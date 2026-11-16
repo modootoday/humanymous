@@ -275,10 +275,8 @@ const SMUGGLING: &[(&str, &str)] = &[
 pub fn run() -> Result<()> {
     wait_for(super::OBSERVE)?;
     wait_for(super::GATE)?;
-    let config: Configuration =
-        serde_json::from_value(super::configuration("/unused", "/unused", "unused"))?;
     let mut driver = Driver {
-        config,
+        config: driver_configuration()?,
         cases: Vec::new(),
     };
     let outcome = driver.run();
@@ -303,6 +301,129 @@ pub fn run() -> Result<()> {
         "cases":driver.cases,"passed":driver.cases.len()-failed,"failed":failed,
         "driver_error":outcome.as_ref().err().map(|e|e.to_string()),
         "observations":{"origin_socket_reachable_from_attacker_namespace":bypass},
+        "client_report":"client-asserted fixture report; no browser or collector executed"});
+    println!("{receipt}");
+    if failed > 0 || outcome.is_err() {
+        return Err("product e2e assertions failed".into());
+    }
+    Ok(())
+}
+
+fn driver_configuration() -> Result<Configuration> {
+    Ok(serde_json::from_value(super::configuration(
+        "/unused", "/unused", "unused",
+    ))?)
+}
+
+/// Phase marker the runner waits for before it removes a dependency.
+pub const AWAITING_LOSS: &str = "awaiting_dependency_loss";
+/// Exact line the runner sends after it observed the dependency stopped.
+pub const DEPENDENCY_LOST: &str = "dependency-lost";
+
+/// Witness-required Gate: a witnessed effect, then (after the runner stops the
+/// witness container) a pre-signed effect from an already collected session
+/// must fail closed: no success status and no origin effect.
+pub fn witnessed() -> Result<()> {
+    wait_for(super::OBSERVE)?;
+    wait_for(super::GATE)?;
+    let mut driver = Driver {
+        config: driver_configuration()?,
+        cases: Vec::new(),
+    };
+    let outcome = witnessed_cases(&mut driver);
+    finish(driver, outcome, "humanymous.product-e2e-witnessed-driver/1")
+}
+
+fn witnessed_cases(driver: &mut Driver) -> Result<()> {
+    let plain = wire(&request("/effect", b"effect".to_vec()));
+    driver.case("witnessed_no_session_protected_route", 401, &plain, 0)?;
+    let clean = wire(&driver.signed("/effect", b"effect", false)?);
+    driver.case("witnessed_signed_effect_forwarded", 200, &clean, 1)?;
+    // Prepared before the loss: session issue and collect are already audited.
+    let pending = wire(&driver.signed("/effect", b"effect", false)?);
+    println!(
+        "{}",
+        json!({"schema":"humanymous.product-e2e-driver-phase/1","phase":AWAITING_LOSS})
+    );
+    std::io::stdout().flush()?;
+    let mut line = String::new();
+    std::io::stdin().read_line(&mut line)?;
+    if line.trim_end() != DEPENDENCY_LOST {
+        return Err("runner did not confirm dependency loss".into());
+    }
+    driver.fails_closed("witness_lost_presigned_effect_fails_closed", &pending)?;
+    // Observation only: whether session issue still answers after the loss.
+    let issued = exchange(super::GATE, &wire(&request("/_humanymous/session", vec![])));
+    driver
+        .cases
+        .push(json!({"id":"witness_lost_session_issue_observed",
+        "observed_status":issued.as_deref().ok().and_then(status),
+        "transport_error":issued.as_ref().err().map(|e|e.to_string()),
+        "observation_only":true,"pass":true}));
+    // A failed durable append poisons the session epoch, so the status of an
+    // unsigned request is recorded, not predicted; it must still fail closed.
+    driver.fails_closed("witness_lost_unsigned_request_fails_closed", &plain)
+}
+
+impl Driver {
+    /// Dependency-loss judgement: any non-2xx answer (or no answer) with no
+    /// origin record. The observed status and Gate body are recorded as facts.
+    fn fails_closed(&mut self, id: &str, bytes: &[u8]) -> Result<()> {
+        let before = records()?.len();
+        let response = exchange(super::GATE, bytes);
+        let new = records()?.len() - before;
+        let observed = response.as_deref().ok().and_then(status);
+        let closed = !observed.is_some_and(|code| (200..300).contains(&code)) && new == 0;
+        self.cases.push(
+            json!({"id":id,"observed_status":observed,"origin_delta":new,
+            "gate_local_body":response.as_deref().ok().and_then(body),
+            "transport_error":response.as_ref().err().map(|e|e.to_string()),
+            "expectation":"no 2xx status and no origin effect","pass":closed}),
+        );
+        Ok(())
+    }
+}
+
+/// Gate after its origin container was stopped post-readiness: a signed effect
+/// must not report success, and the origin must actually be unreachable.
+pub fn origin_lost() -> Result<()> {
+    wait_for(super::GATE)?;
+    let mut driver = Driver {
+        config: driver_configuration()?,
+        cases: Vec::new(),
+    };
+    let unreachable = |address| {
+        TcpStream::connect_timeout(&super::address(address), Duration::from_secs(2)).is_err()
+    };
+    let gone = unreachable(super::ORIGIN) && unreachable(super::OBSERVE);
+    driver
+        .cases
+        .push(json!({"id":"origin_absent_after_readiness","origin_unreachable":gone,"pass":gone}));
+    let outcome = (|| -> Result<()> {
+        let effect = wire(&driver.signed("/effect", b"effect", false)?);
+        let response = exchange(super::GATE, &effect);
+        let observed = response.as_deref().ok().and_then(status);
+        let closed = observed.is_some_and(|code| code >= 500);
+        driver
+            .cases
+            .push(json!({"id":"origin_lost_signed_effect_fails_closed",
+            "observed_status":observed,"gate_local_body":response.as_deref().ok().and_then(body),
+            "transport_error":response.as_ref().err().map(|e|e.to_string()),
+            "expectation":"Gate answers with a 5xx; no success is reported","pass":closed}));
+        Ok(())
+    })();
+    finish(
+        driver,
+        outcome,
+        "humanymous.product-e2e-origin-lost-driver/1",
+    )
+}
+
+fn finish(driver: Driver, outcome: Result<()>, schema: &str) -> Result<()> {
+    let failed = driver.cases.iter().filter(|c| c["pass"] != true).count();
+    let receipt = json!({"schema":schema,"cases":driver.cases,
+        "passed":driver.cases.len()-failed,"failed":failed,
+        "driver_error":outcome.as_ref().err().map(|e|e.to_string()),
         "client_report":"client-asserted fixture report; no browser or collector executed"});
     println!("{receipt}");
     if failed > 0 || outcome.is_err() {

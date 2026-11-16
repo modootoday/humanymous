@@ -1,7 +1,8 @@
-# Roadmap unit 35, first increment: real Rust product e2e (Gate + origin + attacker).
+# Roadmap unit 35: real Rust product e2e (Gate + origin + attacker, and a
+# witness-required Gate with an independent audit witness container).
 # Builds the actual humanymous-runtime gateway and the Rust lab actors from source.
 # Lab-only image; no shell entrypoint, no published ports, detection freeze.
-# A partial topology: authority, independent audit service and browser are absent.
+# A partial topology: authority and browser are absent.
 FROM rust:1.99.1-slim-bookworm@sha256:f2c004e3d2d8b547e8cf7ffbc29205385f4e71d23e53e4e383065db5e9f822cd AS compiler
 ENV CARGO_BUILD_JOBS=4 CARGO_INCREMENTAL=0
 WORKDIR /src

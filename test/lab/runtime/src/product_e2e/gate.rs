@@ -1,34 +1,70 @@
-//! Gate container supervisor: provisions synthetic owned sealed custody on the
-//! container tmpfs, then runs the real gateway binary with private inherited
-//! configuration. The passphrase never leaves this process and its child pipe.
-use humanymous_runtime::audit::keys::{
-    KeyMaterial,
-    custody::{Custody, Owner},
+//! Gate container supervisors. Both provision synthetic owned sealed custody on
+//! the container tmpfs. `run` starts the shipped gateway binary with private
+//! inherited configuration. `witnessed` composes the same library `ServiceHost`
+//! with a required external witness, because the shipped binary has no witness
+//! input (`src/gateway/main.rs` calls `ServiceHost::bind` only). The passphrase
+//! never leaves this process and, for `run`, its child pipe.
+use ed25519_dalek::SigningKey;
+use humanymous_runtime::{
+    audit::{
+        checkpoint::{
+            WitnessBootstrap,
+            service::{WitnessServiceClient, read_frame, write_frame},
+        },
+        keys::{
+            KeyMaterial,
+            custody::{Custody, Owner},
+        },
+        log::WitnessDurability,
+    },
+    gateway::{configuration::Configuration, service::ServiceHost, startup::ExternalWitness},
 };
+use serde_json::{Value, json};
 use std::{
     fs,
-    io::{BufRead, BufReader, Write},
+    io::{self, BufRead, BufReader, Write},
     os::unix::fs::PermissionsExt,
+    path::PathBuf,
     process::{Command, Stdio},
     sync::mpsc,
     time::Duration,
 };
+use zeroize::Zeroizing;
+
+type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 fn hex(bytes: &[u8]) -> String {
     bytes.iter().map(|b| format!("{b:02x}")).collect()
 }
 
-fn private_directory(path: &std::path::Path) -> std::io::Result<()> {
+fn private_directory(path: &std::path::Path) -> io::Result<()> {
     fs::create_dir(path)?;
     fs::set_permissions(path, fs::Permissions::from_mode(0o700))
 }
 
-/// Provision, start, report readiness and then wait on the gateway process.
-pub fn run() -> Result<(), Box<dyn std::error::Error>> {
-    let mut seed = [0; 32];
-    let mut hmac = [0; 32];
+/// Freshly provisioned writer custody. Only the public key is ever reported.
+struct Provisioned {
+    root: PathBuf,
+    keys: PathBuf,
+    passphrase: Zeroizing<String>,
+    writer_public: [u8; 32],
+}
+
+impl Provisioned {
+    fn configuration(&self) -> Result<Value> {
+        Ok(super::configuration(
+            self.root.to_str().ok_or("audit path")?,
+            self.keys.to_str().ok_or("custody path")?,
+            &self.passphrase,
+        ))
+    }
+}
+
+fn provision() -> Result<Provisioned> {
+    let mut seed = Zeroizing::new([0; 32]);
+    let mut hmac = Zeroizing::new([0; 32]);
     let mut nonce = [0; 8];
-    let mut secret = [0; 24];
+    let mut secret = Zeroizing::new([0; 24]);
     for buffer in [
         &mut seed[..],
         &mut hmac[..],
@@ -37,22 +73,30 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     ] {
         getrandom::fill(buffer)?;
     }
-    let passphrase = zeroize::Zeroizing::new(hex(&secret));
+    let passphrase = Zeroizing::new(hex(&secret[..]));
     let root = std::env::temp_dir().join(format!("product-e2e-gate-{}", hex(&nonce)));
     private_directory(&root)?;
     let root = root.canonicalize()?;
     let keys = root.join("custody");
     private_directory(&keys)?;
+    let writer_public = SigningKey::from_bytes(&seed).verifying_key().to_bytes();
     let mut custody = Custody::acquire(&keys, Owner::CurrentUser)?;
     custody.load_or_create(passphrase.as_bytes(), || {
-        KeyMaterial::new(seed, hmac.to_vec(), None, None)
+        KeyMaterial::new(*seed, hmac.to_vec(), None, None)
     })?;
     drop(custody);
-    let config = super::configuration(
-        root.to_str().ok_or("audit path")?,
-        keys.to_str().ok_or("custody path")?,
-        &passphrase,
-    );
+    Ok(Provisioned {
+        root,
+        keys,
+        passphrase,
+        writer_public,
+    })
+}
+
+/// Provision, start the shipped binary, report readiness and wait on it.
+pub fn run() -> Result<()> {
+    let provisioned = provision()?;
+    let config = provisioned.configuration()?;
     let mut child = Command::new("/usr/local/bin/humanymous-runtime")
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
@@ -64,6 +108,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         input.flush()?;
     }
     drop(config);
+    drop(provisioned);
     let stdout = child.stdout.take().ok_or("readiness pipe")?;
     let (sender, receiver) = mpsc::channel();
     std::thread::spawn(move || {
@@ -72,7 +117,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         let _ = sender.send((result.ok(), line));
     });
     let readiness = match receiver.recv_timeout(Duration::from_secs(60)) {
-        Ok((Some(n), line)) if n > 0 => serde_json::from_str::<serde_json::Value>(&line)?,
+        Ok((Some(n), line)) if n > 0 => serde_json::from_str::<Value>(&line)?,
         _ => {
             let _ = child.kill();
             let status = child.wait()?;
@@ -82,8 +127,61 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     // Readiness is a nonsecret manifest; the runner retains it from the log.
     println!(
         "{}",
-        serde_json::json!({"schema":"humanymous.product-e2e-gate-ready/1","binary":"/usr/local/bin/humanymous-runtime","readiness":readiness})
+        json!({"schema":"humanymous.product-e2e-gate-ready/1","binary":"/usr/local/bin/humanymous-runtime","readiness":readiness})
     );
     let status = child.wait()?;
     Err(format!("gateway exited: {status}").into())
+}
+
+/// Witness-required Gate. Stdin/stdout carry only typed audit witness frames
+/// relayed by the trusted runner broker; diagnostics and readiness go to stderr.
+pub fn witnessed() -> Result<()> {
+    let provisioned = provision()?;
+    let mut config = provisioned.configuration()?;
+    config["audit"]["require_external_witness"] = json!(true);
+    let node = config["audit"]["node_id"]
+        .as_str()
+        .ok_or("audit node")?
+        .to_owned();
+    let mut output = io::stdout();
+    write_frame(
+        &mut output,
+        &json!({"role":"writer_identity","writer_public":provisioned.writer_public,"node_id":node}),
+    )?;
+    let mut input = BufReader::new(io::stdin());
+    let intro: Value = serde_json::from_slice(
+        &read_frame(&mut input)?.ok_or("broker did not supply witness identity")?,
+    )?;
+    let witness: [u8; 32] = serde_json::from_value(intro["witness_public"].clone())?;
+    let client = WitnessServiceClient::from_ready(
+        input,
+        output,
+        witness,
+        provisioned.writer_public,
+        node,
+        WitnessBootstrap::CreateNew,
+    )?;
+    let external = ExternalWitness::new(
+        Box::new(client),
+        witness,
+        WitnessDurability::FileAndDirectory,
+    )?;
+    let configuration: Configuration = serde_json::from_value(config)?;
+    drop(provisioned);
+    let runtime = tokio::runtime::Builder::new_multi_thread()
+        .worker_threads(2)
+        .enable_all()
+        .build()?;
+    runtime.block_on(async move {
+        let host = ServiceHost::bind_with_witness(configuration, external).await?;
+        eprintln!(
+            "{}",
+            json!({"schema":"humanymous.product-e2e-gate-ready/1",
+                "composition":"humanymous-runtime library ServiceHost::bind_with_witness in the lab broker supervisor",
+                "readiness":serde_json::to_value(host.readiness())?})
+        );
+        let (_sender, receiver) = tokio::sync::watch::channel(None);
+        host.run(receiver).await?;
+        Err::<(), Box<dyn std::error::Error>>("witnessed gateway stopped".into())
+    })
 }
