@@ -6,6 +6,7 @@ pub(crate) mod build_observation;
 mod collection;
 mod helpers;
 pub(crate) mod packages;
+mod pilots;
 
 const PACKAGES: [&str; 2] = ["humanymous-runtime", "humanymous-cli"];
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -280,13 +281,48 @@ fn execute_inner(
         // Retain the observed final counts even when strict summary accounting
         // rejects extra child output. `validated` still records that rejection.
         let counts = summaries(&output).ok().and_then(|s| s.last().copied());
+        let declared = if scope == Scope::Workspace {
+            pilots::declared(
+                entry,
+                packages,
+                std::env::consts::OS,
+                std::env::consts::ARCH,
+            )?
+        } else {
+            pilots::Declared::default()
+        };
         let accounting = if custody {
             custody_account(&output, count, execution.status.success())
         } else if let Some((helper, parent)) = captured_helper {
-            captured_helper_account(&output, count, execution.status.success(), helper, parent)
+            captured_helper_account(
+                &output,
+                count,
+                execution.status.success(),
+                helper,
+                parent,
+                &declared.ignored,
+            )
+        } else if !declared.is_empty() {
+            declared_account(
+                &output,
+                count,
+                execution.status.success(),
+                &declared.ignored,
+            )
         } else {
             account_pending(&output, count, execution.status.success(), pending)
         };
+        let receipt =
+            std::fs::read_to_string(packages.root().join("target/native-pilots/receipt.json")).ok();
+        let pilot_receipt = pilots::verify_receipt(
+            &declared,
+            packages.source_sha(),
+            receipt.as_deref(),
+            std::env::consts::OS,
+            std::env::consts::ARCH,
+        );
+        let pilot_receipt_verified = pilot_receipt.is_ok();
+        let accounting = accounting.and_then(|passed| pilot_receipt.map(|()| passed));
         rows.push(json!({"index":index,"executable_sha256":entry["sha256"],"package_id":entry["package_id"],"target":entry["target"],"discovered":count,"passed":counts.map(|c|c[0]),"failed":counts.map(|c|c[1]),"ignored":counts.map(|c|c[2]),"required_not_run":if service{json!([required_service])}else{json!([])},"filtered":counts.map(|c|c[4]),"validated":accounting.is_ok(),"exit_code":execution.status.code(),"stdout_sha256":format!("{:x}",sha2::Sha256::digest(output.as_bytes()))}));
         if custody {
             let row = rows.last_mut().unwrap();
@@ -306,8 +342,9 @@ fn execute_inner(
             row["subprocess_helpers"] = json!([helper]);
             row["required_parent_tests"] = json!(parent);
         }
-        if let Some(scope) = helpers::external_scope(entry, &output, cfg!(unix), packages) {
-            for (key, value) in scope.as_object().unwrap() {
+        if !declared.is_empty() {
+            let row = declared.row(pilot_receipt_verified);
+            for (key, value) in row.as_object().unwrap() {
                 rows.last_mut().unwrap()[key] = value.clone();
             }
         }
@@ -385,19 +422,15 @@ fn captured_helper_account(
     success: bool,
     helper: &str,
     parents: &[&str],
+    declared: &[String],
 ) -> io::Result<usize> {
-    let ignored: Vec<_> = log
-        .lines()
-        .filter_map(|line| {
-            line.strip_prefix("test ")
-                .and_then(|s| s.split_once(" ... ignored").map(|(name, _)| name))
-        })
-        .collect();
+    let mut expected = vec![helper.to_owned()];
+    expected.extend(declared.iter().cloned());
     if (helper == "audit::storage::wal::tests::process_lock_probe"
         && log
             .lines()
             .any(|line| line == "humanymous-wal-lock-refused"))
-        || ignored != [helper]
+        || !pilots::ignored_matches(log, &expected)
         || parents.is_empty()
         || parents.iter().any(|parent| {
             !log.lines()
@@ -408,7 +441,20 @@ fn captured_helper_account(
             "captured subprocess helper/parent inventory differs",
         ));
     }
-    account_pending(log, discovered, success, 1)
+    account_pending(log, discovered, success, expected.len())
+}
+/// Ignored names must equal the declared pilot names exactly; the receipt or
+/// named job step is checked separately.
+fn declared_account(
+    log: &str,
+    discovered: usize,
+    success: bool,
+    declared: &[String],
+) -> io::Result<usize> {
+    if !pilots::ignored_matches(log, declared) {
+        return Err(io::Error::other("declared pilot ignored inventory differs"));
+    }
+    account_pending(log, discovered, success, declared.len())
 }
 fn account_pending(
     log: &str,
@@ -542,6 +588,14 @@ fn custody_account(log: &str, discovered: usize, success: bool) -> io::Result<us
     }
     account_pending(log, discovered, success, 2)
 }
+/// Closed public vocabulary of declared pilot ids.
+pub(crate) fn pilot_ids() -> std::collections::BTreeSet<String> {
+    pilots::known_ids()
+}
+/// Closed public vocabulary of declared pilot subprocess helpers.
+pub(crate) fn pilot_helpers() -> std::collections::BTreeSet<String> {
+    pilots::known_helpers()
+}
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -549,7 +603,7 @@ mod tests {
     fn captured_helpers_require_single_summary_exact_helper_and_parent() {
         let good = "test helper ... ignored\ntest parent ... ok\ntest result: ok. 1 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.1s";
         assert_eq!(
-            captured_helper_account(good, 2, true, "helper", &["parent"]).unwrap(),
+            captured_helper_account(good, 2, true, "helper", &["parent"], &[]).unwrap(),
             1
         );
         for bad in [
@@ -557,10 +611,10 @@ mod tests {
             good.replace("test helper", "test unknown"),
             format!("{good}\n{good}"),
         ] {
-            assert!(captured_helper_account(&bad, 2, true, "helper", &["parent"]).is_err());
+            assert!(captured_helper_account(&bad, 2, true, "helper", &["parent"], &[]).is_err());
         }
-        assert!(captured_helper_account(good, 2, false, "helper", &["parent"]).is_err());
-        assert!(captured_helper_account(good, 3, true, "helper", &["parent"]).is_err());
+        assert!(captured_helper_account(good, 2, false, "helper", &["parent"], &[]).is_err());
+        assert!(captured_helper_account(good, 3, true, "helper", &["parent"], &[]).is_err());
         let wal = good
             .replace("helper", "audit::storage::wal::tests::process_lock_probe")
             .replace(
@@ -571,7 +625,7 @@ mod tests {
         let parents =
             &["audit::storage::wal::tests::exclusive_writer_rotation_checkpoint_and_restart"];
         assert_eq!(
-            captured_helper_account(&wal, 2, true, helper, parents).unwrap(),
+            captured_helper_account(&wal, 2, true, helper, parents, &[]).unwrap(),
             1
         );
         assert!(
@@ -580,9 +634,27 @@ mod tests {
                 2,
                 true,
                 helper,
-                parents
+                parents,
+                &[]
             )
             .is_err()
+        );
+    }
+    #[test]
+    fn declared_pilots_extend_helpers_and_must_match_exactly() {
+        let log = "test helper ... ignored\ntest pilot ... ignored\ntest parent ... ok\ntest result: ok. 1 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.1s";
+        let pilot = vec!["pilot".to_owned()];
+        assert_eq!(
+            captured_helper_account(log, 3, true, "helper", &["parent"], &pilot).unwrap(),
+            1
+        );
+        assert!(captured_helper_account(log, 3, true, "helper", &["parent"], &[]).is_err());
+        let only = "test pilot ... ignored\ntest parent ... ok\ntest result: ok. 1 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.1s";
+        assert_eq!(declared_account(only, 2, true, &pilot).unwrap(), 1);
+        assert!(declared_account(only, 2, true, &["other".to_owned()]).is_err());
+        assert!(declared_account(only, 2, false, &pilot).is_err());
+        assert!(
+            declared_account(&only.replace("1 ignored", "2 ignored"), 2, true, &pilot).is_err()
         );
     }
     #[test]

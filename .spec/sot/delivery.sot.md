@@ -1050,6 +1050,37 @@ helper, missing parent/child proof, malformed extra summary or ordinary ignored
 unit fails the gate. All other harnesses retain strict one-summary/zero-ignore
 accounting. This does not skip tests or qualify full product runtime.
 
+### Declared ignored native pilots (2026-11-16)
+
+scripts/ci/native-pilots.json is the single declaration both the workspace
+probe and the executor compile in. Each pilot names a package, target, kind,
+OS (and optional architecture), exact ignored test names, subprocess helpers
+and one executor. A harness may report ignored tests only when the observed
+ignored names equal the declared names for that harness and OS exactly; any
+extra, missing or renamed ignored test stays a coverage-accounting failure.
+
+Executor `native-pilots`: the native job runs `delivery component pilots`
+before the probe. It builds each pilot target, runs every declared test alone
+with `--exact --ignored` (root pilots through `sudo -n` from a world-executable
+copy, private-parent pilots in a fresh 0700 directory under RUNNER_TEMP) and
+requires the exact single-test success footer. It writes
+target/native-pilots/receipt.json bound to the source SHA, OS, architecture and
+declaration digest. The probe accepts the declared names only when that receipt
+shows one passed row per declared test; an absent, failed or mismatched receipt
+is an accounting failure.
+
+Executor `job`: the pilot is run by a named step of another job that
+merge-ready already requires (today the `node` job `component node-host`
+step for the three Node host_process groups). Delivery tests verify the named
+step exists in that job; the other job's own result carries the outcome.
+
+This replaces the single privileged-Docker scope declaration for the authority
+socket ACL test: it now runs as root on the hosted runner and its helper is
+declared. Undeclared ignored tests (dotnet hosted and package pilots, and the
+Windows-supervised platform capture parents on Linux) still fail accounting
+until an executor exists. Declarations are not waivers and qualify no full
+product runtime.
+
 ## Bounded public archive transport and measurement
 
 Run 42354873001 at a26d1c3f08b365ca93545c6a51343095868edb45 is a distinct

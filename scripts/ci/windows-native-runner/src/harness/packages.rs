@@ -13,6 +13,7 @@ use std::{
 pub(crate) struct Packages {
     root: PathBuf,
     entries: BTreeMap<String, Value>,
+    source_sha: Option<String>,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Role {
@@ -61,7 +62,8 @@ impl Packages {
             16 * 1024 * 1024,
         )
         .map_err(io::Error::other)?;
-        let packages = Self::from_metadata(&metadata, root)?;
+        let mut packages = Self::from_metadata(&metadata, root)?;
+        packages.source_sha = source["source_sha"].as_str().map(str::to_owned);
         let files = source["files"]
             .as_object()
             .ok_or_else(|| io::Error::other("source files absent"))?;
@@ -130,10 +132,31 @@ impl Packages {
             }
             entries.insert(id.to_owned(), package.clone());
         }
-        Ok(Self { root, entries })
+        Ok(Self {
+            root,
+            entries,
+            source_sha: None,
+        })
     }
 }
 
 mod roles;
 #[cfg(test)]
 mod tests;
+
+impl Packages {
+    /// Cargo package name for a workspace manifest entry, if it is a member.
+    pub(crate) fn name(&self, entry: &Value) -> Option<&str> {
+        entry["package_id"]
+            .as_str()
+            .and_then(|id| self.entries.get(id))
+            .and_then(|package| package["name"].as_str())
+    }
+    pub(crate) fn root(&self) -> &Path {
+        &self.root
+    }
+    /// Observed source revision; absent for metadata-only fixtures.
+    pub(crate) fn source_sha(&self) -> Option<&str> {
+        self.source_sha.as_deref()
+    }
+}

@@ -8,6 +8,7 @@ const NATIVE_TESTS: [&str; 5] = [
     "sealed_startup_retains_custody_and_reuses_existing_identity",
 ];
 pub(super) fn row(raw: &Value, public: &mut Value) {
+    let helpers = crate::harness::pilot_helpers();
     public["index"] = json!(raw["index"].as_u64());
     public["required_native_tests_verified"] =
         json!(raw["required_native_tests_verified"].as_bool());
@@ -23,15 +24,26 @@ pub(super) fn row(raw: &Value, public: &mut Value) {
     public["required_execution_scope"] = json!(
         raw["required_execution_scope"]
             .as_str()
-            .filter(|value| *value == "privileged-docker")
+            .filter(|value| matches!(*value, "native-pilots" | "job"))
     );
+    let ids = crate::harness::pilot_ids();
+    public["pilot_ids"] = json!(
+        raw["pilot_ids"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .filter_map(Value::as_str)
+            .filter(|id| ids.contains(*id))
+            .collect::<Vec<_>>()
+    );
+    public["pilot_receipt_verified"] = json!(raw["pilot_receipt_verified"].as_bool());
     public["declared_subprocess_helpers"] = json!(
         raw["declared_subprocess_helpers"]
             .as_array()
             .into_iter()
             .flatten()
             .filter_map(Value::as_str)
-            .filter(|name| *name == "unix_unprivileged_connect_probe")
+            .filter(|name| helpers.contains(*name))
             .collect::<Vec<_>>()
     );
 }
@@ -63,12 +75,18 @@ mod tests {
     use super::*;
     #[test]
     fn named_assertions_are_preserved_without_publishing_private_strings() {
-        let raw = json!({"index":4,"required_native_tests_verified":true,"required_native_tests":[NATIVE_TESTS[0],"private-path"],"required_execution_scope":"privileged-docker","declared_subprocess_helpers":["unix_unprivileged_connect_probe","private-path"]});
+        let raw = json!({"index":4,"required_native_tests_verified":true,"required_native_tests":[NATIVE_TESTS[0],"private-path"],"required_execution_scope":"native-pilots","pilot_ids":["runtime-audit-native-source","private-path"],"declared_subprocess_helpers":["unix_unprivileged_connect_probe","private-path"]});
         let mut public = json!({});
         row(&raw, &mut public);
         assert_eq!(public["index"], 4);
         assert_eq!(public["required_native_tests"].as_array().unwrap().len(), 1);
         assert_eq!(public["required_native_tests_verified"], true);
+        assert_eq!(public["required_execution_scope"], "native-pilots");
+        assert_eq!(public["pilot_ids"], json!(["runtime-audit-native-source"]));
+        assert_eq!(
+            public["declared_subprocess_helpers"],
+            json!(["unix_unprivileged_connect_probe"])
+        );
         assert!(!public.to_string().contains("private-path"));
     }
     #[test]

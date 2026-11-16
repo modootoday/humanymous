@@ -98,6 +98,9 @@ jobs:
     - name: Execute provisioned Windows CEF component cases
       if: ${{ !cancelled() && steps.native_build.outcome == 'success' && runner.os == 'Windows' }}
       run: cargo run --locked --manifest-path scripts/ci/cef-pilot/Cargo.toml -- target/cef-native-evidence
+    - name: Execute declared ignored native pilots
+      if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+      run: cargo run --locked -p humanymous-delivery -- component pilots
     - name: Execute every workspace harness through the native Rust actor
       if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
       run: cargo run --locked -p humanymous-delivery -- probe ${{ matrix.os == 'windows-2025' && 'windows' || matrix.os == 'macos-15' && 'macos' || 'linux' }} ${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
