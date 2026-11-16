@@ -1019,6 +1019,11 @@ pub fn check(root: &Path) -> Result<()> {
         document(name, doc)?;
     }
     image_parity(&docs)?;
+    private_evidence_untracked(&command::text(
+        root,
+        "git",
+        &["ls-files", "--cached", "--", ".spec.local"],
+    )?)?;
     // Only newly authored Rust/workflow sources are owned here; legacy oracles
     // remain distinct. Enforce actual bytes, not a post-hash newline rewrite.
     let paths = command::text(
@@ -1207,6 +1212,19 @@ fn verify_public_commit(body: &str, expected_sha: &str) -> Result<()> {
         "action commit identity mismatch",
     )
 }
+/// Private Specfold evidence stays out of the public index; a force-add is refused.
+fn private_evidence_untracked(listing: &str) -> Result<()> {
+    let tracked = listing
+        .lines()
+        .filter(|line| !line.trim().is_empty())
+        .count();
+    require(
+        tracked == 0,
+        format!(
+            "{tracked} private .spec.local file(s) are tracked; publish a sanitized .spec summary instead"
+        ),
+    )
+}
 pub fn jobs(raw: &str) -> Result<()> {
     let value: Value = serde_json::from_str(raw).map_err(|e| e.to_string())?;
     let jobs = value.as_object().ok_or("aggregate must be an object")?;
@@ -1218,6 +1236,15 @@ pub fn jobs(raw: &str) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn tracked_private_evidence_is_refused() {
+        assert!(private_evidence_untracked("").is_ok());
+        assert!(private_evidence_untracked("\n").is_ok());
+        let error = private_evidence_untracked(".spec.local/root/evidence/x/CLOSER.json\n")
+            .unwrap_err()
+            .to_string();
+        assert!(error.contains("1 private .spec.local file(s) are tracked"));
+    }
     #[test]
     fn free_branch_upload_defaults_are_never_enabled_by_always() {
         for name in [

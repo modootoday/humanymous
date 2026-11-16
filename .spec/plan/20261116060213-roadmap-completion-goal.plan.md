@@ -3,7 +3,7 @@ id: plan:root/20261116060213
 title: Roadmap completion goal and unattended execution contract
 status: active
 created: 2026-11-16T06:02:13Z
-updated: 2026-11-16T07:15:00Z
+updated: 2026-11-16T06:52:38Z
 rel:
   depends_on: [sot:root/milestones, sot:root/program-roadmap, plan:root/20261110061400, sot:root/clean-room-usage-matrix]
 ---
@@ -114,3 +114,6 @@ unattended.
 - 2026-11-16: FM11 row review landed as
   `.agents/retirement/legacy-go-row-review.json`. No row is retired; the
   missing and partial rows are now explicit port or retirement work.
+- 2026-11-16: 158 force-added `.spec.local` files were untracked after a
+  consumer measurement showed no test or gate change, and CI `delivery policy`
+  now refuses tracked private evidence ([[evidence:root/20261116081000]]).

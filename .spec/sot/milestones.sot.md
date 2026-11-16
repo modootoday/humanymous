@@ -3,7 +3,7 @@ id: sot:root/milestones
 title: Canonical milestone register
 status: active
 created: 2026-11-16T05:56:01Z
-updated: 2026-11-16T07:15:00Z
+updated: 2026-11-16T06:52:38Z
 verify: ["spec check --no-local"]
 rel:
   depends_on: [sot:root/program-roadmap, sot:root/clean-room-usage-matrix, sot:root/rust-migration]

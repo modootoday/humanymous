@@ -2,8 +2,8 @@
 id: evidence:root/20261116071500
 title: Legacy Go responsibility row review (FM11)
 status: active
-created: 2026-11-16T07:15:00Z
-updated: 2026-11-16T07:15:00Z
+created: 2026-11-16T06:40:00Z
+updated: 2026-11-16T06:40:00Z
 rel:
   depends_on: [plan:root/20261116060213, sot:root/milestones]
 ---
