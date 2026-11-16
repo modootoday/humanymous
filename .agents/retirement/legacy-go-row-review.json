@@ -14,9 +14,9 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "missing": 90,
+  "missing": 88,
   "partial": 95,
-  "ported_unit": 127,
+  "ported_unit": 129,
   "not_applicable": 2
  },
  "by_package": {
@@ -143,7 +143,7 @@
    "partial": 3
   },
   "pkg/origincloak": {
-   "missing": 2
+   "ported_unit": 2
   }
  },
  "rows": [
@@ -2264,24 +2264,40 @@
    "baseline_path": "internal/gate/guard.go",
    "disposition": "partial",
    "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/guard.rs",
     "crates/sdk/humanymous-runtime/src/gateway/http.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::real_shared_client_consumption_ack_and_origin_fidelity",
-    "crates/sdk/humanymous-runtime/src/gateway/http/stream.rs::complete_chunk_stream_reframes_and_strips_forged_gateway_fields"
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::clean_request_has_no_spoof",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::epoch_buckets_by_hour",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::origin_handler_example_direct_hit_fails",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::short_origin_key_is_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::spoofed_trust_headers_are_reported_and_stripped",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_is_hmac_hex",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_matches_go_golden_bytes",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::valid_with_symmetric_grace",
+    "crates/sdk/humanymous-runtime/src/gateway/http/stream.rs::complete_chunk_stream_reframes_and_strips_forged_gateway_fields",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::real_shared_client_consumption_ack_and_origin_fidelity"
    ],
    "go_test_map": {},
    "gaps": [
-    "spoof scan and audit of forged trust headers",
-    "stripping X-Forwarded-For/Forwarded/X-Real-Ip/Cf-Connecting-Ip",
-    "origin-cloak token and epoch grace"
+    "Forwarding composition does not yet call strip_inbound or attach the origin-cloak header",
+    "HR-27b spoof audit record is not emitted"
    ],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Rust strips only its own x-humanymous-* namespace inbound and from origin responses.",
+   "notes": "Spoof scan, inbound strip and origin-cloak token/grace are ported as pure kernels in gateway/guard.rs; the existing Rust forwarder strips only its own x-humanymous-* namespace.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/http/stream.rs::complete_chunk_stream_reframes_and_strips_forged_gateway_fields": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::real_shared_client_consumption_ack_and_origin_fidelity": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::real_shared_client_consumption_ack_and_origin_fidelity": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::clean_request_has_no_spoof": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::epoch_buckets_by_hour": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::origin_handler_example_direct_hit_fails": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::short_origin_key_is_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::spoofed_trust_headers_are_reported_and_stripped": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_is_hmac_hex": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_matches_go_golden_bytes": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::valid_with_symmetric_grace": "passed"
    }
   },
   {
@@ -7810,36 +7826,64 @@
   },
   {
    "baseline_path": "pkg/origincloak/origincloak_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestTokenIsHMACHex": null,
-    "TestEpochBucketsByHour": null,
-    "TestValidWithGrace": null,
-    "TestOriginHandlerExample": null
-   },
-   "gaps": [
-    "Origin-auth HMAC token, hourly epoch, +/-1 grace validation"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/guard.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_matches_go_golden_bytes",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_is_hmac_hex",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::epoch_buckets_by_hour",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::valid_with_symmetric_grace",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::origin_handler_example_direct_hit_fails",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::short_origin_key_is_refused"
+   ],
+   "go_test_map": {
+    "TestTokenIsHMACHex": "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_is_hmac_hex",
+    "TestEpochBucketsByHour": "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::epoch_buckets_by_hour",
+    "TestValidWithGrace": "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::valid_with_symmetric_grace",
+    "TestOriginHandlerExample": "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::origin_handler_example_direct_hit_fails"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "X-Hmny-Origin-Auth not found in crates.",
-   "test_verification": {}
+   "notes": "All four legacy cases have Rust counterparts plus a Go golden vector.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_matches_go_golden_bytes": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_is_hmac_hex": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::epoch_buckets_by_hour": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::valid_with_symmetric_grace": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::origin_handler_example_direct_hit_fails": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::short_origin_key_is_refused": "passed"
+   }
   },
   {
    "baseline_path": "pkg/origincloak/origincloak.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "Token/Epoch/EpochGrace/Valid/ValidAt"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/guard.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_matches_go_golden_bytes",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_is_hmac_hex",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::epoch_buckets_by_hour",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::valid_with_symmetric_grace",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::origin_handler_example_direct_hit_fails",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::short_origin_key_is_refused"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust origin-cloak token; plan B14 origin authentication is \"M\".",
-   "test_verification": {}
+   "notes": "Token, epoch, symmetric grace and constant-time validation match Go bytes (golden regenerated with Go 1.25.3). Deliberate difference: origin keys under 32 bytes are refused.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_matches_go_golden_bytes": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_is_hmac_hex": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::epoch_buckets_by_hour": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::valid_with_symmetric_grace": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::origin_handler_example_direct_hit_fails": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::short_origin_key_is_refused": "passed"
+   }
   }
  ]
 }

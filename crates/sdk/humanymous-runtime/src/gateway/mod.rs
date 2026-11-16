@@ -4,6 +4,7 @@ pub mod ban;
 pub mod browser;
 pub mod configuration;
 pub mod control;
+pub mod guard;
 pub mod http;
 #[cfg(feature = "hosted-pilot")]
 pub mod lab_h2_measure;

@@ -224,6 +224,7 @@ pub fn origin_request(request: &Request, authority: &str) -> Vec<u8> {
                 | "proxy-authorization"
                 | "proxy-authenticate"
         ) || lower.starts_with("x-humanymous-")
+            || crate::gateway::guard::is_internal(name)
             || lower == "authorization"
                 && !matches!(
                     crate::gateway::browser::profile(request),
@@ -333,6 +334,16 @@ mod tests {
         );
         assert_eq!(request.header("Accept"), Some("*/*"));
         assert_eq!(request.target, "/a?b=1");
+    }
+    #[test]
+    fn origin_request_drops_forged_trust_headers() {
+        let frame = "GET / HTTP/1.1\r\nHost: app\r\nX-Forwarded-For: 1.2.3.4\r\nforwarded: for=5.6.7.8\r\nX-Real-IP: 9.9.9.9\r\nCF-Connecting-IP: 1.1.1.1\r\nX-Hmny-Origin-Auth: forged\r\nX-Hmn-Verdict: ALLOW\r\nAccept: */*\r\nContent-Length: 0";
+        let (request, _) = parse_headers(frame.as_bytes()).unwrap();
+        let text = String::from_utf8(origin_request(&request, "origin")).unwrap();
+        assert_eq!(
+            text,
+            "GET / HTTP/1.1\r\nHost: origin\r\nContent-Length: 0\r\nConnection: close\r\nAccept: */*\r\n\r\n"
+        );
     }
     #[test]
     fn origin_response_preserves_cookie_bytes_and_rejects_ambiguity() {
