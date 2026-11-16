@@ -3210,27 +3210,28 @@
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs",
     "crates/sdk/humanymous-runtime/src/gateway/settings.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/config.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets",
     "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision",
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs::crash_selection_applies_only_the_journal_committed_candidate"
+    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs::crash_selection_applies_only_the_journal_committed_candidate",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::validate_refuses_non_positive_rate_hard"
    ],
    "go_test_map": {
     "TestValidateRefusesIntegrityOff": "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets",
     "TestValidateRefusesHROff": "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets",
     "TestValidateRefusesNetTCPEnforce": "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets",
     "TestValidateScoringBounds": "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision",
-    "TestValidateRefusesNonPositiveRateHard": null,
+    "TestValidateRefusesNonPositiveRateHard": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::validate_refuses_non_positive_rate_hard",
     "TestResolveEmptyOverlayIdentity": null,
     "TestResolveOverlayScoringAndKill": null,
     "TestFileStoreRoundTrip": "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs::crash_selection_applies_only_the_journal_committed_candidate"
    },
    "gaps": [
-    "overlay resolution identity",
-    "scoring/kill overlay resolution",
-    "explicit non-positive rate-hard test"
+    "overlay resolution identity (no scoring/route/net overlay model: Rust settings are resource-only by design, plan 20261107205817 B20 M)",
+    "scoring/kill overlay resolution (detection freeze; kill effects are dual-controlled, plan 20261116060213 unit 19)"
    ],
    "retire_basis": null,
    "confidence": "medium",
@@ -3238,7 +3239,8 @@
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs::crash_selection_applies_only_the_journal_committed_candidate": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::validate_refuses_non_positive_rate_hard": "passed"
    }
   },
   {

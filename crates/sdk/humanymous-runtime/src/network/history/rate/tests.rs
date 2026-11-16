@@ -224,6 +224,20 @@ fn invalid_config_has_no_defaults_or_overflowing_ttl() {
     assert!(Config::new(ticks(1), 3, 2, limits).is_err());
 }
 
+/// Go TestValidateRefusesNonPositiveRateHard (internal/gate/settings at
+/// baseline 981d25c): a hard cutpoint of zero is refused, with or without a
+/// soft cutpoint below it.
+#[test]
+fn validate_refuses_non_positive_rate_hard() {
+    let limits = Limits::new(1, 1, 1, Duration::MAX, 100, 1).unwrap();
+    assert_eq!(
+        Config::new(ticks(10), 1, 0, limits).err(),
+        Some(Unavailable::InvalidConfiguration)
+    );
+    assert!(Config::new(ticks(10), 0, 0, limits).is_err());
+    assert!(Config::new(ticks(10), 1, 1, limits).is_ok());
+}
+
 #[test]
 fn tightening_defers_key_trim_and_expansion_overflow_preserves_config() {
     let mut rate = limiter(10, 3, 5, 2, 4, 2);
