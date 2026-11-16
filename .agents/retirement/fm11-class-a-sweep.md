@@ -15,8 +15,13 @@ a detection-scoring change, a new dependency or Cargo manifest change, audit
 keys or Cap/handoff/grant artifacts, or owner acceptance of an intentional
 Go/Rust difference. Go behavior was read at 981d25c; the internal/scoring and
 internal/audit Go tests were also re-run there with go1.25.3 (pass). The
-internal/gate Go package could not be built in the scratch extract (a module
-outside the frozen go.sum), so its rounds were ported from source reading.
+internal/gate Go package could not be built in the sweep's own scratch extract
+(a module outside the frozen go.sum), so its rounds were first ported from
+source reading. A separate extract of 981d25c that resolves modules
+(`GOTOOLCHAIN=go1.25.3 GOFLAGS=-mod=mod`) builds the package; there, all 90 Go
+tests mapped in the four `internal/gate/wargame_escalation_r*_test.go` rows
+pass (`go test ./internal/gate -run '^(<mapped names>)$' -count=1`, 90 PASS,
+0 FAIL), and the Rust counterparts pass in `cargo test --locked`.
 
 ## Class A ported in this sweep
 
