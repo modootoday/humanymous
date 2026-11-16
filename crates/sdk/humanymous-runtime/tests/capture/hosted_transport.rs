@@ -114,7 +114,9 @@ fn h1_idle_refusal(tail: H1Tail) {
     let (consumed, read_complete) = std::sync::mpsc::sync_channel(1);
     let (changed, observe_change) = std::sync::mpsc::sync_channel(1);
     let server = thread::spawn(move || {
-        let mut conn = Connection::accept(accept(&listener), server, BUDGET).unwrap();
+        let stream = accept(&listener);
+        let delivery = stream.try_clone().unwrap();
+        let mut conn = Connection::accept(stream, server, BUDGET).unwrap();
         let mut request = vec![0; REQUEST.len()];
         let mut used = 0;
         while used < request.len() {
@@ -126,6 +128,16 @@ fn h1_idle_refusal(tail: H1Tail) {
         // This is a component barrier, not a durable-audit or origin witness.
         consumed.send(()).unwrap();
         observe_change.recv_timeout(BUDGET).unwrap();
+        // A tail written after the barrier can still be in flight when the
+        // client signals. Wait until the kernel delivers it (bytes or FIN)
+        // before the non-blocking probe; peek leaves the bytes unconsumed.
+        if matches!(
+            tail,
+            H1Tail::Fin | H1Tail::CloseNotify | H1Tail::PendingCiphertext
+        ) {
+            delivery.set_read_timeout(Some(BUDGET)).unwrap();
+            delivery.peek(&mut [0]).unwrap();
+        }
         let error = conn.check_h1_idle().unwrap_err();
         match tail {
             H1Tail::Fin => assert_eq!(error.kind(), io::ErrorKind::UnexpectedEof),
