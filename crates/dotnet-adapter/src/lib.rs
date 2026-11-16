@@ -6,11 +6,11 @@
 
 pub mod bridge;
 
-use humanymous_runtime::authority::client::{BoundResponse, Verdict};
 use humanymous_core::integrity::adapter::AdapterProfile;
 use humanymous_framework_adapter::{
     Admission, Configuration, Error, Observation, Pending, internal_header,
 };
+use humanymous_runtime::authority::client::{BoundResponse, Verdict};
 use std::sync::{Arc, Mutex};
 
 #[derive(Clone, Copy, PartialEq, Eq)]

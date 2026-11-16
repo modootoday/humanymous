@@ -4,13 +4,7 @@ use crate::gateway::http::{self, Request};
 use crate::network::ingress::{H2Claim, Refusal};
 use httlib_hpack::Encoder;
 use rustls::ServerConfig;
-use std::{
-    io,
-    net::TcpStream,
-    sync::Arc,
-    thread,
-    time::Duration,
-};
+use std::{io, net::TcpStream, sync::Arc, thread, time::Duration};
 use tokio::sync::oneshot;
 
 const PREFACE: &[u8] = b"PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
@@ -111,7 +105,6 @@ pub(super) fn serve_accepted(mut connection: Connection) -> io::Result<CapturedH
 }
 
 impl CapturedH2Request {
-
     /// Exact parsed gateway request bound to this H2 stream.
     pub fn request(&self) -> &Request {
         &self.request
@@ -244,12 +237,7 @@ fn h2_response_frames(stream: u32, h1: &[u8]) -> io::Result<Vec<u8>> {
     }
     let mut out = Vec::new();
     if body.is_empty() {
-        out.extend(frame(
-            1,
-            FLAG_END_HEADERS | FLAG_END_STREAM,
-            stream,
-            &block,
-        ));
+        out.extend(frame(1, FLAG_END_HEADERS | FLAG_END_STREAM, stream, &block));
     } else {
         out.extend(frame(1, FLAG_END_HEADERS, stream, &block));
         let chunks: Vec<_> = body.chunks(FRAME_LIMIT).collect();
@@ -503,7 +491,11 @@ mod tests {
         assert_eq!(frames[4] & FLAG_END_STREAM, 0);
         let data_at = frames.windows(1).position(|b| b[0] == 0 && false);
         let _ = data_at;
-        assert!(frames.windows(2).any(|w| w[0] == 0 || (w.len() > 1 && frames.contains(&0))));
+        assert!(
+            frames
+                .windows(2)
+                .any(|w| w[0] == 0 || (w.len() > 1 && frames.contains(&0)))
+        );
         // DATA frame kind appears after HEADERS.
         assert!(frames[9..].windows(4).any(|w| w[3] == 0));
     }

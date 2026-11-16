@@ -88,8 +88,12 @@ impl Application {
         shutdown: &watch::Receiver<Option<ShutdownRequest>>,
     ) -> io::Result<()> {
         match captured {
-            CapturedTls::H1(captured) => self.captured_h1_connection(captured, until, shutdown).await,
-            CapturedTls::H2(captured) => self.captured_h2_connection(captured, until, shutdown).await,
+            CapturedTls::H1(captured) => {
+                self.captured_h1_connection(captured, until, shutdown).await
+            }
+            CapturedTls::H2(captured) => {
+                self.captured_h2_connection(captured, until, shutdown).await
+            }
         }
     }
 
@@ -165,17 +169,15 @@ impl Application {
         connection
             .check_h1_idle()
             .map_err(|_| Rejection::new(400, "tls_client_closed"))?;
-        self.encode_decision(
-            EncodeArgs {
-                decision,
-                request,
-                connection,
-                until,
-                shutdown,
-                ack,
-                h1_idle: true,
-            },
-        )
+        self.encode_decision(EncodeArgs {
+            decision,
+            request,
+            connection,
+            until,
+            shutdown,
+            ack,
+            h1_idle: true,
+        })
         .await
     }
 
@@ -197,17 +199,15 @@ impl Application {
             .check_stream()
             .map_err(|_| Rejection::new(400, "tls_client_closed"))?;
         let (request, connection, _) = captured.parts();
-        self.encode_decision(
-            EncodeArgs {
-                decision,
-                request,
-                connection,
-                until,
-                shutdown,
-                ack,
-                h1_idle: false,
-            },
-        )
+        self.encode_decision(EncodeArgs {
+            decision,
+            request,
+            connection,
+            until,
+            shutdown,
+            ack,
+            h1_idle: false,
+        })
         .await
     }
 

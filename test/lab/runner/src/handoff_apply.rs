@@ -5,16 +5,16 @@
 //! / product / Cap free / AT or AUTH tokens. Cap burn stays 0.
 use crate::docker::Result;
 use crate::orchestration::cap0_product_honesty::{
-    cap_free_after_unlock_a, BROWSER_READY_CAP_SELECTOR, BROWSER_READY_PILOT_COMMAND,
-    BROWSER_READY_ROOT_ASK_PATHS, INTERACTIVE_AT_HANDOFF_CANDIDATES, N06_OWNER_AUTH_CAP_SELECTOR,
-    N06_OWNER_AUTH_PILOT_COMMAND, UNLOCK_A_CLOSER_REL,
+    BROWSER_READY_CAP_SELECTOR, BROWSER_READY_PILOT_COMMAND, BROWSER_READY_ROOT_ASK_PATHS,
+    INTERACTIVE_AT_HANDOFF_CANDIDATES, N06_OWNER_AUTH_CAP_SELECTOR, N06_OWNER_AUTH_PILOT_COMMAND,
+    UNLOCK_A_CLOSER_REL, cap_free_after_unlock_a,
 };
 use crate::orchestration::h2_product_binding::{
     N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES, N06_OWNER_JOIN_AUTH_HANDOFF_SCHEMA,
     N06_OWNER_JOIN_ROOT_ASK_PATHS,
 };
 use crate::snapshot;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::{fs, path::Path};
 
 const AT_SCHEMA: &str = "humanymous.lab-at-handoff-apply/1";

@@ -174,7 +174,8 @@ impl Application {
                 return Err(Rejection::new(409, "route_integrity_profile"));
             }
             if route.required.raw_tls && tls.and_then(|owner| owner.client_hello()).is_none()
-                || route.required.original_h2 && !tls.is_some_and(|owner| original_h2_observation(owner, req))
+                || route.required.original_h2
+                    && !tls.is_some_and(|owner| original_h2_observation(owner, req))
                 || route.required.collector && !self.sessions.fresh_collector_provenance(req)
             {
                 return Err(Rejection::new(422, "required_capability"));

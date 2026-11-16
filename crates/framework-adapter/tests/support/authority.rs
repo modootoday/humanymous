@@ -19,8 +19,10 @@ impl humanymous_runtime::authority::decision::Evidence for SyntheticEvidence {
         &mut self,
         request: &humanymous_core::integrity::adapter::ValidatedRequest,
         _: bool,
-    ) -> Result<humanymous_core::signals::report::SessionReport, humanymous_runtime::authority::Rejection>
-    {
+    ) -> Result<
+        humanymous_core::signals::report::SessionReport,
+        humanymous_runtime::authority::Rejection,
+    > {
         self.0.lock().unwrap().push(Observed {
             headers: request.headers().to_vec(),
             mode: request.header_mode().to_owned(),

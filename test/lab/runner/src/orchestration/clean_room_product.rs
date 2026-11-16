@@ -4,9 +4,7 @@
 //! `pass_product_clean_room`, BrowserReady, N06 join, or Cap free. Cap topology
 //! remains Cap-ready until TRANSFER.
 use super::Lab;
-use super::cap0_product_honesty::{
-    INTERACTIVE_AT_HANDOFF_CANDIDATES, cap_free_after_unlock_a,
-};
+use super::cap0_product_honesty::{INTERACTIVE_AT_HANDOFF_CANDIDATES, cap_free_after_unlock_a};
 use crate::orchestration::h2_product_binding::N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES;
 use crate::{docker::Result, snapshot};
 use serde_json::{Value, json};
@@ -32,8 +30,7 @@ pub const REQUIRED_CAP_TOPOLOGY: &[&str] = &[
 pub const CONTRACT_REL: &str = "deployments/lab/product/clean-room-product-contract.json";
 
 /// Cap-ready pack (private evidence; candidates out of live paths until TRANSFER).
-pub const CAP_READY_PACK_REL: &str =
-    ".spec.local/root/evidence/20261109040000-cursor-clean-room-product-cap-ready/cap-ready/clean-room-product/candidate-pack/";
+pub const CAP_READY_PACK_REL: &str = ".spec.local/root/evidence/20261109040000-cursor-clean-room-product-cap-ready/cap-ready/clean-room-product/candidate-pack/";
 
 /// Documented Cap realloc receipt schema for this structural feeder only.
 pub const CAP_REALLOC_SCHEMA: &str = "humanymous.cursor-clean-room-product-cap-realloc/1";
@@ -121,7 +118,11 @@ pub fn require_cap_free_or_clean_room_realloc(root: &Path) -> Result<()> {
     .into())
 }
 
-fn validate_cap1_component_hold(root: &Path, relative: &str, expected_selector: &str) -> Result<()> {
+fn validate_cap1_component_hold(
+    root: &Path,
+    relative: &str,
+    expected_selector: &str,
+) -> Result<()> {
     let path = root.join(relative);
     if !path.is_file() {
         return Err(format!(
@@ -167,14 +168,10 @@ fn validate_cap1_component_hold(root: &Path, relative: &str, expected_selector: 
             .and_then(Value::as_u64)
             != Some(0)
     {
-        return Err(
-            "clean-room-product Cap refused: Cap=1 receipt invented product".into(),
-        );
+        return Err("clean-room-product Cap refused: Cap=1 receipt invented product".into());
     }
     if receipt.get("cap_exit").and_then(Value::as_u64) != Some(0) {
-        return Err(
-            "clean-room-product Cap refused: Cap=1 hold must be EXIT0 component".into(),
-        );
+        return Err("clean-room-product Cap refused: Cap=1 hold must be EXIT0 component".into());
     }
     Ok(())
 }
@@ -239,11 +236,7 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
             "bound_g5_receipt": G5_CAP1_RECEIPT_REL,
             "note": "Cap=0 Cap CLI scaffold refuse-closed; G2+G5 Cap=1 holds bound; AUTH/AT refuse; Cap free conserved; Cap realloc only after live topology TRANSFER; never invent pass_product_clean_room"
         });
-        snapshot::write(
-            &lab.evidence,
-            "clean-room-product-cap-refuse.json",
-            &refuse,
-        )?;
+        snapshot::write(&lab.evidence, "clean-room-product-cap-refuse.json", &refuse)?;
         lab.components["clean_room_product"] = json!({
             "status": "cap0_scaffold_refused",
             "kind": "clean-room-product-cap",
@@ -368,12 +361,16 @@ mod tests {
     use super::*;
     #[test]
     fn required_topology_lists_compose_and_dockerfile() {
-        assert!(REQUIRED_CAP_TOPOLOGY
-            .iter()
-            .any(|p| p.contains("compose.clean-room-product.yaml")));
-        assert!(REQUIRED_CAP_TOPOLOGY
-            .iter()
-            .any(|p| p.contains("clean-room-product-lab.Dockerfile")));
+        assert!(
+            REQUIRED_CAP_TOPOLOGY
+                .iter()
+                .any(|p| p.contains("compose.clean-room-product.yaml"))
+        );
+        assert!(
+            REQUIRED_CAP_TOPOLOGY
+                .iter()
+                .any(|p| p.contains("clean-room-product-lab.Dockerfile"))
+        );
         assert!(CAP_REALLOC_ELIGIBLE_SCHEMA.contains("cap-realloc-eligible"));
         assert_eq!(CAP_SELECTOR, "--clean-room-product");
     }

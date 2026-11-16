@@ -6,11 +6,11 @@
 //! Never invents Cap free / product / AUTH / AT. Never Cap1 Docker-burns.
 use crate::docker::Result;
 use crate::orchestration::cap0_product_honesty::{
-    cap_free_after_unlock_a, UNLOCK_A_CLOSER_REL, UNLOCK_A_CLOSER_SCHEMA,
+    UNLOCK_A_CLOSER_REL, UNLOCK_A_CLOSER_SCHEMA, cap_free_after_unlock_a,
 };
 use crate::snapshot;
 use crate::transfer_preimage;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::{fs, path::Path};
 
 const SCHEMA: &str = "humanymous.lab-cap-realloc-apply/1";
@@ -653,10 +653,12 @@ mod tests {
             report["preimage_rematch"]["mismatches"][0]["root_must_set_preimageSha256_to"],
             live
         );
-        assert!(report["error"]
-            .as_str()
-            .unwrap_or("")
-            .contains("root_must_set_preimageSha256_to="));
+        assert!(
+            report["error"]
+                .as_str()
+                .unwrap_or("")
+                .contains("root_must_set_preimageSha256_to=")
+        );
         assert!(!cap_free_after_unlock_a(&root).expect("probe"));
         let _ = fs::remove_dir_all(&root);
     }

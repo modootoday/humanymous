@@ -32,8 +32,7 @@ pub const REQUIRED_CAP_TOPOLOGY: &[&str] = &[
 pub const CONTRACT_REL: &str = "deployments/lab/witness/g5-witness-transport-contract.json";
 
 /// Cap-ready pack (private evidence; candidates out of live paths until TRANSFER).
-pub const CAP_READY_PACK_REL: &str =
-    ".spec.local/root/evidence/20261109031000-cursor-g5-cap-ready-feeder/cap-ready/g5-witness-transport/candidate-pack/";
+pub const CAP_READY_PACK_REL: &str = ".spec.local/root/evidence/20261109031000-cursor-g5-cap-ready-feeder/cap-ready/g5-witness-transport/candidate-pack/";
 
 /// Documented Cap realloc receipt schema for this structural feeder only.
 pub const CAP_REALLOC_SCHEMA: &str = "humanymous.cursor-g5-witness-transport-cap-realloc/1";
@@ -314,22 +313,24 @@ mod tests {
     use super::*;
     #[test]
     fn required_topology_lists_compose_and_dockerfile() {
-        assert!(REQUIRED_CAP_TOPOLOGY
-            .iter()
-            .any(|p| p.contains("compose.g5-witness-transport.yaml")));
-        assert!(REQUIRED_CAP_TOPOLOGY
-            .iter()
-            .any(|p| p.contains("g5-witness-transport-lab.Dockerfile")));
+        assert!(
+            REQUIRED_CAP_TOPOLOGY
+                .iter()
+                .any(|p| p.contains("compose.g5-witness-transport.yaml"))
+        );
+        assert!(
+            REQUIRED_CAP_TOPOLOGY
+                .iter()
+                .any(|p| p.contains("g5-witness-transport-lab.Dockerfile"))
+        );
         assert!(CAP_REALLOC_ELIGIBLE_SCHEMA.contains("cap-realloc-eligible"));
         assert_ne!(CAP_SELECTOR, "--g5-witness-transport-honesty");
     }
 
     #[test]
     fn missing_topology_refuse_closed_without_live_files() {
-        let root = std::env::temp_dir().join(format!(
-            "humanymous-g5-cap-topology-{}",
-            std::process::id()
-        ));
+        let root =
+            std::env::temp_dir().join(format!("humanymous-g5-cap-topology-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         fs::create_dir_all(&root).unwrap();
         let missing = missing_cap_topology(&root);

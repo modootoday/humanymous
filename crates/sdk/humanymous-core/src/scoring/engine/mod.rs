@@ -693,7 +693,10 @@ mod tests {
         // CHALLENGE band: single soft L5 residual (~30) crosses ChallengeAt without HR.
         let challenge = score_fixture(&engine, &[("l5.traffic.tls_no_permutation", true)]);
         assert_eq!(
-            (challenge.verdict.as_str(), challenge.hard_rule_fired.as_str()),
+            (
+                challenge.verdict.as_str(),
+                challenge.hard_rule_fired.as_str()
+            ),
             ("CHALLENGE", ""),
             "frozen CHALLENGE band must Challenge soft residual without hard rule"
         );

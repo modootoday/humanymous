@@ -1,7 +1,7 @@
 //! Schedule Python callbacks on their owning event loop and cancel on Rust Drop.
 use crate::failure;
-use humanymous_runtime::authority::client::{BoundResponse, Verdict};
 use humanymous_framework_adapter::{Admission, Pending};
+use humanymous_runtime::authority::client::{BoundResponse, Verdict};
 use pyo3::{
     BoundObject,
     prelude::*,

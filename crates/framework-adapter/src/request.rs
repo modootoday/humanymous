@@ -1,7 +1,7 @@
 use crate::{Configuration, Error};
 use base64::{Engine, engine::general_purpose::STANDARD};
-use humanymous_runtime::authority::client::{self, BoundResponse, ClientOptions, ExpectedBinding};
 use humanymous_core::integrity::adapter::{AdapterProfile, parse_with_profile};
+use humanymous_runtime::authority::client::{self, BoundResponse, ClientOptions, ExpectedBinding};
 use sha2::{Digest, Sha256};
 use std::time::{Duration, Instant};
 
@@ -53,7 +53,8 @@ impl Pending {
     }
     /// Remaining input/IPC duration; a caller cannot reset the original budget.
     pub fn remaining(&self) -> Result<Duration, Error> {
-        let now = humanymous_runtime::authority::now_ms().map_err(|_| Error("clock unavailable"))?;
+        let now =
+            humanymous_runtime::authority::now_ms().map_err(|_| Error("clock unavailable"))?;
         self.remaining_at(now, Instant::now())
     }
     fn remaining_at(&self, now: u64, monotonic: Instant) -> Result<Duration, Error> {
@@ -110,7 +111,9 @@ impl Pending {
     /// Final host handoff liveness check, in addition to BoundResponse::consume.
     pub fn check_handoff(&self, expires: u64) -> Result<(), Error> {
         self.remaining()?;
-        if humanymous_runtime::authority::now_ms().map_err(|_| Error("clock unavailable"))? >= expires {
+        if humanymous_runtime::authority::now_ms().map_err(|_| Error("clock unavailable"))?
+            >= expires
+        {
             return Err(Error("authority result expired"));
         }
         Ok(())

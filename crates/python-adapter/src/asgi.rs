@@ -2,11 +2,11 @@ use crate::{
     async_call::{call, call_origin},
     failure,
 };
-use humanymous_runtime::authority::client::Verdict;
 use humanymous_core::integrity::adapter::AdapterProfile;
 use humanymous_framework_adapter::{
     Admission, Configuration, Observation, Pending, internal_header,
 };
+use humanymous_runtime::authority::client::Verdict;
 use pyo3::{
     prelude::*,
     types::{PyBytes, PyDict, PyList},

@@ -38,8 +38,10 @@ impl Evidence for Synthetic {
         &mut self,
         request: &humanymous_core::integrity::adapter::ValidatedRequest,
         _: bool,
-    ) -> Result<humanymous_core::signals::report::SessionReport, humanymous_runtime::authority::Rejection>
-    {
+    ) -> Result<
+        humanymous_core::signals::report::SessionReport,
+        humanymous_runtime::authority::Rejection,
+    > {
         if matches!(request.request_target().1, "/gc-await" | "/abort-await") {
             self.gc_entered
                 .try_send(())
@@ -190,8 +192,10 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() -> Result<(), Box<Host>> {
             let profile = if synthetic { "synthetic" } else { "production" };
             #[cfg(windows)]
             let directory =
-                humanymous_runtime::native_security::storage::create_user_private_directory(&root, profile)
-                    .expect("ordinary actor and verified private parent required");
+                humanymous_runtime::native_security::storage::create_user_private_directory(
+                    &root, profile,
+                )
+                .expect("ordinary actor and verified private parent required");
             #[cfg(unix)]
             let directory = {
                 use std::os::unix::fs::DirBuilderExt;
@@ -259,9 +263,12 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() -> Result<(), Box<Host>> {
             "capacity":8,"replay_capacity":256,"rate_per_second":1000,"timeout_ms":2000,"clock_skew_ms":1000});
             let mut config: Configuration = serde_json::from_value(value.clone()).unwrap();
             config.validate().unwrap();
-            let log =
-                humanymous_runtime::authority::startup::open_audit(&mut config.audit, &config.peer, None)
-                    .unwrap();
+            let log = humanymous_runtime::authority::startup::open_audit(
+                &mut config.audit,
+                &config.peer,
+                None,
+            )
+            .unwrap();
             let counts = Arc::new(Mutex::new(std::collections::BTreeMap::new()));
             let (gc_entered_tx, gc_entered_rx) = mpsc::sync_channel(1);
             let (gc_release_tx, gc_release_rx) = mpsc::sync_channel(1);

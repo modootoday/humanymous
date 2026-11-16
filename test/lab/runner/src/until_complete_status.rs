@@ -510,14 +510,8 @@ fn receipt_is_without_require_full_not_dod(value: &Value) -> bool {
         .get("require_full_without_dod")
         .and_then(Value::as_bool)
         == Some(true)
-        || value
-            .get("catalog_subset")
-            .and_then(Value::as_bool)
-            == Some(true)
-        || value
-            .get("partial_catalog")
-            .and_then(Value::as_bool)
-            == Some(true)
+        || value.get("catalog_subset").and_then(Value::as_bool) == Some(true)
+        || value.get("partial_catalog").and_then(Value::as_bool) == Some(true)
     {
         return true;
     }
@@ -540,7 +534,9 @@ fn receipt_is_without_require_full_not_dod(value: &Value) -> bool {
         .and_then(Value::as_str)
         .unwrap_or("");
     let selector_l = selector.to_ascii_lowercase();
-    if selector_l.contains("red-blue") && !selector_l.contains("require-full") && !selector.is_empty()
+    if selector_l.contains("red-blue")
+        && !selector_l.contains("require-full")
+        && !selector.is_empty()
     {
         return true;
     }
@@ -602,7 +598,10 @@ fn docker_e2e_receipt_lacks_mutex_pressure_not_product(value: &Value) -> bool {
     if (launcher_l.contains("make e2e")
         || launcher_l.contains("e2e-docker.sh")
         || launcher_l.contains("e2e-docker.ps1"))
-        && value.get("single_flight_mutex_passed").and_then(Value::as_bool) != Some(true)
+        && value
+            .get("single_flight_mutex_passed")
+            .and_then(Value::as_bool)
+            != Some(true)
     {
         return true;
     }
@@ -615,7 +614,9 @@ fn docker_e2e_receipt_lacks_mutex_pressure_not_product(value: &Value) -> bool {
     let product_measured = value.get("product").and_then(Value::as_u64) == Some(1)
         || value.get("pass_product_clean_room").and_then(Value::as_u64) == Some(1);
     if claims_product && product_measured {
-        let mutex_ok = value.get("single_flight_mutex_passed").and_then(Value::as_bool)
+        let mutex_ok = value
+            .get("single_flight_mutex_passed")
+            .and_then(Value::as_bool)
             == Some(true)
             || value
                 .get("single_flight_mutex_executed")
@@ -912,33 +913,33 @@ fn measured_browser_ready(root: &Path) -> (bool, Option<String>) {
 }
 
 fn measured_browser_product_e2e(root: &Path) -> (bool, Option<String>) {
-  measured_bool_receipt(
-    root,
-    BROWSER_PRODUCT_MEASURED_RECEIPT_CANDIDATES,
-    "browser_product_measured_e2e",
-  )
+    measured_bool_receipt(
+        root,
+        BROWSER_PRODUCT_MEASURED_RECEIPT_CANDIDATES,
+        "browser_product_measured_e2e",
+    )
 }
 
 fn measured_humanymous_browser_app_e2e(root: &Path) -> (bool, Option<String>) {
-  measured_bool_receipt(
-    root,
-    HUMANUMOUS_BROWSER_APP_E2E_RECEIPT_CANDIDATES,
-    "humanymous_browser_app_measured_e2e",
-  )
+    measured_bool_receipt(
+        root,
+        HUMANUMOUS_BROWSER_APP_E2E_RECEIPT_CANDIDATES,
+        "humanymous_browser_app_measured_e2e",
+    )
 }
 
 fn browser_product_measured_e2e_honesty(root: &Path) -> Value {
-  let contract = root.join(BROWSER_PRODUCT_MEASURED_E2E_CONTRACT);
-  json!({
-      "contract_present": contract.is_file(),
-      "contract_path": BROWSER_PRODUCT_MEASURED_E2E_CONTRACT,
-      "cap0_contract_presence_ne_product": true,
-      "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --browser-product --require-full",
-      "matrix_scenario": "browser-product",
-      "cursor_ide_browser_ne_product": true,
-      "cef_cap_day_ne_browser_ready": true,
-      "note": "Cap0 contract + matrix cell honesty; measured receipt required for DoD; never invent BrowserReady"
-  })
+    let contract = root.join(BROWSER_PRODUCT_MEASURED_E2E_CONTRACT);
+    json!({
+        "contract_present": contract.is_file(),
+        "contract_path": BROWSER_PRODUCT_MEASURED_E2E_CONTRACT,
+        "cap0_contract_presence_ne_product": true,
+        "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --browser-product --require-full",
+        "matrix_scenario": "browser-product",
+        "cursor_ide_browser_ne_product": true,
+        "cef_cap_day_ne_browser_ready": true,
+        "note": "Cap0 contract + matrix cell honesty; measured receipt required for DoD; never invent BrowserReady"
+    })
 }
 
 fn apps_browser_present(root: &Path) -> (bool, Option<String>) {

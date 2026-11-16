@@ -138,7 +138,8 @@ impl Directory {
                 constants::{SeObjectType, SecurityInformation},
                 wrappers,
             };
-            let identity = humanymous_runtime::native_security::process::current_identity().unwrap();
+            let identity =
+                humanymous_runtime::native_security::process::current_identity().unwrap();
             let sid = identity.sid();
             let owner: LocalBox<Sid> = sid.parse().unwrap();
             let sd: LocalBox<SecurityDescriptor> =
@@ -220,8 +221,7 @@ fn actual_authority_decisions_are_enforced_before_origin() {
             #[cfg(windows)]
             let server = json!({"kind":"windows","sid":humanymous_runtime::native_security::process::current_identity().unwrap().sid(),"pid":authority.0.id()});
             #[cfg(unix)]
-            let server =
-                json!({"kind":"unix","uid":humanymous_runtime::native_security::process::current_uid()});
+            let server = json!({"kind":"unix","uid":humanymous_runtime::native_security::process::current_uid()});
             let effect_file = directory.0.join("effects.log");
             let (_node, port) = configure_host(
                 node,
@@ -406,9 +406,8 @@ fn actual_framework_allow_preserves_binary_body_and_headers() {
             let empty = request(port, "/empty", b"");
             assert!(empty.starts_with(b"HTTP/1.1 204"));
             assert!(http::body(&empty).is_empty());
-            let head = try_request_method(port, "HEAD", "/empty", b"").unwrap_or_else(|error| {
-                panic!("{runtime_name}/{framework} HEAD /empty: {error}")
-            });
+            let head = try_request_method(port, "HEAD", "/empty", b"")
+                .unwrap_or_else(|error| panic!("{runtime_name}/{framework} HEAD /empty: {error}"));
             assert!(
                 head.starts_with(b"HTTP/1.1 204"),
                 "{runtime_name}/{framework} HEAD /empty status: {}",

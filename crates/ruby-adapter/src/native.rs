@@ -1,9 +1,9 @@
 //! Native Rack callback. Ruby callback state lives in VM-managed ivars.
-use humanymous_runtime::authority::client::Verdict;
 use humanymous_core::integrity::adapter::AdapterProfile;
 use humanymous_framework_adapter::{
     Admission, Configuration, Observation, Pending, body_length, internal_header,
 };
+use humanymous_runtime::authority::client::Verdict;
 use magnus::{Error, RClass, RHash, RString, Ruby, Value, function, method, prelude::*};
 use std::sync::Arc;
 mod liveness;

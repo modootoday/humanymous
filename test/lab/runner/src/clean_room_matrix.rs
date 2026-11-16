@@ -236,8 +236,8 @@ fn wake_state(root: &Path) -> Value {
     // Measure Cap free from Unlock A CLOSER only (cap_free_after_unlock_a). Never
     // invent true; never hardcode false when CLOSER already restored Cap free.
     // GRANT presence alone ≠ Cap free.
-    let cap_free = crate::orchestration::cap0_product_honesty::cap_free_after_unlock_a(root)
-        .unwrap_or(false);
+    let cap_free =
+        crate::orchestration::cap0_product_honesty::cap_free_after_unlock_a(root).unwrap_or(false);
     let note = if cap_free {
         "Unlock A CLOSER.cap_free=true measured; Cap1 serial may proceed once LIVE topology/handoffs allow; never invent pass_product_clean_room / BrowserReady"
     } else if !(g2_grant

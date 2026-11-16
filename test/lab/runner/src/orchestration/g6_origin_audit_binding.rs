@@ -18,8 +18,7 @@ use std::{
 pub const CAP_SELECTOR: &str = "--g6-origin-audit-binding";
 
 /// Exact Cap argv shape for GRANT.pilot_command (evidence bundle filled at Cap day).
-pub const CODE_DEFINED_PILOT_COMMAND: &str =
-    "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --g6-origin-audit-binding";
+pub const CODE_DEFINED_PILOT_COMMAND: &str = "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --g6-origin-audit-binding";
 
 /// Cap topology required before Cap can Docker-coordinate G6 origin/audit binding.
 pub const REQUIRED_CAP_TOPOLOGY: &[&str] = &[
@@ -31,8 +30,7 @@ pub const REQUIRED_CAP_TOPOLOGY: &[&str] = &[
 pub const CONTRACT_REL: &str = "deployments/lab/origin/g6-origin-audit-binding-contract.json";
 
 /// Cap-ready pack (private evidence; candidates out of live paths until TRANSFER).
-pub const CAP_READY_PACK_REL: &str =
-    ".spec.local/root/evidence/20261109040600-cursor-g6-cap-ready-feeder/cap-ready/g6-origin-audit-binding/candidate-pack/";
+pub const CAP_READY_PACK_REL: &str = ".spec.local/root/evidence/20261109040600-cursor-g6-cap-ready-feeder/cap-ready/g6-origin-audit-binding/candidate-pack/";
 
 /// Documented Cap realloc receipt schema for this structural feeder only.
 pub const CAP_REALLOC_SCHEMA: &str = "humanymous.cursor-g6-origin-audit-binding-cap-realloc/1";
@@ -46,8 +44,7 @@ pub const G5_CAP1_RECEIPT_REL: &str =
     ".spec.local/root/evidence/20261109035200-cursor-g5-desktop-baseline-realloc/CAP1-RECEIPT.json";
 
 /// Prior CR Cap=1 component hold (≠ pass_product_clean_room).
-pub const CR_CAP1_RECEIPT_REL: &str =
-    ".spec.local/root/evidence/20261109040100-cursor-clean-room-product-cleanup-realloc/CAP1-RECEIPT.json";
+pub const CR_CAP1_RECEIPT_REL: &str = ".spec.local/root/evidence/20261109040100-cursor-clean-room-product-cleanup-realloc/CAP1-RECEIPT.json";
 
 /// Missing Cap topology paths.
 pub fn missing_cap_topology(root: &Path) -> Vec<&'static str> {
@@ -166,9 +163,7 @@ fn validate_cap1_hold(root: &Path, relative: &str, expected_selector: &str) -> R
             .and_then(Value::as_u64)
             != Some(0)
     {
-        return Err(
-            "g6-origin-audit-binding Cap refused: Cap=1 receipt invented product".into(),
-        );
+        return Err("g6-origin-audit-binding Cap refused: Cap=1 receipt invented product".into());
     }
     if receipt.get("cap_exit").and_then(Value::as_u64) != Some(0) {
         return Err(
@@ -336,12 +331,16 @@ mod tests {
     use super::*;
     #[test]
     fn required_topology_lists_compose_and_dockerfile() {
-        assert!(REQUIRED_CAP_TOPOLOGY
-            .iter()
-            .any(|p| p.contains("compose.g6-origin-audit-binding.yaml")));
-        assert!(REQUIRED_CAP_TOPOLOGY
-            .iter()
-            .any(|p| p.contains("g6-origin-audit-binding-lab.Dockerfile")));
+        assert!(
+            REQUIRED_CAP_TOPOLOGY
+                .iter()
+                .any(|p| p.contains("compose.g6-origin-audit-binding.yaml"))
+        );
+        assert!(
+            REQUIRED_CAP_TOPOLOGY
+                .iter()
+                .any(|p| p.contains("g6-origin-audit-binding-lab.Dockerfile"))
+        );
         assert!(CAP_REALLOC_ELIGIBLE_SCHEMA.contains("cap-realloc-eligible"));
         assert_ne!(CAP_SELECTOR, "--g5-witness-transport");
         assert_ne!(CAP_SELECTOR, "--clean-room-product");
@@ -350,10 +349,8 @@ mod tests {
 
     #[test]
     fn missing_topology_refuse_closed_without_live_files() {
-        let root = std::env::temp_dir().join(format!(
-            "humanymous-g6-cap-topology-{}",
-            std::process::id()
-        ));
+        let root =
+            std::env::temp_dir().join(format!("humanymous-g6-cap-topology-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         fs::create_dir_all(&root).unwrap();
         let missing = missing_cap_topology(&root);

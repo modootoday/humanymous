@@ -16,6 +16,9 @@ use crate::docker::Result;
 use crate::orchestration::clean_room_product::{
     CAP_SELECTOR as CR_CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND as CR_CODE_DEFINED_PILOT,
 };
+use crate::orchestration::clean_room_product_matrix::{
+    CAP_SELECTOR as PM_CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND as PM_CODE_DEFINED_PILOT,
+};
 use crate::orchestration::g2_collector_product_binding::{
     CAP_SELECTOR as G2_CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND as G2_CODE_DEFINED_PILOT,
 };
@@ -30,9 +33,6 @@ use crate::orchestration::g6_origin_audit_binding::{
 };
 use crate::orchestration::red_blue_product::{
     CAP_SELECTOR as RB_CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND as RB_CODE_DEFINED_PILOT,
-};
-use crate::orchestration::clean_room_product_matrix::{
-    CAP_SELECTOR as PM_CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND as PM_CODE_DEFINED_PILOT,
 };
 use crate::snapshot;
 use serde_json::{Map, Value, json};

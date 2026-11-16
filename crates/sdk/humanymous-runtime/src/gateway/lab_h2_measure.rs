@@ -16,8 +16,8 @@ use crate::gateway::{
     session::canonical,
 };
 use base64::{Engine as _, engine::general_purpose::URL_SAFE_NO_PAD};
-use humanymous_core::integrity::request::{compute_token, seed};
 use httlib_hpack::{Decoder, Encoder};
+use humanymous_core::integrity::request::{compute_token, seed};
 use rustls::{ClientConfig, ClientConnection, RootCertStore, ServerConfig};
 use serde_json::{Value, json};
 use std::{
@@ -77,23 +77,25 @@ pub fn run() -> i32 {
                 .get("original_h2_measured")
                 .and_then(Value::as_bool)
                 .unwrap_or(false);
-            println!("{}", serde_json::to_string(&receipt).unwrap_or_else(|_| {
-                json!({
-                    "schema": RECEIPT_SCHEMA,
-                    "original_h2_measured": false,
-                    "product": 0,
-                    "pass_product_clean_room": 0,
-                    "desktop_as_hosted": false,
-                    "error": "receipt_serialize"
+            println!(
+                "{}",
+                serde_json::to_string(&receipt).unwrap_or_else(|_| {
+                    json!({
+                        "schema": RECEIPT_SCHEMA,
+                        "original_h2_measured": false,
+                        "product": 0,
+                        "pass_product_clean_room": 0,
+                        "desktop_as_hosted": false,
+                        "error": "receipt_serialize"
+                    })
+                    .to_string()
                 })
-                .to_string()
-            }));
+            );
             if measured { 0 } else { 1 }
         }
         Err(error) => {
-            let (venue, network) = measure_venue().unwrap_or_else(|_| {
-                (DESKTOP_VENUE.into(), DESKTOP_NETWORK)
-            });
+            let (venue, network) =
+                measure_venue().unwrap_or_else(|_| (DESKTOP_VENUE.into(), DESKTOP_NETWORK));
             println!(
                 "{}",
                 json!({
@@ -162,9 +164,8 @@ async fn measure_async() -> Result<Value, String> {
     let (stop, stopping) = tokio::sync::watch::channel(None);
     let mut server_config = configuration(origin_addr);
     server_config.routes[0].required.original_h2 = true;
-    let mut server_app =
-        Application::new(server_config, Default::default(), Box::new(MemoryAudit))
-            .map_err(|error| format!("server application: {}", error.code))?;
+    let mut server_app = Application::new(server_config, Default::default(), Box::new(MemoryAudit))
+        .map_err(|error| format!("server application: {}", error.code))?;
     let issued = issue(&mut server_app, now)?;
     let mut serve_cfg = configuration(origin_addr);
     serve_cfg.routes[0].required.original_h2 = true;
@@ -415,10 +416,7 @@ async fn exchange_h2(
             .map_err(|error| format!("write: {error}"))?;
         socket.flush().map_err(|error| format!("flush: {error}"))?;
         if socket.conn.alpn_protocol() != Some(b"h2".as_slice()) {
-            return Err(format!(
-                "negotiated alpn {:?}",
-                socket.conn.alpn_protocol()
-            ));
+            return Err(format!("negotiated alpn {:?}", socket.conn.alpn_protocol()));
         }
         let mut response = Vec::new();
         let mut scratch = [0u8; 16_384];

@@ -353,18 +353,24 @@ fn missing_client_is_challenge_and_missing_planes_are_not_ready() {
 fn fresh_collector_provenance_gates_required_collector() {
     let mut cfg = config();
     cfg.routes[0].required.collector = true;
-    let mut app =
-        Application::new(config_with_collector(), Default::default(), Box::new(Audit::default()))
-            .unwrap();
+    let mut app = Application::new(
+        config_with_collector(),
+        Default::default(),
+        Box::new(Audit::default()),
+    )
+    .unwrap();
     let issued = issue(&mut app, 10_000);
     // Partial / missing version+guard.reported after collect still refuses.
     collected(&mut app, &cfg, &issued, 10_000);
     let req = protected(&cfg, &issued, 2, 10_000);
     assert_eq!(app.decide(&req, || Ok(10_000)).err().unwrap().status, 422);
 
-    let mut app =
-        Application::new(config_with_collector(), Default::default(), Box::new(Audit::default()))
-            .unwrap();
+    let mut app = Application::new(
+        config_with_collector(),
+        Default::default(),
+        Box::new(Audit::default()),
+    )
+    .unwrap();
     let issued = issue(&mut app, 10_000);
     let mut collect = request(
         "POST",

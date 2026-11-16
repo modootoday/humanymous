@@ -32,7 +32,10 @@ pub fn encode(source: &[u8], carrier: &[u8], limits: Limits) -> Result<Vec<u8>, 
     validate_module(source)?;
     let framed = frame::encode(carrier, limits)?;
     let mut body = Vec::with_capacity(1 + SECTION_NAME.len() + framed.len());
-    append_uleb128(&mut body, u32::try_from(SECTION_NAME.len()).map_err(|_| Error::ResourceLimit)?)?;
+    append_uleb128(
+        &mut body,
+        u32::try_from(SECTION_NAME.len()).map_err(|_| Error::ResourceLimit)?,
+    )?;
     body.extend_from_slice(SECTION_NAME);
     body.extend_from_slice(&framed);
     let mut section = Vec::with_capacity(1 + 5 + body.len());
@@ -78,7 +81,9 @@ pub fn recover(source: &[u8], limits: Limits) -> Result<Vec<u8>, Error> {
         }
         let (name_len, m) = read_uleb128(body)?;
         let name_start = m;
-        let name_end = name_start.checked_add(name_len).ok_or(Error::InvalidFormat)?;
+        let name_end = name_start
+            .checked_add(name_len)
+            .ok_or(Error::InvalidFormat)?;
         if name_end > body.len() {
             return Err(Error::InvalidFormat);
         }

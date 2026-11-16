@@ -17,8 +17,7 @@ use std::{
 pub const CAP_SELECTOR: &str = "--g2-collector-product-binding";
 
 /// Exact Cap argv shape for GRANT.pilot_command (evidence bundle filled at Cap day).
-pub const CODE_DEFINED_PILOT_COMMAND: &str =
-    "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --g2-collector-product-binding";
+pub const CODE_DEFINED_PILOT_COMMAND: &str = "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --g2-collector-product-binding";
 
 /// Cap topology required before Cap can Docker-coordinate G2 product-binding.
 pub const REQUIRED_CAP_TOPOLOGY: &[&str] = &[
@@ -27,11 +26,11 @@ pub const REQUIRED_CAP_TOPOLOGY: &[&str] = &[
 ];
 
 /// Cap contract destination after Cap-ready TRANSFER apply.
-pub const CONTRACT_REL: &str = "deployments/lab/collector/g2-collector-product-binding-contract.json";
+pub const CONTRACT_REL: &str =
+    "deployments/lab/collector/g2-collector-product-binding-contract.json";
 
 /// Cap-ready pack (private evidence; candidates out of live paths until TRANSFER).
-pub const CAP_READY_PACK_REL: &str =
-    ".spec.local/root/evidence/20261109030000-cursor-g2-cap-ready-feeder/cap-ready/g2-collector-product-binding/candidate-pack/";
+pub const CAP_READY_PACK_REL: &str = ".spec.local/root/evidence/20261109030000-cursor-g2-cap-ready-feeder/cap-ready/g2-collector-product-binding/candidate-pack/";
 
 /// Documented Cap realloc receipt schema for this structural feeder only.
 pub const CAP_REALLOC_SCHEMA: &str = "humanymous.cursor-g2-collector-product-binding-cap-realloc/1";
@@ -298,21 +297,23 @@ mod tests {
     use super::*;
     #[test]
     fn required_topology_lists_compose_and_dockerfile() {
-        assert!(REQUIRED_CAP_TOPOLOGY
-            .iter()
-            .any(|p| p.contains("compose.g2-collector-product-binding.yaml")));
-        assert!(REQUIRED_CAP_TOPOLOGY
-            .iter()
-            .any(|p| p.contains("g2-collector-product-binding-lab.Dockerfile")));
+        assert!(
+            REQUIRED_CAP_TOPOLOGY
+                .iter()
+                .any(|p| p.contains("compose.g2-collector-product-binding.yaml"))
+        );
+        assert!(
+            REQUIRED_CAP_TOPOLOGY
+                .iter()
+                .any(|p| p.contains("g2-collector-product-binding-lab.Dockerfile"))
+        );
         assert!(CAP_REALLOC_ELIGIBLE_SCHEMA.contains("cap-realloc-eligible"));
     }
 
     #[test]
     fn missing_topology_refuse_closed_without_live_files() {
-        let root = std::env::temp_dir().join(format!(
-            "humanymous-g2-cap-topology-{}",
-            std::process::id()
-        ));
+        let root =
+            std::env::temp_dir().join(format!("humanymous-g2-cap-topology-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         fs::create_dir_all(&root).unwrap();
         let missing = missing_cap_topology(&root);

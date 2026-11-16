@@ -19,8 +19,7 @@ use std::{
 pub const CAP_SELECTOR: &str = "--red-blue-product";
 
 /// Exact Cap argv shape for GRANT.pilot_command (require-full product feeder).
-pub const CODE_DEFINED_PILOT_COMMAND: &str =
-    "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --red-blue-product --require-full";
+pub const CODE_DEFINED_PILOT_COMMAND: &str = "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --red-blue-product --require-full";
 
 /// Cap topology required before Cap can Docker-coordinate red-blue product feeder.
 pub const REQUIRED_CAP_TOPOLOGY: &[&str] = &[
@@ -32,8 +31,7 @@ pub const REQUIRED_CAP_TOPOLOGY: &[&str] = &[
 pub const CONTRACT_REL: &str = "deployments/lab/product/red-blue-product-contract.json";
 
 /// Cap-ready pack (private evidence; candidates out of live paths until TRANSFER).
-pub const CAP_READY_PACK_REL: &str =
-    ".spec.local/root/evidence/20261110044800-cursor-red-blue-product-cap-ready/cap-ready/red-blue-product/candidate-pack/";
+pub const CAP_READY_PACK_REL: &str = ".spec.local/root/evidence/20261110044800-cursor-red-blue-product-cap-ready/cap-ready/red-blue-product/candidate-pack/";
 
 /// Documented Cap realloc receipt schema for this structural feeder only.
 pub const CAP_REALLOC_SCHEMA: &str = "humanymous.cursor-red-blue-product-cap-realloc/1";
@@ -60,8 +58,7 @@ pub const PRODUCT_ONESHOT: &[&str] = &[
 ];
 
 /// Prior CR Cap=1 component hold (≠ pass_product_clean_room).
-pub const CR_CAP1_RECEIPT_REL: &str =
-    ".spec.local/root/evidence/20261109040100-cursor-clean-room-product-cleanup-realloc/CAP1-RECEIPT.json";
+pub const CR_CAP1_RECEIPT_REL: &str = ".spec.local/root/evidence/20261109040100-cursor-clean-room-product-cleanup-realloc/CAP1-RECEIPT.json";
 
 /// Prior G6 Cap=1 component hold (≠ origin/audit product).
 pub const G6_CAP1_RECEIPT_REL: &str =
@@ -228,7 +225,11 @@ fn red_blue_product_open_cells(missing: &[Value]) -> Vec<Value> {
         .collect()
 }
 
-fn validate_prior_component_hold(root: &Path, relative: &str, expected_selector: &str) -> Result<()> {
+fn validate_prior_component_hold(
+    root: &Path,
+    relative: &str,
+    expected_selector: &str,
+) -> Result<()> {
     let path = root.join(relative);
     if !path.is_file() {
         return Err(format!(
@@ -266,9 +267,7 @@ fn validate_prior_component_hold(root: &Path, relative: &str, expected_selector:
             .and_then(Value::as_u64)
             != Some(0)
     {
-        return Err(
-            "red-blue-product Cap refused: Cap=1 receipt invented product".into(),
-        );
+        return Err("red-blue-product Cap refused: Cap=1 receipt invented product".into());
     }
     Ok(())
 }
@@ -348,11 +347,7 @@ pub(super) fn run(lab: &mut Lab, require_full: bool) -> Result<()> {
             "not_g7_structural_twin": true,
             "note": "Cap=0 Cap CLI scaffold / require-full honesty refuse-closed; Cap free conserved; Cap realloc only after live topology TRANSFER; Cap=1 product/red-blue feeder waits Cap free; never invent pass_product_clean_room"
         });
-        snapshot::write(
-            &lab.evidence,
-            "red-blue-product-cap-refuse.json",
-            &refuse,
-        )?;
+        snapshot::write(&lab.evidence, "red-blue-product-cap-refuse.json", &refuse)?;
         lab.components["red_blue_product"] = json!({
             "status": "cap0_require_full_honesty_refused",
             "kind": "red-blue-product-cap",
@@ -466,12 +461,16 @@ mod tests {
 
     #[test]
     fn required_topology_lists_compose_and_dockerfile() {
-        assert!(REQUIRED_CAP_TOPOLOGY
-            .iter()
-            .any(|p| p.contains("compose.red-blue-product.yaml")));
-        assert!(REQUIRED_CAP_TOPOLOGY
-            .iter()
-            .any(|p| p.contains("red-blue-product-lab.Dockerfile")));
+        assert!(
+            REQUIRED_CAP_TOPOLOGY
+                .iter()
+                .any(|p| p.contains("compose.red-blue-product.yaml"))
+        );
+        assert!(
+            REQUIRED_CAP_TOPOLOGY
+                .iter()
+                .any(|p| p.contains("red-blue-product-lab.Dockerfile"))
+        );
         assert!(CODE_DEFINED_PILOT_COMMAND.contains("--require-full"));
         assert_eq!(CAP_SELECTOR, "--red-blue-product");
     }

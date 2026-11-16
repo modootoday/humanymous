@@ -8,9 +8,7 @@
 //! restores) is the preferred rank-14 product-path feeder — never invents
 //! `pass_product_clean_room` / BrowserReady / AUTH/AT / Cap free.
 use super::Lab;
-use super::cap0_product_honesty::{
-    INTERACTIVE_AT_HANDOFF_CANDIDATES, cap_free_after_unlock_a,
-};
+use super::cap0_product_honesty::{INTERACTIVE_AT_HANDOFF_CANDIDATES, cap_free_after_unlock_a};
 use crate::orchestration::h2_product_binding::N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES;
 use crate::{docker::Result, snapshot};
 use serde_json::{Value, json};
@@ -56,8 +54,7 @@ pub const E2E_EXIT0_HOLD_REL: &str =
 pub const CR_CAP1_RECEIPT_REL: &str = ".spec.local/root/evidence/20261109040100-cursor-clean-room-product-cleanup-realloc/CAP1-RECEIPT.json";
 
 /// Prior RB Cap=1 feeder hold (≠ pass_product_clean_room).
-pub const RB_CAP1_RECEIPT_REL: &str =
-    ".spec.local/root/evidence/20261110050000-cursor-red-blue-product-cap-realloc/CAP1-RECEIPT.json";
+pub const RB_CAP1_RECEIPT_REL: &str = ".spec.local/root/evidence/20261110050000-cursor-red-blue-product-cap-realloc/CAP1-RECEIPT.json";
 
 /// Preferred Cap=1 product oneshot after Cap free restores (Docker-only).
 /// Windows Desktop: prefer e2e-docker-launch.ps1 (mutex + pressure guard).
@@ -270,9 +267,7 @@ fn validate_prior_component_hold(
             .and_then(Value::as_u64)
             != Some(0)
     {
-        return Err(
-            "clean-room-product-matrix Cap refused: Cap=1 receipt invented product".into(),
-        );
+        return Err("clean-room-product-matrix Cap refused: Cap=1 receipt invented product".into());
     }
     Ok(())
 }
@@ -304,10 +299,7 @@ fn validate_e2e_exit0_hold(root: &Path) -> Result<()> {
         );
     }
     if hold.get("product").and_then(Value::as_u64) != Some(0)
-        || hold
-            .get("pass_product_clean_room")
-            .and_then(Value::as_u64)
-            != Some(0)
+        || hold.get("pass_product_clean_room").and_then(Value::as_u64) != Some(0)
     {
         return Err(
             "clean-room-product-matrix Cap refused: e2e EXIT0 hold invented product".into(),
@@ -550,10 +542,8 @@ mod tests {
 
     #[test]
     fn missing_topology_refuse_closed_without_live_files() {
-        let root = std::env::temp_dir().join(format!(
-            "humanymous-pm-cap-topology-{}",
-            std::process::id()
-        ));
+        let root =
+            std::env::temp_dir().join(format!("humanymous-pm-cap-topology-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         fs::create_dir_all(&root).unwrap();
         let missing = missing_cap_topology(&root);

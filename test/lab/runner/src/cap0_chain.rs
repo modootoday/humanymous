@@ -12,11 +12,11 @@ use crate::cap_realloc_apply;
 use crate::docker::Result;
 use crate::handoff_apply;
 use crate::orchestration::cap0_product_honesty::{
-    cap_free_after_unlock_a, INTERACTIVE_AT_HANDOFF_CANDIDATES, UNLOCK_A_CLOSER_REL,
+    INTERACTIVE_AT_HANDOFF_CANDIDATES, UNLOCK_A_CLOSER_REL, cap_free_after_unlock_a,
 };
 use crate::orchestration::h2_product_binding::N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES;
 use crate::snapshot;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::{fs, path::Path};
 
 const SCHEMA: &str = "humanymous.lab-cap0-chain/1";

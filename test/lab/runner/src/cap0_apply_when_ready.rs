@@ -14,7 +14,7 @@ use crate::docker::Result;
 use crate::orchestration::cap0_product_honesty::cap_free_after_unlock_a;
 use crate::snapshot;
 use crate::until_complete_status;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::{fs, path::Path};
 
 const SCHEMA: &str = "humanymous.lab-cap0-apply-when-ready/1";
@@ -103,10 +103,8 @@ pub(crate) fn apply_when_ready(
     let status = until_complete_status::measure(root)?;
     let inspect = cap0_chain::run_inspect(root, grant_override, manifest_override)?;
 
-    let ready_for_cap0_chain = status
-        .get("ready_for_cap0_chain")
-        .and_then(Value::as_bool)
-        == Some(true);
+    let ready_for_cap0_chain =
+        status.get("ready_for_cap0_chain").and_then(Value::as_bool) == Some(true);
     let inspect_ready = inspect.get("ready_for_apply").and_then(Value::as_bool) == Some(true);
     let incompletes = status
         .get("open_incomplete_ids")
@@ -196,8 +194,7 @@ pub(crate) fn apply_when_ready(
             // Cap1 Docker burn stays NOT automatic unless Cap free+flags explicit and Cap1 product allowed.
             cap1_lander_prep_report = cap1_lander_prep::prep(root)?;
             cap1_lander_prep_ran = true;
-            cap1_lander_prep_note =
-                "cap_free_true_after_chain; Cap1 lander prep armed (serialize only; Cap1 Docker burn NOT automatic)";
+            cap1_lander_prep_note = "cap_free_true_after_chain; Cap1 lander prep armed (serialize only; Cap1 Docker burn NOT automatic)";
         }
     }
 
@@ -303,8 +300,7 @@ mod tests {
     const GRANT_SCHEMA: &str = "humanymous.root-cap-free-restore-grant/1";
     const CAP_FREE_GRANT: &str =
         ".spec.local/root/evidence/20261110082900-cursor-cap0-cap-free-apply/GRANT.json";
-    const CAP_FREE_MANIFEST: &str =
-        ".spec.local/root/evidence/20261110082900-cursor-cap0-cap-free-apply/transfer-manifest.json";
+    const CAP_FREE_MANIFEST: &str = ".spec.local/root/evidence/20261110082900-cursor-cap0-cap-free-apply/transfer-manifest.json";
 
     fn temp_root(label: &str) -> std::path::PathBuf {
         let nanos = SystemTime::now()
