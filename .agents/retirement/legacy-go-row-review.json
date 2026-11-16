@@ -14,8 +14,8 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "missing": 61,
-  "partial": 102,
+  "missing": 60,
+  "partial": 103,
   "ported_unit": 149,
   "not_applicable": 2
  },
@@ -78,8 +78,8 @@
    "ported_unit": 4
   },
   "internal/gate": {
-   "partial": 45,
-   "missing": 19,
+   "partial": 46,
+   "missing": 18,
    "not_applicable": 1,
    "ported_unit": 20
   },
@@ -3917,17 +3917,27 @@
   },
   {
    "baseline_path": "internal/gate/wargame_r01_ban_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/ban.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::single_operator_cannot_ban_permanently_or_broadly",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::auto_ban_escalates_and_permanent_tier_needs_dual_control"
+   ],
    "go_test_map": {
-    "TestPermanentBanIgnoresBodyApprover": null
+    "TestPermanentBanIgnoresBodyApprover": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::single_operator_cannot_ban_permanently_or_broadly"
    },
-   "gaps": [],
+   "gaps": [
+    "The admin bans HTTP endpoint, pending-approval response (approvalId, needsRole) and RBAC roles are unported; the kernel refuses a permanent ban without a dual-control permit instead of queueing it"
+   ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No ban HTTP handler; PermanentBan exists only as a typed control action.",
-   "test_verification": {}
+   "notes": "The invariant (a single operator cannot make a permanent ban enforce, whatever the request body claims) is pinned at the kernel: no permit, no permanent ban.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::single_operator_cannot_ban_permanently_or_broadly": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::auto_ban_escalates_and_permanent_tier_needs_dual_control": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/wargame_t4_promotion_test.go",
