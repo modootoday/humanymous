@@ -1156,23 +1156,24 @@ pub fn pins(root: &Path) -> Result<()> {
     }
     let mut reports = Vec::new();
     let total_actions = actions.len();
+    // The workflow token lifts the shared runner IP's 60 requests per hour
+    // limit (issue #15). Identity is still proven by the commit SHA below.
+    let token = std::env::var("GH_TOKEN")
+        .ok()
+        .filter(|token| !token.trim().is_empty());
     for (index, action) in actions.into_iter().enumerate() {
         let (name, sha) = action.rsplit_once('@').ok_or("bad action")?;
         let parts: Vec<_> = name.split('/').collect();
-        // These are public upstream resources. Do not attach the repository's
-        // installation token: upstream organization IP rules can reject that
-        // authenticated identity even though the public commit is readable.
-        let body = ureq::get(&format!(
+        let url = format!(
             "https://api.github.com/repos/{}/{}/commits/{sha}",
             parts[0], parts[1]
-        ))
-        .header("User-Agent", "humanymous-delivery")
-        .header("Accept", "application/vnd.github+json")
-        .call()
-        .map_err(|e| format!("public action commit lookup {}/{total_actions} failed for {action}: {e}; no authenticated fallback or automatic retry", index + 1))?
-        .body_mut()
-        .read_to_string()
-        .map_err(|e| e.to_string())?;
+        );
+        let body = public_commit(&url, token.as_deref()).map_err(|e| {
+            format!(
+                "public action commit lookup {}/{total_actions} failed for {action}: {e}",
+                index + 1
+            )
+        })?;
         verify_public_commit(&body, sha)?;
         let suffix = if parts.len() > 2 {
             format!("/{}/", parts[2..].join("/"))
@@ -1204,6 +1205,32 @@ pub fn pins(root: &Path) -> Result<()> {
     }
     println!("{}", json!(reports));
     Ok(())
+}
+
+/// Read a public commit, authenticated when a workflow token is present. Some
+/// upstream organizations reject the installation identity by IP allow list;
+/// only then is the same public request repeated once without the token.
+fn public_commit(url: &str, token: Option<&str>) -> Result<String> {
+    let get = |token: Option<&str>| {
+        let request = ureq::get(url)
+            .header("User-Agent", "humanymous-delivery")
+            .header("Accept", "application/vnd.github+json");
+        match token {
+            Some(token) => request
+                .header("Authorization", &format!("Bearer {token}"))
+                .call(),
+            None => request.call(),
+        }
+    };
+    let response = match (get(token), token) {
+        (Err(ureq::Error::StatusCode(403)), Some(_)) => get(None),
+        (result, _) => result,
+    };
+    response
+        .map_err(|e| e.to_string())?
+        .body_mut()
+        .read_to_string()
+        .map_err(|e| e.to_string())
 }
 
 fn verify_public_commit(body: &str, expected_sha: &str) -> Result<()> {
