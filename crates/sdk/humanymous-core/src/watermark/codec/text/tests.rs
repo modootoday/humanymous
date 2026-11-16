@@ -59,3 +59,24 @@ fn input_output_and_candidate_caps_and_new_text_nul_rejection() {
         Err(Error::ResourceLimit)
     );
 }
+
+/// Legacy internal/watermark TestSemantic_JSONStaysValid: marking scalar,
+/// array and object JSON, including a source that already ends in
+/// whitespace, keeps the document parsing to the same value.
+#[test]
+fn json_marking_keeps_the_parsed_value() {
+    for source in [
+        b"{\"user\":\"kim\",\"roles\":[\"a\",\"b\"]}".as_slice(),
+        b"[1,\"two\",{\"three\":3}]",
+        b"\"scalar\"",
+        b"{\"a\":1}\n",
+        b"[true] \t",
+    ] {
+        let out = encode(source, b"carrier", Syntax::Json, limits()).unwrap();
+        let before: serde_json::Value = serde_json::from_slice(source).unwrap();
+        let after: serde_json::Value = serde_json::from_slice(&out).unwrap();
+        assert_eq!(before, after);
+        assert!(out.starts_with(source));
+        assert_eq!(recover(&out, limits()).unwrap(), b"carrier");
+    }
+}

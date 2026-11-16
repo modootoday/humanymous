@@ -140,6 +140,14 @@ mod tests {
             ("image/svg+xml", Family::Markup),
             ("text/css", Family::BlockComment),
             ("application/octet-stream", Family::Opaque),
+            // Legacy internal/watermark TestRoundTrip_AllFamilies declarations.
+            ("application/javascript", Family::BlockComment),
+            ("text/javascript", Family::BlockComment),
+            ("text/html", Family::Markup),
+            ("text/xml", Family::Markup),
+            ("application/xml", Family::Markup),
+            ("application/json", Family::Json),
+            ("text/json", Family::Json),
         ] {
             assert_eq!(select(mime), Ok(family));
         }

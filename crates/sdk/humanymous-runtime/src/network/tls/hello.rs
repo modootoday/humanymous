@@ -152,6 +152,16 @@ mod tests {
         assert!(Cursor(&[0, 2, 1]).vec16().is_err());
     }
 
+    /// Seed corpus of legacy internal/network fuzz_test.go
+    /// (FuzzParseClientHello, FuzzParseRecord), which `go test` runs as
+    /// deterministic cases: each is refused without panicking.
+    #[test]
+    fn legacy_fuzz_seed_corpus_is_refused() {
+        assert!(parse_client_hello(&[0x03, 0x03]).is_err());
+        assert!(parse_client_hello(&[0x03, 0x03, 0x00, 0x00, 0x00, 0x00]).is_err());
+        assert!(parse_record(&[0x16, 0x03, 0x01, 0x00, 0x00]).is_err());
+    }
+
     #[test]
     fn a_capture_is_an_observation_and_does_not_validate_a_tls_handshake() {
         let mut handshake = vec![1, 0, 0, 255, 3, 3];

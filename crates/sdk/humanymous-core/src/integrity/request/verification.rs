@@ -140,6 +140,41 @@ mod tests {
         );
     }
 
+    /// Legacy cmd/server/rit.go `withinTB(presentedTB, currentTB, 1)`: the
+    /// window is inclusive at one bucket either side and refuses two, with
+    /// no wrap at the u64 edges.
+    #[test]
+    fn time_bucket_window_is_inclusive_one_either_side() {
+        let key = session_key(b"master", "session");
+        let seed = seed(&key, 0);
+        let check = |presented_tb: u64, current_tb: u64| {
+            let token = compute_token(&seed, "observed", 1, presented_tb);
+            verify(VerifyParams {
+                session_key: &key,
+                last_n: 0,
+                presented_n: 1,
+                presented_tb,
+                current_tb,
+                token: &token,
+                canonical: "observed",
+                first_req: false,
+            })
+            .id
+        };
+        for (presented, current, id) in [
+            (1000, 999, "l5.rit.ok"),
+            (1000, 1001, "l5.rit.ok"),
+            (1000, 998, "l5.rit.stale_replay"),
+            (1000, 1002, "l5.rit.stale_replay"),
+            (0, 1, "l5.rit.ok"),
+            (0, u64::MAX, "l5.rit.stale_replay"),
+            (u64::MAX, 0, "l5.rit.stale_replay"),
+            (u64::MAX, u64::MAX - 1, "l5.rit.ok"),
+        ] {
+            assert_eq!(check(presented, current), id, "{presented} vs {current}");
+        }
+    }
+
     #[test]
     fn missing_token_precedes_sequence_errors() {
         assert_eq!(
