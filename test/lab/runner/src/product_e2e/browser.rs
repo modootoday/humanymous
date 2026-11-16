@@ -13,6 +13,7 @@ use super::{COMPOSE, Lab, PROJECT, Result, empty, last_json_line};
 use humanymous_runtime::audit::checkpoint::service::write_frame;
 use serde_json::{Value, json};
 use std::{
+    net::Ipv4Addr,
     sync::{Arc, Mutex},
     time::{Duration, Instant},
 };
@@ -212,6 +213,28 @@ fn schema_lines(text: &str, schema: &str) -> Vec<Value> {
         .collect()
 }
 
+/// The single IPv4 subnet of an inspected Docker network.
+fn subnet(network: &Value) -> Option<String> {
+    let configs = network["IPAM"]["Config"].as_array()?;
+    let mut v4 = configs
+        .iter()
+        .filter_map(|c| c["Subnet"].as_str())
+        .filter(|s| cidr(s).is_some());
+    let first = v4.next()?;
+    v4.next().is_none().then(|| first.to_owned())
+}
+
+fn cidr(text: &str) -> Option<(Ipv4Addr, u32)> {
+    let (address, prefix) = text.split_once('/')?;
+    let prefix: u32 = prefix.parse().ok().filter(|p| (8..=32).contains(p))?;
+    Some((address.parse().ok()?, prefix))
+}
+
+fn within(ip: Ipv4Addr, (network, prefix): (Ipv4Addr, u32)) -> bool {
+    let mask = u32::MAX << (32 - prefix);
+    u32::from(ip) & mask == u32::from(network) & mask
+}
+
 /// Pure judgement over the DNS canary: a live listener whose only arrivals are
 /// the answered positive controls from its own network, none from the
 /// browser, while the browser's own resolution failed at its deny resolver
@@ -219,7 +242,7 @@ fn schema_lines(text: &str, schema: &str) -> Vec<Value> {
 pub(super) fn dns_canary_checks(
     canary_log: &[Value],
     probes: &[Value],
-    browser_ip: Option<&str>,
+    browser_subnet: Option<&str>,
     actor: &Value,
     canary: &Value,
     browser: &Value,
@@ -250,7 +273,15 @@ pub(super) fn dns_canary_checks(
         ),
         (
             "dns_canary_zero_arrivals_from_browser",
-            browser_ip.is_some_and(|ip| arrivals.iter().all(|arrival| arrival["source"] != ip)),
+            browser_subnet.and_then(cidr).is_some_and(|net| {
+                arrivals.iter().all(|arrival| {
+                    // An unparsable source is never presumed outside the subnet.
+                    arrival["source"]
+                        .as_str()
+                        .and_then(|ip| ip.parse::<Ipv4Addr>().ok())
+                        .is_some_and(|ip| !within(ip, net))
+                })
+            }),
         ),
         (
             "dns_canary_on_a_network_the_browser_is_not_on",
@@ -480,11 +511,20 @@ pub(super) fn run(
     for name in [BWITNESS, BGATE, BROWSER, DNSCANARY] {
         containers.push(lab.inspect(name)?);
     }
-    let browser_ip = ipv4(&lab.json(&["inspect", "--format", "{{json .}}", BROWSER])?);
+    let network = lab.json(&[
+        "network",
+        "inspect",
+        "--format",
+        "{{json .}}",
+        &format!("{PROJECT}_browser"),
+    ])?;
+    // The browser container has exited, so its address is gone; the browser
+    // network's own subnet attributes arrivals instead.
+    let browser_subnet = subnet(&network);
     let dns = dns_canary_checks(
         &canary_log,
         &probes,
-        browser_ip.as_deref(),
+        browser_subnet.as_deref(),
         &actor,
         &containers[3],
         &containers[2],
@@ -493,7 +533,7 @@ pub(super) fn run(
         .iter()
         .filter(|line| line["event"] == "arrival")
         .collect();
-    report["dns_canary"] = json!({"canary_address":canary_ip,"browser_address":browser_ip,
+    report["dns_canary"] = json!({"canary_address":canary_ip,"browser_network_subnet":browser_subnet,
         "canary_stopped":canary_stopped,"positive_controls":probes,"arrivals":arrivals,
         "arrivals_total":arrivals.len(),
         "browser_actor_dns_control":actor["dns_control"],
@@ -501,13 +541,6 @@ pub(super) fn run(
         "pass":dns.iter().all(|(_, p)| *p)});
     let (summary, report_line) = collector_report(&gate_result);
     report["collector_report"] = summary;
-    let network = lab.json(&[
-        "network",
-        "inspect",
-        "--format",
-        "{{json .}}",
-        &format!("{PROJECT}_browser"),
-    ])?;
     let shape = topology(&network, &containers, image, browser_image);
     let checks = outcome(&actor, &gate_result, &expected, &fixture, head.as_ref());
     {
@@ -623,10 +656,12 @@ mod tests {
     #[test]
     fn dns_canary_requires_live_listener_and_no_browser_arrival() {
         let (log, probes, actor, canary, browser) = canary_case();
-        let check = |log: &[Value], probes: &[Value], ip: Option<&str>, canary: &Value| {
-            dns_canary_checks(log, probes, ip, &actor, canary, &browser)
+        let check = |log: &[Value], probes: &[Value], net: Option<&str>, canary: &Value| {
+            dns_canary_checks(log, probes, net, &actor, canary, &browser)
         };
-        let ip = Some("172.30.0.5");
+        let ip = Some("172.30.0.0/16");
+        // An unknown or empty browser attribution never passes vacuously.
+        assert!(!check(&log, &probes, Some(""), &canary)[3].1);
         assert!(check(&log, &probes, ip, &canary).iter().all(|(_, p)| *p));
         // Zero arrivals with a dead listener is not a denial observation.
         assert!(!check(&[], &[], ip, &canary)[1].1);
@@ -639,6 +674,20 @@ mod tests {
         let mut silent = probes.clone();
         silent[1]["answered"] = json!(false);
         assert!(!check(&log, &silent, ip, &canary)[1].1);
+    }
+    #[test]
+    fn subnet_is_the_single_ipv4_config() {
+        let network =
+            json!({"IPAM":{"Config":[{"Subnet":"172.30.0.0/16","Gateway":"172.30.0.1"}]}});
+        assert_eq!(subnet(&network).as_deref(), Some("172.30.0.0/16"));
+        assert!(subnet(&json!({"IPAM":{"Config":[]}})).is_none());
+        let two =
+            json!({"IPAM":{"Config":[{"Subnet":"172.30.0.0/16"},{"Subnet":"172.31.0.0/16"}]}});
+        assert!(subnet(&two).is_none());
+        let net = cidr("172.30.0.0/16").unwrap();
+        assert!(within("172.30.9.9".parse().unwrap(), net));
+        assert!(!within("172.31.0.1".parse().unwrap(), net));
+        assert!(cidr("172.30.0.0/4").is_none() && cidr("").is_none());
     }
     #[test]
     fn collector_report_line_requires_exactly_one_carried_entity() {
