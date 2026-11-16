@@ -13,6 +13,7 @@ pub mod lab_h2_measure;
 pub mod logging;
 pub mod management;
 pub mod pass_store;
+pub mod request;
 pub mod service;
 pub mod session;
 pub mod settings;

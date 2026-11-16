@@ -15,8 +15,8 @@
  },
  "totals": {
   "missing": 76,
-  "partial": 95,
-  "ported_unit": 141,
+  "partial": 94,
+  "ported_unit": 142,
   "not_applicable": 2
  },
  "by_package": {
@@ -78,10 +78,10 @@
    "ported_unit": 4
   },
   "internal/gate": {
-   "partial": 42,
+   "partial": 41,
    "missing": 27,
    "not_applicable": 1,
-   "ported_unit": 15
+   "ported_unit": 16
   },
   "internal/httpx": {
    "not_applicable": 1
@@ -2745,27 +2745,38 @@
   },
   {
    "baseline_path": "internal/gate/request.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/audit/record/mod.rs",
     "crates/sdk/humanymous-runtime/src/gateway/application.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/request.rs",
     "crates/sdk/humanymous-runtime/src/gateway/session.rs",
-    "crates/sdk/humanymous-runtime/src/audit/record/mod.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/token.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::audit_is_minimized_and_failure_poison_is_permanent"
+    "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::correlation_ids_are_sixteen_hex_and_fresh",
+    "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::latency_saturates_and_never_goes_negative",
+    "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::route_class_follows_legacy_priority",
+    "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::upstream_errors_map_to_stable_classes_without_raw_text",
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::audit_is_minimized_and_failure_poison_is_permanent",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/tls/dispatch.rs::truthful_native_tls_profile_preserves_policy_and_origin_agreement",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::bindings_and_subnets_match_legacy_shapes"
    ],
    "go_test_map": {},
    "gaps": [
-    "client IP and /24 subnet derivation",
-    "route class context",
-    "request latency metadata",
-    "upstream error classification"
+    "upstream_error_class and latency_us are not yet written into origin-failure audit records"
    ],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Rust derives session from signed headers and fills audit correlation fields; other helpers are absent.",
+   "notes": "Route class (now recorded on runtime.decision audit records), saturating latency, correlation ids and upstream error classes are ported in gateway/request.rs; socket subnet is token::client_subnet. Go context plumbing and the hsid cookie are replaced by the RIT design.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::audit_is_minimized_and_failure_poison_is_permanent": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::audit_is_minimized_and_failure_poison_is_permanent": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::correlation_ids_are_sixteen_hex_and_fresh": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::latency_saturates_and_never_goes_negative": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::route_class_follows_legacy_priority": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::upstream_errors_map_to_stable_classes_without_raw_text": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/tls/dispatch.rs::truthful_native_tls_profile_preserves_policy_and_origin_agreement": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::bindings_and_subnets_match_legacy_shapes": "passed"
    }
   },
   {
