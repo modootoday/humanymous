@@ -38,7 +38,8 @@ after 52 missing, 96 partial, 164 ported_unit, 2 n/a.
 
 ## Conclusion
 
-No class A gap remains among the 148 missing or partial rows below. Each
+No class A gap remains among the 148 missing or partial rows below, apart from
+the test-only items an independent re-check found (see "Independent re-check"). Each
 remaining row is blocked by one category; where a row has several gaps, the
 category is its dominant blocker and the row note in the ledger lists the rest.
 
@@ -235,3 +236,26 @@ Coverage: the "Remaining rows" table names exactly the 148 ledger rows whose
 disposition is `missing` or `partial`, each once (set comparison of
 `baseline_path` against the table's first column: equal, 148 = 148), and every
 row carries a class, a category and a citation. No open row is unclassified.
+
+## Independent re-check
+
+Two agents re-classified all 148 rows against the Go source at 981d25c without
+reading this document. Result:
+
+- **internal/gate (64 rows):** no class A item.
+- **The other 84 rows:** 81 have no class A item. Three have narrow test-only
+  class A items, and their listed gaps stay not A:
+  - `cmd/server/rit.go`: the inclusive ±1 time-bucket boundary.
+  - `internal/watermark/watermark_test.go`: JSON validity after marking, the
+    remaining MIME families, and a codec-level tag round trip.
+  - `internal/network/fuzz_test.go`: the seed corpus as deterministic cases.
+
+These five tests landed in a separate tests-only change
+(`test: pin legacy Go boundary cases for RIT, watermark codecs and TLS seeds`).
+The rows keep their dispositions.
+
+The re-check also found an intended Go/Rust difference for the owner. Go
+`cmd/server` `verifyRIT` emits `l5.rit.bootstrap` once, then `l5.rit.absent`.
+Rust follows `internal/integrity.Verify` and emits `l5.rit.ok` with
+`"bootstrap"`. Reconciling them touches signal IDs (detection freeze), so it is
+category DIFF.
