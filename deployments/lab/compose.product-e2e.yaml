@@ -1,11 +1,28 @@
-# Roadmap unit 35, first increment: real Rust product e2e partial topology.
-# Three containers from one source-built image: the real humanymous-runtime
-# gateway (gate), an owned recording origin and an attacker/driver.
-# The gateway only accepts loopback listen/origin addresses and loopback peers,
-# so origin and attacker join the gate container's network namespace. That
-# namespace sits on one internal network: no published ports, no egress.
-# Authority, independent audit service and browser are absent. This is never
-# pass_product_clean_room. Run via: humanymous-lab-runner product-e2e.
+# Roadmap unit 35: real Rust product e2e partial topology.
+# All containers run one source-built image. Run via: humanymous-lab-runner product-e2e.
+#
+# Default services (increment 1, plus health checks): the shipped
+# humanymous-runtime gateway (gate), an owned recording origin and an
+# attacker/driver. The gateway only accepts loopback listen/origin addresses
+# and loopback peers, so origin and attacker join the gate container's network
+# namespace. That namespace sits on one internal network: no published ports,
+# no egress.
+#
+# Profile "witnessed" (increment 2): a witness-required Gate (wgate) whose
+# sealed WAL checkpoints are counter-signed by an independent witness
+# container (separate UID, no network, own tmpfs custody). The runner is the
+# trusted broker that relays typed audit frames between their private stdio.
+# The shipped gateway binary has no witness input, so wgate composes the same
+# library ServiceHost::bind_with_witness in the lab supervisor.
+#
+# Health checks use exec form and a Rust actor subcommand; no shell runs.
+# Authority and browser are absent. This is never pass_product_clean_room.
+x-health: &health
+  interval: 2s
+  timeout: 5s
+  retries: 30
+  start_period: 120s
+  start_interval: 1s
 services:
   gate:
     extends: {file: topology/sandbox.yaml, service: sandbox}
@@ -17,21 +34,82 @@ services:
     mem_limit: 256m
     cpus: 1
     tmpfs: ["/tmp:rw,noexec,nosuid,size=32m,mode=1777"]
+    healthcheck:
+      <<: *health
+      test: ["CMD", "/usr/local/bin/humanymous-runtime-pilot", "--product-health", "gate"]
   origin:
     extends: {file: topology/sandbox.yaml, service: sandbox}
     image: humanymous/product-e2e:local
     command: ["--product-origin"]
     init: true
     network_mode: "service:gate"
-    depends_on: [gate]
+    depends_on:
+      gate: {condition: service_healthy}
+    healthcheck:
+      <<: *health
+      test: ["CMD", "/usr/local/bin/humanymous-runtime-pilot", "--product-health", "origin"]
   attacker:
     extends: {file: topology/sandbox.yaml, service: sandbox}
     image: humanymous/product-e2e:local
     command: ["--product-driver"]
     init: true
     network_mode: "service:gate"
-    depends_on: [gate, origin]
+    depends_on:
+      gate: {condition: service_healthy}
+      origin: {condition: service_healthy}
     profiles: [driver]
+  witness:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--product-witness"]
+    user: "65533:65533"
+    init: true
+    network_mode: none
+    stdin_open: true
+    healthcheck:
+      <<: *health
+      test: ["CMD", "/usr/local/bin/humanymous-runtime-pilot", "--product-health", "witness"]
+    profiles: [witnessed]
+  wgate:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--product-gate-witnessed"]
+    init: true
+    networks: [witnessed]
+    stdin_open: true
+    pids_limit: 64
+    mem_limit: 256m
+    cpus: 1
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=32m,mode=1777"]
+    healthcheck:
+      <<: *health
+      test: ["CMD", "/usr/local/bin/humanymous-runtime-pilot", "--product-health", "gate"]
+    profiles: [witnessed]
+  worigin:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--product-origin"]
+    init: true
+    network_mode: "service:wgate"
+    depends_on:
+      wgate: {condition: service_healthy}
+    healthcheck:
+      <<: *health
+      test: ["CMD", "/usr/local/bin/humanymous-runtime-pilot", "--product-health", "origin"]
+    profiles: [witnessed]
+  wdriver:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--product-driver-witnessed"]
+    init: true
+    network_mode: "service:wgate"
+    stdin_open: true
+    depends_on:
+      wgate: {condition: service_healthy}
+      worigin: {condition: service_healthy}
+    profiles: [witnessed]
 networks:
   product:
+    internal: true
+  witnessed:
     internal: true

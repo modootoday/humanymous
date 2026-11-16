@@ -59,6 +59,17 @@ fn main() {
         Some("--product-origin") => product_e2e::origin().expect("owned recording origin"),
         Some("--product-gate") => product_e2e::gate().expect("owned Gate supervisor"),
         Some("--product-driver") => product_e2e::driver().expect("product e2e driver"),
+        Some("--product-health") => product_e2e::health(std::env::args().nth(2).as_deref()),
+        Some("--product-witness") => product_e2e::witness().expect("independent audit witness"),
+        Some("--product-gate-witnessed") => {
+            product_e2e::gate_witnessed().expect("witness-required Gate supervisor")
+        }
+        Some("--product-driver-witnessed") => {
+            product_e2e::driver_witnessed().expect("witnessed product e2e driver")
+        }
+        Some("--product-driver-origin-lost") => {
+            product_e2e::driver_origin_lost().expect("origin-loss product e2e driver")
+        }
         Some("--wargame") => wargame::run(),
         Some("--witness-transaction") => {
             witness::transaction().expect("private witness transaction")

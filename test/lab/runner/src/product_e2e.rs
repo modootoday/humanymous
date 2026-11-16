@@ -1,5 +1,9 @@
-//! Roadmap unit 35, first increment: build, start, drive and tear down the
-//! real Rust Gate + origin + attacker topology, then emit a source-bound receipt.
+//! Roadmap unit 35: build, start, drive and tear down the real Rust Gate +
+//! origin + attacker topology, then emit a source-bound receipt. Increment 2
+//! adds shell-free health checks with `service_healthy` dependencies, an
+//! origin-loss-after-readiness case, and a witness-required Gate whose audit
+//! checkpoints are counter-signed by an independent witness container, with a
+//! witness-loss-after-readiness case.
 //!
 //! Venue: an explicitly named cloud container whose own Linux engine listens on
 //! the local Unix socket. It never claims Windows Docker Desktop affinity or a
@@ -12,6 +16,8 @@ use std::{
     time::{Duration, Instant},
 };
 
+mod witnessed;
+
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 const ENDPOINT: &str = "unix:///var/run/docker.sock";
@@ -22,6 +28,7 @@ const ORIGIN_CONTAINER: &str = "humanymous-lab-product-e2e-origin-1";
 const COMPOSE: &str = "deployments/lab/compose.product-e2e.yaml";
 const DOCKERFILE: &str = "build/rust/product-e2e.Dockerfile";
 const ATTACKER: &str = "humanymous-lab-product-e2e-attacker";
+const ORIGIN_LOST_ATTACKER: &str = "humanymous-lab-product-e2e-attacker-origin-lost";
 
 struct Options {
     emit: PathBuf,
@@ -64,6 +71,7 @@ fn options(args: &[String]) -> Result<Options> {
 struct Output {
     success: bool,
     stdout: String,
+    stderr: String,
 }
 
 struct Lab {
@@ -124,6 +132,7 @@ impl Lab {
         Ok(Output {
             success,
             stdout: String::from_utf8(captured.stdout)?,
+            stderr: String::from_utf8_lossy(&captured.stderr).into_owned(),
         })
     }
 
@@ -174,7 +183,10 @@ impl Lab {
             "read_only_rootfs":value["HostConfig"]["ReadonlyRootfs"],
             "cap_drop":value["HostConfig"]["CapDrop"],"user":value["Config"]["User"],
             "init":value["HostConfig"]["Init"],"state":value["State"]["Status"],
-            "exit_code":value["State"]["ExitCode"]}))
+            "exit_code":value["State"]["ExitCode"],"health":value["State"]["Health"]["Status"],
+            "healthcheck_test":value["Config"]["Healthcheck"]["Test"],
+            "depends_on":value["Config"]["Labels"]["com.docker.compose.depends_on"],
+            "mounts":value["Mounts"]}))
     }
 }
 
@@ -222,6 +234,42 @@ fn topology_assertions(
     ]
 }
 
+/// Exec-form probes (never `CMD-SHELL`), observed healthy, and the compose
+/// `service_healthy` dependency edges as recorded by the engine.
+fn health_assertions(containers: &[Value]) -> Vec<(&'static str, bool)> {
+    let exec_form = |c: &Value| {
+        c["healthcheck_test"][0] == "CMD"
+            && c["healthcheck_test"][1] == "/usr/local/bin/humanymous-runtime-pilot"
+    };
+    let depends = |c: &Value, edge: &str| {
+        c["depends_on"]
+            .as_str()
+            .is_some_and(|text| text.split(',').any(|item| item.starts_with(edge)))
+    };
+    let [gate, origin, attacker] = containers else {
+        return vec![("three_main_containers_observed", false)];
+    };
+    vec![
+        (
+            "gate_and_origin_exec_form_health_probe",
+            exec_form(gate) && exec_form(origin),
+        ),
+        (
+            "gate_and_origin_healthy_before_driver",
+            gate["health"] == "healthy" && origin["health"] == "healthy",
+        ),
+        (
+            "origin_depends_on_gate_service_healthy",
+            depends(origin, "gate:service_healthy"),
+        ),
+        (
+            "attacker_depends_on_gate_and_origin_service_healthy",
+            depends(attacker, "gate:service_healthy")
+                && depends(attacker, "origin:service_healthy"),
+        ),
+    ]
+}
+
 fn last_json_line(text: &str, schema: &str) -> Option<Value> {
     text.lines()
         .rev()
@@ -255,23 +303,30 @@ pub fn run(args: &[String]) -> Result<i32> {
     let source = json!({"commit":commit,"branch":branch,"tree_clean":dirty==0,"dirty_entries":dirty,
         "dockerfile":DOCKERFILE,"compose":COMPOSE});
     let engine = lab.engine()?;
-    let mut receipt = json!({"schema":"humanymous.product-e2e-receipt/1","roadmap_unit":35,"increment":1,
+    let mut receipt = json!({"schema":"humanymous.product-e2e-receipt/1","roadmap_unit":35,"increment":2,
         "status":"started","pass_product_clean_room":false,"product_complete":false,
-        "label":"partial topology: gate + origin + attacker; not product e2e completion",
+        "label":"partial topology: gate + origin + attacker, and a witness-required gate with an independent witness container; not product e2e completion",
         "source":source,"venue":engine,
         "components":{
           "gate":{"present":true,"real":true,"binary":"humanymous-runtime (crates/sdk/humanymous-runtime, src/gateway/main.rs)",
-                  "embedded_durable_audit":"runtime-owned sealed WAL with synthetic owned custody on tmpfs; no external witness"},
+                  "embedded_durable_audit":"runtime-owned sealed WAL with synthetic owned custody on tmpfs; the shipped binary has no witness input"},
+          "witnessed_gate":{"present":true,"real":"runtime library, lab composition root","composition":"humanymous-runtime-pilot --product-gate-witnessed: the humanymous-runtime library ServiceHost::bind_with_witness with require_external_witness=true",
+                  "why_not_the_shipped_binary":"crates/sdk/humanymous-runtime/src/gateway/main.rs:16 calls ServiceHost::bind(config) only, and crates/cli/src/runtime_host/platform.rs:49 passes no witness on Unix; no shipped executable injects an ExternalWitness"},
           "origin":{"present":true,"real":true,"binary":"humanymous-runtime-pilot --product-origin (Rust recording origin)"},
           "attacker":{"present":true,"real":true,"binary":"humanymous-runtime-pilot --product-driver (Rust HTTP/1.1 driver)"},
-          "authority":{"present":false,"note":"humanymous-authority service not deployed in this increment"},
-          "audit":{"present":false,"note":"no independent audit service or witness; only the gate's embedded WAL ran"},
+          "authority":{"present":false,"gate_can_use_remote_authority":false,
+                  "reason":"the gateway decides in-process: crates/sdk/humanymous-runtime/src/gateway/service.rs:287 builds Application::new with its own Engine and crates/sdk/humanymous-runtime/src/gateway/application.rs:474 calls self.decide_request; the gateway has no authority client. humanymous-authority (src/authority/main.rs) serves adapter decisions over a restricted native IPC listener only (src/authority/transport/mod.rs:60, no TCP fallback)"},
+          "audit":{"present":true,"scope":"witnessed topology only","binary":"humanymous-runtime-pilot --product-witness: audit::checkpoint::service::serve with its own sealed identity and head state",
+                  "independence":"separate container, UID 65533, network none, own tmpfs custody and passphrase; the runner brokers typed frames over private stdio",
+                  "not_qualified":"identity is first-contact pinned through the broker, the head pin is not persisted outside the witness, tmpfs gives no power-loss durability"},
           "browser":{"present":false,"note":"no browser or WASM collector; collect reports are client-asserted fixtures"}},
-        "constraint":"Configuration::validate requires loopback listen and origin and the accept loop drops non-loopback peers, so origin and attacker share the gate container network namespace; origin network isolation is therefore absent",
+        "constraint":"Configuration::validate requires loopback listen and origin (crates/sdk/humanymous-runtime/src/gateway/configuration.rs:127-128) and the accept loop drops non-loopback peers (crates/sdk/humanymous-runtime/src/gateway/application.rs:352 and 374), so origin and attacker share the gate container network namespace; origin network isolation is therefore absent",
         "clean_room":false,
         "clean_room_gaps":["engine venue is a cloud container, not Windows desktop-linux or genuine GitHub-hosted Linux",
           "single shared loopback namespace for gate, origin and attacker; origin is not reachable only through a Gate backend network",
-          "authority, independent audit witness and browser roles are absent"]});
+          "authority and browser roles are absent; the Gate cannot use a remote authority",
+          "the witnessed gate is the runtime library composed by a lab supervisor, not the shipped binary",
+          "health probes are liveness only (TCP connect or a witness-ready marker); they do not observe witness loss"]});
     let config = lab.docker(
         &[
             "compose",
@@ -342,6 +397,9 @@ pub fn run(args: &[String]) -> Result<i32> {
             "--no-build",
             "--pull",
             "never",
+            "--wait",
+            "--wait-timeout",
+            "180",
             "gate",
             "origin",
         ],
@@ -354,17 +412,11 @@ pub fn run(args: &[String]) -> Result<i32> {
     let drive = [
         &compose[..],
         &[
-            "run",
-            "--no-deps",
-            "--no-TTY",
-            "--pull",
-            "never",
-            "--name",
-            ATTACKER,
-            "attacker",
+            "run", "--no-TTY", "--pull", "never", "--name", ATTACKER, "attacker",
         ],
     ]
     .concat();
+    // Without --no-deps: compose itself enforces the service_healthy edges.
     let driven = lab.docker(&drive, 600, false)?;
     let driver = last_json_line(&driven.stdout, "humanymous.product-e2e-driver/1");
     let gate_log = lab.docker(&["logs", GATE_CONTAINER], 60, false)?;
@@ -382,7 +434,8 @@ pub fn run(args: &[String]) -> Result<i32> {
         "{{json .}}",
         &format!("{PROJECT}_product"),
     ])?;
-    let assertions = topology_assertions(&network, &containers, &image);
+    let mut assertions = topology_assertions(&network, &containers, &image);
+    assertions.extend(health_assertions(&containers));
     let topology_pass = assertions.iter().all(|(_, pass)| *pass);
     receipt["topology"] = json!({"project":PROJECT,"network":{"name":network["Name"],"internal":network["Internal"],"driver":network["Driver"]},
         "containers":containers,
@@ -393,12 +446,63 @@ pub fn run(args: &[String]) -> Result<i32> {
             .is_some_and(|d| d["failed"] == 0 && d["driver_error"].is_null());
     receipt["driver"] = driver.unwrap_or(Value::Null);
     receipt["driver_exit_success"] = json!(driven.success);
-    receipt["status"] = json!(if driver_pass && topology_pass {
-        "partial_topology_measured"
-    } else {
-        "partial_topology_failed"
-    });
+    let origin_lost = origin_loss(&mut lab, &compose)?;
+    let origin_lost_pass = origin_lost["pass"] == true;
+    receipt["origin_loss_after_readiness"] = origin_lost;
+    let witnessed = match witnessed::run(&mut lab, &image) {
+        Ok(report) => report,
+        Err(error) => json!({"pass":false,"error":error.to_string()}),
+    };
+    let witnessed_pass = witnessed["pass"] == true;
+    receipt["witnessed"] = witnessed;
+    receipt["status"] = json!(
+        if driver_pass && topology_pass && origin_lost_pass && witnessed_pass {
+            "partial_topology_measured"
+        } else {
+            "partial_topology_failed"
+        }
+    );
     finish(&mut lab, receipt, &options, true)
+}
+
+/// Stop the origin after readiness, then require the Gate to fail closed.
+fn origin_loss(lab: &mut Lab, compose: &[&str]) -> Result<Value> {
+    let stopped = lab
+        .docker(&["stop", "--time", "2", ORIGIN_CONTAINER], 60, false)?
+        .success;
+    let origin = lab.inspect(ORIGIN_CONTAINER)?;
+    let drive = [
+        compose,
+        &[
+            "run",
+            "--no-deps",
+            "--no-TTY",
+            "--pull",
+            "never",
+            "--name",
+            ORIGIN_LOST_ATTACKER,
+            "attacker",
+            "--product-driver-origin-lost",
+        ],
+    ]
+    .concat();
+    let driven = lab.docker(&drive, 300, false)?;
+    let driver = last_json_line(
+        &driven.stdout,
+        "humanymous.product-e2e-origin-lost-driver/1",
+    )
+    .unwrap_or(Value::Null);
+    let gate = lab.inspect(GATE_CONTAINER)?;
+    let pass = stopped
+        && origin["state"] == "exited"
+        && driven.success
+        && driver["failed"] == 0
+        && driver["driver_error"].is_null();
+    Ok(
+        json!({"origin_stopped":stopped,"origin_state":origin["state"],
+        "gate_state_after":gate["state"],"gate_health_after":gate["health"],
+        "driver":driver,"driver_exit_success":driven.success,"pass":pass}),
+    )
 }
 
 fn finish(lab: &mut Lab, mut receipt: Value, options: &Options, started: bool) -> Result<i32> {
@@ -410,6 +514,10 @@ fn finish(lab: &mut Lab, mut receipt: Value, options: &Options, started: bool) -
             COMPOSE,
             "--project-name",
             PROJECT,
+            "--profile",
+            "driver",
+            "--profile",
+            "witnessed",
             "down",
             "--volumes",
             "--remove-orphans",
@@ -417,7 +525,13 @@ fn finish(lab: &mut Lab, mut receipt: Value, options: &Options, started: bool) -
             "5",
         ];
         cleanup["compose_down"] = json!(lab.docker(&down, 120, false)?.success);
-        let removed = lab.docker(&["rm", "--force", ATTACKER], 60, false)?.success;
+        let removed = lab
+            .docker(
+                &["rm", "--force", ATTACKER, ORIGIN_LOST_ATTACKER],
+                60,
+                false,
+            )?
+            .success;
         cleanup["attacker_container_removed"] = json!(removed);
         let left = lab.docker(
             &[
@@ -482,6 +596,30 @@ mod tests {
         detached[2]["network_mode"] = json!("bridge");
         assert!(!topology_assertions(&internal, &detached, "sha256:i")[2].1);
         assert!(!topology_assertions(&internal, &good, "sha256:other")[3].1);
+    }
+    #[test]
+    fn health_requires_exec_form_healthy_state_and_service_healthy_edges() {
+        let probe = json!([
+            "CMD",
+            "/usr/local/bin/humanymous-runtime-pilot",
+            "--product-health"
+        ]);
+        let mut good = vec![
+            json!({"healthcheck_test":probe,"health":"healthy","depends_on":null}),
+            json!({"healthcheck_test":probe,"health":"healthy","depends_on":"gate:service_healthy:false"}),
+            json!({"depends_on":"gate:service_healthy:false,origin:service_healthy:false"}),
+        ];
+        assert!(health_assertions(&good).iter().all(|(_, p)| *p));
+        good[0]["healthcheck_test"] = json!(["CMD-SHELL", "true"]);
+        assert!(!health_assertions(&good)[0].1);
+        good[0]["healthcheck_test"] = probe.clone();
+        good[1]["health"] = json!("starting");
+        assert!(!health_assertions(&good)[1].1);
+        good[1]["depends_on"] = json!("gate:service_started:false");
+        assert!(!health_assertions(&good)[2].1);
+        good[2]["depends_on"] = json!("gate:service_healthy:false");
+        assert!(!health_assertions(&good)[3].1);
+        assert!(!health_assertions(&good[..2])[0].1);
     }
     #[test]
     fn venue_is_explicit_and_receipts_are_never_overwritten() {

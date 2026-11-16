@@ -1,17 +1,27 @@
-//! Roadmap unit 35, first increment: separate Gate, origin and attacker
-//! containers driven through the real `humanymous-runtime` gateway binary.
+//! Roadmap unit 35: separate Gate, origin and attacker containers driven
+//! through the real `humanymous-runtime` gateway, plus (increment 2) a
+//! witness-required Gate whose audit checkpoints are counter-signed by an
+//! independent witness container, shell-free health probes and
+//! dependency-loss-after-readiness drivers.
 //!
 //! The gateway validates loopback-only listen and origin addresses and refuses
-//! non-loopback peers, so the three containers share the Gate container's
-//! network namespace on one internal Docker network. Authority, an independent
-//! audit service and a browser are absent from this increment.
+//! non-loopback peers, so origin and attacker share the Gate container's
+//! network namespace on an internal Docker network. Authority and a browser
+//! are absent.
 mod driver;
 mod gate;
+mod health;
 mod origin;
+mod witness;
 
+pub use driver::origin_lost as driver_origin_lost;
 pub use driver::run as driver;
+pub use driver::witnessed as driver_witnessed;
 pub use gate::run as gate;
+pub use gate::witnessed as gate_witnessed;
+pub use health::run as health;
 pub use origin::run as origin;
+pub use witness::run as witness;
 
 use serde_json::{Value, json};
 use std::net::SocketAddr;
