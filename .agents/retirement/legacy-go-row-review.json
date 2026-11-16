@@ -14,8 +14,8 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "missing": 64,
-  "partial": 100,
+  "missing": 63,
+  "partial": 101,
   "ported_unit": 148,
   "not_applicable": 2
  },
@@ -78,8 +78,8 @@
    "ported_unit": 4
   },
   "internal/gate": {
-   "partial": 44,
-   "missing": 20,
+   "partial": 45,
+   "missing": 19,
    "not_applicable": 1,
    "ported_unit": 20
   },
@@ -2001,30 +2001,55 @@
   },
   {
    "baseline_path": "internal/gate/attestfloor_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/token.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/mod.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::lifted_step_up_proof_fails_binding",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::step_up_and_verdict_tokens_are_domain_separated",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::step_up_rejects_wrong_bind_expiry_and_garbage_receipts",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::receipt_checks_session_expiry_with_skew_and_domain",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r257_flag_releases_session_set",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r258_post_flag_sessions_are_not_retained",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r251_identical_farm_flags_once",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r252_solo_session_does_not_flag"
+   ],
    "go_test_map": {
     "TestAttestFloorDemotesUnattestedAllow": null,
     "TestAttestFloorStepUpProofPasses": null,
     "TestAttestFloorStickyAllowLaunderingClosed": null,
-    "TestStepUpProofNotLiftable": null,
-    "TestStepUpDomainSeparation": null,
+    "TestStepUpProofNotLiftable": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::lifted_step_up_proof_fails_binding",
+    "TestStepUpDomainSeparation": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::step_up_and_verdict_tokens_are_domain_separated",
     "TestStepUpEndpointMintsProof": null,
     "TestStepUpCrossPlaneKeyMismatch": null,
     "TestStepUpCrossPlaneSidDivergence": null,
     "TestWebAuthnFanoutCap": null,
     "TestWebAuthnFanoutCapUnmarkedRoutesUntouched": null,
     "TestNewServerRefusesAttestedCatchAll": null,
-    "TestCohortShadowBounded": null,
-    "TestCohortShadowFlagsSharedGenerator": null,
-    "TestStepUpTokenVerify": null
+    "TestCohortShadowBounded": "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r257_flag_releases_session_set",
+    "TestCohortShadowFlagsSharedGenerator": "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r251_identical_farm_flags_once",
+    "TestStepUpTokenVerify": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::step_up_rejects_wrong_bind_expiry_and_garbage_receipts"
    },
-   "gaps": [],
+   "gaps": [
+    "The attested-route floor (demoting an unattested ALLOW, sticky-allow laundering) is unported: it changes route verdict policy and needs the Runtime route owner",
+    "The /__hmn/stepup receipt-to-proof endpoint and its cross-plane key and session checks are unported",
+    "WebAuthn fan-out cap and the attested catch-all configuration refusal are unported"
+   ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No attested-route floor, step-up proof/receipt, WebAuthn fanout cap or cohort shadow in Rust.",
-   "test_verification": {}
+   "notes": "Token and cohort kernel cases are mapped. The HTTP-level 401 and origin-not-contacted assertions belong to the unported floor.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::lifted_step_up_proof_fails_binding": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::step_up_and_verdict_tokens_are_domain_separated": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::step_up_rejects_wrong_bind_expiry_and_garbage_receipts": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::receipt_checks_session_expiry_with_skew_and_domain": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r257_flag_releases_session_set": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r258_post_flag_sessions_are_not_retained": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r251_identical_farm_flags_once": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r252_solo_session_does_not_flag": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/ban_integration_test.go",

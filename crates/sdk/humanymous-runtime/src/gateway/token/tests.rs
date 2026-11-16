@@ -271,3 +271,50 @@ fn incident_handles_are_stable_opaque_and_keyed() {
     assert_ne!(h, k.incident_handle(8));
     assert_ne!(h, key(b"other").incident_handle(7));
 }
+
+#[test]
+fn step_up_rejects_wrong_bind_expiry_and_garbage_receipts() {
+    let k = key(b"server-only-token-key");
+    let accepted = epochs(&["e1"]);
+    let token = k.issue_step_up("sidX", "bindX", "e1", NOW + 60).unwrap();
+    assert_eq!(
+        k.verify_step_up(&token, "bindX", "sidX", NOW, &accepted),
+        Ok(())
+    );
+    assert_eq!(
+        k.verify_step_up(&token, "bindY", "sidX", NOW, &accepted),
+        Err(Reason::BindingMismatch)
+    );
+    assert_eq!(
+        k.verify_step_up(&token, "bindX", "sidX", NOW + 120, &accepted),
+        Err(Reason::Expired)
+    );
+    let receipt = k.issue_receipt("sidX", NOW + 60).unwrap();
+    assert_eq!(k.verify_receipt(&receipt, "sidX", NOW + 90), Ok(()));
+    assert_eq!(
+        k.verify_receipt(&receipt, "sidX", NOW + 600),
+        Err(Reason::Expired)
+    );
+    assert!(k.verify_receipt("garbage", "sidX", NOW).is_err());
+}
+
+#[test]
+fn lifted_step_up_proof_fails_binding() {
+    let k = key(b"server-only-token-key");
+    let victim = token_bind(
+        bind_key("Chrome/126-victim", "", "").as_deref(),
+        &client_subnet("203.0.113.5".parse().unwrap()),
+    );
+    let bot = token_bind(
+        bind_key("HeadlessChrome/126", "", "").as_deref(),
+        &client_subnet("45.66.77.88".parse().unwrap()),
+    );
+    let accepted = epochs(&["e1"]);
+    let proof = k
+        .issue_step_up("victim", &victim, "e1", NOW + 1800)
+        .unwrap();
+    assert_eq!(
+        k.verify_step_up(&proof, &bot, "victim", NOW, &accepted),
+        Err(Reason::BindingMismatch)
+    );
+}
