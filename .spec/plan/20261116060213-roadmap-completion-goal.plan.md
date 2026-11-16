@@ -63,7 +63,7 @@ unattended.
 | 5 | AT-HANDOFF (interactive AT Windows tuple) | B2, G4 | R+H | Root places `humanymous.root-interactive-at-windows-tuple/1` from a real Windows AT session |
 | 6 | CEF pilot bundle (`HUMANYMOUS_CEF_PILOT_BUNDLE`) | B2 | H | owner with the Windows CEF build host |
 | 7 | BrowserReady measured join | B2, G4 | R+H | follows 5 and 6; `handoff-apply --kind browser-ready-join` |
-| 8 | AUTH-HANDOFF and N06 owner-join | FM4, FM5 | R | Root places `humanymous.root-n06-owner-join-auth-handoff/1` |
+| 8 | AUTH-HANDOFF and N06 owner-join | FM4, FM5 | R | AUTH-HANDOFF recorded 2026-11-16 on owner approval; measured join still needs the hosted venue |
 | 9 | Cap-free-restore GRANT and live-matching TRANSFER (Unlock C) | IM3 | R | Root issues GRANT.json and TRANSFER manifest matching live digests |
 | 10 | `crates/apps/humanymous-browser` package landing (3 → 1) | IM1, B0 | R | Root structural path release |
 | 11 | Adapters package consolidation (12 → 1) | IM1, FM6 | R | Root structural path release |
@@ -90,6 +90,8 @@ unattended.
 | 32 | Make the lab-runner Unlock-A test hermetic (it now needs an untracked private closer) | IM2 | R | product-lab with Root: fixture or explicit ignore with a reason |
 | 33 | `git_coord` test needs `pwsh`; Rust replacement of the coordination scripts | FM11 | R | agents-meta owner; scripts stay until replaced and qualified |
 | 34 | Workspace Clippy `-D warnings` clean | FM0 | A | done 2026-11-16 |
+| 35 | Real Rust Docker product e2e harness (Gate + origin + authority + audit + browser + attacker), replacing the scaffold product labs | IM3, FM8 | A (large) | none; the current product labs `cat` fixed receipts ([[evidence:root/20261116062411]]) |
+| 36 | Retire scaffold `*-cap-pilot.sh` shell pilots | FM11 | A after 35 | replaced by 35 |
 
 ## Record
 
@@ -103,3 +105,9 @@ unattended.
   [[evidence:root/20261116055601]] and [[evidence:root/20261116060831]].
 - 2026-11-16: the unattended run stopped after class A units 1–4 and 34. Every
   open unit (5–33) is D, R, H or P.
+- 2026-11-16: the owner confirmed that no other session is active, approved
+  push, and as Root approved AUTH-HANDOFF and Cap-free. AUTH-HANDOFF was
+  recorded. Cap-free could not be applied without forging the absent Unlock A
+  closer, and the product labs turned out to be scaffolds (units 35–36). Units
+  31 (TLS drain race) and 32 (hermetic Unlock A test) were fixed. The owner chose
+  FM11 (unit 24) as the next structural work.
