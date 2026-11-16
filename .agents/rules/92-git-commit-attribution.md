@@ -10,10 +10,16 @@ Owner decision 2026-11-16 (common automation rules C10.2):
 4. Provider attribution goes in the pull request body
    (`Agent-Provider: claude|codex|cursor|grok|gemini|human`), and agent branches
    are named `<provider>/<slug>`.
-5. Do not invent addresses or set the git author to an LLM identity.
-6. Historical provider trailers stay; history is not rewritten.
+5. **Author and committer use a GitHub noreply address** (C10.5). Agent
+   sessions commit as the owner's `<id>+<login>@users.noreply.github.com`
+   identity, set repo-locally (`git config user.name` / `user.email`), never
+   globally. The committer may also be GitHub's web-flow `noreply@github.com`.
+   Never set the author to an LLM identity or invent an address.
+6. Historical provider trailers and identities stay; history is not rewritten.
+   The identity check starts after commit `7e986a5`.
 
-Check: `cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- commit-trailers <base>..<head>`.
+Check: `cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- commit-trailers <base>..<head>`
+(trailers on every commit; author/committer on commits after the cutoff).
 
 ## Full canon
 

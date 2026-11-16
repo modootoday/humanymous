@@ -24,8 +24,12 @@ contradict it.
 4. **Provider attribution goes in the pull request body**, as the field
    `Agent-Provider: claude|codex|cursor|grok|gemini|human`. Agent branches are
    named `<provider>/<slug>`. With merge commits, the branch name stays in history.
-5. Never change git `author.name`/`author.email` to an LLM identity, and never
-   invent an address.
+5. **Author and committer must be GitHub noreply addresses** (C10.5, owner
+   decision 2026-11-16). Agent sessions commit as the owner's
+   `<id>+<login>@users.noreply.github.com` identity, configured with repo-local
+   `git config user.name` and `user.email` (never `--global`). GitHub's web-flow
+   committer `noreply@github.com` is also accepted, for merges and edits made on
+   github.com. Never use an LLM identity and never invent an address.
 
 Why: all three projects are public. A vendor address on a commit attributes the
 change to an account the project does not control, and some vendor addresses are
@@ -76,7 +80,7 @@ A human collaborator who wants co-author credit uses their own
 |-----------|----------------|
 | Rule `.agents/rules/92-git-commit-attribution.md` | Always-on for agents |
 | `git-coord commit` / `git-commit.sh` | Validate the provider key and subject; add no trailer |
-| `delivery commit-trailers <base>..<head>` | Rust check; fails on any `Co-authored-by` whose address is not `@users.noreply.github.com` |
+| `delivery commit-trailers <base>..<head>` | Rust check; fails on any `Co-authored-by` whose address is not `@users.noreply.github.com`, and, for commits after `7e986a5`, on an author or committer that is not a noreply address (web-flow committer allowed). Output names the commit and field, never the address. Fails closed when the cutoff commit is not in the clone. |
 | CI | Runs the Rust check on the pull-request range once the PR flow is active (`plan:root/20261116070000`) |
 
 ```bash
@@ -90,5 +94,7 @@ cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- commit-trai
 - Commits before 2026-11-16 carry provider trailers (`Claude …`, `codex …`,
   `Cursor Agent …`, `Grok …`) under the retired registry. They are not rewritten.
   Run the check on new ranges only.
+- Commits up to and including `7e986a5` may carry a vendor author or committer
+  identity. The identity check skips them.
 - To find a provider's past work, use the old trailers for commits before the
   decision, and branch names or PR `Agent-Provider` fields after it.

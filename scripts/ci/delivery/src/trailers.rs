@@ -1,8 +1,18 @@
-//! Commit co-author trailer policy: only GitHub noreply addresses are allowed.
+//! Commit attribution policy.
+//!
+//! Co-author trailers may only use GitHub noreply addresses. Commits after the
+//! identity cutoff must also carry a GitHub noreply author and committer; the
+//! committer may additionally be GitHub's own web-flow address. Failures name
+//! the commit and the field, never the address.
 use crate::{Result, command};
 use std::path::Path;
 
 const ALLOWED_DOMAIN: &str = "@users.noreply.github.com";
+/// GitHub's committer address for web-flow merges and edits.
+const WEB_FLOW_COMMITTER: &str = "noreply@github.com";
+/// Last commit made before the owner noreply identity rule (owner decision
+/// 2026-11-16); it and its ancestors are exempt from the identity check.
+pub const IDENTITY_CUTOFF: &str = "7e986a5";
 
 /// Returns the offending trailer lines of one commit message.
 fn offending(message: &str) -> Vec<String> {
@@ -21,6 +31,25 @@ fn offending(message: &str) -> Vec<String> {
         .collect()
 }
 
+fn noreply(address: &str) -> bool {
+    let address = address.trim().to_ascii_lowercase();
+    address.len() > ALLOWED_DOMAIN.len()
+        && address.ends_with(ALLOWED_DOMAIN)
+        && !address.contains(char::is_whitespace)
+}
+
+/// Returns the identity fields of one commit that break the rule.
+fn identity_failures(author: &str, committer: &str) -> Vec<&'static str> {
+    let mut fields = Vec::new();
+    if !noreply(author) {
+        fields.push("author");
+    }
+    if !(noreply(committer) || committer.trim().eq_ignore_ascii_case(WEB_FLOW_COMMITTER)) {
+        fields.push("committer");
+    }
+    fields
+}
+
 /// Checks every commit in `range` (for example `base..head`).
 pub fn check(root: &Path, range: &str) -> Result<()> {
     if range.starts_with('-') || !range.contains("..") {
@@ -34,12 +63,22 @@ pub fn check(root: &Path, range: &str) -> Result<()> {
             failures.push(format!("{sha}: {line}"));
         }
     }
+    // Fails closed when the cutoff object is absent (for example a too-shallow clone).
+    let recent = command::text(root, "git", &["rev-list", range, "--not", IDENTITY_CUTOFF])?;
+    for sha in recent.lines().filter(|sha| !sha.is_empty()) {
+        let fields = command::text(root, "git", &["show", "-s", "--format=%ae%n%ce", sha])?;
+        let mut lines = fields.lines();
+        let (author, committer) = (lines.next().unwrap_or(""), lines.next().unwrap_or(""));
+        for field in identity_failures(author, committer) {
+            failures.push(format!("{sha}: {field} is not a GitHub noreply address"));
+        }
+    }
     if failures.is_empty() {
-        println!("commit trailer policy passed for {range}");
+        println!("commit attribution policy passed for {range}");
         Ok(())
     } else {
         Err(format!(
-            "co-author trailers must use a {ALLOWED_DOMAIN} address; put provider attribution in the pull request body:\n{}",
+            "co-author trailers and (after {IDENTITY_CUTOFF}) author/committer must use a {ALLOWED_DOMAIN} address; put provider attribution in the pull request body:\n{}",
             failures.join("\n")
         ))
     }
@@ -70,5 +109,22 @@ mod tests {
             offending("Co-authored-by: a <a@evil.example> @users.noreply.github.com\n").len(),
             1
         );
+    }
+    #[test]
+    fn noreply_identities_pass_and_web_flow_is_committer_only() {
+        let owner = "1+owner@users.noreply.github.com";
+        assert!(identity_failures(owner, owner).is_empty());
+        assert!(identity_failures(owner, "noreply@github.com").is_empty());
+        assert_eq!(identity_failures("noreply@github.com", owner), ["author"]);
+        assert_eq!(
+            identity_failures("noreply@anthropic.com", "dev@example.com"),
+            ["author", "committer"]
+        );
+    }
+    #[test]
+    fn bare_domain_and_embedded_spaces_are_refused() {
+        assert!(!noreply("@users.noreply.github.com"));
+        assert!(!noreply("a@evil.example @users.noreply.github.com"));
+        assert!(noreply("1+X@Users.Noreply.GitHub.com"));
     }
 }
