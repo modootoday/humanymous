@@ -1,13 +1,13 @@
 ---
-id: plan:root/20261108221000-clean-room-matrix-cap-driver
+id: plan:root/20261108221000
 title: Lab-runner clean-room matrix Cap planner (fail-closed; no Cap burn)
 status: active
 created: 2026-11-08T13:15:00Z
 updated: 2026-11-08T14:13:17Z
 rel:
   depends_on:
-    - plan:root/20261108220600-cap-ready-g4-w2-harness
-    - plan:root/20261108220000-post-g4-w2-residual-root-ask
+    - plan:root/20261108220600
+    - plan:root/20261108220000
     - sot:root/program-roadmap
     - sot:root/container-test-environments
   governs: []

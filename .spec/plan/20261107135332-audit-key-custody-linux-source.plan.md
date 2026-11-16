@@ -5,7 +5,7 @@ status: draft
 created: 2026-11-07T13:53:32Z
 updated: 2026-11-07T13:53:32Z
 rel:
-  governs: [crates/audit/src/verification/scan]
+  governs: [crates/sdk/humanymous-runtime/src/audit/verification/scan]
   depends_on: [sot:root/audit-key-custody, plan:root/20261107103624]
 ---
 

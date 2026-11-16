@@ -1,7 +1,7 @@
 ---
 id: sot:root/clean-room-usage-matrix
 title: Docker clean-room usage-condition matrix completeness gates
-status: accepted
+status: active
 created: 2026-11-08T18:35:00Z
 updated: 2026-11-09T23:15:00Z
 verify: manual

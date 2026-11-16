@@ -1,13 +1,13 @@
 ---
-id: plan:root/20261109041000-cap0-product-gate-enumeration-hard-stop
+id: plan:root/20261109041000
 title: Cap=0 tip-bound product-gate enumeration + hard-stop after G2/G5/CR/G6 Cap spent
 status: active
 created: 2026-11-09T03:45:00Z
 updated: 2026-11-09T03:45:00Z
 rel:
   depends_on:
-    - plan:root/20261108233000-post-unlock-c-matrix-honesty
-    - plan:root/20261109033000-matrix-completeness
+    - plan:root/20261108233000
+    - plan:root/20261109033001
     - sot:root/program-roadmap
     - sot:root/structural-development
   governs: []

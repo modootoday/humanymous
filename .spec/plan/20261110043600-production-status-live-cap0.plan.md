@@ -1,13 +1,13 @@
 ---
-id: plan:root/20261110043600-production-status-live-cap0
+id: plan:root/20261110043600
 title: LIVE Cap=0 production STATUS — incomplete; CR Cap1 component ≠ product e2e
 status: active
 created: 2026-11-09T19:36:00Z
 updated: 2026-11-09T19:36:00Z
 rel:
   depends_on:
-    - plan:root/20261109041000-cap0-product-gate-enumeration-hard-stop
-    - plan:root/20261109033000-matrix-completeness
+    - plan:root/20261109041000
+    - plan:root/20261109033001
     - sot:root/program-roadmap
     - sot:root/structural-development
   governs: []

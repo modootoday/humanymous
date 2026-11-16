@@ -1,14 +1,14 @@
 ---
-id: plan:root/20261108233000-post-unlock-c-matrix-honesty
+id: plan:root/20261108233000
 title: Post-Unlock-C matrix honesty + Unlock B Cap (component EXIT 0)
 status: active
 created: 2026-11-08T14:30:00Z
 updated: 2026-11-09T03:45:00Z
 rel:
   depends_on:
-    - plan:root/20261108230100-bottom-up-inner-outer-parallelization
-    - plan:root/20261108221000-clean-room-matrix-cap-driver
-    - plan:root/20261108220600-cap-ready-g4-w2-harness
+    - plan:root/20261108230100
+    - plan:root/20261108221000
+    - plan:root/20261108220600
     - sot:root/program-roadmap
     - sot:root/structural-development
   governs: []

@@ -1,5 +1,5 @@
 ---
-id: plan:root/20261108230100-bottom-up-inner-outer-parallelization
+id: plan:root/20261108230100
 title: Bottom-up / inner-to-outer parallelization priority (tip 87be1b76)
 status: active
 created: 2026-11-08T14:01:00Z
@@ -10,9 +10,9 @@ rel:
     - sot:root/program-roadmap
     - sot:root/rust-migration
     - plan:root/20261107151000
-    - plan:root/20261108220000-post-g4-w2-residual-root-ask
-    - plan:root/20261108220600-cap-ready-g4-w2-harness
-    - plan:root/20261108221000-clean-room-matrix-cap-driver
+    - plan:root/20261108220000
+    - plan:root/20261108220600
+    - plan:root/20261108221000
   governs: []
 ---
 
@@ -129,9 +129,9 @@ green alone is not `pass_product_clean_room`.
 | **B** | W2 hosted gateway H2 product-binding + N06 (not capture `observe_h2` alone) | `cap-ready/w2-h2-product-binding/` | 대기 (Root-blocked) |
 | **C** | Authority Cap CLI paths (`deployments/lab/**`, lab-runner orchestration, …) | `cap-ready/authority-node-ipc/` + `candidate-pack/TRANSFER.md` | candidate-pack authored; live transfer **not applied** |
 
-Governing sibling plans: `plan:root/20261108220000-post-g4-w2-residual-root-ask`,
-`plan:root/20261108220600-cap-ready-g4-w2-harness`,
-`plan:root/20261108221000-clean-room-matrix-cap-driver`.
+Governing sibling plans: `plan:root/20261108220000`,
+`plan:root/20261108220600`,
+`plan:root/20261108221000`.
 
 ## 6. M1–M6 mapping
 

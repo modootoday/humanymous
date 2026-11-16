@@ -1,14 +1,14 @@
 ---
-id: plan:root/20261110044500-production-status-priority-reorder
+id: plan:root/20261110044500
 title: Cap=0 priority reorder — shortest path to pass_product_clean_room then red-blue
 status: active
 created: 2026-11-09T19:45:00Z
 updated: 2026-11-09T19:45:00Z
 rel:
   depends_on:
-    - plan:root/20261110043600-production-status-live-cap0
-    - plan:root/20261108230100-bottom-up-inner-outer-parallelization
-    - plan:root/20261109041000-cap0-product-gate-enumeration-hard-stop
+    - plan:root/20261110043600
+    - plan:root/20261108230100
+    - plan:root/20261109041000
     - sot:root/program-roadmap
     - sot:root/clean-room-usage-matrix
     - sot:root/structural-development
@@ -135,6 +135,6 @@ Sibling Cap1 agents must not collide; this lane stays Cap=0 until realloc is obs
 | --- | --- |
 | This plan | `.spec/plan/20261110044500-production-status-priority-reorder.plan.md` |
 | Cap=0 evidence | `.spec.local/root/evidence/20261110044500-cursor-priority-reorder/` |
-| Prior STATUS | `plan:root/20261110043600-production-status-live-cap0` |
+| Prior STATUS | `plan:root/20261110043600` |
 | Matrix | `.spec.local/root/evidence/20261108164500-cursor-clean-room-matrix/` |
 | LIVE canvas | `canvases/humanymous-live-roadmap.canvas.tsx` (Cursor projects) |

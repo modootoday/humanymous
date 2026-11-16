@@ -1,14 +1,14 @@
 ---
-id: plan:root/20261109020000-unlock-a-cap1-fail-closed
+id: plan:root/20261109020000
 title: Unlock A G4 CEF/AT Cap=1 (missing CEF then realloc with host bundle + Desktop baseline)
 status: active
 created: 2026-11-08T16:58:00Z
 updated: 2026-11-08T18:05:00Z
 rel:
   depends_on:
-    - plan:root/20261108233000-post-unlock-c-matrix-honesty
-    - plan:root/20261108220600-cap-ready-g4-w2-harness
-    - plan:root/20261108215600-g4-at-cef-blocked-claim
+    - plan:root/20261108233000
+    - plan:root/20261108220600
+    - plan:root/20261108215600
     - sot:root/program-roadmap
   governs: []
 ---

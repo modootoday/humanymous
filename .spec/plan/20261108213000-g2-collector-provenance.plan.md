@@ -1,5 +1,5 @@
 ---
-id: plan:root/20261108213000-g2-collector-provenance
+id: plan:root/20261108213000
 title: G2 / R03 fresh session-bound collector provenance — design delta
 status: active
 created: 2026-11-08T21:30:00Z

@@ -1,12 +1,12 @@
 ---
-id: plan:root/20261109033000-matrix-completeness
+id: plan:root/20261109033001
 title: Cap=0 clean-room matrix completeness gate (tip a984a871)
 status: active
 created: 2026-11-08T18:35:00Z
 updated: 2026-11-08T19:05:00Z
 rel:
   depends_on:
-    - plan:root/20261108221000-clean-room-matrix-cap-driver
+    - plan:root/20261108221000
     - sot:root/container-test-environments
     - sot:root/program-roadmap
   governs:

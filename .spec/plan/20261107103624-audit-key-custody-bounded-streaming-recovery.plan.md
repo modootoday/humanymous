@@ -5,7 +5,7 @@ status: draft
 created: 2026-11-07T10:36:24Z
 updated: 2026-11-07T10:36:24Z
 rel:
-  governs: [crates/audit/src/storage]
+  governs: [crates/sdk/humanymous-runtime/src/audit/storage]
   depends_on: [sot:root/audit-key-custody]
 ---
 

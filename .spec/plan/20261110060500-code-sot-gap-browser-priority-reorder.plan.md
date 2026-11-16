@@ -1,15 +1,14 @@
 ---
-id: plan:root/20261110060500-code-sot-gap-browser-priority-reorder
+id: plan:root/20261110060500
 title: Cap=0 CODE↔SoT gap survey — BrowserReady first-class priority reorder
 status: superseded
 created: 2026-11-09T21:05:00Z
 updated: 2026-11-09T21:14:00Z
-superseded_by: plan:root/20261110061400-full-remaining-priority-no-cutoff
 rel:
   depends_on:
-    - plan:root/20261110044500-production-status-priority-reorder
-    - plan:root/20261110043600-production-status-live-cap0
-    - plan:root/20261108230100-bottom-up-inner-outer-parallelization
+    - plan:root/20261110044500
+    - plan:root/20261110043600
+    - plan:root/20261108230100
     - sot:root/program-roadmap
     - sot:root/clean-room-usage-matrix
     - sot:root/structural-development
@@ -156,6 +155,6 @@ Hold until Cap realloc → Cap free=true. Then **one** burn:
 | --- | --- |
 | This plan | `.spec/plan/20261110060500-code-sot-gap-browser-priority-reorder.plan.md` |
 | Cap=0 evidence | `.spec.local/root/evidence/20261110060500-cursor-code-sot-gap-survey/` |
-| Supersedes priority table of | `plan:root/20261110044500-production-status-priority-reorder` |
+| Supersedes priority table of | `plan:root/20261110044500` |
 | Matrix | `.spec.local/root/evidence/20261108164500-cursor-clean-room-matrix/` |
 | LIVE canvas | `canvases/humanymous-live-roadmap.canvas.tsx` (Cursor projects) |

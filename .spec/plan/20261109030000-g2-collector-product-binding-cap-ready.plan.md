@@ -1,14 +1,14 @@
 ---
-id: plan:root/20261109030000-g2-collector-product-binding-cap-ready
+id: plan:root/20261109030000
 title: G2 collector product-binding Cap CLI Cap=0 scaffold + Cap-ready topology
 status: active
 created: 2026-11-08T18:00:00Z
 updated: 2026-11-08T19:05:00Z
 rel:
   depends_on:
-    - plan:root/20261108233000-post-unlock-c-matrix-honesty
-    - plan:root/20261109020000-unlock-a-cap1-fail-closed
-    - plan:root/20261108213000-g2-collector-provenance
+    - plan:root/20261108233000
+    - plan:root/20261109020000
+    - plan:root/20261108213000
     - sot:root/program-roadmap
     - sot:root/structural-development
   governs: []

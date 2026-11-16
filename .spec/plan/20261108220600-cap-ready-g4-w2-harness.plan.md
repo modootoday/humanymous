@@ -1,14 +1,14 @@
 ---
-id: plan:root/20261108220600-cap-ready-g4-w2-harness
+id: plan:root/20261108220600
 title: Cap-ready G4/W2 harness prep (unlock→Cap burn shortener)
 status: active
 created: 2026-11-08T13:06:00Z
 updated: 2026-11-08T14:13:17Z
 rel:
   depends_on:
-    - plan:root/20261108220000-post-g4-w2-residual-root-ask
-    - plan:root/20261108215600-g4-at-cef-blocked-claim
-    - plan:root/20261108210000-r14-h2-serving-consumer
+    - plan:root/20261108220000
+    - plan:root/20261108215600
+    - plan:root/20261108210000
     - sot:root/network-capture
     - sot:root/program-roadmap
   governs: []

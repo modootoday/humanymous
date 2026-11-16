@@ -1,7 +1,7 @@
 ---
-id: plan:root/20261109033000-clean-room-usage-matrix
+id: plan:root/20261109033000
 title: Canonize clean-room usage-matrix SoT from Cap=0 completeness gate
-status: accepted
+status: active
 created: 2026-11-08T18:35:00Z
 updated: 2026-11-08T19:10:00Z
 rel:

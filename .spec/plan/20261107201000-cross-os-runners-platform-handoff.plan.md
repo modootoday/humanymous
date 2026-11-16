@@ -33,7 +33,7 @@ Inventory records its exact source HEAD. It is a non-atomic read snapshot, so Ro
 must recheck hashes at the specific slice freeze; no continuing source lease is
 implied. The tracked dirty runner src/service/receipt.rs is FOREIGN, pre-existing
 and must not be staged, replaced or attributed to this owner. The untracked
-[[plan:root/20261107134952]] (native-secrets) is also not this
+`plan:root/20261107134952` (native-secrets; never committed) is also not this
 owner's authored work. Other tracked owned source roots were clean at handoff.
 Public evidence binding-capture-bridge-pure-summary.json also has foreign dirty
 state; preserve it and the original indexed historical proof separately.

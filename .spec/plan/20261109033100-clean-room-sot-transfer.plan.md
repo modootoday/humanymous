@@ -1,12 +1,12 @@
 ---
-id: plan:root/20261109033100-clean-room-sot-transfer
+id: plan:root/20261109033100
 title: Cap-ready path-release for clean-room usage-matrix SoT slice
 status: active
 created: 2026-11-08T18:35:00Z
 updated: 2026-11-08T18:35:00Z
 rel:
   depends_on:
-    - plan:root/20261109033000-matrix-completeness
+    - plan:root/20261109033001
   governs: []
 ---
 

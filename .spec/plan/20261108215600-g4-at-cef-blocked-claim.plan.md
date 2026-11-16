@@ -1,5 +1,5 @@
 ---
-id: plan:root/20261108215600-g4-at-cef-blocked-claim
+id: plan:root/20261108215600
 title: G4 human/keyboard/AT (CEF) — blocked_claim honesty receipt
 status: active
 created: 2026-11-08T12:56:24Z
@@ -9,8 +9,8 @@ rel:
     - sot:root/browser-ui
     - sot:root/runtime-application
     - sot:root/container-test-environments
-    - plan:root/20261108213000-g2-collector-provenance
-    - plan:root/20261108210000-r14-h2-serving-consumer
+    - plan:root/20261108213000
+    - plan:root/20261108210000
   governs: []
 ---
 

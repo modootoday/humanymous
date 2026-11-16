@@ -1,12 +1,12 @@
 ---
-id: plan:root/20261110044800-red-blue-product-cap-ready
+id: plan:root/20261110044800
 title: Cap=0 Cap-ready --red-blue-product require-full feeder (not Cap twin)
 status: active
 created: 2026-11-09T19:48:00Z
 updated: 2026-11-09T19:48:00Z
 rel:
   depends_on:
-    - plan:root/20261110043600-production-status-live-cap0
+    - plan:root/20261110043600
     - sot:root/clean-room-usage-matrix
     - sot:root/program-roadmap
   governs: []

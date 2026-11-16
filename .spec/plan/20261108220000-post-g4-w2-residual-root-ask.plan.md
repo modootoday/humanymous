@@ -1,15 +1,15 @@
 ---
-id: plan:root/20261108220000-post-g4-w2-residual-root-ask
+id: plan:root/20261108220000
 title: Post-G4/W2 residual inventory — consolidated ROOT-ASK (Cap free)
 status: active
 created: 2026-11-08T13:01:00Z
 updated: 2026-11-08T14:13:17Z
 rel:
   depends_on:
-    - plan:root/20261108215600-g4-at-cef-blocked-claim
-    - plan:root/20261108213000-g2-collector-provenance
-    - plan:root/20261108210000-r14-h2-serving-consumer
-    - plan:root/20261108221000-clean-room-matrix-cap-driver
+    - plan:root/20261108215600
+    - plan:root/20261108213000
+    - plan:root/20261108210000
+    - plan:root/20261108221000
     - sot:root/program-roadmap
     - sot:root/pass-protocol
   governs: []
@@ -78,6 +78,6 @@ of A/B/C + exact path transfer / INTEGRATION amendment. Cursor Cap=1 then burns
 the matching Cap-ready pack. Prefer Cap burn over more docs if A/B/C unlocks.
 No architecture invention; detection freeze.
 
-Follow-on Cap-ready: `plan:root/20261108220600-cap-ready-g4-w2-harness` +
+Follow-on Cap-ready: `plan:root/20261108220600` +
 authority pack under the same private `cap-ready/` tree. Matrix Cap planner:
-`plan:root/20261108221000-clean-room-matrix-cap-driver` (serialize=0).
+`plan:root/20261108221000` (serialize=0).

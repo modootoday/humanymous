@@ -1,21 +1,13 @@
 ﻿---
-id: plan:root/20261110061400-full-remaining-priority-no-cutoff
+id: plan:root/20261110061400
 title: Cap=0 FULL remaining priority 1..N — no quantity cutoff
 status: active
 created: 2026-11-09T21:14:00Z
-updated: 2026-11-09T23:32:00Z
+updated: 2026-11-16T05:55:21Z
 rel:
-  depends_on:
-    - plan:root/20261110060500-code-sot-gap-browser-priority-reorder
-    - plan:root/20261110044500-production-status-priority-reorder
-    - plan:root/20261110043600-production-status-live-cap0
-    - sot:root/program-roadmap
-    - sot:root/clean-room-usage-matrix
-    - sot:root/structural-development
-    - sot:root/browser-ui
-    - sot:root/client-collector
-    - sot:root/chromium-lab-browser
+  depends_on: [plan:root/20261110060500, plan:root/20261110044500, plan:root/20261110043600, sot:root/program-roadmap, sot:root/clean-room-usage-matrix, sot:root/structural-development, sot:root/browser-ui, sot:root/client-collector, sot:root/chromium-lab-browser]
   governs: []
+  supersedes: [plan:root/20261110060500]
 ---
 
 # Cap=0 FULL remaining priority (수량제한없이 / no N-cap)
@@ -229,7 +221,7 @@ Receipt: `.spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/
 
 | Artifact | Path |
 | --- | --- |
-| This plan | .spec/plan/20261110061400-full-remaining-priority-no-cutoff.plan.md |
+| This plan | [[plan:root/20261110061400]] |
 | Cap=0 evidence | .spec.local/root/evidence/20261110061400-cursor-full-priority-no-cutoff/ |
 | Cap0∥ wave | .spec.local/root/evidence/20261110063500-cursor-full-cap0-parallel-wave/ |
 | Cap0 reaudit wave | .spec.local/root/evidence/20261110072000-cursor-cap0-reaudit-wave/ |
@@ -242,7 +234,7 @@ Receipt: `.spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/
 | Prior tipbind readiness | .spec.local/root/evidence/20261110074900-cursor-cap0-tipbind-readiness/ |
 | Prior Decision B closer | .spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/ |
 | Prior Cap0∥ closer | .spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-closer/ |
-| Supersedes truncated tables | plan:root/20261110060500-code-sot-gap-browser-priority-reorder, plan:root/20261110044500-production-status-priority-reorder |
+| Supersedes truncated tables | plan:root/20261110060500, plan:root/20261110044500 |
 | Matrix | .spec.local/root/evidence/20261108164500-cursor-clean-room-matrix/ |
 | LIVE canvas | canvases/humanymous-live-roadmap.canvas.tsx |
 

@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-08T04:32:53Z
+updated: 2026-11-16T05:56:01Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/client-collector, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui, sot:root/native-embedding]
@@ -19,6 +19,57 @@ snapshots, including their allocation tables, counts and then-current CI handles
 They do not grant current execution slots, supersede newer contracts or prove
 freshness for later source. Actual allocation requires current root coordination
 and resource admission; follow the exact live run or process handle.
+
+## Canonical roadmap (normative)
+
+This section and [[sot:root/milestones]] are the canonical roadmap. Every
+section after it is a dated checkpoint or historical snapshot. A snapshot never
+overrides this section.
+
+Authority order for "what is the plan and where are we":
+
+1. [[sot:root/milestones]]: milestone ids, statuses, exit gates and the
+   definition of done (`goal_complete`).
+2. This section: program order and critical path.
+3. [[sot:root/clean-room-usage-matrix]] and the LIVE board below: product
+   measurements. Only Docker clean-room evidence moves them.
+4. The active priority plan [[plan:root/20261110061400]]: the full ordered
+   work list inside the current wave.
+5. Evidence documents: the receipts that justify status changes. The latest
+   repository-wide audit is [[evidence:root/20261116055601]].
+
+Program order (dependency order, not dates):
+
+```mermaid
+flowchart LR
+  PA[PA architecture] --> PB[PB foundations FM1-FM4]
+  PA --> PC[PC tools FM7 FM10]
+  PA --> PD[PD adapters and browser FM6 B0-B6]
+  PB --> PE[PE final eight graph IM1 IM2]
+  PC --> PE
+  PD --> PE
+  PE --> IM3[IM3 Docker clean-room product e2e]
+  IM3 --> RB[red-blue-validate Docker]
+  PF[PF docs and Draft v0 IM4] --> IM5
+  RB --> IM5[IM5 main integration]
+  IM5 --> IM6[IM6 main-only and Pages]
+```
+
+Critical path today (recorded 2026-11-09, unchanged by the 2026-11-16 audit):
+AT-HANDOFF, CEF bundle, BrowserReady (G4/B2), then AUTH-HANDOFF and N06
+owner-join. Next comes Cap reallocation, then one serial Cap=1 clean-room
+product run. That run feeds red-blue-validate, and then the FM5/FM6 product
+binding.
+
+In parallel and off that path:
+
+- FM11 legacy Go disposition: 255 of 314 rows unresolved, Go Gate/Core images
+  still shipped.
+- IM1 consolidation from 29 to 8 packages.
+- IM4 Pages and Draft v0.
+
+`goal_complete` is false.
+
 ## Latest isolated Adapters integration checkpoint
 
 Root has now adopted the reviewed twelve-to-one Adapters transformation into its
@@ -879,14 +930,8 @@ no external package version changed. This graph check neither compiles the new
 capture API nor qualifies image extraction. Delivery archive regression and Lab
 diagnostic consumer batches retain separate frozen sources and terminal gates.
 
-| Milestone | State | Exit requirement |
-| --- | --- | --- |
-| M1 shared contracts and package structure | In progress | Finish native owner/context/epoch/identity boundaries and source-bound units without weakening security |
-| M2 component runtime qualification | In progress | Complete current-source adapter, CEF and Cross-OS actual pilots; failures/unknown/ignored cases resolved or explicitly outside the approved product contract |
-| M3 composed product e2e | Not qualified | Actual isolated Docker browser/runtime/Authority/audit/origin/witness composition, required adversarial and accessibility checks, exact cleanup and source/image binding. Cursor inventory 20261108192100 classifies remaining FullProduct blockers G1–G9 (TLS/H2/capture, session-bound collector, Pass recovery, interactive AT, authenticated witness transport, L5 origin/audit binding, remote attestation, native OS, provider deployment) as Root-only: matrix cells stay `required_unavailable` / blocked until Root allocates; Cap=1 browser/collector/controls feeders do not close M3; `pass_product_clean_room` remains 0 and `full_product_qualified` remains false. No architecture invented here. |
-| M4 current Pages and Draft v0 | In progress | Complete current-source manual reviews, fresh dual-base builds/archive transport, browser and required AT validation; no unsupported public claims |
-| M5 shared main integration | Held by M1-M4 | Exact final candidate passes all mandatory gates, then normal integration and post-merge verification |
-| M6 main-only and approved Pages | Not started | Verify integrated main and approved serving, then retire authorized obsolete branches/files without losing required evidence |
+Integration-gate status (historically labelled `M1–M6` here) is canonical only
+in [[sot:root/milestones]] as IM1–IM6. This section keeps the ordering rationale.
 
 ### LIVE Cap=0 product honesty board (remeasured)
 
@@ -912,7 +957,7 @@ BrowserReady.
 | Exact next closer | Root AT-HANDOFF + AUTH-HANDOFF → Cap0 apply → NEW non-twin Cap realloc → Cap free=true → Cap=1 product path |
 | goal_complete | false |
 
-Canon pointers: `plan:root/20261110061400-full-remaining-priority-no-cutoff`,
+Canon pointers: `plan:root/20261110061400`,
 `sot:root/clean-room-usage-matrix`,
 `.spec.local/root/evidence/20261110080500-cursor-cap0-cap-free-restore/`,
 `.spec.local/root/evidence/20261110080900-cursor-sot-code-sync/`.
@@ -1547,27 +1592,9 @@ timeline
 
 ## Goal-completion milestones
 
-| ID | Scope | Status | Completion conditions/remaining work |
-|---|---|---|---|
-| M0 | Branch, Specfold and development rules | Implemented | Maintain .spec/.spec.local, attribution and evidence; final agents cleanup is M11 |
-| M1 | Pure engine, model and Pass | Partial | All original regressions, ML lifecycle, full Pass, actual runtime parity |
-| M2 | Network/raw capture | Partial | TLS ClientHello, ordered headers, HPACK/H2 settings/priority, connection/session binding |
-| M3 | Audit/keys/state | Partial | Independent durable witness, operational rotation, dual-control, backup/erasure/sinks |
-| M4 | Core/Gate and authority | Bounded runtime | All actual collector/capture/RIT, proxy/settings/abuse/admin paths |
-| M5 | Rust collector | Partial through baseline | Local native19/Firefox34; guard hooks/CDP, fingerprint-ID/ICE, loader/session/RIT/recovery, Pass, API matrix |
-| M6 | Server adapters | Partial/research | Node/Bun Express/Hono and nginx Rust-only; peer/route/header/body/stream/provenance and actual authority |
-| M7 | Operational CLI and installation | Provisioning implemented | Signed package→service activation/readiness→update/rollback; native peer negative pilots |
-| M8 | Product Docker wargame | Limited pilot | Live Gate/browser/Pass, egress, origin/audit, attack/ordinary/human/AT denominators |
-| M9 | Automation/mobile/provider/standards | Research/draft | Owned execution, wire/vectors, interoperability/security/privacy/a11y review, international-submission preparation |
-| M10 | Cross-OS, OIDC and Pages | Scoped verification/wiring | 3 full runners, final-source6tuple, registry/package trust, docs freshness, Pages artifact; deployment verification is M12 |
-| M11 | Rust-only, supply chain and agents/skills | Partial | Full foreign-source disposition; CVE/SBOM/image scan; .agents/rules/skills/agents and user skills/eval |
-| M12 | Retain only final main | Deferred | Latest-main integration candidate→all exact-SHA/tree gates→main update→actual Pages deployment verification→rust branch removal |
-| B0/B1 | Browser design/engine/profile | Design/partial | Pin/provenance, permission/network/lifecycle qualification |
-| B2 | Actual Meari+CEF UI | Partial on Windows | Full sandbox/input/IME/AX, DPI/crash, OS tuples, Chrome-rendering capability matrix |
-| B3 | Diagnostics/receipt | Unimplemented | Qualified target/input; typed collector/session/capture/audit join |
-| B4 | Controlled experiments | Not run | Ordinary Chrome, human/AT, observer on/off, false positives and actual effects |
-| B5 | Tool distribution | Unimplemented | Native CVE/SBOM, signing/update/rollback, user docs |
-| B6 | Native SDK/framework/CLI | Design/manifest init implemented | CLI11 units/6 processes; 4 foundation crates, versioned ABI/consumer, owned lifecycle/unload, framework matrix, scaffold/doctor/verify |
+Feature (historically `M0–M12`) and browser-track (B0–B6) milestone status is
+canonical only in [[sot:root/milestones]], as FM0–FM12 and B0–B6. The table that
+stood here was carried into that register with its labels normalized.
 
 ## Future execution timeline
 
