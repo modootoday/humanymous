@@ -377,6 +377,36 @@ mod tests {
         }
         fs::remove_dir(dir).unwrap();
     }
+    /// Go TestAppendPanicsWithoutHMAC (internal/audit/verifier_p0_test.go at
+    /// baseline 981d25c). Go panicked on the first Append; Rust refuses an
+    /// empty HMAC key when the log opens, so no record or WAL entry can ever be
+    /// sealed without the secondary MAC, and the MAC primitive refuses too.
+    #[test]
+    fn empty_hmac_key_is_refused_before_any_append() {
+        let dir = dir();
+        let empty = Config {
+            hmac_key: Vec::new(),
+            ..config()
+        };
+        let opened = Log::open(
+            Wal::open(&dir, WalOptions::default()).unwrap(),
+            empty,
+            None,
+            true,
+        );
+        assert!(opened.is_err(), "an empty HMAC key must not open a writer");
+        assert!(crate::audit::record::record_mac("ab", b"").is_err());
+        let reopened = Log::open(
+            Wal::open(&dir, WalOptions::default()).unwrap(),
+            config(),
+            None,
+            true,
+        )
+        .unwrap();
+        assert!(reopened.records().unwrap().is_empty());
+        drop(reopened);
+        clean(&dir);
+    }
     /// Legacy sink.go refused an empty event type before the action; so does
     /// `emit_and_act`, without advancing the chain.
     #[test]
