@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 336,
-      "macos": 336,
-      "windows": 328
+      "linux": 345,
+      "macos": 345,
+      "windows": 337
     },
     "common_test_names": [
       "gateway::application::temporal::tests::categories::configure_only_preserves_unknown_gap_until_provider_observation",
@@ -277,6 +277,15 @@
       "gateway::tests::tls::dispatch::chrome_claim_over_actual_rustls_is_audited_and_never_reaches_origin",
       "gateway::tests::tls::dispatch::truthful_native_tls_profile_preserves_policy_and_origin_agreement",
       "gateway::tests::tls::observation::actual_client_hello_and_negotiated_alpn_share_the_request_owner",
+      "gateway::tls::acme::tests::account_files_are_keyed_by_directory",
+      "gateway::tls::acme::tests::cache_is_owner_only_and_loose_entries_are_refused",
+      "gateway::tls::acme::tests::cached_pair_for_other_domains_is_not_served",
+      "gateway::tls::acme::tests::challenge_certificate_names_the_domain_and_carries_the_critical_digest",
+      "gateway::tls::acme::tests::issued_pair_must_cover_every_domain_and_match_its_key",
+      "gateway::tls::acme::tests::issuer_serves_cached_certificate_over_h2_and_refuses_other_names",
+      "gateway::tls::acme::tests::renewal_is_due_when_absent_or_within_thirty_days",
+      "gateway::tls::acme::tests::resolver_answers_only_declared_names_and_routes_challenges",
+      "gateway::tls::acme::tests::settings_accept_https_directories_and_plain_contacts_only",
       "gateway::tls::certificate::tests::issuer_domains_are_normalised_and_plain_hosts_only",
       "gateway::tls::certificate::tests::issuer_must_cover_exactly_the_selected_domains",
       "gateway::tls::certificate::tests::load_provisioned_reads_bounded_files",
