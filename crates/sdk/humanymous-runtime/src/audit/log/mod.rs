@@ -55,6 +55,7 @@ pub struct Log {
     poisoned: bool,
     external_witness: Option<Box<dyn CheckpointWitness>>,
     witness_durability: WitnessDurability,
+    projections: Vec<std::sync::Arc<dyn crate::audit::projection::Projection>>,
 }
 impl Log {
     /// Restore an authenticated chain or explicitly initialize an empty one.
@@ -161,6 +162,7 @@ impl Log {
             poisoned: false,
             external_witness,
             witness_durability,
+            projections: Vec::new(),
         })
     }
 
@@ -187,6 +189,11 @@ impl Log {
         if let Err(error) = self.wal.append_record(&record) {
             self.poisoned = true;
             return Err(error);
+        }
+        // Best-effort projections see each record once it is durable in the WAL
+        // authority; they never block or fail the seal (Go `Log.Append`).
+        for projection in &self.projections {
+            projection.append(&record);
         }
         self.sequence = record.seq;
         self.head = record.record_hash.clone();
@@ -323,6 +330,14 @@ impl Log {
         }
         Ok(())
     }
+    /// Ship every later sealed record to an asynchronous projection (SoT-32
+    /// Tier 1/2). The WAL stays the only durability authority.
+    pub fn project(
+        &mut self,
+        projection: std::sync::Arc<dyn crate::audit::projection::Projection>,
+    ) {
+        self.projections.push(projection);
+    }
     /// Latest locally authenticated sequence.
     pub fn sequence(&self) -> u64 {
         self.sequence
@@ -426,6 +441,39 @@ mod tests {
         assert!(log.records().unwrap().is_empty());
         let first = log.append(event()).unwrap();
         assert_eq!(first.seq, 1, "a refusal must not consume a sequence number");
+        drop(log);
+        clean(&dir);
+    }
+    /// Go Log.Append fed every projection after the WAL authority; a refused
+    /// record reaches no projection.
+    #[test]
+    fn projections_receive_each_sealed_record_after_the_wal() {
+        struct Capture(std::sync::Mutex<Vec<u64>>);
+        impl crate::audit::projection::Projection for Capture {
+            fn append(&self, record: &Record) {
+                self.0.lock().unwrap().push(record.seq);
+            }
+            fn flush(&self) -> io::Result<()> {
+                Ok(())
+            }
+            fn dropped(&self) -> u64 {
+                0
+            }
+        }
+        let dir = dir();
+        let mut log = Log::open(
+            Wal::open(&dir, WalOptions::default()).unwrap(),
+            config(),
+            None,
+            true,
+        )
+        .unwrap();
+        let capture = std::sync::Arc::new(Capture(std::sync::Mutex::new(Vec::new())));
+        log.project(capture.clone());
+        log.append(event()).unwrap();
+        assert!(log.append(Record::default()).is_err());
+        log.append(event()).unwrap();
+        assert_eq!(*capture.0.lock().unwrap(), [1, 2]);
         drop(log);
         clean(&dir);
     }
