@@ -3,7 +3,7 @@ id: sot:root/client-collector
 title: Rust browser signal collection and generated WASM boundary
 status: active
 created: 2026-11-07T01:30:00Z
-updated: 2026-11-08T21:30:00Z
+updated: 2026-11-17T23:30:00Z
 verify:
   - cargo test -p humanymous-collector --locked
 rel:
@@ -466,3 +466,41 @@ describe Origin/referrer processing but do not prove empty-referrer causality in
 this Firefox run. Actual isolated browser and Docker product execution must
 measure the new source; no manual Origin, Referer authorization fallback, CORS
 mode change, policy relaxation or successful wire result is claimed.
+
+## Go loader report assembly (roadmap 2d collector-parity)
+
+The 2d `collector-parity` lab case measures the real browser report against the
+Go oracle at 981d25c, whose `web/js/loader.js` always posted a probed
+`environment`, an `advanced` plane, a `fingerprintId` and `guard.reported=true`.
+BrowserCollector::report_json is the explicit Rust assembly of that report. It
+measures snapshot_json first (L1-L3, behavior, guard), then runs the existing
+environment and advanced probes and computes fingerprintId. The order differs
+from the oracle only in that guard/behavior are read before the probes, so the
+collector's own probes cannot appear in its guard observation. The oracle's
+2500ms advanced race and 6000ms behavior window are page pacing, not ported.
+Probe failure rejects the report, instead of the oracle's silent default.
+
+fingerprintId ports `advanced.js` computeFingerprintId: fixed canvas data URL,
+`webgl` vendor/renderer, screen width/height/colorDepth/devicePixelRatio, time
+zone, languages, hardwareConcurrency and platform, joined with JavaScript join
+semantics and hashed with WebCrypto SHA-256 (first12 bytes, lowercase hex).
+Surfaces the oracle wrapped in try are skipped on throw; a throwing or rejecting
+digest takes the oracle's Int32 fallback hash; a digest timeout rejects. Joined
+surfaces are bounded to1MiB UTF-16 units. The value is an unscored client
+assertion, not a signal, device attestation or correlation implementation; the
+Rust runtime does not consume it. An amended existing WASM test compares it with
+the unchanged oracle in the same browser without changing the66-test inventory.
+
+Guard hooks stay an explicit enable_guard_hooks opt-in; report_json never enables
+them and reports `reported` as measured. The selected runtime pilot now posts
+the report_json report without hooks. This closes the lab gaps
+`environment_not_probed` and `fingerprint_id_absent` only. `guard_not_reported`
+and `issuing_session_not_admitted_on_required_collector_route` remain one coupled
+owner decision: the runtime admits `required.collector` only on a receipt with
+guard `reported=true`, so enabling hooks in the pilot would also change the
+pilot's fail-closed 422 contract, the fixture's refused `required_collector_ack`
+expectation, the audit denominator and the `missing-signals-closed` evaluation,
+which uses the same captured report as its stripped-report evidence. The two
+lab cases cannot both pass on one captured report; a pilot that keeps a separate
+stripped epoch needs an owner-approved contract change. Native and isolated
+headless Firefox component results are not Docker product evidence.

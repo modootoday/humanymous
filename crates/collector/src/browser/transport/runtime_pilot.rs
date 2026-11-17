@@ -81,10 +81,10 @@ async fn actual_runtime_session_report_and_required_capability_fail_closed() {
     );
     assert!(!session.is_closed());
 
-    // Preserve actual headless/browser observations. Never fabricate a benign
-    // report or interpret accepted report ingestion as human/code attestation.
+    // Actual observations plus Go loader planes; guard hooks stay off (partial).
+    // Never fabricate a benign report or treat ingestion as human attestation.
     let mut collector = crate::BrowserCollector::new().unwrap();
-    let report = collector.snapshot_json().unwrap();
+    let report = collector.report().unwrap().await.unwrap();
     collector.stop().unwrap();
     let collected = session
         .fetch(

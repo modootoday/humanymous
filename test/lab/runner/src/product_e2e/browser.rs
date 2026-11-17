@@ -40,7 +40,7 @@ const PROBE_SCHEMA: &str = "humanymous.product-e2e-dns-probe/1";
 const CANARY_CONTROL_NAME: &str = "product-e2e-canary-control.invalid";
 /// Wrapper schema the drivers read on stdin (`test/lab/runtime/src/product_e2e/report.rs`).
 const REPORT_SCHEMA: &str = "humanymous.product-e2e-collector-report/1";
-const REPORT_SOURCE: &str = "humanymous-collector BrowserCollector::snapshot_json in Firefox ESR (wasm32, feature runtime-pilot), POSTed to /_humanymous/browser/collect and captured at the browser Gate frontend proxy";
+const REPORT_SOURCE: &str = "humanymous-collector BrowserCollector loader report (report_json path: L1-L3, behavior, partial guard, environment, advanced, fingerprintId) in Firefox ESR (wasm32, feature runtime-pilot), POSTed to /_humanymous/browser/collect and captured at the browser Gate frontend proxy";
 
 fn role(state: &Mutex<State>, name: &str, seconds: u64) -> Result<Value> {
     let until = Instant::now() + Duration::from_secs(seconds);
