@@ -14,9 +14,9 @@
   "steps": [
     {"id": "ca-trusted", "outcome": "not_run"},
     {"id": "gate-reached", "outcome": "not_run"},
-    {"id": "ordinary-pass", "outcome": "not_run", "note": "Waits on the Runtime Pass port."},
-    {"id": "pass-keyboard-only", "outcome": "not_run", "note": "Waits on the Runtime Pass port."},
-    {"id": "pass-screen-reader", "outcome": "not_run", "note": "Waits on the Runtime Pass port."},
-    {"id": "pass-zero-pointer", "outcome": "not_run", "note": "Waits on the Runtime Pass port."}
+    {"id": "ordinary-pass", "outcome": "not_run"},
+    {"id": "pass-keyboard-only", "outcome": "not_run"},
+    {"id": "pass-screen-reader", "outcome": "not_run"},
+    {"id": "pass-zero-pointer", "outcome": "not_run"}
   ]
 }

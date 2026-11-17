@@ -1215,7 +1215,7 @@ witness/drain ordering and product assertion denominators unchanged.
 ## Human tester hosting profile (2026-11-17)
 
 `deployments/lab/compose.human-test.yaml` lets the owner run the unwitnessed
-product-e2e Gate (`--product-gate`, shipped gateway) and owned origin on their
+product-e2e Gate (`--human-test-gate`, shipped gateway) and owned origin on their
 own Docker Desktop and test by hand with a real browser, keyboard and AT
 (runbook `docs/how-to/run-human-test-lab.md`). It is the only supported source
 of the `human-control` case; an automated browser run is never a human baseline.
@@ -1235,9 +1235,16 @@ of the `human-control` case; an automated browser run is never a human baseline.
   rustls/rcgen dependency edge (human-gated `Cargo.lock`). Like product-e2e's
   attacker, a same-namespace actor could reach the origin's loopback port; this
   profile is not an origin-isolation proof.
-- Pass: `/pass` and `/api/pass/*` forward to the Gate listener. Until the Runtime
-  Pass port adds routes and a Pass policy to the lab Gate configuration, the Gate
-  refuses them and the four Pass steps stay `not_run`.
+- Pass: `--human-test-gate` is `--product-gate` plus the explicit gateway
+  `legacy` section (`pass`, `demo`, `static_assets`; absolute `web_dir`
+  `/usr/local/share/humanymous/web`, a read-only copy of `web/pass.html`,
+  `web/demo.html` and the static files they reference in the final product-e2e
+  image). The Gate serves `/pass`, `/api/pass/{new,pow,attest,solve,kpi}`,
+  `/demo` and `/static/*`; the protected routes do not collide with them. The
+  `--product-gate` document is unchanged (pilot golden test). `/api/collect`,
+  `/api/report`, `/api/pow`, `/api/session` and `detector.wasm` are absent, so
+  the demo scoring flow does not work, and the in-memory Pass verdict does not
+  feed the gateway decision path.
 - Tunnel (`--profile tunnel`): pinned `cloudflared` on `human-edge` plus its own
   egress bridge only; token from `HM_TUNNEL_TOKEN` at start time (empty refuses).
   Access protection of the exact hostname is an owner dashboard prerequisite.

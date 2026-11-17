@@ -1,11 +1,13 @@
-//! Gate container supervisors. Both provision synthetic owned sealed custody on
+//! Gate container supervisors. Each provisions synthetic owned sealed custody on
 //! the container tmpfs. `run` starts the shipped gateway binary with private
 //! inherited configuration. `witnessed` composes the same library `ServiceHost`
 //! with a required external witness, because the shipped binary has no witness
 //! input (`src/gateway/main.rs` calls `ServiceHost::bind` only). `witnessed`
 //! also mirrors the runtime's live epoch latch (`ServiceHost::epoch_health`)
-//! into a private tmpfs marker for the exec readiness probe. The passphrase
-//! never leaves this process and, for `run`, its child pipe.
+//! into a private tmpfs marker for the exec readiness probe. `human_test` is
+//! `run` plus the explicit legacy Pass/demo/static section (human tester
+//! hosting profile only). The passphrase never leaves this process and, for
+//! `run` and `human_test`, its child pipe.
 use ed25519_dalek::SigningKey;
 use humanymous_runtime::{
     audit::{
@@ -99,6 +101,20 @@ fn provision() -> Result<Provisioned> {
 pub fn run() -> Result<()> {
     let provisioned = provision()?;
     let config = provisioned.configuration()?;
+    serve(provisioned, config, None)
+}
+
+/// Human tester hosting profile: the same unwitnessed Gate with the legacy
+/// Pass, demo and static surfaces mounted from the in-image web directory.
+/// Never used by product e2e.
+pub fn human_test() -> Result<()> {
+    let provisioned = provision()?;
+    let config =
+        super::human_test_configuration(provisioned.configuration()?, super::HUMAN_TEST_WEB_DIR);
+    serve(provisioned, config, Some("human-test"))
+}
+
+fn serve(provisioned: Provisioned, config: Value, profile: Option<&str>) -> Result<()> {
     let mut child = Command::new("/usr/local/bin/humanymous-runtime")
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
@@ -127,10 +143,11 @@ pub fn run() -> Result<()> {
         }
     };
     // Readiness is a nonsecret manifest; the runner retains it from the log.
-    println!(
-        "{}",
-        json!({"schema":"humanymous.product-e2e-gate-ready/1","binary":"/usr/local/bin/humanymous-runtime","readiness":readiness})
-    );
+    let mut ready = json!({"schema":"humanymous.product-e2e-gate-ready/1","binary":"/usr/local/bin/humanymous-runtime","readiness":readiness});
+    if let Some(profile) = profile {
+        ready["profile"] = json!(profile);
+    }
+    println!("{ready}");
     let status = child.wait()?;
     Err(format!("gateway exited: {status}").into())
 }

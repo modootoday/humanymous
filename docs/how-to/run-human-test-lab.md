@@ -26,13 +26,20 @@ assistive technology.
 - Only your own containers are targets. Do not point the tunnel or any tool at
   third-party sites.
 - **What works today:** building and starting the Gate and its origin, trusting
-  the lab certificate authority, reaching the Gate over HTTPS from your browser
-  and seeing it refuse what it does not know (fail-closed).
-- **What waits on the Runtime Pass port:** the `/pass` page and the
-  `/api/pass/*` calls. The lab already forwards those paths to the Gate, but
-  the Gate has no Pass routes yet and its lab configuration has no Pass policy,
-  so today every Pass step is recorded as `not_run`. Once the port lands, the
-  same lab serves the Pass page with no change to the forwarding.
+  the lab certificate authority and reaching the Gate over HTTPS from your
+  browser. The lab Gate runs `--human-test-gate`: the same Gate as product e2e
+  plus an explicit legacy section, so it serves the Pass page at
+  `https://127.0.0.1:8443/pass` (or `https://localhost:8443/pass`), issues its
+  challenge (`/api/pass/new`), runs the background proof of work
+  (`/api/pass/pow`, `/api/pass/attest`) and scores your answer
+  (`/api/pass/solve`). Any other path it does not know is refused
+  (fail-closed).
+- **What does not work yet:** `/api/collect`, `/api/report`, `/api/pow` and
+  `/api/session` are not mounted, and the image has no `detector.wasm`, so the
+  `/demo` page loads but its scoring flow fails. The Pass verdict lives in the
+  Gate's memory only; it does not unlock protected routes on the origin and is
+  lost when the Gate restarts. There is no audit witness and no Core
+  (authority) service, so nothing here is witnessed or authority-backed.
 
 ## Before you start
 
@@ -120,9 +127,8 @@ set it to "Always Trust" for SSL.
    and shows a short JSON refusal such as `{"error":"route_inventory"}`. That
    is the Gate refusing a path that is not in its route inventory. Record
    `ca-trusted` and `gate-reached`.
-2. Open `https://localhost:8443/pass`. Today you see the same kind of refusal;
-   that is expected until the Pass port lands. After it lands, you see the
-   Pass page and continue with the steps below.
+2. Open `https://127.0.0.1:8443/pass`. You see the Pass page with three rows
+   to align. Continue with the steps below.
 
 Do not add exceptions for certificate warnings. A warning means the trust step
 did not work; fix that instead.
@@ -165,7 +171,6 @@ the repository, for example
 - List the operating system, browser and assistive technology with versions,
   and the input methods you used.
 - Give every step an outcome: `passed`, `failed`, `blocked` or `not_run`.
-  Today the four Pass steps are `not_run`.
 - Notes are optional and short. Never write names, email addresses, account
   identifiers, links or anything you saw in another window.
 

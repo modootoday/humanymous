@@ -28,12 +28,15 @@
 # Witness/Core: the witnessed Gate needs the trusted runner broker on private
 # stdio (product-e2e profile `witnessed`) and cannot run under plain Compose;
 # authority/Core is absent exactly as in product-e2e. This profile is
-# unwitnessed. Pass: `/pass` and `/api/pass/*` are forwarded to the Gate, which
-# serves them once the Runtime Pass port lands; today the Gate refuses them.
+# unwitnessed. Pass: the Gate runs `--human-test-gate`, the product-e2e Gate
+# plus the explicit legacy section, so it serves `/pass`, `/api/pass/{new,pow,
+# attest,solve,kpi}`, `/demo` and `/static/*` from the in-image web copy.
+# `/api/collect`, `/api/report` and the other legacy APIs stay unmounted.
 name: humanymous-human-test
 services:
   gate:
     extends: {file: compose.product-e2e.yaml, service: gate}
+    command: ["--human-test-gate"]
     build:
       context: ../..
       dockerfile: build/rust/product-e2e.Dockerfile
@@ -130,8 +133,8 @@ configs:
         }
       }
       (routes) {
-        # Pass page and API: served by the Rust Gate once the Runtime Pass
-        # port lands; until then the Gate refuses them (fail-closed).
+        # Pass page and API: served by the Gate's legacy surfaces
+        # (--human-test-gate); every other path meets the route inventory.
         handle /pass {
           import gate
         }
