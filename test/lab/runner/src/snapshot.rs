@@ -182,6 +182,9 @@ fn allowed(path: &str) -> bool {
         || ((path.starts_with("crates/") || path.starts_with("test/lab/"))
             && matches!(extension, "rs" | "toml" | "lock" | "json"))
         || path == "crates/sdk/humanymous-core/src/watermark/codec/fixtures/minimal_module.wasm"
+        // Operator console page and styles compiled into the runtime with include_str!.
+        || (path.starts_with("crates/sdk/humanymous-runtime/assets/console/")
+            && matches!(extension, "html" | "css"))
         || (path.starts_with("deployments/lab/")
             && matches!(extension, "yaml" | "Dockerfile" | "dockerignore"))
         || (path.starts_with("docs/tooling/") && matches!(extension, "rs" | "toml"))
@@ -359,6 +362,8 @@ mod tests {
             "crates/sdk/humanymous-core/src/watermark/codec/fixtures/minimal_module.wasm",
             "web/pass.html",
             "web/demo.html",
+            "crates/sdk/humanymous-runtime/assets/console/console.html",
+            "crates/sdk/humanymous-runtime/assets/console/styles/00-layers.css",
         ] {
             assert!(allowed(path));
         }
@@ -367,5 +372,8 @@ mod tests {
             "crates/sdk/humanymous-core/src/watermark/codec/fixtures/other.wasm"
         ));
         assert!(!allowed("web/detector.wasm"));
+        assert!(!allowed(
+            "crates/sdk/humanymous-runtime/assets/console/app.js"
+        ));
     }
 }
