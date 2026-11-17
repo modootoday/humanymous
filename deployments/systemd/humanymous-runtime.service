@@ -1,0 +1,62 @@
+# humanymous runtime: systemd unit for the Rust `humanymous-runtime` binary on a
+# host (no container). It replaces the legacy Go `gate` unit and keeps its
+# sandboxing. The Go flags have no argv equivalent: the binary takes one private
+# JSON configuration document on standard input and refuses any argument.
+#
+# Install: see README.md in this directory (build the binary, create the
+# `humanymous` user, provision sealed audit custody, write
+# /etc/humanymous/runtime.json, then enable this unit).
+[Unit]
+Description=humanymous runtime: loopback request-integrity gateway
+Documentation=https://github.com/modootoday/humanymous
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=humanymous
+Group=humanymous
+
+# The binary has no arguments. Its configuration (loopback listen and origin,
+# route inventory, audit WAL and custody paths, custody unseal passphrase)
+# arrives as a file on standard input. systemd opens the file before it drops
+# to User=, so keep it root:root 0600: the service user never needs to reread
+# it. Standard output must not be a terminal; the journal is not one. The
+# binary prints one readiness JSON line there once it listens.
+ExecStart=/usr/local/bin/humanymous-runtime
+StandardInput=file:/etc/humanymous/runtime.json
+StandardOutput=journal
+StandardError=journal
+
+Restart=on-failure
+RestartSec=2s
+
+# The standalone binary installs no SIGTERM handler, so stop is immediate:
+# there is no in-process drain to wait for (the Go gate drained for
+# -shutdown-grace). Every audit append is synced before the request reaches the
+# origin, so a stop loses in-flight requests, not committed audit records.
+TimeoutStopSec=30
+
+# --- Sandbox hardening (unchanged from the Go unit) ---
+NoNewPrivileges=true
+ProtectSystem=strict            # entire fs read-only except ReadWritePaths below
+ProtectHome=true
+PrivateTmp=true                 # private /tmp, /var/tmp
+ReadWritePaths=/var/lib/humanymous
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+# The runtime binds loopback only (validate() refuses any other listen address),
+# so it never needs CAP_NET_BIND_SERVICE. Public :443 belongs to the TLS front
+# proxy you run in front of it.
+CapabilityBoundingSet=
+
+[Install]
+WantedBy=multi-user.target
