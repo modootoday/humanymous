@@ -14,9 +14,9 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "ported_unit": 169,
-  "partial": 97,
-  "missing": 46,
+  "ported_unit": 173,
+  "partial": 98,
+  "missing": 41,
   "not_applicable": 2
  },
  "by_package": {
@@ -39,9 +39,9 @@
    "ported_unit": 1
   },
   "cmd/server": {
-   "missing": 7,
+   "missing": 6,
    "partial": 23,
-   "ported_unit": 12
+   "ported_unit": 13
   },
   "cmd/tlsparrot": {
    "missing": 1
@@ -77,10 +77,10 @@
    "ported_unit": 5
   },
   "internal/gate": {
-   "partial": 46,
-   "missing": 18,
+   "partial": 47,
+   "missing": 14,
    "not_applicable": 1,
-   "ported_unit": 20
+   "ported_unit": 23
   },
   "internal/httpx": {
    "not_applicable": 1
@@ -620,23 +620,29 @@
   },
   {
    "baseline_path": "cmd/server/demo_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestDemoPageServed": null,
-    "TestDemoIssuesSession": null,
-    "TestDemoIndependentOfPlayground": null
-   },
-   "gaps": [
-    "demo page",
-    "demo session issuance",
-    "independence from playground"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/demo.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/demo.rs::tests::demo_is_independent_of_the_playground",
+    "crates/sdk/humanymous-runtime/src/gateway/demo.rs::tests::demo_issues_and_reuses_a_session",
+    "crates/sdk/humanymous-runtime/src/gateway/demo.rs::tests::demo_page_is_served"
+   ],
+   "go_test_map": {
+    "TestDemoPageServed": "crates/sdk/humanymous-runtime/src/gateway/demo.rs::tests::demo_page_is_served",
+    "TestDemoIssuesSession": "crates/sdk/humanymous-runtime/src/gateway/demo.rs::tests::demo_issues_and_reuses_a_session",
+    "TestDemoIndependentOfPlayground": "crates/sdk/humanymous-runtime/src/gateway/demo.rs::tests::demo_is_independent_of_the_playground"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No demo/static page handler; plan B05 marks Core page/demo as M. Gateway session issuance exists but not via a demo page.",
-   "test_verification": {}
+   "notes": "Ported as gateway::demo: /demo serves web/demo.html, issues or reuses the hsid cookie with Go's attributes, and needs no playground flag.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/demo.rs::tests::demo_is_independent_of_the_playground": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/demo.rs::tests::demo_issues_and_reuses_a_session": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/demo.rs::tests::demo_page_is_served": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/external_input_receipt_test.go",
@@ -2366,31 +2372,55 @@
   },
   {
    "baseline_path": "internal/gate/console_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/console.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/console.rs::tests::console_css_is_non_empty_and_drops_no_partial",
+    "crates/sdk/humanymous-runtime/src/gateway/console.rs::tests::console_has_one_inline_script",
+    "crates/sdk/humanymous-runtime/src/gateway/console.rs::tests::modular_console_css_is_assembled_into_the_page"
+   ],
    "go_test_map": {
-    "TestModularConsoleCSSAssembled": null,
-    "TestConsoleCSSNonEmpty": null,
-    "TestConsoleJavaScriptSyntax": null
+    "TestModularConsoleCSSAssembled": "crates/sdk/humanymous-runtime/src/gateway/console.rs::tests::modular_console_css_is_assembled_into_the_page",
+    "TestConsoleCSSNonEmpty": "crates/sdk/humanymous-runtime/src/gateway/console.rs::tests::console_css_is_non_empty_and_drops_no_partial",
+    "TestConsoleJavaScriptSyntax": "crates/sdk/humanymous-runtime/src/gateway/console.rs::tests::console_has_one_inline_script"
    },
-   "gaps": [],
+   "gaps": [
+    "TestConsoleJavaScriptSyntax ran node --check on the inline script (and skipped without node); Rust only locates the single inline script. A real JavaScript parse needs a JS engine and belongs to the browser pilot."
+   ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust admin console assets.",
-   "test_verification": {}
+   "notes": "CSS assembly tests ported; the drop check now compares the embedded list to the asset directory.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/console.rs::tests::console_css_is_non_empty_and_drops_no_partial": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/console.rs::tests::console_has_one_inline_script": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/console.rs::tests::modular_console_css_is_assembled_into_the_page": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/console.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/console.rs",
+    "crates/sdk/humanymous-runtime/assets/console/console.html",
+    "crates/sdk/humanymous-runtime/assets/console/styles"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/console.rs::tests::console_css_is_non_empty_and_drops_no_partial",
+    "crates/sdk/humanymous-runtime/src/gateway/console.rs::tests::console_has_one_inline_script",
+    "crates/sdk/humanymous-runtime/src/gateway/console.rs::tests::modular_console_css_is_assembled_into_the_page"
+   ],
    "go_test_map": {},
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust admin console assets (B21 M).",
-   "test_verification": {}
+   "notes": "Ported as gateway::console; the page and SRP partials are copied into the crate (Rust Docker contexts only ship crates/**) and assembled in file-name order into the app-css placeholder.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/console.rs::tests::console_css_is_non_empty_and_drops_no_partial": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/console.rs::tests::console_has_one_inline_script": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/console.rs::tests::modular_console_css_is_assembled_into_the_page": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/control_collect.go",
@@ -2749,33 +2779,69 @@
   },
   {
    "baseline_path": "internal/gate/inject_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::falls_back_to_before_body",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::injects_right_after_head_across_every_split",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::insertion_point_order_and_case",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::marker_prevents_a_second_injection",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::non_html_passes_through_unchanged",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::oversize_headless_body_is_bounded_and_loses_no_bytes",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::upstream_error_surfaces_after_the_buffered_bytes"
+   ],
    "go_test_map": {
-    "TestInjectAfterHead": null,
-    "TestInjectFallbackBeforeBody": null,
-    "TestIdempotentNoDoubleInject": null,
-    "TestNoHTMLPassThrough": null,
-    "TestOversizeHeadlessBodyGivesUp": null
+    "TestInjectAfterHead": "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::injects_right_after_head_across_every_split",
+    "TestInjectFallbackBeforeBody": "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::falls_back_to_before_body",
+    "TestIdempotentNoDoubleInject": "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::marker_prevents_a_second_injection",
+    "TestNoHTMLPassThrough": "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::non_html_passes_through_unchanged",
+    "TestOversizeHeadlessBodyGivesUp": "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::oversize_headless_body_is_bounded_and_loses_no_bytes"
    },
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No HTML loader injection in Rust Runtime (B15 M).",
-   "test_verification": {}
+   "notes": "All five inject tests ported; the oversize case now asserts the exact pass-through and the bounded-injection byte count.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::falls_back_to_before_body": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::injects_right_after_head_across_every_split": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::insertion_point_order_and_case": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::marker_prevents_a_second_injection": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::non_html_passes_through_unchanged": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::oversize_headless_body_is_bounded_and_loses_no_bytes": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::upstream_error_surfaces_after_the_buffered_bytes": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/inject.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/inject.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::falls_back_to_before_body",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::injects_right_after_head_across_every_split",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::insertion_point_order_and_case",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::marker_prevents_a_second_injection",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::non_html_passes_through_unchanged",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::oversize_headless_body_is_bounded_and_loses_no_bytes",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::upstream_error_surfaces_after_the_buffered_bytes"
+   ],
    "go_test_map": {},
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No HTML loader injection in Rust Runtime (B15 M).",
-   "test_verification": {}
+   "notes": "Ported as gateway::inject::Injector (io::Read): 64 KiB bounded look-ahead, marker idempotence, add-only insertion after <head…>, before </head>, before <body…>, upstream error surfaced after buffered bytes.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::falls_back_to_before_body": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::injects_right_after_head_across_every_split": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::insertion_point_order_and_case": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::marker_prevents_a_second_injection": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::non_html_passes_through_unchanged": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::oversize_headless_body_is_bounded_and_loses_no_bytes": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::upstream_error_surfaces_after_the_buffered_bytes": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/integration_test.go",

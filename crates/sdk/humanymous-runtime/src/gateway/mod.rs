@@ -4,11 +4,14 @@ pub mod ban;
 pub mod browser;
 pub mod configuration;
 pub mod connection_cap;
+pub mod console;
 pub mod control;
 pub mod credential;
+pub mod demo;
 pub mod external_input;
 pub mod guard;
 pub mod http;
+pub mod inject;
 #[cfg(feature = "hosted-pilot")]
 pub mod lab_h2_measure;
 pub mod logging;

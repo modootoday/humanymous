@@ -335,6 +335,8 @@ pub struct Request<'a> {
     pub origin: Option<&'a str>,
     /// `Last-Event-ID` header.
     pub last_event_id: Option<&'a str>,
+    /// `Cookie` header.
+    pub cookie: Option<&'a str>,
     /// Request body.
     pub body: &'a [u8],
 }

@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 356,
-      "macos": 356,
-      "windows": 348
+      "linux": 369,
+      "macos": 369,
+      "windows": 361
     },
     "common_test_names": [
       "gateway::application::temporal::tests::categories::configure_only_preserves_unknown_gap_until_provider_observation",
@@ -60,6 +60,9 @@
       "gateway::connection_cap::tests::connection_concurrency_is_capped",
       "gateway::connection_cap::tests::limit_bounds_are_refused",
       "gateway::connection_cap::tests::permits_are_counted_and_released_on_drop",
+      "gateway::console::tests::console_css_is_non_empty_and_drops_no_partial",
+      "gateway::console::tests::console_has_one_inline_script",
+      "gateway::console::tests::modular_console_css_is_assembled_into_the_page",
       "gateway::control::state::tests::spent_intent_without_covered_effect_cannot_become_healthy",
       "gateway::control::tests::node_kill_binding_is_exact_and_survives_policy_revision_changes",
       "gateway::credential::privacy_pass::tests::challenge_binding_when_configured",
@@ -112,6 +115,9 @@
       "gateway::credential::webauthn::tests::webauthn_replay_rejected",
       "gateway::credential::webauthn::tests::webauthn_unknown_credential",
       "gateway::credential::webauthn::tests::webauthn_verified",
+      "gateway::demo::tests::demo_is_independent_of_the_playground",
+      "gateway::demo::tests::demo_issues_and_reuses_a_session",
+      "gateway::demo::tests::demo_page_is_served",
       "gateway::external_input::tests::configuration_is_explicit",
       "gateway::external_input::tests::fails_closed_without_wasm_evidence",
       "gateway::external_input::tests::labels_outside_the_run_shape_are_ignored_or_refused",
@@ -138,6 +144,13 @@
       "gateway::http::tests::origin_request_drops_forged_trust_headers",
       "gateway::http::tests::origin_response_preserves_cookie_bytes_and_rejects_ambiguity",
       "gateway::http::tests::strict_framing_rejects_smuggling_and_normalization",
+      "gateway::inject::tests::falls_back_to_before_body",
+      "gateway::inject::tests::injects_right_after_head_across_every_split",
+      "gateway::inject::tests::insertion_point_order_and_case",
+      "gateway::inject::tests::marker_prevents_a_second_injection",
+      "gateway::inject::tests::non_html_passes_through_unchanged",
+      "gateway::inject::tests::oversize_headless_body_is_bounded_and_loses_no_bytes",
+      "gateway::inject::tests::upstream_error_surfaces_after_the_buffered_bytes",
       "gateway::logging::tests::canonical_external_input_label_bounds",
       "gateway::logging::tests::core_accumulates_plain_and_jsonl_files",
       "gateway::logging::tests::core_logging_off_by_default",
