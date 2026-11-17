@@ -14,8 +14,8 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "ported_unit": 179,
-  "partial": 96,
+  "ported_unit": 183,
+  "partial": 92,
   "missing": 37,
   "not_applicable": 2
  },
@@ -40,8 +40,8 @@
   },
   "cmd/server": {
    "missing": 5,
-   "partial": 22,
-   "ported_unit": 15
+   "partial": 21,
+   "ported_unit": 16
   },
   "cmd/tlsparrot": {
    "missing": 1
@@ -77,10 +77,10 @@
    "ported_unit": 5
   },
   "internal/gate": {
-   "partial": 47,
+   "partial": 44,
    "missing": 12,
    "not_applicable": 1,
-   "ported_unit": 25
+   "ported_unit": 28
   },
   "internal/httpx": {
    "not_applicable": 1
@@ -813,7 +813,8 @@
     "page/demo/static handlers",
     "report single/list views",
     "CSP report endpoint",
-    "cookie session ensureSession"
+    "cookie session ensureSession",
+    "issueSeed RIT seed in the /api/session response (kernel: gateway/rit.rs)"
    ],
    "retire_basis": null,
    "confidence": "medium",
@@ -1719,31 +1720,52 @@
   },
   {
    "baseline_path": "cmd/server/rit.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-core/src/integrity/request/rotation.rs",
     "crates/sdk/humanymous-core/src/integrity/request/token.rs",
     "crates/sdk/humanymous-core/src/integrity/request/verification.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/session.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/session.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/rit.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/integrity/request/token.rs::token_binds_every_input_and_exact_encoding",
     "crates/sdk/humanymous-core/src/integrity/request/verification.rs::valid_roundtrip_tamper_replay_and_bootstrap",
-    "crates/sdk/humanymous-core/tests/integrity/request_parity.rs::matches_go_canonical_and_rotation_protocols"
+    "crates/sdk/humanymous-core/tests/integrity/request_parity.rs::matches_go_canonical_and_rotation_protocols",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::any_tampering_fails_the_single_hmac_check",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::bucket_outside_tolerance_is_stale",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::canonical_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::counter_parsing_follows_go_parse_uint",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::first_tokenless_request_claims_the_grace_once",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::issued_seed_matches_go_golden_and_refuses_missing_inputs",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::out_of_sequence_counter_is_stale",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::token_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::tokenless_request_after_signing_is_absent_without_grace",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::valid_request_verifies",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::verify_refuses_missing_inputs",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::within_bucket_is_symmetric_with_tolerance"
    ],
    "go_test_map": {},
-   "gaps": [
-    "live canonical sid\\nn\\ntb\\nsha256(body)",
-    "issueSeed per-session counter response",
-    "withinTB tolerance wiring"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "medium",
-   "notes": "Session key/seed/token/verify kernels exist; gateway uses its own browser binding instead of the legacy live canonical (plan B06). Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (RIT bootstrap; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "confidence": "high",
+   "notes": "Session key/seed/token/verify kernels exist in humanymous-core. The legacy live protocol is ported as gateway::rit: canonical (sid\\nn\\ntb\\nsha256hex(body)), token (b64url HMAC over the canonical with seed_lastN), within_bucket, Go ParseUint-equivalent counter parsing, issue_seed (seed, counter, 10 s window) and verify returning a typed Outcome in Go's check order, with Go 1.25 goldens. baseline 981d25c has no direct Go test for this file. Deliberate fail-closed difference: an empty master key or session ID is refused. Mapping an Outcome to the frozen l5.rit.* signals, the bootstrap grace store and the collect/session wiring stay with the serving composition (cmd/server/collect_pipeline.go, handlers.go); the gateway itself uses its own browser binding (plan B06). Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (RIT bootstrap; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/integrity/request/token.rs::token_binds_every_input_and_exact_encoding": "passed",
     "crates/sdk/humanymous-core/src/integrity/request/verification.rs::valid_roundtrip_tamper_replay_and_bootstrap": "passed",
-    "crates/sdk/humanymous-core/tests/integrity/request_parity.rs::matches_go_canonical_and_rotation_protocols": "passed"
+    "crates/sdk/humanymous-core/tests/integrity/request_parity.rs::matches_go_canonical_and_rotation_protocols": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::any_tampering_fails_the_single_hmac_check": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::bucket_outside_tolerance_is_stale": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::canonical_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::counter_parsing_follows_go_parse_uint": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::first_tokenless_request_claims_the_grace_once": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::issued_seed_matches_go_golden_and_refuses_missing_inputs": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::out_of_sequence_counter_is_stale": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::token_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::tokenless_request_after_signing_is_absent_without_grace": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::valid_request_verifies": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::verify_refuses_missing_inputs": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs::within_bucket_is_symmetric_with_tolerance": "passed"
    }
   },
   {
@@ -2728,7 +2750,8 @@
     "HTML injection",
     "erasure shred runner",
     "projection/operational metrics",
-    "settings-driven module modes"
+    "settings-driven module modes",
+    "periodic composite GC ticker (kernel: gateway/gc.rs)"
    ],
    "retire_basis": null,
    "confidence": "medium",
@@ -2760,7 +2783,8 @@
     "upgrade gate",
     "agent-auth, PAT and WebAuthn gates",
     "sweep gate",
-    "attestation floor audit"
+    "attestation floor audit",
+    "constant decision-latency floor on the response path (kernel: gateway/recon.rs)"
    ],
    "retire_basis": null,
    "confidence": "medium",
@@ -2773,7 +2797,7 @@
   },
   {
    "baseline_path": "internal/gate/gc_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/ban.rs",
     "crates/sdk/humanymous-runtime/src/gateway/token.rs",
@@ -2781,7 +2805,8 @@
     "crates/sdk/humanymous-runtime/src/network/history/cohort/mod.rs",
     "crates/sdk/humanymous-runtime/src/network/history/interarrival/mod.rs",
     "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs",
-    "crates/sdk/humanymous-runtime/src/network/history/sweep/mod.rs"
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/mod.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/gc.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::gc_sweeps_stale_strikes_and_expired_bans",
@@ -2791,20 +2816,22 @@
     "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r259_idle_cohort_is_evicted_strictly_after_ten_minutes",
     "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r266_gc_drops_last_seen_strictly_after_idle",
     "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::bounded_gc_cursor_progresses_and_ttl_equality_survives",
-    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed"
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed",
+    "crates/sdk/humanymous-runtime/src/gateway/gc/tests.rs::a_refusing_kernel_does_not_stop_the_others",
+    "crates/sdk/humanymous-runtime/src/gateway/gc/tests.rs::anomaly_ttl_matches_the_legacy_observer",
+    "crates/sdk/humanymous-runtime/src/gateway/gc/tests.rs::server_gc_runs_without_panic_with_default_kernels",
+    "crates/sdk/humanymous-runtime/src/gateway/gc/tests.rs::sweeps_every_present_kernel"
    ],
    "go_test_map": {
     "TestVerdictStoreGC": "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::gc_sweeps_expired_sticky_verdicts",
     "TestBanStoreGCSweepsStrikesAndExpired": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::gc_sweeps_stale_strikes_and_expired_bans",
     "TestSweepDetectorGC": "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed",
-    "TestServerGCRunsWithoutPanic": null
+    "TestServerGCRunsWithoutPanic": "crates/sdk/humanymous-runtime/src/gateway/gc/tests.rs::server_gc_runs_without_panic_with_default_kernels"
    },
-   "gaps": [
-    "No Runtime composite GC owner (Go Server.GC) sweeps every kernel"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Each kernel GC is tested on its own; an expired ban drops at once while its strike survives until STRIKE_DECAY.",
+   "notes": "Each kernel GC is tested on its own; an expired ban drops at once while its strike survives until STRIKE_DECAY. Server.GC is ported as gateway::gc::sweep: verdicts, bans, sweep bindings, anomaly series (Go's 10-minute TTL) and credential correlation are swept, absent kernels are skipped, and a refusing kernel is reported without stopping the others. Go's settings overlay expiry is not part of it (Rust has no scoring/route overlay model by design; tracked on admin_settings.go). The periodic ticker that calls it belongs to the serving composition (internal/gate/gate.go).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::gc_sweeps_stale_strikes_and_expired_bans": "passed",
     "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed": "passed",
@@ -2813,7 +2840,11 @@
     "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r266_gc_drops_last_seen_strictly_after_idle": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::nonce_cache_expires_and_saturates_closed": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::spent_nonce_expires_after_ttl": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::gc_sweeps_expired_sticky_verdicts": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::gc_sweeps_expired_sticky_verdicts": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/gc/tests.rs::a_refusing_kernel_does_not_stop_the_others": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/gc/tests.rs::anomaly_ttl_matches_the_legacy_observer": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/gc/tests.rs::server_gc_runs_without_panic_with_default_kernels": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/gc/tests.rs::sweeps_every_present_kernel": "passed"
    }
   },
   {
@@ -2861,22 +2892,22 @@
   },
   {
    "baseline_path": "internal/gate/incident.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/token.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::incident_handles_are_stable_opaque_and_keyed"
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::incident_handles_are_stable_opaque_and_keyed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::incident_handles_resolve_to_their_record_only"
    ],
    "go_test_map": {},
-   "gaps": [
-    "resolver over the audit log and per-operator lookup cap (admin API, B19)"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "The keyed opaque handle INC-<10 hex> is ported; resolution needs the admin API.",
+   "notes": "The keyed opaque handle INC-<10 hex> and resolveIncident are ported in gateway/token.rs (TokenKey::incident_handle, TokenKey::resolve_incident over caller-supplied (seq, record) pairs), with Go 1.25 handle goldens. baseline 981d25c has no direct Go test for this file; TestIncidentHandleOpaque and the per-operator enumeration cap live in ws4_test.go/admin.go, which stay with the admin API.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::incident_handles_are_stable_opaque_and_keyed": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::incident_handles_are_stable_opaque_and_keyed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::incident_handles_resolve_to_their_record_only": "passed"
    }
   },
   {
@@ -3168,24 +3199,31 @@
   },
   {
    "baseline_path": "internal/gate/recon.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/network/history/sweep/mod.rs"
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/mod.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/recon.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::many_sessions_from_one_binding_trip_the_detector",
-    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed"
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed",
+    "crates/sdk/humanymous-runtime/src/gateway/recon/tests.rs::a_clock_behind_start_extends_the_wait_like_go",
+    "crates/sdk/humanymous-runtime/src/gateway/recon/tests.rs::constant_floor_blocks_until_the_floor",
+    "crates/sdk/humanymous-runtime/src/gateway/recon/tests.rs::nothing_remains_once_the_floor_has_elapsed",
+    "crates/sdk/humanymous-runtime/src/gateway/recon/tests.rs::remaining_is_floor_minus_elapsed"
    ],
    "go_test_map": {},
-   "gaps": [
-    "constant response-time floor in the Gate response path"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Bounded sliding-window sweep detector is ported in network/history/sweep; the constant floor belongs to the unported Gate composition.",
+   "notes": "Bounded sliding-window sweep detector is ported in network/history/sweep. constantFloor is ported as gateway::recon (floor_remaining reproduces Go floor - now.Sub(start), including a clock behind start; constant_floor sleeps on the monotonic clock). baseline 981d25c has no direct Go test for this file. Applying the floor on the response path (gates.go) is tracked on internal/gate/gates.go.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::many_sessions_from_one_binding_trip_the_detector": "passed",
-    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed": "passed"
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/recon/tests.rs::a_clock_behind_start_extends_the_wait_like_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/recon/tests.rs::constant_floor_blocks_until_the_floor": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/recon/tests.rs::nothing_remains_once_the_floor_has_elapsed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/recon/tests.rs::remaining_is_floor_minus_elapsed": "passed"
    }
   },
   {
