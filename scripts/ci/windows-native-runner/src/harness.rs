@@ -435,7 +435,9 @@ fn panic_locations(stdout: &str, stderr: &[u8]) -> Vec<String> {
         .chain(stderr.lines())
         .filter_map(|line| line.split_once(" panicked at ")?.1.strip_suffix(':'))
         .take(16)
-        .map(str::to_owned)
+        // Windows prints `crates\x\src\a.rs:1:1`; the public filter accepts
+        // only relative `/`-separated source positions.
+        .map(|location| location.replace('\\', "/"))
         .collect()
 }
 fn captured_helper_account(
@@ -621,6 +623,15 @@ pub(crate) fn pilot_helpers() -> std::collections::BTreeSet<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn panic_locations_use_forward_slashes_from_both_streams() {
+        let stdout = "thread 'a' (1) panicked at crates\\x\\src\\a.rs:12:5:\nmessage";
+        let stderr = b"thread 'b' panicked at src/b.rs:3:9:\n";
+        assert_eq!(
+            panic_locations(stdout, stderr),
+            ["crates/x/src/a.rs:12:5", "src/b.rs:3:9"]
+        );
+    }
     #[test]
     fn captured_helpers_require_single_summary_exact_helper_and_parent() {
         let good = "test helper ... ignored\ntest parent ... ok\ntest result: ok. 1 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.1s";

@@ -29,12 +29,26 @@
       "package": "humanymous-attacker",
       "target": "humanymous_attacker",
       "kind": "lib",
-      "os": ["linux", "macos"],
+      "os": ["linux", "macos", "windows"],
       "executor": "native-pilots",
       "cargo": ["--lib"],
       "privilege": "user",
       "tests": [
         "report::legacy::tests::native_publication_replaces_old_report_and_preserves_foreign_collision"
+      ],
+      "helpers": []
+    },
+    {
+      "id": "attacker-windows-denied-replacement",
+      "package": "humanymous-attacker",
+      "target": "humanymous_attacker",
+      "kind": "lib",
+      "os": ["windows"],
+      "executor": "native-pilots",
+      "cargo": ["--lib"],
+      "privilege": "user",
+      "tests": [
+        "report::legacy::tests::native_windows_denied_replacement_retains_old_report"
       ],
       "helpers": []
     },
@@ -74,7 +88,7 @@
       "package": "humanymous-platform",
       "target": "humanymous_platform",
       "kind": "lib",
-      "os": ["linux", "macos"],
+      "os": ["linux", "macos", "windows"],
       "executor": "native-pilots",
       "cargo": ["--lib", "--features", "testing"],
       "privilege": "user",
@@ -85,6 +99,22 @@
         "testing::process::capture_attempt::actual_tests::retained_stdout_cap_is_sticky",
         "testing::process::capture_attempt::actual_tests::retained_stderr_cap_is_sticky",
         "testing::process::capture_attempt::actual_tests::retained_stop_request_preserves_observed_exit_zero"
+      ],
+      "helpers": []
+    },
+    {
+      "id": "platform-controlled-barrier-windows",
+      "package": "humanymous-platform",
+      "target": "humanymous_platform",
+      "kind": "lib",
+      "os": ["windows"],
+      "executor": "native-pilots",
+      "cargo": ["--lib", "--features", "testing"],
+      "privilege": "user",
+      "outer_grant": true,
+      "tests": [
+        "testing::process::controlled_barrier::actual_tests::missing_grant_refuses_before_workload",
+        "testing::process::controlled_barrier::actual_tests::parent_remains_running_until_original_outer_deadline"
       ],
       "helpers": []
     },

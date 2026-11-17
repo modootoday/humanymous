@@ -1094,6 +1094,23 @@ itself through the Unix executor. The Node host_process groups are declared on
 every native OS with the `job` executor: the row names the Linux `node` job
 that runs them and claims no macOS or Windows host qualification.
 
+On Windows (2026-11-17) the attacker publication and platform controlled-capture
+pilots are also declared, plus two Windows-only pilots: the attacker
+denied-replacement test and the two platform controlled_barrier parents
+(missing grant, live parent at the outer deadline). A Windows `outer_grant`
+pilot is supervised by the native runner's `controlled-capture` mode, which
+owns the test process in a real Windows Job and classifies the fixed case; the
+receipt row passes only when that classification qualifies the case for this
+exact test executable digest, and the capture parents must also show the
+single-test success footer. Other Windows pilots run the test process directly
+under the same 900-second deadline; a deadline kill is a failure.
+
+The standard-user Windows actor that runs the workspace probe receives only
+System32, the directories of `git.exe` and `pwsh.exe` from the provisioning
+parent's PATH, a private TEMP, a command-scope `safe.directory` for the
+read-only checkout, and `cargo metadata` output captured by the parent; it has
+no Cargo of its own.
+
 Undeclared ignored tests (the dotnet hosted and package pilots, whose host
 start is Unsupported) still fail accounting until an executor exists.
 

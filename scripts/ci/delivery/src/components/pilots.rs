@@ -214,6 +214,7 @@ fn private_dir(base: &Path, label: &str, mode: u32) -> Result<PathBuf> {
 /// Cooperative controlled-capture grant, in the closed shape the platform
 /// barrier accepts: the exact selector, a fresh 128-bit nonce and the PID of
 /// the directly spawned test process. It grants no production capability.
+#[cfg(any(unix, test))]
 pub fn grant_bytes(nonce: &str, selector: &str, pid: u32) -> Result<Vec<u8>> {
     require(
         nonce.len() == 32
@@ -228,12 +229,12 @@ pub fn grant_bytes(nonce: &str, selector: &str, pid: u32) -> Result<Vec<u8>> {
         .map_err(|e| e.to_string())
 }
 
+/// OS entropy without a Unix-only device path, so the grant shape is also
+/// exercised on Windows test runners.
+#[cfg(any(unix, test))]
 fn nonce() -> Result<String> {
-    use std::io::Read;
     let mut bytes = [0u8; 16];
-    fs::File::open("/dev/urandom")
-        .and_then(|mut file| file.read_exact(&mut bytes))
-        .map_err(|e| e.to_string())?;
+    getrandom::fill(&mut bytes).map_err(|e| e.to_string())?;
     Ok(bytes.iter().map(|b| format!("{b:02x}")).collect())
 }
 
@@ -285,9 +286,75 @@ fn supervise(
     published.map_err(|e| e.to_string())?;
     Ok((status.code(), !expired && status.success()))
 }
-#[cfg(not(unix))]
+/// Windows controlled-capture case for a declared pilot test, as the native
+/// runner's fixed contract names it. Unknown names refuse.
+pub fn windows_controlled_case(name: &str) -> Option<&'static str> {
+    Some(match name.rsplit("::").next()? {
+        "retained_normal_stdout_stderr_and_actual_joins" => "normal",
+        "retained_synthetic_pending_stdin_expires_original_run" => "pending-input",
+        "retained_stdout_cap_is_sticky" => "stdout-cap",
+        "retained_stderr_cap_is_sticky" => "stderr-cap",
+        "retained_stop_request_preserves_observed_exit_zero" => "stop-after-zero",
+        "missing_grant_refuses_before_workload" => "outer-missing-grant",
+        "parent_remains_running_until_original_outer_deadline" => "outer-live-timeout",
+        _ => return None,
+    })
+}
+/// On Windows the outer supervisor is the native runner's controlled-capture
+/// mode: it owns the test process in a real Windows Job, writes (or, for the
+/// missing-grant case, withholds) the grant and classifies the outcome. A test
+/// counts only when that classification qualifies the case.
+#[cfg(windows)]
+fn supervise(
+    program: &Path,
+    name: &str,
+    root: &Path,
+    private: &Path,
+    log: &Path,
+) -> Result<(Option<i32>, bool)> {
+    let case = windows_controlled_case(name).ok_or("undeclared Windows controlled case")?;
+    let work = private.join("work");
+    let digest = source::file(program)?;
+    let stdout = fs::File::create(log).map_err(|e| e.to_string())?;
+    let stderr = fs::File::create(log.with_extension("stderr.log")).map_err(|e| e.to_string())?;
+    let status = Command::new("cargo")
+        .args([
+            "run",
+            "--locked",
+            "--quiet",
+            "--manifest-path",
+            "scripts/ci/windows-native-runner/Cargo.toml",
+            "--",
+            "controlled-capture",
+            "--test-exe",
+        ])
+        .arg(program)
+        .args(["--expected-sha256", &digest, "--case", case, "--work"])
+        .arg(&work)
+        .current_dir(root)
+        .stdin(Stdio::null())
+        .stdout(stdout)
+        .stderr(stderr)
+        .status()
+        .map_err(|e| e.to_string())?;
+    let outer: Value = fs::read(work.join("outer-result.json"))
+        .ok()
+        .and_then(|bytes| serde_json::from_slice(&bytes).ok())
+        .unwrap_or(Value::Null);
+    // The parent's own libtest output is the evidence for the pass cases; the
+    // refusal cases are qualified by the outer classification alone.
+    let parent = fs::read(work.join("parent.stdout.log")).unwrap_or_default();
+    fs::write(log, &parent).map_err(|e| e.to_string())?;
+    let qualified = status.success()
+        && outer["schema"] == "humanymous.controlled-capture-outer/1"
+        && outer["case"] == case
+        && outer["test_exe_sha256"] == digest.as_str()
+        && outer["case_qualified"] == true;
+    Ok((status.code(), qualified))
+}
+#[cfg(not(any(unix, windows)))]
 fn supervise(_: &Path, _: &str, _: &Path, _: &Path, _: &Path) -> Result<(Option<i32>, bool)> {
-    Err("controlled outer-grant supervision is implemented for Unix runners only".into())
+    Err("controlled outer-grant supervision is not implemented for this OS".into())
 }
 
 /// Run an unprivileged pilot in its own process group and kill the whole group
@@ -342,9 +409,59 @@ fn bounded_output(mut command: Command) -> Result<std::process::Output> {
         stderr: stderr.join().map_err(|_| "pilot stderr reader panicked")?,
     })
 }
+/// Windows: the same 900 s deadline on the direct test process. Declared
+/// Windows pilots of this kind start no child processes of their own.
 #[cfg(not(unix))]
-fn bounded_output(_: Command) -> Result<std::process::Output> {
-    Err("native pilots are implemented for Unix runners only".into())
+fn bounded_output(mut command: Command) -> Result<std::process::Output> {
+    use std::io::Read;
+    let mut child = command
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .map_err(|e| e.to_string())?;
+    let drain = |pipe: Option<Box<dyn Read + Send>>| {
+        std::thread::spawn(move || {
+            let mut bytes = Vec::new();
+            if let Some(mut pipe) = pipe {
+                let _ = pipe.read_to_end(&mut bytes);
+            }
+            bytes
+        })
+    };
+    let stdout = drain(
+        child
+            .stdout
+            .take()
+            .map(|p| Box::new(p) as Box<dyn Read + Send>),
+    );
+    let stderr = drain(
+        child
+            .stderr
+            .take()
+            .map(|p| Box::new(p) as Box<dyn Read + Send>),
+    );
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(900);
+    let mut expired = false;
+    let status = loop {
+        if let Some(status) = child.try_wait().map_err(|e| e.to_string())? {
+            break status;
+        }
+        if std::time::Instant::now() >= deadline {
+            expired = true;
+            let _ = child.kill();
+            break child.wait().map_err(|e| e.to_string())?;
+        }
+        std::thread::sleep(std::time::Duration::from_millis(20));
+    };
+    // A killed run can still report exit code 0 on some hosts; never let it pass.
+    if expired {
+        return Err("native pilot exceeded its 900 s deadline".into());
+    }
+    Ok(std::process::Output {
+        status,
+        stdout: stdout.join().map_err(|_| "pilot stdout reader panicked")?,
+        stderr: stderr.join().map_err(|_| "pilot stderr reader panicked")?,
+    })
 }
 
 fn execute(root: &Path, dir: &Path, pilot: &Value, exe: &Path, name: &str) -> Result<Value> {
@@ -357,7 +474,14 @@ fn execute(root: &Path, dir: &Path, pilot: &Value, exe: &Path, name: &str) -> Re
         let private = private_dir(&scratch, &format!("humanymous-{id}"), 0o700)?;
         let (code, success) = supervise(exe, name, root, &private, &log)?;
         let stdout = fs::read_to_string(&log).map_err(|e| e.to_string())?;
-        let ok = success && passed(&stdout, name);
+        // The Windows barrier cases expect a refusal or an outer kill, not a
+        // libtest pass; the native runner's case classification decides them.
+        let outer_only = cfg!(windows)
+            && matches!(
+                windows_controlled_case(name),
+                Some("outer-missing-grant" | "outer-live-timeout")
+            );
+        let ok = success && (outer_only || passed(&stdout, name));
         if !ok {
             print!("{stdout}");
             eprint!(
@@ -467,6 +591,22 @@ pub fn run(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn every_windows_outer_grant_test_maps_to_a_fixed_controlled_case() {
+        let value = declarations().unwrap();
+        let mut seen = 0;
+        for pilot in value["pilots"].as_array().unwrap() {
+            if pilot["outer_grant"] != true || !applies(pilot, "windows", "x86_64") {
+                continue;
+            }
+            for name in strings(&pilot["tests"]).unwrap() {
+                assert!(windows_controlled_case(&name).is_some(), "{name}");
+                seen += 1;
+            }
+        }
+        assert_eq!(seen, 7);
+        assert_eq!(windows_controlled_case("arbitrary::test"), None);
+    }
     #[test]
     fn checked_in_declarations_are_closed_and_valid() {
         let value = declarations().unwrap();
