@@ -249,6 +249,36 @@ complete dependency/toolchain graph; it is not an immutable full-unit receipt.
 Do not cargo-clean active targets or change production panic/LTO/codegen settings
 without measurements. Source: https://doc.rust-lang.org/cargo/reference/profiles.html .
 
+### Debug-info profile (owner direction 2026-11-17)
+
+Cargo.toml sets `[profile.dev] debug = "line-tables-only"`,
+`[profile.dev.package."*"] debug = false` and
+`[profile.test] debug = "line-tables-only"`. Workspace crates keep line tables,
+so panic messages and backtraces still name file and line. Dependencies carry
+no debug info. Release, the local-edit profile's other settings and the CI
+crate-archive cache policy are unchanged.
+
+| Measurement (design session, 4-core Linux) | Before | After |
+| --- | ---: | ---: |
+| `target` after `cargo test --workspace --no-run` | 5.91 GB | 2.14 GB |
+| Build wall time, same command | 88 s | 64 s |
+| `cargo test --workspace` | — | 1,778 passed, 11 failed |
+
+A recheck in a 4-core Linux cloud container on 2026-11-17, with the settings
+applied, a cold `target` and a warm registry, finished
+`cargo test --workspace --locked --no-run` in 110 s with `target` at 3.55 GB.
+Of that, `target/debug/deps` was 2.0 GB, close to the figure above, and
+`target/debug/incremental` was 1.4 GB, because incremental compilation was
+on. No before-change baseline was taken in that container because disk was
+short, so it is not an A/B and does not replace the design-session figures.
+`CARGO_INCREMENTAL=0`, as CI uses, leaves out the incremental directory.
+
+The 11 failures are the same as before the change: 10 cli tests that refuse to
+run as root by design and 1 `git_coord` test that needs `pwsh`. Debuggers lose
+variable and type information for dependencies; set `debug = true` in a local,
+uncommitted override when that is needed. Actions cache and per-PC cache
+figures are surveyed separately and are not recorded here.
+
 sccache/alternate linkers remain candidates, not installed defaults. Rust sccache
 requires incremental disabled and cannot cache final linker invocations for
 binary/dynamic/proc-macro crates. Two modes must be compared separately, with
