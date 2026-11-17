@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>humanymous · Ledger</title>
+<style id="app-css"></style>
+</head>
+<body>
+<div class="app">
+  <nav class="rail">
+    <div class="brand"><div class="mark">h</div><div><b>humanymous</b><span>Ledger</span></div></div>
+    <div class="navlabel">Operations</div>
+    <a class="navitem active" data-view="overview" data-tip="<b>Overview</b>Live feed of recent ALLOW, CHALLENGE, and DENY decisions with key indicators computed from the audit stream. Select a row to inspect it."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg>Overview</a>
+    <a class="navitem" data-view="integrity" data-tip="<b>Integrity</b>Live verification of this node's hash chain, per-record keyed authentication, Ed25519-signed tree checkpoints, and configured local witness. External auditors can verify exported checkpoints with published keys."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg>Integrity</a>
+    <a class="navitem" data-view="sessions" data-tip="<b>Sessions</b>Look up a decision by its audit sequence or incident reference, then inspect its timeline, top contributors, and pseudonymous subject."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Sessions</a>
+    <a class="navitem" data-view="virtual-usb" data-tip="<b>Virtual USB Lab</b>Read-only results from the isolated Docker laboratory. Kernel-emulated Universal Serial Bus input is never presented as physical hardware evidence."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v5m8-5v5M6 8h12v5a6 6 0 0 1-12 0z"/><path d="M12 19v3"/></svg>Virtual USB Lab</a>
+    <div class="navlabel">Governance</div>
+    <a class="navitem" data-view="bans" data-tip="<b>Rate limits and bans</b>Active source-address and fingerprint bans, including escalating automatic bans and manual actions. Permanent or network-range placement requires a distinct Approver; one Operator can lift a ban."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></svg>Rate Limits &amp; Bans<span class="badge" id="banBadge">0</span></a>
+    <a class="navitem" data-view="policy" data-tip="<b>Policy</b>Read-only effective posture: routes, rate limits, emergency monitor state, and configuration identity. Writable controls live under Settings; the emergency switch still requires a second approver."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg>Policy</a>
+    <a class="navitem" data-view="settings" data-tip="<b>Settings</b>Change thresholds, selected rule and edge-protection modes, network evidence policy, routes, and request-rate limits. Protection-reducing changes require a distinct approver. No active overlay preserves the built-in and startup behavior."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>Settings</a>
+    <a class="navitem" data-view="compliance" data-tip="<b>Compliance operations</b>Request cryptographic erasure under an operator-supplied legal basis. Erasure destroys the subject's linkage key while retaining the audit record. Displayed retention tiers are declared labels, not physically enforced storage."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M9 9l6 6M15 9l-6 6"/></svg>Compliance</a>
+    <a class="navitem" data-view="approvals" data-tip="<b>Approvals</b>Pending dual-control actions (bans, kill switch, erasures) awaiting a second, distinct approver. Committing here is separation-of-duty enforced and audited."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Approvals<span class="badge" id="approvalsBadge">0</span></a>
+    <div class="spacer"></div>
+    <div class="rolechip"><span class="dot"></span><div><b>Operator</b><small>live · dual-control</small></div></div>
+  </nav>
+
+  <div class="main">
+    <div class="topbar">
+      <button class="hamburger" id="navToggle" aria-label="Open navigation">☰</button>
+      <h1 id="viewTitle">Overview<small>live edge decisions</small></h1>
+      <div class="push"></div>
+      <div class="live" data-tip="<b>Live status</b>The console polls the audit chain every 4s. Shows the current record count and whether the chain still self-verifies."><span class="pulse"></span><span id="liveLabel">connecting…</span></div>
+      <button class="iconbtn" id="refreshBtn" data-tip="Refresh the current view and re-verify the chain now"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 3v6h-6"/></svg></button>
+      <button class="iconbtn" id="themeBtn" data-tip="Toggle light / dark theme"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg></button>
+    </div>
+
+    <div class="content" id="view-overview"></div>
+    <div class="content" id="view-integrity" hidden></div>
+    <div class="content" id="view-sessions" hidden></div>
+    <div class="content" id="view-virtual-usb" hidden></div>
+    <div class="content" id="view-bans" hidden></div>
+    <div class="content" id="view-policy" hidden></div>
+    <div class="content" id="view-settings" hidden></div>
+    <div class="content" id="view-compliance" hidden></div>
+    <div class="content" id="view-approvals" hidden></div>
+
+    <div class="statusbar">
+      <span id="sb-chain"><span class="ok">●</span> chain —</span>
+      <span id="sb-node">node —</span>
+      <span>read view · separation of duty · every action audited</span>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Session detail">
+  <header><span class="mono" id="d-title" style="color:var(--accent)">record</span>
+    <button class="iconbtn" id="d-close" style="margin-left:auto"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+  </header>
+  <div class="body" id="d-body"></div>
+</aside>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="tooltip" id="tooltip" role="tooltip"></div>
+<div class="mscrim" id="cScrim"></div>
+<div class="modal" id="cModal" role="dialog" aria-modal="true" aria-labelledby="cTitle">
+  <h3 id="cTitle">Confirm</h3>
+  <p id="cMsg"></p>
+  <div class="mrow" id="cConfirmRow" hidden><span style="font-size:12px">Type <b id="cWord"></b> to confirm</span><input id="cInput" autocomplete="off"></div>
+  <div class="modal-btns"><button class="btn" id="cCancel">Cancel</button><button class="btn primary" id="cOk">Confirm</button></div>
+</div>
+
+<script>
+// ---------- overlay tooltip engine ----------
+(function(){
+  const tip=document.getElementById('tooltip');
+  function place(el){
+    const r=el.getBoundingClientRect();
+    let left=r.left+r.width/2-tip.offsetWidth/2;
+    left=Math.max(10,Math.min(left,innerWidth-tip.offsetWidth-10));
+    let top=r.bottom+9;
+    if(top+tip.offsetHeight>innerHeight-10) top=r.top-tip.offsetHeight-9;
+    tip.style.left=left+'px'; tip.style.top=Math.max(10,top)+'px';
+  }
+  function open(el){ const t=el.getAttribute('data-tip'); if(!t)return; tip.innerHTML=t; tip.classList.add('show'); place(el); }
+  function close(){ tip.classList.remove('show'); }
+  document.addEventListener('mouseover',e=>{const el=e.target.closest('[data-tip]'); if(el)open(el);});
+  document.addEventListener('mouseout',e=>{const el=e.target.closest('[data-tip]'); if(el && !el.contains(e.relatedTarget))close();});
+  document.addEventListener('focusin',e=>{const el=e.target.closest('[data-tip]'); if(el)open(el);});
+  document.addEventListener('focusout',close);
+  document.addEventListener('scroll',close,true);
+})();
+const API = location.pathname.replace(/console\/?$/, '').replace(/\/$/, '') || '/__hmn/admin';
+const $ = s => document.querySelector(s);
+async function api(path, opts){ opts=opts||{}; const h=Object.assign({}, opts.headers); if(window.__HMN_TOKEN) h['Authorization']='Bearer '+window.__HMN_TOKEN; opts.headers=h; const r = await fetch(API + path, opts); if(!r.ok) throw new Error(await r.text()); const t = await r.text(); try{return JSON.parse(t)}catch{return t} }
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2600); }
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const critHR = new Set(['HR-1','HR-2','HR-7','HR-8','HR-9','HR-14','HR-16','HR-18','HR-19','HR-20','HR-21','HR-23','HR-24','HR-27b','HR-28','HR-30']);
+const verdictTip = {
+  allow:'<b>ALLOW</b>Passed to the origin. If a fingerprint-bound trust token is present it takes the fast-path with no re-scoring.',
+  challenge:'<b>CHALLENGE</b>Additional verification is required before origin contact. The reference does not provide a complete, user-solvable recovery path for every challenged request.',
+  deny:'<b>DENY</b>Blocked at the edge before any upstream connection. The origin is never contacted.',
+  none:'<b>NONE</b>No verdict yet (Unknown). Public routes fail-open; sensitive routes fail-closed to a challenge.' };
+const hrDesc = {
+  'HR-1':'High-confidence automation artifact (Selenium, Puppeteer, or Playwright) → DENY',
+  'HR-2':'The user-agent claim disagrees with the encrypted-connection and Hypertext Transfer Protocol version 2 implementations → DENY',
+  'HR-7':'Headless browser plus a second automation tell → DENY',
+  'HR-8':'Patched native getter hiding webdriver in a chromeless window → DENY',
+  'HR-9':'Chrome DevTools Protocol evidence plus another automation indicator → DENY',
+  'HR-12':'No interaction over the observation window → CHALLENGE',
+  'HR-18':'A browser user-agent claim has no client-side JavaScript execution evidence → DENY',
+  'HR-19':'One stable fingerprint across many network ranges (residential-proxy rotation) → DENY',
+  'HR-20':'Artificial intelligence browser-agent signature (teleport click plus language-model cadence) → DENY',
+  'HR-21':'Destructive flood, Hypertext Transfer Protocol version 2 denial of service, or request-rate ban → DENY',
+  'HR-23':'Ambiguous Hypertext Transfer Protocol message framing indicates request smuggling → DENY',
+  'HR-24':'Direct origin hit bypassing Gate (origin cloaking) → 421',
+  'HR-26':'WebSocket or Server-Sent Events upgrade has no prior fingerprint-bound verdict → DENY',
+  'HR-27a':'Unsafe or oversized Hypertext Markup Language response — skip collector injection and pass the origin response through',
+  'HR-27b':'Client forged a trust / internal forwarding header → DENY',
+  'HR-28':'Verdict token replayed from a different fingerprint, or forged → DENY',
+  'HR-29':'A single-use beacon or proof-of-work nonce was replayed → reject',
+  'HR-30':'Decision-probing sweep: many sessions from one fingerprint → DENY' };
+const ruleLabel = {
+  'HR-1':'automation artifact',
+  'HR-2':'browser/network mismatch',
+  'HR-3':'synthetic events + driver',
+  'HR-4':'WebDriver concealment',
+  'HR-5':'integrity + protocol mismatch',
+  'HR-6':'runtime hook + automation',
+  'HR-7':'headless + automation',
+  'HR-8':'stealth modification',
+  'HR-9':'browser-control leak',
+  'HR-10':'missing browser evidence',
+  'HR-11':'hosting-network browser',
+  'HR-12':'no interaction observed',
+  'HR-13':'disabled developer console',
+  'HR-14':'protocol rotation',
+  'HR-15':'multi-axis rotation',
+  'HR-16':'request-body integrity',
+  'HR-17':'missing or replayed request integrity',
+  'HR-18':'browser claim without execution',
+  'HR-19':'cross-session correlation',
+  'HR-20':'automated-browser interaction',
+  'HR-21':'request-flood protection',
+  'HR-22':'advanced browser residual',
+  'HR-23':'request-smuggling protection',
+  'HR-24':'origin or network protection',
+  'HR-26':'unverified connection upgrade',
+  'HR-27a':'response-injection safety',
+  'HR-27b':'forged internal header',
+  'HR-28':'verdict-token binding',
+  'HR-29':'single-use proof replay',
+  'HR-30':'decision-probing sweep'
+};
+function verdictCell(v){ v=(v||'none'); return `<span class="verdict v-${v}" data-tip='${verdictTip[v]||''}'>${v.toUpperCase()}</span>`; }
+function ruleName(id){ const raw=String(id||''); return ruleLabel[raw]||(/^HR-/i.test(raw)?'legacy protection rule':raw.replace(/[._-]+/g,' ')); }
+function hrBadge(hr,crit){ return hr?`<span class="hr ${crit?'crit':''}" data-tip="${esc(hrDesc[hr]||ruleName(hr))}">${esc(ruleName(hr))}</span>`:'<span style="color:var(--faint)">—</span>'; }
+function fmtDur(s){ if(s<=0) return '<span style="color:var(--deny);font-weight:600">permanent</span>'; const h=s/3600|0,m=(s%3600)/60|0; return `<span class="mono">${h?h+'h ':''}${m}m</span>`; }
+
+// theme
+$('#themeBtn').onclick=()=>{const c=document.documentElement.getAttribute('data-theme');document.documentElement.setAttribute('data-theme',c==='dark'?'light':'dark');};
+
+// ---------- confirm modal (WS9 destructive-action safety) ----------
+function confirmAction({title,msg,danger,word}){
+  return new Promise(resolve=>{
+    $('#cTitle').textContent=title; $('#cMsg').innerHTML=msg;
+    $('#cModal').classList.toggle('danger',!!danger);
+    const needWord=!!word; $('#cConfirmRow').hidden=!needWord;
+    if(needWord){ $('#cWord').textContent=word; $('#cInput').value=''; $('#cInput').style.borderColor=''; }
+    $('#cScrim').classList.add('show'); $('#cModal').classList.add('show');
+    setTimeout(()=>{(needWord?$('#cInput'):$('#cOk')).focus();},50);
+    const close=v=>{ $('#cScrim').classList.remove('show'); $('#cModal').classList.remove('show'); $('#cOk').onclick=$('#cCancel').onclick=$('#cScrim').onclick=null; document.removeEventListener('keydown',key); resolve(v); };
+    const ok=()=>{ if(needWord && $('#cInput').value.trim()!==word){ $('#cInput').style.borderColor='var(--deny)'; return; } close(true); };
+    function key(e){ if(e.key==='Escape')close(false); if(e.key==='Enter')ok(); }
+    $('#cOk').onclick=ok; $('#cCancel').onclick=()=>close(false); $('#cScrim').onclick=()=>close(false); document.addEventListener('keydown',key);
+  });
+}
+// ---------- mobile nav toggle ----------
+$('#navToggle') && ($('#navToggle').onclick=()=>document.querySelector('.rail').classList.toggle('open'));
+// ---------- WCAG: nav items keyboard-operable ----------
+document.querySelectorAll('.navitem').forEach(n=>{ n.setAttribute('role','button'); n.setAttribute('tabindex','0');
+  n.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); n.click(); } }); });
+// ---------- operator attribution (WS9) ----------
+(async()=>{ try{ const me=await api('/whoami'); const rc=document.querySelector('.rolechip'); if(rc&&me.id){ rc.querySelector('b').textContent=me.id; rc.querySelector('small').textContent=me.role+' · authenticated'; } }catch(e){} })();
+
+// ---------- views ----------
+const views = ['overview','integrity','sessions','virtual-usb','bans','policy','settings','compliance','approvals'];
+const titles = { overview:['Overview','live edge decisions'], integrity:['Chain Integrity','tamper-evident audit log'],
+  sessions:['Sessions','incident drill-down'], bans:['Rate Limits &amp; Bans','edge protection'],
+  'virtual-usb':['Virtual USB Lab','isolated Docker measurement'],
+  policy:['Policy &amp; Rollout','route enforcement'], settings:['Settings','runtime protection controls'],
+  compliance:['Compliance','erasure &amp; retention'],
+  approvals:['Approvals','dual-control commit queue'] };
+let current='overview';
+const loaded=new Set(); // load each view once; nav switching is then instant
+function show(v){
+  current=v; views.forEach(k=>$('#view-'+k).hidden=k!==v);
+  document.querySelectorAll('.navitem').forEach(n=>{const a=n.dataset.view===v;n.classList.toggle('active',a);a?n.setAttribute('aria-current','page'):n.removeAttribute('aria-current');});
+  document.querySelector('.rail').classList.remove('open'); // close mobile nav on switch
+  const [t,s]=titles[v]; $('#viewTitle').innerHTML=`${t}<small>${s}</small>`;
+  // Only fetch+render on first visit; revisits show the already-rendered view
+  // instantly. Use the refresh button (or overview's auto-tick) to update.
+  if(loaders[v] && !loaded.has(v)){ loaded.add(v); loaders[v](); }
+}
+document.querySelectorAll('.navitem[data-view]').forEach(n=>n.onclick=()=>show(n.dataset.view));
+
+// ---------- Overview ----------
+let overviewTimer;
+async function loadOverview(){
+  const el=$('#view-overview');
+  let data; try{ data=await api('/audit?limit=60'); }catch(e){ el.innerHTML=`<div class="note">Could not load audit stream: ${esc(e.message)}</div>`; return; }
+  const recs=data.records||[];
+  const c={allow:0,challenge:0,deny:0,none:0}; let denies=0,challenges=0,bans=0;
+  recs.forEach(r=>{ c[r.verdict||'none']=(c[r.verdict||'none']||0)+1; if(r.event_type==='ban.enforced'||r.event_type==='ban.applied')bans++; });
+  const total=recs.length||1;
+  el.innerHTML=`
+    <div class="kpis">
+      <div class="kpi" data-tip="<b>Allow</b>Sessions passed to the origin in the recent window. A trust token short-circuits re-scoring on the fast path."><span class="stripe" style="background:var(--allow)"></span><div class="k-label">Allow</div><div class="k-val up">${c.allow}</div><div class="k-sub">${(c.allow/total*100|0)}% of recent</div></div>
+      <div class="kpi" data-tip="<b>Challenge</b>Sessions scored into the challenge band (Pass / step-up when configured). Not a guarantee that a PoW interstitial was served from this control plane."><span class="stripe" style="background:var(--challenge)"></span><div class="k-label">Challenge</div><div class="k-val warn">${c.challenge}</div><div class="k-sub">recent window</div></div>
+      <div class="kpi" data-tip="<b>Deny</b>Sessions blocked at the edge before any upstream connection — automation, floods, smuggling, token/proof abuse."><span class="stripe" style="background:var(--deny)"></span><div class="k-label">Deny</div><div class="k-val bad">${c.deny}</div><div class="k-sub">edge-blocked</div></div>
+      <div class="kpi" data-tip="<b>Ban actions</b>Bans applied or enforced in this window — rate-limit auto-bans plus manual operator bans."><span class="stripe" style="background:var(--info)"></span><div class="k-label">Ban actions</div><div class="k-val">${bans}</div><div class="k-sub">auto + manual</div></div>
+      <div class="kpi" data-tip="<b>Records</b>Total events sealed into the tamper-evident audit chain on this node."><span class="stripe" style="background:var(--accent)"></span><div class="k-label">Records</div><div class="k-val">${data.count}</div><div class="k-sub">newest first</div></div>
+    </div>
+    <section class="card">
+      <header><h2>Decision feed</h2><div class="push"></div>
+        <input id="ovHost" placeholder="filter host…" aria-label="Filter by host" style="font-family:var(--mono);font-size:12px;padding:5px 9px;border-radius:8px;background:var(--panel-2);border:1px solid var(--border);color:var(--text);width:130px">
+        <button class="btn" id="ovExport" data-tip="Download the current feed as comma-separated values (CSV) for a postmortem or shift handoff">Export CSV</button>
+        <div class="chiprow" id="ovFilters">
+        <span class="chip on" data-f="all" role="button" tabindex="0">all</span><span class="chip" data-f="deny" role="button" tabindex="0">deny</span><span class="chip" data-f="challenge" role="button" tabindex="0">challenge</span><span class="chip" data-f="allow" role="button" tabindex="0">allow</span>
+      </div></header>
+      <div class="streamwrap"><table><thead><tr><th>Seq</th><th>Event</th><th>Host</th><th>Verdict</th><th>Rule</th><th>Risk</th><th>Mode</th></tr></thead>
+      <tbody id="ovRows"></tbody></table></div>
+    </section>`;
+  const rows=$('#ovRows');
+  let curF='all';
+  function draw(f){
+    curF=f;
+    const hostq=($('#ovHost').value||'').toLowerCase();
+    const list=recs.filter(r=>(f==='all'||r.verdict===f) && (!hostq||(r.host||'').toLowerCase().includes(hostq)));
+    rows.innerHTML=list.slice(0,25).map(r=>{
+      const hr=(r.triggered_rules||[])[0];
+      return `<tr class="clk" data-inc="${r.incident||''}"><td class="mono t-ts" data-tip="incident ${r.incident||''}">#${r.seq}</td>
+        <td class="mono" style="font-size:12px;color:var(--muted)">${esc(r.event_type)}</td>
+        <td class="t-host">${esc(r.host||'—')}</td>
+        <td>${verdictCell(r.verdict)}</td>
+        <td>${hrBadge(hr,critHR.has(hr))}</td>
+        <td class="num">${r.risk_score||0}</td>
+        <td><span class="mode-badge mode-${r.enforcement_mode==='monitor'?'monitor':'enforce'}">${esc(r.enforcement_mode||'—')}</span></td></tr>`;
+    }).join('')|| '<tr><td colspan="7" class="empty">No records.</td></tr>';
+    rows.querySelectorAll('tr.clk').forEach(tr=>tr.onclick=()=>drill(tr.dataset.inc));
+  }
+  draw('all');
+  $('#ovFilters').querySelectorAll('.chip').forEach(ch=>{const go=()=>{$('#ovFilters').querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));ch.classList.add('on');draw(ch.dataset.f);};ch.onclick=go;ch.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};});
+  $('#ovHost').oninput=()=>draw(curF);
+  $('#ovExport').onclick=()=>{
+    const cols=['seq','ts','event_type','host','verdict','risk_score','triggered_rules'];
+    const q=($('#ovHost').value||'').toLowerCase();
+    const list=recs.filter(r=>(curF==='all'||r.verdict===curF)&&(!q||(r.host||'').toLowerCase().includes(q)));
+    const cell=v=>'"'+String(Array.isArray(v)?v.join(' '):(v==null?'':v)).replace(/"/g,'""')+'"';
+    const csv=[cols.join(',')].concat(list.map(r=>cols.map(c=>cell(r[c])).join(','))).join('\n');
+    const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='audit-feed.csv'; a.click(); URL.revokeObjectURL(a.href);
+    toast('Exported '+list.length+' records');
+  };
+}
+
+// ---------- Integrity ----------
+async function loadIntegrity(){
+  const el=$('#view-integrity');
+  let d; try{ d=await api('/integrity'); }catch(e){ el.innerHTML=`<div class="note">${esc(e.message)}</div>`; return; }
+  const ok=d.ok;
+  el.innerHTML=`
+    <div class="split">
+      <section class="card">
+        <header><h2>Verification</h2><div class="push"></div><span class="mono" style="font-size:11px;color:var(--muted)">live SelfVerify</span></header>
+        <div class="statuslead"><div class="shieldbig ${ok?'ok-bg':'bad-bg'}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg></div>
+          <div><b>${ok?'PASS':'VIOLATION'}</b><span>${ok?d.records+' records · 0 divergent':'diverged at seq '+(d.divergentSeq||0)+(d.class?' · '+d.class:'')}</span></div></div>
+        <div class="integ-row" data-tip="Total events sealed into the append-only chain. Each links to the previous by hash, so any edit, deletion, or reorder is detectable. Empty chain = empty-chain fail (not a green pass)."><span class="lbl">Chain records</span><span class="val">${d.records}</span></div>
+        <div class="integ-row" data-tip="Periodic tree checkpoints signed with an Ed25519 key and co-signed by the local witness. They expose truncation or rewriting of checkpointed history; they are not an external immutable archive."><span class="lbl">Signed tree checkpoints</span><span class="val">${d.checkpoints}</span></div>
+        ${d.witnessed!==undefined?`<div class="integ-row" data-tip="A co-signer in this process countersigns each tree head (local witness — same keystore when sealed). Defends writer malfunction, not an actor who holds the full keystore.">
+          <span class="lbl">Local witness</span><span class="val" style="color:${d.witnessed?'var(--allow)':'var(--deny)'}">${d.witnessed?'✓ co-signed':'✗ FAILED @'+d.witnessFailAt}</span></div>`:''}
+        ${d.lastSTH?`<div class="integ-row"><span class="lbl">Latest checkpoint size</span><span class="val">#${d.lastSTH.treeSize}</span></div>
+        <div class="integ-row"><span class="lbl">Root (hex)</span><span class="val" style="max-width:180px;overflow:hidden;text-overflow:ellipsis">${esc(d.lastSTH.root).slice(0,20)}…</span></div>`:''}
+        ${ok?'':`<div class="integ-row"><span class="lbl">Class</span><span class="val bad">${esc(d.class)}</span></div>`}
+      </section>
+      <div class="side">
+        <section class="card"><header><h2>Node</h2></header>
+          <div class="integ-row"><span class="lbl">Node id</span><span class="val">${esc(d.node)}</span></div>
+          <div class="integ-row" data-tip="Auditors can export signed tree checkpoints from the checkpoints endpoint and pin the public key returned by the keys endpoint."><span class="lbl">Checkpoint signing</span><span class="val" style="color:var(--allow)">✓ Ed25519</span></div>
+          <div class="integ-row" data-tip="This live view checks hash linkage, per-record keyed authentication, signed tree checkpoints, and the local witness with this node's key material. Public-key-only offline verification cannot check the keyed record authentication."><span class="lbl">Verification method</span><span class="val">live node verification</span></div>
+        </section>
+        <section class="card" style="margin-top:20px"><header><h2>Guarantees</h2></header>
+          <div style="padding:14px 16px"><p class="note" style="margin:0">The append-only hash chain combines per-record keyed authentication with Ed25519-signed tree checkpoints. Live verification uses node key material; external auditors use the published key and exported checkpoints. Cryptographic erasure retains the verifiable audit chain.</p></div>
+        </section>
+      </div>
+    </div>`;
+}
+
+// ---------- Sessions (incident drill-down) ----------
+async function loadSessions(){
+  const el=$('#view-sessions');
+  el.innerHTML=`
+    <section class="card">
+      <header><h2>Incident lookup</h2></header>
+      <div style="padding:15px 16px;display:flex;gap:10px;align-items:end">
+        <label class="fld" style="flex:1"><span>Incident handle</span><input id="incSeq" placeholder="INC-…" data-tip="Every block/challenge shows an opaque incident handle (INC-…). Paste it to open the full evidence. The raw record seq is never exposed (non-enumerable)."></label>
+        <button class="btn primary" id="incGo" data-tip="Open the full record: decision, rules, top contributors, pseudonymized subject">Open</button>
+      </div>
+    </section>
+    <section class="card">
+      <header><h2>Recent enforcement</h2><div class="push"></div><span class="mono" style="font-size:11px;color:var(--muted)">deny / challenge</span></header>
+      <div class="streamwrap"><table><thead><tr><th>Seq</th><th>Host</th><th>Verdict</th><th>Rule</th><th>Reason</th></tr></thead><tbody id="sessRows"></tbody></table></div>
+    </section>`;
+  $('#incGo').onclick=()=>{const v=$('#incSeq').value.trim(); if(v)drill(v);};
+  $('#incSeq').onkeydown=e=>{if(e.key==='Enter'){const v=$('#incSeq').value.trim();if(v)drill(v);}};
+  let d; try{ d=await api('/audit?limit=100'); }catch(e){ return; }
+  const rows=(d.records||[]).filter(r=>r.verdict==='deny'||r.verdict==='challenge').slice(0,25);
+  $('#sessRows').innerHTML=rows.map(r=>`<tr class="clk" data-inc="${r.incident||''}"><td class="mono t-ts">#${r.seq}</td>
+    <td class="t-host">${esc(r.host||'—')}</td><td>${verdictCell(r.verdict)}</td>
+    <td>${(r.triggered_rules||[]).map(h=>hrBadge(h,true)).join(' ')||'—'}</td>
+    <td style="color:var(--muted);font-size:12px">${esc(r.fail_reason||'')}</td></tr>`).join('')||'<tr><td colspan="5" class="empty">No enforcement events yet.</td></tr>';
+  $('#sessRows').querySelectorAll('tr.clk').forEach(tr=>tr.onclick=()=>drill(tr.dataset.inc));
+}
+
+// ---------- Bans ----------
+let banFilter='all';
+async function loadBans(){
+  const el=$('#view-bans');
+  let d; try{ d=await api('/bans'); }catch(e){ el.innerHTML=`<div class="note">${esc(e.message)}</div>`; return; }
+  const bans=d.bans||[];
+  $('#banBadge').textContent=bans.length;
+  const auto=bans.filter(b=>b.source==='auto').length, manual=bans.length-auto;
+  el.innerHTML=`
+    <div class="kpis" style="grid-template-columns:repeat(4,1fr)">
+      <div class="kpi" data-tip="<b>Active bans</b>Sources currently blocked at the edge. A banned key is dropped before scoring or any upstream connection."><span class="stripe" style="background:var(--deny)"></span><div class="k-label">Active bans</div><div class="k-val">${bans.length}</div><div class="k-sub">${auto} auto · ${manual} manual</div></div>
+      <div class="kpi" data-tip="<b>Escalation</b>A repeat rate-limit offender is banned for longer each strike: 1h, then 6h, 24h, then permanent."><span class="stripe" style="background:var(--challenge)"></span><div class="k-label">Escalation</div><div class="k-val mono" style="font-size:15px">1h→6h→24h→∞</div><div class="k-sub">by strike</div></div>
+      <div class="kpi" data-tip="<b>Keys</b>Bans use source-address or stable-fingerprint keys. A source that rotates addresses may still match its fingerprint key."><span class="stripe" style="background:var(--accent)"></span><div class="k-label">Ban keys</div><div class="k-val" style="font-size:15px">address · fingerprint</div><div class="k-sub">two scopes</div></div>
+      <div class="kpi" data-tip="<b>Strike decay</b>A strike is remembered for 7 days, so a returning abuser escalates to a longer ban quickly."><span class="stripe" style="background:var(--info)"></span><div class="k-label">Strike decay</div><div class="k-val">7d</div><div class="k-sub">repeat abusers</div></div>
+    </div>
+    <div class="split">
+      <section class="card">
+        <header><h2>Active bans</h2><div class="push"></div><div class="chiprow" id="banFilters">
+          <span class="chip ${banFilter==='all'?'on':''}" data-bf="all">all</span><span class="chip ${banFilter==='auto'?'on':''}" data-bf="auto">auto</span><span class="chip ${banFilter==='manual'?'on':''}" data-bf="manual">manual</span></div></header>
+        <div class="streamwrap"><table><thead><tr><th>Key</th><th>Source</th><th>Reason</th><th>Strike</th><th>Expires</th><th></th></tr></thead><tbody id="banRows"></tbody></table></div>
+      </section>
+      <div class="side">
+        <section class="card"><header><h2>Add manual ban</h2></header>
+          <div style="padding:15px 16px;display:flex;flex-direction:column;gap:11px">
+            <label class="fld"><span>Key</span><input id="b-key" placeholder="ip:203.0.113.9 · fp:…"></label>
+            <label class="fld"><span>Reason</span><input id="b-reason" placeholder="coordinated scraping"></label>
+            <label class="fld"><span>Duration</span><select id="b-dur"><option value="3600">1 hour</option><option value="21600">6 hours</option><option value="86400">24 hours</option><option value="604800">7 days</option><option value="0">Permanent</option></select></label>
+            <p class="note" id="b-dcnote" hidden style="margin:0">Permanent or network-range placement is dual-control: this request enters Approvals, where a <b>distinct Approver</b> commits it with their authenticated identity.</p>
+            <button class="btn primary" id="b-add" style="justify-content:center" data-tip="One Operator can place a temporary ban. Permanent or network-range placement waits for a distinct Approver in Approvals.">Apply ban</button>
+            <p class="note" style="margin:0">Every ban/unblock is written to the audit chain before it takes effect. Lift is single-Operator.</p>
+          </div>
+        </section>
+      </div>
+    </div>`;
+  const durSel=$('#b-dur'); durSel.onchange=()=>{$('#b-dcnote').hidden=durSel.value!=='0';};
+  function drawBans(){
+    const list=bans.filter(b=>banFilter==='all'||b.source===banFilter);
+    $('#banRows').innerHTML=list.map(b=>`<tr><td class="mono" style="font-size:12.5px" data-tip="Ban key — ${b.key.startsWith('fp:')?'stable client fingerprint that can persist across source-address changes':'client source address'}">${esc(b.key)}</td>
+      <td><span class="src-badge src-${b.source}" data-tip="${b.source==='auto'?'Applied automatically by the rate limiter on a hard-flood breach':'Applied manually by an operator (audited, dual-control for permanent)'}">${b.source}</span></td>
+      <td style="color:var(--muted);font-size:12.5px">${esc(b.reason)}</td>
+      <td class="num" data-tip="Escalation strike count — higher strikes mean longer bans">${b.strike||'—'}</td><td>${fmtDur(b.expiresInSec)}</td>
+      <td style="text-align:right"><button class="lift" data-k="${esc(b.key)}" data-tip="Remove this ban now (single Operator action, written to the audit chain)">Unblock</button></td></tr>`).join('')||'<tr><td colspan="6" class="empty">No active bans.</td></tr>';
+    $('#banRows').querySelectorAll('.lift').forEach(btn=>btn.onclick=async()=>{
+      try{ await api('/bans/lift?key='+encodeURIComponent(btn.dataset.k)+'&operator=console', {method:'POST'}); toast('Ban lifted — audited'); loadBans(); }catch(e){ toast('Lift failed: '+e.message); }
+    });
+  }
+  drawBans();
+  $('#banFilters').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{banFilter=c.dataset.bf;$('#banFilters').querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');drawBans();});
+  $('#b-add').onclick=async()=>{
+    const key=$('#b-key').value.trim(); if(!key){$('#b-key').focus();return;}
+    // Body carries Key/Reason/Duration only — actor is server-derived from the bearer.
+    const body={Key:key,Reason:$('#b-reason').value||'manual ban',DurationSec:+durSel.value};
+    try{
+      const r=await api('/bans',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+      if(r&&r.pending){ toast('Permanent or network-range ban pending — a distinct Approver must commit it'); }
+      else { toast('Ban applied — audited'); }
+      loadBans();
+    }catch(e){ toast(e.message.includes('dual-control')||e.message.includes('approval')?'Permanent ban needs a second approver':'Add failed'); }
+  };
+}
+
+// ---------- Policy ----------
+async function loadPolicy(){
+  const el=$('#view-policy');
+  let d; try{ d=await api('/policy'); }catch(e){ el.innerHTML=`<div class="note">${esc(e.message)}</div>`; return; }
+  el.innerHTML=`
+    <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
+      <div class="kpi"><span class="stripe" style="background:${d.globalMonitor?'var(--info)':'var(--accent)'}"></span><div class="k-label">Global mode</div><div class="k-val" style="font-size:17px">${d.globalMonitor?'MONITOR':'ENFORCE'}</div><div class="k-sub">${d.globalMonitor?'shadow — actions logged only':'live enforcement'}</div></div>
+      <div class="kpi"><span class="stripe" style="background:var(--challenge)"></span><div class="k-label">Rate limit</div><div class="k-val mono" style="font-size:16px">${d.rateLimit.hard}/${d.rateLimit.windowSec}s</div><div class="k-sub">hard · soft ${d.rateLimit.soft}</div></div>
+      <div class="kpi"><span class="stripe" style="background:var(--accent)"></span><div class="k-label">Routes</div><div class="k-val">${d.routes.length}</div><div class="k-sub">longest-prefix match</div></div>
+    </div>
+    <section class="card" data-tip="Emergency global monitor: suppresses all scoring-driven enforcement to log-only. Dual-control — a second approver must commit. Use during a false-positive incident.">
+      <header><h2>Kill switch — emergency global monitor</h2><div class="push"></div>
+        <span class="mono" style="font-size:12px;color:${d.effectiveMonitor?'var(--challenge)':'var(--muted)'}">${d.effectiveMonitor?'● MONITOR (enforcement suppressed)':'○ enforcing'}</span></header>
+      <div style="padding:14px 16px;display:flex;gap:10px;align-items:center">
+        <button class="btn" id="ks-req" data-tip="Requests the flip; a distinct approver must then commit (dual-control).">${d.killSwitch?'Request release':'Request kill switch'}</button>
+        <span class="note" style="margin:0;flex:1">Requesting creates a pending action — an Approver commits it in the approvals queue. Every flip is audited (config.changed).</span>
+      </div>
+    </section>
+    <section class="card">
+      <header><h2>Route policy</h2></header>
+      <div class="streamwrap"><table><thead><tr><th>Route</th>
+        <th data-tip="<b>Preset</b>Sensitivity bundle: off / monitor / low / balanced / strict / api-mode. Longest path-prefix wins.">Preset</th>
+        <th data-tip="<b>Enforce</b>Whether verdicts are acted on (enforce) or only scored and logged (monitor/shadow — the mandatory first rollout stage).">Enforce</th>
+        <th data-tip="<b>Fail policy</b>What happens when evidence is missing or a dependency is down. Public routes fail-open (pass) so the layer never takes down the app; sensitive routes fail-closed (challenge/deny).">Fail policy</th>
+        <th data-tip="<b>Sync re-score</b>High-assurance state-changing routes re-score synchronously before the mutation, so a single-request attack cannot slip through on the sticky-verdict fast path.">Sync re-score</th>
+        <th data-tip="<b>Inject</b>Whether the detection bundle is streamed into HTML responses on this route.">Inject</th></tr></thead>
+      <tbody>${d.routes.map(r=>`<tr><td class="mono" style="font-size:12.5px">${esc(r.prefix)}</td>
+        <td><span class="mode-badge ${r.preset==='strict'?'mode-enforce':'mode-monitor'}">${esc(r.preset)}</span></td>
+        <td>${r.enforce?'<span style="color:var(--allow)">●</span> enforce':'<span style="color:var(--info)">○</span> monitor'}</td>
+        <td class="mono" style="font-size:12px;color:${r.failClosed?'var(--deny)':'var(--muted)'}">${r.failClosed?'fail-closed':'fail-open'}</td>
+        <td>${r.syncScore?'<span style="color:var(--allow)">✓</span>':'<span style="color:var(--faint)">—</span>'}</td>
+        <td>${r.inject?'<span style="color:var(--accent)">✓</span>':'<span style="color:var(--faint)">—</span>'}</td></tr>`).join('')}</tbody></table></div>
+    </section>
+    <div class="note">Sensitive routes such as login, checkout, and administration can use the <b>strict</b> preset: fail closed and re-score before a state-changing request. Public routes can fail open so the reference layer does not take down the application. This view is <b>read-only</b>; use Settings for runtime route changes. Protection-reducing route changes, the emergency monitor switch, and permanent or address-range bans require a distinct approver. The configuration identity fingerprints the effective posture.</div>`;
+  $('#ks-req').onclick=async()=>{
+    const on=!d.killSwitch;
+    if(!await confirmAction({title:on?'Engage kill switch':'Release kill switch',danger:on,
+      msg:on?'This suppresses ALL scoring-driven enforcement to monitor mode across every route. A second approver must commit. Use only during a false-positive incident.':'This restores enforcement. A second approver must commit.'})) return;
+    try{ const r=await api('/killswitch',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({On:on})});
+      toast(r.pending?'Kill-switch flip requested — needs an approver (dual-control)':'Requested'); }
+    catch(e){ toast(e.message.includes('role')?'Requires the Operator role':'Request failed'); }
+  };
+}
+
+// ---------- Virtual USB laboratory (read-only) ----------
+async function loadVirtualUSB(){
+  const el=$('#view-virtual-usb');
+  let body;
+  try{ body=await api('/virtual-usb'); }
+  catch(e){ el.innerHTML=`<div class="note">Virtual USB laboratory status is unavailable: ${esc(e.message)}</div>`; return; }
+  if(!body.enabled){
+    el.innerHTML=`<div class="note"><b>Not configured.</b> ${esc(body.note||'Mount a bounded result directory on the admin process to display laboratory results.')}</div>`;
+    return;
+  }
+  if(body.healthy!==true){
+    el.innerHTML=`<div class="note" style="border-color:var(--deny)"><b>Result directory rejected.</b> ${esc(body.note||'Only bounded terminal summaries are accepted.')}</div>`;
+    return;
+  }
+  const runs=body.runs||[];
+  const latest=runs[0];
+  const label={
+    external_input_virtual:'virtual control',
+    external_input_dom_virtual:'document observation plus virtual control',
+    external_input_vusb:'kernel-emulated USB control',
+    external_input_dom_vusb:'document observation plus kernel-emulated USB control'
+  };
+  el.innerHTML=`
+    <div class="note" style="border-color:var(--challenge)"><b>Scope limit:</b> these schema-checked files are unverified laboratory artifacts, not signed operational evidence. They describe a disposable native-Linux Docker laboratory. Kernel-emulated USB is virtual evidence, never physical device, cable, firmware, or human evidence. Detector verdicts shown here were measured elsewhere; this view does not rescore them.</div>
+    <div class="kpis">
+      <div class="kpi"><span class="stripe" style="background:${latest?.result?.canonical?'var(--allow)':'var(--muted)'}"></span><div class="k-label">Latest lab summary</div><div class="k-val" style="font-size:15px">${latest?(latest.result.canonical?'reported complete':'reported incomplete'):'no runs'}</div><div class="k-sub">schema-only · ${latest?esc(new Date(latest.recordedAt).toLocaleString()):'—'}</div></div>
+      <div class="kpi"><span class="stripe" style="background:var(--accent)"></span><div class="k-label">English control ladder</div><div class="k-val">${latest?.result?.measured||0}/8</div><div class="k-sub">four modes in two browsers</div></div>
+      <div class="kpi"><span class="stripe" style="background:var(--info)"></span><div class="k-label">Pinned input-method cells</div><div class="k-val">${latest?.result?.ime?.pass||0}/${latest?.result?.ime?.expected||6}</div><div class="k-sub">six fixed browser and locale tuples</div></div>
+      <div class="kpi"><span class="stripe" style="background:var(--challenge)"></span><div class="k-label">Defended outcomes</div><div class="k-val">${latest?.result?.pass||0}</div><div class="k-sub">challenge or deny</div></div>
+      <div class="kpi"><span class="stripe" style="background:var(--muted)"></span><div class="k-label">Measured residuals</div><div class="k-val">${latest?.result?.residual||0}</div><div class="k-sub">allow, reported honestly</div></div>
+    </div>
+    <section class="card"><header><h2>Bounded terminal summaries</h2></header>
+      <div class="streamwrap"><table><thead><tr><th>Recorded</th><th>Status</th><th>Browsers</th><th>Mode order</th><th>Input-method cells</th><th>Failures</th></tr></thead>
+      <tbody>${runs.map(r=>`<tr><td class="mono">${esc(new Date(r.recordedAt).toLocaleString())}</td><td><span class="mode-badge mode-${r.result.canonical?'enforce':'monitor'}">${r.result.canonical?'reported complete':'reported incomplete'}</span></td><td>${esc((r.result.engines||[]).join(' → '))}</td><td>${esc((r.result.order||[]).map(x=>label[x]||x).join(' → '))}</td><td>${esc(`${r.result.ime?.pass||0}/${r.result.ime?.expected||6} · ${(r.result.ime?.order||[]).join(' → ')}`)}</td><td>${esc([...(r.result.failures||[]),...(r.result.ime?.failures||[])].join('; ')||'none')}</td></tr>`).join('')||'<tr><td colspan="6" class="empty">No terminal ladder summaries.</td></tr>'}</tbody>
+      </table></div>
+    </section>`;
+}
+
+// ---------- Compliance / Erasure ----------
+async function loadCompliance(){
+  const el=$('#view-compliance');
+  el.innerHTML=`
+    <div class="split">
+      <section class="card"><header><h2>Right-to-erasure — crypto-shred</h2></header>
+        <div style="padding:15px 16px;display:flex;flex-direction:column;gap:11px">
+          <label class="fld"><span>Subject id (session / subject key)</span><input id="e-subj" placeholder="subject id"></label>
+          <label class="fld"><span>Legal basis</span><select id="e-basis"><option>GDPR Art.17</option><option>PIPA §36</option><option>DPA request</option></select></label>
+          <button class="btn primary" id="e-go" style="justify-content:center" data-tip="Request destruction of this session subject's linkage key. A distinct privacy officer must approve; the approver comes from the authenticated account, not this form. After the hold window the linkage key is destroyed and the audit chain remains verifiable.">Destroy subject linkage key</button>
+          <p class="note" style="margin:0">Enter a session <b>pseudonym</b> shown in an incident. A raw client identifier is not needed. A <b>distinct privacy officer</b> commits the request through Approvals. The hold window is cancellable. Execution seals an erasure-completed audit record; it does not create a separate certificate download. One session subject does not necessarily equal one natural person.</p>
+        </div>
+      </section>
+      <div class="side">
+        <section class="card"><header><h2>Erasure log</h2><div class="push"></div><span class="mono" style="font-size:11px;color:var(--muted)">from audit chain</span></header>
+          <div id="eraseLog"></div>
+        </section>
+        <section class="card" style="margin-top:20px"><header><h2>Retention</h2></header>
+          <div class="integ-row" data-tip="Declared label only — the reference does not auto-prune or compress by tier."><span class="lbl">HOT (declared)</span><span class="val">~90d · not enforced</span></div>
+          <div class="integ-row" data-tip="Declared label only — no runtime move to compressed storage."><span class="lbl">WARM (declared)</span><span class="val">~1y · not enforced</span></div>
+          <div class="integ-row" data-tip="Declared label only — no WORM media in the reference. Without -audit-wal the chain is RAM-only; with it the WAL grows unbounded."><span class="lbl">COLD (declared)</span><span class="val">~7y · not WORM</span></div>
+          <p class="note" style="margin:8px 12px 12px">Operator-owned retention / archival is required. Crypto-shred is not a retention engine.</p>
+        </section>
+      </div>
+    </div>
+    <section class="card" data-tip="Approved erasures wait out a hold window before the crypto-shred commits. Any one can be cancelled during this window; every cancel is written to the audit chain.">
+      <header><h2>Scheduled erasures (hold window)</h2><div class="push"></div><span class="mono" style="font-size:11px;color:var(--muted)">cancellable before commit</span></header>
+      <div class="streamwrap"><table><thead><tr><th>Id</th><th>Legal basis</th><th>Requester</th><th>Approver</th><th>Executes in</th><th></th></tr></thead><tbody id="eraseSched"></tbody></table></div>
+    </section>`;
+  $('#e-go').onclick=async()=>{
+    const subj=$('#e-subj').value.trim(); if(!subj){$('#e-subj').focus();return;}
+    if(!await confirmAction({title:'Crypto-shred subject',danger:true,word:'ERASE',
+      msg:'Requesting erasure of <b class="mono">'+esc(subj)+'</b>. After a distinct privacy officer approves and the hold window elapses, the linkage key for this subject is permanently destroyed. The audit chain stays intact.'})) return;
+    try{ const r=await api('/erasure',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({Subject:subj,LegalBasis:$('#e-basis').value})});
+      toast(r.approvalId?'Erasure requested — awaiting a distinct privacy officer':'Requested'); loadCompliance(); }
+    catch(e){ toast(e.message.includes('legal')?'Legal basis required':'Erasure request failed'); }
+  };
+  try{ const d=await api('/audit?limit=100'); const evs=(d.records||[]).filter(r=>r.event_type&&r.event_type.startsWith('erasure')).slice(0,10);
+    $('#eraseLog').innerHTML=evs.map(r=>`<div class="integ-row"><span class="lbl mono" style="font-size:11.5px">${esc(r.event_type)}</span><span class="val" style="font-size:11px;color:var(--muted)">#${r.seq}</span></div>`).join('')||'<div class="empty">No erasure events.</div>';
+  }catch(e){}
+  loadErasures();
+}
+
+// ---------- Scheduled erasures (hold window) ----------
+let erasureRows=[];
+function fmtCountdown(s){ s=Math.max(0,s|0); if(s<=0) return '<span style="color:var(--challenge);font-weight:600">now</span>'; const h=s/3600|0,m=(s%3600)/60|0,sec=s%60; return `<span class="mono">${h?h+'h ':''}${m}m ${sec}s</span>`; }
+function drawErasures(){
+  const body=$('#eraseSched'); if(!body) return;
+  body.innerHTML=erasureRows.map(s=>`<tr>
+    <td class="mono" style="font-size:12.5px" data-tip="Scheduled crypto-shred id — cancellable during the hold window">${esc(String(s.id).slice(0,12))}…</td>
+    <td style="font-size:12.5px">${esc(s.legalBasis)}</td>
+    <td class="mono" style="font-size:12px;color:var(--muted)">${esc(s.requester)}</td>
+    <td class="mono" style="font-size:12px;color:var(--muted)">${esc(s.approver)}</td>
+    <td class="num" data-eid="${esc(String(s.id))}">${fmtCountdown(s.executesInSec)}</td>
+    <td style="text-align:right"><button class="lift" data-cancel="${esc(String(s.id))}" data-tip="Cancel this scheduled shred during its hold window (written to the audit chain)">Cancel</button></td></tr>`).join('')||'<tr><td colspan="6" class="empty">No scheduled erasures.</td></tr>';
+  body.querySelectorAll('button[data-cancel]').forEach(btn=>btn.onclick=async()=>{
+    try{ const r=await api('/erasures/'+encodeURIComponent(btn.dataset.cancel)+'/cancel',{method:'POST'}); toast('Scheduled erasure cancelled — audited'); loadErasures(); }
+    catch(e){ toast(e.message||'Cancel failed'); }
+  });
+}
+async function loadErasures(){
+  const body=$('#eraseSched'); if(!body) return;
+  let d; try{ d=await api('/erasures'); }catch(e){ body.innerHTML=`<tr><td colspan="6" class="empty">${esc(e.message)}</td></tr>`; erasureRows=[]; return; }
+  erasureRows=d.scheduled||[];
+  drawErasures();
+}
+// live "executes in Ns" countdown — ticks only while the Compliance view is on screen.
+setInterval(()=>{
+  if(current!=='compliance'||!erasureRows.length) return;
+  const body=$('#eraseSched'); if(!body) return; let changed=false;
+  erasureRows.forEach(s=>{ if(s.executesInSec>0){ s.executesInSec--; changed=true; } });
+  if(changed) body.querySelectorAll('td[data-eid]').forEach(td=>{ const s=erasureRows.find(x=>String(x.id)===td.getAttribute('data-eid')); if(s) td.innerHTML=fmtCountdown(s.executesInSec); });
+},1000);
+
+// ---------- Approvals (dual-control commit queue) ----------
+async function loadApprovals(){
+  const el=$('#view-approvals');
+  let d; try{ d=await api('/approvals'); }catch(e){ el.innerHTML=`<div class="note">${esc(e.message)}</div>`; return; }
+  const pend=d.pending||[];
+  $('#approvalsBadge').textContent=pend.length;
+  el.innerHTML=`
+    <div class="kpis" style="grid-template-columns:repeat(2,1fr)">
+      <div class="kpi" data-tip="<b>Pending</b>Dual-control actions requested but not yet committed. Each needs a second, distinct approver before it takes effect."><span class="stripe" style="background:var(--challenge)"></span><div class="k-label">Pending actions</div><div class="k-val">${pend.length}</div><div class="k-sub">awaiting a distinct approver</div></div>
+      <div class="kpi" data-tip="<b>Separation of duty</b>The operator who requested an action can never commit it. Erasures additionally require the privacy-officer role."><span class="stripe" style="background:var(--accent)"></span><div class="k-label">Separation of duty</div><div class="k-val mono" style="font-size:15px">requester ≠ approver</div><div class="k-sub">erasure needs a privacy officer</div></div>
+    </div>
+    <section class="card">
+      <header><h2>Pending dual-control actions</h2><div class="push"></div><span class="mono" style="font-size:11px;color:var(--muted)">commit needs a distinct approver</span></header>
+      <div class="streamwrap"><table><thead><tr><th>Id</th><th>Action</th><th>Needs role</th><th>Params</th><th></th></tr></thead><tbody id="apRows"></tbody></table></div>
+    </section>`;
+  const rows=$('#apRows');
+  rows.innerHTML=pend.map(p=>{
+    const params=(p.params&&typeof p.params==='object')?JSON.stringify(p.params):String(p.params==null?'':p.params);
+    return `<tr><td class="mono" style="font-size:12.5px" data-tip="Pending action id">${esc(String(p.id).slice(0,12))}…</td>
+      <td><span class="mode-badge mode-enforce">${esc(p.kind)}</span></td>
+      <td>${p.needsRole?`<span class="src-badge src-manual" data-tip="Committing requires this role">${esc(p.needsRole)}</span>`:'<span style="color:var(--faint)">—</span>'}</td>
+      <td class="mono" style="font-size:11.5px;color:var(--muted);max-width:300px;overflow:hidden;text-overflow:ellipsis" data-tip="${esc(params)}">${esc(params)}</td>
+      <td style="text-align:right"><button class="btn primary" data-id="${esc(String(p.id))}" data-tip="Commit this action with a distinct approver account. Erasure requires the privacy-officer role. The action is written to the audit chain.">Commit</button></td></tr>`;
+  }).join('')||'<tr><td colspan="5" class="empty">No pending approvals.</td></tr>';
+  rows.querySelectorAll('button[data-id]').forEach(btn=>btn.onclick=async()=>{
+    try{ await api('/approvals/'+encodeURIComponent(btn.dataset.id),{method:'POST'}); toast('Approved & committed — audited'); loadApprovals(); }
+    catch(e){ toast(e.message||'Commit failed'); }
+  });
+}
+
+// ---------- drill-over ----------
+async function drill(ref){
+  const scrim=$('#scrim'),dr=$('#drawer');
+  $('#d-title').textContent=ref||'record'; $('#d-body').innerHTML='<div class="empty">Loading…</div>';
+  scrim.classList.add('show'); dr.classList.add('show');
+  let r; try{ r=await api('/incidents/'+encodeURIComponent(ref)); }catch(e){ $('#d-body').innerHTML=`<div class="note">${esc(e.message)}</div>`; return; }
+  const sig=(r.top_signals||[]).map(s=>`<div class="kv"><span class="k mono" style="font-size:12px">${esc(s.id)}</span><span class="v">${(s.conf||0).toFixed(2)}</span></div>`).join('');
+  $('#d-body').innerHTML=`
+    <div><div class="sec-label">Decision</div>
+      <div class="kv"><span class="k">verdict</span><span class="v">${verdictCell(r.verdict)}</span></div>
+      <div class="kv"><span class="k">event</span><span class="v" style="font-size:12px">${esc(r.event_type)}</span></div>
+      <div class="kv"><span class="k">matched protections</span><span class="v">${(r.triggered_rules||[]).map(ruleName).map(esc).join(', ')||'—'}</span></div>
+      <div class="kv"><span class="k">risk</span><span class="v">${r.risk_score||0}</span></div>
+      <div class="kv"><span class="k">action / mode</span><span class="v">${esc(r.enforcement_action||'—')} · ${esc(r.enforcement_mode||'—')}</span></div>
+      ${r.fail_reason?`<div class="kv"><span class="k">reason</span><span class="v" style="font-size:11.5px">${esc(r.fail_reason)}</span></div>`:''}</div>
+    <div><div class="sec-label">Subject (pseudonymized)</div>
+      <div class="kv"><span class="k">session</span><span class="v" style="color:var(--faint);font-size:11px">${esc((r.session_pseudonym||'—')).slice(0,20)}…</span></div>
+      <div class="kv"><span class="k">host / route</span><span class="v" style="font-size:12px">${esc(r.host||'—')} ${esc(r.route_class||'')}</span></div>
+      <div class="kv"><span class="k">config</span><span class="v">${esc(r.config_version||'—')}</span></div>
+      <div class="kv"><span class="k">chain seq</span><span class="v">#${r.seq}</span></div></div>
+    ${sig?`<div><div class="sec-label">Top contributors</div>${sig}</div>`:''}
+    <div><div class="sec-label">Actions</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" id="d-rescore" data-tip="Re-open this record to re-examine the decision">Copy incident id</button>
+        <button class="btn" id="d-erase" data-tip="Start a right-to-erasure for this subject (resolves the pseudonym via the reverse index; dual-control)">Request erasure of this subject</button>
+      </div></div>
+    <div class="note">Identifiers are pseudonyms derived with a subject-specific key. The reference build does not provide a re-identification workflow. Erasure destroys this subject's linkage key from the Compliance view after the required approval and hold window.</div>`;
+  // Incident → action linkage (WS9): jump to Compliance pre-filled with this subject.
+  $('#d-erase') && ($('#d-erase').onclick=()=>{
+    const psn=r.session_pseudonym||''; if(!psn){ toast('No subject pseudonym on this record'); return; }
+    $('#scrim').classList.remove('show'); $('#drawer').classList.remove('show');
+    show('compliance');
+    setTimeout(()=>{ const f=$('#e-subj'); if(f){ f.value=psn; f.focus(); toast('Subject loaded — request erasure, then use a distinct privacy officer to approve'); } },120);
+  });
+  $('#d-rescore') && ($('#d-rescore').onclick=()=>{ navigator.clipboard && navigator.clipboard.writeText(r.incident||('#'+r.seq)); toast('Incident id copied'); });
+}
+$('#d-close').onclick=$('#scrim').onclick=()=>{$('#scrim').classList.remove('show');$('#drawer').classList.remove('show');};
+addEventListener('keydown',e=>{if(e.key==='Escape'){$('#scrim').classList.remove('show');$('#drawer').classList.remove('show');}});
+
+// ---------- status bar + live ----------
+// ---------- Settings ----------
+async function loadSettings(){
+  const el=$('#view-settings');
+  let effBody, schema;
+  try{ effBody=await api('/settings/effective'); schema=await api('/settings/schema'); }
+  catch(e){ el.innerHTML=`<div class="note">Settings unavailable: ${esc(e.message)}. Start Gate with <span class="mono">-settings-dir</span> to enable writes. Without an active settings overlay, reads still show the built-in and startup behavior.</div>`; return; }
+  const eff=effBody.effective||{};
+  const storeOk=!!effBody.storeAttached;
+  const ch=eff.challengeAt, dn=eff.denyAt, lc=eff.layerCap;
+  const gateLabels={
+    'gate.smuggle':'request-smuggling protection',
+    'gate.spoof_header':'forged internal-header protection',
+    'gate.ban':'request-rate bans',
+    'gate.verdict_token':'verdict trust tokens',
+    'gate.recon_sweep':'decision-probing sweep protection',
+    'gate.inject':'browser collector injection',
+    'gate.attest_floor':'high-value route step-up requirement'
+  };
+  const netLabels={
+    'net.proxy.hop':'proxy-hop evidence',
+    'net.proxy.anon':'anonymous-proxy evidence',
+    'net.proxy.spoof':'source-spoofing evidence',
+    'net.vpn':'virtual-private-network evidence',
+    'net.tor':'Tor exit evidence',
+    'net.tcp':'transport-pattern evidence',
+    'net.correlation':'cross-session network correlation'
+  };
+  const riskLabel=c=>({A:'more protective — applies immediately',B:'protection reducing — needs a distinct approver',C:'integrity reducing — needs a distinct approver and confirmation',D:'sensitive-route reducing — needs a distinct approver'}[c]||c||'server classified');
+  const resultText=r=>{
+    if(r.usable!==undefined){
+      const lines=['Preview: '+(r.usable?'enough samples':'not enough samples for a numeric estimate'),'Samples examined: '+(r.n||0),'Change risk: '+riskLabel(r.class)];
+      if(r.usable) lines.push('Estimated allow / challenge / deny counts: '+(r.allowDelta||0)+' / '+(r.challengeDelta||0)+' / '+(r.denyDelta||0));
+      return lines.join('\n');
+    }
+    if(r.applied) return 'Status: applied\nChange risk: '+riskLabel(r.class)+'\nConfiguration identity: '+(r.configVersion||'—');
+    if(r.pending) return 'Status: awaiting a distinct approver\nChange risk: '+riskLabel(r.class)+'\nApproval reference: '+(r.approvalId||'—');
+    return 'Settings request completed.';
+  };
+  const modeOptions=(values,currentLabel)=>['<option value="">('+currentLabel+')</option>'].concat((values||[]).map(v=>`<option value="${esc(v)}">${esc(v)}</option>`)).join('');
+  const criticalGates=new Set(schema.integrityCriticalGates||[]);
+  const gateControls=(schema.gates||[]).map(id=>{
+    const modes=(schema.modes&&schema.modes.gates||['enforce','monitor','shadow']).filter(m=>m!=='off'||!criticalGates.has(id));
+    return `<label class="fld"><span>${esc(gateLabels[id]||id)}</span><select data-gate="${esc(id)}">${modeOptions(modes,'unchanged')}</select></label>`;
+  }).join('');
+  const networkControls=(schema.netPolicyClasses||[]).map(id=>
+    `<label class="fld"><span>${esc(netLabels[id]||id)}</span><select data-net="${esc(id)}">${modeOptions((schema.modes&&schema.modes.netPolicy)||['enforce','monitor','shadow'],'built-in behavior')}</select></label>`
+  ).join('');
+  el.innerHTML=`
+    <div class="note" style="border-color:var(--challenge)">Settings do <b>not</b> make internally consistent, real-browser, human-paced automation distinguishable from legitimate use. With no active overlay, Gate preserves its built-in and startup behavior. The server computes change risk; every protection-reducing change requires a distinct approver.</div>
+    <div class="kpis" style="grid-template-columns:repeat(4,1fr)">
+      <div class="kpi"><span class="stripe" style="background:var(--accent)"></span><div class="k-label">Configuration identity</div><div class="k-val mono" style="font-size:13px">${esc(eff.configVersion||'—')}</div><div class="k-sub">${eff.emptyOverlay?'built-in and startup behavior':'settings overlay active'}</div></div>
+      <div class="kpi"><span class="stripe" style="background:${storeOk?'var(--allow)':'var(--muted)'}"></span><div class="k-label">Settings storage</div><div class="k-val" style="font-size:15px">${storeOk?'available':'read only'}</div><div class="k-sub">${esc(effBody.storeWarning||'-settings-dir')}</div></div>
+      <div class="kpi"><span class="stripe" style="background:var(--challenge)"></span><div class="k-label">Score thresholds</div><div class="k-val">${ch} / ${dn}</div><div class="k-sub">challenge / deny · per-stage maximum ${lc}</div></div>
+      <div class="kpi"><span class="stripe" style="background:var(--info)"></span><div class="k-label">Emergency monitor</div><div class="k-val" style="font-size:15px">${eff.killSwitch?'ENGAGED':'not engaged'}</div><div class="k-sub">${eff.globalMonitor?'enforcement suppressed':'normal route policy'}</div></div>
+    </div>
+    <div class="split">
+      <section class="card"><header><h2>Propose settings changes</h2><div class="push"></div><span style="font-size:11px;color:var(--muted)">server-validated fields</span></header>
+        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+          <div class="sec-label">Core scoring rules</div>
+          <label class="fld"><span>No interaction observed rule</span>
+            <select id="s-hr12"><option value="">(unchanged)</option><option value="enforce">enforce</option><option value="monitor">monitor</option></select></label>
+          <label class="fld"><span>Browser claim without execution evidence rule</span>
+            <select id="s-hr18"><option value="">(unchanged)</option><option value="enforce">enforce</option><option value="monitor">monitor</option></select></label>
+          <label class="fld"><span>Challenge threshold (raising reduces protection)</span><input id="s-ch" type="number" min="10" max="60" step="1" placeholder="${ch}"></label>
+          <label class="fld"><span>Deny threshold (raising reduces protection)</span><input id="s-dn" type="number" min="40" max="95" step="1" placeholder="${dn}"></label>
+          <label class="fld"><span>Per-stage score cap (lowering reduces protection)</span><input id="s-lc" type="number" min="30" max="80" step="1" placeholder="${lc}"></label>
+          <label class="fld"><span>No-interaction signal weight multiplier (0–2)</span><input id="s-w" type="number" min="0" max="2" step="0.05" placeholder="1"></label>
+          <div class="sec-label">Edge protections</div>
+          ${gateControls}
+          <div class="sec-label">Network evidence policy</div>
+          ${networkControls}
+          <div class="sec-label">Route policy</div>
+          <label class="fld"><span>Route prefix</span><input id="s-route-prefix" placeholder="/checkout"></label>
+          <label class="fld"><span>Route preset</span>
+            <select id="s-route"><option value="">(unchanged)</option><option value="strict">strict</option><option value="balanced">balanced</option><option value="monitor">monitor</option><option value="attested">attested</option><option value="off">off</option></select></label>
+          <div class="sec-label">Request-rate limits</div>
+          <label class="fld"><span>Window in seconds</span><input id="s-rw" type="number" min="1" step="1" placeholder="${eff.rateWindowSec||''}"></label>
+          <label class="fld"><span>Warning threshold</span><input id="s-rs" type="number" min="1" step="1" placeholder="${eff.rateSoft||''}"></label>
+          <label class="fld"><span>Ban threshold</span><input id="s-rh" type="number" min="1" step="1" placeholder="${eff.rateHard||''}"></label>
+          <label class="fld"><span>Confirmation for integrity-reducing changes</span><input id="s-ic" placeholder="DISABLE-INTEGRITY" autocomplete="off"></label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn" id="s-dry">Preview against aggregates</button>
+            <button class="btn primary" id="s-prop">Propose / apply</button>
+            <button class="btn" id="s-rb">Restore built-in behavior</button>
+          </div>
+          <pre id="s-out" class="mono" style="font-size:11px;background:var(--panel-2);padding:10px;border-radius:8px;max-height:160px;overflow:auto;margin:0"></pre>
+        </div>
+      </section>
+      <div class="side">
+        <section class="card"><header><h2>Effective edge protections</h2></header>
+          <div class="streamwrap"><table><thead><tr><th>Module</th><th>Mode</th></tr></thead>
+          <tbody>${Object.entries(eff.gates||{}).map(([k,v])=>`<tr><td>${esc(gateLabels[k]||k)}</td><td>${esc(v)}</td></tr>`).join('')||'<tr><td colspan="2" class="empty">—</td></tr>'}</tbody></table></div>
+        </section>
+        <section class="card" style="margin-top:16px"><header><h2>Core rule overrides</h2></header>
+          <div class="streamwrap"><table><thead><tr><th>Rule</th><th>Mode</th></tr></thead>
+          <tbody>${Object.entries(eff.hardRules||{}).map(([k,v])=>`<tr><td>${esc(ruleName(k))}</td><td>${esc(v)}</td></tr>`).join('')||'<tr><td colspan="2" class="empty">No overrides; built-in rule modes apply.</td></tr>'}</tbody></table></div>
+        </section>
+        <section class="card" style="margin-top:16px"><header><h2>Network, routes, and rates</h2></header>
+          <div class="streamwrap"><table><thead><tr><th>Key</th><th>Value</th></tr></thead>
+          <tbody>
+            ${Object.entries(eff.netPolicy||{}).map(([k,v])=>`<tr><td>${esc(netLabels[k]||k)}</td><td>${esc(v)}</td></tr>`).join('')}
+            ${Object.entries(eff.routes||{}).map(([k,v])=>`<tr><td class="mono" style="font-size:12px">route ${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')}
+            <tr><td>request-rate window</td><td>${eff.rateWindowSec||'—'} seconds</td></tr>
+            <tr><td>warning / ban thresholds</td><td>${eff.rateSoft||'—'} / ${eff.rateHard||'—'}</td></tr>
+          </tbody></table></div>
+        </section>
+        <section class="card" style="margin-top:16px"><header><h2>Change approval</h2></header>
+          <div style="padding:12px;font-size:12px;color:var(--muted)">
+            <div>· More-protective changes apply immediately for an Operator.</div>
+            <div>· Protection-reducing changes wait for a distinct Approver.</div>
+            <div>· Integrity-reducing changes also require the confirmation phrase.</div>
+            <div>· Sensitive-route reductions are identified separately in audit records.</div>
+            <div>· Preview results are aggregate-only and make no numeric claim below the minimum sample size.</div>
+          </div>
+        </section>
+      </div>
+    </div>`;
+  function buildBody(){
+    const b={parentConfigVersion:eff.configVersion};
+    const hr={};
+    if($('#s-hr12').value) hr['HR-12']=$('#s-hr12').value;
+    if($('#s-hr18').value) hr['HR-18']=$('#s-hr18').value;
+    if(Object.keys(hr).length) b.hardRules=hr;
+    const scoring={};
+    if($('#s-ch').value!=='') scoring.challengeAt=Number($('#s-ch').value);
+    if($('#s-dn').value!=='') scoring.denyAt=Number($('#s-dn').value);
+    if($('#s-lc').value!=='') scoring.layerCap=Number($('#s-lc').value);
+    if(Object.keys(scoring).length) b.scoring=scoring;
+    if($('#s-w').value!=='') b.weightMultipliers={'l4.event.no_interaction':Number($('#s-w').value)};
+    const gates={};
+    el.querySelectorAll('select[data-gate]').forEach(x=>{if(x.value)gates[x.dataset.gate]=x.value;});
+    if(Object.keys(gates).length) b.gates=gates;
+    const np={};
+    el.querySelectorAll('select[data-net]').forEach(x=>{if(x.value)np[x.dataset.net]=x.value;});
+    if(Object.keys(np).length) b.netPolicy=np;
+    const routePrefix=$('#s-route-prefix').value.trim();
+    if($('#s-route').value&&routePrefix) b.routes={[routePrefix]:$('#s-route').value};
+    const rate={};
+    if($('#s-rw').value!=='') rate.windowSec=Number($('#s-rw').value);
+    if($('#s-rs').value!=='') rate.soft=Number($('#s-rs').value);
+    if($('#s-rh').value!=='') rate.hard=Number($('#s-rh').value);
+    if(Object.keys(rate).length) b.rateLimit=rate;
+    if($('#s-ic').value.trim()) b.integrityConfirm=$('#s-ic').value.trim();
+    return b;
+  }
+  $('#s-dry').onclick=async()=>{
+    if($('#s-route').value&&!$('#s-route-prefix').value.trim()){ toast('Enter a route prefix for the selected preset'); $('#s-route-prefix').focus(); return; }
+    try{ const r=await api('/settings/dry-run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(buildBody())});
+      $('#s-out').textContent=resultText(r); toast(r.usable?'Preview complete':'Not enough samples for a numeric preview'); }
+    catch(e){ toast('Dry-run failed: '+e.message); }
+  };
+  $('#s-prop').onclick=async()=>{
+    if($('#s-route').value&&!$('#s-route-prefix').value.trim()){ toast('Enter a route prefix for the selected preset'); $('#s-route-prefix').focus(); return; }
+    const b=buildBody();
+    if(!await confirmAction({title:'Propose settings overlay',danger:!!$('#s-hr18').value&&$('#s-hr18').value==='monitor',
+      msg:'The server will compute whether this change increases or reduces protection. Protection-reducing changes move to Approvals. Current configuration: '+esc(eff.configVersion)})) return;
+    try{ const r=await api('/settings/overlays',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});
+      $('#s-out').textContent=resultText(r);
+      if(r.applied) toast('Applied: '+riskLabel(r.class)); else if(r.pending) toast('Pending approval: '+riskLabel(r.class)); loaded.delete('settings'); loadSettings(); }
+    catch(e){ toast(e.message); $('#s-out').textContent=e.message; }
+  };
+  $('#s-rb').onclick=async()=>{
+    if(!await confirmAction({title:'Restore built-in behavior',msg:'Clear the active settings overlay and return to built-in and startup behavior. A distinct Approver may be required when this removes a protection increase.'})) return;
+    try{ const r=await api('/settings/rollback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({parentConfigVersion:eff.configVersion})});
+      toast(r.pending?'Rollback pending Approver':(r.rolledBack?'Rolled back':'No-op')); loaded.delete('settings'); loadSettings(); }
+    catch(e){ toast(e.message); }
+  };
+}
+
+const loaders={overview:loadOverview,integrity:loadIntegrity,sessions:loadSessions,'virtual-usb':loadVirtualUSB,bans:loadBans,policy:loadPolicy,settings:loadSettings,compliance:loadCompliance,approvals:loadApprovals};
+async function refreshStatus(){
+  try{ const d=await api('/integrity'); $('#sb-chain').innerHTML=d.ok?'<span class="ok">●</span> chain verified':'<span class="bad">●</span> chain VIOLATION';
+    $('#sb-node').textContent='node '+d.node+' · '+d.records+' rec'; $('#liveLabel').textContent='live · '+d.records+' records';
+  }catch(e){ $('#liveLabel').textContent='offline'; $('#sb-chain').innerHTML='<span class="bad">●</span> chain unreachable'; }
+  try{ const b=await api('/bans'); $('#banBadge').textContent=b.count; }catch(e){}
+  try{ const a=await api('/approvals'); $('#approvalsBadge').textContent=a.count; }catch(e){}
+}
+$('#refreshBtn').onclick=()=>{ loaders[current](); refreshStatus(); toast('Refreshed'); };
+// auto-refresh overview + status
+setInterval(()=>{ refreshStatus(); if(current==='overview')loadOverview(); },4000);
+refreshStatus(); loadOverview();
+</script>
+</body>
+</html>

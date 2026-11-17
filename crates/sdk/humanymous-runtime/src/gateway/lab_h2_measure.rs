@@ -301,6 +301,7 @@ fn issue(app: &mut Application, now: u64) -> Result<Value, String> {
         }
         Decision::Local(status, _) => Err(format!("issue status {status}")),
         Decision::Origin { .. } => Err("issue unexpected origin".into()),
+        Decision::Legacy(_) => Err("issue unexpected legacy surface".into()),
     }
 }
 
