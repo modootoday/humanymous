@@ -7,7 +7,9 @@ use std::{fs, path::PathBuf};
 struct Fixture(PathBuf);
 impl Fixture {
     fn new() -> Self {
-        let path = std::env::temp_dir().join(format!(
+        let path = std::fs::canonicalize(std::env::temp_dir())
+            .expect("macOS temp_dir resolves through the /var link; the reader refuses linked ancestors")
+            .join(format!(
             "humanymous-selected-{}-{}",
             std::process::id(),
             std::time::SystemTime::now()

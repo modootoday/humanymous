@@ -8,7 +8,9 @@ use std::{
 struct Fixture(PathBuf);
 impl Fixture {
     fn new() -> Self {
-        let root = std::env::temp_dir().join(format!(
+        let root = std::fs::canonicalize(std::env::temp_dir())
+            .expect("macOS temp_dir resolves through the /var link; the reader refuses linked ancestors")
+            .join(format!(
             "hmn-selected-cli-{}-{}",
             std::process::id(),
             std::time::SystemTime::now()
