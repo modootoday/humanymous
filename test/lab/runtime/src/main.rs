@@ -4,6 +4,8 @@ mod attack_catalog;
 #[cfg(unix)]
 mod attestation;
 #[cfg(unix)]
+mod browser_controls;
+#[cfg(unix)]
 mod browser_dns;
 #[cfg(any(unix, test))]
 #[path = "../../browser_expectations.rs"]

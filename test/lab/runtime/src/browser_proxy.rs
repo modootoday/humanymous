@@ -46,11 +46,30 @@ pub struct ProxyConfig {
     /// Browser F accepts absolute-form and serves assets from its own S.
     pub browser: bool,
 }
+/// Counters, collect entities and (Gate side) the exact forwarded collect
+/// requests. Requests stay in process memory for the post-browser controls and
+/// are never written to a frame, log or HTTP response.
 #[derive(Clone, Default)]
-pub struct Receipts(Arc<Mutex<BTreeMap<String, u64>>>, Arc<Mutex<Vec<Vec<u8>>>>);
+pub struct Receipts(
+    Arc<Mutex<BTreeMap<String, u64>>>,
+    Arc<Mutex<Vec<Vec<u8>>>>,
+    Arc<Mutex<Vec<Vec<u8>>>>,
+);
 /// Collect entities retained per proxy; the pilot posts exactly one.
 const COLLECT_CAPTURE_MAX: usize = 4;
 impl Receipts {
+    /// Retain the exact forwarded collect request bytes, bounded.
+    fn capture_request(&self, request: &[u8]) {
+        if let Ok(mut requests) = self.2.lock()
+            && requests.len() < COLLECT_CAPTURE_MAX
+        {
+            requests.push(request.to_vec());
+        }
+    }
+    /// Forwarded collect requests in arrival order (Gate frontend only).
+    pub fn collect_requests(&self) -> Vec<Vec<u8>> {
+        self.2.lock().map(|v| v.clone()).unwrap_or_default()
+    }
     fn hit(&self, key: &str) {
         if let Ok(mut counts) = self.0.lock() {
             *counts.entry(key.into()).or_default() += 1;
@@ -210,6 +229,7 @@ async fn exchange(socket: &mut TcpStream, config: &ProxyConfig, receipts: &Recei
         // posted, so other topologies replay collector bytes, not fixtures.
         if !config.browser && fixture()["routes"]["collect"].as_str() == Some(&frame.target) {
             receipts.capture(&frame.body);
+            receipts.capture_request(&encode(&frame));
         }
     }
     let upstream = if api {

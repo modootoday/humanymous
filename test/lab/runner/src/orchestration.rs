@@ -52,6 +52,7 @@ mod browser_failure;
 pub(crate) mod cap0_product_honesty;
 pub(crate) mod clean_room_product;
 pub(crate) mod clean_room_product_matrix;
+mod collector_parity;
 pub(crate) mod g2_collector_product_binding;
 pub(crate) mod g4_cef_at;
 pub(crate) mod g5_witness_transport;
