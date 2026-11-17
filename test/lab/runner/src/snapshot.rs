@@ -252,6 +252,9 @@ fn allowed(path: &str) -> bool {
             path,
             "web/js/features/mouse.js" | "web/js/features/keystroke.js" | "web/js/advanced.js"
         )
+        // Read-only legacy pages served by the pass-pilot Gate and mounted by
+        // the runtime pilot's unit tests (deployments/lab/images/product.Dockerfile).
+        || matches!(path, "web/pass.html" | "web/demo.html")
 }
 pub fn write(directory: &Path, name: &str, value: &Value) -> Result<()> {
     fs::write(directory.join(name), serde_json::to_vec_pretty(value)?)?;
@@ -357,11 +360,14 @@ mod tests {
             "deployments/lab/compose.rust.mount.yaml",
             "deployments/lab/images/product.Dockerfile",
             "crates/sdk/humanymous-core/src/watermark/codec/fixtures/minimal_module.wasm",
+            "web/pass.html",
+            "web/demo.html",
             "crates/sdk/humanymous-runtime/assets/console/console.html",
             "crates/sdk/humanymous-runtime/assets/console/styles/00-layers.css",
         ] {
             assert!(allowed(path));
         }
+        assert!(!allowed("web/playground.html"));
         assert!(!allowed(
             "crates/sdk/humanymous-core/src/watermark/codec/fixtures/other.wasm"
         ));
