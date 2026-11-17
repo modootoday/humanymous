@@ -62,16 +62,37 @@ Order follows dependency. Each capability turns one `required_unavailable` entry
 | --- | --- | --- | --- |
 | 2a | full Gate TLS/H2/capture | gate, raw-tls-h2 | certificate source (Step 3 B02) |
 | 2b | runtime binary authenticated witness transport | attack-catalog, swarm | — |
-| 2c | cross-namespace origin/audit effect binding | origin-isolation, audit-restart | owner G6 grant |
+| 2c | cross-namespace origin/audit effect binding | origin-isolation, audit-restart | — (Go `internal/gate`, `internal/audit`) |
 | 2d | session-bound real browser collector | collector-parity, missing-signals-closed | browser image |
 | 2e | Pass recovery | pass | — |
 | 2f | human, keyboard and assistive controls | human-control, challenge-keyboard, challenge-assistive | Windows AT venue for the native part |
 | 2g | native OS qualification | native axis | Step 1 |
-| 2h | signed remote target attestation | deployment | owner signing key (secret) |
-| 2i | provider deployment | deployment, documentation-examples | owner provider account |
+| 2h | signed remote target attestation | deployment | beyond Go parity; lab key generated inside the Docker topology |
+| 2i | provider deployment | deployment, documentation-examples | Go parity is compose/k8s/systemd manifests; a live provider is beyond Go |
 
 Red-blue product (RB) and clean-room product matrix (PM) runs need owner-authored
-grants, per `transfer_applicator.rs`. Agents never author grants.
+grants, per `transfer_applicator.rs`. Agents never author grants. A grant is a
+governance step for a run, not a missing capability: the implementation work above
+proceeds without one.
+
+### Cross-check against the measured Go implementation
+
+Measured at oracle 981d25c on 2026-11-17:
+
+- **No paid or owner-held resource.** Go TLS used `autocert` with free Let's
+  Encrypt (TLS-ALPN-01, `DirCache`, optional email, `AcceptTOS`, host whitelist);
+  `-acme-directory` selected staging or a private CA. BYO pairs used
+  `tls.LoadX509KeyPair`. Self-signed was the default when nothing was set. The
+  Rust issuer (#68) follows the same path without a production self-signed
+  fallback.
+- **Automatable at Go parity:** 2a (`cmd/server` tlsconn, h1capture, h2capture),
+  2b (`internal/audit` witness, merkle, proofs), 2c (`internal/gate`), 2d (`web/`
+  collector), 2e (`pass_handler`, store, proof), and 2g on GitHub-hosted runners.
+- **Beyond Go:** 2h. Go `internal/attestation` was a local HMAC demo. Signed remote
+  attestation is new Rust scope; a lab key generated in the topology suffices.
+  2i: Go shipped only deployment manifests, which are ported as manifests; the
+  container SoT keeps a live provider out of the Docker lab.
+- **Needs a desktop:** only the native Windows assistive-technology part of 2f.
 
 ## Step 3: legacy Go port (FM11 ledger)
 
@@ -80,7 +101,7 @@ rows. Port them by plan slice:
 
 | Slice | Rows | Notes |
 | --- | --- | --- |
-| B02 certificate source (ACME, BYO, dev self-sign) | cmd/server, cmd/gate tls/acme/cert | also unblocks 2a |
+| B02 certificate source (ACME, BYO, dev self-sign) | cmd/server, cmd/gate tls/acme/cert | #67 source, #68 ACME issuer; dev self-sign and a live directory run remain; unblocks 2a |
 | B23 Redis client, ledger, rate limit | internal/redis, internal/gate redis* | |
 | B24 Redis/ClickHouse audit projection | internal/audit sinks | |
 | B11 playground, livefeed, launch parity | cmd/server playground/launch, internal/livefeed | lab-only replacement |
@@ -111,3 +132,6 @@ pilot, and `delivery ready` on every axis. Summarise in #65 and update #22.
 - 2026-11-17: the owner chose roadmap implementation, porting Go before removal,
   and handling .NET now. A merge attempt on #41 was refused: "Required status
   check validate / merge-ready is failing". The ruleset has no bypass actors.
+- 2026-11-17: a cross-check against the measured Go implementation found no paid or
+  owner-held resource in Go's TLS path. The owner G6 grant, owner signing key and
+  owner provider account were removed as capability prerequisites.
