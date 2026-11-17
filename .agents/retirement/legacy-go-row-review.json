@@ -14,9 +14,9 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "ported_unit": 167,
-  "partial": 95,
-  "missing": 50,
+  "ported_unit": 172,
+  "partial": 94,
+  "missing": 46,
   "not_applicable": 2
  },
  "by_package": {
@@ -77,10 +77,10 @@
    "ported_unit": 5
   },
   "internal/gate": {
-   "partial": 46,
-   "missing": 18,
+   "partial": 45,
+   "missing": 14,
    "not_applicable": 1,
-   "ported_unit": 20
+   "ported_unit": 25
   },
   "internal/httpx": {
    "not_applicable": 1
@@ -2926,41 +2926,92 @@
   },
   {
    "baseline_path": "internal/gate/redisledger_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::seal_binds_the_value_to_its_key_and_refuses_tampering",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::wargame_r241_r250_seal_axis"
+   ],
    "go_test_map": {
-    "TestSealOpenValue": null
+    "TestSealOpenValue": "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::seal_binds_the_value_to_its_key_and_refuses_tampering"
    },
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Redis ledger in Rust (B23).",
-   "test_verification": {}
+   "notes": "Seal/open round trip, relocation, tamper and unsigned passthrough.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::seal_binds_the_value_to_its_key_and_refuses_tampering": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::wargame_r241_r250_seal_axis": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/redisledger.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::a_ban_outage_serves_the_local_view",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::a_coordinator_outage_serves_the_local_verdict",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::a_flood_split_across_nodes_bans_on_aggregate",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::a_lifted_ban_cannot_be_resurrected_by_replay",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::a_rolled_back_verdict_is_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::a_verdict_set_on_one_node_is_seen_on_another",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::an_absent_verdict_is_unknown",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::an_auto_ban_on_one_node_is_enforced_on_another",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::an_unsigned_coordinator_cannot_impose_permanent_or_broad_bans",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::list_unions_the_coordinator_and_local_view",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::relocated_and_expired_bans_are_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::relocated_forged_and_stale_verdicts_fall_back_to_the_local_view",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::seal_binds_the_value_to_its_key_and_refuses_tampering"
+   ],
    "go_test_map": {},
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Redis ban/verdict ledger in Rust (B23).",
-   "test_verification": {}
+   "notes": "gateway::coordinator::ledger::{SharedBanLedger, SharedVerdictLedger} implement the BanLedger/VerdictLedger seams over the RESP client at Go parity: hmn:ban:/hmn:verdict: keys, SET PX write-through, local mirror fallback on outage or untrusted value, key-bound HMAC seal, verdict freshness and per-session anti-rollback high-water mark, per-key lift epoch (30 d) against resurrection, 400-day permanent retention horizon, SCAN union bounded by 4096 rounds / 65536 keys with cursor-cycle detection. Stricter than Go: fallbacks are counted in Degradation, and an unsigned coordinator cannot impose permanent or cidr: bans (they need dual control). Time is Unix-epoch wall clock across nodes.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::a_ban_outage_serves_the_local_view": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::a_coordinator_outage_serves_the_local_verdict": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::a_flood_split_across_nodes_bans_on_aggregate": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::a_lifted_ban_cannot_be_resurrected_by_replay": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::a_rolled_back_verdict_is_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::a_verdict_set_on_one_node_is_seen_on_another": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::an_absent_verdict_is_unknown": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::an_auto_ban_on_one_node_is_enforced_on_another": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::an_unsigned_coordinator_cannot_impose_permanent_or_broad_bans": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::list_unions_the_coordinator_and_local_view": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::relocated_and_expired_bans_are_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::relocated_forged_and_stale_verdicts_fall_back_to_the_local_view": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::seal_binds_the_value_to_its_key_and_refuses_tampering": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/redisratelimit.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/config.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::a_flood_split_across_nodes_bans_on_aggregate",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::a_flood_split_across_nodes_is_counted_on_aggregate",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::a_rate_outage_falls_back_to_the_local_counter",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::widening_the_shared_window_reports_the_coverage_gap"
+   ],
    "go_test_map": {},
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Redis rate limiter; only local network/history/rate.",
-   "test_verification": {}
+   "notes": "SharedRateLimiter implements the RateLimiter seam with the Go sliding-window Lua (ZREMRANGEBYSCORE/ZADD/PEXPIRE/ZCARD) on hmn:rl:<key>, ns scores, TTL = window x 6, member now-seq; outage falls back to the local limiter and is counted; thresholds come from the local configuration; a widened window reports the same coverage gap as the local history. ban::Store is generic over the seam so auto-bans escalate on the fleet aggregate.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::a_flood_split_across_nodes_bans_on_aggregate": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::a_flood_split_across_nodes_is_counted_on_aggregate": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::a_rate_outage_falls_back_to_the_local_counter": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::widening_the_shared_window_reports_the_coverage_gap": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/request.go",
@@ -3052,12 +3103,13 @@
   },
   {
    "baseline_path": "internal/gate/seams.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/ban.rs",
     "crates/sdk/humanymous-runtime/src/gateway/seams.rs",
     "crates/sdk/humanymous-runtime/src/gateway/verdict_store.rs",
-    "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs"
+    "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::ban_store_enforces_through_the_seam",
@@ -3067,12 +3119,10 @@
     "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::verdict_store_serves_through_the_seam"
    ],
    "go_test_map": {},
-   "gaps": [
-    "No shared (fleet) implementation; Redis backends are B23"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "BanLedger (including the monitor-only rate observation) and RateLimiter (including hot configure) are Rust traits implemented by the local stores, which is the compile-time proof Go had. Deliberate difference: dual-controlled bans are not on the seam. VerdictLedger seam added and implemented by VerdictStore.",
+   "notes": "BanLedger (including the monitor-only rate observation) and RateLimiter (including hot configure) are Rust traits implemented by the local stores, which is the compile-time proof Go had. Deliberate difference: dual-controlled bans are not on the seam. VerdictLedger seam added and implemented by VerdictStore. Fleet-shared implementations: gateway::coordinator::ledger (B23).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::ban_store_enforces_through_the_seam": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::monitor_mode_never_bans_through_the_seam": "passed",
@@ -3554,26 +3604,32 @@
   },
   {
    "baseline_path": "internal/gate/wargame_axis_redis_r241_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::wargame_r241_r250_seal_axis"
+   ],
    "go_test_map": {
-    "TestWargameR241_RedisSealOpenRoundTrip": null,
-    "TestWargameR242_RedisRelocationRejected": null,
-    "TestWargameR243_RedisUnsignedInjectionRejected": null,
-    "TestWargameR244_RedisTamperedPayloadRejected": null,
-    "TestWargameR245_RedisNilKeyPassthroughCompat": null,
-    "TestWargameR246_RedisCrossContextBanVsVerdict": null,
-    "TestWargameR247_RedisEmptyPayloadSeal": null,
-    "TestWargameR248_RedisWrongKeyRejected": null,
-    "TestWargameR249_RedisTagTruncationRejected": null,
-    "TestWargameR250_AxisRedisClose": null
+    "TestWargameR241_RedisSealOpenRoundTrip": "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::wargame_r241_r250_seal_axis",
+    "TestWargameR242_RedisRelocationRejected": "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::wargame_r241_r250_seal_axis",
+    "TestWargameR243_RedisUnsignedInjectionRejected": "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::wargame_r241_r250_seal_axis",
+    "TestWargameR244_RedisTamperedPayloadRejected": "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::wargame_r241_r250_seal_axis",
+    "TestWargameR245_RedisNilKeyPassthroughCompat": "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::wargame_r241_r250_seal_axis",
+    "TestWargameR246_RedisCrossContextBanVsVerdict": "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::wargame_r241_r250_seal_axis",
+    "TestWargameR247_RedisEmptyPayloadSeal": "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::wargame_r241_r250_seal_axis",
+    "TestWargameR248_RedisWrongKeyRejected": "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::wargame_r241_r250_seal_axis",
+    "TestWargameR249_RedisTagTruncationRejected": "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::wargame_r241_r250_seal_axis",
+    "TestWargameR250_AxisRedisClose": "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::wargame_r241_r250_seal_axis"
    },
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Redis seal/open in Rust.",
-   "test_verification": {}
+   "notes": "All ten seal-axis rounds asserted in one Rust test.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::wargame_r241_r250_seal_axis": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/wargame_axis_shadow_rate_r251_test.go",
