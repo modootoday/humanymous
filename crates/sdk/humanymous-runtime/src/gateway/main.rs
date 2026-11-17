@@ -2,9 +2,37 @@
 use humanymous_runtime::gateway::service::{ServiceHost, read_configuration};
 use std::io::{self, IsTerminal, Write};
 
+/// One bounded private request in, one document out. The installation key never
+/// crosses the pipe; only the public key or signed statement is written.
+fn attestation(mode: &str) -> Result<(), &'static str> {
+    use humanymous_runtime::gateway::attestation;
+    let mut request = Vec::new();
+    io::Read::read_to_end(&mut io::Read::take(io::stdin().lock(), 8_193), &mut request)
+        .map_err(|_| "attestation request pipe")?;
+    let output = match mode {
+        "attestation-provision" => attestation::provision(&request),
+        _ => attestation::answer(&request),
+    }
+    .map_err(|refusal| refusal.code())?;
+    let mut stdout = io::stdout().lock();
+    stdout
+        .write_all(&output)
+        .and_then(|_| stdout.write_all(b"\n"))
+        .and_then(|_| stdout.flush())
+        .map_err(|_| "attestation output pipe")
+}
+
 fn run() -> Result<(), &'static str> {
-    if std::env::args_os().len() != 1 || io::stdin().is_terminal() || io::stdout().is_terminal() {
+    let arguments: Vec<_> = std::env::args_os().skip(1).collect();
+    if io::stdin().is_terminal() || io::stdout().is_terminal() {
         return Err("private inherited configuration/readiness pipes required");
+    }
+    match arguments.as_slice() {
+        [] => {}
+        [mode] if mode == "attestation-provision" || mode == "attestation-answer" => {
+            return attestation(mode.to_str().ok_or("attestation mode")?);
+        }
+        _ => return Err("private inherited configuration/readiness pipes required"),
     }
     let config = read_configuration(io::stdin().lock()).map_err(|_| "configuration pipe")?;
     let runtime = tokio::runtime::Builder::new_multi_thread()
