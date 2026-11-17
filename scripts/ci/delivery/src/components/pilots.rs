@@ -535,7 +535,9 @@ fn execute(root: &Path, dir: &Path, pilot: &Value, exe: &Path, name: &str) -> Re
         );
     }
     if let Some(env) = pilot["source_root_env"].as_str() {
-        command.env(env, root);
+        // Source-root consumers require the exact canonical spelling; on
+        // Windows that is the verbatim `\\?\` form `canonicalize` returns.
+        command.env(env, root.canonicalize().map_err(|e| e.to_string())?);
     }
     let output = if linux {
         command.output().map_err(|e| e.to_string())?
