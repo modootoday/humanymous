@@ -69,14 +69,14 @@ fn control(value: &Value) -> Result<Control> {
     })
 }
 
-fn private_directory(path: &Path) -> io::Result<()> {
+pub(crate) fn private_directory(path: &Path) -> io::Result<()> {
     fs::create_dir(path)?;
     fs::set_permissions(path, fs::Permissions::from_mode(0o700))
 }
 
 /// First boot only: fresh sealed custody and an empty live history. A missing
 /// custody on a later boot is never recreated.
-fn provision(keys: &Path, live: &Path, passphrase: &str) -> Result<()> {
+pub(crate) fn provision(keys: &Path, live: &Path, passphrase: &str) -> Result<()> {
     if keys.join("keys.sealed").exists() || live.exists() {
         return Err("provisioning refused: custody or history already present".into());
     }
@@ -92,7 +92,7 @@ fn provision(keys: &Path, live: &Path, passphrase: &str) -> Result<()> {
     Ok(())
 }
 
-struct Runtime(Child);
+pub(crate) struct Runtime(pub(crate) Child);
 impl Drop for Runtime {
     fn drop(&mut self) {
         let _ = self.0.kill();
@@ -102,7 +102,9 @@ impl Drop for Runtime {
 
 /// Start the shipped binary with the private document; `Ok(None)` when it
 /// exits without readiness (a startup refusal), with its exit code.
-fn start(document: &Value) -> Result<std::result::Result<(Runtime, Value), Option<i32>>> {
+pub(crate) fn start(
+    document: &Value,
+) -> Result<std::result::Result<(Runtime, Value), Option<i32>>> {
     let mut child = Command::new(RUNTIME)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())

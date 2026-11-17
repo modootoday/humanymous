@@ -1,10 +1,12 @@
 use super::{
-    OwnedLab,
+    OwnedLab, Target,
     report::{NetworkRow, Step},
 };
 use crate::report::Status;
 use humanymous_core::signals::report::ClientReport;
-use humanymous_defender::lab::{LabError, OwnedRuntime, Request, Session};
+use humanymous_defender::lab::{
+    LabError, OwnedRuntime, ProcessReceipt, Request, Response, Session, SnapshotDelta,
+};
 use serde_json::{Value, json};
 
 #[derive(Clone, Copy)]
@@ -195,12 +197,17 @@ pub(super) fn matches(spec: &Spec, row: &NetworkRow) -> bool {
     let Some(effects) = &row.effects else {
         return false;
     };
+    matches_effects(kind, &row.steps, effects)
+}
+
+/// Exact statuses, origin delta, audit verdict sequence, rule and event types.
+pub(super) fn matches_effects(kind: Kind, steps: &[Step], effects: &SnapshotDelta) -> bool {
     let (statuses, origin, verdicts, rule) = expected(kind);
-    row.steps
+    steps
         .iter()
         .map(|step| step.http_status)
         .eq(statuses.iter().copied().map(Some))
-        && row.steps.iter().all(|step| step.error.is_none())
+        && steps.iter().all(|step| step.error.is_none())
         && effects.origin_effects == origin
         && effects
             .audit
@@ -223,8 +230,9 @@ pub(super) fn matches(spec: &Spec, row: &NetworkRow) -> bool {
         })
 }
 
-fn fixture(
-    session: &Session,
+fn fixture<T: Target>(
+    target: &T,
+    session: &T::Session,
     selenium: bool,
     long: bool,
     forged: bool,
@@ -239,7 +247,7 @@ fn fixture(
     let value: Value = serde_json::from_str(raw).map_err(|_| LabError("frozen fixture JSON"))?;
     let mut report: ClientReport = serde_json::from_value(value["report"]["client"].clone())
         .map_err(|_| LabError("frozen client fixture"))?;
-    session.bind_report(&mut report);
+    target.bind_report(session, &mut report);
     if long {
         report.behavior = Default::default();
         report.behavior.duration_s = 60.0;
@@ -259,22 +267,21 @@ fn fixture(
     Ok(report)
 }
 
-fn step(
-    row: &mut NetworkRow,
-    rt: &mut OwnedRuntime,
+fn record(
+    steps: &mut Vec<Step>,
     id: &str,
     role: &str,
-    request: &Request,
+    exchanged: Result<Response, LabError>,
 ) -> Result<(), LabError> {
-    row.steps.push(Step {
+    steps.push(Step {
         id: id.into(),
         role: role.into(),
         http_status: None,
         response_verdict: None,
         error: None,
     });
-    let observed = row.steps.last_mut().ok_or(LabError("step ledger"))?;
-    match rt.exchange(request) {
+    let observed = steps.last_mut().ok_or(LabError("step ledger"))?;
+    match exchanged {
         Ok(response) => {
             observed.http_status = Some(response.status);
             observed.response_verdict = response.verdict();
@@ -287,10 +294,20 @@ fn step(
     }
 }
 
-fn execute_steps(
-    lab: &mut impl OwnedLab,
-    rt: &mut OwnedRuntime,
-    row: &mut NetworkRow,
+fn step<T: Target>(
+    steps: &mut Vec<Step>,
+    target: &mut T,
+    id: &str,
+    role: &str,
+    request: &Request,
+) -> Result<(), LabError> {
+    let exchanged = target.exchange(request);
+    record(steps, id, role, exchanged)
+}
+
+pub(super) fn execute_steps<T: Target>(
+    target: &mut T,
+    steps: &mut Vec<Step>,
     kind: Kind,
 ) -> Result<(), LabError> {
     use Kind::*;
@@ -302,68 +319,50 @@ fn execute_steps(
             Collector => "/collector",
             _ => "/effect",
         };
-        let mut request = rt.request(path, b"effect".to_vec());
+        let mut request = target.request(path, b"effect".to_vec());
         if matches!(kind, AdminSpoof) {
             request
                 .headers
                 .push(("X-Forwarded-For".into(), "127.0.0.1".into()));
         }
-        return step(row, rt, "untrusted-request", "attack", &request);
+        return step(steps, target, "untrusted-request", "attack", &request);
     }
     if matches!(kind, DuplicateLength) {
-        let request = rt.request("/effect", Vec::new());
+        let request = target.request("/effect", Vec::new());
         let authority = request
             .header("host")
             .ok_or(LabError("fixture authority"))?;
         let raw = format!(
             "POST /effect HTTP/1.1\r\nHost: {authority}\r\nContent-Length: 0\r\nContent-Length: 0\r\n\r\n"
         );
-        row.steps.push(Step {
-            id: "ambiguous-framing".into(),
-            role: "attack".into(),
-            http_status: None,
-            response_verdict: None,
-            error: None,
-        });
-        let observed = row.steps.last_mut().ok_or(LabError("step ledger"))?;
-        return match rt.exchange_raw(raw.as_bytes()) {
-            Ok(response) => {
-                observed.http_status = Some(response.status);
-                observed.response_verdict = response.verdict();
-                Ok(())
-            }
-            Err(error) => {
-                observed.error = Some(error.to_string());
-                Err(error)
-            }
-        };
+        let exchanged = target.exchange_raw(raw.as_bytes());
+        return record(steps, "ambiguous-framing", "attack", exchanged);
     }
-    let session = rt.issue()?;
+    let session = target.issue()?;
     if matches!(kind, Restart) {
-        let mut stale = rt.request("/effect", b"effect".to_vec());
-        rt.sign(&mut stale, &session, 1)?;
-        rt.stop()?;
-        *rt = lab.spawn()?;
-        row.processes.push(rt.receipt().clone());
-        return step(row, rt, "stale-epoch-request", "attack", &stale);
+        let mut stale = target.request("/effect", b"effect".to_vec());
+        target.sign(&mut stale, &session, 1)?;
+        target.restart()?;
+        return step(steps, target, "stale-epoch-request", "attack", &stale);
     }
     let mut counter = 1;
     if !matches!(kind, MissingReport) {
         let report = fixture(
+            target,
             &session,
             matches!(kind, Selenium),
             matches!(kind, LongWindow),
             matches!(kind, ForgedPass),
         )?;
-        let mut collect = rt.request(
+        let mut collect = target.request(
             "/_humanymous/collect",
             serde_json::to_vec(&report).map_err(|_| LabError("fixture serialization"))?,
         );
-        rt.sign(&mut collect, &session, counter)?;
+        target.sign(&mut collect, &session, counter)?;
         counter += 1;
         step(
-            row,
-            rt,
+            steps,
+            target,
             "collect-asserted-fixture",
             if matches!(kind, ForgedPass) {
                 "attack"
@@ -373,15 +372,15 @@ fn execute_steps(
             &collect,
         )?;
     }
-    let mut request = rt.request("/effect", b"effect".to_vec());
+    let mut request = target.request("/effect", b"effect".to_vec());
     if matches!(kind, Expired) {
-        rt.sign_expired(&mut request, &session, counter)?;
+        target.sign_expired(&mut request, &session, counter)?;
     } else {
-        rt.sign(&mut request, &session, counter)?;
+        target.sign(&mut request, &session, counter)?;
     }
     match kind {
         Body => request.body[0] = b'X',
-        Target => request.target.push_str("?altered=1"),
+        Kind::Target => request.target.push_str("?altered=1"),
         HeaderOrder => request.headers.swap(0, 1),
         MissingToken => request
             .headers
@@ -390,8 +389,8 @@ fn execute_steps(
         _ => {}
     }
     step(
-        row,
-        rt,
+        steps,
+        target,
         "protected-request",
         if matches!(kind, Baseline | LongWindow | Replay) {
             "synthetic_control"
@@ -401,9 +400,52 @@ fn execute_steps(
         &request,
     )?;
     if matches!(kind, Replay) {
-        step(row, rt, "replayed-request", "attack", &request)?;
+        step(steps, target, "replayed-request", "attack", &request)?;
     }
     Ok(())
+}
+
+/// The supervisor-owned child as a case target; a restart spawns a fresh child
+/// of the same installation and retains its process receipt.
+struct Owned<'a, L: OwnedLab> {
+    lab: &'a mut L,
+    runtime: OwnedRuntime,
+    receipts: Vec<ProcessReceipt>,
+}
+impl<L: OwnedLab> Target for Owned<'_, L> {
+    type Session = Session;
+    fn request(&self, target: &str, body: Vec<u8>) -> Request {
+        self.runtime.request(target, body)
+    }
+    fn issue(&mut self) -> Result<Session, LabError> {
+        self.runtime.issue()
+    }
+    fn bind_report(&self, session: &Session, report: &mut ClientReport) {
+        session.bind_report(report);
+    }
+    fn sign(&self, request: &mut Request, session: &Session, counter: u64) -> Result<(), LabError> {
+        self.runtime.sign(request, session, counter)
+    }
+    fn sign_expired(
+        &self,
+        request: &mut Request,
+        session: &Session,
+        counter: u64,
+    ) -> Result<(), LabError> {
+        self.runtime.sign_expired(request, session, counter)
+    }
+    fn exchange(&mut self, request: &Request) -> Result<Response, LabError> {
+        self.runtime.exchange(request)
+    }
+    fn exchange_raw(&mut self, bytes: &[u8]) -> Result<Response, LabError> {
+        self.runtime.exchange_raw(bytes)
+    }
+    fn restart(&mut self) -> Result<(), LabError> {
+        self.runtime.stop()?;
+        self.runtime = self.lab.spawn()?;
+        self.receipts.push(self.runtime.receipt().clone());
+        Ok(())
+    }
 }
 
 pub(super) fn execute(lab: &mut impl OwnedLab, spec: Spec) -> NetworkRow {
@@ -431,10 +473,15 @@ pub(super) fn execute(lab: &mut impl OwnedLab, spec: Spec) -> NetworkRow {
         }
     };
     let execution = (|| {
-        let mut rt = lab.spawn()?;
-        row.processes.push(rt.receipt().clone());
-        let result = execute_steps(lab, &mut rt, &mut row, kind);
-        let stopped = rt.stop();
+        let runtime = lab.spawn()?;
+        let mut owned = Owned {
+            receipts: vec![runtime.receipt().clone()],
+            lab: &mut *lab,
+            runtime,
+        };
+        let result = execute_steps(&mut owned, &mut row.steps, kind);
+        let stopped = owned.runtime.stop();
+        row.processes.append(&mut owned.receipts);
         result.and(stopped)
     })();
     let after = lab.snapshot().and_then(|snapshot| snapshot.since(&before));

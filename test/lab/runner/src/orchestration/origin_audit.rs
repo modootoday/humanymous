@@ -48,9 +48,9 @@ const PHASES: &[&str] = &["first", "restarted", "after-crash", "final"];
 const CLIENT_SCHEMA: &str = "humanymous.origin-audit-client/1";
 const AUDIT_REFUSAL: &str = "audit authenticated recovery";
 
-type Lines = mpsc::Receiver<std::io::Result<Vec<u8>>>;
+pub(super) type Lines = mpsc::Receiver<std::io::Result<Vec<u8>>>;
 
-fn reader(output: ChildStdout) -> Lines {
+pub(super) fn reader(output: ChildStdout) -> Lines {
     let (send, receive) = mpsc::channel();
     std::thread::spawn(move || {
         let mut output = BufReader::new(output);
@@ -73,7 +73,7 @@ fn reader(output: ChildStdout) -> Lines {
     receive
 }
 
-fn next(lines: &Lines, seconds: u64) -> Result<Value> {
+pub(super) fn next(lines: &Lines, seconds: u64) -> Result<Value> {
     Ok(decode_strict_json(
         &lines.recv_timeout(Duration::from_secs(seconds))??,
         1 << 20,
@@ -145,7 +145,7 @@ impl Operator {
     }
 }
 
-fn attached(lab: &Lab, container: &Value) -> Vec<String> {
+pub(super) fn attached(lab: &Lab, container: &Value) -> Vec<String> {
     let prefix = format!("{}_", lab.project);
     let mut names: Vec<_> = container["NetworkSettings"]["Networks"]
         .as_object()
@@ -160,7 +160,7 @@ fn attached(lab: &Lab, container: &Value) -> Vec<String> {
     names
 }
 
-fn address(lab: &mut Lab, id: &str, network: &str) -> Result<String> {
+pub(super) fn address(lab: &mut Lab, id: &str, network: &str) -> Result<String> {
     let state: Value = serde_json::from_str(&lab.docker.call(&["inspect", id])?)?;
     let value =
         state[0]["NetworkSettings"]["Networks"][format!("{}_{network}", lab.project)]["IPAddress"]
@@ -173,7 +173,7 @@ fn address(lab: &mut Lab, id: &str, network: &str) -> Result<String> {
 }
 
 /// Every contact the origin logged, as peer addresses, in order.
-fn contacts(lab: &mut Lab, origin: &str) -> Result<(bool, Vec<String>)> {
+pub(super) fn contacts(lab: &mut Lab, origin: &str) -> Result<(bool, Vec<String>)> {
     let logs = lab.docker.call(&["logs", origin])?;
     let mut ready = false;
     let mut peers = Vec::new();
@@ -225,7 +225,7 @@ fn tamper(lab: &mut Lab, id: &str, mode: &str) -> Result<Value> {
     oneshot(lab, id, &json!({"mode":mode}), 65536)
 }
 
-fn passphrase() -> Result<String> {
+pub(super) fn passphrase() -> Result<String> {
     let mut secret = [0_u8; 24];
     getrandom::fill(&mut secret)?;
     Ok(secret.iter().map(|b| format!("{b:02x}")).collect())
