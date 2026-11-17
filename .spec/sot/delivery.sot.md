@@ -1088,6 +1088,12 @@ this way. The claim is cooperative metadata, not OS authority. A declaration may
 add one explicit `--features` value after `--lib` when the selected tests exist
 only behind that feature.
 
+The attacker publication, lab-runner source pin and platform controlled-capture
+pilots are declared for Linux and macOS, so the macOS native job runs them
+itself through the Unix executor. The Node host_process groups are declared on
+every native OS with the `job` executor: the row names the Linux `node` job
+that runs them and claims no macOS or Windows host qualification.
+
 Undeclared ignored tests (the dotnet hosted and package pilots, whose host
 start is Unsupported) still fail accounting until an executor exists.
 
