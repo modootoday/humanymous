@@ -1076,9 +1076,24 @@ step exists in that job; the other job's own result carries the outcome.
 
 This replaces the single privileged-Docker scope declaration for the authority
 socket ACL test: it now runs as root on the hosted runner and its helper is
-declared. Undeclared ignored tests (dotnet hosted and package pilots, and the
-Windows-supervised platform capture parents on Linux) still fail accounting
-until an executor exists. Declarations are not waivers and qualify no full
+declared.
+
+A pilot may set `outer_grant: true` (unprivileged only). The executor then is
+the outer supervisor that the platform controlled-capture parents require. It
+spawns the test process directly in its own process group, publishes the
+cooperative `humanymous.controlled-capture-grant/1` claim atomically, binding
+the exact selector, a fresh 128-bit nonce and the spawned PID, and kills the
+group at the 900-second deadline. The five Linux capture_attempt parents run
+this way. The claim is cooperative metadata, not OS authority. A declaration may
+add one explicit `--features` value after `--lib` when the selected tests exist
+only behind that feature.
+
+Undeclared ignored tests (the dotnet hosted and package pilots, whose host
+start is Unsupported) still fail accounting until an executor exists.
+
+The native job timeout is 90 minutes. The Windows debug workspace build alone
+takes about 24 minutes, and the old 40-minute limit cancelled the later steps
+before they reported. Declarations are not waivers and qualify no full
 product runtime.
 
 ## Bounded public archive transport and measurement
