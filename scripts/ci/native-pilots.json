@@ -73,7 +73,7 @@
       "package": "humanymous-lab-runner",
       "target": "humanymous-lab-runner",
       "kind": "bin",
-      "os": ["linux", "macos"],
+      "os": ["linux", "macos", "windows"],
       "executor": "native-pilots",
       "cargo": ["--bin", "humanymous-lab-runner"],
       "privilege": "user",

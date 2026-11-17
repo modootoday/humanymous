@@ -1094,8 +1094,8 @@ itself through the Unix executor. The Node host_process groups are declared on
 every native OS with the `job` executor: the row names the Linux `node` job
 that runs them and claims no macOS or Windows host qualification.
 
-On Windows (2026-11-17) the attacker publication and platform controlled-capture
-pilots are also declared, plus two Windows-only pilots: the attacker
+On Windows (2026-11-17) the attacker publication, lab-runner source pin and
+platform controlled-capture pilots are also declared, plus two Windows-only pilots: the attacker
 denied-replacement test and the two platform controlled_barrier parents
 (missing grant, live parent at the outer deadline). A Windows `outer_grant`
 pilot is supervised by the native runner's `controlled-capture` mode, which
@@ -1107,7 +1107,8 @@ under the same 900-second deadline; a deadline kill is a failure.
 
 The standard-user Windows actor that runs the workspace probe receives only
 System32, the directories of `git.exe` and `pwsh.exe` from the provisioning
-parent's PATH, a private TEMP, a command-scope `safe.directory` for the
+parent's PATH, the machine-wide PATHEXT, SystemDrive, ProgramFiles,
+ProgramData and ComSpec values, a private TEMP, a command-scope `safe.directory` for the
 read-only checkout, and `cargo metadata` output captured by the parent; it has
 no Cargo of its own.
 

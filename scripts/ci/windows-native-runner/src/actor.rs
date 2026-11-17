@@ -700,6 +700,19 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
         // to the provisioning administrator, so the actor trusts exactly this
         // one directory at command scope instead of any global configuration.
         environment.extend(git_safe_directory(&workspace));
+        // Machine-wide, non-secret defaults every interactive Windows process
+        // has; PowerShell resolves `git` through PATHEXT. Nothing user-scoped.
+        for name in [
+            "PATHEXT",
+            "SystemDrive",
+            "ProgramFiles",
+            "ProgramData",
+            "ComSpec",
+        ] {
+            if let Ok(value) = std::env::var(name) {
+                environment.push((name.into(), value));
+            }
+        }
         if service {
             environment.extend([
                 ("GITHUB_ACTIONS".into(), "true".into()),
