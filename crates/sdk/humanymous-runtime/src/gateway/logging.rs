@@ -16,17 +16,26 @@
 //!   relative paths against the process working directory.
 //! - Gate trims and lowercases its three selectors as Go did; Core keeps Go's
 //!   exact-token matching.
-//! - Emission is synchronous on the caller's thread with write errors counted,
-//!   not Go's bounded asynchronous queue; a composition that must not block on
-//!   a slow sink places this logger behind its own bounded channel.
+//! - [`OperationalLogger`] emits synchronously on the caller's thread with
+//!   write errors counted, not through Go's bounded asynchronous queue (owner
+//!   decision 2026-11-16, `.agents/retirement/owner-decisions-2026-11-16.md`).
+//!   This is the path the gateway uses. Go's queue, drop counting, deadline
+//!   bounded flush/close and `slog` attrs/groups nesting are ported as the
+//!   opt-in [`QueuedLogger`] and [`LogHandle`], which nothing in the gateway
+//!   constructs.
 //! - The fatal classifier only accepts `&'static str` call-site formats, so
 //!   dynamic error text cannot reach it by type.
 //! - Observability records allowlist the HTTP method (anything else is
 //!   `other`); Go logged the parsed method token verbatim.
+mod queue;
 mod record;
 mod sink;
 
-pub use record::{Level, MAX_FIELDS, MAX_RECORD_BYTES, SCHEMA_VERSION, Value};
+pub use queue::{
+    DEFAULT_QUEUE_SIZE, DeadlineExceeded, DropStats, LevelCounts, LogHandle, MAX_QUEUE_SIZE,
+    QueueRefusal, QueueStats, QueuedLogger,
+};
+pub use record::{Attr, AttrValue, Level, MAX_FIELDS, MAX_RECORD_BYTES, SCHEMA_VERSION, Value};
 
 use record::{MAX_IDENTITY_BYTES, Record, sanitize};
 use std::collections::BTreeSet;
@@ -259,6 +268,10 @@ impl Identity {
             node: clean(node),
         }
     }
+
+    fn parts(&self) -> [&str; 3] {
+        [self.service, self.version.as_str(), self.node.as_str()]
+    }
 }
 
 enum Target {
@@ -366,12 +379,13 @@ impl OperationalLogger {
         if !self.enabled(level) {
             return;
         }
-        let identity = [
-            self.identity.service,
-            self.identity.version.as_str(),
-            self.identity.node.as_str(),
-        ];
-        let mut record = Record::new(at, level, identity, message, attrs);
+        let record = Record::new(at, level, self.identity.parts(), message, attrs);
+        self.write_record(record);
+    }
+
+    /// Stamp the next sequence number, bound the record and write it to every
+    /// sink. The caller has already applied the level threshold.
+    fn write_record(&mut self, mut record: Record) {
         self.sequence = self.sequence.saturating_add(1);
         record.sequence = self.sequence;
         record.fit();
