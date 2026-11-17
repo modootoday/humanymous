@@ -14,9 +14,9 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "ported_unit": 165,
+  "ported_unit": 167,
   "partial": 95,
-  "missing": 52,
+  "missing": 50,
   "not_applicable": 2
  },
  "by_package": {
@@ -116,7 +116,7 @@
    "ported_unit": 2
   },
   "internal/redis": {
-   "missing": 2
+   "ported_unit": 2
   },
   "internal/report": {
    "ported_unit": 3
@@ -8072,38 +8072,66 @@
   },
   {
    "baseline_path": "internal/redis/client_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestRespCommandEncoding": null,
-    "TestReadReplyScalars": null,
-    "TestReadReplyError": null,
-    "TestReadReplyScanArray": null,
-    "TestReadReplyRejectsOversizedLengths": null,
-    "TestBreakerTripsAndFastFails": null,
-    "TestReadReplyRejectsDeepNesting": null
-   },
-   "gaps": [
-    "RESP encoding/decoding, size/depth limits, circuit breaker"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::command_encoding_is_a_resp_array_of_bulk_strings",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::scalar_replies_parse_and_bulk_is_length_delimited",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::error_reply_surfaces_as_a_server_error",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::scan_reply_parses_as_nested_array",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::oversized_lengths_are_refused_before_allocation",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::breaker_trips_on_failure_and_fast_fails_within_cooldown",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::deep_nesting_is_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::malformed_frames_are_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::auth_is_sent_on_connect_then_commands_reuse_the_connection",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::rejected_auth_fails_the_command_and_opens_the_breaker",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::slow_success_returns_the_reply_but_opens_the_breaker",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::sustained_latency_trips_through_the_ewma",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::a_dropped_connection_is_redialled_after_the_cooldown"
+   ],
+   "go_test_map": {
+    "TestRespCommandEncoding": "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::command_encoding_is_a_resp_array_of_bulk_strings",
+    "TestReadReplyScalars": "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::scalar_replies_parse_and_bulk_is_length_delimited",
+    "TestReadReplyError": "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::error_reply_surfaces_as_a_server_error",
+    "TestReadReplyScanArray": "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::scan_reply_parses_as_nested_array",
+    "TestReadReplyRejectsOversizedLengths": "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::oversized_lengths_are_refused_before_allocation",
+    "TestBreakerTripsAndFastFails": "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::breaker_trips_on_failure_and_fast_fails_within_cooldown",
+    "TestReadReplyRejectsDeepNesting": "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::deep_nesting_is_refused"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust Redis client; plan B23 marks fleet coordinator \"M\".",
+   "notes": "gateway::coordinator::redis::Client mirrors Go: lazy dial, reconnect after I/O error, AUTH on connect, 32 MiB bulk / 1Mi array / depth 8 caps, breaker on failure, single slow reply (750 ms) or EWMA (400 ms, alpha 0.4), 2 s cooldown, 3 s timeout. Stricter than Go: header lines capped at 64 KiB and bulk CRLF verified.",
    "test_verification": {}
   },
   {
    "baseline_path": "internal/redis/client.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "RESP client with AUTH, bounded reply parser and breaker"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::command_encoding_is_a_resp_array_of_bulk_strings",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::scalar_replies_parse_and_bulk_is_length_delimited",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::error_reply_surfaces_as_a_server_error",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::scan_reply_parses_as_nested_array",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::oversized_lengths_are_refused_before_allocation",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::breaker_trips_on_failure_and_fast_fails_within_cooldown",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::deep_nesting_is_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::malformed_frames_are_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::auth_is_sent_on_connect_then_commands_reuse_the_connection",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::rejected_auth_fails_the_command_and_opens_the_breaker",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::slow_success_returns_the_reply_but_opens_the_breaker",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::sustained_latency_trips_through_the_ewma",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs::a_dropped_connection_is_redialled_after_the_cooldown"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart; correlation uses only an AtomicCoordinator trait.",
+   "notes": "gateway::coordinator::redis::Client mirrors Go: lazy dial, reconnect after I/O error, AUTH on connect, 32 MiB bulk / 1Mi array / depth 8 caps, breaker on failure, single slow reply (750 ms) or EWMA (400 ms, alpha 0.4), 2 s cooldown, 3 s timeout. Stricter than Go: header lines capped at 64 KiB and bulk CRLF verified.",
    "test_verification": {}
   },
   {

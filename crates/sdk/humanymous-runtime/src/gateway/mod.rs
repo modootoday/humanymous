@@ -5,6 +5,7 @@ pub mod browser;
 pub mod configuration;
 pub mod connection_cap;
 pub mod control;
+pub mod coordinator;
 pub mod credential;
 pub mod external_input;
 pub mod guard;
