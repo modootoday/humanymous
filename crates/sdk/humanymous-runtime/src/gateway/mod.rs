@@ -17,6 +17,7 @@ pub mod lab_h2_measure;
 pub mod logging;
 pub mod management;
 pub mod observatory;
+pub mod pass_flow;
 pub mod pass_proof;
 pub mod pass_store;
 pub mod request;
