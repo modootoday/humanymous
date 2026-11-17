@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 369,
-      "macos": 369,
-      "windows": 361
+      "linux": 379,
+      "macos": 379,
+      "windows": 371
     },
     "common_test_names": [
       "gateway::application::temporal::tests::categories::configure_only_preserves_unknown_gap_until_provider_observation",
@@ -229,6 +229,16 @@
       "gateway::request::tests::route_class_follows_legacy_priority",
       "gateway::request::tests::traffic_ip_hash_matches_go_golden_and_needs_a_key",
       "gateway::request::tests::upstream_errors_map_to_stable_classes_without_raw_text",
+      "gateway::routes::tests::config_version_is_signed_stable_and_tracks_the_effective_policy",
+      "gateway::routes::tests::load_routes_attested_valid_and_catch_all_refused",
+      "gateway::routes::tests::load_routes_malformed",
+      "gateway::routes::tests::load_routes_missing_file",
+      "gateway::routes::tests::load_routes_unknown_preset",
+      "gateway::routes::tests::load_routes_valid",
+      "gateway::routes::tests::normalize_match_path_cleans_lexically",
+      "gateway::routes::tests::resolve_longest_prefix_presets_and_global_monitor",
+      "gateway::routes::tests::resolve_path_confusion_selects_strict",
+      "gateway::routes::tests::validate_attested_route_preconditions",
       "gateway::seams::tests::ban_store_enforces_through_the_seam",
       "gateway::seams::tests::limiter_counts_classifies_and_reconfigures_through_the_seam",
       "gateway::seams::tests::monitor_mode_never_bans_through_the_seam",

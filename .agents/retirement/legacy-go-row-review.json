@@ -14,16 +14,16 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "ported_unit": 173,
-  "partial": 98,
-  "missing": 41,
+  "ported_unit": 177,
+  "partial": 97,
+  "missing": 38,
   "not_applicable": 2
  },
  "by_package": {
   "cmd/gate": {
-   "missing": 3,
-   "partial": 2,
-   "ported_unit": 2
+   "missing": 2,
+   "partial": 1,
+   "ported_unit": 4
   },
   "cmd/ml-train": {
    "partial": 1
@@ -78,9 +78,9 @@
   },
   "internal/gate": {
    "partial": 47,
-   "missing": 14,
+   "missing": 12,
    "not_applicable": 1,
-   "ported_unit": 23
+   "ported_unit": 25
   },
   "internal/httpx": {
    "not_applicable": 1
@@ -253,50 +253,71 @@
   },
   {
    "baseline_path": "cmd/gate/routes_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestLoadRoutesValid": null,
-    "TestLoadRoutesUnknownPreset": null,
-    "TestLoadRoutesAttestedValidAndCatchAllRefused": null,
-    "TestValidateAttestedRoutes": null,
-    "TestLoadRoutesMalformed": null,
-    "TestLoadRoutesMissingFile": null
-   },
-   "gaps": [
-    "prefix->preset text file parsing",
-    "preset vocabulary strict|balanced|attested|monitor|off",
-    "attested refusal on catch-all prefix",
-    "attested requires shared token key / verifier warning"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_attested_valid_and_catch_all_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_malformed",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_missing_file",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_unknown_preset",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_valid",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::validate_attested_route_preconditions"
+   ],
+   "go_test_map": {
+    "TestLoadRoutesValid": "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_valid",
+    "TestLoadRoutesUnknownPreset": "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_unknown_preset",
+    "TestLoadRoutesAttestedValidAndCatchAllRefused": "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_attested_valid_and_catch_all_refused",
+    "TestValidateAttestedRoutes": "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::validate_attested_route_preconditions",
+    "TestLoadRoutesMalformed": "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_malformed",
+    "TestLoadRoutesMissingFile": "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_missing_file"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Rust has an exact method/path JSON route inventory validated in Configuration::validate, but no preset routes file; plan B12 marks preset expansion as an open contract choice.",
-   "test_verification": {}
+   "notes": "All six routes-file tests ported against gateway::routes::parse_routes/load_routes/validate_attested_routes.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_attested_valid_and_catch_all_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_malformed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_missing_file": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_unknown_preset": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_valid": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::validate_attested_route_preconditions": "passed"
+   }
   },
   {
    "baseline_path": "cmd/gate/routes.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
-    "crates/sdk/humanymous-runtime/src/authority/configuration.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/routes.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::configuration_and_readiness_are_honest"
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_attested_valid_and_catch_all_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_malformed",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_missing_file",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_unknown_preset",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_valid",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::normalize_match_path_cleans_lexically",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::resolve_longest_prefix_presets_and_global_monitor",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::resolve_path_confusion_selects_strict",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::validate_attested_route_preconditions"
    ],
    "go_test_map": {},
-   "gaps": [
-    "longest-prefix route matching",
-    "preset expansion (strict/balanced/attested/monitor/off)",
-    "attested catch-all refusal",
-    "attested shared-key precondition and verifier warning"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust Route is exact method+path with required planes (fail-closed validation). Plan B12: \"P exact Runtime route inventory only; C canonical route matching/preset expansion\".",
+   "notes": "Ported as gateway::routes: routes-file parsing, preset vocabulary, attested catch-all refusal, shared-key precondition and verifier warning. Loading the file from the gate binary's flags is tracked on cmd/gate/main.go.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::configuration_and_readiness_are_honest": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_attested_valid_and_catch_all_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_malformed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_missing_file": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_unknown_preset": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::load_routes_valid": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::normalize_match_path_cleans_lexically": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::resolve_longest_prefix_presets_and_global_monitor": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::resolve_path_confusion_selects_strict": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::validate_attested_route_preconditions": "passed"
    }
   },
   {
@@ -2324,51 +2345,67 @@
    "disposition": "partial",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/routes.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::configuration_and_readiness_are_honest",
-    "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets"
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::resolve_path_confusion_selects_strict",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::resolve_longest_prefix_presets_and_global_monitor",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::normalize_match_path_cleans_lexically"
    ],
    "go_test_map": {},
    "gaps": [
-    "longest-prefix route resolution with segment matching",
-    "strict/balanced/attested/monitor/off presets",
-    "global monitor, rate window/soft/hard and erasure hold config"
+    "The preset route table is not yet consulted by the request path (exact Configuration routes still govern); wiring happens with the gateway composition (B01/B12).",
+    "Rate window/soft/hard and erasure hold defaults: owner-accepted fail-closed Rust difference (see notes)."
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust has an exact route inventory and bounded resource budgets only (B12 P). Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (rate no-defaults; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "notes": "Rust has an exact route inventory and bounded resource budgets only (B12 P). Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (rate no-defaults; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged. Route presets, segment-anchored longest-prefix resolution and global monitor are ported in gateway::routes.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::configuration_and_readiness_are_honest": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::resolve_path_confusion_selects_strict": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::resolve_longest_prefix_presets_and_global_monitor": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::normalize_match_path_cleans_lexically": "passed"
    }
   },
   {
    "baseline_path": "internal/gate/configsign_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::config_version_is_signed_stable_and_tracks_the_effective_policy"
+   ],
    "go_test_map": {
-    "TestConfigVersionSignedAndStable": null
+    "TestConfigVersionSignedAndStable": "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::config_version_is_signed_stable_and_tracks_the_effective_policy"
    },
    "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust config_version is the provisioned scope revision, not a keyed hash of effective policy.",
-   "test_verification": {}
+   "notes": "Stability and change-on-kill-switch ported, plus a known-answer vector for the Go policy string.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::config_version_is_signed_stable_and_tracks_the_effective_policy": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/configsign.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/routes.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::config_version_is_signed_stable_and_tracks_the_effective_policy"
+   ],
    "go_test_map": {},
-   "gaps": [],
+   "gaps": [
+    "Audit records still copy scope.revision as config_version; binding config_version() into the record path happens with the gateway composition (B01/B12)."
+   ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust records copy scope.revision as config_version; no signed effective-policy hash.",
-   "test_verification": {}
+   "notes": "Ported as gateway::routes::config_version: HMAC-SHA256 over the Go-formatted effective policy (monitor, kill, sorted routes, rate window/soft/hard), cfg- plus 12 hex digits.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::config_version_is_signed_stable_and_tracks_the_effective_policy": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/console_test.go",
@@ -3162,25 +3199,27 @@
   },
   {
    "baseline_path": "internal/gate/resolve_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/routes.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization"
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::resolve_path_confusion_selects_strict",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::resolve_longest_prefix_presets_and_global_monitor",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::normalize_match_path_cleans_lexically"
    ],
    "go_test_map": {
-    "TestResolve_PathConfusionSelectsStrict": "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization"
+    "TestResolve_PathConfusionSelectsStrict": "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::resolve_path_confusion_selects_strict"
    },
-   "gaps": [
-    "segment-anchored prefix matching to strict policy"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Rust refuses dot-segment, percent and // targets and matches exact routes, instead of resolving to strict.",
+   "notes": "Path-confusion resolution ported: lexically cleaned path, segment-anchored longest-prefix match, balanced default.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::resolve_path_confusion_selects_strict": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::resolve_longest_prefix_presets_and_global_monitor": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs::normalize_match_path_cleans_lexically": "passed"
    }
   },
   {
