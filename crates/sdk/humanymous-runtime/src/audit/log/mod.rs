@@ -1,4 +1,5 @@
 //! Durable per-node sealing. The WAL is the authority; projections are not.
+mod live;
 mod proofs;
 mod sealed;
 mod stamp;
@@ -10,11 +11,12 @@ use crate::audit::{
     storage::{RecoveryPolicy, Wal},
 };
 use ed25519_dalek::SigningKey;
+pub use live::DEFAULT_RING_CAPACITY;
 pub use proofs::{CheckpointInclusion, InclusionProof};
 pub use sealed::{
     PinnedWitness, SealedLog, SealedLogError, SealedLogOptions, SealedLogStage, UnlockCredential,
 };
-use std::io;
+use std::{collections::VecDeque, io};
 
 /// Required persistence strength for a separately supervised witness receipt.
 #[derive(Clone, Copy)]
@@ -56,6 +58,9 @@ pub struct Log {
     external_witness: Option<Box<dyn CheckpointWitness>>,
     witness_durability: WitnessDurability,
     projections: Vec<std::sync::Arc<dyn crate::audit::projection::Projection>>,
+    /// Bounded tail copy of durable records for `recent`; never an authority.
+    ring: VecDeque<Record>,
+    ring_capacity: usize,
 }
 impl Log {
     /// Restore an authenticated chain or explicitly initialize an empty one.
@@ -133,6 +138,11 @@ impl Log {
             .map(|r| r.record_hash.as_bytes().to_vec())
             .collect();
         let checkpoints = history.checkpoints().to_vec();
+        let window = history
+            .records()
+            .len()
+            .saturating_sub(live::DEFAULT_RING_CAPACITY);
+        let ring = history.records()[window..].iter().cloned().collect();
         if let Some(witness) = &config.witness {
             if let Some(last) = checkpoints.last() {
                 witness.restore(last).map_err(io::Error::other)?;
@@ -163,6 +173,8 @@ impl Log {
             external_witness,
             witness_durability,
             projections: Vec::new(),
+            ring,
+            ring_capacity: live::DEFAULT_RING_CAPACITY,
         })
     }
 
@@ -198,6 +210,7 @@ impl Log {
         self.sequence = record.seq;
         self.head = record.record_hash.clone();
         self.leaves.push(record.record_hash.as_bytes().to_vec());
+        self.remember(&record);
         let last = self.checkpoints.last().map_or(0, |cp| cp.tree_size);
         // Recovery with a required witness refuses zero anchor coverage. Seal
         // the first record immediately, so a crash before the periodic cadence
@@ -307,6 +320,13 @@ impl Log {
     ) -> io::Result<T> {
         let sealed = self.append(record)?;
         Ok(action(&sealed))
+    }
+
+    /// Seal an informational record with no side effect (Go `Sink.Emit`). The
+    /// same refusals as [`Log::emit_and_act`] apply: an empty event type or a
+    /// failed seal returns an error and advances nothing.
+    pub fn emit(&mut self, record: Record) -> io::Result<Record> {
+        self.emit_and_act(record, Record::clone)
     }
 
     /// Full authenticated chain export from disk; no shadow in-memory copy.
