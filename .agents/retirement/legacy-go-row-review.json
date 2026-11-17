@@ -14,8 +14,8 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "ported_unit": 165,
-  "partial": 95,
+  "ported_unit": 168,
+  "partial": 92,
   "missing": 52,
   "not_applicable": 2
  },
@@ -67,7 +67,7 @@
    "ported_unit": 2
   },
   "internal/collector": {
-   "partial": 3
+   "ported_unit": 3
   },
   "internal/correlation": {
    "partial": 2,
@@ -5140,77 +5140,100 @@
   },
   {
    "baseline_path": "internal/collector/collector_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/session.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/session.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::sessions_capacity_expiry_restart_and_rollback",
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_lifecycle",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_gc_expiry",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_pins_first_network",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_network_request_scoped_hop_residuals",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_client_and_label"
    ],
    "go_test_map": {
-    "TestStoreLifecycle": null,
-    "TestStoreGCExpiry": "crates/sdk/humanymous-runtime/src/gateway/tests.rs::sessions_capacity_expiry_restart_and_rollback",
-    "TestMergePinsFirstNetwork": null,
-    "TestMergeNetwork_RequestScopedHopResiduals": null,
-    "TestMergeClientAndLabel": null
+    "TestStoreLifecycle": "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_lifecycle",
+    "TestStoreGCExpiry": "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_gc_expiry",
+    "TestMergePinsFirstNetwork": "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_pins_first_network",
+    "TestMergeNetwork_RequestScopedHopResiduals": "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_network_request_scoped_hop_residuals",
+    "TestMergeClientAndLabel": "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_client_and_label"
    },
-   "gaps": [
-    "no per-session RIT counter / PoW solved-issued-too-fast state in the store",
-    "no first-network pinning or request-scoped hop residual merge",
-    "no session label (SetLabel) or StoreScored/List"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "The Rust gateway Sessions keeps only bounded, TTL-expired client reports and an integrity counter.",
+   "notes": "Ported as gateway::session::store::CollectorStore, a component store separate from the capability-issuing gateway Sessions epoch; the gateway request path does not consult it (unit-level only, runtime wiring and runtime proof pending). Callers serialize access instead of the Go internal RWMutex; time is the core Timestamp. The prior gateway Sessions test remains as additional TTL evidence.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::sessions_capacity_expiry_restart_and_rollback": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::sessions_capacity_expiry_restart_and_rollback": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_lifecycle": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_gc_expiry": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_pins_first_network": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_network_request_scoped_hop_residuals": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_client_and_label": "passed"
    }
   },
   {
    "baseline_path": "internal/collector/merge.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/session.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/session.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_pins_first_network",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_network_request_scoped_hop_residuals",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::request_scoped_residual_set_is_exact",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_client_and_label",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_client_drops_server_provenance_claims",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_scored_replaces_report"
    ],
    "go_test_map": {},
-   "gaps": [
-    "MergeNetwork first-observation pinning and request-scoped residual refresh",
-    "AppendNetworkSignals",
-    "SetLabel/StoreScored"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "MergeClient's reserved-server-ID sanitization has a stricter Rust counterpart in store_report: it rejects non-client layers and sources.",
+   "notes": "Ported as gateway::session::store::CollectorStore, a component store separate from the capability-issuing gateway Sessions epoch; the gateway request path does not consult it (unit-level only, runtime wiring and runtime proof pending). Callers serialize access instead of the Go internal RWMutex; time is the core Timestamp. MergeClient keeps the Go reserved-ID/server-source drop; gateway store_report remains the stricter request-path seam.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_pins_first_network": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_network_request_scoped_hop_residuals": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::request_scoped_residual_set_is_exact": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_client_and_label": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_client_drops_server_provenance_claims": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_scored_replaces_report": "passed"
    }
   },
   {
    "baseline_path": "internal/collector/session.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/session.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/session/admission.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/session/admission.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::sessions_capacity_expiry_restart_and_rollback"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::sessions_capacity_expiry_restart_and_rollback",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_lifecycle",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_gc_expiry",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::rit_bootstrap_is_one_shot",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::pow_issue_solve_and_too_fast",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::list_is_bounded"
    ],
    "go_test_map": {},
-   "gaps": [
-    "RIT bootstrap claim/advance API",
-    "PoW issued/solved/too-fast/difficulty tracking",
-    "List(limit) for admin console"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "TTL expiry, capacity and rollback refusal are present in gateway Sessions.",
+   "notes": "Ported as gateway::session::store::CollectorStore, a component store separate from the capability-issuing gateway Sessions epoch; the gateway request path does not consult it (unit-level only, runtime wiring and runtime proof pending). Callers serialize access instead of the Go internal RWMutex; time is the core Timestamp. ClaimRITBootstrap is a store primitive only; the Runtime application SoT keeps no bootstrap token grace on the request path. List(limit) keeps the Go quirk of returning one report for limit 0.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::sessions_capacity_expiry_restart_and_rollback": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::sessions_capacity_expiry_restart_and_rollback": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_lifecycle": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_gc_expiry": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::rit_bootstrap_is_one_shot": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::pow_issue_solve_and_too_fast": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::list_is_bounded": "passed"
    }
   },
   {
