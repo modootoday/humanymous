@@ -1,4 +1,6 @@
 //! Joined blocking TLS ingress. This owner alone does not qualify a route.
+#[cfg(feature = "acme")]
+pub mod acme;
 pub mod certificate;
 mod h2;
 

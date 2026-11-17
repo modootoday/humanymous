@@ -43,6 +43,12 @@ jobs:
     - name: Lint the selected native boundary
       if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
       run: cargo clippy --locked -p humanymous-delivery -p humanymous-runtime -p humanymous-native-abi-export --features humanymous-runtime/capture --all-targets -j1 -- -D warnings
+    - name: Execute B02 certificate source and ACME issuer units
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
+      run: cargo test --locked -p humanymous-runtime --features acme --lib gateway::tls -j1
+    - name: Lint the B02 ACME issuer
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
+      run: cargo clippy --locked -p humanymous-runtime --features acme --all-targets -j1 -- -D warnings
     - name: Verify workflow policy
       if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
       run: cargo run --locked -p humanymous-delivery -- policy
