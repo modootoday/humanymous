@@ -14,15 +14,15 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "ported_unit": 165,
-  "partial": 95,
-  "missing": 52,
+  "ported_unit": 166,
+  "partial": 99,
+  "missing": 47,
   "not_applicable": 2
  },
  "by_package": {
   "cmd/gate": {
-   "missing": 3,
-   "partial": 2,
+   "missing": 1,
+   "partial": 4,
    "ported_unit": 2
   },
   "cmd/ml-train": {
@@ -39,9 +39,9 @@
    "ported_unit": 1
   },
   "cmd/server": {
-   "missing": 11,
-   "partial": 21,
-   "ported_unit": 10
+   "missing": 8,
+   "partial": 23,
+   "ported_unit": 11
   },
   "cmd/tlsparrot": {
    "missing": 1
@@ -310,15 +310,13 @@
     "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs"
    ],
    "go_test_map": {
-    "TestBuildEdgeTLSSelfSigned": null,
+    "TestBuildEdgeTLSSelfSigned": "gateway::tls::certificate::tests::dev_self_signed_is_explicit_exclusive_and_local_only",
     "TestBuildEdgeTLSACME": "gateway::tls::certificate::tests::issuer_must_cover_exactly_the_selected_domains",
     "TestBuildEdgeTLSACMEStagingDirectory": "gateway::tls::acme::tests::settings_accept_https_directories_and_plain_contacts_only",
     "TestBuildEdgeTLSBadCert": "gateway::tls::certificate::tests::provisioned_pair_refuses_empty_missing_and_mismatched_material",
     "TestSplitDomains": "gateway::tls::certificate::tests::issuer_domains_are_normalised_and_plain_hosts_only"
    },
-   "gaps": [
-    "self-signed dev mode (production fallback refused by B02)"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
    "notes": "Mapped to B02 certificate source and ACME issuer tests.",
@@ -334,12 +332,12 @@
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/tls/acme_tests.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs",
+    "crates/sdk/humanymous-runtime/tests/gateway/acme_pebble.rs"
    ],
    "go_test_map": {},
    "gaps": [
-    "live ACME exchange against a running directory (Pebble or Let's Encrypt staging) not yet exercised",
-    "self-signed dev mode (production fallback refused by B02)"
+    "live Pebble issuance test (tests/gateway/acme_pebble.rs) awaits its first CI run"
    ],
    "retire_basis": null,
    "confidence": "high",
@@ -530,14 +528,13 @@
    ],
    "go_test_map": {
     "TestSplitDomains": "gateway::tls::certificate::tests::issuer_domains_are_normalised_and_plain_hosts_only",
-    "TestBuildTLSConfigSelfSigned": null,
+    "TestBuildTLSConfigSelfSigned": "gateway::tls::certificate::tests::dev_self_signed_is_explicit_exclusive_and_local_only",
     "TestBuildTLSConfigACME": "gateway::tls::acme::tests::issuer_serves_cached_certificate_over_h2_and_refuses_other_names",
     "TestBuildTLSConfigProvidedKeyPair": "gateway::tls::certificate::tests::provisioned_pair_builds_h2_then_http11_ingress",
     "TestBuildTLSConfigRejectsAmbiguousSources": "gateway::tls::certificate::tests::selection_refuses_absent_incomplete_and_ambiguous_sources"
    },
    "gaps": [
-    "self-signed dev mode (production fallback refused by B02)",
-    "live ACME exchange against a running directory (Pebble or Let's Encrypt staging) not yet exercised"
+    "live Pebble issuance test (tests/gateway/acme_pebble.rs) awaits its first CI run"
    ],
    "retire_basis": null,
    "confidence": "high",
@@ -554,12 +551,12 @@
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/tls/acme_tests.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs",
+    "crates/sdk/humanymous-runtime/tests/gateway/acme_pebble.rs"
    ],
    "go_test_map": {},
    "gaps": [
-    "live ACME exchange against a running directory (Pebble or Let's Encrypt staging) not yet exercised",
-    "self-signed dev mode (production fallback refused by B02)"
+    "live Pebble issuance test (tests/gateway/acme_pebble.rs) awaits its first CI run"
    ],
    "retire_basis": null,
    "confidence": "high",
@@ -568,16 +565,18 @@
   },
   {
    "baseline_path": "cmd/server/cert.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "in-process self-signed dev certificate generation"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs::dev_self_signed_is_explicit_exclusive_and_local_only"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "rcgen self-signed only appears in Rust tests (gateway/tests/tls.rs); plan B02 says no production self-signed fallback, but no retirement quote for the dev mode.",
+   "notes": "dev_self_signed_config (feature dev-self-signed) matches Go selfSignedCert: ECDSA P-256, CN humanymous.local, SAN localhost/humanymous.local/127.0.0.1/::1, serverAuth, valid from one hour ago for 365 days. Unlike Go it is never an implicit default: select() needs the explicit setting and refuses it alongside another source.",
    "test_verification": {}
   },
   {

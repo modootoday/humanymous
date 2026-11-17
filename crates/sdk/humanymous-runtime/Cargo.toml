@@ -20,6 +20,7 @@ native-security = ["dep:zeroize", "dep:rustix", "dep:winsafe", "dep:windows-perm
 hosted-pilot = ["capture", "dep:rcgen"]
 credential-pilot = ["native-security"]
 acme = ["gateway", "dep:instant-acme", "dep:rcgen", "dep:x509-parser"]
+dev-self-signed = ["gateway", "dep:rcgen", "dep:time"]
 
 [dependencies]
 humanymous-core = { workspace = true, optional = true }
@@ -47,6 +48,7 @@ tokio = { optional = true, version = "1.54.1", features = ["rt-multi-thread", "n
 humanymous-collector = { path = "../../collector", version = "0.1.0" }
 humanymous-platform = { workspace = true, features = ["testing"] }
 rcgen = { version = "=0.14.10", default-features = false, features = ["crypto", "ring"] }
+x509-parser = { version = "0.18", default-features = false }
 
 [target.'cfg(any(unix, windows))'.dependencies]
 time = { workspace = true, optional = true }
@@ -99,6 +101,11 @@ required-features = ["audit"]
 name = "gateway-native-process"
 path = "tests/gateway/native_process.rs"
 required-features = ["gateway"]
+
+[[test]]
+name = "gateway-acme-pebble"
+path = "tests/gateway/acme_pebble.rs"
+required-features = ["acme"]
 
 [[test]]
 name = "authority-decisions"

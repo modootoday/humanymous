@@ -149,6 +149,10 @@ jobs:
         toolchain: 1.99.1
     - run: cargo build --workspace --all-targets --locked
     - run: cargo test --workspace --all-targets --locked
+    - name: Execute B02 certificate source, ACME issuer and development certificate units
+      run: cargo test --locked -p humanymous-runtime --features acme,dev-self-signed --lib gateway::tls
+    - name: Issue a certificate from the pinned Pebble test CA over TLS-ALPN-01
+      run: cargo test --locked -p humanymous-runtime --features acme --test gateway-acme-pebble -- --ignored --test-threads=1
     - run: cargo test --manifest-path scripts/ci/docs-review/Cargo.toml --locked
     - run: cargo test --manifest-path scripts/ci/delivery/Cargo.toml --locked
   quality:
@@ -167,6 +171,8 @@ jobs:
         components: rustfmt, clippy
     - run: cargo fmt --all -- --check
     - run: cargo clippy --workspace --all-targets --locked -- -D warnings
+    - name: Lint the B02 ACME issuer and development certificate features
+      run: cargo clippy --locked -p humanymous-runtime --features acme,dev-self-signed --all-targets -- -D warnings
     - run: cargo fmt --manifest-path scripts/ci/docs-review/Cargo.toml -- --check
     - run: cargo clippy --manifest-path scripts/ci/docs-review/Cargo.toml --all-targets --locked -- -D
         warnings

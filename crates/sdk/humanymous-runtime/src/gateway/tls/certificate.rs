@@ -1,6 +1,8 @@
 //! B02 certificate source: provisioned key pair first, automated issuance only
 //! through an explicit domain-bound issuer contract, never a production
-//! self-signed fallback.
+//! self-signed fallback. A self-signed development certificate (Go `cert.go`
+//! parity) exists only in builds with the `dev-self-signed` feature and only
+//! when the operator selects it explicitly.
 use rustls::{
     ServerConfig,
     pki_types::{CertificateDer, PrivateKeyDer, pem::PemObject},
@@ -24,6 +26,9 @@ pub struct CertificateSettings {
     pub key: Option<PathBuf>,
     /// Domains an automated issuer must cover.
     pub issuer_domains: Vec<String>,
+    /// Explicit development-only self-signed certificate; never a fallback.
+    #[cfg(feature = "dev-self-signed")]
+    pub dev_self_signed: bool,
 }
 
 /// The one certificate source the ingress uses.
@@ -41,6 +46,9 @@ pub enum CertificateSource {
         /// Normalised, deduplicated, sorted domains.
         domains: Vec<String>,
     },
+    /// Explicitly selected development certificate for local hosts only.
+    #[cfg(feature = "dev-self-signed")]
+    DevSelfSigned,
 }
 
 /// Why no certificate source or server configuration was produced.
@@ -95,6 +103,14 @@ pub fn select(settings: &CertificateSettings) -> Result<CertificateSource, Certi
         (None, None) => None,
         _ => return Err(CertificateError::IncompletePair),
     };
+    #[cfg(feature = "dev-self-signed")]
+    if settings.dev_self_signed {
+        return if provisioned.is_none() && settings.issuer_domains.is_empty() {
+            Ok(CertificateSource::DevSelfSigned)
+        } else {
+            Err(CertificateError::AmbiguousSource)
+        };
+    }
     match (provisioned, settings.issuer_domains.is_empty()) {
         (Some(_), false) => Err(CertificateError::AmbiguousSource),
         (Some((chain, key)), true) => Ok(CertificateSource::Provisioned { chain, key }),
@@ -181,6 +197,55 @@ fn bounded_read(path: &std::path::Path) -> Result<Vec<u8>, CertificateError> {
         return Err(CertificateError::Unreadable);
     }
     Ok(bytes)
+}
+
+/// Development host names of the self-signed certificate (Go `cert.go`).
+#[cfg(feature = "dev-self-signed")]
+pub const DEV_HOSTS: [&str; 4] = ["localhost", "humanymous.local", "127.0.0.1", "::1"];
+
+/// Build the ingress configuration with a fresh in-memory ECDSA P-256
+/// self-signed certificate, matching Go `selfSignedCert`: subject
+/// `humanymous.local`, local host names only, server-auth usage, valid from one
+/// hour ago for 365 days. Clients must trust it explicitly.
+#[cfg(feature = "dev-self-signed")]
+pub fn dev_self_signed_config() -> Result<ServerConfig, CertificateError> {
+    let (certificate, key) = dev_self_signed_pair()?;
+    let mut config = ServerConfig::builder()
+        .with_no_client_auth()
+        .with_single_cert(vec![certificate], key)
+        .map_err(|_| CertificateError::Rejected)?;
+    config.alpn_protocols = INGRESS_ALPN
+        .iter()
+        .map(|protocol| protocol.to_vec())
+        .collect();
+    Ok(config)
+}
+
+#[cfg(feature = "dev-self-signed")]
+fn dev_self_signed_pair()
+-> Result<(CertificateDer<'static>, PrivateKeyDer<'static>), CertificateError> {
+    let key = rcgen::KeyPair::generate().map_err(|_| CertificateError::Rejected)?;
+    let mut params = rcgen::CertificateParams::new(DEV_HOSTS.map(str::to_owned).to_vec())
+        .map_err(|_| CertificateError::Rejected)?;
+    params.distinguished_name = rcgen::DistinguishedName::new();
+    params
+        .distinguished_name
+        .push(rcgen::DnType::CommonName, "humanymous.local");
+    let now = time::OffsetDateTime::from(std::time::SystemTime::now());
+    params.not_before = now - time::Duration::hours(1);
+    params.not_after = now + time::Duration::days(365);
+    params.key_usages = vec![
+        rcgen::KeyUsagePurpose::DigitalSignature,
+        rcgen::KeyUsagePurpose::KeyEncipherment,
+    ];
+    params.extended_key_usages = vec![rcgen::ExtendedKeyUsagePurpose::ServerAuth];
+    let certificate = params
+        .self_signed(&key)
+        .map_err(|_| CertificateError::Rejected)?;
+    Ok((
+        certificate.der().clone(),
+        PrivateKeyDer::Pkcs8(key.serialize_der().into()),
+    ))
 }
 
 /// Contract for an accepted automated issuer: it owns issuance, renewal and the
