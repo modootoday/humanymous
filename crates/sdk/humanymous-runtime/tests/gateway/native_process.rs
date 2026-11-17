@@ -65,16 +65,28 @@ fn directory() -> (PrivateDirectory, Value) {
             sid == user || sid == "S-1-5-32-544",
             "new objects owned by neither the user nor Administrators"
         );
-        assert!(
-            Command::new("icacls.exe")
-                .arg(&path)
-                .args(["/inheritance:r", "/grant:r"])
-                .arg(format!("*{sid}:(OI)(CI)F"))
-                .stdout(Stdio::null())
-                .status()
-                .unwrap()
-                .success()
-        );
+        // A protected DACL holding only the owner ACE. `icacls /inheritance:r`
+        // left SYSTEM and Administrators behind as explicit ACEs on hosted
+        // runners, which custody correctly refuses.
+        {
+            use windows_permissions::{
+                LocalBox, SecurityDescriptor,
+                constants::{SeObjectType, SecurityInformation},
+                wrappers,
+            };
+            let descriptor: LocalBox<SecurityDescriptor> =
+                format!("D:P(A;OICI;FA;;;{sid})").parse().unwrap();
+            wrappers::SetNamedSecurityInfo(
+                path.as_os_str(),
+                SeObjectType::SE_FILE_OBJECT,
+                SecurityInformation::Dacl | SecurityInformation::ProtectedDacl,
+                None,
+                None,
+                descriptor.dacl(),
+                None,
+            )
+            .unwrap();
+        }
         json!({"kind":"windows","sid":sid,"pid":std::process::id()})
     };
     (PrivateDirectory(path.canonicalize().unwrap()), owner)

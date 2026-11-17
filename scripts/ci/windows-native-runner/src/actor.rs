@@ -616,6 +616,9 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
         },
         &source,
     )?;
+    // The actor's PATH is System32 only, so the parent resolves workspace
+    // package roles with its own Cargo and hands the bytes over.
+    let package_metadata = harness::packages::Packages::capture_metadata(&options.report)?;
     evidence::verify_snapshot(&source)?;
     let mut nonce = [0u8; 16];
     getrandom::fill(&mut nonce).map_err(io::Error::other)?;
@@ -663,8 +666,10 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
         let manifest_path = scratch.join("manifest.json");
         let source_path = scratch.join("source.json");
         let report = scratch.join("report.json");
+        let package_metadata_path = scratch.join("package-metadata.json");
         evidence::write(&manifest_path, &manifest)?;
         evidence::write(&source_path, &source)?;
+        fs::write(&package_metadata_path, &package_metadata)?;
         let workspace = std::env::current_dir()?.canonicalize()?;
         for (flag, rights) in [
             ("/grant", "(OI)(CI)(RX)"),
@@ -711,6 +716,8 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
             manifest_path.into_os_string(),
             "--source".into(),
             source_path.into_os_string(),
+            "--package-metadata".into(),
+            package_metadata_path.into_os_string(),
             "--expected-sid".into(),
             sid.clone().into(),
         ];

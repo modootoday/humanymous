@@ -29,7 +29,11 @@ pub fn run(options: &Options) -> io::Result<i32> {
         }
         report["manifest"] = manifest.clone();
         stage.set("packages");
-        let packages = harness::packages::Packages::load(&report["source"], &options.report)?;
+        let packages = harness::packages::Packages::load(
+            &report["source"],
+            &options.report,
+            options.package_metadata.as_deref(),
+        )?;
         stage.set("execute");
         harness::execute(
             &manifest["harnesses"],
