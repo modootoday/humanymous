@@ -323,7 +323,7 @@ fn execute_inner(
         );
         let pilot_receipt_verified = pilot_receipt.is_ok();
         let accounting = accounting.and_then(|passed| pilot_receipt.map(|()| passed));
-        rows.push(json!({"index":index,"executable_sha256":entry["sha256"],"package_id":entry["package_id"],"target":entry["target"],"discovered":count,"passed":counts.map(|c|c[0]),"failed":counts.map(|c|c[1]),"ignored":counts.map(|c|c[2]),"required_not_run":if service{json!([required_service])}else{json!([])},"filtered":counts.map(|c|c[4]),"validated":accounting.is_ok(),"exit_code":execution.status.code(),"stdout_sha256":format!("{:x}",sha2::Sha256::digest(output.as_bytes()))}));
+        rows.push(json!({"index":index,"executable_sha256":entry["sha256"],"package_id":entry["package_id"],"target":entry["target"],"discovered":count,"passed":counts.map(|c|c[0]),"failed":counts.map(|c|c[1]),"ignored":counts.map(|c|c[2]),"required_not_run":if service{json!([required_service])}else{json!([])},"filtered":counts.map(|c|c[4]),"validated":accounting.is_ok(),"exit_code":execution.status.code(),"stdout_sha256":format!("{:x}",sha2::Sha256::digest(output.as_bytes())),"failed_test_names":failed_test_names(&output)}));
         if custody {
             let row = rows.last_mut().unwrap();
             row["ignored_subprocess_helpers"] = json!(if accounting.is_ok() { 2 } else { 0 });
@@ -416,6 +416,14 @@ fn execute_inner(
     Ok(())
 }
 use sha2::Digest;
+/// Names of failed tests from libtest's own result lines, bounded. The public
+/// projection re-filters them to identifier characters only.
+fn failed_test_names(log: &str) -> Vec<&str> {
+    log.lines()
+        .filter_map(|line| line.strip_prefix("test ")?.strip_suffix(" ... FAILED"))
+        .take(16)
+        .collect()
+}
 fn captured_helper_account(
     log: &str,
     discovered: usize,

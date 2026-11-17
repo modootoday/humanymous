@@ -257,7 +257,9 @@ mod boundary_tests {
 
     #[test]
     fn changed_open_file_is_not_observed_stable() {
-        let directory = std::env::temp_dir().join(format!(
+        let directory = std::fs::canonicalize(std::env::temp_dir())
+            .expect("macOS temp_dir resolves through the /var link; the reader refuses linked ancestors")
+            .join(format!(
             "hmn-prep-change-{}-{}",
             std::process::id(),
             SystemTime::now()

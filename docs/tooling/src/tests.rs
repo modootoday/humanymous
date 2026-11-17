@@ -9,7 +9,9 @@ static NEXT: AtomicUsize = AtomicUsize::new(0);
 struct Fixture(PathBuf);
 impl Fixture {
     fn new() -> Self {
-        let root = std::env::temp_dir().join(format!(
+        let root = std::fs::canonicalize(std::env::temp_dir())
+            .expect("macOS temp_dir resolves through the /var link; the reader refuses linked ancestors")
+            .join(format!(
             "pages-test-{}-{}",
             std::process::id(),
             NEXT.fetch_add(1, Ordering::Relaxed)

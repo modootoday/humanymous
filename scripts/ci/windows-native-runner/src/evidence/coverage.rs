@@ -37,6 +37,16 @@ pub(super) fn row(raw: &Value, public: &mut Value) {
             .collect::<Vec<_>>()
     );
     public["pilot_receipt_verified"] = json!(raw["pilot_receipt_verified"].as_bool());
+    public["failed_test_names"] = json!(
+        raw["failed_test_names"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .filter_map(Value::as_str)
+            .filter(|name| test_path(name))
+            .take(16)
+            .collect::<Vec<_>>()
+    );
     public["declared_subprocess_helpers"] = json!(
         raw["declared_subprocess_helpers"]
             .as_array()
@@ -46,6 +56,14 @@ pub(super) fn row(raw: &Value, public: &mut Value) {
             .filter(|name| helpers.contains(*name))
             .collect::<Vec<_>>()
     );
+}
+/// A failed libtest name is published only when it is a plain Rust test path.
+fn test_path(name: &str) -> bool {
+    !name.is_empty()
+        && name.len() <= 200
+        && name
+            .bytes()
+            .all(|b| b.is_ascii_alphanumeric() || b == b'_' || b == b':')
 }
 pub(super) fn failures(raw: &Value) -> Value {
     json!(
@@ -88,6 +106,14 @@ mod tests {
             json!(["unix_unprivileged_connect_probe"])
         );
         assert!(!public.to_string().contains("private-path"));
+    }
+    #[test]
+    fn failed_test_names_publish_only_plain_test_paths() {
+        let raw = json!({"failed_test_names":["a::b_c","/private/path","x ... y","",null]});
+        let mut public = json!({});
+        row(&raw, &mut public);
+        assert_eq!(public["failed_test_names"], json!(["a::b_c"]));
+        assert!(!public.to_string().contains("private"));
     }
     #[test]
     fn indexed_failure_projection_excludes_private_diagnostics() {
