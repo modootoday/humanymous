@@ -290,6 +290,63 @@ fn supervise(_: &Path, _: &str, _: &Path, _: &Path, _: &Path) -> Result<(Option<
     Err("controlled outer-grant supervision is implemented for Unix runners only".into())
 }
 
+/// Run an unprivileged pilot in its own process group and kill the whole group
+/// at the same 900 s deadline GNU timeout applies on Linux. A killed run keeps
+/// its signal status, so it can never read as a pass.
+#[cfg(unix)]
+fn bounded_output(mut command: Command) -> Result<std::process::Output> {
+    use std::{io::Read, os::unix::process::CommandExt};
+    let mut child = command
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .process_group(0)
+        .spawn()
+        .map_err(|e| e.to_string())?;
+    let drain = |pipe: Option<Box<dyn Read + Send>>| {
+        std::thread::spawn(move || {
+            let mut bytes = Vec::new();
+            if let Some(mut pipe) = pipe {
+                let _ = pipe.read_to_end(&mut bytes);
+            }
+            bytes
+        })
+    };
+    let stdout = drain(
+        child
+            .stdout
+            .take()
+            .map(|p| Box::new(p) as Box<dyn Read + Send>),
+    );
+    let stderr = drain(
+        child
+            .stderr
+            .take()
+            .map(|p| Box::new(p) as Box<dyn Read + Send>),
+    );
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(900);
+    let status = loop {
+        if let Some(status) = child.try_wait().map_err(|e| e.to_string())? {
+            break status;
+        }
+        if std::time::Instant::now() >= deadline {
+            let _ = Command::new("kill")
+                .args(["-KILL", &format!("-{}", child.id())])
+                .status();
+            break child.wait().map_err(|e| e.to_string())?;
+        }
+        std::thread::sleep(std::time::Duration::from_millis(20));
+    };
+    Ok(std::process::Output {
+        status,
+        stdout: stdout.join().map_err(|_| "pilot stdout reader panicked")?,
+        stderr: stderr.join().map_err(|_| "pilot stderr reader panicked")?,
+    })
+}
+#[cfg(not(unix))]
+fn bounded_output(_: Command) -> Result<std::process::Output> {
+    Err("native pilots are implemented for Unix runners only".into())
+}
+
 fn execute(root: &Path, dir: &Path, pilot: &Value, exe: &Path, name: &str) -> Result<Value> {
     let id = pilot["id"].as_str().unwrap_or_default();
     let scratch = std::env::var_os("RUNNER_TEMP")
@@ -326,11 +383,24 @@ fn execute(root: &Path, dir: &Path, pilot: &Value, exe: &Path, name: &str) -> Re
         prefix = vec!["sudo".into(), "-n".into()];
         program = copy;
     }
-    let mut command = Command::new("timeout");
+    // GNU timeout bounds the Linux run, including the sudo-owned child. Other
+    // Unix runners have no GNU timeout; there the pilot runs unprivileged in
+    // its own process group and `bounded_output` enforces the same deadline.
+    let linux = cfg!(target_os = "linux");
+    if !linux && !prefix.is_empty() {
+        return Err("privileged native pilots are declared for Linux runners only".into());
+    }
+    let mut command = if linux {
+        let mut command = Command::new("timeout");
+        command
+            .args(["--signal=TERM", "--kill-after=15s", "900"])
+            .args(&prefix)
+            .arg(&program);
+        command
+    } else {
+        Command::new(&program)
+    };
     command
-        .args(["--signal=TERM", "--kill-after=15s", "900"])
-        .args(&prefix)
-        .arg(&program)
         .args(["--exact", name, "--ignored", "--test-threads=1"])
         .current_dir(root)
         .stdin(Stdio::null());
@@ -343,7 +413,11 @@ fn execute(root: &Path, dir: &Path, pilot: &Value, exe: &Path, name: &str) -> Re
     if let Some(env) = pilot["source_root_env"].as_str() {
         command.env(env, root);
     }
-    let output = command.output().map_err(|e| e.to_string())?;
+    let output = if linux {
+        command.output().map_err(|e| e.to_string())?
+    } else {
+        bounded_output(command)?
+    };
     let stdout = String::from_utf8_lossy(&output.stdout).into_owned();
     let log = dir.join(format!("pilot-{id}-{}.log", name.replace("::", "-")));
     fs::write(&log, &output.stdout).map_err(|e| e.to_string())?;
