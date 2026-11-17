@@ -9,9 +9,7 @@ static NEXT: AtomicUsize = AtomicUsize::new(0);
 struct Fixture(PathBuf);
 impl Fixture {
     fn new() -> Self {
-        let root = std::fs::canonicalize(std::env::temp_dir())
-            .expect("macOS temp_dir resolves through the /var link; the reader refuses linked ancestors")
-            .join(format!(
+        let root = fixture_temp_dir().join(format!(
             "pages-test-{}-{}",
             std::process::id(),
             NEXT.fetch_add(1, Ordering::Relaxed)
@@ -456,5 +454,17 @@ fn build_refuses_relative_or_source_ancestor_destination_before_processes() {
     assert!(crate::validate(&f.0.join("docs"), &f.0.join("output"), "//external").is_err());
     for destination in [PathBuf::from("relative"), f.0.join("docs"), f.0.clone()] {
         assert!(crate::validate(&f.0.join("docs"), &destination, "").is_err());
+    }
+}
+
+/// macOS `temp_dir` goes through the `/var` link, which the reader refuses as a
+/// linked ancestor, so it is resolved first. Windows has no such link, and its
+/// canonical form gains a `\\?\` verbatim prefix, so it is used as given there.
+fn fixture_temp_dir() -> std::path::PathBuf {
+    let temp = std::env::temp_dir();
+    if cfg!(windows) {
+        temp
+    } else {
+        std::fs::canonicalize(temp).expect("temp_dir resolves")
     }
 }

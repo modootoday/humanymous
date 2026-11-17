@@ -48,14 +48,23 @@ fn directory() -> (PrivateDirectory, Value) {
             .unwrap();
         assert!(output.status.success());
         let text = String::from_utf8(output.stdout).unwrap();
-        let sid = text
+        let user = text
             .trim()
             .trim_matches('"')
             .rsplit(",\"")
             .next()
             .unwrap()
             .to_owned();
-        assert!(sid.starts_with("S-1-5-"));
+        assert!(user.starts_with("S-1-5-"));
+        // An elevated token stamps new objects with its default owner, which
+        // is BUILTIN\Administrators on hosted runners, not its user SID.
+        // Custody checks the actual owner of every object this process and
+        // its child create, so the fixture names that owner.
+        let sid = created_owner_sid(&path);
+        assert!(
+            sid == user || sid == "S-1-5-32-544",
+            "new objects owned by neither the user nor Administrators"
+        );
         assert!(
             Command::new("icacls.exe")
                 .arg(&path)
@@ -69,6 +78,20 @@ fn directory() -> (PrivateDirectory, Value) {
         json!({"kind":"windows","sid":sid,"pid":std::process::id()})
     };
     (PrivateDirectory(path.canonicalize().unwrap()), owner)
+}
+#[cfg(windows)]
+fn created_owner_sid(path: &std::path::Path) -> String {
+    use windows_permissions::{
+        constants::{SeObjectType, SecurityInformation},
+        wrappers,
+    };
+    let descriptor = wrappers::GetNamedSecurityInfo(
+        path.as_os_str(),
+        SeObjectType::SE_FILE_OBJECT,
+        SecurityInformation::Owner,
+    )
+    .unwrap();
+    descriptor.owner().unwrap().to_string()
 }
 fn now() -> u64 {
     SystemTime::now()
