@@ -6,7 +6,14 @@
 //! Stdout: `ac_gate_provisioned`; `ac_gate_ready` or `ac_gate_refused` after
 //! `start`/`restart`; `ac_gate_stopped` with the offline-authenticated history
 //! after `stop`. The passphrase never reaches stdout or the WAL.
+//!
+//! `--gate-tls` runs the same supervisor behind TLS terminated by the runtime
+//! itself (roadmap 2a): an ephemeral lab CA is generated in this container,
+//! the runtime receives the closed TLS launch envelope with the provisioned
+//! server pair, and the ingress relay carries TCP bytes unchanged (L4
+//! passthrough) so the runtime observes the original client's TLS and H2.
 use super::{FRONTEND_PORT, GATE_LISTEN, NODE, ORIGIN_LOOPBACK, ORIGIN_UPSTREAM, document};
+use crate::gate_tls::{self, pki::LabPki};
 use crate::origin_audit::{
     emit,
     gate::{Runtime, private_directory, provision, start},
@@ -47,7 +54,7 @@ fn passphrase(control: &Value) -> Result<Zeroizing<String>> {
 /// Offline authentication of the persisted history with the same custody,
 /// after the runtime released it. Records are projected exactly as the
 /// owned-child lab projects them (`humanymous_defender::lab::AuditEvent`).
-fn verify(
+pub(crate) fn verify(
     keys: &Path,
     wal: &Path,
     passphrase: &str,
@@ -102,6 +109,7 @@ struct Supervisor {
     runtime: Option<Runtime>,
     sessions: u64,
     runtime_sha256: String,
+    tls: Option<LabPki>,
 }
 
 impl Supervisor {
@@ -115,8 +123,12 @@ impl Supervisor {
             serde_json::to_value(&self.head)?,
             OWNER_UID,
         );
-        let started = start(&document)?;
-        drop(document);
+        let launch = match &self.tls {
+            Some(pki) => gate_tls::envelope(document, &pki.chain, &pki.key),
+            None => document,
+        };
+        let started = start(&launch)?;
+        drop(launch);
         let (runtime, readiness) = match started {
             Ok(ready) => ready,
             Err(code) => {
@@ -126,13 +138,17 @@ impl Supervisor {
         if readiness["listen"] != GATE_LISTEN {
             return Err("runtime listener differs from the configured loopback address".into());
         }
+        // The shipped binary reports which ingress it actually bound.
+        if (readiness["profile"]["raw_tls"] == true) != self.tls.is_some() {
+            return Err("runtime ingress profile differs from the launch document".into());
+        }
         let process_sha256 = digest(Path::new(&format!("/proc/{}/exe", runtime.0.id())))?;
         self.runtime = Some(runtime);
         self.sessions += 1;
         Ok(
             json!({"role":"ac_gate_ready","session":self.sessions,"restarted":restarted,
             "readiness":readiness,"runtime_sha256":self.runtime_sha256,
-            "process_sha256":process_sha256,"binary":RUNTIME}),
+            "process_sha256":process_sha256,"binary":RUNTIME,"tls":self.tls.is_some()}),
         )
     }
 
@@ -167,7 +183,17 @@ impl Supervisor {
     }
 }
 
+/// Plain HTTP/1.1 ingress (roadmap 2 attack catalog).
 pub fn run() -> Result<()> {
+    supervise(false)
+}
+
+/// Runtime-terminated TLS ingress (roadmap 2a full Gate TLS/H2/capture).
+pub fn run_tls() -> Result<()> {
+    supervise(true)
+}
+
+fn supervise(tls: bool) -> Result<()> {
     let mut input = BufReader::new(io::stdin());
     let passphrase = passphrase(&read_line(&mut input, 4096)?)?;
     let root = PathBuf::from(ROOT);
@@ -176,14 +202,24 @@ pub fn run() -> Result<()> {
     private_directory(&keys)?;
     let wal = root.join("wal");
     provision(&keys, &wal, &passphrase)?;
+    let pki = if tls {
+        Some(gate_tls::pki::issue(
+            &root.join("tls"),
+            gate_tls::SERVER_NAME,
+        )?)
+    } else {
+        None
+    };
+    let (frontend, backend) = if tls {
+        (gate_tls::FRONTEND_PORT, gate_tls::ORIGIN_UPSTREAM)
+    } else {
+        (FRONTEND_PORT, ORIGIN_UPSTREAM)
+    };
     // The backend relay exists before any runtime so no forward races it; the
     // ingress relay closes a client while no runtime session listens.
+    relay::spawn(TcpListener::bind(ORIGIN_LOOPBACK)?, backend.to_owned());
     relay::spawn(
-        TcpListener::bind(ORIGIN_LOOPBACK)?,
-        ORIGIN_UPSTREAM.to_owned(),
-    );
-    relay::spawn(
-        TcpListener::bind((Ipv4Addr::UNSPECIFIED, FRONTEND_PORT))?,
+        TcpListener::bind((Ipv4Addr::UNSPECIFIED, frontend))?,
         GATE_LISTEN.to_owned(),
     );
     let mut supervisor = Supervisor {
@@ -194,10 +230,19 @@ pub fn run() -> Result<()> {
         runtime: None,
         sessions: 0,
         runtime_sha256: digest(Path::new(RUNTIME))?,
+        tls: pki,
     };
+    // Public material only: the CA certificate and the server certificate digest.
+    let (ca_pem, leaf_sha256) = supervisor
+        .tls
+        .as_ref()
+        .map_or((Value::Null, Value::Null), |pki| {
+            (json!(pki.ca_pem), json!(pki.leaf_sha256))
+        });
     emit(
         &json!({"role":"ac_gate_provisioned","runtime_sha256":supervisor.runtime_sha256,
-        "frontend":format!("0.0.0.0:{FRONTEND_PORT}"),"backend":ORIGIN_UPSTREAM}),
+        "frontend":format!("0.0.0.0:{frontend}"),"backend":backend,
+        "tls":tls,"ca_pem":ca_pem,"leaf_sha256":leaf_sha256}),
     )?;
     loop {
         let mut line = String::new();
@@ -255,6 +300,7 @@ mod tests {
             runtime: None,
             sessions: 0,
             runtime_sha256: String::new(),
+            tls: None,
         };
         assert!(supervisor.command("restart").is_err());
         assert!(supervisor.command("bogus").is_err());

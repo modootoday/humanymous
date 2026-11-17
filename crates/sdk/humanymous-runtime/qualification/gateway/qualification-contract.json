@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 426,
-      "macos": 426,
-      "windows": 416
+      "linux": 429,
+      "macos": 429,
+      "windows": 419
     },
     "common_test_names": [
       "gateway::application::temporal::tests::categories::configure_only_preserves_unknown_gap_until_provider_observation",
@@ -296,6 +296,9 @@
       "gateway::service::epoch::tests::revoked_work_cannot_initiate_connect_or_accept_first_bytes",
       "gateway::service::epoch::tests::starting_and_foreign_instances_cannot_admit_or_revive",
       "gateway::service::epoch::tests::would_block_has_no_bytes_and_reacquisition_rechecks_revocation",
+      "gateway::service::launch::tests::envelope_refuses_unknown_schema_fields_missing_or_mismatched_pairs",
+      "gateway::service::launch::tests::envelope_with_a_provisioned_pair_offers_h2_then_http1",
+      "gateway::service::launch::tests::v1_document_is_read_unchanged_as_plain",
       "gateway::service::observed::retained::tests::abandoned_owner_revokes_guard_before_releasing_resources",
       "gateway::service::observed::retained::tests::failure_retains_same_resource_allocation_until_owner_release",
       "gateway::service::observed::retained::tests::repeated_failure_transition_cannot_release_or_replace_resources",

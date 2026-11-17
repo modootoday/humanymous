@@ -22,6 +22,8 @@ mod client;
 #[path = "../../dns_wire.rs"]
 mod dns_wire;
 #[cfg(unix)]
+mod gate_tls;
+#[cfg(unix)]
 mod go;
 #[cfg(unix)]
 mod installation;
@@ -102,6 +104,8 @@ fn main() {
             attack_catalog::gate::run().expect("attack catalog Gate supervisor")
         }
         Some("--attack-client") => attack_catalog::client::run(),
+        Some("--gate-tls") => attack_catalog::gate::run_tls().expect("TLS Gate supervisor"),
+        Some("--gate-tls-client") => gate_tls::client::run(),
         Some("--witness-transaction") => {
             witness::transaction().expect("private witness transaction")
         }

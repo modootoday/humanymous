@@ -116,6 +116,29 @@ services:
     entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --attack-client]
     stdin_open: true
     networks: [ingress]
+  # Roadmap 4 item 2a: full Gate TLS/H2/capture. The shipped runtime terminates
+  # TLS itself from the closed launch envelope with a pair the Gate generates
+  # from an ephemeral lab CA on its private tmpfs (never committed, no
+  # self-signed fallback); the ingress relay is L4 passthrough so the runtime
+  # captures the original client's ClientHello, H1 order and H2 frames.
+  tg-origin:
+    <<: *origin-audit
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --origin-audit-origin]
+    networks: [backend]
+  tg-gate:
+    <<: *origin-audit
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --gate-tls]
+    stdin_open: true
+    networks: [ingress, backend]
+    pids_limit: 128
+    mem_limit: 512m
+    cpus: 2
+    tmpfs: !override ["/tmp:rw,noexec,nosuid,size=64m,mode=1777"]
+  tg-client:
+    <<: *origin-audit
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --gate-tls-client]
+    stdin_open: true
+    networks: [ingress]
 networks:
   ingress: &internal
     internal: true

@@ -70,13 +70,13 @@ const UNSUPPORTED: &[(&str, Option<&str>)] = &[
 ];
 
 /// A long-lived actor over a private duplex.
-struct Actor {
+pub(super) struct Actor {
     child: ManagedChild,
     input: ChildStdin,
-    lines: Lines,
+    pub(super) lines: Lines,
 }
 impl Actor {
-    fn start(lab: &mut Lab, id: &str, first: &Value) -> Result<Self> {
+    pub(super) fn start(lab: &mut Lab, id: &str, first: &Value) -> Result<Self> {
         let (child, mut input, output) =
             lab.docker
                 .duplex(&["start".into(), "-a".into(), "-i".into(), id.into()])?;
@@ -89,16 +89,16 @@ impl Actor {
             lines: reader(output),
         })
     }
-    fn send(&mut self, line: &str) -> Result<()> {
+    pub(super) fn send(&mut self, line: &str) -> Result<()> {
         self.input.write_all(line.as_bytes())?;
         self.input.write_all(b"\n")?;
         Ok(self.input.flush()?)
     }
-    fn call(&mut self, line: &str, seconds: u64) -> Result<Value> {
+    pub(super) fn call(&mut self, line: &str, seconds: u64) -> Result<Value> {
         self.send(line)?;
         next(&self.lines, seconds)
     }
-    fn finish(self) -> Result<bool> {
+    pub(super) fn finish(self) -> Result<bool> {
         let Self {
             mut child, input, ..
         } = self;
@@ -109,7 +109,7 @@ impl Actor {
 
 /// Measured effects of one case: the authenticated audit suffix since the
 /// previous stop and the origin contacts since the session started.
-fn effects(previous: &[Value], stopped: &Value, contacts_delta: usize) -> Option<Value> {
+pub(super) fn effects(previous: &[Value], stopped: &Value, contacts_delta: usize) -> Option<Value> {
     let records = stopped["records"].as_array()?;
     let sound = stopped["role"] == "ac_gate_stopped"
         && stopped["verified"] == true
@@ -154,6 +154,50 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
 
     lab.stage = "attack_catalog_cases";
     let mut client = Actor::start(lab, &attacker_id, &json!({"gate":gate_ingress}))?;
+    let Operated {
+        report,
+        cases,
+        sessions,
+    } = operate(lab, &mut gate_actor, &mut client, &origin_id)?;
+    let attacker_success = client.finish()?;
+    gate_actor.send("exit")?;
+    let gate_exit = gate_actor.finish()?;
+    let (_, peers) = contacts(lab, &origin_id)?;
+    let ledger = json!({"topology":topology,"gate_backend_ip":gate_backend,"origin_ip":origin_ip,
+        "provisioned":provisioned,"sessions":sessions,"cases":cases,"contact_peers":peers,
+        "report":report,"attacker_process_success":attacker_success,"gate_exit_success":gate_exit,
+        "full_product_qualified":false});
+    snapshot::write(&lab.evidence, "attack-catalog-ledger.json", &ledger)?;
+    let passed = catalog(&ledger);
+    lab.components["attack_catalog"] = json!({"status":if passed {"passed"} else {"failed"},
+        "evidence":"attack-catalog-ledger.json","full_product_qualified":false,
+        "not_qualified":["TLS/H2 ingress and raw capture (plain HTTP/1.1 relay; see the gate_tls stage)",
+            "real browser, human and assistive-technology profiles (separate required cases)",
+            "Go browser/uTLS/HTTP2/proxy/correlation profiles (no Rust client; see INTEGRATION.md)",
+            "swarm / cross-subnet correlation (not evaluated)"]});
+    lab.case(
+        "attack-catalog",
+        passed,
+        json!("Rust attacker network catalog from an ingress-only container through the Gate to a backend-only origin: every supported case evaluated with its exact expectation against independently measured audit and origin effects; no attack step forwarded; controls never DENY; unsupported rows only those owned by other required cases"),
+    )
+}
+
+/// One operated stage: the client report plus the runner's own per-case
+/// measurements and Gate session lines.
+pub(super) struct Operated {
+    pub(super) report: Value,
+    pub(super) cases: Vec<Value>,
+    pub(super) sessions: Vec<Value>,
+}
+
+/// Operate one Gate session per client case (start, restart, stop), answering
+/// each stop with independently measured effects, until the client reports.
+pub(super) fn operate(
+    lab: &mut Lab,
+    gate_actor: &mut Actor,
+    client: &mut Actor,
+    origin_id: &str,
+) -> Result<Operated> {
     let mut cases = Vec::new();
     let mut sessions = Vec::new();
     let mut previous: Vec<Value> = Vec::new();
@@ -163,7 +207,7 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         let message = next(&client.lines, 300)?;
         match message["op"].as_str() {
             Some("start") => {
-                contacts_at_start = contacts(lab, &origin_id)?.1.len();
+                contacts_at_start = contacts(lab, origin_id)?.1.len();
                 let line = gate_actor.call("start", 120)?;
                 let ok = line["role"] == "ac_gate_ready";
                 current = message["case"].clone();
@@ -178,7 +222,7 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
             }
             Some("stop") if message["case"] == current => {
                 let stopped = gate_actor.call("stop", 120)?;
-                let contacts_delta = contacts(lab, &origin_id)?
+                let contacts_delta = contacts(lab, origin_id)?
                     .1
                     .len()
                     .checked_sub(contacts_at_start)
@@ -199,31 +243,15 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
             _ => return Err("unexpected attacker control line".into()),
         }
     };
-    let attacker_success = client.finish()?;
-    gate_actor.send("exit")?;
-    let gate_exit = gate_actor.finish()?;
-    let (_, peers) = contacts(lab, &origin_id)?;
-    let ledger = json!({"topology":topology,"gate_backend_ip":gate_backend,"origin_ip":origin_ip,
-        "provisioned":provisioned,"sessions":sessions,"cases":cases,"contact_peers":peers,
-        "report":report,"attacker_process_success":attacker_success,"gate_exit_success":gate_exit,
-        "full_product_qualified":false});
-    snapshot::write(&lab.evidence, "attack-catalog-ledger.json", &ledger)?;
-    let passed = catalog(&ledger);
-    lab.components["attack_catalog"] = json!({"status":if passed {"passed"} else {"failed"},
-        "evidence":"attack-catalog-ledger.json","full_product_qualified":false,
-        "not_qualified":["TLS/H2 ingress and raw capture (plain HTTP/1.1 relay)",
-            "real browser, human and assistive-technology profiles (separate required cases)",
-            "Go browser/uTLS/HTTP2/proxy/correlation profiles (no Rust client; see INTEGRATION.md)",
-            "swarm / cross-subnet correlation (not evaluated)"]});
-    lab.case(
-        "attack-catalog",
-        passed,
-        json!("Rust attacker network catalog from an ingress-only container through the Gate to a backend-only origin: every supported case evaluated with its exact expectation against independently measured audit and origin effects; no attack step forwarded; controls never DENY; unsupported rows only those owned by other required cases"),
-    )
+    Ok(Operated {
+        report,
+        cases,
+        sessions,
+    })
 }
 
 /// Go escape and false-positive rules applied to one evaluated row.
-fn go_rules(row: &Value) -> bool {
+pub(super) fn go_rules(row: &Value) -> bool {
     let steps = row["steps"].as_array().map_or(&[][..], Vec::as_slice);
     let audit = row["effects"]["audit"]
         .as_array()

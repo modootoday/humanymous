@@ -16,6 +16,7 @@ use std::{
 use tokio::{net::TcpListener, sync::watch};
 use zeroize::Zeroizing;
 mod authorization;
+mod launch;
 mod lifecycle;
 mod observed;
 mod outcome;
@@ -25,6 +26,7 @@ mod shutdown;
 #[cfg(test)]
 mod epoch;
 pub use authorization::{AuthorizationData, AuthorizationDataError};
+pub use launch::{Launch, TLS_INGRESS_SCHEMA, read_launch};
 pub use outcome::{ExitFailure, ExitReport, ExitStage};
 pub use readiness::standalone_profile;
 pub use shutdown::{ShutdownRequest, StopBudget};

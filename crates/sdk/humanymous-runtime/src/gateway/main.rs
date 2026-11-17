@@ -1,5 +1,5 @@
 //! Private inherited configuration, durable audit startup and native listener.
-use humanymous_runtime::gateway::service::{ServiceHost, read_configuration};
+use humanymous_runtime::gateway::service::{Launch, ServiceHost, read_launch};
 use std::io::{self, IsTerminal, Write};
 
 /// One bounded private request in, one document out. The installation key never
@@ -34,16 +34,22 @@ fn run() -> Result<(), &'static str> {
         }
         _ => return Err("private inherited configuration/readiness pipes required"),
     }
-    let config = read_configuration(io::stdin().lock()).map_err(|_| "configuration pipe")?;
+    // A v1 document serves plain HTTP/1.1; the closed TLS envelope terminates
+    // TLS at the same loopback ingress with a provisioned certificate only.
+    let launch = read_launch(io::stdin().lock()).map_err(|_| "configuration pipe")?;
     let runtime = tokio::runtime::Builder::new_multi_thread()
         .worker_threads(2)
         .enable_all()
         .build()
         .map_err(|_| "runtime")?;
     runtime.block_on(async move {
-        let host = ServiceHost::bind(config)
-            .await
-            .map_err(|_| "service startup")?;
+        let host = match launch {
+            Launch::Plain(config) => ServiceHost::bind(config).await,
+            Launch::Tls { configuration, tls } => {
+                ServiceHost::bind_tls(configuration, None, None, None, None, tls).await
+            }
+        }
+        .map_err(|_| "service startup")?;
         {
             let mut stdout = io::stdout().lock();
             serde_json::to_writer(&mut stdout, host.readiness()).map_err(|_| "readiness pipe")?;

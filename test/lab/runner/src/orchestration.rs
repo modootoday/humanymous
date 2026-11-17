@@ -57,6 +57,7 @@ pub(crate) mod g2_collector_product_binding;
 pub(crate) mod g4_cef_at;
 pub(crate) mod g5_witness_transport;
 pub(crate) mod g6_origin_audit_binding;
+mod gate_tls;
 mod go;
 mod go_fixture;
 mod go_public;
@@ -714,6 +715,8 @@ impl Lab {
             origin_audit::run(self)?;
             self.stage = "attack_catalog";
             attack_catalog::run(self)?;
+            self.stage = "gate_tls";
+            gate_tls::run(self)?;
             self.stage = "witness_component";
             witness::run(self)?;
         } else {
