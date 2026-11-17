@@ -8,6 +8,13 @@ x-rust-control: &rust-control
   build:
     <<: *rust-build
     target: controls
+# Runtime-image actors for the origin/audit binding stage.
+x-origin-audit: &origin-audit
+  <<: *rust-control
+  image: humanymous/product-lab:${HM_LAB_IMAGE_TAG:?Rust runner must supply owned tag}
+  build:
+    <<: *rust-build
+    target: runtime
 services:
   origin:
     <<: *rust-control
@@ -58,6 +65,35 @@ services:
   pass-pilot:
     extends: {service: runtime-pilot}
     command: [--pass]
+  # Roadmap 2c: cross-namespace origin/audit binding (Go parity: origin on its
+  # own network, Gate on both, client on the attack network only). The Gate's
+  # sealed custody and WAL are named volumes so they survive a restart; the
+  # tamper actor mounts the WAL only and has no network.
+  oa-origin:
+    <<: *origin-audit
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --origin-audit-origin]
+    networks: [backend]
+  oa-gate:
+    <<: *origin-audit
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --origin-audit-gate]
+    stdin_open: true
+    networks: [ingress, backend]
+    volumes: [oa-keys:/writer/keys, oa-wal:/writer/wal]
+    pids_limit: 128
+    mem_limit: 512m
+    cpus: 2
+    tmpfs: !override ["/tmp:rw,noexec,nosuid,size=64m,mode=1777"]
+  oa-client:
+    <<: *origin-audit
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --origin-audit-client]
+    stdin_open: true
+    networks: [ingress]
+  oa-tamper:
+    <<: *origin-audit
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --origin-audit-tamper]
+    stdin_open: true
+    network_mode: none
+    volumes: [oa-wal:/writer/wal]
 networks:
   ingress: &internal
     internal: true
@@ -67,3 +103,9 @@ networks:
       org.humanymous.expires: "${HM_LAB_EXPIRES:?Rust runner must supply expiry}"
   backend: *internal
   outside: *internal
+volumes:
+  oa-keys: &owned-volume
+    labels:
+      org.humanymous.owner: rust-product-lab
+      org.humanymous.expires: "${HM_LAB_EXPIRES:?Rust runner must supply expiry}"
+  oa-wal: *owned-volume

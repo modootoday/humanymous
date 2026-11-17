@@ -27,6 +27,8 @@ mod mount_policy;
 #[cfg(unix)]
 mod origin;
 #[cfg(unix)]
+mod origin_audit;
+#[cfg(unix)]
 mod pass;
 #[cfg(unix)]
 mod process;
@@ -84,6 +86,14 @@ fn main() {
         Some("--wargame") => wargame::run(),
         Some("--attestation") => attestation::run(),
         Some("--pass") => pass::run(),
+        Some("--origin-audit-origin") => {
+            origin_audit::origin::run().expect("owned backend recording origin")
+        }
+        Some("--origin-audit-gate") => {
+            origin_audit::gate::run().expect("origin/audit Gate supervisor session")
+        }
+        Some("--origin-audit-client") => origin_audit::client::run(),
+        Some("--origin-audit-tamper") => origin_audit::tamper::run(),
         Some("--witness-transaction") => {
             witness::transaction().expect("private witness transaction")
         }

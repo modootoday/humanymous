@@ -60,6 +60,7 @@ mod go_fixture;
 mod go_public;
 pub(crate) mod h2_product_binding;
 mod mount_probe;
+mod origin_audit;
 mod pass_recovery;
 mod public_receipts;
 mod qualification;
@@ -373,11 +374,25 @@ impl Lab {
             &container,
         )?;
         let host = &container["HostConfig"];
-        let mounts_allowed = if service.starts_with("witness-")
+        let mounts_allowed = if let Some(destinations) = match service {
+            "oa-gate" => Some(&["/writer/keys", "/writer/wal"][..]),
+            "oa-tamper" => Some(&["/writer/wal"][..]),
+            _ => None,
+        } {
+            // Origin/audit volumes: the tamper actor never sees custody.
+            container["Mounts"].as_array().is_some_and(|mounts| {
+                mounts.len() == destinations.len()
+                    && mounts.iter().all(|m| {
+                        m["Type"] == "volume"
+                            && destinations.contains(&m["Destination"].as_str().unwrap_or(""))
+                    })
+            })
+        } else if service.starts_with("witness-")
             || matches!(
                 service,
                 "browser-gate" | "go-gate" | "mount-writer-volume" | "mount-witness-volume"
-            ) {
+            )
+        {
             let destinations: &[&str] = if matches!(
                 service,
                 "witness-writer" | "browser-gate" | "go-gate" | "mount-writer-volume"
@@ -693,6 +708,8 @@ impl Lab {
             target_attestation::run(self)?;
             self.stage = "pass_recovery";
             pass_recovery::run(self)?;
+            self.stage = "origin_audit";
+            origin_audit::run(self)?;
             self.stage = "witness_component";
             witness::run(self)?;
         } else {
@@ -1557,6 +1574,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             "pinned-key-fresh-nonce-target-attestation",
         ),
         ("pass_recovery", "pass-step-up-recovery"),
+        ("origin_audit", "cross-namespace-origin-audit-binding"),
     ] {
         if lab.components[component].is_object() && lab.components[component]["status"] != "not_run"
         {
