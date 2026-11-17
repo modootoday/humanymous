@@ -302,17 +302,35 @@ pub(super) fn dns_canary_checks(
     ]
 }
 
-/// The captured collect entity as a driver stdin line, plus a receipt summary
-/// that omits the bytes. Exactly one entity, carried within the frame bound,
+/// The stripped epoch's captured collect entity (no guard hooks, as before the
+/// two-epoch pilot) as a driver stdin line, plus a receipt summary that omits
+/// the bytes. Exactly one entity in that epoch, carried within the frame bound,
 /// is required; otherwise the drivers get no report and no fixture.
 pub(super) fn collector_report(gate: &Value) -> (Value, Option<String>) {
     let captured = gate["collector_reports"]
         .as_array()
         .cloned()
         .unwrap_or_default();
-    let summary = json!({"captured":captured.len(),"source":REPORT_SOURCE,
+    let stripped = crate::browser_expectations::EPOCHS
+        .iter()
+        .position(|id| *id == "stripped")
+        .and_then(|index| gate["epochs"][index]["collector_reports"].as_array())
+        .map(|indices| {
+            indices
+                .iter()
+                .map(|index| {
+                    index
+                        .as_u64()
+                        .and_then(|i| captured.get(i as usize))
+                        .cloned()
+                        .unwrap_or(Value::Null)
+                })
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    let summary = json!({"captured":captured.len(),"epoch":"stripped","source":REPORT_SOURCE,
         "entities":captured.iter().map(|c| json!({"sha256":c["sha256"],"bytes":c["bytes"],"oversize":c["oversize"]})).collect::<Vec<_>>()});
-    let line = match captured.as_slice() {
+    let line = match stripped.as_slice() {
         [one] if one["base64"].is_string() => Some(
             json!({"schema":REPORT_SCHEMA,"base64":one["base64"],"sha256":one["sha256"],
                 "bytes":one["bytes"],"source":REPORT_SOURCE})
@@ -690,21 +708,35 @@ mod tests {
         assert!(cidr("172.30.0.0/4").is_none() && cidr("").is_none());
     }
     #[test]
-    fn collector_report_line_requires_exactly_one_carried_entity() {
-        let one = json!({"collector_reports":[{"sha256":"ab","bytes":2,"base64":"e30=","oversize":false}]});
-        let (summary, line) = collector_report(&one);
-        assert_eq!(summary["captured"], 1);
+    fn collector_report_line_requires_exactly_one_carried_stripped_entity() {
+        let stripped = json!({"sha256":"ab","bytes":2,"base64":"e30=","oversize":false});
+        let complete = json!({"sha256":"cd","bytes":7,"base64":"eyJhIjoxfQ==","oversize":false});
+        let run = |reports: Value, epochs: Value| {
+            collector_report(&json!({"collector_reports":reports,"epochs":epochs}))
+        };
+        let two = json!([{"collector_reports":[0]},{"collector_reports":[1]}]);
+        let (summary, line) = run(json!([stripped, complete]), two.clone());
+        assert_eq!(summary["captured"], 2);
+        assert_eq!(summary["epoch"], "stripped");
         assert!(summary.to_string().find("e30=").is_none());
         let line: Value = serde_json::from_str(&line.unwrap()).unwrap();
         assert_eq!(line["schema"], REPORT_SCHEMA);
         assert_eq!(line["base64"], "e30=");
+        // Never the complete (hooked) epoch's report, and never a fallback.
+        let swapped = json!([{"collector_reports":[1]},{"collector_reports":[0]}]);
+        let line = run(json!([stripped, complete]), swapped).1.unwrap();
+        assert!(line.contains("eyJhIjoxfQ==") && !line.contains("e30="));
         assert!(collector_report(&Value::Null).1.is_none());
-        let big =
-            json!({"collector_reports":[{"sha256":"ab","bytes":2,"base64":null,"oversize":true}]});
-        assert!(collector_report(&big).1.is_none());
-        let two =
-            json!({"collector_reports":[one["collector_reports"][0], one["collector_reports"][0]]});
-        assert!(collector_report(&two).1.is_none());
+        assert!(run(json!([stripped]), Value::Null).1.is_none());
+        assert!(
+            run(json!([stripped]), json!([{"collector_reports":[3]}]))
+                .1
+                .is_none()
+        );
+        let big = json!({"sha256":"ab","bytes":2,"base64":null,"oversize":true});
+        assert!(run(json!([big, complete]), two).1.is_none());
+        let doubled = json!([{"collector_reports":[0, 0]},{"collector_reports":[1]}]);
+        assert!(run(json!([stripped, complete]), doubled).1.is_none());
     }
     #[test]
     fn steps_keep_only_finite_labels() {

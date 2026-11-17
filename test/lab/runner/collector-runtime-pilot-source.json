@@ -2,8 +2,8 @@
   "schema": 1,
   "path": "crates/collector/src/browser/transport/runtime_pilot.rs",
   "name": "browser::transport::runtime_pilot::actual_runtime_session_report_and_required_capability_fail_closed",
-  "sha256": "1e80091a0b1020a2ce782f9e4b916e3a5599dec48fdb48c43d7b111363f53852",
-  "bytes": 6582,
+  "sha256": "bb1a4cffcb82b1ed5862bb46dac17a6f37cbe4c8052bad9e2aa369bf63c01531",
+  "bytes": 8436,
   "sites": [
     {
       "line": 11,
@@ -169,6 +169,91 @@
       "line": 118,
       "code": "browser_panic_closed_refusal",
       "needle": "assert!("
+    },
+    {
+      "line": 135,
+      "code": "browser_panic_complete_bootstrap",
+      "needle": ".expect(\"complete epoch runtime bootstrap\")"
+    },
+    {
+      "line": 136,
+      "code": "browser_panic_complete_collector_start",
+      "needle": "BrowserCollector::new()"
+    },
+    {
+      "line": 137,
+      "code": "browser_panic_complete_guard_hooks",
+      "needle": "enable_guard_hooks()"
+    },
+    {
+      "line": 138,
+      "code": "browser_panic_complete_collector_report",
+      "needle": "collector.report()"
+    },
+    {
+      "line": 139,
+      "code": "browser_panic_complete_collector_stop",
+      "needle": "collector.stop()"
+    },
+    {
+      "line": 148,
+      "code": "browser_panic_complete_collect_ack",
+      "needle": ".expect(\"complete report ingestion"
+    },
+    {
+      "line": 149,
+      "code": "browser_panic_complete_collect_status",
+      "needle": "assert_eq!(collected.status()"
+    },
+    {
+      "line": 150,
+      "code": "browser_panic_complete_collect_json",
+      "needle": "serde_json::from_slice"
+    },
+    {
+      "line": 151,
+      "code": "browser_panic_complete_collect_verdict",
+      "needle": "assert_eq!(body[\"verdict\"]"
+    },
+    {
+      "line": 152,
+      "code": "browser_panic_complete_collect_epoch",
+      "needle": "assert!(!complete.is_closed())"
+    },
+    {
+      "line": 161,
+      "code": "browser_panic_complete_required_ack",
+      "needle": ".expect(\"admitted required collector"
+    },
+    {
+      "line": 163,
+      "code": "browser_panic_complete_required_status",
+      "needle": "assert_eq!("
+    },
+    {
+      "line": 167,
+      "code": "browser_panic_complete_fixture_status",
+      "needle": ".unwrap()"
+    },
+    {
+      "line": 169,
+      "code": "browser_panic_complete_required_json",
+      "needle": "serde_json::from_slice"
+    },
+    {
+      "line": 170,
+      "code": "browser_panic_complete_required_verdict",
+      "needle": "assert_eq!("
+    },
+    {
+      "line": 174,
+      "code": "browser_panic_complete_required_epoch",
+      "needle": "assert!(!complete.is_closed())"
+    },
+    {
+      "line": 175,
+      "code": "browser_panic_complete_session_close",
+      "needle": "complete.close().unwrap()"
     }
   ]
 }

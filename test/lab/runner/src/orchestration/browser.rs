@@ -385,25 +385,37 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         status.success() && report["stopped"] == true,
         json!("actual audit flush and custody drop before Stopped"),
     )?;
-    for (key, response_expected) in expected["responses"]
+    // Whole-run accounting over both session epochs: every distinct expected
+    // response of a route, each with its exact count at both proxies.
+    for (key, responses_expected) in expected["responses"]
         .as_object()
         .ok_or("fixture response expectations")?
     {
-        let status = response_expected["status"]
-            .as_u64()
-            .ok_or("fixture response status")?;
-        let ack = response_expected["ack"]
-            .as_bool()
-            .ok_or("fixture response ACK")?;
-        let count = expected["request_counts"][key]
-            .as_u64()
-            .ok_or("fixture response count")?;
         let path = fixture["routes"][key].as_str().ok_or("fixture route")?;
-        let response = format!("response:{path}:{status}:ack_{ack}");
+        let mut keys = Vec::new();
+        let mut matched = true;
+        for response_expected in responses_expected
+            .as_array()
+            .ok_or("fixture response list")?
+        {
+            let status = response_expected["status"]
+                .as_u64()
+                .ok_or("fixture response status")?;
+            let ack = response_expected["ack"]
+                .as_bool()
+                .ok_or("fixture response ACK")?;
+            let count = response_expected["count"]
+                .as_u64()
+                .ok_or("fixture response count")?;
+            let response = format!("response:{path}:{status}:ack_{ack}");
+            matched &=
+                report["proxy_hits"][&response] == count && actor["proxy_hits"][&response] == count;
+            keys.push(response);
+        }
         lab.case(
             &format!("browser-response-{key}"),
-            report["proxy_hits"][&response] == count && actor["proxy_hits"][&response] == count,
-            json!(response),
+            matched && !keys.is_empty(),
+            json!(keys),
         )?;
     }
     for (key, route) in fixture["routes"].as_object().ok_or("fixture routes")? {
@@ -497,24 +509,32 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
     // when a gap fails the run. Evaluated only from observed evidence; the
     // public stage stays the existing browser_receipts code.
     lab.stage = "browser_receipts";
-    let missing = super::collector_parity::missing_signals(&report, &actor, &expected, &fixture);
-    let parity = super::collector_parity::parity(&report, &actor, &expected, &fixture);
+    // Each case reads only its own observed session epoch of this one run.
+    let binding = super::browser_epochs::binding_gaps(&report, &actor);
+    let [gate, browser, epoch] =
+        super::browser_epochs::view(&report, &actor, &expected, "stripped");
+    let missing = super::collector_parity::missing_signals(&gate, &browser, &epoch, &fixture);
+    let [gate, browser, epoch] =
+        super::browser_epochs::view(&report, &actor, &expected, "complete");
+    let parity = super::collector_parity::parity(&gate, &browser, &epoch, &fixture);
     snapshot::write(
         &lab.evidence,
         "collector-parity-report.json",
         &json!({"schema":"humanymous.collector-parity-lab/1","collector_parity":parity,
-            "missing_signals_closed":missing,"full_product_qualified":false}),
+            "missing_signals_closed":missing,"epoch_binding_gaps":binding,
+            "epochs":{"collector_parity":"complete","missing_signals_closed":"stripped"},
+            "full_product_qualified":false}),
     )?;
     lab.components["collector_parity"] = json!({"collector_parity_gaps":parity["gaps"],"missing_signals_gaps":missing["gaps"],
-            "go_oracle":super::collector_parity::GO_ORACLE});
+            "epoch_binding_gaps":binding,"go_oracle":super::collector_parity::GO_ORACLE});
     lab.case(
         "missing-signals-closed",
         missing["passed"] == true,
-        json!({"gaps":missing["gaps"],"evidence":"absent report challenged; real stripped report refused 422 without ACK; real collect replayed and moved into a fresh session refused; fresh session never admitted; zero origin effect and unchanged authenticated audit"}),
+        json!({"gaps":missing["gaps"],"epoch":"stripped","evidence":"stripped epoch (no guard hooks): absent report challenged; real stripped report refused 422 without ACK; real collect replayed and moved into a fresh session refused; fresh session never admitted; zero origin effect and unchanged authenticated audit for that epoch"}),
     )?;
     lab.case(
         "collector-parity",
         parity["passed"] == true,
-        json!({"gaps":parity["gaps"],"evidence":"real browser Rust WASM report vs Go 981d25c report/signal sets and loader planes; collect bound to the issuing session; required-collector admission for that session only"}),
+        json!({"gaps":parity["gaps"],"epoch":"complete","evidence":"complete epoch (lab page explicitly enabled guard hooks): real browser Rust WASM report vs Go 981d25c report/signal sets and loader planes; collect bound to the issuing session; required-collector admission for that session only"}),
     )
 }

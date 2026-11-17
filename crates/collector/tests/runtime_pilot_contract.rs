@@ -64,6 +64,17 @@ fn owned_runtime_fixture_and_webdriver_proxy_cannot_drift_independently() {
         && !path.contains(['?', '#', '%', '\\'])));
     assert_eq!(fixture["expected"]["required_collector_status"], 422);
     assert_eq!(fixture["expected"]["required_collector_ack"], false);
+    // The complete (hooks opted in) epoch is admitted with a consumed, non-ALLOW
+    // decision, so the whole two-epoch pilot still has zero origin effects.
+    assert_eq!(fixture["expected"]["complete_required_collector_ack"], true);
+    assert_ne!(
+        fixture["expected"]["complete_required_collector_status"],
+        fixture["expected"]["required_collector_status"]
+    );
+    assert!(matches!(
+        fixture["expected"]["complete_required_collector_verdict"].as_str(),
+        Some("DENY" | "CHALLENGE")
+    ));
     assert_eq!(fixture["expected"]["origin_effects"], 0);
     assert_eq!(fixture["expected"]["effect_requests"], 2);
     assert_eq!(fixture["test_selection"]["selected"], 1);

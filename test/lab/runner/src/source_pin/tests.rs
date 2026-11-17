@@ -171,7 +171,7 @@ fn duplicate_or_wrong_line_profiles_are_refused() {
 fn owned_data_profile_uses_only_reviewed_public_codes() {
     let catalog: Value = serde_json::from_str(include_str!("../../safe-diagnostics.json")).unwrap();
     let sites = profile()["sites"].as_array().unwrap();
-    assert_eq!(sites.len(), 33);
+    assert_eq!(sites.len(), 50);
     let mut lines = HashSet::new();
     let mut codes = HashSet::new();
     for site in sites {

@@ -29,6 +29,9 @@
     "collect_status": 200,
     "required_collector_status": 422,
     "required_collector_ack": false,
+    "complete_required_collector_status": 403,
+    "complete_required_collector_verdict": "DENY",
+    "complete_required_collector_ack": true,
     "origin_effects": 0
   },
   "qualification": "actual browser HTTP session join; full product requires independent isolation and witness receipts"

@@ -38,6 +38,9 @@ fn extract(actor: &Value, fixture: &Value, expected: &Value) -> Result<Value, &'
             return Err("private actor string type rejected");
         }
     }
+    if !actor["epochs"].is_array() {
+        return Err("private actor epoch ledger type rejected");
+    }
     for field in [
         "proxy_hits",
         "namespace_controls",
@@ -200,7 +203,7 @@ mod tests {
         let actor = json!({"schema":"humanymous.browser-product-actor/1","expected":expected,
             "status":"failed","test_output":"PRIVATE_BODY","test_stderr":"PRIVATE_HEADER",
             "test_inventory":inventory,"selected_test":name,"declared_selected":1,
-            "declared_filtered":66,"summary_verified":false,"proxy_hits":{},"namespace_controls":{},
+            "declared_filtered":66,"summary_verified":false,"proxy_hits":{},"epochs":[],"namespace_controls":{},
             "connection_refusals":{},"hardening":{},"dns_control":{},"dns_policy":{},
             "full_product_qualified":false,"test_process_success":false,"test_exit_code":1,
             "parser_summary_matched":false,"dns_finish":"succeeded"});
@@ -270,7 +273,7 @@ mod tests {
             super::from_stdout(&encode(&actor), &fixture, &expected, Some(&source.binding)).1,
             Some("browser_selected_test_failed")
         );
-        assert_eq!(actor.as_object().unwrap().len(), 21);
+        assert_eq!(actor.as_object().unwrap().len(), 22);
         assert_eq!(public.as_object().unwrap().len(), 13);
         assert!(!public.to_string().contains("PRIVATE"));
         let mut old = actor.clone();

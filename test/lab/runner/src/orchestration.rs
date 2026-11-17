@@ -48,6 +48,7 @@ mod attack_catalog;
 mod authority;
 mod browser;
 mod browser_actor;
+mod browser_epochs;
 mod browser_failure;
 pub(crate) mod cap0_product_honesty;
 pub(crate) mod clean_room_product;
