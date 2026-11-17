@@ -38,6 +38,28 @@ pub struct Configuration {
     /// Explicit browser contract; absent preserves native-only configuration.
     #[serde(default)]
     pub browser: Option<BrowserPolicy>,
+    /// Explicit legacy Core page/API surfaces; absent mounts nothing.
+    #[serde(default)]
+    pub legacy: Option<LegacyPolicy>,
+}
+
+/// Opt-in legacy Core surfaces served by [`crate::gateway::legacy`]. Each
+/// surface is mounted only when its flag is set; the operator console and the
+/// detection observatory are not mountable here (see that module).
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct LegacyPolicy {
+    /// Absolute directory holding `pass.html`, `demo.html` and static assets.
+    pub web_dir: std::path::PathBuf,
+    /// `/pass` and `/api/pass/{new,pow,attest,solve,kpi}`.
+    #[serde(default)]
+    pub pass: bool,
+    /// `/demo`.
+    #[serde(default)]
+    pub demo: bool,
+    /// Files under `/static/`, from `web_dir`.
+    #[serde(default)]
+    pub static_assets: bool,
 }
 
 /// Distinct integrity contracts. A browser subset never claims full wire binding.
@@ -163,6 +185,16 @@ impl Configuration {
             .browser
             .as_ref()
             .is_some_and(|policy| policy.origin != format!("http://{}", self.scope.authority))
+        {
+            return Err(bad);
+        }
+        if let Some(legacy) = &self.legacy
+            && (!legacy.web_dir.is_absolute()
+                || !(legacy.pass || legacy.demo || legacy.static_assets)
+                || self
+                    .routes
+                    .iter()
+                    .any(|route| crate::gateway::legacy::claims(legacy, &route.path)))
         {
             return Err(bad);
         }

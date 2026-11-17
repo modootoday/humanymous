@@ -14,6 +14,7 @@ pub mod http;
 pub mod inject;
 #[cfg(feature = "hosted-pilot")]
 pub mod lab_h2_measure;
+pub mod legacy;
 pub mod logging;
 pub mod management;
 pub mod observatory;

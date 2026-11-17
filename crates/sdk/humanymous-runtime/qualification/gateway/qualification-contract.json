@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 404,
-      "macos": 404,
-      "windows": 396
+      "linux": 412,
+      "macos": 412,
+      "windows": 404
     },
     "common_test_names": [
       "gateway::application::temporal::tests::categories::configure_only_preserves_unknown_gap_until_provider_observation",
@@ -151,6 +151,14 @@
       "gateway::inject::tests::non_html_passes_through_unchanged",
       "gateway::inject::tests::oversize_headless_body_is_bounded_and_loses_no_bytes",
       "gateway::inject::tests::upstream_error_surfaces_after_the_buffered_bytes",
+      "gateway::legacy::tests::browser_get_pass_serves_the_page_with_session_and_security_headers",
+      "gateway::legacy::tests::configuration_refuses_ambiguous_or_incomplete_legacy_policy",
+      "gateway::legacy::tests::demo_and_static_follow_the_go_paths",
+      "gateway::legacy::tests::disabled_and_unmounted_surfaces_keep_gateway_behaviour",
+      "gateway::legacy::tests::legacy_absent_keeps_prior_gateway_behaviour",
+      "gateway::legacy::tests::memory_reports_are_bounded",
+      "gateway::legacy::tests::pass_api_issues_a_challenge_and_enforces_post_only_routes",
+      "gateway::legacy::tests::pass_context_uses_the_peer_and_the_unavailable_ja4_form",
       "gateway::logging::tests::canonical_external_input_label_bounds",
       "gateway::logging::tests::core_accumulates_plain_and_jsonl_files",
       "gateway::logging::tests::core_logging_off_by_default",

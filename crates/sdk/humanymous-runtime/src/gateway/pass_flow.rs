@@ -28,11 +28,10 @@
 //!   behaviour (bounded ids, refusal at saturation).
 //! - Request bodies must be exactly one JSON value within the Go size limits.
 //!
-//! Open integration gap: the live gateway listener has no router seam for
-//! legacy Core page/API routes yet (the demo, console and observatory
-//! surfaces are likewise unmounted), so nothing serves these paths in the
-//! product. An HTTP owner must dispatch to [`PassFlow::handle`], supplying the
-//! trust-gated client IP and stable JA4 through [`PassContext`].
+//! Mounting: [`crate::gateway::legacy`] dispatches these paths from the live
+//! gateway listener when its explicit `legacy.pass` configuration is set,
+//! supplying the accepted peer address and the captured stable JA4 (empty
+//! when no ClientHello was captured) through [`PassContext`].
 pub mod scoring;
 
 use crate::gateway::demo::{new_session, session_cookie, session_from_cookie};
