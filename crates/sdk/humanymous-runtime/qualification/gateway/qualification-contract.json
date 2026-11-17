@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 345,
-      "macos": 345,
-      "windows": 337
+      "linux": 346,
+      "macos": 346,
+      "windows": 338
     },
     "common_test_names": [
       "gateway::application::temporal::tests::categories::configure_only_preserves_unknown_gap_until_provider_observation",
@@ -286,6 +286,7 @@
       "gateway::tls::acme::tests::renewal_is_due_when_absent_or_within_thirty_days",
       "gateway::tls::acme::tests::resolver_answers_only_declared_names_and_routes_challenges",
       "gateway::tls::acme::tests::settings_accept_https_directories_and_plain_contacts_only",
+      "gateway::tls::certificate::tests::dev_self_signed_is_explicit_exclusive_and_local_only",
       "gateway::tls::certificate::tests::issuer_domains_are_normalised_and_plain_hosts_only",
       "gateway::tls::certificate::tests::issuer_must_cover_exactly_the_selected_domains",
       "gateway::tls::certificate::tests::load_provisioned_reads_bounded_files",
