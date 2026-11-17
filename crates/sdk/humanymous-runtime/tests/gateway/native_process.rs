@@ -93,6 +93,25 @@ fn created_owner_sid(path: &std::path::Path) -> String {
     .unwrap();
     descriptor.owner().unwrap().to_string()
 }
+#[cfg(windows)]
+fn security_sddl(path: &std::path::Path) -> String {
+    use windows_permissions::{
+        constants::{SeObjectType, SecurityInformation},
+        wrappers,
+    };
+    let information = SecurityInformation::Owner | SecurityInformation::Dacl;
+    match wrappers::GetNamedSecurityInfo(
+        path.as_os_str(),
+        SeObjectType::SE_FILE_OBJECT,
+        information,
+    )
+    .and_then(|descriptor| {
+        wrappers::ConvertSecurityDescriptorToStringSecurityDescriptor(&descriptor, information)
+    }) {
+        Ok(sddl) => sddl.to_string_lossy().into_owned(),
+        Err(error) => format!("unreadable ({:?})", error.kind()),
+    }
+}
 fn now() -> u64 {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
@@ -216,7 +235,18 @@ fn native_binary_session_collection_origin_restart_and_wal_authentication() {
     );
     let mut custody =
         humanymous_runtime::audit::keys::custody::Custody::acquire(&key_directory.0, key_owner)
-            .unwrap();
+            .unwrap_or_else(|error| {
+                // Custody refuses without naming the object or the descriptor,
+                // so a failure prints what it checked: SIDs and ACE flags only.
+                #[cfg(windows)]
+                panic!(
+                    "{error:?}; key directory {}; lock {}",
+                    security_sddl(&key_directory.0),
+                    security_sddl(&key_directory.0.join("keys.lock"))
+                );
+                #[cfg(not(windows))]
+                panic!("{error:?}");
+            });
     custody
         .load_or_create(b"native-fixture", || {
             humanymous_runtime::audit::keys::KeyMaterial::new(
