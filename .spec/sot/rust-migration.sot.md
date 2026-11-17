@@ -271,7 +271,7 @@ Of that, `target/debug/deps` was 2.0 GB, close to the figure above, and
 `target/debug/incremental` was 1.4 GB, because incremental compilation was
 on. No before-change baseline was taken in that container because disk was
 short, so it is not an A/B and does not replace the design-session figures.
-`CARGO_INCREMENTAL=0`, as CI uses, leaves out the incremental directory.
+`CARGO_INCREMENTAL=0`, which several CI workflows set, leaves out that directory.
 
 The 11 failures are the same as before the change: 10 cli tests that refuse to
 run as root by design and 1 `git_coord` test that needs `pwsh`. Debuggers lose
