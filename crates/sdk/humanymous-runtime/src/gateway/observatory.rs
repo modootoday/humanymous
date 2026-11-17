@@ -456,7 +456,11 @@ pub struct Observatory {
     sessions: Arc<dyn Sessions>,
     runner: ProfileRunner,
     reset: Arc<dyn Fn() + Send + Sync>,
-    in_flight: Arc<AtomicBool>,
+    /// The single launch slot. The worker frees it and publishes
+    /// `attack.completed` under this lock, so a launch accepted after
+    /// `completed` never sees the slot still held, and never interleaves its
+    /// `attack.launched` ahead of the previous `attack.completed`.
+    in_flight: Arc<Mutex<bool>>,
     abort: Mutex<Option<Arc<AtomicBool>>>,
 }
 
@@ -488,7 +492,7 @@ impl Observatory {
             sessions,
             runner,
             reset,
-            in_flight: Arc::new(AtomicBool::new(false)),
+            in_flight: Arc::new(Mutex::new(false)),
             abort: Mutex::new(None),
         }))
     }
@@ -627,12 +631,12 @@ impl Observatory {
             return Response::text(400, "unknown profile");
         }
         let runs = u32::try_from(launch.runs.clamp(1, i64::from(MAX_RUNS))).unwrap_or(1);
-        if self
-            .in_flight
-            .compare_exchange(false, true, Ordering::SeqCst, Ordering::SeqCst)
-            .is_err()
         {
-            return Response::text(429, "a launch is already in flight");
+            let mut in_flight = self.in_flight.lock().unwrap_or_else(|p| p.into_inner());
+            if *in_flight {
+                return Response::text(429, "a launch is already in flight");
+            }
+            *in_flight = true;
         }
         (self.reset)();
         let aborted = Arc::new(AtomicBool::new(false));
@@ -651,16 +655,20 @@ impl Observatory {
             .name("observatory-launch".into())
             .spawn(move || {
                 run_launch(&hub, &runner, &control, &profile, runs);
-                in_flight.store(false, Ordering::SeqCst);
+                let mut in_flight = in_flight.lock().unwrap_or_else(|p| p.into_inner());
+                hub.publish("attack.completed", &json!({"profile": profile}));
+                *in_flight = false;
             });
         if spawned.is_err() {
-            self.in_flight.store(false, Ordering::SeqCst);
+            *self.in_flight.lock().unwrap_or_else(|p| p.into_inner()) = false;
             return Response::text(503, "launch worker unavailable");
         }
         Response::json(&json!({"accepted": true, "profileId": launch.profile, "runs": runs}))
     }
 }
 
+/// Publishes `attack.launched` and each run's outcome; the caller publishes
+/// `attack.completed` while freeing the launch slot.
 fn run_launch(hub: &Hub, runner: &ProfileRunner, control: &RunControl, profile: &str, runs: u32) {
     hub.publish(
         "attack.launched",
@@ -691,7 +699,6 @@ fn run_launch(hub: &Hub, runner: &ProfileRunner, control: &RunControl, profile: 
             }
         }
     }
-    hub.publish("attack.completed", &json!({"profile": profile}));
 }
 
 #[cfg(test)]
