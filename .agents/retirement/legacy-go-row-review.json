@@ -14,9 +14,9 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "ported_unit": 165,
+  "ported_unit": 168,
   "partial": 95,
-  "missing": 52,
+  "missing": 49,
   "not_applicable": 2
  },
  "by_package": {
@@ -29,7 +29,7 @@
    "partial": 1
   },
   "cmd/mlcorrect-train": {
-   "missing": 3
+   "ported_unit": 3
   },
   "cmd/redteam": {
    "partial": 2,
@@ -376,59 +376,105 @@
   },
   {
    "baseline_path": "cmd/mlcorrect-train/gate_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestRunGate_CleanDataEmitsCandidate": null,
-    "TestRunGate_PoisonedCohortBlocksCandidate_FailClosed": null,
-    "TestRunGate_TooFewSamplesIsAPreconditionError": null
-   },
-   "gaps": [
-    "promotion gate run",
-    "per-cohort human FPR blocking",
-    ">=100 sample precondition"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::clean_data_emits_candidate",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::poisoned_cohort_blocks_candidate_fail_closed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::too_few_samples_is_a_precondition_error",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::window_without_humans_or_bots_fails_closed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::undersampled_and_missing_required_cohorts_block_the_candidate",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::catalog_regression_below_the_bot_floor_blocks_the_candidate",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::invalid_configuration_and_inputs_are_typed_preconditions",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::warm_start_requires_a_matching_base_and_keeps_shape",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::gate_is_deterministic_for_a_seed"
+   ],
+   "go_test_map": {
+    "TestRunGate_CleanDataEmitsCandidate": "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::clean_data_emits_candidate",
+    "TestRunGate_PoisonedCohortBlocksCandidate_FailClosed": "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::poisoned_cohort_blocks_candidate_fail_closed",
+    "TestRunGate_TooFewSamplesIsAPreconditionError": "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::too_few_samples_is_a_precondition_error"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust runGate/promotion gate; evaluate.rs only provides aggregate confusion counts (human_fpr/bot_tpr).",
-   "test_verification": {}
+   "notes": "Same fixture (1200 time-interleaved samples, 3 bots : 2 typical : 1 edge), same config (hidden 8, epochs 40, lr 0.1, seed 2, test-frac 0.25, 0.005/0.80/20) and same assertions; extra tests cover the fail-closed deltas, bot-floor message, warm start and determinism.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::clean_data_emits_candidate": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::poisoned_cohort_blocks_candidate_fail_closed": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::too_few_samples_is_a_precondition_error": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::window_without_humans_or_bots_fails_closed": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::undersampled_and_missing_required_cohorts_block_the_candidate": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::catalog_regression_below_the_bot_floor_blocks_the_candidate": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::invalid_configuration_and_inputs_are_typed_preconditions": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::warm_start_requires_a_matching_base_and_keeps_shape": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::gate_is_deterministic_for_a_seed": "passed"
+   }
   },
   {
    "baseline_path": "cmd/mlcorrect-train/gate.go",
-   "disposition": "missing",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-core/src/model/training/evaluate.rs"
+    "crates/sdk/humanymous-core/src/model/training/gate.rs",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal.rs",
+    "crates/sdk/humanymous-core/src/model/training/sgd.rs"
    ],
-   "rust_tests": [],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::clean_data_emits_candidate",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::poisoned_cohort_blocks_candidate_fail_closed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::too_few_samples_is_a_precondition_error",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::window_without_humans_or_bots_fails_closed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::undersampled_and_missing_required_cohorts_block_the_candidate",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::catalog_regression_below_the_bot_floor_blocks_the_candidate",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::invalid_configuration_and_inputs_are_typed_preconditions",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::warm_start_requires_a_matching_base_and_keeps_shape",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::gate_is_deterministic_for_a_seed"
+   ],
    "go_test_map": {},
-   "gaps": [
-    "TESSERACT time-ordered split",
-    "per-cohort FPR with min-cohort-humans fail-closed",
-    "bot TPR floor",
-    "AUT metric",
-    "candidate emission only on pass"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Only aggregate Counts::human_fpr/bot_tpr exist; SoT model-training-correction requires cohort gate and time split still unimplemented.",
-   "test_verification": {}
+   "notes": "runGate ported as training::gate::run_gate: >=100-sample precondition, time_split (TESSERACT), standardize, warm-startable SGD, evaluation through the existing Mlp, AUT over 5 buckets, per-cohort human-FP gate in sorted order with min-cohort-humans fail-closed, bot-TPR floor, candidate emitted only when failures is empty; legacy failure strings preserved. Gate criteria are caller-supplied offline promotion parameters, not scoring changes. Deliberate fail-closed deltas: windows without human or bot support fail (Go could pass vacuously), optional required cohorts, NaN/out-of-range gate parameters are a typed config error, split/standardize/train/evaluate refusals are typed errors. No staging, signing or activation.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::clean_data_emits_candidate": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::poisoned_cohort_blocks_candidate_fail_closed": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::too_few_samples_is_a_precondition_error": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::window_without_humans_or_bots_fails_closed": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::undersampled_and_missing_required_cohorts_block_the_candidate": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::catalog_regression_below_the_bot_floor_blocks_the_candidate": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::invalid_configuration_and_inputs_are_typed_preconditions": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::warm_start_requires_a_matching_base_and_keeps_shape": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::gate_is_deterministic_for_a_seed": "passed"
+   }
   },
   {
    "baseline_path": "cmd/mlcorrect-train/main.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "anchor/oracle/base JSONL inputs and warm start CLI",
-    "exit3 no-write on gate failure",
-    "sha256 candidate digest output"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train.rs",
+    "crates/sdk/humanymous-core/src/bin/mlcorrect_train.rs",
+    "crates/sdk/humanymous-core/Cargo.toml"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs::passing_gates_write_candidate_and_print_only_its_digest",
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs::failed_gate_exits_3_and_leaves_existing_output_untouched",
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs::input_and_precondition_errors_exit_1_without_output",
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs::flag_syntax_and_usage_errors_follow_go_flag",
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs::version_stamp_matches_the_legacy_layout"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "SoT model-training-correction: \"both training commands | no equivalents found in model\".",
-   "test_verification": {}
+   "notes": "mlcorrect-train [[bin]] in humanymous-core over training::mlcorrect_train::run: Go flag syntax and defaults (hidden 16, epochs 60, lr 0.05, seed 1, test-frac 0.25, max-human-fpr 0.005, min-bot-tpr 0.80, min-cohort-humans 20, out candidate.json), required -anchor, optional -oracle/-base, warm start, metrics on stderr, exit 3 with no write (existing output untouched), lowercase SHA-256 digest alone on stdout, mlp-corrected-YYYYMMDD-HHMMSS version. Deltas: base read once from a bounded 1 MiB buffer (no Go double read), quarantined oracle records (weak/unknown provenance, e.g. challenge) excluded and counted, shared bounded JSONL reader, positional args are a usage error, decimal-only numbers, -require-cohort addition, serde_json float text so digests identify Rust-written bytes. Actual binary process pilot (clean pass exit 0 + digest match, poisoned cohort exit 3 sentinel kept, warm start exit 0, missing anchor exit 1, unknown flag exit 2) run on owned temp files; not product/Docker qualification.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs::passing_gates_write_candidate_and_print_only_its_digest": "passed",
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs::failed_gate_exits_3_and_leaves_existing_output_untouched": "passed",
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs::input_and_precondition_errors_exit_1_without_output": "passed",
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs::flag_syntax_and_usage_errors_follow_go_flag": "passed",
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs::version_stamp_matches_the_legacy_layout": "passed"
+   }
   },
   {
    "baseline_path": "cmd/redteam/attacks.go",

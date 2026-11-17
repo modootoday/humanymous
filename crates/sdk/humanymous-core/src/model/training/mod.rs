@@ -1,12 +1,10 @@
 //! Offline training inputs; no serving or model activation authority.
 pub mod evaluate;
+pub mod gate;
+pub mod mlcorrect_train;
 pub mod record;
 pub mod rng;
 pub mod sink;
-// The offline composition root is a separately allocated migration slice.
-#[cfg_attr(
-    not(test),
-    expect(dead_code, reason = "Private offline SGD awaits its bootstrap caller")
-)]
+// Private offline SGD; reached through the promotion gate composition root.
 pub(crate) mod sgd;
 pub mod standardize;
