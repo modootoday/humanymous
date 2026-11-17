@@ -4,14 +4,18 @@ use humanymous_agent_maintenance::selected_inputs::{
 };
 use std::{fs, path::PathBuf};
 
+/// macOS SystemTime has microsecond resolution, so parallel fixtures in one
+/// process also need a counter to get distinct directories.
+static NEXT: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
 struct Fixture(PathBuf);
 impl Fixture {
     fn new() -> Self {
         let path = std::fs::canonicalize(std::env::temp_dir())
             .expect("macOS temp_dir resolves through the /var link; the reader refuses linked ancestors")
             .join(format!(
-            "humanymous-selected-{}-{}",
+            "humanymous-selected-{}-{}-{}",
             std::process::id(),
+            NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .unwrap()

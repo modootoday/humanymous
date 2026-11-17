@@ -47,6 +47,16 @@ pub(super) fn row(raw: &Value, public: &mut Value) {
             .take(16)
             .collect::<Vec<_>>()
     );
+    public["panic_locations"] = json!(
+        raw["panic_locations"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .filter_map(Value::as_str)
+            .filter(|location| source_location(location))
+            .take(16)
+            .collect::<Vec<_>>()
+    );
     public["declared_subprocess_helpers"] = json!(
         raw["declared_subprocess_helpers"]
             .as_array()
@@ -64,6 +74,26 @@ fn test_path(name: &str) -> bool {
         && name
             .bytes()
             .all(|b| b.is_ascii_alphanumeric() || b == b'_' || b == b':')
+}
+/// A panic location is published only as a repository-relative `file.rs:line:col`.
+fn source_location(location: &str) -> bool {
+    let mut parts = location.rsplitn(3, ':');
+    let (Some(column), Some(line), Some(file)) = (parts.next(), parts.next(), parts.next()) else {
+        return false;
+    };
+    location.len() <= 200
+        && !column.is_empty()
+        && column.bytes().all(|b| b.is_ascii_digit())
+        && !line.is_empty()
+        && line.bytes().all(|b| b.is_ascii_digit())
+        && file.ends_with(".rs")
+        && !file.starts_with('/')
+        && !file
+            .split('/')
+            .any(|part| part.is_empty() || part == "." || part == "..")
+        && file
+            .bytes()
+            .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'_' | b'-' | b'.' | b'/'))
 }
 pub(super) fn failures(raw: &Value) -> Value {
     json!(
@@ -114,6 +144,13 @@ mod tests {
         row(&raw, &mut public);
         assert_eq!(public["failed_test_names"], json!(["a::b_c"]));
         assert!(!public.to_string().contains("private"));
+    }
+    #[test]
+    fn panic_locations_publish_only_relative_source_positions() {
+        let raw = json!({"panic_locations":["src/a.rs:57:9","/Users/runner/x.rs:1:1","../x.rs:1:1","C:\\x.rs:1:1","src/a.rs:x:1","src/a.txt:1:1"]});
+        let mut public = json!({});
+        row(&raw, &mut public);
+        assert_eq!(public["panic_locations"], json!(["src/a.rs:57:9"]));
     }
     #[test]
     fn indexed_failure_projection_excludes_private_diagnostics() {

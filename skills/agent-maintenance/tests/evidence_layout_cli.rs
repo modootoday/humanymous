@@ -6,14 +6,18 @@ use std::{
     path::PathBuf,
     process::{Command, Output},
 };
+/// macOS SystemTime has microsecond resolution, so parallel fixtures in one
+/// process also need a counter to get distinct directories.
+static NEXT: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
 struct Fixture(PathBuf);
 impl Fixture {
     fn new() -> Self {
         let root = std::fs::canonicalize(std::env::temp_dir())
             .expect("macOS temp_dir resolves through the /var link; the reader refuses linked ancestors")
             .join(format!(
-            "hmn-layout-cli-{}-{}",
+            "hmn-layout-cli-{}-{}-{}",
             std::process::id(),
+            NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .unwrap()
