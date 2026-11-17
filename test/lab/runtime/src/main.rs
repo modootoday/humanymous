@@ -27,6 +27,8 @@ mod mount_policy;
 #[cfg(unix)]
 mod origin;
 #[cfg(unix)]
+mod pass;
+#[cfg(unix)]
 mod process;
 #[cfg(unix)]
 mod product_e2e;
@@ -81,6 +83,7 @@ fn main() {
         }
         Some("--wargame") => wargame::run(),
         Some("--attestation") => attestation::run(),
+        Some("--pass") => pass::run(),
         Some("--witness-transaction") => {
             witness::transaction().expect("private witness transaction")
         }

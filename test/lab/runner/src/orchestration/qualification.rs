@@ -12,7 +12,7 @@ pub(super) const CAPABILITIES: &[(&str, &[&str])] = &[
         "session-bound real browser collector",
         &["collector-parity", "missing-signals-closed"],
     ),
-    ("Pass recovery", &["pass"]),
+    ("Pass recovery", &["pass", "pass-forgery-refused"]),
     (
         "human/keyboard/assistive controls",
         &["human-control", "challenge-keyboard", "challenge-assistive"],

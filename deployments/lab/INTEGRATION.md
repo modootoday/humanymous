@@ -215,7 +215,8 @@ deployments/lab/images; build/rust remains another owner's read-only surface.
 
 Output lab-report.json schema `humanymous.product-lab/2` has evidence_types,
 cases[{id,status,detail}], components.runtime (actual binary pilot report),
-components.wargame, components.target_attestation, components.independent_witness,
+components.wargame, components.target_attestation, components.pass_recovery,
+components.independent_witness,
 optional components.collector, required_unavailable, required_cases,
 full_product_qualified and release_ready, plus the pilot-read top-level
 status/qualification/errors/skips/source_sha/documentation_review_sha256.
@@ -228,7 +229,19 @@ returns 2 while full product gates are unavailable; failures return 1.
 The default profile's attestation-pilot (network none, same hardening) has the
 shipped runtime binary generate its installation key at lab start, pins the
 enrollment public key and verifies fresh-nonce answers; installation-target-binding
-and unknown-target-refused are recorded from that exact eight-row ledger. Never relabel exit 2 as
+and unknown-target-refused are recorded from that exact eight-row ledger.
+The default profile's pass-pilot (network none, same hardening) runs the shipped
+runtime binary with one `attest_floor` route and the legacy Pass surface
+(read-only web/pass.html in the runtime image). An in-container Rust HTTP/1.1
+client is challenged, issues a Pass instance, pays the proof of work, solves from
+the public scene with no motor trace, redeems the receipt at /__hmn/stepup and is
+admitted with exactly one origin effect. `pass` and `pass-forgery-refused` are
+recorded from that exact sixteen-row ledger (missing proof of work, missing,
+forged, wrong-session and expired receipt, lifted and wrong-session proof,
+replayed solve, a proof never overriding a scoring CHALLENGE, positive control
+after negatives). The expired-receipt row waits for receipt expiry plus skew,
+about four minutes. Keyboard/AT human Pass runs remain human-attested and are
+not part of this case. Never relabel exit 2 as
 product success. Collector is optional Firefox component evidence, never a real
 human/AT or Meari+CEF product browser. No sandbox-disabling option is supplied.
 

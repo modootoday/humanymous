@@ -60,6 +60,7 @@ mod go_fixture;
 mod go_public;
 pub(crate) mod h2_product_binding;
 mod mount_probe;
+mod pass_recovery;
 mod public_receipts;
 mod qualification;
 pub(crate) mod red_blue_product;
@@ -690,6 +691,8 @@ impl Lab {
             self.case("actual-owned-wargame",result.success && report["scoped_passed"]==true,json!("19 actual programs plus 7 unsupported; audit verdicts and origin deltas retained"))?;
             self.stage = "attestation_process";
             target_attestation::run(self)?;
+            self.stage = "pass_recovery";
+            pass_recovery::run(self)?;
             self.stage = "witness_component";
             witness::run(self)?;
         } else {
@@ -1553,6 +1556,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             "target_attestation",
             "pinned-key-fresh-nonce-target-attestation",
         ),
+        ("pass_recovery", "pass-step-up-recovery"),
     ] {
         if lab.components[component].is_object() && lab.components[component]["status"] != "not_run"
         {

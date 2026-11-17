@@ -31,8 +31,22 @@
 //!   exactly Go's `ja4Stable(nil)`; nothing is synthesized.
 //! - `/static/` never lists directories, refuses files outside the canonical
 //!   web directory and files above [`MAX_FILE`].
-//! - Pass reports live in a bounded in-process store; they do not yet feed the
-//!   gateway's own decision path.
+//! - Pass reports live in a bounded in-process store; they do not feed the
+//!   gateway's scoring. The Gate consumes a Pass only through the step-up
+//!   proof below, never by injecting a scoring signal.
+//!
+//! Step-up (legacy internal/gate control.go `handleStepUp`, gates.go
+//! `hasValidStepUp`, ceiling-guard #1): with the Pass surface mounted, a
+//! verified solve returns a session-bound receipt, `POST` [`STEP_UP_PATH`]
+//! redeems it for the `hmn_su` proof re-bound to the live socket (header
+//! fingerprint plus peer subnet), and an `attest_floor` route admits a scoring
+//! ALLOW only with that proof. Differences from Go:
+//! - Pass and Gate share one process, so the token key is a fresh random
+//!   per-process key instead of the shared `HMN_TOKEN_KEY`; nothing is
+//!   configured, exported or persisted, and a restart invalidates every proof.
+//! - Redemption is a sessionless surface and is not written to durable audit;
+//!   the demoted and the admitted route decisions are.
+use crate::gateway::token::{self, Epochs, TokenKey};
 use crate::gateway::{
     Rejection,
     configuration::LegacyPolicy,
@@ -60,6 +74,14 @@ pub const STATIC_PREFIX: &str = "/static/";
 pub const MAX_FILE: usize = http::MAX_BODY * 2 - 4096;
 /// Pass API paths, in Go mux order.
 pub const PASS_API: [&str; 5] = [NEW_PATH, POW_PATH, ATTEST_PATH, SOLVE_PATH, KPI_PATH];
+/// Step-up receipt redemption (Go control plane `/__hmn/stepup`).
+pub const STEP_UP_PATH: &str = "/__hmn/stepup";
+/// Step-up proof cookie (Go `stepUpCookie`).
+pub const STEP_UP_COOKIE: &str = "hmn_su";
+/// Receipt request header (Go `stepUpReceiptHeader`).
+pub const STEP_UP_RECEIPT_HEADER: &str = "x-hmn-stepup-receipt";
+/// Step-up proof lifetime (Go: 30 minutes).
+pub const STEP_UP_TTL_SECS: u64 = 30 * 60;
 
 /// Go `withSecurityHeaders`.
 const SECURITY_HEADERS: [(&str, &str); 3] = [
@@ -75,15 +97,110 @@ const SECURITY_HEADERS: [(&str, &str); 3] = [
 pub fn surface_path(path: &str) -> bool {
     path == PAGE_PATH
         || PASS_API.contains(&path)
+        || path == STEP_UP_PATH
         || path == demo::PATH
         || path.starts_with(STATIC_PREFIX)
 }
 
 /// Whether `policy` mounts a surface at `path`.
 pub fn claims(policy: &LegacyPolicy, path: &str) -> bool {
-    (policy.pass && (path == PAGE_PATH || PASS_API.contains(&path)))
+    (policy.pass && pass_path(path))
         || (policy.demo && path == demo::PATH)
         || (policy.static_assets && path.starts_with(STATIC_PREFIX))
+}
+
+fn pass_path(path: &str) -> bool {
+    path == PAGE_PATH || PASS_API.contains(&path) || path == STEP_UP_PATH
+}
+
+/// Value of the cookie `name` from a `Cookie` header, when present and non-empty.
+fn cookie<'a>(header: Option<&'a str>, name: &str) -> Option<&'a str> {
+    header?
+        .split(';')
+        .filter_map(|pair| pair.trim().split_once('='))
+        .find(|(key, _)| *key == name)
+        .map(|(_, value)| value.trim_matches('"'))
+        .filter(|value| !value.is_empty())
+}
+
+/// Go `tokenBind`: header fingerprint plus the accepted peer's subnet. No
+/// peer, no binding.
+fn bind(req: &http::Request, peer: Option<IpAddr>) -> Option<String> {
+    let peer = peer?;
+    let key = token::bind_key(
+        req.header("user-agent").unwrap_or(""),
+        req.header("accept-language").unwrap_or(""),
+        req.header("sec-ch-ua").unwrap_or(""),
+    );
+    Some(token::token_bind(
+        key.as_deref(),
+        &token::client_subnet(peer),
+    ))
+}
+
+/// Per-process step-up key and epochs; the key never leaves this process.
+struct StepUp {
+    key: Arc<TokenKey>,
+    epochs: Epochs,
+}
+
+impl StepUp {
+    fn new() -> Result<Self, Rejection> {
+        let mut bytes = vec![0u8; token::MIN_KEY];
+        getrandom::fill(&mut bytes).map_err(|_| Rejection::new(503, "entropy"))?;
+        Ok(Self {
+            key: Arc::new(TokenKey::new(bytes).map_err(|_| Rejection::new(503, "entropy"))?),
+            epochs: Epochs::default(),
+        })
+    }
+
+    /// Go `handleStepUp`: verify the session-bound receipt, then mint the
+    /// proof re-bound to this socket. Refusals grant nothing.
+    fn redeem(&self, req: &http::Request, peer: Option<IpAddr>, now: u64) -> Response {
+        if req.method != "POST" {
+            return Response::text(405, "POST only");
+        }
+        let Some(session) = demo::session_from_cookie(req.header("cookie")) else {
+            return Response::text(400, "no session");
+        };
+        let receipt = req.header(STEP_UP_RECEIPT_HEADER).unwrap_or("");
+        let Some(bound) = bind(req, peer) else {
+            return Response::text(403, "invalid or missing step-up receipt");
+        };
+        if self.key.verify_receipt(receipt, session, now).is_err() {
+            return Response::text(403, "invalid or missing step-up receipt");
+        }
+        let Ok(proof) = self.key.issue_step_up(
+            session,
+            &bound,
+            &self.epochs.current(now),
+            now.saturating_add(STEP_UP_TTL_SECS),
+        ) else {
+            return Response::text(403, "invalid or missing step-up receipt");
+        };
+        let mut response = Response::json(&serde_json::json!({"ok": true}));
+        response.headers.push((
+            "Set-Cookie",
+            format!("{STEP_UP_COOKIE}={proof}; Path=/; HttpOnly; Secure; SameSite=Lax"),
+        ));
+        response
+    }
+
+    /// Go `hasValidStepUp`: a proof for this request's `hsid`, bound to this
+    /// socket, unexpired and in an accepted epoch.
+    fn valid(&self, req: &http::Request, peer: Option<IpAddr>, now: u64) -> bool {
+        let header = req.header("cookie");
+        let (Some(session), Some(proof), Some(bound)) = (
+            demo::session_from_cookie(header),
+            cookie(header, STEP_UP_COOKIE),
+            bind(req, peer),
+        ) else {
+            return false;
+        };
+        self.key
+            .verify_step_up(proof, &bound, session, now, &self.epochs.accepted(now))
+            .is_ok()
+    }
 }
 
 /// Stable JA4 prefix (`a_b`) of a captured hello, or `""` when none was
@@ -145,6 +262,7 @@ impl Reports for MemoryReports {
 pub struct Surfaces {
     root: PathBuf,
     pass: Option<PassFlow>,
+    step_up: Option<StepUp>,
     reports: Arc<MemoryReports>,
     demo: bool,
     static_assets: bool,
@@ -163,6 +281,11 @@ impl Surfaces {
             return Err(bad);
         }
         let reports = Arc::new(MemoryReports::new(capacity));
+        let step_up = if policy.pass {
+            Some(StepUp::new()?)
+        } else {
+            None
+        };
         let pass = if policy.pass {
             // Go generated a fresh random 32-byte master key per process.
             let mut key = vec![0u8; 32];
@@ -176,7 +299,7 @@ impl Surfaces {
                     clock: Arc::new(SystemClock::default()),
                     feed: no_feed(),
                     hub: None,
-                    step_up: None,
+                    step_up: step_up.as_ref().map(|step_up| step_up.key.clone()),
                 },
             ))
         } else {
@@ -185,6 +308,7 @@ impl Surfaces {
         Ok(Self {
             root,
             pass,
+            step_up,
             reports,
             demo: policy.demo,
             static_assets: policy.static_assets,
@@ -193,18 +317,27 @@ impl Surfaces {
 
     /// Whether an enabled surface answers `path`.
     pub fn mounted(&self, path: &str) -> bool {
-        (self.pass.is_some() && (path == PAGE_PATH || PASS_API.contains(&path)))
+        (self.pass.is_some() && pass_path(path))
             || (self.demo && path == demo::PATH)
             || (self.static_assets && path.starts_with(STATIC_PREFIX))
     }
 
+    /// Whether `req` from `peer` carries a valid step-up proof at `now`
+    /// (Unix seconds). False whenever the Pass surface is not mounted.
+    pub fn step_up_valid(&self, req: &http::Request, peer: Option<IpAddr>, now: u64) -> bool {
+        self.step_up
+            .as_ref()
+            .is_some_and(|step_up| step_up.valid(req, peer, now))
+    }
+
     /// Answer one request on a mounted path as complete HTTP/1.1 bytes;
-    /// `None` leaves the path to the gateway.
+    /// `None` leaves the path to the gateway. `now` is Unix seconds.
     pub fn handle(
         &self,
         req: &http::Request,
         peer: Option<IpAddr>,
         hello: Option<&ClientHello>,
+        now: u64,
     ) -> Option<Result<Vec<u8>, Rejection>> {
         let (path, query) = match req.target.split_once('?') {
             Some((path, query)) => (path, Some(query)),
@@ -223,7 +356,9 @@ impl Surfaces {
             cookie: req.header("cookie"),
             body: &req.body,
         };
-        let response = if let Some(rel) = path.strip_prefix(STATIC_PREFIX) {
+        let response = if path == STEP_UP_PATH {
+            Ok(self.step_up.as_ref()?.redeem(req, peer, now))
+        } else if let Some(rel) = path.strip_prefix(STATIC_PREFIX) {
             Ok(self.static_file(rel))
         } else if path == demo::PATH {
             demo::handle(&request, &self.root, &|session| {

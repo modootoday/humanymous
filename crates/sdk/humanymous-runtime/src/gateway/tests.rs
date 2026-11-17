@@ -123,7 +123,7 @@ impl DurableAudit for Audit {
         Ok(())
     }
 }
-fn request(method: &str, target: &str, body: Vec<u8>) -> Request {
+pub(in crate::gateway) fn request(method: &str, target: &str, body: Vec<u8>) -> Request {
     Request {
         method: method.into(),
         target: target.into(),
@@ -143,7 +143,14 @@ fn request(method: &str, target: &str, body: Vec<u8>) -> Request {
         body,
     }
 }
-fn sign(config: &Configuration, req: &mut Request, id: &str, key: &str, n: u64, now: u64) {
+pub(in crate::gateway) fn sign(
+    config: &Configuration,
+    req: &mut Request,
+    id: &str,
+    key: &str,
+    n: u64,
+    now: u64,
+) {
     let deadline = now + 900;
     req.headers.retain(|(name, _)| {
         !name.starts_with("x-humanymous-") && !name.eq_ignore_ascii_case("authorization")
@@ -161,7 +168,7 @@ fn sign(config: &Configuration, req: &mut Request, id: &str, key: &str, n: u64, 
     let token = compute_token(&seed(&key, n - 1), &text, n, now / 10_000);
     req.headers.push(("x-humanymous-token".into(), token));
 }
-fn issue(app: &mut Application, now: u64) -> Value {
+pub(in crate::gateway) fn issue(app: &mut Application, now: u64) -> Value {
     match app
         .decide(&request("POST", "/_humanymous/session", vec![]), || Ok(now))
         .unwrap()
@@ -177,7 +184,12 @@ fn client_report(id: &str) -> Vec<u8> {
         "environment":{"probed":true},"behavior":{},"uaClientHints":{"brands":[{"brand":"Chromium","version":"126"}],"platform":"Windows"},
         "signals":[{"id":"l1.navigator.webdriver","value":false,"verdict":"OK","confidence":1,"collected":"wasm"}]})).unwrap()
 }
-fn collected(app: &mut Application, cfg: &Configuration, issued: &Value, now: u64) {
+pub(in crate::gateway) fn collected(
+    app: &mut Application,
+    cfg: &Configuration,
+    issued: &Value,
+    now: u64,
+) {
     let mut req = request(
         "POST",
         "/_humanymous/collect",

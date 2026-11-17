@@ -530,3 +530,18 @@ startup/admission serialization and retained-permit-only effect remain unwired.
 Pure classification matrix authored NOT_RUN; inventory50Unix/46Windows/native1.
 Required typed control query/Scope API producer is audit9c47f8e4dfb8dcfe0dee4e3359bb3c5e573050d5.
 Producer and this consumer remain source-only until post-quiet allocated validation.
+
+Roadmap 2e Pass recovery (Go internal/gate control.go handleStepUp, gates.go
+attestation floor, token.go receipts at 981d25c): a route may set
+`attest_floor`, which validation accepts only for a native-profile route with
+`legacy.pass` mounted. On such a route a scoring ALLOW without a valid `hmn_su`
+step-up proof is enforced as 403 `{"verdict":"CHALLENGE","step_up":"/pass"}`;
+the audit record keeps the scoring verdict ALLOW with enforcement CHALLENGE and
+rule `gate.attest_floor`. A verified Pass solve returns a session-bound receipt;
+`POST /__hmn/stepup` with the `hsid` cookie and `X-Hmn-Stepup-Receipt` mints the
+30-minute proof re-bound to the header fingerprint and peer subnet. The token key
+is a fresh per-process random key (Pass and Gate share the process), never
+configured or exported. A proof never upgrades a scoring CHALLENGE or DENY; no
+signal, weight, threshold, hard rule or verdict band changed. Redemption itself
+is not durably audited. Tests: legacy::tests::step_up (3). Docker evidence is the
+lab pass-pilot (`pass`, `pass-forgery-refused`), pending an owner Docker run.

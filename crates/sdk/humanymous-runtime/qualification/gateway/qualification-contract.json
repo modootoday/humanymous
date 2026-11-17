@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 417,
-      "macos": 417,
-      "windows": 407
+      "linux": 420,
+      "macos": 420,
+      "windows": 410
     },
     "common_test_names": [
       "gateway::application::temporal::tests::categories::configure_only_preserves_unknown_gap_until_provider_observation",
@@ -162,6 +162,9 @@
       "gateway::legacy::tests::memory_reports_are_bounded",
       "gateway::legacy::tests::pass_api_issues_a_challenge_and_enforces_post_only_routes",
       "gateway::legacy::tests::pass_context_uses_the_peer_and_the_unavailable_ja4_form",
+      "gateway::legacy::tests::step_up::attest_floor_needs_the_native_pass_surface_and_is_reported",
+      "gateway::legacy::tests::step_up::expired_receipt_and_proof_are_refused",
+      "gateway::legacy::tests::step_up::solved_pass_redeems_a_socket_bound_proof_that_admits_the_attested_route",
       "gateway::logging::tests::canonical_external_input_label_bounds",
       "gateway::logging::tests::core_accumulates_plain_and_jsonl_files",
       "gateway::logging::tests::core_logging_off_by_default",
