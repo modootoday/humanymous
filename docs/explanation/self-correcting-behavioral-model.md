@@ -2,7 +2,7 @@
 layout: doc
 title: Behavioral model limits
 permalink: /explanation/self-correcting-behavioral-model.html
-reviewed: 2026-11-07
+reviewed: 2026-11-18
 ---
 # Behavioral model limits
 
@@ -19,3 +19,9 @@ claimed here. Frozen scoring policy remains unchanged during migration.
 Recovery must never require motor richness or speed. Treat model results as
 scoped evidence within a declared deployment, not a universal identity test.
 See [accessible recovery](../help/challenge-accessibility.md).
+
+Similarity to confirmed abuse patterns is implemented only as a shadow kernel.
+It compares a session with clusters built from confirmed abuse, never with a
+"typical human" profile, and its operator policy cannot block on behavior
+similarity alone. It records what it would have done next to the served
+verdict and changes no verdict. See `sot:root/abuse-similarity`.

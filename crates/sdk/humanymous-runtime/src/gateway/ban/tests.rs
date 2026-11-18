@@ -455,3 +455,49 @@ mod dual_control {
 }
 
 mod wargame;
+
+/// Port of legacy internal/gate/ws9_test.go TestBulkBan (baseline 981d25c).
+#[test]
+fn bulk_ban() {
+    let mut s = store();
+    // fp meets the minimum key length; cidr is skipped (dual-control path only).
+    let keys = [
+        "ip:203.0.113.1",
+        "ip:203.0.113.2",
+        "fp:abcd1234",
+        "cidr:10.0.0.0/8",
+    ];
+    let term = Duration::from_secs(3600);
+    assert_eq!(
+        s.bulk_temporary(&keys, "scraper fleet", term, T0),
+        Ok((3, 1))
+    );
+    assert!(
+        s.check(&key("ip:203.0.113.1"), T0).is_some(),
+        "bulk-banned key in force"
+    );
+    assert!(s.check(&key("cidr:10.0.0.0/8"), T0).is_none());
+    // Permanent (zero) and over-cap bulk terms are rejected.
+    for term in [Duration::ZERO, MAX_BULK_TERM] {
+        assert_eq!(
+            s.bulk_temporary(&["ip:1.1.1.1"], "scraper fleet", term, T0),
+            Err(Refusal::Duration)
+        );
+    }
+    assert!(s.check(&key("ip:1.1.1.1"), T0).is_none());
+}
+
+#[test]
+fn bulk_ban_skips_invalid_keys_and_expires() {
+    let mut s = store();
+    let term = MAX_BULK_TERM - Duration::from_secs(1);
+    assert_eq!(
+        s.bulk_temporary(&["nope", "fp:ab", "ip:198.51.100.7"], "fleet", term, T0),
+        Ok((1, 2))
+    );
+    assert_eq!(
+        s.bulk_temporary(&["ip:198.51.100.8"], "", term, T0),
+        Err(Refusal::Reason)
+    );
+    assert!(s.check(&key("ip:198.51.100.7"), T0 + term).is_none());
+}
