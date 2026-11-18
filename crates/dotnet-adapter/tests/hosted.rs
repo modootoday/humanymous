@@ -3,7 +3,6 @@
 mod generic;
 #[path = "hosted/http.rs"]
 mod http;
-#[cfg(test)]
 #[path = "hosted/launch.rs"]
 mod launch;
 #[cfg(test)]
@@ -23,7 +22,6 @@ use serde_json::{Value, json};
 use std::{
     io::{Read, Write},
     net::Shutdown,
-    path::PathBuf,
     sync::{Arc, Mutex, mpsc},
     time::{Duration, Instant},
 };
@@ -42,12 +40,18 @@ impl Evidence for Synthetic {
         humanymous_core::signals::report::SessionReport,
         humanymous_runtime::authority::Rejection,
     > {
-        if matches!(request.request_target().1, "/gc-await" | "/abort-await") {
+        let path = request.request_target().1;
+        if matches!(path, "/gc-await" | "/abort-await" | "/hold-await") {
             self.gc_entered
                 .try_send(())
                 .expect("pilot GC gate observer");
+            // `/hold-await` must outlive the 2000 ms host request deadline.
+            let ceiling = if path == "/hold-await" { 4000 } else { 1500 };
             self.gc_release
-                .recv_timeout(stage_remaining(self.run_until, Duration::from_millis(1500)))
+                .recv_timeout(stage_remaining(
+                    self.run_until,
+                    Duration::from_millis(ceiling),
+                ))
                 .expect("bounded pilot GC gate");
         }
         let text = match request.request_target().1.split('?').next().unwrap_or("") {
@@ -85,6 +89,34 @@ fn stage_remaining(run_until: Instant, ceiling: Duration) -> Duration {
         .filter(|remaining| !remaining.is_zero())
         .expect("original host stage budget exhausted")
         .min(ceiling)
+}
+/// Install a new host configuration through the bounded control line.
+fn replace_host(host: &mut Host, configuration: Value) -> bool {
+    let control = json!({"operation":"replace-host","configuration":configuration});
+    assert!(
+        serde_json::to_vec(&control).unwrap().len() < 1024,
+        "replace-host control exceeds the pilot line bound"
+    );
+    host.send(control);
+    host.frame("replaced")["ok"].as_bool().unwrap()
+}
+/// A request held at the authority gate; a transport error reads as no bytes.
+fn hold_request(host: &mut Host, port: u16, run_until: Instant) {
+    host.spawn_http(move || {
+        try_request(port, "POST", "/hold-await", b"x", false, run_until).unwrap_or_default()
+    })
+    .unwrap();
+}
+/// The configured server identity with one OS fact changed: a real peer whose
+/// kernel-reported uid (Linux) or pipe server PID (Windows) differs.
+fn wrong_peer(server: &Value) -> Value {
+    let mut wrong = server.clone();
+    if server["kind"] == "unix" {
+        wrong["uid"] = json!(server["uid"].as_u64().unwrap() + 1);
+    } else {
+        wrong["pid"] = json!(server["pid"].as_u64().unwrap() + 1);
+    }
+    wrong
 }
 fn socket(port: u16, run_until: Instant) -> Socket {
     Socket::connect(port, run_until).unwrap()
@@ -177,12 +209,12 @@ fn chunked_entity(wire: &[u8]) -> Vec<u8> {
 #[ignore = "actual explicitly allocated Kestrel/JIT or NativeAOT, IPC and GC"]
 fn actual_kestrel_engine_audit_body_gc_and_shutdown() -> Result<(), Box<Host>> {
     let execution_environment = support::execution_environment();
-    let root = PathBuf::from(
-        std::env::var_os("HUMANYMOUS_DOTNET_AUDIT_DIR")
-            .expect("supervisor-provisioned private fixture directory"),
-    );
     for synthetic in [false, true] {
         let mut host = Host::start().expect("qualified native host admission required");
+        let root = host
+            .audit_root()
+            .expect("admitted private audit root")
+            .to_path_buf();
         let run_until = host.run_deadline();
         // Keep the actual owner OUTSIDE the assertion boundary. A failed case
         // still reaches explicit cancellation and retained settlement below.
@@ -251,6 +283,7 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() -> Result<(), Box<Host>> {
                 "/app-error",
                 "/gc-await",
                 "/abort-await",
+                "/hold-await",
             ];
             let mut routes = Vec::new();
             for path in paths {
@@ -292,17 +325,19 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() -> Result<(), Box<Host>> {
             )
             .unwrap();
             let credential = authority.credential().to_owned();
-            let runtime = tokio::runtime::Builder::new_multi_thread()
+            let expiry = authority.test_expiry();
+            let mut runtime = tokio::runtime::Builder::new_multi_thread()
                 .worker_threads(2)
                 .enable_all()
                 .build()
                 .unwrap();
             let listener = {
                 let _entered = runtime.enter();
-                Listener::bind(&serde_json::from_value(value).unwrap()).unwrap()
+                Listener::bind(&serde_json::from_value(value.clone()).unwrap()).unwrap()
             };
             let mut service = Some(runtime.spawn(listener.serve(authority, 8, 1000, 2000)));
-            host.send(json!({"configuration":{"installation":"i","tenant":"t","origin":"o","revision":"r","endpoint":endpoint,"credential":credential,"server":server,"routes":paths,"timeoutMs":2000,"maxBody":1024}}));
+            let configuration = |credential: &str, server: &Value| json!({"installation":"i","tenant":"t","origin":"o","revision":"r","endpoint":endpoint,"credential":credential,"server":server,"routes":paths,"timeoutMs":2000,"maxBody":1024});
+            host.send(json!({"configuration":configuration(&credential, &server)}));
             let ready = host.frame("ready");
             if let Ok(expected) = std::env::var("HUMANYMOUS_DOTNET_EXPECT_AOT") {
                 assert!(expected == "true" || expected == "false");
@@ -318,6 +353,9 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() -> Result<(), Box<Host>> {
             let first = request(port, "POST", "/api?q=1", &binary, false, run_until);
             let mut passed = 1;
             let mut covered = std::collections::BTreeSet::new();
+            let mut shutdown_frame: Option<Value> = None;
+            let mut epoch2_verdicts = Value::Null;
+            let mut timings = serde_json::Map::new();
             let mut last_live_resources = host.counters()["native_resources"].clone();
             assert_eq!(last_live_resources, 0);
             if !synthetic {
@@ -484,6 +522,125 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() -> Result<(), Box<Host>> {
                 }
                 host.send(json!({"operation":"handoff-mode","mode":"normal"}));
                 host.counters();
+                // expired-result (owner decision D4). A test authority issues an
+                // authenticated ALLOW whose expiry precedes the request deadline.
+                // The control run proves the same 600 ms hold passes under the
+                // production expiry rule, so only authority expiry refuses it.
+                host.send(json!({"operation":"handoff-mode","mode":"hold"}));
+                for (ttl, allowed) in [(0, true), (300, false)] {
+                    expiry.set(ttl);
+                    let before = host.counters()["contacts"].as_u64().unwrap();
+                    let reply = request(port, "POST", "/api", b"x", false, run_until);
+                    let counters = host.counters();
+                    if allowed {
+                        assert!(
+                            reply.starts_with(b"HTTP/1.1 200"),
+                            "production expiry must admit the hold"
+                        );
+                        assert_eq!(counters["contacts"].as_u64().unwrap(), before + 1);
+                    } else {
+                        assert!(
+                            reply.starts_with(b"HTTP/1.1 503"),
+                            "an expired authority result must refuse"
+                        );
+                        assert_eq!(counters["contacts"], before);
+                    }
+                    assert_eq!(counters["native_resources"], 0);
+                    passed += 1;
+                }
+                expiry.set(0);
+                host.send(json!({"operation":"handoff-mode","mode":"normal"}));
+                covered.insert("expired-result");
+                // drop-pending-decision. The authority holds its decision past
+                // the 2000 ms host deadline; the host must drop the request
+                // while the decision is still pending.
+                let before = host.counters();
+                hold_request(&mut host, port, run_until);
+                gc_entered_rx
+                    .recv_timeout(stage_remaining(run_until, Duration::from_secs(1)))
+                    .expect("held decision must enter actual authority IPC");
+                let held = Instant::now();
+                let dropped = host
+                    .http_finished_by(held + Duration::from_millis(3000))
+                    .unwrap();
+                if !dropped {
+                    gc_release_tx.send(()).unwrap();
+                }
+                assert!(
+                    dropped,
+                    "host deadline must drop a decision the authority still holds"
+                );
+                let reply = host.join_http().unwrap();
+                timings.insert("drop_pending_ms".into(), json!(held.elapsed().as_millis()));
+                assert!(reply.starts_with(b"HTTP/1.1 503"));
+                let after = host.counters();
+                assert_eq!(after["contacts"], before["contacts"]);
+                assert_eq!(after["mutations"], before["mutations"]);
+                assert_eq!(after["native_resources"], 0);
+                gc_release_tx.send(()).unwrap();
+                // The next decision serializes behind the released one, so a
+                // single contact proves the late completion reactivated nothing.
+                let next = request(port, "POST", "/api", b"x", false, run_until);
+                assert!(next.starts_with(b"HTTP/1.1 200"));
+                assert_eq!(
+                    host.counters()["contacts"].as_u64().unwrap(),
+                    before["contacts"].as_u64().unwrap() + 1
+                );
+                covered.insert("drop-pending-decision");
+                passed += 1;
+                // wrong-peer. The host is reconfigured to expect a server
+                // identity the real authority socket does not have.
+                assert!(replace_host(
+                    &mut host,
+                    configuration(&credential, &wrong_peer(&server))
+                ));
+                let before = host.counters();
+                let verdicts_before: u64 = counts.lock().unwrap().values().sum();
+                let reply = request(port, "POST", "/api", b"x", false, run_until);
+                assert!(reply.starts_with(b"HTTP/1.1 503"));
+                let after = host.counters();
+                assert_eq!(after["contacts"], before["contacts"]);
+                assert_eq!(after["native_resources"], 0);
+                assert_eq!(
+                    counts.lock().unwrap().values().sum::<u64>(),
+                    verdicts_before,
+                    "a mismatched server peer must receive no request"
+                );
+                assert!(replace_host(&mut host, configuration(&credential, &server)));
+                let restored = request(port, "POST", "/api", b"x", false, run_until);
+                assert!(restored.starts_with(b"HTTP/1.1 200"));
+                assert_eq!(
+                    host.counters()["contacts"].as_u64().unwrap(),
+                    before["contacts"].as_u64().unwrap() + 1
+                );
+                covered.insert("wrong-peer");
+                passed += 1;
+                // dispose-race. The installation is replaced and disposed while
+                // its request holds a decision; release must not reach next, and
+                // the replacement serves exactly one new request.
+                let before = host.counters();
+                hold_request(&mut host, port, run_until);
+                gc_entered_rx
+                    .recv_timeout(stage_remaining(run_until, Duration::from_secs(1)))
+                    .expect("dispose-race decision must enter actual authority IPC");
+                assert!(replace_host(&mut host, configuration(&credential, &server)));
+                gc_release_tx.send(()).unwrap();
+                let reply = host.join_http().unwrap();
+                assert!(
+                    reply.starts_with(b"HTTP/1.1 503"),
+                    "a decision held across host disposal must not reach the application"
+                );
+                assert_eq!(host.counters()["contacts"], before["contacts"]);
+                let fresh = request(port, "POST", "/api", b"x", false, run_until);
+                assert!(fresh.starts_with(b"HTTP/1.1 200"));
+                let after = host.counters();
+                assert_eq!(
+                    after["contacts"].as_u64().unwrap(),
+                    before["contacts"].as_u64().unwrap() + 1
+                );
+                assert_eq!(after["native_resources"], 0);
+                covered.insert("dispose-race");
+                passed += 1;
                 let oversized = request(port, "POST", "/api", &[7; 1025], false, run_until);
                 assert!(oversized.starts_with(b"HTTP/1.1 503"));
                 passed += 1;
@@ -538,12 +695,41 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() -> Result<(), Box<Host>> {
                 passed += 1;
                 last_live_resources = host.counters()["native_resources"].clone();
                 assert_eq!(last_live_resources, 0);
+                // authority-restart. Epoch 1 dies with a decision in flight: the
+                // serve task is cancelled and its runtime shut down, so no
+                // connection task can still deliver that decision.
+                let before_restart = host.counters();
+                hold_request(&mut host, port, run_until);
+                gc_entered_rx
+                    .recv_timeout(stage_remaining(run_until, Duration::from_secs(1)))
+                    .expect("restart decision must enter epoch 1 IPC");
                 let stopped_authority = service.take().unwrap();
                 stopped_authority.abort();
                 runtime.block_on(async {
                     let result = stopped_authority.await;
                     assert!(result.unwrap_err().is_cancelled());
                 });
+                let epoch2_runtime = tokio::runtime::Builder::new_multi_thread()
+                    .worker_threads(2)
+                    .enable_all()
+                    .build()
+                    .unwrap();
+                let restarted = Instant::now();
+                std::mem::replace(&mut runtime, epoch2_runtime)
+                    .shutdown_timeout(Duration::from_millis(200));
+                let held_reply = host.join_http().unwrap();
+                timings.insert(
+                    "restart_held_ms".into(),
+                    json!(restarted.elapsed().as_millis()),
+                );
+                assert!(
+                    held_reply.starts_with(b"HTTP/1.1 503"),
+                    "an epoch 1 decision in flight must not survive its authority"
+                );
+                gc_release_tx.send(()).unwrap();
+                assert_eq!(host.counters()["contacts"], before_restart["contacts"]);
+                passed += 1;
+                // authority-down, while no epoch serves the endpoint.
                 let before_down = host.counters();
                 let down_started = std::time::Instant::now();
                 let unavailable = request(port, "POST", "/api", b"x", false, run_until);
@@ -555,16 +741,153 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() -> Result<(), Box<Host>> {
                 assert_eq!(after_down["native_resources"], 0);
                 covered.insert("authority-down");
                 passed += 1;
+                // Epoch 2 binds the same endpoint with a new credential and a
+                // new audit chain. The epoch 1 credential must not authenticate.
+                #[cfg(windows)]
+                let epoch2_directory =
+                    humanymous_runtime::native_security::storage::create_user_private_directory(
+                        &root,
+                        "synthetic-epoch2",
+                    )
+                    .expect("ordinary actor and verified private parent required");
+                #[cfg(unix)]
+                let epoch2_directory = {
+                    use std::os::unix::fs::DirBuilderExt;
+                    let path = root.join("synthetic-epoch2");
+                    std::fs::DirBuilder::new()
+                        .mode(0o700)
+                        .create(&path)
+                        .expect("new private epoch 2 audit child required");
+                    path
+                };
+                let mut epoch2_value = value.clone();
+                epoch2_value["audit"]["directory"] =
+                    json!(epoch2_directory.canonicalize().unwrap());
+                let mut epoch2_config: Configuration =
+                    serde_json::from_value(epoch2_value.clone()).unwrap();
+                epoch2_config.validate().unwrap();
+                let epoch2_log = humanymous_runtime::authority::startup::open_audit(
+                    &mut epoch2_config.audit,
+                    &epoch2_config.peer,
+                    None,
+                )
+                .unwrap();
+                let epoch2_counts = Arc::new(Mutex::new(std::collections::BTreeMap::new()));
+                let (hold_entered_tx, hold_entered_rx) = mpsc::sync_channel(1);
+                let (hold_release_tx, hold_release_rx) = mpsc::sync_channel(1);
+                let epoch2 = Authority::new(
+                    epoch2_config,
+                    Default::default(),
+                    Box::new(Synthetic {
+                        gc_entered: hold_entered_tx,
+                        gc_release: hold_release_rx,
+                        run_until,
+                    }),
+                    Box::new(CountingAudit {
+                        inner: epoch2_log,
+                        counts: epoch2_counts.clone(),
+                    }),
+                )
+                .unwrap();
+                let epoch2_credential = epoch2.credential().to_owned();
+                assert_ne!(epoch2_credential, credential);
+                let epoch2_listener = {
+                    let _entered = runtime.enter();
+                    Listener::bind(&serde_json::from_value(epoch2_value).unwrap())
+                        .expect("epoch 2 must bind the endpoint epoch 1 released")
+                };
+                service = Some(runtime.spawn(epoch2_listener.serve(epoch2, 8, 1000, 2000)));
+                let before = host.counters();
+                let stale = request(port, "POST", "/api", b"x", false, run_until);
+                assert!(
+                    stale.starts_with(b"HTTP/1.1 503"),
+                    "an epoch 1 credential must not authenticate to epoch 2"
+                );
+                assert_eq!(host.counters()["contacts"], before["contacts"]);
+                assert!(epoch2_counts.lock().unwrap().is_empty());
+                assert!(replace_host(
+                    &mut host,
+                    configuration(&epoch2_credential, &server)
+                ));
+                let renewed = request(port, "POST", "/api", b"x", false, run_until);
+                assert!(renewed.starts_with(b"HTTP/1.1 200"));
+                assert_eq!(
+                    host.counters()["contacts"].as_u64().unwrap(),
+                    before["contacts"].as_u64().unwrap() + 1
+                );
+                assert_eq!(epoch2_counts.lock().unwrap().values().sum::<u64>(), 1);
+                covered.insert("authority-restart");
+                passed += 1;
                 host.send(json!({"operation":"dispose-host"}));
                 let before = host.counters()["contacts"].as_u64().unwrap();
                 let after = request(port, "POST", "/api", b"x", false, run_until);
                 assert!(after.starts_with(b"HTTP/1.1 503"));
                 assert_eq!(host.counters()["contacts"], before);
                 passed += 1;
+                assert!(replace_host(
+                    &mut host,
+                    configuration(&epoch2_credential, &server)
+                ));
+                // The process-lived profile refuses a collectible load twice and
+                // claims no native runtime unload.
+                host.send(json!({"operation":"collectible-probe"}));
+                let probe = host.frame("collectible");
+                assert_eq!(probe["rejected"], true);
+                assert_eq!(
+                    probe["reason"],
+                    if ready["dynamic_code"] == true {
+                        "collectible-context"
+                    } else {
+                        "no-dynamic-loading"
+                    }
+                );
+                passed += 1;
+                // shutdown-active. Stop arrives with one decision held at the
+                // epoch 2 authority and one request still awaiting body input.
+                let before = host.counters();
+                assert_eq!(before["native_resources"], 0);
+                last_live_resources = before["native_resources"].clone();
+                hold_request(&mut host, port, run_until);
+                hold_entered_rx
+                    .recv_timeout(stage_remaining(run_until, Duration::from_secs(1)))
+                    .expect("shutdown decision must enter epoch 2 IPC");
+                let mut pending_input = socket(port, run_until);
+                pending_input
+                    .write_all(b"POST /api HTTP/1.1\r\nHost: example.test\r\nContent-Length: 10\r\nConnection: close\r\n\r\nx")
+                    .unwrap();
+                std::thread::sleep(stage_remaining(run_until, Duration::from_millis(50)));
+                let stop_started = Instant::now();
+                host.send(json!({"operation":"stop"}));
+                let stopped = host.frame("stopped");
+                timings.insert(
+                    "shutdown_ms".into(),
+                    json!(stop_started.elapsed().as_millis()),
+                );
+                hold_release_tx.send(()).unwrap();
+                assert_eq!(stopped["contacts"], before["contacts"]);
+                assert_eq!(stopped["mutations"], before["mutations"]);
+                let held = host.join_http().unwrap();
+                assert!(
+                    !held.starts_with(b"HTTP/1.1 2"),
+                    "a decision pending at shutdown must not complete"
+                );
+                let mut tail = Vec::new();
+                let _ = pending_input.take(65_537).read_to_end(&mut tail);
+                assert!(!tail.starts_with(b"HTTP/1.1 2"));
+                covered.insert("shutdown-active");
+                passed += 1;
+                epoch2_verdicts = json!(*epoch2_counts.lock().unwrap());
+                shutdown_frame = Some(stopped);
             }
-            let final_counts = host.counters();
-            host.send(json!({"operation":"stop"}));
-            host.frame("stopped");
+            let final_counts = match shutdown_frame {
+                Some(stopped) => stopped,
+                None => {
+                    let counters = host.counters();
+                    host.send(json!({"operation":"stop"}));
+                    host.frame("stopped");
+                    counters
+                }
+            };
             if let Some(service) = service {
                 runtime.block_on(async {
                     service.abort();
@@ -582,7 +905,7 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() -> Result<(), Box<Host>> {
                 .map(|c| c["id"].as_str().unwrap())
                 .filter(|id| !covered.contains(id))
                 .collect();
-            json!({"schema":"humanymous.dotnet-host-observation/1","execution_environment":execution_environment,"os":std::env::consts::OS,"arch":std::env::consts::ARCH,"profile":if synthetic{"real-engine-audit-synthetic-evidence"}else{"production-application-http"},"runtime":ready["runtime"],"dynamic_code":ready["dynamic_code"],"passed":passed,"failed":0,"ignored":0,"covered_contract_cases":covered,"not_run_contract_cases":not_run,"origin_contacts":final_counts["contacts"],"origin_mutations":final_counts["mutations"],"gc_collections":final_counts["collections"],"remaining_native_resources_before_dispose":last_live_resources,"verdict_counts":*counts.lock().unwrap(),"full_product":false,"package_install":false})
+            json!({"schema":"humanymous.dotnet-host-observation/1","execution_environment":execution_environment,"os":std::env::consts::OS,"arch":std::env::consts::ARCH,"profile":if synthetic{"real-engine-audit-synthetic-evidence"}else{"production-application-http"},"runtime":ready["runtime"],"dynamic_code":ready["dynamic_code"],"passed":passed,"failed":0,"ignored":0,"covered_contract_cases":covered,"not_run_contract_cases":not_run,"origin_contacts":final_counts["contacts"],"origin_mutations":final_counts["mutations"],"gc_collections":final_counts["collections"],"remaining_native_resources_before_dispose":last_live_resources,"verdict_counts":*counts.lock().unwrap(),"epoch2_verdict_counts":epoch2_verdicts,"timings_ms":timings,"native_runtime_unload_claimed":false,"full_product":false,"package_install":false})
         }));
         if outcome.is_err() {
             host.cancel();

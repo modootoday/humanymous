@@ -18,9 +18,13 @@ use std::{
     ptr::{null, null_mut},
 };
 use windows_sys::Win32::{
-    Foundation::{CloseHandle, HANDLE, WAIT_OBJECT_0},
+    Foundation::{CloseHandle, ERROR_FILE_NOT_FOUND, ERROR_SUCCESS, HANDLE, WAIT_OBJECT_0},
     NetworkManagement::NetManagement::*,
-    System::{JobObjects::*, Threading::*},
+    System::{
+        JobObjects::*,
+        Registry::{HKEY, HKEY_LOCAL_MACHINE, KEY_READ, RegCloseKey, RegOpenKeyExW},
+        Threading::*,
+    },
     UI::WindowsAndMessaging::SW_HIDE,
 };
 use zeroize::Zeroizing;
@@ -490,6 +494,130 @@ impl Drop for OwnedProcessAttempt {
         drop(self.job.take());
     }
 }
+/// Logon profile choice for `CreateProcessWithLogonW`. Existing modes keep
+/// `LOGON_WITH_PROFILE`; the prebuilt actor uses NoProfile (SoT N5, D3).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum Logon {
+    WithProfile,
+    NoProfile,
+}
+impl Logon {
+    fn flags(self) -> u32 {
+        match self {
+            Self::WithProfile => LOGON_WITH_PROFILE,
+            Self::NoProfile => 0,
+        }
+    }
+}
+/// The actor child's standard handles (SoT N1, D3): the read end of the
+/// creator-channel pipe and the write ends of bounded parent readers. The
+/// parent drops these after creation and keeps only its own ends.
+struct ChildStdio {
+    input: io::PipeReader,
+    output: io::PipeWriter,
+    error: io::PipeWriter,
+}
+fn startup_flags(stdio: bool) -> u32 {
+    STARTF_USESHOWWINDOW | if stdio { STARTF_USESTDHANDLES } else { 0 }
+}
+/// HKLM ProfileList subkey for one exact account SID.
+fn profile_list_key(sid: &str) -> io::Result<String> {
+    let digits = sid.strip_prefix("S-1-").unwrap_or("");
+    if digits.is_empty()
+        || sid.len() > 184
+        || !digits.split('-').all(|part| {
+            !part.is_empty() && part.len() <= 10 && part.bytes().all(|b| b.is_ascii_digit())
+        })
+    {
+        return Err(io::Error::other("exact account SID required"));
+    }
+    Ok(format!(
+        r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\{sid}"
+    ))
+}
+/// Actual NoProfile facts (SoT N5): no ProfileList entry for the SID and no
+/// profile directory. Any other registry or filesystem error is not absence.
+fn profile_absent(sid: &str, directory: &Path) -> io::Result<bool> {
+    let key = wide(profile_list_key(sid)?);
+    let mut handle: HKEY = null_mut();
+    // SAFETY: `key` is an owned NUL-terminated UTF-16 buffer live for the call;
+    // `handle` is a local out-parameter closed below when the open succeeds.
+    let status = unsafe { RegOpenKeyExW(HKEY_LOCAL_MACHINE, key.as_ptr(), 0, KEY_READ, &mut handle) };
+    let registry_absent = match status {
+        ERROR_SUCCESS => {
+            // SAFETY: `handle` was returned open by the successful call above.
+            unsafe {
+                RegCloseKey(handle);
+            }
+            false
+        }
+        ERROR_FILE_NOT_FOUND => true,
+        other => return Err(error("RegOpenKeyExW", other)),
+    };
+    let directory_absent = match fs::symlink_metadata(directory) {
+        Ok(_) => false,
+        Err(missing) if missing.kind() == io::ErrorKind::NotFound => true,
+        Err(other) => return Err(other),
+    };
+    Ok(registry_absent && directory_absent)
+}
+/// A started prebuilt actor and the parent's pipe ends.
+#[expect(
+    dead_code,
+    reason = "SoT N4 runner-mode wiring is not implemented; N1/N5 are unrun on Windows"
+)]
+struct PrebuiltActor {
+    owner: OwnedProcessAttempt,
+    creator: io::PipeWriter,
+    output: io::PipeReader,
+    error: io::PipeReader,
+}
+/// NoProfile actor launch with a piped creator channel (SoT N1 + N5). The
+/// profile must be absent before; the caller observes absence again after
+/// cleanup with `profile_absent`.
+#[expect(
+    dead_code,
+    reason = "SoT N4 runner-mode wiring is not implemented; N1/N5 are unrun on Windows"
+)]
+fn start_prebuilt_actor(
+    account: &Account,
+    password: &[u16],
+    launch: (&[OsString], &[(String, String)], &Path),
+    sid: &str,
+    profile_directory: &Path,
+) -> Result<PrebuiltActor, StartFailure> {
+    let (arguments, environment, cwd) = launch;
+    if !profile_absent(sid, profile_directory).map_err(StartFailure::NotStarted)? {
+        return Err(StartFailure::NotStarted(io::Error::other(
+            "actor profile present before NoProfile launch",
+        )));
+    }
+    let pipes = (|| -> io::Result<_> { Ok((io::pipe()?, io::pipe()?, io::pipe()?)) })()
+        .map_err(StartFailure::NotStarted)?;
+    let ((input, creator), (output, output_writer), (error, error_writer)) = pipes;
+    let stdio = ChildStdio {
+        input,
+        output: output_writer,
+        error: error_writer,
+    };
+    let owner = start_owned_runner(
+        account,
+        password,
+        arguments,
+        environment,
+        cwd,
+        false,
+        (Logon::NoProfile, Some(&stdio)),
+    )?;
+    // The child's ends close in the parent; only the parent's ends remain.
+    drop(stdio);
+    Ok(PrebuiltActor {
+        owner,
+        creator,
+        output,
+        error,
+    })
+}
 fn start_owned_runner(
     account: &Account,
     password: &[u16],
@@ -497,6 +625,7 @@ fn start_owned_runner(
     environment: &[(String, String)],
     cwd: &Path,
     legacy_cleanup: bool,
+    (logon, stdio): (Logon, Option<&ChildStdio>),
 ) -> Result<OwnedProcessAttempt, StartFailure> {
     let prepared = (|| -> io::Result<_> {
         let exe = std::env::current_exe()?.canonicalize()?;
@@ -525,15 +654,21 @@ fn start_owned_runner(
     let (application, mut command, domain, directory, environment) = prepared;
     let mut startup: STARTUPINFOW = unsafe { zeroed() };
     startup.cb = size_of::<STARTUPINFOW>() as u32;
-    startup.dwFlags = STARTF_USESHOWWINDOW;
+    startup.dwFlags = startup_flags(stdio.is_some());
     startup.wShowWindow = SW_HIDE as u16;
+    if let Some(stdio) = stdio {
+        use std::os::windows::io::AsRawHandle;
+        startup.hStdInput = stdio.input.as_raw_handle();
+        startup.hStdOutput = stdio.output.as_raw_handle();
+        startup.hStdError = stdio.error.as_raw_handle();
+    }
     let mut process: PROCESS_INFORMATION = unsafe { zeroed() };
     let result = unsafe {
         CreateProcessWithLogonW(
             account.name.as_ptr(),
             domain.as_ptr(),
             password.as_ptr(),
-            LOGON_WITH_PROFILE,
+            logon.flags(),
             application.as_ptr(),
             command.as_mut_ptr(),
             CREATE_SUSPENDED | CREATE_UNICODE_ENVIRONMENT | CREATE_NO_WINDOW,
@@ -568,7 +703,15 @@ fn launch(
     environment: &[(String, String)],
     cwd: &Path,
 ) -> io::Result<(u32, u32)> {
-    let mut owner = start_owned_runner(account, password, arguments, environment, cwd, true)
+    let mut owner = start_owned_runner(
+        account,
+        password,
+        arguments,
+        environment,
+        cwd,
+        true,
+        (Logon::WithProfile, None),
+    )
         .map_err(|failure| match failure {
             StartFailure::NotStarted(error) => error,
             StartFailure::Retained(OwnedProcessFailure { owner, error }) => {
@@ -873,6 +1016,35 @@ mod tests {
         );
         for value in ["a\"b", "a\nb", "a\0b", r"C:\tail\"] {
             assert!(quote(OsStr::new(value)).is_err());
+        }
+    }
+    #[test]
+    fn prebuilt_launch_flags_are_noprofile_and_std_handles_only_when_piped() {
+        assert_eq!(Logon::WithProfile.flags(), LOGON_WITH_PROFILE);
+        assert_eq!(Logon::NoProfile.flags(), 0);
+        assert_eq!(startup_flags(false), STARTF_USESHOWWINDOW);
+        assert_eq!(
+            startup_flags(true),
+            STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES
+        );
+    }
+    #[test]
+    fn profile_list_key_accepts_only_an_exact_sid() {
+        assert!(
+            profile_list_key("S-1-5-21-1-2-3-1001")
+                .unwrap()
+                .ends_with(r"\ProfileList\S-1-5-21-1-2-3-1001")
+        );
+        for sid in [
+            "",
+            "S-1-",
+            "S-1-5-",
+            "S-1-5--1",
+            "S-1-5-21\\..\\x",
+            "S-2-5-21",
+            "S-1-5-21-12345678901",
+        ] {
+            assert!(profile_list_key(sid).is_err(), "{sid}");
         }
     }
     #[test]

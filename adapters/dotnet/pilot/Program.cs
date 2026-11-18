@@ -2,6 +2,8 @@ using System.Net;
 using System.Text.Json;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+using System.Runtime.Loader;
+using System.Diagnostics.CodeAnalysis;
 using Humanymous;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -23,6 +25,9 @@ internal static class Program
     private static int collecting;
     private static Task? gcWorker;
     private static string handoffMode = "normal";
+    // The installed host; `replace-host` swaps it so a held request keeps its
+    // original installation while new requests reach the replacement.
+    private static HumanymousHost? current;
     private static void Emit(Action<Utf8JsonWriter> fields)
     {
         using var buffer = new MemoryStream();
@@ -55,7 +60,7 @@ internal static class Program
                 json.WriteString("case", "pointer-free-roundtrip-and-negative-ownership"); });
         }
         if (probeOnly) return 0;
-        using var host = new HumanymousHost(startup.RootElement.GetProperty("configuration").GetRawText());
+        Volatile.Write(ref current, new HumanymousHost(startup.RootElement.GetProperty("configuration").GetRawText()));
         HumanymousMiddleware.BeforeHandoff = async context =>
         {
             switch (Volatile.Read(ref handoffMode))
@@ -66,7 +71,9 @@ internal static class Program
                 case "rewrite-host": context.Request.Host = new HostString("rewritten.test"); break;
                 case "rewrite-header": context.Request.Headers["X-Pilot-Rewrite"] = "added"; break;
                 case "response-started": await context.Response.StartAsync(); break;
-                case "expire": await Task.Delay(host.TimeoutMilliseconds + 100); break;
+                case "expire": await Task.Delay(Volatile.Read(ref current)!.TimeoutMilliseconds + 100); break;
+                // Shorter than the request deadline, longer than a short test-authority expiry.
+                case "hold": await Task.Delay(600); break;
             }
         };
         var builder = WebApplication.CreateSlimBuilder();
@@ -78,8 +85,9 @@ internal static class Program
             server.Limits.MinRequestBodyDataRate = null;
         });
         await using var app = builder.Build();
-        app.Lifetime.ApplicationStopping.Register(host.Dispose);
-        app.UseMiddleware<HumanymousMiddleware>(host);
+        app.Lifetime.ApplicationStopping.Register(() => Volatile.Read(ref current)?.Dispose());
+        // Each request binds the installation current at its arrival, never a later one.
+        app.Use(next => context => new HumanymousMiddleware(next, Volatile.Read(ref current)!).InvokeAsync(context));
         app.Run(async context =>
         {
             long contact = Interlocked.Increment(ref contacts);
@@ -134,17 +142,25 @@ internal static class Program
                         Interlocked.Exchange(ref collecting, 0);
                         if (gcWorker is { } finishedGc) await finishedGc.WaitAsync(TimeSpan.FromSeconds(2));
                         gcWorker = null; break;
-                    case "dispose-host": host.Dispose(); break;
+                    case "dispose-host": Volatile.Read(ref current)!.Dispose(); break;
+                    case "replace-host":
+                        HumanymousHost? replacement = null;
+                        try { replacement = new HumanymousHost(command.RootElement.GetProperty("configuration").GetRawText()); }
+                        catch (Exception error) when (error is NativeFailureException or InvalidOperationException or KeyNotFoundException or JsonException) { }
+                        if (replacement is not null) Interlocked.Exchange(ref current, replacement)?.Dispose();
+                        Emit(json => { json.WriteString("kind", "replaced"); json.WriteBoolean("ok", replacement is not null); });
+                        break;
+                    case "collectible-probe": CollectibleProbe(); break;
                     case "handoff-mode":
                         var mode = command.RootElement.GetProperty("mode").GetString();
                         if (mode is not ("normal" or "rewrite" or "rewrite-method" or "rewrite-target" or "rewrite-host" or "rewrite-header"
-                            or "response-started" or "expire")) throw new InvalidDataException();
+                            or "response-started" or "expire" or "hold")) throw new InvalidDataException();
                         Volatile.Write(ref handoffMode, mode); break;
                     case "stop": Interlocked.Exchange(ref collecting, 0); app.Lifetime.StopApplication(); return;
                     case "counters":
                         Emit(json => { json.WriteString("kind", "counters"); json.WriteNumber("contacts", Interlocked.Read(ref contacts));
                             json.WriteNumber("mutations", Interlocked.Read(ref mutations)); json.WriteNumber("collections", GC.CollectionCount(2));
-                            try { json.WriteNumber("native_resources", host.Metrics()); } catch (ObjectDisposedException) { json.WriteNull("native_resources"); } });
+                            try { json.WriteNumber("native_resources", Volatile.Read(ref current)!.Metrics()); } catch (ObjectDisposedException) { json.WriteNull("native_resources"); } });
                         break;
                     default: app.Lifetime.StopApplication(); return;
                 }
@@ -156,9 +172,39 @@ internal static class Program
         if (gcWorker is { } remainingGc) await remainingGc.WaitAsync(TimeSpan.FromSeconds(2));
         try { await control.WaitAsync(TimeSpan.FromSeconds(2)); }
         catch (TimeoutException) { return 70; }
+        Volatile.Read(ref current)?.Dispose();
         Emit(json => { json.WriteString("kind", "stopped"); json.WriteNumber("contacts", Interlocked.Read(ref contacts));
             json.WriteNumber("mutations", Interlocked.Read(ref mutations)); json.WriteNumber("collections", GC.CollectionCount(2)); });
         return 0;
+    }
+
+    // The process-lived profile: loading the adapter into a collectible context
+    // must refuse, twice (load, then reload after unload). No native unload is claimed.
+    [UnconditionalSuppressMessage("AOT", "IL3000", Justification = "Assembly location is only read when dynamic loading is supported.")]
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Probe runs only on JIT; AOT reports no-dynamic-loading.")]
+    [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Probe runs only on JIT; AOT reports no-dynamic-loading.")]
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Probe runs only on JIT; AOT reports no-dynamic-loading.")]
+    private static void CollectibleProbe()
+    {
+        if (!RuntimeFeature.IsDynamicCodeSupported)
+        {
+            Emit(json => { json.WriteString("kind", "collectible"); json.WriteBoolean("rejected", true); json.WriteString("reason", "no-dynamic-loading"); });
+            return;
+        }
+        int rejected = 0;
+        for (int attempt = 0; attempt < 2; attempt++)
+        {
+            var context = new AssemblyLoadContext("humanymous-collectible-probe", isCollectible: true);
+            try
+            {
+                var assembly = context.LoadFromAssemblyPath(typeof(HumanymousHost).Assembly.Location);
+                var type = assembly.GetType("Humanymous.HumanymousHost", throwOnError: true)!;
+                try { (Activator.CreateInstance(type, "{}") as IDisposable)?.Dispose(); }
+                catch (System.Reflection.TargetInvocationException error) when (error.InnerException is PlatformNotSupportedException) { rejected++; }
+            }
+            finally { context.Unload(); }
+        }
+        Emit(json => { json.WriteString("kind", "collectible"); json.WriteBoolean("rejected", rejected == 2); json.WriteString("reason", "collectible-context"); });
     }
 }
 

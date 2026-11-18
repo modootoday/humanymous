@@ -285,14 +285,21 @@ mod tests {
         let found = declared(&package, &packages, "macos", "x86_64").unwrap();
         assert_eq!(found.unsupported_ids, ["dotnet-package-macos-unsupported"]);
         assert_eq!(found.ignored, ["sdk_package_and_real_host_matrix"]);
-        // Linux and Windows keep strict accounting: nothing is declared there,
-        // so the ignored host pilots stay a coverage-accounting failure.
+        // Linux hosted runs in the `dotnet` job (systemd-scope provider). Its
+        // pilots are accounted there, never as unsupported.
+        let linux = declared(&hosted, &packages, "linux", "x86_64").unwrap();
+        assert_eq!(linux.jobs.len(), 1);
+        assert_eq!(linux.jobs[0]["pilot"], "dotnet-hosted-linux");
+        assert_eq!(linux.jobs[0]["job"], "dotnet");
+        assert!(linux.unsupported_ids.is_empty());
+        // Windows hosted and both package rows keep strict accounting: nothing
+        // is declared, so those ignored pilots stay a coverage failure.
+        assert!(
+            declared(&hosted, &packages, "windows", "x86_64")
+                .unwrap()
+                .is_empty()
+        );
         for os in ["linux", "windows"] {
-            assert!(
-                declared(&hosted, &packages, os, "x86_64")
-                    .unwrap()
-                    .is_empty()
-            );
             assert!(
                 declared(&package, &packages, os, "x86_64")
                     .unwrap()

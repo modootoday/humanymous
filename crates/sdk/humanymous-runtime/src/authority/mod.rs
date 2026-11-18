@@ -7,6 +7,9 @@ pub mod protocol;
 pub mod startup;
 pub mod transport;
 
+#[cfg(all(feature = "test-authority", not(debug_assertions)))]
+compile_error!("test-authority is a debug test-only feature and never ships in a release build");
+
 /// Static errors are safe for the wire; request values and secrets are omitted.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Rejection {

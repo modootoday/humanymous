@@ -2,6 +2,7 @@
 use crate::{Result, command, evidence, require, source, write_json};
 use serde_json::{Value, json};
 use std::path::Path;
+pub mod dotnet_host;
 mod maintenance;
 mod native_archive;
 mod node_host;
@@ -267,7 +268,14 @@ fn request(entry: EntryPoint, kind: &str) -> Result<Request<'_>> {
     require(
         matches!(
             kind,
-            "capture" | "header" | "archive" | "maintenance" | "runtime" | "node-host" | "pilots"
+            "capture"
+                | "header"
+                | "archive"
+                | "maintenance"
+                | "runtime"
+                | "node-host"
+                | "dotnet-host"
+                | "pilots"
         ),
         "unknown hosted component",
     )?;
@@ -347,6 +355,7 @@ fn execute(root: &Path, request: Request<'_>) -> Result<()> {
         "maintenance" => maintenance::run(root, &dir, &mut report),
         "runtime" => runtime::run(root, &dir, &mut report),
         "node-host" => node_host::run(root, &dir, &mut report),
+        "dotnet-host" => dotnet_host::run(root, &dir, &mut report),
         "pilots" => pilots::run(root, &dir, &mut report),
         "archive" => native_archive::run(root, &dir, &mut report, &before),
         _ => header(root, &dir, &mut report),

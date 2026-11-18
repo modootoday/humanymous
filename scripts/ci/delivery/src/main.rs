@@ -116,6 +116,7 @@ fn run() -> Result<()> {
         "facade-profile" => facade_profile::check(&args[1..]),
         "component" => components::run(&root, argument(1)?),
         "native-component" => components::native(&root, argument(1)?),
+        "dotnet-host-local" => components::dotnet_host::local(&root, &args[1..]),
         "action-pins" => policy::pins(&root),
         "commit-trailers" => trailers::check(&root, argument(1)?),
         "merge-gate" => merge_gate::check(&root, argument(1)?, argument(2)?, args.get(3).map(String::as_str) == Some("--enforce")),

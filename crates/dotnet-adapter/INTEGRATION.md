@@ -98,14 +98,20 @@ ActualHostIO source waits for the exact codec handoff/commit and retained native
 admission interface; actual ASP.NET/SDK execution is genuine-hosted only and has
 no current allocation. No fourth C# file or additional exception was requested.
 
-### Shared parent-context consumer, pure validation complete
+### Creator-channel admission consumer (SoT dotnet-protected-host-launch)
 
-Test-only hosted/launch.rs consumes the native owner's exact shared
-parent_context API4629133c through the existing test-support dependency. There is
-no wire/manifest validator fork or new dependency edge. UnverifiedHostLaunch
-retains syntax and one budget mapping only; it cannot create Command/OS IO or
-authorize a parent, file, token, Job, readiness or cleanup. Cleanup-only contexts
-never become workloads; sequential profiles borrow the original stage deadline.
+Test-only hosted/launch.rs is the admission consumer for
+`humanymous.dotnet-host-admission/1` (2026-11-18). It reads one bounded
+envelope from stdin and admits it only if all of these hold: stdin is a pipe,
+the actor matches the real and effective identity, the venue and backend are
+observed (Linux: systemd scope `hm-dotnet-<nonce>.scope`), and the context,
+binding and budget are valid. Every other case is refused in the SoT 3.3 order
+before any `Command`. It decodes through the shared platform `parent_context`
+`/2` codec; there is no validator fork. Cleanup-only contexts never become
+workloads. A derived admission only narrows the apphost and audit root under
+the original private work, and never renews the budget. `Host::start()` in
+hosted/retained.rs launches only from this admission, with a cleared, fixed
+environment.
 
 Evidence:root/20261107124134 records four consumer, eight protocol and one managed
 scope test passes plus all-target check/strict Clippy. Source is b482d5be plus six
