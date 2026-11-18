@@ -1,7 +1,7 @@
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::{collections::BTreeMap, fs, io, path::Path, process::Command};
-mod accounting;
+pub(crate) mod accounting;
 mod coverage;
 mod failure;
 mod lifecycle;
@@ -284,6 +284,14 @@ pub fn summary(input: &Path, output: &Path) -> io::Result<()> {
             .as_str()
             .filter(|kind| kind.len() <= 40 && kind.bytes().all(|b| b.is_ascii_alphabetic()))
             .into();
+        // Aggregate accounting refusals are not indexed harness failures, so
+        // `failures` stays empty for them; publish the closed reason code.
+        if stage == "accounting" {
+            summary["error_reason"] = report["error_reason"]
+                .as_str()
+                .filter(|code| crate::workspace::ACCOUNTING_REASONS.contains(code))
+                .into();
+        }
     }
     if report["initialization_failure"]["reported"] == true {
         summary["initialization_failure"] = json!({"reported":true,"os_error_code":report["initialization_failure"]["os_error_code"].as_i64()});
@@ -296,6 +304,7 @@ pub fn summary(input: &Path, output: &Path) -> io::Result<()> {
         summary["scope"] = "workspace-default-features".into();
         summary["qualification"] = "implemented-workspace-component".into();
         summary["ignored_subprocess_helpers"] = report["ignored_subprocess_helpers"].clone();
+        summary["declared_pilot_ignored"] = report["declared_pilot_ignored"].clone();
     }
     summary["runner_provenance"] = report["source"]["github"].clone();
     lifecycle::project(&report, &mut summary);
@@ -374,6 +383,7 @@ mod tests {
         workspace["coverage"]["required_harnesses"] = 1.into();
         workspace["coverage"]["executed_harnesses"] = 1.into();
         workspace["ignored_subprocess_helpers"] = 0.into();
+        workspace["declared_pilot_ignored"] = 0.into();
         workspace["coverage"]["harnesses"][0]["ignored"] = 0.into();
         workspace["coverage"]["harnesses"][0]["validated"] = true.into();
         workspace["coverage"]["harnesses"][0]["failed"] = 0.into();
@@ -398,6 +408,21 @@ mod tests {
         assert_eq!(published["error_stage"], "execute");
         assert_eq!(published["error_kind"], "NotFound");
         assert!(!text.contains("private-error-text"));
+        let mut refused = report("accounting", "Other");
+        refused["error_reason"] = "ignored-unaccounted".into();
+        write(&raw, &refused).unwrap();
+        summary(&raw, &public).unwrap();
+        let published: Value = serde_json::from_slice(&fs::read(&public).unwrap()).unwrap();
+        assert_eq!(published["error_stage"], "accounting");
+        assert_eq!(published["error_reason"], "ignored-unaccounted");
+        assert_eq!(published["failures"], json!([]));
+        refused["error_reason"] = "private-reason".into();
+        write(&raw, &refused).unwrap();
+        summary(&raw, &public).unwrap();
+        let text = fs::read_to_string(&public).unwrap();
+        assert!(!text.contains("private-reason"));
+        let published: Value = serde_json::from_str(&text).unwrap();
+        assert_eq!(published["error_reason"], Value::Null);
         write(&raw, &report("private-stage", "private kind")).unwrap();
         summary(&raw, &public).unwrap();
         let text = fs::read_to_string(&public).unwrap();

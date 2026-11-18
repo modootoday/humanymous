@@ -8,10 +8,13 @@
 //! poisoning guard's solve rate; it is never a bot label. An abstaining model
 //! contributes nothing. Nothing here mutates a verdict or installs a threshold.
 //!
-//! The JSONL trace sink and the operator handler are not ported; the caller
-//! receives the record and decides where it goes.
+//! The solved-Pass trace reaches the opt-in JSONL sink through
+//! [`append_trace`] (legacy `a.traceSink.Append`); the operator snapshot lives
+//! in the runtime's `gateway::operations::mlcorrect`.
 use super::{Controller, CorrectionError, DriftEvent, Outcome};
 use crate::model::inference::Prediction;
+use crate::model::training::record::Record;
+use crate::model::training::sink::{SinkError, TraceSink};
 use crate::signals::report::BehaviorSummary;
 
 /// Input-modality cohort used to hold human-FP near zero per modality, so
@@ -64,6 +67,31 @@ pub struct HumanTrace {
     pub cohort: Cohort,
     /// Always `pass`.
     pub source: &'static str,
+}
+
+impl HumanTrace {
+    /// The legacy `mltrain.Record` written for this trace.
+    pub fn to_record(&self) -> Record {
+        Record {
+            label: self.label,
+            behavior: self.behavior.clone(),
+            ts: Some(self.ts),
+            cohort: Some(self.cohort.as_str().to_owned()),
+            source: Some(self.source.to_owned()),
+        }
+    }
+}
+
+/// Persist a solved Pass's trace to the opt-in sink (legacy
+/// `a.traceSink.Append` in `feedPassOutcome`). `None` sink (collection off) and
+/// a failed Pass write nothing. Returns whether a line was written. An error is
+/// non-fatal by contract: Go logged a warning and continued, so the caller
+/// logs it and never changes a decision.
+pub fn append_trace(sink: Option<&mut TraceSink>, fed: &Fed) -> Result<bool, SinkError> {
+    match (sink, &fed.trace) {
+        (Some(sink), Some(trace)) => sink.append(&trace.to_record()).map(|()| true),
+        _ => Ok(false),
+    }
 }
 
 /// What one Pass outcome produced.
