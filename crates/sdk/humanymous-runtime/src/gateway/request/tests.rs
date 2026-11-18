@@ -100,6 +100,12 @@ fn upstream_errors_map_to_stable_classes_without_raw_text() {
         upstream_error_class(&Error::other("secret /path/token leaked")),
         "unreachable"
     );
+    // Refusals without a transport error keep the same closed class set.
+    assert_eq!(origin_error_class("origin_timeout"), "timeout");
+    assert_eq!(origin_error_class("origin_truncated_head"), "eof");
+    assert_eq!(origin_error_class("origin_chunk_truncated"), "eof");
+    assert_eq!(origin_error_class("origin_framing"), "unreachable");
+    assert_eq!(origin_error_class("origin_stream_budget"), "unreachable");
 }
 
 #[test]
