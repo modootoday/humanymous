@@ -6787,9 +6787,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "e69e1d4263d1b9325e6431523a86370c38e850fa8d617017ba291c8dd761b996",
+      "sha256": "8b0a31e79c7567598609e2dd81d13b6ebc85402a953c2ac1c23884acd739e2b6",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 450 / macos 450 / windows 438 (438 common names plus 12 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for claude/gate-residual-ws: 19 common names were added for the attested-route floor, operations (audit search, counters, erasure hold) and bulk ban tests, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 450 listed names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 471 / macos 471 / windows 459 (459 common names plus 12 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for claude/gate-residual-ws: 19 common names were added for the attested-route floor, operations (audit search, counters, erasure hold) and bulk ban tests, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 450 listed names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect. Re-reviewed 2026-11-18 for claude/fm11-residual-4: adds the 21 gateway::admin_approval::tests names to the common list and raises every count by 21; on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 452 gateway:: names, equal to the 440 common plus 12 Unix-only names. macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for the merge of codex/rust into claude/fm11-residual-4: the common list is the union of both sides' additions (21 gateway::admin_approval names and 19 claude/gate-residual-ws names), giving expected counts linux 471 / macos 471 / windows 459, and on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 471 gateway:: names, equal to the 459 common plus 12 Unix-only names; macOS and Windows inventories were not re-run.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/how-this-was-built.md"
@@ -8571,9 +8571,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/mod.rs",
-      "sha256": "b14076a8da74135d127cdb31b3643d6b63dd77f7eabe8184e80604580c60ab36",
+      "sha256": "3702c9fa4129defca0d42ea3d1d7a4a4e86bab1229101af7c92088546507470c",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway module root of the runtime crate: declares the application, attestation, ban, browser, configuration, connection cap, control, coordinator, credential, external input, guard, http, logging, management, model admission, observatory, pass proof/store, request, seams, service, session, settings, shipping, smuggle, startup, TLS, token, verdict store and virtual USB modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b: the change unions both parents' module declarations (the B23 coordinator module from PR #70 and the G7 target attestation module from PR #83, beside the existing model_admission and observatory modules). Doc line states loopback component support is not product qualification. Re-reviewed 2026-11-18 for claude/gate-residual-ws: declares the new attest_floor and operations modules.",
+      "notes": "Gateway module root of the runtime crate: declares the application, attestation, ban, browser, configuration, connection cap, control, coordinator, credential, external input, guard, http, logging, management, model admission, observatory, pass proof/store, request, seams, service, session, settings, shipping, smuggle, startup, TLS, token, verdict store and virtual USB modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b: the change unions both parents' module declarations (the B23 coordinator module from PR #70 and the G7 target attestation module from PR #83, beside the existing model_admission and observatory modules). Doc line states loopback component support is not product qualification. Re-reviewed 2026-11-18 for claude/gate-residual-ws: declares the new attest_floor and operations modules. Re-reviewed 2026-11-18 for claude/fm11-residual-4: the only change declares the admin_approval module (Go adminauth.go and approval.go kernel). Re-reviewed 2026-11-18 for the merge of codex/rust into claude/fm11-residual-4: the merged file declares admin_approval, attest_floor and operations together with no other change; the gateway:: library inventory is now linux 471 / macos 471 / windows 459.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
@@ -10423,6 +10423,26 @@
       "pages": [
         "docs/how-to/detection-observatory.md",
         "docs/explanation/observatory-architecture.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/admin_approval.rs",
+      "sha256": "978861de2ab209db1339cdae1d1bd913f74298c9fba4aba79de5f3425b18f882",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Gateway-side port of legacy internal/gate/adminauth.go and approval.go: an Authorization: Bearer token table with a constant-time scan over every token and no early exit (deny status 404), the auditor/operator/approver/DPO role model with Go capabilities and the hasRole DPO superset, and a pending two-person approval store with copied params, 12-byte OS-entropy hex ids, TTL collection, Go refusal order (unknown, expired and removed, self-approval, wrong role), exactly-once commit and a hex HMAC-SHA256 ticket over id|kind|requester|approver plus the nine Go binding keys. Fail-closed differences: empty or duplicate tokens and empty ids are refused, entropy failure and a 4096-entry full store refuse create, a clock before creation never expires an entry, and the list is id ordered. It does not score, does not replace the signed quorum in audit control and is not yet wired to a served admin surface. Reader page coverage is indirect.",
+      "pages": [
+        "docs/reference/rbac-separation-of-duties.md",
+        "docs/runbooks/kill-switch-and-bans.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/admin_approval/tests.rs",
+      "sha256": "303c706e4b7f8094cafab5fe0790cc631a14721d419bc7a52e6b82699fca7e00",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "21 unit tests: Go TestApprovalStoreRules and wargame rounds R071-R078, R178-R180, R188 and R189 ported against the store, a ticket byte-layout vector computed independently with HMAC-SHA256 over the Go message, bearer parsing and deny-by-default, registration refusals, the role capability table, the erasure DPO rule, TTL boundary and clock regression, and the full-store refusal after expiry collection. Reader page coverage is indirect.",
+      "pages": [
+        "docs/reference/rbac-separation-of-duties.md",
+        "docs/runbooks/kill-switch-and-bans.md"
       ]
     },
     {
