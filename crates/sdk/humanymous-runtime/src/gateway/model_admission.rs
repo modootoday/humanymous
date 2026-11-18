@@ -9,10 +9,16 @@
 //! are decoded. Any failure is non-fatal for the caller: the result is
 //! [`Admission::Refused`] and the model seam keeps abstaining (heuristics only).
 //!
+//! [`lab_control`] ports the rest of `setupBehavioralML` as a LAB control
+//! plane: it builds the self-calibration controller with the legacy
+//! parameters, arms the canary whose auto-rollback reverts the admitted lab
+//! identity through the [`BundleManager`], and loads the shadow candidate.
+//!
 //! Not ported here (they install into the scoring seam, which the
 //! model-training-correction SoT keeps annotation-only until a separately
-//! accepted activation design): the self-calibration controller as threshold
-//! provider and feature observer, canary auto-rollback and shadow scoring.
+//! accepted activation design): installing the controller as threshold
+//! provider, feature observer or shadow observer, and installing the admitted
+//! or shadow model into the serving inference runtime.
 //!
 //! Deliberate fail-closed differences from legacy, each pinned by a test:
 //! - A configured public-key file that is empty is refused (legacy treated an
@@ -30,9 +36,11 @@ use ed25519_dalek::{Signature, VerifyingKey};
 use humanymous_core::model::correction::{
     BundleIdentity, BundleManager, BundleVerifier, CorrectionError, MAX_BUNDLE_BYTES,
 };
+use humanymous_core::model::correction::{CanaryBudget, Controller};
 use humanymous_core::model::inference::Mlp;
 use std::io::Read;
 use std::path::PathBuf;
+use std::sync::Arc;
 
 /// DER prefix of an Ed25519 SubjectPublicKeyInfo (RFC 8410): SEQUENCE,
 /// AlgorithmIdentifier { OID 1.3.101.112 }, BIT STRING with no unused bits.
@@ -185,8 +193,9 @@ pub enum Refusal {
 /// [`Admitted::model`] into a serving seam is the caller's separate decision.
 #[derive(Debug)]
 pub struct Admitted {
-    /// Lifecycle owner of the admitted identity (rollback target).
-    pub bundles: BundleManager,
+    /// Lifecycle owner of the admitted identity (rollback target); shared
+    /// with the canary's rollback notification.
+    pub bundles: Arc<BundleManager>,
     /// Active identity: bundle version and SHA-256 of the admitted bytes.
     pub identity: BundleIdentity,
     /// Decoded from the same bytes that were verified.
@@ -274,12 +283,102 @@ pub fn admit(flags: &Flags) -> Admission {
     };
     let signed = bundles.signed();
     Admission::Admitted(Box::new(Admitted {
-        bundles,
+        bundles: Arc::new(bundles),
         identity,
         model,
         signed,
         schema_pin_only: !signed && digest.is_none(),
     }))
+}
+
+/// Lab control-plane configuration (legacy `mlFlags` control fields).
+#[derive(Debug, Clone, PartialEq)]
+pub struct ControlFlags {
+    /// `-ml-fp-budget`: tolerated human false-positive rate (default 0.005).
+    pub fp_budget: f64,
+    /// `-ml-canary`: put the admitted model on probation.
+    pub canary: bool,
+    /// `-ml-canary-max-fp`: realized human-FP ceiling (default 0.02).
+    pub canary_max_fp: f64,
+    /// `-ml-canary-probation`: confirmed humans before graduation (default 200).
+    pub canary_probation: i64,
+}
+
+impl Default for ControlFlags {
+    fn default() -> Self {
+        Self {
+            fp_budget: 0.005,
+            canary: false,
+            canary_max_fp: 0.02,
+            canary_probation: 200,
+        }
+    }
+}
+
+/// Shadow candidate outcome (legacy `-ml-shadow-bundle`).
+#[derive(Debug)]
+pub enum ShadowCandidate {
+    /// No shadow bundle configured.
+    NotConfigured,
+    /// Loaded and shape/schema-validated; never served. Installing it into the
+    /// inference runtime's candidate seam is the caller's separate decision.
+    Loaded(Box<Mlp>),
+    /// Unreadable, oversized or invalid: shadow evaluation stays disabled
+    /// (legacy logged and continued).
+    Refused,
+}
+
+/// The lab control plane for an admitted bundle.
+#[derive(Debug)]
+pub struct LabControl {
+    /// Self-calibration controller (`NewController(budget, 0.5, 0.01)`).
+    pub controller: Arc<Controller>,
+    /// The canary was armed; on its first breach it rolls the admitted lab
+    /// identity back through [`Admitted::bundles`].
+    pub canary_armed: bool,
+    /// Shadow candidate.
+    pub shadow: ShadowCandidate,
+}
+
+/// Build the lab control plane for an admitted bundle (legacy
+/// `setupBehavioralML` after `Promote`). A nonfinite budget or canary
+/// ceiling is refused (legacy narrowed it to float32 and continued); a
+/// negative probation wraps like Go's `uint64(int)`, which never graduates.
+pub fn lab_control(
+    admitted: &Admitted,
+    flags: &ControlFlags,
+    shadow_bundle: Option<&PathBuf>,
+) -> Result<LabControl, CorrectionError> {
+    let controller = Arc::new(Controller::new(flags.fp_budget as f32, 0.5, 0.01)?);
+    if flags.canary {
+        let bundles = Arc::clone(&admitted.bundles);
+        controller.arm_canary(
+            CanaryBudget {
+                max_human_fp: flags.canary_max_fp as f32,
+                probation_humans: flags.canary_probation as u64,
+                rollback_on_drift: true,
+                rollback_on_pass_anomaly: true,
+            },
+            Some(Arc::new(move |_reason: &str| {
+                // Revert the lab identity; with nothing to revert to, the
+                // seam already abstains (legacy forced abstention).
+                let _ = bundles.rollback();
+            })),
+        )?;
+    }
+    let shadow = match shadow_bundle {
+        None => ShadowCandidate::NotConfigured,
+        Some(path) => read_bounded(path, MAX_BUNDLE_BYTES)
+            .and_then(|bytes| Mlp::from_json(&bytes).ok())
+            .map_or(ShadowCandidate::Refused, |model| {
+                ShadowCandidate::Loaded(Box::new(model))
+            }),
+    };
+    Ok(LabControl {
+        controller,
+        canary_armed: flags.canary,
+        shadow,
+    })
 }
 
 #[cfg(test)]
