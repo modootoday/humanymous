@@ -6667,9 +6667,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "6536e3e452fdc6a302d3bcb1af01951a61f1fecf25d26517d6492a522c6d3575",
+      "sha256": "ddf70bb50bd1c16ceb23ab932430e7abf97ca4bd3bba922178f9b938394d7589",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 336 / macos 336 / windows 328 (328 common names plus 8 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 on the B02 certificate-source branch: the six gateway::tls::certificate::tests names are added and the counts rise by six; the listed names and counts are internally consistent (328 unique common + 8 Unix-only), but this review did not re-run cargo test --list on any OS. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 362 / macos 362 / windows 354 (354 common names plus 8 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 when merging codex/rust into claude/b11-observatory: the name lists are the union of both parents' already-reviewed additions, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 362 listed common plus Unix-only names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/how-this-was-built.md"
@@ -8372,9 +8372,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/mod.rs",
-      "sha256": "b3d4be4fee2e26cb1d98faaffc8073d60fea320f466e74a44967a1a24bddcd10",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Gateway module root of the runtime crate: declares the application, ban, browser, configuration, connection cap, control, credential, external input, guard, http, logging, management, pass proof/store, request, seams, service, session, settings, shipping, smuggle, startup, TLS, token, verdict store and virtual USB modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Doc line states loopback component support is not product qualification.",
+      "sha256": "348446adf8ac839d5d9d36e2bb1e4368244f80b68c7e6e8343c0b56f27130b58",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Gateway module root of the runtime crate: declares the application, ban, browser, configuration, connection cap, control, credential, external input, guard, http, logging, management, observatory, pass proof/store, request, seams, service, session, settings, shipping, smuggle, startup, TLS, token, verdict store and virtual USB modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Doc line states loopback component support is not product qualification.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
@@ -10122,6 +10122,36 @@
         "docs/reference/production-vs-reference.md",
         "docs/help/challenge-accessibility.md",
         "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/observatory.rs",
+      "sha256": "fb8bb31091e366d509f4362333238d5cb5eacfb9d2f21883a28f7b70af4b629a",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Lab-only Detection Observatory port of legacy cmd/server playground.go/launch.go (SoT-30): exists only when HMN_PLAYGROUND is exactly 1 and the listen address is loopback (enabled off loopback is a startup error), answers only loopback Host values with X-Frame-Options DENY, frame-ancestors 'none' and no-store, and serves /playground (playground.html from the web dir), an SSE live feed with Last-Event-ID or lastId replay and 15 s heartbeats, policy meta (challengeAt/denyAt bands, 24 rules, 7 stages), a nonce endpoint, abort, and a score explanation that rescores a copy of a stored report. Launch is POST-only, refuses non-loopback Origin, host/url/upstream overrides, bodies over 4 KiB, reused or expired 120 s nonces, Docker-only external-input profiles (409) and unknown profiles, clamps runs to 1..5, allows one launch in flight, resets stateful detectors first and always targets https://127.0.0.1:8443 through an injected profile runner; it opens no sockets itself and is not product qualification.",
+      "pages": [
+        "docs/how-to/detection-observatory.md",
+        "docs/explanation/observatory-architecture.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/observatory/hub.rs",
+      "sha256": "cd7937888a347f68e2020857bed5800975511204e522b8c04dec7b92676d5c63",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "In-process broadcast hub for the observatory live feed (port of internal/livefeed/hub.go): monotonic event ids from 1, a bounded replay ring and bounded per-subscriber sync channels (default 256 each). Publish never blocks; a full subscriber drops the event and increments its lagged counter, disconnected subscribers are pruned, and unencodable payloads publish as {}. Subscribe takes the backlog newer than last_id under the same lock as registration so no event is both replayed and streamed; cancel and Drop unregister the reader. States that only detection telemetry passes through it.",
+      "pages": [
+        "docs/explanation/observatory-architecture.md",
+        "docs/how-to/detection-observatory.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs",
+      "sha256": "15b8dd7db9470c2abe048c3262f67eb12143cb03f34c3821d49a8e90ef28c97f",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "26 unit tests ported from livefeed hub_test.go and playground/launch parity tests: hub ordering, non-blocking drop counting, bounded backlog replay without duplicates, idempotent cancel and event shape; observatory disabled unless HMN_PLAYGROUND=1 and refused off loopback, anti-embed headers and policy bands (30/70, layer cap 60, 24 rules, 7 stages), non-loopback Host 403, SSE retry/backlog/live/heartbeat and lastId fallback, tap-A scored-session events, single-use nonces, rejection of target overrides, unknown profiles, GET, foreign Origin, bad and oversized bodies, Docker-only profiles answered 409 without running, serialized launches (429), reset plus loopback base and 5-run clamp, abort, explanation without mutating the stored report, and loopback parsing cases. Parity tests read test/e2e/runner.mjs and web/playground.html so the launch and Docker-only profile lists stay in lock-step.",
+      "pages": [
+        "docs/how-to/detection-observatory.md",
+        "docs/explanation/observatory-architecture.md"
       ]
     }
   ],

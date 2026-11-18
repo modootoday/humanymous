@@ -14,15 +14,15 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "ported_unit": 177,
-  "partial": 91,
-  "missing": 44,
+  "ported_unit": 181,
+  "partial": 97,
+  "missing": 34,
   "not_applicable": 2
  },
  "by_package": {
   "cmd/gate": {
-   "missing": 3,
-   "partial": 2,
+   "missing": 1,
+   "partial": 4,
    "ported_unit": 2
   },
   "cmd/ml-train": {
@@ -39,9 +39,9 @@
    "ported_unit": 1
   },
   "cmd/server": {
-   "missing": 11,
-   "partial": 21,
-   "ported_unit": 10
+   "missing": 5,
+   "partial": 25,
+   "ported_unit": 12
   },
   "cmd/tlsparrot": {
    "missing": 1
@@ -89,7 +89,7 @@
    "ported_unit": 6
   },
   "internal/livefeed": {
-   "missing": 2
+   "ported_unit": 2
   },
   "internal/logger": {
    "ported_unit": 2,
@@ -883,38 +883,79 @@
   },
   {
    "baseline_path": "cmd/server/launch_parity_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestLaunchProfilesMatchCatalog": null,
-    "TestObservatoryCatalogMatchesLaunchProfiles": null,
-    "TestDockerOnlyProfilesMatchObservatoryAndNeverOverlapLocalLauncher": null
-   },
-   "gaps": [
-    "launch profile vs catalog parity"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::docker_only_profiles_match_observatory_and_never_overlap_the_launcher",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_profiles_match_catalog",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::observatory_catalog_matches_launch_profiles"
+   ],
+   "go_test_map": {
+    "TestLaunchProfilesMatchCatalog": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_profiles_match_catalog",
+    "TestObservatoryCatalogMatchesLaunchProfiles": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::observatory_catalog_matches_launch_profiles",
+    "TestDockerOnlyProfilesMatchObservatoryAndNeverOverlapLocalLauncher": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::docker_only_profiles_match_observatory_and_never_overlap_the_launcher"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No playground launcher in Rust; plan B11 lab-only role replacement still required.",
-   "test_verification": {}
+   "notes": "Parity tests read test/e2e/runner.mjs and web/playground.html as data.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::docker_only_profiles_match_observatory_and_never_overlap_the_launcher": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_profiles_match_catalog": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::observatory_catalog_matches_launch_profiles": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/launch.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/observatory.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::abort_cancels_remaining_runs",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::accepted_launch_resets_state_targets_loopback_and_publishes_lifecycle",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::explain_returns_the_trace_for_a_stored_session",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::host_is_loopback_cases",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_nonce_is_single_use_and_required",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_rejects_docker_only_profiles_without_running",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_rejects_target_override_unknown_profile_method_and_origin",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launches_are_serialized",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::listen_addr_is_loopback_cases",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::missing_dependency_classification",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_gate_off_and_off_loopback",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_meta_has_policy_bands_and_anti_embed_headers",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_rejects_non_loopback_host",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_sse_streams_retry_backlog_live_events_and_heartbeats",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::sse_last_id_query_fallback",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::tap_a_publishes_a_scored_session"
+   ],
    "go_test_map": {},
    "gaps": [
-    "nonce store single use",
-    "playground launch/abort of attack profiles",
-    "detection state reset",
-    "loopback origin check"
+    "The profile runner is injected (ProfileRunner); the binary must supply the Docker-lab driver that spawns the catalog profile, which is wired with the gateway entry point."
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust playground launcher (grep playground/launch empty); plan B11.",
-   "test_verification": {}
+   "notes": "Ported: single-use nonce store, loopback Origin check, body limit, target-override refusal, catalog allowlist, Docker-only 409, runs clamp, serialized launches (429), detection-state reset, abort, lifecycle events, missing-dependency classification.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::abort_cancels_remaining_runs": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::accepted_launch_resets_state_targets_loopback_and_publishes_lifecycle": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::explain_returns_the_trace_for_a_stored_session": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::host_is_loopback_cases": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_nonce_is_single_use_and_required": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_rejects_docker_only_profiles_without_running": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_rejects_target_override_unknown_profile_method_and_origin": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launches_are_serialized": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::listen_addr_is_loopback_cases": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::missing_dependency_classification": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_gate_off_and_off_loopback": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_meta_has_policy_bands_and_anti_embed_headers": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_rejects_non_loopback_host": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_sse_streams_retry_backlog_live_events_and_heartbeats": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::sse_last_id_query_fallback": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::tap_a_publishes_a_scored_session": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/logging_test.go",
@@ -1408,49 +1449,104 @@
   },
   {
    "baseline_path": "cmd/server/playground_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestPlaygroundGateOff": null,
-    "TestPlaygroundMeta": null,
-    "TestPlaygroundRejectsNonLoopbackHost": null,
-    "TestPlaygroundSSEContentType": null,
-    "TestTapAPublishesScoredSession": null,
-    "TestTapAGatedOff": null,
-    "TestLaunchNonceSingleUse": null,
-    "TestLaunchRejectsTargetOverrideAndUnknownProfile": null,
-    "TestLaunchRejectsDockerOnlyProfilesWithoutSpawning": null,
-    "TestLaunchSerialized": null,
-    "TestLaunchAcceptedPublishesLifecycle": null,
-    "TestPlaygroundExplain": null,
-    "TestListenAddrIsLoopback": null,
-    "TestHostIsLoopback": null
-   },
-   "gaps": [
-    "entire playground SSE/launch surface"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::accepted_launch_resets_state_targets_loopback_and_publishes_lifecycle",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::explain_returns_the_trace_for_a_stored_session",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::host_is_loopback_cases",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_nonce_is_single_use_and_required",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_rejects_docker_only_profiles_without_running",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_rejects_target_override_unknown_profile_method_and_origin",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launches_are_serialized",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::listen_addr_is_loopback_cases",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_gate_off_and_off_loopback",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_meta_has_policy_bands_and_anti_embed_headers",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_rejects_non_loopback_host",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_sse_streams_retry_backlog_live_events_and_heartbeats",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::tap_a_publishes_a_scored_session"
+   ],
+   "go_test_map": {
+    "TestPlaygroundGateOff": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_gate_off_and_off_loopback",
+    "TestPlaygroundMeta": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_meta_has_policy_bands_and_anti_embed_headers",
+    "TestPlaygroundRejectsNonLoopbackHost": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_rejects_non_loopback_host",
+    "TestPlaygroundSSEContentType": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_sse_streams_retry_backlog_live_events_and_heartbeats",
+    "TestTapAPublishesScoredSession": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::tap_a_publishes_a_scored_session",
+    "TestTapAGatedOff": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_gate_off_and_off_loopback",
+    "TestLaunchNonceSingleUse": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_nonce_is_single_use_and_required",
+    "TestLaunchRejectsTargetOverrideAndUnknownProfile": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_rejects_target_override_unknown_profile_method_and_origin",
+    "TestLaunchRejectsDockerOnlyProfilesWithoutSpawning": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_rejects_docker_only_profiles_without_running",
+    "TestLaunchSerialized": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launches_are_serialized",
+    "TestLaunchAcceptedPublishesLifecycle": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::accepted_launch_resets_state_targets_loopback_and_publishes_lifecycle",
+    "TestPlaygroundExplain": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::explain_returns_the_trace_for_a_stored_session",
+    "TestListenAddrIsLoopback": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::listen_addr_is_loopback_cases",
+    "TestHostIsLoopback": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::host_is_loopback_cases"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust playground; plan B11 requires a separate lab replacement.",
-   "test_verification": {}
+   "notes": "All fourteen playground tests ported against the in-process handler.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::accepted_launch_resets_state_targets_loopback_and_publishes_lifecycle": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::explain_returns_the_trace_for_a_stored_session": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::host_is_loopback_cases": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_nonce_is_single_use_and_required": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_rejects_docker_only_profiles_without_running": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_rejects_target_override_unknown_profile_method_and_origin": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launches_are_serialized": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::listen_addr_is_loopback_cases": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_gate_off_and_off_loopback": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_meta_has_policy_bands_and_anti_embed_headers": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_rejects_non_loopback_host": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_sse_streams_retry_backlog_live_events_and_heartbeats": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::tap_a_publishes_a_scored_session": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/playground.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/observatory.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::accepted_launch_resets_state_targets_loopback_and_publishes_lifecycle",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::explain_returns_the_trace_for_a_stored_session",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::host_is_loopback_cases",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_nonce_is_single_use_and_required",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_rejects_docker_only_profiles_without_running",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_rejects_target_override_unknown_profile_method_and_origin",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launches_are_serialized",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::listen_addr_is_loopback_cases",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_gate_off_and_off_loopback",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_meta_has_policy_bands_and_anti_embed_headers",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_rejects_non_loopback_host",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_sse_streams_retry_backlog_live_events_and_heartbeats",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::tap_a_publishes_a_scored_session"
+   ],
    "go_test_map": {},
    "gaps": [
-    "HMN_PLAYGROUND gate",
-    "SSE live feed",
-    "loopback host guard",
-    "explain view"
+    "Tap A publish_scored is not yet called from the collect handler, and the observatory routes are not yet mounted in the runtime HTTP listener; both wire up with the gateway entry point (B21/B15)."
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart; plan B11.",
-   "test_verification": {}
+   "notes": "Ported as gateway::observatory: HMN_PLAYGROUND gate, loopback-only listen refusal, loopback Host guard, anti-embed headers, meta, SSE (retry, Last-Event-ID/lastId backlog, heartbeat), explain via score_with_trace on a copy.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::accepted_launch_resets_state_targets_loopback_and_publishes_lifecycle": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::explain_returns_the_trace_for_a_stored_session": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::host_is_loopback_cases": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_nonce_is_single_use_and_required": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_rejects_docker_only_profiles_without_running": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launch_rejects_target_override_unknown_profile_method_and_origin": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::launches_are_serialized": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::listen_addr_is_loopback_cases": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_gate_off_and_off_loopback": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_meta_has_policy_bands_and_anti_embed_headers": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_rejects_non_loopback_host": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::playground_sse_streams_retry_backlog_live_events_and_heartbeats": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::tap_a_publishes_a_scored_session": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/powhandler_launder_test.go",
@@ -7013,38 +7109,66 @@
   },
   {
    "baseline_path": "internal/livefeed/hub_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestPublishDelivers": null,
-    "TestPublishNonBlockingDrops": null,
-    "TestBacklogReplayAndRingCap": null,
-    "TestNoDuplicationAcrossSubscribe": null,
-    "TestCancelStopsDelivery": null,
-    "TestEventPayloadShape": null
-   },
-   "gaps": [
-    "No Rust live event hub (publish/subscribe/backlog ring/cancel)"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::backlog_replays_after_last_id_and_the_ring_is_bounded",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::cancel_stops_delivery_and_is_idempotent",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::event_payload_shape",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::no_event_is_both_replayed_and_streamed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::publish_delivers_in_order",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::publish_never_blocks_and_counts_drops"
+   ],
+   "go_test_map": {
+    "TestPublishDelivers": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::publish_delivers_in_order",
+    "TestPublishNonBlockingDrops": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::publish_never_blocks_and_counts_drops",
+    "TestBacklogReplayAndRingCap": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::backlog_replays_after_last_id_and_the_ring_is_bounded",
+    "TestNoDuplicationAcrossSubscribe": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::no_event_is_both_replayed_and_streamed",
+    "TestCancelStopsDelivery": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::cancel_stops_delivery_and_is_idempotent",
+    "TestEventPayloadShape": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::event_payload_shape"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No livefeed/hub counterpart found in crates; plan B11 treats playground SSE as a separately required lab replacement.",
-   "test_verification": {}
+   "notes": "All six hub tests ported.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::backlog_replays_after_last_id_and_the_ring_is_bounded": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::cancel_stops_delivery_and_is_idempotent": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::event_payload_shape": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::no_event_is_both_replayed_and_streamed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::publish_delivers_in_order": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::publish_never_blocks_and_counts_drops": "passed"
+   }
   },
   {
    "baseline_path": "internal/livefeed/hub.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "Bounded event ring, non-blocking fan-out, backlog replay by lastID, subscriber count"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/hub.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::backlog_replays_after_last_id_and_the_ring_is_bounded",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::cancel_stops_delivery_and_is_idempotent",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::event_payload_shape",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::no_event_is_both_replayed_and_streamed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::publish_delivers_in_order",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::publish_never_blocks_and_counts_drops"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart found.",
-   "test_verification": {}
+   "notes": "Ported as gateway::observatory::hub (bounded ring, non-blocking fan-out, lastID backlog under the registration lock, subscriber count).",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::backlog_replays_after_last_id_and_the_ring_is_bounded": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::cancel_stops_delivery_and_is_idempotent": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::event_payload_shape": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::no_event_is_both_replayed_and_streamed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::publish_delivers_in_order": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::publish_never_blocks_and_counts_drops": "passed"
+   }
   },
   {
    "baseline_path": "internal/logger/handler.go",
