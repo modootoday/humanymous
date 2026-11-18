@@ -131,10 +131,17 @@ inside the runtime's 100-byte endpoint bound.
 
 The Linux provider runs it as `delivery component dotnet-package` (local:
 `dotnet-host-local launch-package`). Prepare adds the release native export,
-the controller test binary, `rustc -V` and the strict provenance file. Launch
-scratch lives under `RUNNER_TEMP` when set, otherwise under the canonical
-temp root, for the same socket bound. The provider deletes it after launch and
-requires that deletion as its last fact, as the hosted component does.
+the controller test binary, `rustc -V` and the strict provenance file. Like the
+hosted component, it first downloads SDK 10.0.403 itself, checks the pinned
+SHA-512 and the exact `dotnet --version`, and gives the controller only that
+private SDK on `PATH`. Launch scratch lives under the canonical temp root
+(`/tmp` on hosted runners), not `RUNNER_TEMP`: the deepest package socket,
+`<private_work>/pkg/<mode>/audit/<profile>/decision.sock`, adds 46 bytes,
+which `/home/runner/work/_temp` cannot hold under the 100-byte bound. The
+provider checks that real path before any build, deletes the scratch after
+launch and requires that deletion as its last fact, as the hosted component
+does. The original envelope's harness lineage is the controller binary and its
+native lineage the release export.
 
 Evidence:root/20261107124134 records four consumer, eight protocol and one managed
 scope test passes plus all-target check/strict Clippy. Source is b482d5be plus six

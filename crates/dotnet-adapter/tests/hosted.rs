@@ -356,6 +356,8 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() -> Result<(), Box<Host>> {
             let mut shutdown_frame: Option<Value> = None;
             let mut epoch2_verdicts = Value::Null;
             let mut timings = serde_json::Map::new();
+            // Probes that cannot run on this runtime: counted here, never as passed.
+            let mut not_applicable: Vec<Value> = Vec::new();
             let mut last_live_resources = host.counters()["native_resources"].clone();
             assert_eq!(last_live_resources, 0);
             if !synthetic {
@@ -829,19 +831,22 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() -> Result<(), Box<Host>> {
                     configuration(&epoch2_credential, &server)
                 ));
                 // The process-lived profile refuses a collectible load twice and
-                // claims no native runtime unload.
+                // claims no native runtime unload. NativeAOT has no dynamic
+                // loading, so nothing is attempted there: not applicable, not
+                // passed.
                 host.send(json!({"operation":"collectible-probe"}));
                 let probe = host.frame("collectible");
                 assert_eq!(probe["rejected"], true);
-                assert_eq!(
-                    probe["reason"],
-                    if ready["dynamic_code"] == true {
-                        "collectible-context"
-                    } else {
-                        "no-dynamic-loading"
-                    }
-                );
-                passed += 1;
+                if ready["dynamic_code"] == true {
+                    assert_eq!(probe["reason"], "collectible-context");
+                    passed += 1;
+                } else {
+                    assert_eq!(probe["reason"], "no-dynamic-loading");
+                    not_applicable.push(json!({
+                        "probe": "collectible-probe",
+                        "reason": "no-dynamic-loading: NativeAOT cannot load into a collectible AssemblyLoadContext, so no load was attempted",
+                    }));
+                }
                 // shutdown-active. Stop arrives with one decision held at the
                 // epoch 2 authority and one request still awaiting body input.
                 let before = host.counters();
@@ -905,7 +910,7 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() -> Result<(), Box<Host>> {
                 .map(|c| c["id"].as_str().unwrap())
                 .filter(|id| !covered.contains(id))
                 .collect();
-            json!({"schema":"humanymous.dotnet-host-observation/1","execution_environment":execution_environment,"os":std::env::consts::OS,"arch":std::env::consts::ARCH,"profile":if synthetic{"real-engine-audit-synthetic-evidence"}else{"production-application-http"},"runtime":ready["runtime"],"dynamic_code":ready["dynamic_code"],"passed":passed,"failed":0,"ignored":0,"covered_contract_cases":covered,"not_run_contract_cases":not_run,"origin_contacts":final_counts["contacts"],"origin_mutations":final_counts["mutations"],"gc_collections":final_counts["collections"],"remaining_native_resources_before_dispose":last_live_resources,"verdict_counts":*counts.lock().unwrap(),"epoch2_verdict_counts":epoch2_verdicts,"timings_ms":timings,"native_runtime_unload_claimed":false,"full_product":false,"package_install":false})
+            json!({"schema":"humanymous.dotnet-host-observation/1","execution_environment":execution_environment,"os":std::env::consts::OS,"arch":std::env::consts::ARCH,"profile":if synthetic{"real-engine-audit-synthetic-evidence"}else{"production-application-http"},"runtime":ready["runtime"],"dynamic_code":ready["dynamic_code"],"passed":passed,"failed":0,"ignored":0,"not_applicable":not_applicable,"covered_contract_cases":covered,"not_run_contract_cases":not_run,"origin_contacts":final_counts["contacts"],"origin_mutations":final_counts["mutations"],"gc_collections":final_counts["collections"],"remaining_native_resources_before_dispose":last_live_resources,"verdict_counts":*counts.lock().unwrap(),"epoch2_verdict_counts":epoch2_verdicts,"timings_ms":timings,"native_runtime_unload_claimed":false,"full_product":false,"package_install":false})
         }));
         if outcome.is_err() {
             host.cancel();

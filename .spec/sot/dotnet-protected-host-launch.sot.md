@@ -205,6 +205,10 @@ an environment-variable apphost or a direct `Command`.
   - Timeout or error: main containment empty, then a same-user cleanup child in
     its own containment, then private cleanup, then cleanup containment empty,
     then account and scratch deletion.
+- **Linux provider child**: on every exit path, an early error included, the
+  provider kills the scope and its `sudo systemd-run` child and reaps that
+  child within a bounded grace. `child_reaped` is a terminal fact; a child
+  still running at the cleanup deadline never reports an exit code.
 - **Parent death**: a kill-on-close Job (Windows) or scope teardown (Linux)
   stops the tree. Account, profile and private state are recorded as
   residual/Unknown. They are never reported clean, and no recovery is promised.
@@ -291,10 +295,38 @@ These steps come after the source exists:
   - `dotnet-package` for the package target, test
     `[sdk_package_and_real_host_matrix]`;
   - both with `os: [linux, windows]` and `executor: job`.
-- The job named by those rows must be one that merge-ready requires. It pins
-  `actions/setup-dotnet` at `26b0ec14cb23fa6904739307f278c14f94c95bf1` with
-  `cache: false`, SDK 10.0.403 and x64, and runs `dotnet --info` into the
-  receipt. Workflow edits are human-gated paths, so they go to owner review.
+- The job named by those rows must be one that merge-ready requires. It uses
+  no `actions/setup-dotnet` and no runner-installed SDK. The Rust provider
+  (`scripts/ci/delivery/src/components/dotnet_host/sdk.rs`) downloads the
+  SDK 10.0.403 linux-x64 tarball from Microsoft's official
+  `builds.dotnet.microsoft.com` URL into a private owner-only temp directory.
+  Before extraction it checks the exact size and the SHA-512 pinned in that
+  file, copied from Microsoft's official release metadata
+  (`release-metadata/10.0/releases.json`, whose URL sits next to the pin). A
+  mismatch fails closed. Every SDK command runs with that private root as
+  `DOTNET_ROOT`/`PATH` (set only for the child) and with `adapters/dotnet` as
+  the working directory, so `global.json` (10.0.403, `rollForward: disable`)
+  applies. `dotnet --version` must print exactly `10.0.403`; a list that only
+  contains it is refused. The receipt records the tarball SHA-512, the
+  resolved version, the muxer SHA-256 and `dotnet --info`. The private SDK is
+  also the apphost runtime root, and it is removed after the launch phase.
+  The first green hosted run (before this rule) resolved SDK 11.0.100 from the
+  repository root; it is not evidence of the pin. Workflow edits are
+  human-gated paths, so they go to owner review. Known gap: other jobs'
+  `actions/setup-node` and `oven-sh/setup-bun` downloads are not yet
+  hash-verified this way.
+- `component dotnet-package` runs the same SDK custody itself (its own
+  download, SHA-512 check and exact-version check; the two steps share no
+  SDK). The controller's `PATH` names only that private SDK root. Its
+  original envelope's harness lineage is the package controller binary that
+  runs in the scope, and its native lineage is the release export it packs;
+  each scoped result also records the SHA-256 of the binary it ran. Provider
+  scratch lives under the canonical temp root (`/tmp` on hosted runners), not
+  `RUNNER_TEMP`: the package socket
+  `<private_work>/pkg/<mode>/audit/<profile>/decision.sock` adds 46 bytes, so
+  `/home/runner/work/_temp` leaves no room under the 100-byte bound, while
+  `/tmp/hm-dotnet-<12>/run-<12>` keeps 10 bytes of margin. The provider checks
+  that real path before any build starts.
 - The rows are declared only in the same change that adds the named job step.
   Delivery tests reject a `job` row whose step does not exist.
 
@@ -390,7 +422,9 @@ whose ceiling (4000 ms) outlives the 2000 ms host deadline.
 - `shutdown-active`: stop arrives with one decision held and one request
   awaiting body input. `stopped` reports no new contact, neither request
   completes with 2xx, and the process exits 0. The collectible probe refuses
-  a collectible load twice (JIT) and the observation states
+  a collectible load twice (JIT). Under NativeAOT no load is attempted, so the
+  probe is listed in `not_applicable` with reason `no-dynamic-loading` and is
+  not counted in `passed`. The observation states
   `native_runtime_unload_claimed: false`. Observed shutdown takes about
   1.96 s: pending work settles through the 2000 ms request deadline, not
   through immediate cancellation at host dispose.
@@ -403,17 +437,21 @@ sandbox, cgroup v2), with the creator channel a FIFO and the scope
 `package-install` stays not-run. This is not hosted CI qualification and
 claims nothing for Windows.
 
-Run evidence, package matrix (2026-11-18): three consecutive local runs on
-Linux x86_64, venue `root-allocated-local`, through `dotnet-host-local
-launch-package` as uid 1000 in a transient scope (systemd 255 as PID 1 in a
-private namespace sandbox with a read-only host root, cgroup v2), creator
-channel a FIFO, scope `Collected`. SDK 10.0.403 was verified against
-Microsoft's published SHA-512. All four modes passed: jit-source, jit-packed,
-aot-source and aot-packed, each with both profiles on runtime 10.0.14. The
-projection reported `host_contract_complete: true` with no required case
-unrun (`package-install` evidenced by the packed modes), status
-`fixture-complete-cleanup-unverified`, `component_qualified: false` and
-`cleanup: null`. The controller finished in 108-113 s of its 180 s budget.
+Run evidence, package matrix (2026-11-18): four local runs on Linux x86_64,
+the last on 55d76b1f, venue `root-allocated-local`, through
+`dotnet-host-local launch-package` as uid 1000 in a transient scope (systemd
+255 as PID 1 in a private namespace sandbox with a read-only host root, cgroup
+v2), creator channel a FIFO, scope `Collected`. In those runs the SDK 10.0.403
+tarball was checked against Microsoft's published SHA-512 by hand before
+installation; the provider code did not check it then. Since the PR #120
+review fix the provider itself performs that check, in CI and in local
+`prepare` alike (4.3). Those four runs predate that fix, the canonical
+temp-root scratch and the controller lineage fix. All four modes passed:
+jit-source, jit-packed, aot-source and aot-packed, each with both profiles on
+runtime 10.0.14. The projection reported `host_contract_complete: true` with
+no required case unrun (`package-install` evidenced by the packed modes),
+status `fixture-complete-cleanup-unverified`, `component_qualified: false`
+and `cleanup: null`. The controller finished in 108-113 s of its 180 s budget.
 This is not hosted CI qualification and claims nothing for Windows.
 
 Historical note, before the controller wiring above:

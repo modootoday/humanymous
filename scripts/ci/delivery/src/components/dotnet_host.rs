@@ -22,9 +22,10 @@ use serde_json::{Value, json};
 use std::{
     io::{Read, Write},
     path::{Path, PathBuf},
-    process::{Command, Stdio},
+    process::{Child, Command, ExitStatus, Stdio},
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
+pub mod sdk;
 
 /// Exactly the two row-24 tests this provider runs, each alone with --exact.
 pub const TESTS: [&str; 2] = [
@@ -37,11 +38,17 @@ pub const PACKAGE_TEST: &str = "sdk_package_and_real_host_matrix";
 const RUN_MS: u64 = 180_000;
 const CLEANUP_MS: u64 = 60_000;
 const OUTPUT_LIMIT: u64 = 1_048_576;
+/// Bounded wait to reap the sudo child after its scope and itself are killed.
+const REAP_GRACE_MS: u64 = 5_000;
 /// The runtime's Unix authority listener refuses an endpoint longer than this
 /// (`authority/transport/unix.rs`), below the kernel's 108-byte `sun_path`.
 const SOCKET_ENDPOINT_LIMIT: usize = 100;
-/// Longest endpoint the Kestrel case binds under the admitted audit root.
-const SOCKET_SUFFIX: &str = "/audit/production/decision.sock";
+/// Longest endpoint the hosted Kestrel case binds under its private work:
+/// `audit/<profile>/decision.sock`, `production` being the longer profile.
+const HOSTED_SOCKET_SUFFIX: &str = "/audit/production/decision.sock";
+/// Longest endpoint a package-matrix mode binds under the controller's private
+/// work: `pkg/<mode>/audit/<profile>/decision.sock` (`package.rs` layout).
+const PACKAGE_SOCKET_SUFFIX: &str = "/pkg/aot-packed/audit/production/decision.sock";
 
 /// Verified inputs handed from the build phase to the launch phase.
 pub struct Prepared {
@@ -92,29 +99,46 @@ fn private_dir(path: &Path) -> Result<()> {
         .map_err(|e| format!("private directory: {e}"))
 }
 
-/// Whether the authority socket under this private work root fits the
-/// listener's endpoint bound. A longer root fails the Kestrel case at bind.
-pub fn socket_endpoint_fits(private_work: &Path) -> bool {
-    private_work
-        .to_str()
-        .is_some_and(|root| root.len() + SOCKET_SUFFIX.len() <= SOCKET_ENDPOINT_LIMIT)
+fn socket_suffix(target: Target) -> &'static str {
+    match target {
+        Target::Hosted => HOSTED_SOCKET_SUFFIX,
+        Target::Package => PACKAGE_SOCKET_SUFFIX,
+    }
 }
 
-/// Hosted scratch: a fresh owner-only directory under `RUNNER_TEMP` when it is
-/// an absolute directory, else under the canonical temp root, never under the
-/// evidence bundle. The name stays short because the package matrix nests each
-/// mode's audit root below the private work and the authority socket under it
-/// must fit the listener's endpoint bound.
-fn hosted_scratch() -> Result<PathBuf> {
-    let base = std::env::var_os("RUNNER_TEMP")
-        .map(PathBuf::from)
-        .filter(|path| path.is_absolute() && path.is_dir())
-        .unwrap_or_else(std::env::temp_dir)
+/// Whether this target's longest authority socket under this private work
+/// root fits the listener's endpoint bound. A longer root fails at bind.
+pub fn socket_endpoint_fits(private_work: &Path, target: Target) -> bool {
+    private_work
+        .to_str()
+        .is_some_and(|root| root.len() + socket_suffix(target).len() <= SOCKET_ENDPOINT_LIMIT)
+}
+
+/// Hosted scratch: a fresh owner-only directory under the canonical temp root
+/// (`/tmp` on hosted runners), short enough for the authority socket. Neither
+/// the evidence bundle nor `RUNNER_TEMP` (`/home/runner/work/_temp`) leaves
+/// margin for the package matrix's nested mode socket.
+fn hosted_scratch(prefix: &str) -> Result<PathBuf> {
+    let base = std::env::temp_dir()
         .canonicalize()
         .map_err(|e| format!("temp root: {e}"))?;
-    let scratch = base.join(format!("hm{}", &nonce()?[..6]));
+    let scratch = base.join(format!("{prefix}-{}", &nonce()?[..12]));
     private_dir(&scratch)?;
     Ok(scratch)
+}
+
+/// One scoped run's private work root under the provider scratch.
+fn run_dir(scratch: &Path, nonce: &str) -> PathBuf {
+    scratch.join(format!("run-{}", &nonce[..12]))
+}
+
+/// Refuse before any build when the real private work path that `launch`
+/// will create under `scratch` cannot hold this target's longest socket.
+fn scratch_fits(scratch: &Path, target: Target) -> Result<()> {
+    require(
+        socket_endpoint_fits(&run_dir(scratch, &"0".repeat(32)), target),
+        "dotnet scratch too long for the authority socket endpoint",
+    )
 }
 
 /// Remove hosted scratch after launch; its deletion is the last provider fact.
@@ -239,6 +263,53 @@ pub fn host_observations(output: &str) -> Result<Value> {
     Ok(json!(rows))
 }
 
+fn kill_scope(unit: &str) {
+    let _kill = Command::new("sudo")
+        .args(["-n", "systemctl", "kill", "--signal=SIGKILL", unit])
+        .stdin(Stdio::null())
+        .status();
+}
+
+/// The spawned `sudo systemd-run --scope` child. Every exit path, an early
+/// error included, kills the scope and the child and reaps it (bounded).
+struct ScopedChild {
+    child: Child,
+    unit: String,
+    status: Option<ExitStatus>,
+}
+impl ScopedChild {
+    fn try_wait(&mut self) -> Result<Option<ExitStatus>> {
+        if self.status.is_none() {
+            self.status = self.child.try_wait().map_err(|e| e.to_string())?;
+        }
+        Ok(self.status)
+    }
+    /// Kill the scope and the direct child, then reap it before `until`.
+    /// Returns whether the child is reaped.
+    fn terminate(&mut self, until: Instant) -> bool {
+        if self.status.is_some() {
+            return true;
+        }
+        kill_scope(&self.unit);
+        let _ = self.child.kill();
+        loop {
+            if let Ok(Some(status)) = self.child.try_wait() {
+                self.status = Some(status);
+                return true;
+            }
+            if Instant::now() >= until {
+                return false;
+            }
+            std::thread::sleep(Duration::from_millis(5));
+        }
+    }
+}
+impl Drop for ScopedChild {
+    fn drop(&mut self) {
+        self.terminate(Instant::now() + Duration::from_millis(REAP_GRACE_MS));
+    }
+}
+
 struct Attempt<'a> {
     harness: &'a Path,
     uid: u32,
@@ -276,29 +347,33 @@ fn launch_one(dir: &Path, attempt: Attempt<'_>) -> Result<Value> {
         "--test-threads=1".to_owned(),
         "--nocapture".to_owned(),
     ]);
-    let mut child = Command::new("sudo")
-        .args(&arguments)
-        .env_clear()
-        .env("PATH", "/usr/bin:/bin")
-        .current_dir("/")
-        .stdin(if attempt.envelope.is_some() {
-            Stdio::piped()
-        } else {
-            Stdio::null()
-        })
-        .stdout(Stdio::piped())
-        .stderr(Stdio::piped())
-        .spawn()
-        .map_err(|e| format!("provider spawn: {e}"))?;
+    let mut child = ScopedChild {
+        child: Command::new("sudo")
+            .args(&arguments)
+            .env_clear()
+            .env("PATH", "/usr/bin:/bin")
+            .current_dir("/")
+            .stdin(if attempt.envelope.is_some() {
+                Stdio::piped()
+            } else {
+                Stdio::null()
+            })
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .map_err(|e| format!("provider spawn: {e}"))?,
+        unit: unit.clone(),
+        status: None,
+    };
     let elapsed_at_dispatch = attempt.issued.elapsed();
     // Creator channel: write the one frame, then close the only write end.
-    let channel = match (attempt.envelope, child.stdin.take()) {
+    let channel = match (attempt.envelope, child.child.stdin.take()) {
         (Some(frame), Some(mut stdin)) => stdin.write_all(&frame).map_err(|e| e.to_string()),
         (None, None) => Ok(()),
         _ => Err("creator channel mismatch".into()),
     };
-    let stdout = bounded_reader(child.stdout.take().ok_or("stdout absent")?);
-    let stderr = bounded_reader(child.stderr.take().ok_or("stderr absent")?);
+    let stdout = bounded_reader(child.child.stdout.take().ok_or("stdout absent")?);
+    let stderr = bounded_reader(child.child.stderr.take().ok_or("stderr absent")?);
     let scope_dir = cgroup2_root()?.join("system.slice").join(&unit);
     let run_until = attempt.issued + Duration::from_millis(RUN_MS);
     let cleanup_until = run_until + Duration::from_millis(CLEANUP_MS);
@@ -309,22 +384,22 @@ fn launch_one(dir: &Path, attempt: Attempt<'_>) -> Result<Value> {
             populated_seen = std::fs::read_to_string(scope_dir.join("cgroup.events"))
                 .is_ok_and(|events| events.lines().any(|line| line == "populated 1"));
         }
-        if let Some(status) = child.try_wait().map_err(|e| e.to_string())? {
+        if let Some(status) = child.try_wait()? {
             break Some(status);
         }
         let now = Instant::now();
         if now >= run_until && !deadline_kill {
             deadline_kill = true;
-            let _kill = Command::new("sudo")
-                .args(["-n", "systemctl", "kill", "--signal=SIGKILL", &unit])
-                .stdin(Stdio::null())
-                .status();
+            kill_scope(&unit);
         }
         if now >= cleanup_until {
             break None;
         }
         std::thread::sleep(Duration::from_millis(5));
     };
+    // A child still running at the cleanup deadline is killed and reaped now;
+    // its exit is never reported as the test's own.
+    let child_reaped = child.terminate(Instant::now() + Duration::from_millis(REAP_GRACE_MS));
     // Terminal fact: read now; a populated scope is killed through the scope.
     let mut fact = classify_events(
         std::fs::read_to_string(scope_dir.join("cgroup.events"))
@@ -334,10 +409,7 @@ fn launch_one(dir: &Path, attempt: Attempt<'_>) -> Result<Value> {
     );
     let residual = fact == ScopeFact::Populated;
     if residual {
-        let _kill = Command::new("sudo")
-            .args(["-n", "systemctl", "kill", "--signal=SIGKILL", &unit])
-            .stdin(Stdio::null())
-            .status();
+        kill_scope(&unit);
         while Instant::now() < cleanup_until {
             fact = classify_events(
                 std::fs::read_to_string(scope_dir.join("cgroup.events"))
@@ -375,10 +447,12 @@ fn launch_one(dir: &Path, attempt: Attempt<'_>) -> Result<Value> {
     let text = String::from_utf8_lossy(&output).into_owned();
     Ok(json!({
         "test": attempt.name,
+        "harness_sha256": source::file(attempt.harness)?,
         "unit": unit,
         "creator_channel_written": channel.is_ok(),
         "dispatch_elapsed_ms": elapsed_at_dispatch.as_millis() as u64,
         "exit_code": status.and_then(|s| s.code()),
+        "child_reaped": child_reaped,
         "readers_joined": readers_joined && output.len() as u64 <= OUTPUT_LIMIT && error_output.len() as u64 <= OUTPUT_LIMIT,
         "scope_populated_observed": populated_seen,
         "scope_terminal": format!("{fact:?}"),
@@ -387,6 +461,15 @@ fn launch_one(dir: &Path, attempt: Attempt<'_>) -> Result<Value> {
         "passed": single_test_passed(&text, attempt.name),
         "stdout_sha256": source::sha(&output),
     }))
+}
+
+/// Binding venue metadata for the run's actual venue; anything else refuses.
+fn preflight_environment(venue: &str) -> Result<PreflightEnvironment> {
+    match venue {
+        "github-hosted" => Ok(PreflightEnvironment::GithubHosted),
+        "root-allocated-local" => Ok(PreflightEnvironment::RootAllocatedLocal),
+        _ => Err(format!("unknown dotnet host venue: {venue}")),
+    }
 }
 
 fn lineage(sha: &str, lock: &str, receipt: &str) -> NativeLineage {
@@ -406,10 +489,30 @@ pub enum Target {
     Package,
 }
 
+/// Native and harness lineage receipts for the binary that actually runs in
+/// the scope: the hosted harness and debug export for row 24, the package
+/// controller and the release export it packs for rows 72/73.
+fn lineage_receipts(prepared: &Prepared, target: Target) -> Result<(String, String)> {
+    let (native, harness) = match target {
+        Target::Hosted => ("native_library", "harness"),
+        Target::Package => ("release_native", "controller"),
+    };
+    let hash = |label: &str| {
+        prepared.hashes[label]
+            .as_str()
+            .map(str::to_owned)
+            .ok_or_else(|| format!("{label} hash absent"))
+    };
+    Ok((hash(native)?, hash(harness)?))
+}
+
 /// Original `/2` context, binding and envelope for one scoped run. The
 /// package controller later re-sends these exact bytes, narrowed per mode.
+#[allow(clippy::too_many_arguments, reason = "one scoped run's fixed inputs")]
 fn envelope(
     prepared: &Prepared,
+    target: Target,
+    venue: &str,
     actor: u32,
     nonce: &str,
     issued: Instant,
@@ -417,6 +520,7 @@ fn envelope(
     handoff: &Path,
 ) -> Result<Vec<u8>> {
     let issued_ms = now_ms()?;
+    let (native_receipt, harness_receipt) = lineage_receipts(prepared, target)?;
     let provenance = UnverifiedProvenance {
         managed: ManagedLineage {
             source_sha: prepared.source_sha.clone(),
@@ -429,16 +533,12 @@ fn envelope(
         native: lineage(
             &prepared.source_sha,
             &prepared.cargo_lock_sha256,
-            prepared.hashes["native_library"]
-                .as_str()
-                .ok_or("native hash absent")?,
+            &native_receipt,
         ),
         harness: lineage(
             &prepared.source_sha,
             &prepared.cargo_lock_sha256,
-            prepared.hashes["harness"]
-                .as_str()
-                .ok_or("harness hash absent")?,
+            &harness_receipt,
         ),
     };
     let context = UnverifiedHostContext {
@@ -471,7 +571,7 @@ fn envelope(
             &encode_provenance(&context.provenance).map_err(|e| e.to_string())?,
         ),
         original_budget: UnverifiedBudget { ..context.budget },
-        preflight_environment: PreflightEnvironment::GithubHosted,
+        preflight_environment: preflight_environment(venue)?,
     };
     let binding_bytes = encode_host_binding(&binding, &context).map_err(|e| e.to_string())?;
     encode_envelope(&UnverifiedEnvelope {
@@ -503,6 +603,7 @@ pub fn launch(
     report: &mut Value,
 ) -> Result<()> {
     backend_observed()?;
+    preflight_environment(venue)?;
     let (real, effective) = humanymous_runtime::native_security::process::current_uids();
     require(
         real == effective && real != 0,
@@ -512,10 +613,10 @@ pub fn launch(
     for name in tests(target) {
         let nonce = nonce()?;
         let issued = Instant::now();
-        let private_work = scratch.join(format!("run-{}", &nonce[..12]));
+        let private_work = run_dir(scratch, &nonce);
         let handoff = scratch.join(format!("handoff-{}", &nonce[..12]));
         require(
-            socket_endpoint_fits(&private_work),
+            socket_endpoint_fits(&private_work, target),
             "dotnet host scratch too long for the authority socket endpoint",
         )?;
         for path in [
@@ -587,7 +688,16 @@ pub fn launch(
                     ),
                 ]);
             }
-            let frame = envelope(prepared, real, &nonce, issued, &private_work, &handoff)?;
+            let frame = envelope(
+                prepared,
+                target,
+                venue,
+                real,
+                &nonce,
+                issued,
+                &private_work,
+                &handoff,
+            )?;
             let harness = if *name == PACKAGE_TEST {
                 &prepared.controller
             } else {
@@ -643,6 +753,7 @@ pub fn launch(
     });
     let clean = results.iter().all(|result| {
         result["exit_code"] == 0
+            && result["child_reaped"] == true
             && result["passed"] == true
             && result["creator_channel_written"] == true
             && result["readers_joined"] == true
@@ -682,19 +793,6 @@ pub fn package_projection(output: &str) -> Result<Value> {
     Ok(rows[0].clone())
 }
 
-/// Resolve the `dotnet` muxer actually on PATH and its runtime root.
-fn muxer() -> Result<(PathBuf, PathBuf)> {
-    let path = std::env::var_os("PATH").ok_or("PATH absent")?;
-    let dotnet = std::env::split_paths(&path)
-        .map(|dir| dir.join("dotnet"))
-        .find(|candidate| candidate.is_file())
-        .ok_or("dotnet muxer absent")?
-        .canonicalize()
-        .map_err(|e| e.to_string())?;
-    let root = dotnet.parent().ok_or("dotnet root absent")?.to_path_buf();
-    Ok((dotnet, root))
-}
-
 fn harness_executable(log: &str, name: &str) -> Result<PathBuf> {
     let paths: Vec<_> = log
         .lines()
@@ -710,11 +808,21 @@ fn harness_executable(log: &str, name: &str) -> Result<PathBuf> {
     Ok(paths[0].clone())
 }
 
-/// Build phase: native exports, harness and the FDD/JIT pilot app.
-pub fn prepare(root: &Path, dir: &Path, report: &mut Value, work: &Path) -> Result<Prepared> {
+/// Build phase: the pinned SDK (verified first), native exports, harness and
+/// the FDD/JIT pilot app. `sdk_private` is a fresh owner-only directory that
+/// must outlive the launch phase: its SDK root is the apphost runtime root.
+pub fn prepare(
+    root: &Path,
+    dir: &Path,
+    report: &mut Value,
+    work: &Path,
+    sdk_private: &Path,
+) -> Result<Prepared> {
     let step = |report: &mut Value, stage: &str, program: &str, args: &[&str], budget: &str| {
         super::invoke(root, dir, report, stage, program, args, budget)
     };
+    let sdk = sdk::acquire(sdk_private, report)?;
+    sdk.check(root, dir, report)?;
     step(
         report,
         "dotnet-native-build",
@@ -793,15 +901,7 @@ pub fn prepare(root: &Path, dir: &Path, report: &mut Value, work: &Path) -> Resu
         rustc.starts_with("rustc 1.99.1 ") && !rustc.contains('\n'),
         "pinned rustc 1.99.1 required",
     )?;
-    let (dotnet, runtime_root) = muxer()?;
-    step(report, "dotnet-info", "dotnet", &["--info"], "60s")?;
-    let info = std::fs::read_to_string(dir.join("dotnet-info.log")).map_err(|e| e.to_string())?;
-    require(
-        info.lines()
-            .any(|line| line.trim() == "Version:           10.0.403")
-            || info.contains("10.0.403"),
-        "pinned .NET SDK 10.0.403 required",
-    )?;
+    let (dotnet, runtime_root) = (sdk.muxer.clone(), sdk.root.clone());
     let app_root = work.join("app");
     let build = work.join("dotnet-build");
     let target_root = std::env::var_os("CARGO_TARGET_DIR")
@@ -812,13 +912,15 @@ pub fn prepare(root: &Path, dir: &Path, report: &mut Value, work: &Path) -> Resu
         .join("release")
         .join("libhumanymous_dotnet_adapter_export.so");
     let (app, build_text) = (text(&app_root)?, text(&build)?);
-    step(
+    // Working directory adapters/dotnet: global.json selects the pinned SDK.
+    sdk.invoke(
+        root,
+        dir,
         report,
         "dotnet-publish",
-        "dotnet",
         &[
             "publish",
-            "adapters/dotnet/pilot/Humanymous.HostPilot.csproj",
+            "pilot/Humanymous.HostPilot.csproj",
             "-c",
             "Release",
             "-r",
@@ -845,6 +947,7 @@ pub fn prepare(root: &Path, dir: &Path, report: &mut Value, work: &Path) -> Resu
     }
     hashes["managed_assembly"] = json!(source::file(&app_root.join("Humanymous.HostPilot.dll"))?);
     hashes["harness"] = json!(source::file(&harness)?);
+    hashes["dotnet_muxer"] = json!(source::file(&dotnet)?);
     let artifact = |path: PathBuf| -> Result<Value> {
         Ok(json!({"sha256": source::file(&path)?, "path": text(&path)?}))
     };
@@ -907,53 +1010,50 @@ pub fn prepare(root: &Path, dir: &Path, report: &mut Value, work: &Path) -> Resu
 
 /// Hosted component: one runner user builds, then launches under scopes.
 pub(super) fn run(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
-    backend_observed()?;
-    let work = dir.join("dotnet-host-work");
-    private_dir(&work)?;
-    let prepared = prepare(root, dir, report, &work)?;
-    report["dotnet_sdk_muxer_sha256"] = json!(source::file(&prepared.dotnet)?);
-    // Private work and handoff live in short provider scratch, not under the
-    // evidence bundle; scratch deletion is the last provider fact.
-    let scratch = hosted_scratch()?;
-    let outcome = launch(
-        &prepared,
-        Target::Hosted,
-        &scratch,
-        dir,
-        "github-hosted",
-        report,
-    );
-    let scratch_removed = remove_scratch(&scratch, report, "dotnet_host_scratch_removed");
-    report["full_native_qualified"] = json!(false);
-    report["package_qualification_receipt_created"] = json!(false);
-    outcome?;
-    require(scratch_removed, "dotnet host provider scratch not removed")
+    run_target(root, dir, report, Target::Hosted)
 }
 
 /// Hosted package component: the same provider admits the package controller,
 /// which derives one narrowing envelope per mode.
 pub(super) fn run_package(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
+    run_target(root, dir, report, Target::Package)
+}
+
+fn run_target(root: &Path, dir: &Path, report: &mut Value, target: Target) -> Result<()> {
     backend_observed()?;
-    let work = dir.join("dotnet-package-work");
+    let (work, scratch_key) = match target {
+        Target::Hosted => ("dotnet-host-work", "dotnet_host_scratch_removed"),
+        Target::Package => ("dotnet-package-work", "dotnet_package_scratch_removed"),
+    };
+    let work = dir.join(work);
     private_dir(&work)?;
-    let prepared = prepare(root, dir, report, &work)?;
-    report["dotnet_sdk_muxer_sha256"] = json!(source::file(&prepared.dotnet)?);
-    let scratch = hosted_scratch()?;
-    let outcome = launch(
-        &prepared,
-        Target::Package,
-        &scratch,
-        dir,
-        "github-hosted",
-        report,
-    );
-    let scratch_removed = remove_scratch(&scratch, report, "dotnet_package_scratch_removed");
+    // Private work and handoff live in short provider scratch, not under the
+    // evidence bundle; it is created and its real socket path checked before
+    // any build. The pinned SDK lives in its own private temp root. Both are
+    // removed after the launch phase; their deletion is the last provider fact.
+    let scratch = hosted_scratch("hm-dotnet")?;
+    let sdk_private = match hosted_scratch("hm-dotnet-sdk") {
+        Ok(path) => path,
+        Err(error) => {
+            remove_scratch(&scratch, report, scratch_key);
+            return Err(error);
+        }
+    };
+    let outcome = scratch_fits(&scratch, target)
+        .and_then(|()| prepare(root, dir, report, &work, &sdk_private))
+        .and_then(|prepared| {
+            report["dotnet_sdk_muxer_sha256"] = json!(source::file(&prepared.dotnet)?);
+            launch(&prepared, target, &scratch, dir, "github-hosted", report)
+        });
+    let scratch_removed = remove_scratch(&scratch, report, scratch_key);
+    let sdk_removed = remove_scratch(&sdk_private, report, "dotnet_sdk_private_removed");
     report["full_native_qualified"] = json!(false);
+    if target == Target::Hosted {
+        report["package_qualification_receipt_created"] = json!(false);
+    }
     outcome?;
-    require(
-        scratch_removed,
-        "dotnet package provider scratch not removed",
-    )
+    require(scratch_removed, "dotnet provider scratch not removed")?;
+    require(sdk_removed, "dotnet provider private SDK not removed")
 }
 
 fn local_allocation() -> Result<()> {
@@ -1009,6 +1109,7 @@ impl Prepared {
             ("harness", prepared.harness.clone()),
             ("controller", prepared.controller.clone()),
             ("release_native", prepared.release_native.clone()),
+            ("dotnet_muxer", prepared.dotnet.clone()),
             (
                 "native_library",
                 prepared
@@ -1046,7 +1147,10 @@ pub fn local(root: &Path, args: &[String]) -> Result<()> {
         Some("prepare") => {
             let dir = work.join("prepare-evidence");
             std::fs::create_dir(&dir).map_err(|e| e.to_string())?;
-            let prepared = prepare(root, &dir, &mut report, &work)?;
+            // The pinned SDK stays under the allocated work root for launch.
+            let sdk_private = work.join("dotnet-sdk");
+            private_dir(&sdk_private)?;
+            let prepared = prepare(root, &dir, &mut report, &work, &sdk_private)?;
             std::fs::write(
                 work.join("prepared.json"),
                 serde_json::to_vec_pretty(&prepared.to_json()?).map_err(|e| e.to_string())?,
@@ -1166,16 +1270,118 @@ mod tests {
         let bundle = Path::new(
             "/home/runner/work/humanymous/humanymous/.spec.local/root/evidence/20261118140959-delivery-pilot/dotnet-host-work/run-0123456789ab",
         );
-        assert!(!socket_endpoint_fits(bundle));
-        assert!(socket_endpoint_fits(Path::new(
-            "/tmp/hm012345/run-0123456789ab"
-        )));
-        let edge = format!(
-            "/{}",
-            "a".repeat(SOCKET_ENDPOINT_LIMIT - SOCKET_SUFFIX.len() - 1)
+        assert!(!socket_endpoint_fits(bundle, Target::Hosted));
+        let tmp = run_dir(
+            Path::new("/tmp/hm-dotnet-0123456789ab"),
+            "0123456789abcdef0123456789abcdef",
         );
-        assert!(socket_endpoint_fits(Path::new(&edge)));
-        assert!(!socket_endpoint_fits(Path::new(&format!("{edge}a"))));
+        assert!(socket_endpoint_fits(&tmp, Target::Hosted));
+        for (target, suffix) in [
+            (Target::Hosted, HOSTED_SOCKET_SUFFIX),
+            (Target::Package, PACKAGE_SOCKET_SUFFIX),
+        ] {
+            let edge = format!("/{}", "a".repeat(SOCKET_ENDPOINT_LIMIT - suffix.len() - 1));
+            assert!(socket_endpoint_fits(Path::new(&edge), target));
+            assert!(!socket_endpoint_fits(
+                Path::new(&format!("{edge}a")),
+                target
+            ));
+        }
+    }
+    #[test]
+    fn envelope_lineage_names_the_binary_that_runs_in_the_scope() {
+        let path = PathBuf::from("/unused");
+        let prepared = Prepared {
+            harness: path.clone(),
+            controller: path.clone(),
+            release_native: path.clone(),
+            provenance: path.clone(),
+            source_root: path.clone(),
+            app_root: path.clone(),
+            runtime_root: path.clone(),
+            dotnet: path.clone(),
+            source_sha: "a".repeat(40),
+            manifest_sha256: "b".repeat(64),
+            cargo_lock_sha256: "c".repeat(64),
+            hashes: json!({"native_library":"1".repeat(64),"harness":"2".repeat(64),
+                "release_native":"3".repeat(64),"controller":"4".repeat(64)}),
+            work: path,
+        };
+        assert_eq!(
+            lineage_receipts(&prepared, Target::Hosted).unwrap(),
+            ("1".repeat(64), "2".repeat(64))
+        );
+        assert_eq!(
+            lineage_receipts(&prepared, Target::Package).unwrap(),
+            ("3".repeat(64), "4".repeat(64))
+        );
+        let mut missing = prepared;
+        missing.hashes["controller"] = Value::Null;
+        assert!(lineage_receipts(&missing, Target::Package).is_err());
+    }
+    #[test]
+    fn package_socket_suffix_is_the_longest_real_mode_path() {
+        // package.rs: <private_work>/pkg/<mode>/audit/<profile>/decision.sock.
+        // The four package.rs modes; none may outgrow the pinned suffix.
+        let modes = ["jit-source", "jit-packed", "aot-source", "aot-packed"];
+        let longest = modes
+            .iter()
+            .flat_map(|mode| {
+                ["production", "synthetic"]
+                    .map(|profile| format!("/pkg/{mode}/audit/{profile}/decision.sock"))
+            })
+            .max_by_key(String::len)
+            .unwrap();
+        assert_eq!(longest.len(), PACKAGE_SOCKET_SUFFIX.len());
+        assert_eq!(PACKAGE_SOCKET_SUFFIX.len(), 46);
+        // The real package path under the canonical temp root keeps margin.
+        let tmp = run_dir(
+            Path::new("/tmp/hm-dotnet-0123456789ab"),
+            "0123456789abcdef0123456789abcdef",
+        );
+        assert!(socket_endpoint_fits(&tmp, Target::Package));
+        assert!(scratch_fits(Path::new("/tmp/hm-dotnet-0123456789ab"), Target::Package).is_ok());
+        // Under RUNNER_TEMP the same scratch leaves no room for the mode socket.
+        let runner_temp = Path::new("/home/runner/work/_temp/hm-dotnet-0123456789ab");
+        assert!(scratch_fits(runner_temp, Target::Hosted).is_ok());
+        assert!(scratch_fits(runner_temp, Target::Package).is_err());
+        assert!(!socket_endpoint_fits(
+            &run_dir(runner_temp, "0123456789abcdef0123456789abcdef"),
+            Target::Package
+        ));
+    }
+    #[test]
+    fn scoped_child_is_killed_and_reaped_on_every_exit_path() {
+        let spawn = || ScopedChild {
+            child: Command::new("sleep")
+                .arg("30")
+                .stdin(Stdio::null())
+                .spawn()
+                .unwrap(),
+            // No such unit: the scope kill is a harmless no-op here.
+            unit: "hm-dotnet-unit-test-absent.scope".into(),
+            status: None,
+        };
+        let gone = |pid: u32| !Path::new(&format!("/proc/{pid}")).exists();
+        // Deadline path: terminate kills and reaps a still-running child.
+        let mut deadline = spawn();
+        let pid = deadline.child.id();
+        assert!(deadline.terminate(Instant::now() + Duration::from_secs(5)));
+        assert!(deadline.status.is_some_and(|status| !status.success()));
+        assert!(gone(pid));
+        // Early-error path: dropping the guard kills and reaps the child.
+        let early = spawn();
+        let pid = early.child.id();
+        drop(early);
+        assert!(gone(pid));
+    }
+    #[test]
+    fn binding_venue_follows_the_actual_run_venue() {
+        let wire = |venue| serde_json::to_value(preflight_environment(venue).unwrap()).unwrap();
+        assert_eq!(wire("github-hosted"), json!("github-hosted"));
+        assert_eq!(wire("root-allocated-local"), json!("root-allocated-local"));
+        assert!(preflight_environment("local").is_err());
+        assert!(preflight_environment("").is_err());
     }
     #[test]
     fn harness_executable_is_the_one_hosted_test_artifact() {
