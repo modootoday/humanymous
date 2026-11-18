@@ -1,5 +1,7 @@
 //! Ports of legacy cmd/server/mlcorrect_ops_test.go (baseline 981d25c).
 use super::*;
+use crate::model::training::record::Record;
+use crate::model::training::sink::TraceSink;
 use crate::signals::report::{KeyFeatures, MouseFeatures};
 
 fn scored(p_bot: f32) -> Prediction {
@@ -121,4 +123,46 @@ fn cohort_follows_input_modality() {
     assert_eq!(cohort_of(&behavior(2, 5)), Cohort::Keyboard);
     assert_eq!(cohort_of(&BehaviorSummary::default()), Cohort::Default);
     assert_eq!(Cohort::Keyboard.as_str(), "keyboard");
+}
+
+#[test]
+fn solved_pass_writes_one_human_trace_line_to_the_sink() {
+    // Port of TestFeedPassOutcome_SolvedWritesHumanTrace: sink on, no controller.
+    let dir =
+        std::env::temp_dir().join(format!("humanymous-pass-feed-sink-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&dir);
+    let path = dir.join("oracle.jsonl");
+    let mut sink = TraceSink::open(&path).unwrap();
+    // a pointer-using session -> the "pointer" cohort.
+    let mut b = behavior(40, 0);
+    b.duration_s = 7.0;
+
+    let solved = feed_pass_outcome(None, &b, 4242, true, scored(0.1), false).unwrap();
+    assert_eq!(append_trace(Some(&mut sink), &solved), Ok(true));
+    // failure -> NOT a trace (only the solve-rate guard, absent here)
+    let failed = feed_pass_outcome(None, &b, 4242, false, scored(0.1), false).unwrap();
+    assert_eq!(append_trace(Some(&mut sink), &failed), Ok(false));
+    assert_eq!(
+        sink.count(),
+        1,
+        "only the solved Pass must be persisted as a trace"
+    );
+    // no sink configured: collection off, nothing written, no error
+    assert_eq!(append_trace(None, &solved), Ok(false));
+
+    sink.close().unwrap();
+    let data = std::fs::read_to_string(&path).unwrap();
+    let record: Record = serde_json::from_str(data.trim()).unwrap();
+    let _ = std::fs::remove_dir_all(&dir);
+    assert_eq!(
+        (
+            record.label,
+            record.source.as_deref(),
+            record.ts,
+            record.cohort.as_deref()
+        ),
+        (0, Some("pass"), Some(4242), Some("pointer")),
+        "trace must be a labeled, cohort-tagged human Pass record"
+    );
+    assert_eq!(record.behavior, b);
 }
