@@ -371,6 +371,39 @@ fn clickhouse_basic_auth_and_row_trigger() {
     );
 }
 
+/// Go `CHSink.Close` flushed before stopping: a partial batch that neither
+/// reached `max_rows` nor waited `max_wait` is still inserted on close, after
+/// a full batch already went out on the row trigger. Carried over from the
+/// superseded PR #71 projection tests.
+#[test]
+fn clickhouse_close_flushes_the_partial_batch() {
+    let (endpoint, requests) = clickhouse_stand_in("200 OK");
+    let sink =
+        ClickHouseSink::new(clickhouse_options(endpoint, 2, Duration::from_secs(60))).unwrap();
+    sink.append_record(&sample_record(1)).unwrap();
+    sink.append_record(&sample_record(2)).unwrap();
+    let full = requests
+        .recv_timeout(Duration::from_secs(3))
+        .expect("max_rows did not trigger a batch");
+    assert_eq!(full.body.lines().count(), 2);
+    sink.append_record(&sample_record(3)).unwrap();
+    assert!(
+        requests.recv_timeout(Duration::from_millis(200)).is_err(),
+        "a partial batch waits for max_wait"
+    );
+    sink.close().unwrap();
+    let partial = requests
+        .recv_timeout(Duration::from_secs(3))
+        .expect("close did not flush the partial batch");
+    let seqs: Vec<u64> = partial
+        .body
+        .lines()
+        .map(|line| serde_json::from_str::<Record>(line).unwrap().seq)
+        .collect();
+    assert_eq!(seqs, [3]);
+    assert_eq!(sink.dropped(), 0);
+}
+
 /// Go counted a failed or refused insert as dropped rows and returned the
 /// status; a full backlog drops too, and the append never fails. Rust also
 /// drops an append after close.
