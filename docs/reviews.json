@@ -5886,12 +5886,12 @@
     },
     {
       "source": "crates/sdk/humanymous-core/src/signals/wire/mod.rs",
-      "sha256": "cdfc6ec3d955e9a0a7730c2a7d4cba2f2472a63590249ccf99d4e93544fe6c5a",
-      "reviewer": "codex/rust-pages",
+      "sha256": "1d1559e2dea417af17f9b954d8c285764c139aef37850eaf6fd9cd57bcbd5dd0",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
       "pages": [
         "docs/standards/draft-v0/validation/implementation-map.md"
       ],
-      "notes": "217-line complete source reread. New quote_json_go_to writes exact HTML/control/line-separator Go string escaping to an IO sink, immediately returns partial sink failure; caller must not commit partial bytes. Existing allocating encoder delegates to it. Unicode15 simple lowercase/printability and float32 representations retain separate frozen model semantics. Source tests cover all valid scalar values against prior JSON escaping and partial-sink failure; Pages did not rerun them. This is scoped project compatibility, not generic JSON canonicalization or independent Draftv0 interoperable wire. Carried unchanged from crates/signals/src/wire/mod.rs: identical SHA-256 after the crate consolidation, so the reviewed bytes are the same."
+      "notes": "217-line complete source reread. New quote_json_go_to writes exact HTML/control/line-separator Go string escaping to an IO sink, immediately returns partial sink failure; caller must not commit partial bytes. Existing allocating encoder delegates to it. Unicode15 simple lowercase/printability and float32 representations retain separate frozen model semantics. Source tests cover all valid scalar values against prior JSON escaping and partial-sink failure; Pages did not rerun them. This is scoped project compatibility, not generic JSON canonicalization or independent Draftv0 interoperable wire. Carried unchanged from crates/signals/src/wire/mod.rs: identical SHA-256 after the crate consolidation, so the reviewed bytes are the same. Re-reviewed 2026-11-18 (B1 settings slice): adds format_float_go (%v), format_fixed_go (%.Nf, half-even) and json_float_go (encoding/json float text, None for non-finite) with a test of values captured from Go 1.26.3 at 981d25c; existing functions unchanged."
     },
     {
       "source": "crates/sdk/humanymous-core/src/signals/wire/unicode.json",
@@ -6717,9 +6717,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "359d47a12a5f78da1178fdc1c9a02beba4b7c72e1aafafdcdebdc1ed0bbc7c47",
+      "sha256": "b8de05b02cc00874443f57e23d8461824d5bef0ff5702e13db70df4d60f5aef1",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 431 / macos 431 / windows 419 (419 common names plus 12 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b (codex/rust plus PR heads #70 and #83): the name lists are the union of all parents' already-reviewed additions, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 431 listed common plus Unix-only names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 431 / macos 431 / windows 419 (419 common names plus 12 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b (codex/rust plus PR heads #70 and #83): the name lists are the union of all parents' already-reviewed additions, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 431 listed common plus Unix-only names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect. Re-reviewed 2026-11-18 (B1 settings slice): 25 gateway::settings::overlay names added to the common list, so expected counts are linux 456 / macos 456 / windows 444; the Linux --list gateway:: inventory equals common plus unix_extra.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/how-this-was-built.md"
@@ -8725,9 +8725,109 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/settings.rs",
-      "sha256": "70f9a0866a1eb80bc5dffff5ed3377795ad9ada29cae00af1b41be2a01a2ac97",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Scoped operational settings snapshot (protocol humanymous.operational/0.1): strict deny_unknown_fields payload binding scope, node, revision and resource settings (no scoring fields); from_json enforces a 16 KiB budget, scope binding and canonical bytes; prepare() checks the parent revision and safe-integer revision limit and returns frozen candidate bytes with domain-separated SHA-256 parent and candidate commitments. Candidates grant no side effect or durable authorization.",
+      "sha256": "5bf1bc758985117f838352ae1cccd1d31204ec7596aaadea8e843bac6a5013e2",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Scoped operational settings snapshot (protocol humanymous.operational/0.1): strict deny_unknown_fields payload binding scope, node, revision and resource settings (no scoring fields); from_json enforces a 16 KiB budget, scope binding and canonical bytes; prepare() checks the parent revision and safe-integer revision limit and returns frozen candidate bytes with domain-separated SHA-256 parent and candidate commitments. Candidates grant no side effect or durable authorization. Re-reviewed 2026-11-18: only adds the pub mod overlay declaration for the B1 settings overlay port.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay.rs",
+      "sha256": "02e63599fdb04aba11ca3a8960e5d06723925bf170896d34fa81295c13b6ed9b",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Owner decision B1 (issue #75 comment 6979694428) exact-parity port of the Go oracle at 981d25c; nothing tuned. Settings overlay model: Mode, MutationClass, Overlay with ScoringPatch and RateLimitPatch, frozen scoring defaults 30/70/60, integrity-critical gate and hard-rule catalogs, known gates and net policy classes; CanonicalJSON, HMAC-SHA256 overlay digest (6 bytes) and cfg- configuration version byte-equal to Go. Pure library; not wired into the hosted gateway, whose operational CAS settings stay resource-only.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/wire.rs",
+      "sha256": "10d713b94f103dbfa39ae499be885b69997a61a258dfbc77710bc52779653591",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Owner decision B1 (issue #75 comment 6979694428) exact-parity port of the Go oracle at 981d25c; nothing tuned. Go encoding/json reproduction for overlays: whole-document validation with the 10000 nesting limit, exact then case-folded key match (including U+017F and U+212A), merged duplicates, Go null handling, per-byte invalid UTF-8 and lone-surrogate replacement, integer-literal int fields; encoder writes Go MarshalIndent and compact bytes and Go's NaN/time error texts. Decode error message text is not Go's; only refusal is compared.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/timestamp.rs",
+      "sha256": "e94cd0dd762bc502db45dd7b7fcfbddb227738a2c1be28c25d48696027d82771",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Owner decision B1 (issue #75 comment 6979694428) exact-parity port of the Go oracle at 981d25c; nothing tuned. Go 1.26 time.Time JSON: parse is the union of the RFC 3339 fast path and lenient time.Parse fallback (1-2 digit hour, . or , fraction, offsets up to 24:60); format trims nanoseconds, writes Z for zero offset (oracle captured with UTC Local) and refuses zone hours above 23 like MarshalJSON.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/validate.rs",
+      "sha256": "b61a619d7f2332077d4d5d9b833d322bcae8519989bf833ca9f89007c8284f63",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Owner decision B1 (issue #75 comment 6979694428) exact-parity port of the Go oracle at 981d25c; nothing tuned. Validate bounds with byte-equal Go messages (%q, %v, %.1f): schema version, gate and hard-rule and net policy modes, integrity-critical refusals, scoring bounds 10-60/40-95/30-80 with challenge<deny, weight multipliers in [0,2], rate limit minima and attested catch-all refusal. Maps are checked in sorted order, one of Go's map-order outcomes.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/classify.rs",
+      "sha256": "5728b2456e70c2d9d93a0756fbc93094d7b63d1e437c5b878ab739e93d968596",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Owner decision B1 (issue #75 comment 6979694428) exact-parity port of the Go oracle at 981d25c; nothing tuned. Mutation class C>B>D>A over scoring, weights, hard rules, gates, global monitor, net policy, routes and rate limits relative to the current Effective, equal to Go across the captured classification matrix.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/resolve.rs",
+      "sha256": "cdf67821bbb4326d4c5358f2333c73fa16f88a8ae72a362531e1cb4547020caf",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Owner decision B1 (issue #75 comment 6979694428) exact-parity port of the Go oracle at 981d25c; nothing tuned. Resolve boot input plus overlay into Effective (Go field order JSON, HRMode/GateMode, configuration version) and configure_engine, which maps Effective onto the existing frozen humanymous-core scoring Engine (policy, +overlay version, rule modes, weight multipliers, nil-vs-set net policy) without a parallel engine.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/store.rs",
+      "sha256": "db909d350920e957de6c25ebf27a9a4bd472f1fb12ea06a968f7614c45a6c593",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Owner decision B1 (issue #75 comment 6979694428) exact-parity port of the Go oracle at 981d25c; nothing tuned. File overlay store: settings.overlay.v1.json and settings.overlay.lkg.json written 0600 under a 0700 directory, validate before write, last-known-good recovery with Go load-error texts, and the overlay JSON schema bytes. OS read error text is not Go's; only the kind is compared.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs",
+      "sha256": "e5102439e4208a78c363612f904cee369a5ae26dc0d486ba606526ec89694d84",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "One-to-one Rust ports of all 8 Go classify_test.go and 8 settings_test.go cases plus admin_settings_test.go TestConfigureEngineFromEffectiveNetPolicy, and port-specific negatives: empty overlay keeps frozen engine defaults, empty directory and invalid overlay refusal without writing, malformed and too-deep documents refused.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests/parity.rs",
+      "sha256": "5d30d2556bedb4b4e1ca831d02f486f503263bdf7573ca905a120e9119681048",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Differential parity against the Go-captured golden: float text, 192 overlay cases (157 decoded) through decode, validate, canonical and indented encoding, digest, resolve, configure_engine and a 1884-entry classification matrix, 32 frozen-report scores with traces, 19 file store scenarios and schema bytes (Go's map-ordered hard-rule list compared as a sorted set). Never regenerated; mismatches fail.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-overlay-go-golden.json",
+      "sha256": "b783c54a4fee962eca729603d6237747d76ee54370bd446e3165a4565dc498ae",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Differential golden captured from the Go oracle at 981d25c in mirror.gcr.io/library/golang:1.26.3-alpine@sha256:91eda9776261207ea25fd06b5b7fed8d397dd2c0a283e77f2ab6e91bfa71079d, offline (--network none, GOPROXY=off, GOFLAGS=-mod=readonly, GOTOOLCHAIN=local). Provenance records the command and capture program, input and output SHA-256 and Go nondeterminism; it holds inputs and Go outputs only, no Go code. Owner decision B1 forbids regeneration.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/reference/cli-config-policy.md"

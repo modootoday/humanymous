@@ -74,6 +74,131 @@ pub fn float32_json_value(value: f32) -> serde_json::Value {
     serde_json::from_str(&value.to_string()).expect("finite float32 JSON number")
 }
 
+/// Shortest round-trip decimal digits of a finite value: sign, significant
+/// digits without leading zeros (empty for zero) and the decimal point
+/// position, so that the magnitude is `0.digits * 10^point`.
+fn shortest_digits(value: f64) -> (bool, Vec<u8>, i32) {
+    let negative = value.is_sign_negative();
+    if value == 0.0 {
+        return (negative, Vec::new(), 0);
+    }
+    // Rust's LowerExp without precision is the shortest round-trip form,
+    // the same digit string Go's strconv selects with precision -1.
+    let text = format!("{:e}", value.abs());
+    let (mantissa, exponent) = text.split_once('e').expect("LowerExp has an exponent");
+    let digits: Vec<u8> = mantissa.bytes().filter(u8::is_ascii_digit).collect();
+    let exponent: i32 = exponent.parse().expect("LowerExp exponent is an integer");
+    (negative, digits, exponent + 1)
+}
+
+/// Go strconv `%e` layout of shortest digits with `precision` fraction digits.
+fn go_exponent(output: &mut String, digits: &[u8], point: i32, precision: usize) {
+    output.push(char::from(*digits.first().unwrap_or(&b'0')));
+    if precision > 0 {
+        output.push('.');
+        for index in 1..=precision {
+            output.push(char::from(*digits.get(index).unwrap_or(&b'0')));
+        }
+    }
+    let exponent = if digits.is_empty() { 0 } else { point - 1 };
+    output.push('e');
+    output.push(if exponent < 0 { '-' } else { '+' });
+    let magnitude = exponent.unsigned_abs();
+    if magnitude < 10 {
+        output.push('0');
+    }
+    write!(output, "{magnitude}").expect("string write");
+}
+
+/// Go strconv `%f` layout of shortest digits with `precision` fraction digits.
+fn go_fixed(output: &mut String, digits: &[u8], point: i32, precision: usize) {
+    if point > 0 {
+        for index in 0..point as usize {
+            output.push(char::from(*digits.get(index).unwrap_or(&b'0')));
+        }
+    } else {
+        output.push('0');
+    }
+    if precision > 0 {
+        output.push('.');
+        for index in 1..=precision as i32 {
+            let position = point + index - 1;
+            let digit = usize::try_from(position)
+                .ok()
+                .and_then(|position| digits.get(position))
+                .copied()
+                .unwrap_or(b'0');
+            output.push(char::from(digit));
+        }
+    }
+}
+
+fn go_nonfinite(value: f64) -> Option<&'static str> {
+    if value.is_nan() {
+        Some("NaN")
+    } else if value == f64::INFINITY {
+        Some("+Inf")
+    } else if value == f64::NEG_INFINITY {
+        Some("-Inf")
+    } else {
+        None
+    }
+}
+
+/// Format a float64 like Go `fmt` `%v` (`strconv.FormatFloat(v, 'g', -1, 64)`):
+/// shortest digits, exponent form below 1e-4 or from 1e21 digit position six.
+pub fn format_float_go(value: f64) -> String {
+    if let Some(text) = go_nonfinite(value) {
+        return text.into();
+    }
+    let (negative, digits, point) = shortest_digits(value);
+    let mut output = String::new();
+    if negative {
+        output.push('-');
+    }
+    let exponent = point - 1;
+    if !digits.is_empty() && !(-4..6).contains(&exponent) {
+        go_exponent(&mut output, &digits, point, digits.len() - 1);
+    } else {
+        let precision = usize::try_from(digits.len() as i32 - point).unwrap_or(0);
+        go_fixed(&mut output, &digits, point, precision);
+    }
+    output
+}
+
+/// Format a float64 like Go `fmt` `%.Nf`, including Go's non-finite spellings.
+pub fn format_fixed_go(value: f64, precision: usize) -> String {
+    match go_nonfinite(value) {
+        Some(text) => text.into(),
+        None => format!("{value:.precision$}"),
+    }
+}
+
+/// Encode a float64 as Go `encoding/json` does. Go refuses NaN and infinities
+/// with an unsupported-value error, so they yield `None` here.
+pub fn json_float_go(value: f64) -> Option<String> {
+    if go_nonfinite(value).is_some() {
+        return None;
+    }
+    let (negative, digits, point) = shortest_digits(value);
+    let mut output = String::new();
+    if negative {
+        output.push('-');
+    }
+    let magnitude = value.abs();
+    if magnitude != 0.0 && !(1e-6..1e21).contains(&magnitude) {
+        go_exponent(&mut output, &digits, point, digits.len() - 1);
+        // Go trims one leading zero from a negative two-digit exponent.
+        if let Some(index) = output.rfind("e-0") {
+            output.remove(index + 2);
+        }
+    } else {
+        let precision = usize::try_from(digits.len() as i32 - point).unwrap_or(0);
+        go_fixed(&mut output, &digits, point, precision);
+    }
+    Some(output)
+}
+
 /// Unicode simple lowercase used by the frozen Go wire contracts.
 /// Unlike full string lowercase, this neither expands dotted I nor applies
 /// contextual final sigma mappings.
@@ -206,6 +331,55 @@ mod tests {
         for case in corpus.cases {
             assert_eq!(simple_lowercase(&case.input), case.lower);
             assert_eq!(quote_go(&case.input), case.quoted);
+        }
+    }
+    /// Values captured from Go 1.26.3 `%v`, `%.1f` and `json.Marshal` at the
+    /// frozen oracle commit 981d25c (settings overlay golden capture).
+    #[test]
+    fn float_formatting_matches_go_fmt_and_encoding_json() {
+        for (value, v, fixed, json) in [
+            (0.0, "0", "0.0", Some("0")),
+            (-0.0, "-0", "-0.0", Some("-0")),
+            (-1.0, "-1", "-1.0", Some("-1")),
+            (2.5, "2.5", "2.5", Some("2.5")),
+            (29.95, "29.95", "29.9", Some("29.95")),
+            (60.05, "60.05", "60.0", Some("60.05")),
+            (60.25, "60.25", "60.2", Some("60.25")),
+            (0.05, "0.05", "0.1", Some("0.05")),
+            (100_000.0, "100000", "100000.0", Some("100000")),
+            (1e6, "1e+06", "1000000.0", Some("1000000")),
+            (
+                123_456_789.0,
+                "1.23456789e+08",
+                "123456789.0",
+                Some("123456789"),
+            ),
+            (0.0001, "0.0001", "0.0", Some("0.0001")),
+            (0.00001, "1e-05", "0.0", Some("0.00001")),
+            (1e-7, "1e-07", "0.0", Some("1e-7")),
+            (1.5e-7, "1.5e-07", "0.0", Some("1.5e-7")),
+            (
+                1e20,
+                "1e+20",
+                "100000000000000000000.0",
+                Some("100000000000000000000"),
+            ),
+            (1e21, "1e+21", "1000000000000000000000.0", Some("1e+21")),
+            (5e-324, "5e-324", "0.0", Some("5e-324")),
+            (2.675, "2.675", "2.7", Some("2.675")),
+            (
+                33.333333333333336,
+                "33.333333333333336",
+                "33.3",
+                Some("33.333333333333336"),
+            ),
+            (f64::NAN, "NaN", "NaN", None),
+            (f64::INFINITY, "+Inf", "+Inf", None),
+            (f64::NEG_INFINITY, "-Inf", "-Inf", None),
+        ] {
+            assert_eq!(format_float_go(value), v, "{value:e}");
+            assert_eq!(format_fixed_go(value, 1), fixed, "{value:e}");
+            assert_eq!(json_float_go(value).as_deref(), json, "{value:e}");
         }
     }
     #[test]
