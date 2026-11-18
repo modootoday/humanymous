@@ -1,0 +1,8 @@
+[submodule "third_party/ip-intel/firehol-level1"]
+	path = third_party/ip-intel/firehol-level1
+	url = https://github.com/firehol/blocklist-ipsets.git
+	shallow = true
+[submodule "third_party/ip-intel/x4bnet-datacenter"]
+	path = third_party/ip-intel/x4bnet-datacenter
+	url = https://github.com/X4BNet/lists_vpn.git
+	shallow = true

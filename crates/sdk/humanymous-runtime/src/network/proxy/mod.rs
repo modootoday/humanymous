@@ -6,6 +6,7 @@
 //! client provenance (network-capture N01) and never reads HTTP forwarding fields.
 //! An untrusted peer's bytes are not inspected at all, so a spoofed header stays
 //! ordinary payload for the next layer.
+use crate::network::intel::prefix_set::Prefix;
 use std::io::Read;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
 
@@ -35,69 +36,24 @@ pub enum Refusal {
     Truncated,
 }
 
-/// One trusted network: masked address plus prefix length.
+/// One trusted network. Parsing and membership reuse the network context's
+/// single CIDR primitive; this type only adds the allowlist breadth limit.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct Cidr {
-    network: IpAddr,
-    prefix: u8,
-}
+pub struct Cidr(Prefix);
 
 impl Cidr {
     /// Parse `a.b.c.d/n`, `v6/n` or a bare address (host route).
     pub fn parse(text: &str) -> Result<Self, Refusal> {
-        let (address, prefix) = match text.split_once('/') {
-            Some((address, prefix)) => (address, Some(prefix)),
-            None => (text, None),
-        };
-        let address: IpAddr = address.parse().map_err(|_| Refusal::Cidr)?;
-        let width = if address.is_ipv4() { 32 } else { 128 };
-        let prefix = match prefix {
-            None => width,
-            Some(p)
-                if !p.is_empty()
-                    && p.len() <= 3
-                    && p.bytes().all(|b| b.is_ascii_digit())
-                    && (p.len() == 1 || !p.starts_with('0')) =>
-            {
-                p.parse::<u8>().map_err(|_| Refusal::Cidr)?
-            }
-            Some(_) => return Err(Refusal::Cidr),
-        };
-        if prefix > width {
-            return Err(Refusal::Cidr);
-        }
-        if prefix < MIN_PREFIX {
+        let prefix = Prefix::parse_masked(text).map_err(|_| Refusal::Cidr)?;
+        if prefix.len() < MIN_PREFIX {
             return Err(Refusal::TooBroad);
         }
-        Ok(Self {
-            network: mask(address, prefix),
-            prefix,
-        })
+        Ok(Self(prefix))
     }
 
     /// Membership; an IPv4-mapped IPv6 peer matches IPv4 networks.
     pub fn contains(&self, ip: IpAddr) -> bool {
-        let ip = match ip {
-            IpAddr::V6(v6) if self.network.is_ipv4() => match v6.to_ipv4_mapped() {
-                Some(v4) => IpAddr::V4(v4),
-                None => return false,
-            },
-            other => other,
-        };
-        ip.is_ipv4() == self.network.is_ipv4() && mask(ip, self.prefix) == self.network
-    }
-}
-
-fn mask(ip: IpAddr, prefix: u8) -> IpAddr {
-    match ip {
-        IpAddr::V4(v4) => {
-            let bits = u32::from(v4) & u32::MAX.checked_shl(32 - u32::from(prefix)).unwrap_or(0);
-            IpAddr::V4(Ipv4Addr::from(bits))
-        }
-        IpAddr::V6(v6) => {
-            let bits = u128::from(v6) & u128::MAX.checked_shl(128 - u32::from(prefix)).unwrap_or(0);
-            IpAddr::V6(Ipv6Addr::from(bits))
-        }
+        self.0.contains(ip)
     }
 }
 

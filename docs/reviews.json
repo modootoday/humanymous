@@ -3,13 +3,14 @@
   "reviews": [
     {
       "source": "Cargo.lock",
-      "sha256": "0d5b3b2c7fc9d780d90d0232391c06be7094b82ef67524e1656765eeda0598b8",
+      "sha256": "a2434e204eeee85755892270a910ea15d3701e6b28b66b4c62c22c32c58ea4a8",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Cargo-generated lockfile (format version 4) pinning 664 packages, including the consolidated workspace members humanymous-core, humanymous-runtime, humanymous-platform, the adapter, browser, CEF and CLI crates and their third-party dependencies. Re-reviewed 2026-11-18: the only change since the prior review adds the already-locked getrandom 0.4.3 to humanymous-delivery's dependency list; the package count is unchanged. It fixes resolution for --locked builds only; it is not install, OS-support or artifact qualification evidence.",
+      "notes": "Cargo-generated lockfile (format version 4) pinning 664 packages, including the consolidated workspace members humanymous-core, humanymous-runtime, humanymous-platform, the adapter, browser, CEF and CLI crates and their third-party dependencies. Re-reviewed 2026-11-18: the only change since the prior review adds the already-locked getrandom 0.4.3 to humanymous-delivery's dependency list; the package count is unchanged. It fixes resolution for --locked builds only; it is not install, OS-support or artifact qualification evidence. Re-reviewed 2026-11-18 (IP reputation feed): adds the already-locked ureq 3.5.1 to humanymous-cli's dependency list as an optional dependency of the ip-intel feature; no new package.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/start-here/developer.md",
-        "docs/reference/install-requirements.md"
+        "docs/reference/install-requirements.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -2324,12 +2325,13 @@
     },
     {
       "source": "crates/cli/Cargo.toml",
-      "sha256": "93e95b9da635acc4e466e8da4fb92c4c5d17a734ff51a307d9443da9734c6cc6",
+      "sha256": "b93f5ca8c8e2589a9d70af20429564883c2747afdce6f816beae8612fda7835f",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "48-line manifest for humanymous-cli (description, readme INTEGRATION.md, publish = [\"crates-io\"] as part of the first crates.io wave; opening the manifest performs no upload) with the humanymous binary and the humanymous-service-fixture binary, which needs the service-pilot feature. runtime-service adds the runtime gateway and authority features plus optional Tokio and zeroize; runtime-service-pilot adds credential-pilot and audit. Windows targets add windows-service, and Windows dev-dependencies add windows-permissions and junction. Features do not prove native execution, deployment support or registry publication.",
+      "notes": "48-line manifest for humanymous-cli (description, readme INTEGRATION.md, publish = [\"crates-io\"] as part of the first crates.io wave; opening the manifest performs no upload) with the humanymous binary and the humanymous-service-fixture binary, which needs the service-pilot feature. runtime-service adds the runtime gateway and authority features plus optional Tokio and zeroize; runtime-service-pilot adds credential-pilot and audit. Windows targets add windows-service, and Windows dev-dependencies add windows-permissions and junction. Features do not prove native execution, deployment support or registry publication. Re-reviewed 2026-11-18: adds the optional ip-intel feature (runtime network feature plus optional ureq =3.5.1) for the IP reputation updater; default features unchanged.",
       "pages": [
         "docs/reference/install-requirements.md",
-        "docs/reference/cli-config-policy.md"
+        "docs/reference/cli-config-policy.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -2363,13 +2365,14 @@
     },
     {
       "source": "crates/cli/src/commands.rs",
-      "sha256": "abac4c2db93b854c0c935de9d55eb22775494f4eff3d5e459f0e13a6f1a294f6",
+      "sha256": "637a0b5d19d21c3d48dbebff172c9359c7100c6fe1d34f44a4aa4687bbd3ea41",
       "reviewer": "codex/rust-pages",
       "pages": [
         "docs/reference/install-requirements.md",
-        "docs/reference/cli-config-policy.md"
+        "docs/reference/cli-config-policy.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ],
-      "notes": "Complete147-line strict service/runtime-host CLI composition. Unknown/duplicate options refused, activate and dry mutually exclusive; doctor read-only requires observed running/diagnostic report. Install/upgrade/rollback/remove delegate to ServicePlan; mutation authorization and filesystem/native guarantees require underlying code, not argument parsing. Success JSON keeps product_qualified false."
+      "notes": "Complete147-line strict service/runtime-host CLI composition. Unknown/duplicate options refused, activate and dry mutually exclusive; doctor read-only requires observed running/diagnostic report. Install/upgrade/rollback/remove delegate to ServicePlan; mutation authorization and filesystem/native guarantees require underlying code, not argument parsing. Success JSON keeps product_qualified false. Re-reviewed 2026-11-18: adds the feature-gated ip-intel command (update, sources, inspect) with strict argument parsing; a partial update prints its report and exits non-zero."
     },
     {
       "source": "crates/cli/src/installation/mod.rs",
@@ -2408,24 +2411,44 @@
       ]
     },
     {
+      "source": "crates/cli/src/ip_intel/mod.rs",
+      "sha256": "87b61d33d7c63f0d1fe139a694aebbbe841920cf9f182af07dd6dd0515a6d351",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Operator IP reputation updater behind the ip-intel feature: reads pinned submodule checkouts (commit from git metadata, no git process), operator --input files and HTTPS sources (https only, 60 s timeout, per-source byte bound), normalizes through the runtime source registry, encodes the humanymous-ip-intel/1 snapshot and writes it atomically (create_new 0600 sibling, sync, rename). Refuses to write when no source succeeded; missing/uninitialized sources stay listed with a static reason.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/cli/src/ip_intel/tests.rs",
+      "sha256": "e5d40304d4b0c26db7080760d928575c2bbd6416d76d886ed45da0e73212d546",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Updater unit tests with an injected fake fetcher and temporary checkouts: git commit recorded, uninitialized submodule reported missing, offline mode never fetches, all-failed update writes nothing, written snapshot parses back. No network access.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
       "source": "crates/cli/src/lib.rs",
-      "sha256": "ed5ef8a2da815e2995eb661737ba59c693145271ca7aee64930c1e456e11ae6c",
+      "sha256": "adcf041f6ec8a5cfe5b9585f9bd8b1621b084010be81dbf40eb5209240fe7377",
       "reviewer": "codex/rust-pages",
       "pages": [
         "docs/reference/install-requirements.md",
-        "docs/reference/cli-config-policy.md"
+        "docs/reference/cli-config-policy.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ],
-      "notes": "Complete7-line root. Plan/release/service always exported, runtime_host feature gated; native-cli browser tooling remains separate."
+      "notes": "Complete7-line root. Plan/release/service always exported, runtime_host feature gated; native-cli browser tooling remains separate. Re-reviewed 2026-11-18: declares the feature-gated ip_intel module."
     },
     {
       "source": "crates/cli/src/main.rs",
-      "sha256": "5b9889403a4d1dce532f97d7dd02ecaaf2b040a9380dec07f23a58a4d7ca4f9b",
+      "sha256": "3d7bc83a2d60dce66df224461525875d05d38098de7819ff79632ab840086423",
       "reviewer": "codex/rust-pages",
       "pages": [
         "docs/reference/install-requirements.md",
-        "docs/reference/cli-config-policy.md"
+        "docs/reference/cli-config-policy.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ],
-      "notes": "Complete70-line dispatcher. Legacy doctor/install/rollback require explicit artifact/destination/digest/locality acknowledgement; service-prefixed commands separate. runtime-host refuses without feature. Doctor/dry branch read-only by intended Plan interface, actual Plan implementation not newly read in this batch."
+      "notes": "Complete70-line dispatcher. Legacy doctor/install/rollback require explicit artifact/destination/digest/locality acknowledgement; service-prefixed commands separate. runtime-host refuses without feature. Doctor/dry branch read-only by intended Plan interface, actual Plan implementation not newly read in this batch. Re-reviewed 2026-11-18: dispatches the feature-gated ip-intel command."
     },
     {
       "source": "crates/cli/src/release.rs",
@@ -2549,22 +2572,24 @@
     },
     {
       "source": "crates/cli/src/service/mod.rs",
-      "sha256": "7edd0fad1c4f3651212b60d7c851e05853edde0471da0c21d7f963cd336ab010",
+      "sha256": "7127bcae3fa6e65bd48f38336af4aa6af11fd8bbf69936844bf52140b57cc641",
       "reviewer": "codex/rust-pages",
       "pages": [
         "docs/reference/install-requirements.md",
-        "docs/reference/cli-config-policy.md"
+        "docs/reference/cli-config-policy.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ],
-      "notes": "Complete366-line service state machine fully read. Explicit activate, exact signed artifact/private root, create-new lock/pending marker; install repeat verifies native state+diagnostic. Upgrade higher than retained floor, stages immutable generation then unregisters old/activates new; ordinary activation/persistence failure attempts prior restore, failures preserve pending. Rollback known predecessor preserves floor; removal verifies owned generations first. No power-loss/crash-atomic recovery, anti-rollback external anchor or actual native qualification. Doctor registration/running/loopback diagnostic not management authorization."
+      "notes": "Complete366-line service state machine fully read. Explicit activate, exact signed artifact/private root, create-new lock/pending marker; install repeat verifies native state+diagnostic. Upgrade higher than retained floor, stages immutable generation then unregisters old/activates new; ordinary activation/persistence failure attempts prior restore, failures preserve pending. Rollback known predecessor preserves floor; removal verifies owned generations first. No power-loss/crash-atomic recovery, anti-rollback external anchor or actual native qualification. Doctor registration/running/loopback diagnostic not management authorization. Re-reviewed 2026-11-18: storage module made crate-visible so the IP reputation updater reuses its private create-new writer."
     },
     {
       "source": "crates/cli/src/service/storage.rs",
-      "sha256": "7d7a5cd4ed0aee527f5052c7ea21925f261232edbd4d3fc4b817eac7cb95cd7e",
+      "sha256": "b017501bfa46ea6762197b543135b1571735b9f4137b8210f6d3f389d89d4cd4",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Managed immutable service generations and fail-closed state (320 lines): each generation is signature-revalidated against the trust key, staged as a create-new Plan plus an exact declarative definition file, verified for service-SID access and (with runtime-service on Windows) runtime activation grants, and removed only after verification; deployment.json is schema/trust-key checked with at most 14 retired generations, unique sequences <= highest and one service name, written via create-new deployment.next+fsync then rename. A pending.json marker or existing service.lock fails closed and requires manual recovery; lock removal on Drop is best effort and there is no directory fsync or general recovery backend.",
+      "notes": "Managed immutable service generations and fail-closed state (320 lines): each generation is signature-revalidated against the trust key, staged as a create-new Plan plus an exact declarative definition file, verified for service-SID access and (with runtime-service on Windows) runtime activation grants, and removed only after verification; deployment.json is schema/trust-key checked with at most 14 retired generations, unique sequences <= highest and one service name, written via create-new deployment.next+fsync then rename. A pending.json marker or existing service.lock fails closed and requires manual recovery; lock removal on Drop is best effort and there is no directory fsync or general recovery backend. Re-reviewed 2026-11-18: write_new made crate-visible for the IP reputation updater's atomic snapshot write; behaviour unchanged.",
       "pages": [
         "docs/reference/install-requirements.md",
-        "docs/reference/cli-config-policy.md"
+        "docs/reference/cli-config-policy.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -6667,13 +6692,14 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/Cargo.toml",
-      "sha256": "0b1157d8c55ada2751c7c9ba2bbb272700bb93c6eb057760d368da2f469674de",
+      "sha256": "d13c22dcb9056938149223c5ac30e4cdcb1f7f76bb700da1415da10a0ab1ee29",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Manifest for the consolidated humanymous-runtime crate (description, readme README.md, publish = [\"crates-io\"] in the first crates.io wave, which performs no upload; autobins/autotests off, default feature gateway): feature-gated contexts gateway, authority, audit, capture, network and native-security plus hosted-pilot and credential-pilot, with pinned optional dependencies such as rustls 0.23.46 (ring, tls12), httlib-hpack 0.1.3, rcgen 0.14.10, interprocess 2.4.7, winsafe/keyring stores on Windows and rustix on Unix; the collector dev-dependency carries a registry version beside its path. It declares five binaries (humanymous-runtime, humanymous-h2-product-binding-measure, humanymous-authority, audit-witness, audit-control-retainer) and named gateway (now also gateway-witness-input, path tests/gateway/witness_input.rs, required feature gateway, beside gateway-deployment-manifests), authority, audit, capture and network parity integration tests. No dependency changed in this revision. The first [[bin]] table also repeats the package description line, which is not a Cargo target field. The manifest itself is not evidence that those binaries or tests ran.",
+      "notes": "Manifest for the consolidated humanymous-runtime crate (description, readme README.md, publish = [\"crates-io\"] in the first crates.io wave, which performs no upload; autobins/autotests off, default feature gateway): feature-gated contexts gateway, authority, audit, capture, network and native-security plus hosted-pilot and credential-pilot, with pinned optional dependencies such as rustls 0.23.46 (ring, tls12), httlib-hpack 0.1.3, rcgen 0.14.10, interprocess 2.4.7, winsafe/keyring stores on Windows and rustix on Unix; the collector dev-dependency carries a registry version beside its path. It declares five binaries (humanymous-runtime, humanymous-h2-product-binding-measure, humanymous-authority, audit-witness, audit-control-retainer) and named gateway (now also gateway-witness-input, path tests/gateway/witness_input.rs, required feature gateway, beside gateway-deployment-manifests), authority, audit, capture and network parity integration tests. No dependency changed in this revision. The first [[bin]] table also repeats the package description line, which is not a Cargo target field. The manifest itself is not evidence that those binaries or tests ran. Re-reviewed 2026-11-18: registers the network_ip_intel integration test (requires the network feature).",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/reference/supported-topologies.md",
-        "docs/standards/draft-v0/validation/implementation-map.md"
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -6717,12 +6743,13 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "359d47a12a5f78da1178fdc1c9a02beba4b7c72e1aafafdcdebdc1ed0bbc7c47",
+      "sha256": "ff082c7d9815b02452c7bd520e62738f6d13fb5d3758c6fbed33a5670bd49552",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 431 / macos 431 / windows 419 (419 common names plus 12 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b (codex/rust plus PR heads #70 and #83): the name lists are the union of all parents' already-reviewed additions, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 431 listed common plus Unix-only names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 431 / macos 431 / windows 419 (419 common names plus 12 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b (codex/rust plus PR heads #70 and #83): the name lists are the union of all parents' already-reviewed additions, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 431 listed common plus Unix-only names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect. Re-reviewed 2026-11-18: four gateway IP reputation tests added to the common set (linux 435, macos 435, windows 423), equal to the --list output.",
       "pages": [
         "docs/reference/production-vs-reference.md",
-        "docs/explanation/how-this-was-built.md"
+        "docs/explanation/how-this-was-built.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -7978,13 +8005,14 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/application.rs",
-      "sha256": "7a8bce5b4da396e62a95b15087cadf9bde800591bfab2be1f3472f21450640c6",
+      "sha256": "5cf86fcbdac2c9502f14d6d73648b7adf1e1f75026c90b99fd9b5627ac1aa8c0",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Single-owner gateway Application that composes sessions, the frozen scoring engine and durable audit. It enforces Host==scope authority and validates browser/native session bootstrap and collect routes, rejecting reserved routes (403), route-inventory or profile mismatch (409), missing required raw_tls/original_h2/collector evidence (422) and failed admission (429); it scores other requests and appends a runtime.decision/collect audit record (request commitment hash, fail_closed) before answering, and audit failure poisons sessions with 503. Re-reviewed 2026-11-18: an origin_* refusal after the committed ALLOW and before any client byte now appends one upstream.error record linked by the ALLOW record's request id and commitment, with route class, revision, latency, a static error class and code but no transport error text; the client still gets the 503 refusal, and a failed append poisons the epoch and answers durable_audit. serve/serve_until are loopback-only, one request per connection with per-connection deadlines, bounded shutdown drain and settings-command handling; the code says this is an experimental loopback pilot, not a production throughput claim.",
+      "notes": "Single-owner gateway Application that composes sessions, the frozen scoring engine and durable audit. It enforces Host==scope authority and validates browser/native session bootstrap and collect routes, rejecting reserved routes (403), route-inventory or profile mismatch (409), missing required raw_tls/original_h2/collector evidence (422) and failed admission (429); it scores other requests and appends a runtime.decision/collect audit record (request commitment hash, fail_closed) before answering, and audit failure poisons sessions with 503. Re-reviewed 2026-11-18: an origin_* refusal after the committed ALLOW and before any client byte now appends one upstream.error record linked by the ALLOW record's request id and commitment, with route class, revision, latency, a static error class and code but no transport error text; the client still gets the 503 refusal, and a failed append poisons the epoch and answers durable_audit. serve/serve_until are loopback-only, one request per connection with per-connection deadlines, bounded shutdown drain and settings-command handling; the code says this is an experimental loopback pilot, not a production throughput claim. Re-reviewed 2026-11-18: optional IntelReader install; when ip_reputation is configured each loopback connection must start with a PROXY v2 header (dropped otherwise) and the recovered client address sets only the frozen is_datacenter_ip observation input. Tor and blocklist never reach the observation.",
       "pages": [
         "docs/reference/gate-origin-contract.md",
         "docs/reference/production-vs-reference.md",
-        "docs/standards/draft-v0/validation/implementation-map.md"
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -8069,13 +8097,14 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/application/tls.rs",
-      "sha256": "c07ff283f37eb9acb34393e3d6a9cf4f8825e561555ccce921ea45d1b922c8ff",
+      "sha256": "ba09f86b6fa7985f238e7999d01310205f502b80789cc13606d28c831da973fa",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Bounded TLS consumers for the Application: serve_tls_until validates the rustls config, accepts loopback peers only with admission and settings handling, and dispatches captured H1 or R14 H2 requests through the same decide_observed authority. It checks client idle or stream liveness before and after the decision and before origin dispatch, then encodes local or origin responses with ACK headers. Re-reviewed 2026-11-18: origin connect, write, read, frame-parse and timeout refusals now go through the Application's upstream.error audit before the refusal is encoded, since no TLS response byte precedes it. The doc comments state there is no plaintext fallback, no early data and no native streaming inference.",
+      "notes": "Bounded TLS consumers for the Application: serve_tls_until validates the rustls config, accepts loopback peers only with admission and settings handling, and dispatches captured H1 or R14 H2 requests through the same decide_observed authority. It checks client idle or stream liveness before and after the decision and before origin dispatch, then encodes local or origin responses with ACK headers. Re-reviewed 2026-11-18: origin connect, write, read, frame-parse and timeout refusals now go through the Application's upstream.error audit before the refusal is encoded, since no TLS response byte precedes it. The doc comments state there is no plaintext fallback, no early data and no native streaming inference. Re-reviewed 2026-11-18: the same PROXY v2 client-address recovery runs before TLS capture when ip_reputation is configured.",
       "pages": [
         "docs/how-to/https-tls-certificates.md",
         "docs/reference/gate-origin-contract.md",
-        "docs/standards/draft-v0/validation/implementation-map.md"
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -8128,12 +8157,13 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
-      "sha256": "5d5adb1fe30511db1a2330cdde10eaa1cbd2f23f3221f3bec7f99c31acccc9d9",
+      "sha256": "9cc6926818c192385187df8d51f6ec0c7737489cf2c599829ffa499b12b43c06",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Private inherited gateway configuration (deny_unknown_fields, no Debug). It re-exports Audit, SealedKeys, WitnessInput, WitnessInputDurability and MAX_WITNESS_PROOF. validate() fails closed with 503 unless listen and origin are distinct loopback addresses with a nonzero origin port, operational settings are valid, there are 1-4096 routes, the audit witness input (when present) is structurally valid, scope identities and authority are well formed, the browser origin equals http://<authority>, and every route has an allowed method, a strict target, no reserved path, rit required and no duplicates. BrowserAuthOnly routes need a browser policy and cannot use NativeStream. readiness() reports profile experimental-loopback-http1 with raw_tls, original_h2, browser collector, administration and product_qualified all false.",
+      "notes": "Private inherited gateway configuration (deny_unknown_fields, no Debug). It re-exports Audit, SealedKeys, WitnessInput, WitnessInputDurability and MAX_WITNESS_PROOF. validate() fails closed with 503 unless listen and origin are distinct loopback addresses with a nonzero origin port, operational settings are valid, there are 1-4096 routes, the audit witness input (when present) is structurally valid, scope identities and authority are well formed, the browser origin equals http://<authority>, and every route has an allowed method, a strict target, no reserved path, rit required and no duplicates. BrowserAuthOnly routes need a browser policy and cannot use NativeStream. readiness() reports profile experimental-loopback-http1 with raw_tls, original_h2, browser collector, administration and product_qualified all false. Re-reviewed 2026-11-18: optional ip_reputation object validated and summarized in readiness (scoring versus shadow categories).",
       "pages": [
         "docs/reference/cli-config-policy.md",
-        "docs/reference/gate-origin-contract.md"
+        "docs/reference/gate-origin-contract.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -8144,6 +8174,15 @@
       "pages": [
         "docs/how-to/key-management.md",
         "docs/how-to/verify-audit-log.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/configuration/ip_reputation.rs",
+      "sha256": "de990d8755482e906d2287c4691289d6490bc36fe8e29c33803a5cd61d72823c",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Optional ip_reputation gateway configuration (snapshot path, client_address proxy_v2, max_age_s default 7 days, expire_after_s default 30 days, categories) with deny_unknown_fields and bounded validation; maps to the store policy and a readiness summary that separates scoring (datacenter only) from shadow categories.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -8461,12 +8500,13 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/management/mod.rs",
-      "sha256": "4fc7875cbf1c7eea6cbfd45efdd827c4048998afceb5c21c3ad609f779bb7e8d",
+      "sha256": "ba9ec5249e7e5c71097d9c5aa1bc661abe084bb5e62d504d86d55b996b142c4f",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Separate native management listener over a private IPC endpoint bound to an authenticated native peer, limited to 8 connections, 20 per second and 1 s timeouts, with a drain budget from the stop policy. It serves an observer role, gated by exact peer, observer credential and exact scope body, at POST /management/v0.1/status and /settings. Status returns the profile snapshot with destructive_controls=false; settings returns the operational settings and revision. The settings/commit route is delegated to the optional operator. Application and browser credentials never enter.",
+      "notes": "Separate native management listener over a private IPC endpoint bound to an authenticated native peer, limited to 8 connections, 20 per second and 1 s timeouts, with a drain budget from the stop policy. It serves an observer role, gated by exact peer, observer credential and exact scope body, at POST /management/v0.1/status and /settings. Status returns the profile snapshot with destructive_controls=false; settings returns the operational settings and revision. The settings/commit route is delegated to the optional operator. Application and browser credentials never enter. Re-reviewed 2026-11-18: observer route POST /management/v0.1/ip-reputation returns the store status (freshness, sources, reload errors, counters, shadow hits; no client addresses) under the existing authentication and scope checks.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
-        "docs/reference/rbac-separation-of-duties.md"
+        "docs/reference/rbac-separation-of-duties.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -8481,22 +8521,24 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/management/policy.rs",
-      "sha256": "e31edc95f50ec70922fcdca2d6081346633e75ed9b9949cacf0c6bbd358576b2",
+      "sha256": "314804add5fa46230b90611be7bfa07558de8ba6be96f7d8c0a2ec4a16b89b5d",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Management policy types and request validation. ManagementPolicy holds the trusted endpoint, peer, stop budget and observer credential; ManagementScope is the exact installation/tenant/origin/revision/authority binding. Observer requests must be POST to status or settings with an exact scope body. Header checks refuse duplicates, Cookie, Origin, Referer, sec-*, proxy-* and x-humanymous-* fields, and require Host humanymous.management.local, Content-Type application/json and a body of at most 8 KiB.",
+      "notes": "Management policy types and request validation. ManagementPolicy holds the trusted endpoint, peer, stop budget and observer credential; ManagementScope is the exact installation/tenant/origin/revision/authority binding. Observer requests must be POST to status or settings with an exact scope body. Header checks refuse duplicates, Cookie, Origin, Referer, sec-*, proxy-* and x-humanymous-* fields, and require Host humanymous.management.local, Content-Type application/json and a body of at most 8 KiB. Re-reviewed 2026-11-18: the ip-reputation route is an observer-scope read.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
-        "docs/reference/rbac-separation-of-duties.md"
+        "docs/reference/rbac-separation-of-duties.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs",
-      "sha256": "8fcaeeeba71ab346493d0d5fcfaab8b6e781c96601ad0f78e09b9b3e21f471be",
+      "sha256": "3d8565df2f59047a223e1496404a43a54bcacb50404b535a878cf1e085652069",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Unit tests for the native management Handler: observer requests need the exact native peer, the separate management Bearer credential and exact scope body; Origin, Cookie, Referer, Sec-Fetch-Site, session and proxy headers, non-status targets, query strings and duplicate Host are refused; the settings view is observer-only for POST and refuses PATCH/PUT/DELETE; operator commits require a distinct operator credential, native peer, no browser headers, matching scope and valid settings (status 401/403/400 paths).",
+      "notes": "Unit tests for the native management Handler: observer requests need the exact native peer, the separate management Bearer credential and exact scope body; Origin, Cookie, Referer, Sec-Fetch-Site, session and proxy headers, non-status targets, query strings and duplicate Host are refused; the settings view is observer-only for POST and refuses PATCH/PUT/DELETE; operator commits require a distinct operator credential, native peer, no browser headers, matching scope and valid settings (status 401/403/400 paths). Re-reviewed 2026-11-18: management tests updated for the store parameter and the ip-reputation observer route.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
-        "docs/reference/rbac-separation-of-duties.md"
+        "docs/reference/rbac-separation-of-duties.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -8591,12 +8633,13 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/service.rs",
-      "sha256": "6e539e3e1d2138fba1f4ef325b2dc0332c0c6c7d278507bd11630364b148dc4d",
+      "sha256": "7c311d7cb57f085f4d86d30a29501da817d4e349bb78802e8c8da346f375efdd",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "OS-independent ServiceHost lifecycle: read_configuration (64 KiB budget, validated), and bind variants for plain, witness, management, witnessed recovery, settings, TLS and resource operator. bind_inner validates config and TLS, requires management plus witnessed settings for an operator, opens or recovers sealed audit (never recovery without a witness), restores settings, binds the listener and builds the readiness profile. run/run_report serve application and management, then flush audit, and report drain or flush failure rather than Stopped. Blocking I/O needs an external supervisor deadline.",
+      "notes": "OS-independent ServiceHost lifecycle: read_configuration (64 KiB budget, validated), and bind variants for plain, witness, management, witnessed recovery, settings, TLS and resource operator. bind_inner validates config and TLS, requires management plus witnessed settings for an operator, opens or recovers sealed audit (never recovery without a witness), restores settings, binds the listener and builds the readiness profile. run/run_report serve application and management, then flush audit, and report drain or flush failure rather than Stopped. Blocking I/O needs an external supervisor deadline. Re-reviewed 2026-11-18: opens the IP reputation store at bind (never fails startup), reports it in readiness, installs it in the application and management handler, and runs a 60 s change-detected reload on the blocking pool.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
-        "docs/standards/draft-v0/validation/implementation-map.md"
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -8685,12 +8728,13 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/service/readiness.rs",
-      "sha256": "fcf3394303ba80c140b2a4d603125a849c650036bd99ad12e00f8802788182d1",
+      "sha256": "b74df816036273739fc29703db822a76b8f7a9e012fa3e253986518ca6c5c27e",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Builds the readiness profile manifest: standalone_profile for the inherited-pipe executable and profile() adding external-witness flags (independence always false), startup recovery, administration flags and operational revision; tls_h1 marks the experimental-loopback-tls-h1 profile with raw_tls and per-route ready only when original H2 and collector are not required. One test asserts honest defaults and product_qualified false. Expected configuration, not runtime attestation.",
+      "notes": "Builds the readiness profile manifest: standalone_profile for the inherited-pipe executable and profile() adding external-witness flags (independence always false), startup recovery, administration flags and operational revision; tls_h1 marks the experimental-loopback-tls-h1 profile with raw_tls and per-route ready only when original H2 and collector are not required. One test asserts honest defaults and product_qualified false. Expected configuration, not runtime attestation. Re-reviewed 2026-11-18: startup readiness records the IP reputation state, whether datacenter scoring is active and the last reload error.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
-        "docs/standards/draft-v0/validation/implementation-map.md"
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -8875,12 +8919,13 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/tests.rs",
-      "sha256": "4b16b07267bc8a4290511be1de70fdee8b110ab565326a8aac86caafe462110e",
+      "sha256": "4c6309ff32ece666ea7e827c55ee2db7c63b28afcb0d09ad41ae93f8b8a097f5",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway unit and loopback TCP tests with fixture controls (not browser e2e): streaming requires a native profile, required external witness and recovery refusals, honest readiness, session capacity/expiry/rollback, RIT binding against 12 method/target/body/scope/deadline/header mutations, replay and cross-session collect refusal, missing client giving CHALLENGE and missing planes 422, fresh collector provenance gating, minimized audit with permanent poison, deadline and rollback never releasing origin, server-plane signal refusal with registry scores, and real TCP checks that audit precedes origin and client abort never dispatches origin. Re-reviewed 2026-11-18: the shared Audit fixture gains a fail_upstream switch that fails only upstream.error appends; no test here changed.",
+      "notes": "Gateway unit and loopback TCP tests with fixture controls (not browser e2e): streaming requires a native profile, required external witness and recovery refusals, honest readiness, session capacity/expiry/rollback, RIT binding against 12 method/target/body/scope/deadline/header mutations, replay and cross-session collect refusal, missing client giving CHALLENGE and missing planes 422, fresh collector provenance gating, minimized audit with permanent poison, deadline and rollback never releasing origin, server-plane signal refusal with registry scores, and real TCP checks that audit precedes origin and client abort never dispatches origin. Re-reviewed 2026-11-18: the shared Audit fixture gains a fail_upstream switch that fails only upstream.error appends; no test here changed. Re-reviewed 2026-11-18: registers the ip_reputation gateway test module.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
-        "docs/reference/gate-origin-contract.md"
+        "docs/reference/gate-origin-contract.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -8909,6 +8954,15 @@
       "notes": "Owned bounded TCP harness for the browser contract tests: loads tests/fixtures/gateway/collector-pilot.json, configures scope, browser origin and two browser auth-only routes, serves the Application on loopback, bootstraps the shared client, completes or refuses responses by ACK/counter headers, and on finish sends a 100 ms shutdown, joins within 4 s and asserts no origin connection occurred.",
       "pages": [
         "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/tests/ip_reputation.rs",
+      "sha256": "40686f5ec489ae1424c46563d386b7b22004a9d0791af1176137d572ca819538",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Gateway tests: a datacenter classification yields CHALLENGE with triggered rule HR-11 while tor-exit and blocklist classifications leave the verdict unchanged; configuration is optional and reported in readiness; a PROXY v2 header source reaches the reader and a connection without the header is dropped.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -9491,22 +9545,267 @@
       ]
     },
     {
-      "source": "crates/sdk/humanymous-runtime/src/network/mod.rs",
-      "sha256": "bec828813ede036623cb58dc6f57fa224cb10de5b326755c600f9a7210e2cf15",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Network context root listing order-preserving protocol observation modules captured before HTTP normalization: correlation, history, http, http2, ingress, proxy, report, residual, tcp, tls and traffic. No logic of its own.",
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/mod.rs",
+      "sha256": "25d085b6991bee39cd68998f2126fb36b46f12ac09984d0ab7b2a21bc15ab2e1",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "IP intelligence facade: IntelCategory (datacenter, tor_exit, blocklist) where only datacenter feeds scoring, Classification, the IntelReader contract the serving path consumes, strict client-address parsing and the rule that loopback, private, link-local and unspecified addresses are never classified.",
       "pages": [
-        "docs/reference/supported-topologies.md"
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/prefix_set/mod.rs",
+      "sha256": "35c45170152e58d3be5e344b0b0a16106965626c7374ce0df770cd740c572380",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Pure IPv4/IPv6 prefix parser and set: canonical and masked parsing, host-bit refusal, merged inclusive ranges with binary-search lookup, IPv4-mapped IPv6 looked up as IPv4. Shared by the PROXY v2 allowlist.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/prefix_set/tests.rs",
+      "sha256": "f21b45c534f7e3fb19609e9b5c7f3279478fa09697015502d2020963d29c2857",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Prefix-set tests covering v4 and v6 boundaries (/0, /32, /128, first and last addresses, adjacency merging), host-bit and syntax refusal, and mapped-address lookup.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/shadow/mod.rs",
+      "sha256": "9e0d51a78b9a03d46afdadbc92b5f1cd0f82499bd810ab84d392870d71b0dc30",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Process-lifetime shadow counters for tor-exit and blocklist hits; aggregate only, no per-client keys, never consulted by scoring.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/shadow/tests.rs",
+      "sha256": "c3342fd8dedd0ac67fc025cfe4aa7da3f8638461c660674015cb6b2bf2c70c47",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Shadow counter tests: each category and the overlap are counted independently and clean classifications count nothing.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/snapshot/mod.rs",
+      "sha256": "459110932c26454e1e6130b3e47306f66f3b6704b8a83c0e63bcbb15533a57db",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Versioned snapshot format humanymous-ip-intel/1: per-source provenance (git commit, http url and fetched_at, file read_at), status and canonical prefixes; parse and encode share one validation with size, count, text, commit and timestamp bounds and static refusal codes.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/snapshot/tests.rs",
+      "sha256": "514b43be5ea2063ed37dff15f3cf4426afcd4104e5ce33bc2508c4382c54d717",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Snapshot tests: round trip, unknown fields, format, bounds, duplicate names, status/prefix agreement, commit and future-timestamp refusal.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/aws_json/mod.rs",
+      "sha256": "8121b706c99a5d989f20fbecd26e1c217cac70652bde42bd5d7c9a45c0a7e544",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Parser for the AWS ip-ranges.json document (prefixes and ipv6_prefixes).",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/aws_json/tests.rs",
+      "sha256": "bffa3bbe34c0412035f259b67dee37b0015826bfc51b32713d8cf334344adb48",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "AWS format parser tests on synthetic documentation ranges, including malformed prefix refusal.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/azure_tags/mod.rs",
+      "sha256": "2c87686d4614a591c438f8c903e50f44fdd1047c63d6bbb9d65d58dfbb3ac36c",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Parser for the Azure Service Tags public JSON document (values[].properties.addressPrefixes).",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/azure_tags/tests.rs",
+      "sha256": "218a81dc111f6d9e3c33b8e7f99067af25285c991db6892c9df594c02d6b027b",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Azure Service Tags parser tests on synthetic documentation ranges, including malformed input refusal.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/gcp_json/mod.rs",
+      "sha256": "b7381c8f5794496d651802d5878f86743e926b7891ef3fd1d973d476c6dfca6f",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Parser for the Google Cloud cloud.json document (ipv4Prefix and ipv6Prefix entries).",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/gcp_json/tests.rs",
+      "sha256": "82bfbb1f513ce0b96a905d32753913c7501b48423f7bd487a2319ab4aa87db73",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "GCP format parser tests on synthetic documentation ranges, including entries without a prefix.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/geofeed/mod.rs",
+      "sha256": "89bb6839232ca301667f8876bcd6398834b6df1dcbdad82da956083dd4cf7a13",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Parser for RFC 8805 geofeed CSV (first column prefix, comments skipped) used by DigitalOcean and Linode.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/geofeed/tests.rs",
+      "sha256": "22f617d6b4a64ffdf8d374d4907c1fee8b79a0eaa8ee54fb8436c11d94af3dc0",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Geofeed parser tests: comments, blank lines, masked prefixes and line-numbered refusal.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/mod.rs",
+      "sha256": "d80448bc53cf3d261b46c4e5077af95125382bac96cbb42d8f066f3ccdfc851e",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Format-grouped source parsers with shared prefix and JSON document helpers; each parser returns prefixes or a static source error.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/netset/mod.rs",
+      "sha256": "4884a3ac3427291c1048862747b7041b9b3fee90e1f331778085f93a6ef9b7dc",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Parser for one-prefix-or-address-per-line netset/text lists (FireHOL, X4BNet, Tor bulk exit list).",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/netset/tests.rs",
+      "sha256": "2888ea2578e2883a9117999856c9a23585a5f4ef25f73110555f250ba691ae03",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Netset parser tests: comments, bare addresses as host prefixes, and line-numbered refusal.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/oracle_json/mod.rs",
+      "sha256": "e5764981412503431f201bf03146a1ed4d6e64bdfe8063c5c22c345dcd689e45",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Parser for the Oracle Cloud public_ip_ranges.json document (regions[].cidrs[].cidr).",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/oracle_json/tests.rs",
+      "sha256": "5719674ee9b66eaf05a0a583022c90f472457ccfee8a7213eff19543b54cda00",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Oracle format parser tests on synthetic documentation ranges.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/spamhaus_jsonl/mod.rs",
+      "sha256": "bec957ef9498d72ad1583d6dcb3f8c78d8d38e9163fcc20eb8440d58c238dfdb",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Parser for Spamhaus DROP JSON-lines (cidr records; the trailing metadata record is skipped).",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/spamhaus_jsonl/tests.rs",
+      "sha256": "a0d3fd71944f6b3b0cef8c2de655a1294b24feca5c00c4fb3206e5159ed50811",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Spamhaus DROP parser tests: metadata line skipped, malformed line refused with its number.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/mod.rs",
+      "sha256": "1386c7aca62e781f7fd2a835c4cd877c69e1d409ff42fead0c8e14f23089ee15",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Const source registry as data (ten public sources with category, licence note, format and origin: pinned git submodule, HTTPS endpoint or operator-supplied URL) and normalize(format, bytes) with byte and prefix bounds, sorting, de-duplication and empty-list refusal.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/tests.rs",
+      "sha256": "10fe3f987a815da4ff337dcf57b64f1cc14255f74c626816c34954a9ddf97cff",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Registry tests: unique valid names, every category covered, submodule paths only for git sources under third_party/ip-intel, https-only URLs; normalize sorting, masking and bound refusals.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/store/mod.rs",
+      "sha256": "a53c0f1ed38a3f929e511a9e682d00ef18438e5fb9696ddd282e0e6cad1c6be1",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Snapshot store I/O boundary: bounded file load, RwLock Arc swap that keeps the previous snapshot on a refused reload, freshness (missing, fresh, stale, expired) from an injected clock, change-detected reload, and an operator status with sources, reload errors, lookup counters and shadow hits but no client addresses.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/store/tests.rs",
+      "sha256": "818252092a53ed2d60bb20a3aaea4f0dcf2000ee23b3d9130f409f39d9f67434",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Store tests: classification per category, missing feed visible and denies nobody, stale still classifies and expires, malformed reloads refused without state change, change-only swap, disabled categories not loaded.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/tests.rs",
+      "sha256": "d9f87bb837d0da71c9c2af0ba28c3eea6c0eb4dcb17aa819d39c105f8a2aec7a",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Facade tests: only datacenter feeds scoring, strict client-address parsing, non-public addresses never classifiable.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/mod.rs",
+      "sha256": "dace79ff6e8a8eb0efc0901c96c122e9a64211cb5c50cbcadf749b0f6e27fabc",
+      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
+      "notes": "Network context root listing order-preserving protocol observation modules captured before HTTP normalization: correlation, history, http, http2, ingress, proxy, report, residual, tcp, tls and traffic. No logic of its own. Re-reviewed 2026-11-18: declares the intel module.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/network/proxy/mod.rs",
-      "sha256": "dc0c08f967bc69464fc3d1948e46d7d469b1b2b1194fac5f34557aefeaa587ca",
+      "sha256": "96ce8d850dfb0632cd784eea815226f34dcf8c3b69aba88bd002f8bffe06b6b6",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "PROXY protocol v2 peer recovery behind a trusted-balancer allowlist (shipping-plan row B26): Cidr parses canonical prefixes and refuses anything broader than /8, Allowlist must be 1..256 entries, read_header reads exactly one v2 header (LOCAL keeps the socket peer, TCP4/TCP6 yield the declared source, other families are Unspecified) and leaves following bytes on the stream, and resolve never reads bytes from an untrusted peer. It does not create TLS or original-client provenance and ignores HTTP forwarding headers. Reader page coverage is indirect.",
+      "notes": "PROXY protocol v2 peer recovery behind a trusted-balancer allowlist (shipping-plan row B26): Cidr parses canonical prefixes and refuses anything broader than /8, Allowlist must be 1..256 entries, read_header reads exactly one v2 header (LOCAL keeps the socket peer, TCP4/TCP6 yield the declared source, other families are Unspecified) and leaves following bytes on the stream, and resolve never reads bytes from an untrusted peer. It does not create TLS or original-client provenance and ignores HTTP forwarding headers. Reader page coverage is indirect. Re-reviewed 2026-11-18: Cidr now wraps the shared intel Prefix parser instead of a local mask; refusal codes, the /8 breadth floor and containment behaviour are unchanged.",
       "pages": [
         "docs/reference/supported-topologies.md",
-        "docs/concepts/how-gate-sees-a-request.md"
+        "docs/concepts/how-gate-sees-a-request.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -9896,6 +10195,69 @@
       ]
     },
     {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/aws-ip-ranges.json",
+      "sha256": "f47f04fd5172d50e5167bc0180072584b984e9f24eaeef93d967c5c5ded4ffbf",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tiny synthetic AWS-format fixture using only documentation ranges (192.0.2.0/24, 2001:db8::/32); no vendored list data.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/azure-service-tags.json",
+      "sha256": "3b2871f271bcb4b1c3c744a87e85ad5b67fdb90517161680fec20acce48ea5e8",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tiny synthetic Azure Service Tags fixture using only documentation ranges; no vendored list data.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/gcp-cloud.json",
+      "sha256": "c44c422a375d0f6877d2336ca9b1f0458aefff7c6ff13587db420f54bfbecd83",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tiny synthetic GCP-format fixture using only documentation ranges; no vendored list data.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/geofeed.csv",
+      "sha256": "26405ad9e2a95223ebfea339ba11f950ba2be703002c1fc72d8e5a04a1a85cc8",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tiny synthetic RFC 8805 geofeed fixture using only documentation ranges; no vendored list data.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/netset.txt",
+      "sha256": "3c78e2aca6742419c0e5120620567d181c7e80074c60841a419b651ed666c42d",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tiny synthetic netset fixture using only documentation ranges; no vendored list data.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/oracle-cloud.json",
+      "sha256": "0898d1f9a973e737ee912d0966ae9afdca94bdaefab0d1dd69370718df6abbab",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tiny synthetic Oracle-format fixture using only documentation ranges; no vendored list data.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/spamhaus-drop.jsonl",
+      "sha256": "86c3a7e1ca70680cdfb1bb5e17563eedbf19d7921a666301dcd2d95da10801e6",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tiny synthetic Spamhaus DROP JSON-lines fixture using only documentation ranges; no vendored list data.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
       "source": "crates/sdk/humanymous-runtime/tests/fixtures/network/h2.json",
       "sha256": "5d2958a8dc33a81283d75cb67116e6e9762bfbc928db0a4ce820bc572836a866",
       "reviewer": "codex/rust-pages",
@@ -9978,6 +10340,15 @@
       "pages": [
         "docs/concepts/how-gate-sees-a-request.md",
         "docs/explanation/detection-engine-internals.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/network/ip_intel.rs",
+      "sha256": "e586f5310f5ffc16f724c20031d64b49aac0b69e7937b8fba3bc8b7616a62c30",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Integration test: .gitmodules entries under third_party/ip-intel equal the registry git sources exactly; every format normalizes its synthetic fixture; a snapshot datacenter classification sets only the frozen l5.ip.datacenter_asn input while tor-exit and blocklist leave signals and verdict unchanged.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {

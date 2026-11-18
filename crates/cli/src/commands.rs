@@ -28,6 +28,86 @@ pub(super) fn runtime_host(arguments: Vec<String>) -> Result<()> {
     Ok(())
 }
 
+/// `humanymous ip-intel update|sources|inspect`: composition only; see
+/// `humanymous_cli::ip_intel` and `sot:root/ip-reputation`.
+#[cfg(feature = "ip-intel")]
+pub(super) fn ip_intel(arguments: Vec<String>) -> Result<()> {
+    use humanymous_cli::ip_intel::{self, HttpFetch};
+    let mut arguments = arguments.into_iter();
+    let now_s = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map_err(|_| "clock unavailable")?
+        .as_secs();
+    match arguments.next().as_deref() {
+        Some("sources") if arguments.next().is_none() => {
+            println!("{}", serde_json::to_string_pretty(&ip_intel::registry())?);
+            Ok(())
+        }
+        Some("inspect") => {
+            let path = arguments.next().ok_or("inspect PATH required")?;
+            if arguments.next().is_some() {
+                return Err("inspect takes exactly one PATH".into());
+            }
+            println!("{}", ip_intel::inspect(Path::new(&path), now_s)?);
+            Ok(())
+        }
+        Some("update") => {
+            let plan = update_plan(arguments)?;
+            let report = ip_intel::update(&plan, &HttpFetch::default(), now_s)?;
+            println!("{}", serde_json::to_string(&report)?);
+            if report.partial {
+                return Err("snapshot written but incomplete: see missing/invalid sources".into());
+            }
+            Ok(())
+        }
+        _ => Err("usage: humanymous ip-intel update --output PATH [--repository DIR] [--source NAME]... [--input NAME=PATH]... [--url NAME=URL]... [--offline] | sources | inspect PATH".into()),
+    }
+}
+
+#[cfg(feature = "ip-intel")]
+fn update_plan(
+    mut arguments: impl Iterator<Item = String>,
+) -> Result<humanymous_cli::ip_intel::UpdatePlan> {
+    let mut plan = humanymous_cli::ip_intel::UpdatePlan {
+        repository: ".".into(),
+        ..Default::default()
+    };
+    let (mut output, mut repository, mut offline) = (None, None, false);
+    while let Some(flag) = arguments.next() {
+        let mut value = || {
+            arguments
+                .next()
+                .filter(|v| !v.starts_with("--"))
+                .ok_or(format!("{flag} value required"))
+        };
+        match flag.as_str() {
+            "--output" if output.is_none() => output = Some(value()?),
+            "--repository" if repository.is_none() => repository = Some(value()?),
+            "--offline" if !offline => offline = true,
+            "--source" => plan.sources.push(value()?),
+            "--input" | "--url" => {
+                let pair = value()?;
+                let (name, value) = pair.split_once('=').ok_or("expected NAME=VALUE")?;
+                let duplicate = if flag == "--input" {
+                    plan.inputs.insert(name.into(), value.into()).is_some()
+                } else {
+                    plan.urls.insert(name.into(), value.into()).is_some()
+                };
+                if duplicate {
+                    return Err(format!("duplicate {flag} for {name}").into());
+                }
+            }
+            _ => return Err(format!("unsupported or duplicate ip-intel option: {flag}").into()),
+        }
+    }
+    plan.output = output.ok_or("--output required")?.into();
+    if let Some(repository) = repository {
+        plan.repository = repository.into();
+    }
+    plan.offline = offline;
+    Ok(plan)
+}
+
 fn options(arguments: Vec<String>) -> Result<(BTreeMap<String, String>, bool, bool)> {
     let mut values = BTreeMap::new();
     let (mut activate, mut dry) = (false, false);
@@ -143,5 +223,37 @@ mod tests {
             assert!(options(args.into_iter().map(String::from).collect()).is_err());
         }
         assert!(options(vec!["--dry-run".into()]).unwrap().2);
+    }
+    #[cfg(feature = "ip-intel")]
+    #[test]
+    fn strict_ip_intel_update_arguments() {
+        let parse = |args: &[&str]| update_plan(args.iter().map(|a| (*a).to_owned()));
+        let plan = parse(&[
+            "--output",
+            "o.json",
+            "--source",
+            "aws-ip-ranges",
+            "--input",
+            "gcp-cloud=g.json",
+            "--url",
+            "azure-service-tags=https://example.test/a.json",
+            "--offline",
+        ])
+        .unwrap();
+        assert_eq!(plan.output, std::path::PathBuf::from("o.json"));
+        assert_eq!(plan.repository, std::path::PathBuf::from("."));
+        assert!(plan.offline && plan.sources == ["aws-ip-ranges"]);
+        for bad in [
+            &[][..],
+            &["--output"],
+            &["--output", "--offline"],
+            &["--output", "a", "--output", "b"],
+            &["--output", "a", "--input", "noequals"],
+            &["--output", "a", "--url", "x=1", "--url", "x=2"],
+            &["--output", "a", "--unknown"],
+            &["--output", "a", "--offline", "--offline"],
+        ] {
+            assert!(parse(bad).is_err(), "{bad:?}");
+        }
     }
 }

@@ -53,6 +53,13 @@ impl Application {
             }
             let budget = Duration::from_millis(self.config.timeout_ms);
             let until = Instant::now() + budget;
+            let mut stream = stream;
+            self.client = None;
+            match transport_client(self.client_source(), &mut stream, until).await {
+                Ok(client) => self.client = client,
+                // The trusted edge contract was violated; drop this connection only.
+                Err(_) => continue,
+            }
             let connection_shutdown = shutdown.clone();
             let pending = timeout_at(until, async {
                 let captured =

@@ -1,0 +1,257 @@
+---
+id: sot:root/ip-reputation
+title: Operator IP reputation feed
+status: draft
+created: 2026-11-18T13:30:00Z
+updated: 2026-11-18T13:30:00Z
+verify: cargo test --locked -p humanymous-runtime --all-features network::intel && cargo test --locked -p humanymous-runtime --all-features --test network_ip_intel && cargo test --locked -p humanymous-cli --features ip-intel ip_intel
+rel:
+  governs: [crates/sdk/humanymous-runtime/src/network/intel/**, crates/sdk/humanymous-runtime/src/gateway/configuration/ip_reputation.rs, crates/sdk/humanymous-runtime/tests/network/ip_intel.rs, crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/**, crates/cli/src/ip_intel/**, third_party/ip-intel/**]
+  depends_on: [sot:root/rust-migration, sot:root/runtime-application, sot:root/cli-installation]
+---
+
+# Operator IP reputation feed
+
+Document version 0.1.0.
+
+## Decision
+
+Owner decision, 2026-11-18: datacenter IPs must get CHALLENGE. The product
+exists to raise the cost of automation, and datacenters host or prepare most of
+it.
+
+The frozen engine already does this. `l5.ip.datacenter_asn` fires hard rule
+HR-11 (CHALLENGE). Until this SoT, the serving path never set the
+`is_datacenter_ip` observation input, so HR-11 could not fire in production.
+The Go oracle's `SetDatacenterCIDRs` was only called from tests and failed open
+on an empty list.
+
+This SoT populates that **existing** input from public data. It adds no signal,
+weight, threshold, hard-rule predicate, verdict band or signal ID. The detection
+freeze is unchanged.
+
+## Categories
+
+| Category | Effect | Signal |
+|---|---|---|
+| `datacenter` | Sets `is_datacenter_ip` | Existing `l5.ip.datacenter_asn` (HR-11) |
+| `tor_exit` | **Shadow-only**: counted, shown to operators | None |
+| `blocklist` | **Shadow-only**: counted, shown to operators | None |
+
+- The serving path never sets `is_tor_exit` or `is_proxy` from this feed, even
+  though the frozen report has inputs for them. Doing so would change verdicts
+  outside the owner decision.
+- `IntelCategory::feeds_scoring` is true only for `datacenter`. It is code, not
+  configuration: an operator cannot promote a category by editing a file.
+
+### Owner item: promotion
+
+Promoting `tor_exit` or `blocklist` into scoring needs a separate owner
+decision. That decision must cover false-positive measurement on shadow counts,
+accessibility review, and the blocked-user help path. Until then both stay
+shadow-only.
+
+## Sources
+
+Only free, public sources. None needs a paid service or an owner-owned account.
+Two acquisition paths exist.
+
+- **Pinned git submodule.** The source lives in an external git repository.
+  - It is a submodule under `third_party/ip-intel/<registry name>`, pinned by
+    commit (a gitlink). `shallow = true` is set in `.gitmodules`.
+  - The gitlink SHA is the source of truth for which data version is used.
+  - Updating data means a reviewed PR that moves the gitlink. That PR's diff
+    shows the old and new SHA.
+  - The updater reads the checkout. It records the checked-out commit in the
+    snapshot.
+  - No list data is copied into this repository.
+- **Operator fetch.** The source is only an HTTP endpoint.
+  - The updater fetches it at update time over HTTPS.
+  - It records the URL and `fetched_at` in the snapshot.
+  - Nothing is vendored.
+
+A test asserts that the `.gitmodules` entries under `third_party/ip-intel/` are
+exactly the registry's git sources: same set, same paths, same URLs.
+
+| Registry name | Category | Path | Terms (checked 2026-11-18) |
+|---|---|---|---|
+| `aws-ip-ranges` | datacenter | HTTP `ip-ranges.amazonaws.com/ip-ranges.json` | Public AWS endpoint; no redistribution grant. Operator fetch. |
+| `gcp-cloud` | datacenter | HTTP `www.gstatic.com/ipranges/cloud.json` | Public Google endpoint; no redistribution grant. Operator fetch. |
+| `azure-service-tags` | datacenter | Rotating Download Center URL | Microsoft Download Center terms. The operator passes the current URL from the discovery page (`--url`). |
+| `oracle-cloud` | datacenter | HTTP `docs.oracle.com/.../public_ip_ranges.json` | Public Oracle endpoint. Operator fetch. |
+| `digitalocean-geofeed` | datacenter | HTTP `digitalocean.com/geo/google.csv` (RFC 8805) | Self-published geofeed. Operator fetch. |
+| `linode-geofeed` | datacenter | HTTP `geoip.linode.com` (RFC 8805) | Self-published geofeed. Operator fetch. |
+| `x4bnet-datacenter` | datacenter | Submodule `X4BNet/lists_vpn` at `c60005a45e8b93dbdaa5d5d750de81a76a9d6a0f`, `output/datacenter/ipv{4,6}.txt` | MIT for the generated lists. The upstream IPLocate ASN data is CC BY-SA 4.0: attribute it, and share alike if the snapshot is redistributed. |
+| `tor-bulk-exit` | tor_exit | HTTP `check.torproject.org/torbulkexitlist` | Tor Project public list. Operator fetch. |
+| `spamhaus-drop` | blocklist | HTTP `www.spamhaus.org/drop/drop_v{4,6}.json` | Spamhaus DROP terms: free of charge; no IP licence; no use of the Spamhaus name in marketing; revocable. Operator fetch only. |
+| `firehol-level1` | blocklist | Submodule `firehol/blocklist-ipsets` at `0df25fdb2d7184ff3da4f7db086f4cb39ba415fa`, `firehol_level1.netset` | No repository licence. Each list keeps its upstream terms (it includes DShield, Feodo, fullbogons and Spamhaus DROP). The gitlink is a pointer, not a copy. See the owner item below. |
+
+### Considered and not included
+
+- `jhassine/server-ip-addresses`: the repository has no licence. It also only
+  re-publishes AWS, Azure, GCP and Cloudflare, which are already covered.
+- `client9/ipcat`: MIT, but last updated 2023-02, so too stale.
+- Hetzner and OVH: neither publishes a machine-readable range list. Their ASNs
+  are covered through the X4BNet ASN-derived list.
+
+### Owner items: licences
+
+- **FireHOL level1 for commercial operators.** FireHOL level1 includes DShield
+  data, whose terms are non-commercial. The source is shadow-only and is only
+  read locally. Still, commercial operators should review the upstream terms,
+  or skip the source (`--source` selects sources).
+- **Spamhaus DROP.** The terms allow free use and revocation. The project must
+  not use the Spamhaus name in marketing.
+
+### Future option: Cloudflare zone-operator data
+
+A Cloudflare zone operator could feed its own edge's threat or bot fields. That
+is optional and off by default, and is not implemented. It depends on an
+owner-owned account, which this SoT excludes.
+
+## Snapshot format
+
+The updater writes one UTF-8 JSON document, `humanymous-ip-intel/1`:
+
+- `format`: exactly `humanymous-ip-intel/1`. Unknown fields are refused.
+- `generated_at`: Unix seconds. Staleness is measured from this value.
+- `sources[]`: sorted by name. Each source has:
+  - `name`: `[a-z0-9-]{1,64}`, unique;
+  - `category`;
+  - `licence`;
+  - `origin`: one of `{git:{path, commit}}`, `{http:{url, fetched_at}}` or
+    `{file:{read_at}}`;
+  - `status`: `ok`, `missing` or `invalid`;
+  - `detail`: a static reason, present unless `ok`;
+  - `prefixes[]`: canonical, sorted CIDRs.
+
+Validation rules:
+
+- An `ok` source needs prefixes. `missing` and `invalid` sources have none.
+- A git source with `ok` status needs a 40- or 64-hex commit.
+- `generated_at` may be at most 300 s in the future.
+- `fetched_at` and `read_at` may not be later than `generated_at`.
+
+Bounds:
+
+- 64 MiB per file;
+- 64 sources;
+- 2,000,000 prefixes in total;
+- 512-byte text fields;
+- 32 MiB and 1,000,000 prefixes per upstream source.
+
+The encoder and parser share one validator. A file the updater can write is
+exactly a file the runtime accepts.
+
+## Runtime behaviour
+
+The layout follows `sot:root/rust-migration` (one owner per responsibility; pure
+code kept apart from I/O):
+
+| Path | Responsibility |
+|---|---|
+| `network/intel/mod.rs` | Facade: `IntelCategory`, `Classification`, and `IntelReader`, the one read contract the serving path uses |
+| `prefix_set/` | Pure IPv4/IPv6 prefix set; sorted merged ranges with binary search. Its `Prefix` is the network context's only CIDR parser; the PROXY v2 allowlist reuses it. |
+| `snapshot/` | Pure format: parse, validate, encode |
+| `source/` | Pure registry as data, plus `normalize(format, bytes)`. Parsers are grouped by format: `aws_json`, `gcp_json`, `azure_tags`, `oracle_json`, `geofeed`, `netset`, `spamhaus_jsonl`. |
+| `store/` | I/O boundary: bounded load, atomic `RwLock<Arc<_>>` swap, staleness from an injected clock, ops status |
+| `shadow/` | Shadow-only counters |
+
+Configuration lives in the runtime's existing configuration surface, as the
+optional `ip_reputation` object:
+
+- `snapshot`;
+- `client_address`: `proxy_v2`;
+- `max_age_s`: default 7 days;
+- `expire_after_s`: default 30 days;
+- `categories`: default all.
+
+When the object is absent, behaviour is unchanged.
+
+### Trusted client address
+
+The runtime listener accepts loopback connections only. The original client
+address therefore comes from the trusted edge, through a **PROXY protocol v2**
+header on every accepted connection. The runtime reuses the existing
+`network::proxy` parser.
+
+- A connection without a valid header is dropped. A misconfigured edge fails
+  closed and is not classified.
+- LOCAL or UNSPEC headers mean the request is unattributed.
+- HTTP forwarding headers are never trusted. Native request integrity signs
+  every header, and a client controls any header the edge forgets to strip.
+- Private, loopback, link-local and unspecified addresses are never classified.
+  This matches the Go oracle.
+
+### Freshness and failure semantics
+
+Traffic fails open, but the state is never silent.
+
+| State | Classification | Visibility |
+|---|---|---|
+| `missing` (no snapshot accepted yet) | Nothing | Startup readiness `ip_reputation.startup_state`; live management status |
+| `fresh` (age ≤ `max_age_s`) | All enabled categories | Status |
+| `stale` (age ≤ `expire_after_s`) | Still classifies; counted in `lookups.stale` | Status `state: stale`, `age_s` |
+| `expired` | Nothing; counted in `lookups.unavailable` | Status `state: expired`, `datacenter_scoring_active: false` |
+
+Further rules:
+
+- A refused reload keeps the previous snapshot. The status reports
+  `last_reload_error`, `reloads_failed` and the snapshot SHA-256.
+- A missing or refused feed never denies all traffic.
+- It is also never reported as clean: `datacenter_scoring_active` is false, and
+  `missing` or `invalid` sources stay listed with their reason.
+- The updater refuses to write a snapshot when no source succeeded. When any
+  selected source is missing or invalid, it writes the snapshot and exits
+  non-zero.
+- An uninitialized submodule is reported as `missing` with the reason
+  `submodule_not_initialized`, not as an empty list.
+- The runtime checks the snapshot file's length and modification time every 60
+  seconds, and parses on the blocking pool.
+- Live status is served by the management observer route
+  `POST /management/v0.1/ip-reputation`. It carries the same authentication and
+  scope checks as `/status`.
+
+## Updater
+
+The existing operator CLI is the composition root:
+
+```
+humanymous ip-intel update|sources|inspect
+```
+
+It is behind the `ip-intel` Cargo feature, so the default offline provisioning
+binary has no HTTP client. `update` only wires these steps:
+
+1. Read submodule checkouts. The commit comes from the checkout's git metadata;
+   no git process is spawned.
+2. Read operator files (`--input NAME=PATH`).
+3. Fetch HTTPS bodies, with a 60 s timeout and the per-source byte bound.
+4. Call `source::normalize`, then `snapshot::encode`.
+5. Write a private sibling file with `create_new`, sync it and rename it over
+   the output.
+
+`--offline` never fetches. Unit tests inject a fake fetcher, and builds and
+tests need no network or submodule access.
+
+## Limits (T4 ceiling)
+
+- Residential proxies, mobile carriers and commercial VPNs on consumer ranges
+  are not covered. A coherent real browser on a residential exit stays
+  invisible to this feed. That is the declared T4 ceiling.
+- Range lists lag reassignment. Stale data can challenge a human on a
+  reassigned range. `expire_after_s` bounds how long that can last.
+- HR-11 challenges and never denies. A human on a cloud desktop or corporate
+  egress inside a cloud range gets a challenge and must be able to pass it.
+  Pass and CHALLENGE never depend on motor richness or speed.
+- Without PROXY v2 from the edge, nothing is classified. The authority adapter
+  path (`ApplicationHttp`) has no trusted client address and stays
+  unclassified.
+
+## Privacy
+
+- The status and the snapshot contain prefixes and counters only. They contain
+  no client addresses, sessions or request data.
+- The classification is not written to the audit record beyond the existing
+  verdict and triggered rule.
+- Shadow counters are process-lifetime aggregates with no per-client keys.
