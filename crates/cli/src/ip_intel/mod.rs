@@ -5,12 +5,18 @@
 //! one snapshot and replace the output file atomically. Parsing, validation and
 //! the snapshot format live in `humanymous_runtime::network::intel`.
 use humanymous_runtime::network::intel::{
-    snapshot::{self, Checkout, Origin, Snapshot, SourceRecord, SourceStatus},
+    IntelCategory,
+    prefix_set::{Prefix, PrefixSet},
+    snapshot::{
+        self, Checkout, Origin, SCORING_MAX_V4, SCORING_MAX_V6, Snapshot, SnapshotError,
+        SourceRecord, SourceStatus,
+    },
     source::{self, MAX_SOURCE_BYTES, REGISTRY, SourceOrigin, SourceSpec},
 };
 use serde::Serialize;
 use std::{
-    collections::BTreeMap,
+    cmp::Reverse,
+    collections::{BTreeMap, BTreeSet},
     fs,
     io::{self, Read},
     path::{Path, PathBuf},
@@ -108,6 +114,10 @@ pub struct UpdateReport {
     pub partial: bool,
 }
 
+/// Static detail of a scoring source dropped because its category's union
+/// with the other sources exceeds the coverage cap.
+pub const UNION_CAP_DROPPED: &str = "category_union_coverage_cap";
+
 fn selected(plan: &UpdatePlan) -> io::Result<Vec<&'static SourceSpec>> {
     if plan.sources.is_empty() {
         return Ok(REGISTRY.iter().collect());
@@ -120,18 +130,44 @@ fn selected(plan: &UpdatePlan) -> io::Result<Vec<&'static SourceSpec>> {
         .collect()
 }
 
-/// Build and atomically write one snapshot. Refuses to write when no source
-/// succeeded, so an empty feed is never published as clean data.
-pub fn update(plan: &UpdatePlan, fetch: &dyn Fetch, now_s: u64) -> io::Result<UpdateReport> {
-    for name in plan.inputs.keys().chain(plan.urls.keys()) {
+/// Refuse a plan that names a source twice, names an unknown source, or
+/// passes `--url` for a source whose endpoint is not operator-supplied. Run by
+/// the argument parser and again by [`update`], so nothing is ignored.
+pub fn check_plan(plan: &UpdatePlan) -> io::Result<()> {
+    let mut seen = BTreeSet::new();
+    for name in &plan.sources {
+        if !seen.insert(name.as_str()) {
+            return Err(io::Error::other(format!("duplicate source: {name}")));
+        }
+    }
+    for name in plan.sources.iter().chain(plan.inputs.keys()) {
         if source::find(name).is_none() {
             return Err(io::Error::other(format!("unknown source: {name}")));
         }
     }
-    let records: Vec<SourceRecord> = selected(plan)?
+    for name in plan.urls.keys() {
+        match source::find(name).map(|spec| spec.origin) {
+            None => return Err(io::Error::other(format!("unknown source: {name}"))),
+            Some(SourceOrigin::OperatorUrl { .. }) => {}
+            Some(_) => {
+                return Err(io::Error::other(format!(
+                    "source {name} does not take an operator URL"
+                )));
+            }
+        }
+    }
+    Ok(())
+}
+
+/// Build and atomically write one snapshot. Refuses to write when no source
+/// succeeded, so an empty feed is never published as clean data.
+pub fn update(plan: &UpdatePlan, fetch: &dyn Fetch, now_s: u64) -> io::Result<UpdateReport> {
+    check_plan(plan)?;
+    let mut records: Vec<SourceRecord> = selected(plan)?
         .into_iter()
         .map(|spec| acquire(spec, plan, fetch, now_s))
         .collect();
+    fit_union_caps(&mut records);
     if !records.iter().any(|r| r.status == SourceStatus::Ok) {
         return Err(io::Error::other(
             "no source succeeded; snapshot not written",
@@ -164,6 +200,43 @@ pub fn update(plan: &UpdatePlan, fetch: &dyn Fetch, now_s: u64) -> io::Result<Up
         partial: sources.iter().any(|s| s.status != SourceStatus::Ok),
         sources,
     })
+}
+
+/// Fail closed per source when a scoring category's union exceeds the coverage
+/// cap although every source fits alone: drop the ok source with the largest
+/// coverage in the overflowing family (ties: the lowest name), mark it invalid
+/// with [`UNION_CAP_DROPPED`], and repeat until the union fits. A union above
+/// the cap is never written; the remaining sources still are.
+fn fit_union_caps(records: &mut [SourceRecord]) {
+    let coverage = |prefixes: &[Prefix]| PrefixSet::new(prefixes.iter().copied()).coverage();
+    for category in IntelCategory::ALL {
+        loop {
+            let ok = |r: &SourceRecord| r.category == category && r.status == SourceStatus::Ok;
+            let union: Vec<Prefix> = records
+                .iter()
+                .filter(|r| ok(r))
+                .flat_map(|r| r.prefixes.iter().copied())
+                .collect();
+            if snapshot::check_breadth(category, &union) != Err(SnapshotError::Coverage) {
+                break;
+            }
+            let (v4, v6) = coverage(&union);
+            let (over_v4, over_v6) = (v4 > SCORING_MAX_V4, v6 > SCORING_MAX_V6);
+            let Some(largest) = records.iter_mut().filter(|r| ok(r)).max_by_key(|r| {
+                let (a, b) = coverage(&r.prefixes);
+                (
+                    if over_v6 { b } else { 0 },
+                    if over_v4 { a } else { 0 },
+                    Reverse(r.name.clone()),
+                )
+            }) else {
+                break;
+            };
+            largest.status = SourceStatus::Invalid;
+            largest.detail = UNION_CAP_DROPPED.into();
+            largest.prefixes.clear();
+        }
+    }
 }
 
 /// Bytes plus provenance, or the provenance, outcome and static reason of a

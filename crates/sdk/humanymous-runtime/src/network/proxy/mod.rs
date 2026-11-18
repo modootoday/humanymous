@@ -30,6 +30,8 @@ pub enum Refusal {
     Allowlist,
     /// Signature or version is not PROXY v2.
     NotProxyV2,
+    /// Command is neither LOCAL (0x0) nor PROXY (0x1); 0x2-0xF are reserved.
+    Command,
     /// The address block is shorter than its declared family needs.
     ShortAddress,
     /// The stream ended or failed before the complete header.
@@ -111,11 +113,17 @@ pub fn read_header(stream: &mut impl Read) -> Result<Header, Refusal> {
     if fixed[..12] != SIGNATURE || fixed[12] & 0xF0 != 0x20 {
         return Err(Refusal::NotProxyV2);
     }
+    // Only LOCAL (0x0) and PROXY (0x1) are defined; a reserved command is
+    // refused before its address block is read, never treated as PROXY.
+    let command = fixed[12] & 0x0F;
+    if command > 0x01 {
+        return Err(Refusal::Command);
+    }
     let mut block = vec![0u8; usize::from(u16::from_be_bytes([fixed[14], fixed[15]]))];
     stream
         .read_exact(&mut block)
         .map_err(|_| Refusal::Truncated)?;
-    if fixed[12] & 0x0F == 0x00 {
+    if command == 0x00 {
         return Ok(Header::Local);
     }
     let port = |at: usize| u16::from_be_bytes([block[at], block[at + 1]]);

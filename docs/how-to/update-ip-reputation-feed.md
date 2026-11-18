@@ -57,7 +57,9 @@ gitlink) and refuses a source as `invalid` when:
 
 `--allow-unpinned-checkout` accepts such a checkout anyway. The snapshot then
 records `unpinned_override: true` with the gitlink and clean state it found, so
-the override stays visible in `inspect` and in the gateway status.
+the override stays visible in `inspect`. The gateway status reports the source
+as `source_unpinned:<name>` in `degraded_reasons` for as long as that snapshot
+is active.
 
 ## 3. Write a snapshot
 
@@ -71,18 +73,28 @@ humanymous ip-intel update --output /var/lib/humanymous/ip-intel.json \
 - **Azure.** The Azure download URL changes weekly. Copy the current one from
   Microsoft's Service Tags download page, or leave it out; Azure is then
   reported as `missing`.
-- **Choosing sources.** `--source NAME` (repeatable) selects sources.
+- **Choosing sources.** `--source NAME` (repeatable) selects sources. Naming
+  a source twice is refused.
+- **Operator URLs.** `--url` is accepted only for `azure-service-tags`. A
+  `--url` for any other source is refused instead of being ignored: their
+  endpoints are fixed or pinned.
 - **Local files.** `--input NAME=PATH` reads a file you already downloaded.
 - **No network.** `--offline` reads only submodules and `--input` files.
 - **Exit status.** The command writes nothing when no source succeeds. When
   some sources fail, it writes the snapshot, prints the report and exits
   non-zero.
 - **Over-broad data.** A datacenter source with a prefix shorter than IPv4 /8
-  or IPv6 /16, or covering more than a quarter of IPv4 (or more than one IPv6
-  /12), is refused as `invalid` (`snapshot_prefix_too_broad` or
-  `snapshot_coverage_cap`). The gateway applies the same check on every load,
+  or IPv6 /19, or covering more than 2^30 IPv4 addresses (a quarter of IPv4)
+  or 2^112 IPv6 addresses (one /16), is refused as `invalid`
+  (`snapshot_prefix_too_broad` or `snapshot_coverage_cap`). The pinned
+  X4BNet list, the broadest source, measured IPv6 /20 and 2^109.76 IPv6
+  addresses on 2026-11-18. The gateway applies the same check on every load,
   so a hand-edited snapshot with `0.0.0.0/0` is refused there too and never
   turns scoring on.
+- **Sources that only overflow together.** When each datacenter source fits
+  but their union does not, the updater drops the source with the largest
+  coverage as `invalid` (`category_union_coverage_cap`), repeating until the
+  union fits, writes the rest and exits non-zero.
 - **File permissions.** The updater creates the snapshot with mode `0600`,
   owned by the user that ran it. See step 4 when the gateway runs as a
   different user.
@@ -132,7 +144,8 @@ Add the object to the gateway configuration JSON:
   - freshness and age;
   - per-source status;
   - `degraded` and `degraded_reasons`: any datacenter source that is missing,
-    invalid, absent from the snapshot or fetched longer than `max_age_s` ago,
+    invalid, absent from the snapshot, accepted from an unpinned checkout
+    (`source_unpinned:<name>`) or fetched longer than `max_age_s` ago,
     plus a stale, expired or missing snapshot and a refused reload. A failed
     source's old ranges are never carried forward, so its coverage is simply
     gone until the next successful update;

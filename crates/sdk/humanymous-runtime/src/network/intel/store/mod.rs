@@ -416,9 +416,16 @@ impl IntelStore {
                 // A pinned commit's age is the snapshot's age, reported above.
                 Origin::Git { .. } => None,
             };
+            // An operator-overridden checkout is not the pinned data version:
+            // the coverage is served, but never reported as complete.
+            let unpinned = matches!(
+                &source.origin,
+                Origin::Git { checkout: Some(checkout), .. } if checkout.unpinned_override
+            );
             match source.status {
                 SourceStatus::Missing => reasons.push(format!("source_missing:{name}")),
                 SourceStatus::Invalid => reasons.push(format!("source_invalid:{name}")),
+                SourceStatus::Ok if unpinned => reasons.push(format!("source_unpinned:{name}")),
                 SourceStatus::Ok
                     if acquired_at
                         .is_some_and(|t| now_s.saturating_sub(t) > self.policy.max_age_s) =>

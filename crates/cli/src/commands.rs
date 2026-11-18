@@ -85,7 +85,13 @@ fn update_plan(
             "--repository" if repository.is_none() => repository = Some(value()?),
             "--offline" if !offline => offline = true,
             "--allow-unpinned-checkout" if !unpinned => unpinned = true,
-            "--source" => plan.sources.push(value()?),
+            "--source" => {
+                let name = value()?;
+                if plan.sources.contains(&name) {
+                    return Err(format!("duplicate --source {name}").into());
+                }
+                plan.sources.push(name);
+            }
             "--input" | "--url" => {
                 let pair = value()?;
                 let (name, value) = pair.split_once('=').ok_or("expected NAME=VALUE")?;
@@ -107,6 +113,7 @@ fn update_plan(
     }
     plan.offline = offline;
     plan.allow_unpinned = unpinned;
+    humanymous_cli::ip_intel::check_plan(&plan)?;
     Ok(plan)
 }
 
@@ -256,6 +263,36 @@ mod tests {
             &["--output", "a", "--url", "x=1", "--url", "x=2"],
             &["--output", "a", "--unknown"],
             &["--output", "a", "--offline", "--offline"],
+            // A source named twice, an unknown source, and --url for a source
+            // with a fixed or pinned endpoint are refused, never ignored.
+            &[
+                "--output",
+                "a",
+                "--source",
+                "gcp-cloud",
+                "--source",
+                "gcp-cloud",
+            ],
+            &["--output", "a", "--source", "not-a-source"],
+            &["--output", "a", "--input", "not-a-source=x"],
+            &[
+                "--output",
+                "a",
+                "--url",
+                "not-a-source=https://example.test/",
+            ],
+            &[
+                "--output",
+                "a",
+                "--url",
+                "aws-ip-ranges=https://example.test/",
+            ],
+            &[
+                "--output",
+                "a",
+                "--url",
+                "x4bnet-datacenter=https://example.test/",
+            ],
             &[
                 "--output",
                 "a",

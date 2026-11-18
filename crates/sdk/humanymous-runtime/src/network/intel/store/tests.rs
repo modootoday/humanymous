@@ -377,6 +377,44 @@ fn degraded_names_missing_invalid_absent_and_stale_scoring_sources() {
     let stale = store.status(NOW + 7 * DAY + 1).degraded_reasons;
     assert_eq!(stale[0], "snapshot_stale");
 
+    // A checkout accepted with --allow-unpinned-checkout is served but is not
+    // the pinned data version, so scoring coverage is reported as degraded.
+    let git = |override_: bool| {
+        move |record: &mut SourceRecord| {
+            if record.name == "x4bnet-datacenter" {
+                record.origin = Origin::Git {
+                    path: "third_party/ip-intel/x4bnet-datacenter".into(),
+                    commit: Some("1".repeat(40)),
+                    checkout: Some(snapshot::Checkout {
+                        gitlink: Some("0".repeat(40)),
+                        clean: true,
+                        unpinned_override: override_,
+                    }),
+                };
+            }
+        }
+    };
+    file.write(&every_scoring_source(git(true)));
+    store.reload(NOW).unwrap();
+    let status = store.status(NOW);
+    assert!(status.degraded);
+    assert_eq!(
+        status.degraded_reasons,
+        ["source_unpinned:x4bnet-datacenter"]
+    );
+    assert!(store.classify(ip("192.0.7.9"), NOW).datacenter);
+    // The same record pinned (commit equals gitlink) is not degraded.
+    file.write(&every_scoring_source(|record| {
+        if record.name == "x4bnet-datacenter" {
+            git(false)(record);
+            if let Origin::Git { commit, .. } = &mut record.origin {
+                *commit = Some("0".repeat(40));
+            }
+        }
+    }));
+    store.reload(NOW).unwrap();
+    assert!(store.status(NOW).degraded_reasons.is_empty());
+
     // Shadow-only configuration never degrades scoring.
     let mut shadow_only = policy(&file.0);
     shadow_only.categories = vec![IntelCategory::TorExit];

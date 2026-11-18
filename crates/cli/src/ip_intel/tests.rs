@@ -458,10 +458,183 @@ fn over_broad_source_is_refused_on_update() {
     }
     // Exactly at the floor is accepted.
     let input = dir.0.join("x4b.txt");
-    fs::write(&input, "3.0.0.0/8\n2001::/16\n").unwrap();
+    fs::write(&input, "3.0.0.0/8\n2600::/19\n").unwrap();
     let mut floor = plan(&dir.0, &["x4bnet-datacenter"]);
     floor.inputs.insert("x4bnet-datacenter".into(), input);
     let report = update(&floor, &FakeFetch::default(), NOW).unwrap();
     assert!(!report.partial);
     assert_eq!(report.prefixes, 2);
+}
+
+/// IPv4 /8s `first..first + count`.
+fn slash8s(first: u8, count: u8) -> Vec<String> {
+    (first..first + count)
+        .map(|octet| format!("{octet}.0.0.0/8"))
+        .collect()
+}
+
+/// IPv6 /20s, the `first..first + count`-th of 2400::/12.
+fn slash20s(first: u16, count: u16) -> Vec<String> {
+    (first..first + count)
+        .map(|n| format!("{:x}:{:x}::/20", 0x2400 + (n >> 4), (n & 0xf) << 12))
+        .collect()
+}
+
+/// Operator files for datacenter sources, each written in its registry
+/// format; every source fits the coverage cap alone.
+fn union_plan(root: &Path, sources: &[(&str, Vec<String>)]) -> UpdatePlan {
+    let mut plan = plan(root, &[]);
+    plan.offline = true;
+    for (name, prefixes) in sources {
+        let lines: String = prefixes
+            .iter()
+            .map(|prefix| match source::find(name).unwrap().format {
+                source::Format::Geofeed => format!("{prefix},ZZ,,,\n"),
+                _ => format!("{prefix}\n"),
+            })
+            .collect();
+        let path = root.join(format!("{name}.txt"));
+        fs::write(&path, lines).unwrap();
+        plan.sources.push((*name).into());
+        plan.inputs.insert((*name).into(), path);
+    }
+    plan
+}
+
+fn line<'a>(report: &'a UpdateReport, name: &str) -> &'a SourceLine {
+    report.sources.iter().find(|s| s.name == name).unwrap()
+}
+
+#[test]
+fn union_over_the_coverage_cap_drops_the_largest_sources_and_writes_the_rest() {
+    let dir = TempDir::new("union");
+    fs::create_dir_all(dir.0.join("out")).unwrap();
+    // 40 + 20 + 20 /8s: each fits (cap 64 /8s), the union of 80 does not.
+    // The largest source is dropped by itself; the rest is written.
+    let plan = union_plan(
+        &dir.0,
+        &[
+            ("digitalocean-geofeed", slash8s(1, 20)),
+            ("linode-geofeed", slash8s(21, 40)),
+            ("x4bnet-datacenter", slash8s(61, 20)),
+        ],
+    );
+    let report = update(&plan, &FakeFetch::default(), NOW).unwrap();
+    assert!(report.partial);
+    let dropped = line(&report, "linode-geofeed");
+    assert_eq!(
+        (dropped.status, dropped.detail.as_str(), dropped.prefixes),
+        (SourceStatus::Invalid, UNION_CAP_DROPPED, 0)
+    );
+    for kept in ["digitalocean-geofeed", "x4bnet-datacenter"] {
+        assert_eq!(
+            (line(&report, kept).status, line(&report, kept).prefixes),
+            (SourceStatus::Ok, 20)
+        );
+    }
+    let parsed = snapshot::parse(&fs::read(&plan.output).unwrap(), NOW).unwrap();
+    assert_eq!(parsed.prefix_count(), 40);
+    fs::remove_file(&plan.output).unwrap();
+
+    // 40 + 40 + 40: no single source explains the overflow. Equal coverage
+    // drops the lowest name first, and drops repeat until the union fits;
+    // each drop is recorded.
+    let plan = union_plan(
+        &dir.0,
+        &[
+            ("digitalocean-geofeed", slash8s(1, 40)),
+            ("linode-geofeed", slash8s(41, 40)),
+            ("x4bnet-datacenter", slash8s(81, 40)),
+        ],
+    );
+    let report = update(&plan, &FakeFetch::default(), NOW).unwrap();
+    let outcome: Vec<_> = report
+        .sources
+        .iter()
+        .map(|s| (s.name.as_str(), s.status, s.detail.as_str()))
+        .collect();
+    assert_eq!(
+        outcome,
+        [
+            (
+                "digitalocean-geofeed",
+                SourceStatus::Invalid,
+                UNION_CAP_DROPPED
+            ),
+            ("linode-geofeed", SourceStatus::Invalid, UNION_CAP_DROPPED),
+            ("x4bnet-datacenter", SourceStatus::Ok, ""),
+        ]
+    );
+    let parsed = snapshot::parse(&fs::read(&plan.output).unwrap(), NOW).unwrap();
+    assert_eq!(parsed.prefix_count(), 40);
+    fs::remove_file(&plan.output).unwrap();
+
+    // Under the cap together (at it exactly): nothing is dropped.
+    let plan = union_plan(
+        &dir.0,
+        &[
+            ("digitalocean-geofeed", slash8s(1, 24)),
+            ("linode-geofeed", slash8s(25, 20)),
+            ("x4bnet-datacenter", slash8s(45, 20)),
+        ],
+    );
+    let report = update(&plan, &FakeFetch::default(), NOW).unwrap();
+    assert!(!report.partial);
+    assert_eq!(report.prefixes, 64);
+    fs::remove_file(&plan.output).unwrap();
+
+    // Only IPv6 overflows (20 /20s against a cap of 16): the source with the
+    // largest IPv6 coverage is dropped, not the one with the largest IPv4.
+    let mut big_v4 = slash8s(1, 40);
+    big_v4.extend(slash20s(0, 2));
+    let mut big_v6 = slash8s(41, 1);
+    big_v6.extend(slash20s(2, 10));
+    let mut rest = slash8s(42, 1);
+    rest.extend(slash20s(12, 8));
+    let plan = union_plan(
+        &dir.0,
+        &[
+            ("digitalocean-geofeed", big_v4),
+            ("linode-geofeed", big_v6),
+            ("x4bnet-datacenter", rest),
+        ],
+    );
+    let report = update(&plan, &FakeFetch::default(), NOW).unwrap();
+    let dropped: Vec<_> = report
+        .sources
+        .iter()
+        .filter(|s| s.status != SourceStatus::Ok)
+        .map(|s| (s.name.as_str(), s.detail.as_str()))
+        .collect();
+    assert_eq!(dropped, [("linode-geofeed", UNION_CAP_DROPPED)]);
+    snapshot::parse(&fs::read(&plan.output).unwrap(), NOW).unwrap();
+}
+
+#[test]
+fn duplicate_sources_and_misplaced_operator_urls_are_refused() {
+    let dir = TempDir::new("plan-checks");
+    let mut duplicate = plan(&dir.0, &["gcp-cloud", "gcp-cloud"]);
+    duplicate.offline = true;
+    let error = update(&duplicate, &FakeFetch::default(), NOW).unwrap_err();
+    assert!(error.to_string().contains("duplicate source"), "{error}");
+    for name in ["aws-ip-ranges", "x4bnet-datacenter", "tor-bulk-exit"] {
+        let mut misplaced = plan(&dir.0, &[name]);
+        misplaced
+            .urls
+            .insert(name.into(), "https://example.test/list".into());
+        let fetch = FakeFetch::default();
+        let error = update(&misplaced, &fetch, NOW).unwrap_err();
+        assert!(
+            error.to_string().contains("does not take an operator URL"),
+            "{name}: {error}"
+        );
+        assert!(fetch.requested.borrow().is_empty());
+        assert!(!misplaced.output.exists());
+    }
+    let mut operator = plan(&dir.0, &["azure-service-tags"]);
+    operator.urls.insert(
+        "azure-service-tags".into(),
+        "https://example.test/a.json".into(),
+    );
+    assert!(check_plan(&operator).is_ok());
 }

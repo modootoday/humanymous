@@ -30,15 +30,20 @@ pub const MAX_PREFIXES: usize = 2_000_000;
 pub const MAX_TEXT: usize = 512;
 /// Tolerated clock skew for `generated_at` and `fetched_at` in the future.
 pub const MAX_FUTURE_SKEW_S: u64 = 300;
-/// Shortest prefix a scoring category may carry: IPv4 /8, IPv6 /16. Real
-/// cloud data reaches /8 (AWS `3.0.0.0/8`) and IPv6 /20.
-pub const SCORING_FLOOR: Floor = Floor { v4: 8, v6: 16 };
+/// Shortest prefix a scoring category may carry: IPv4 /8, IPv6 /19. Measured
+/// 2026-11-18: the pinned X4BNet datacenter list reaches IPv4 /8 and IPv6 /20
+/// (its shortest IPv6 prefix); the AWS, Google, Oracle, DigitalOcean and
+/// Linode endpoints carry no IPv6 prefix shorter than /32. /19 keeps one bit of
+/// headroom while refusing /16-sized carrier blocks (2600::/12 split into /16s).
+pub const SCORING_FLOOR: Floor = Floor { v4: 8, v6: 19 };
 /// Most IPv4 addresses one scoring category may cover after merging: a
-/// quarter of the family. All datacenter sources together cover about 10%.
+/// quarter of the family. Measured union of all datacenter sources: 2^28.65.
 pub const SCORING_MAX_V4: u64 = 1 << 30;
-/// Most IPv6 addresses one scoring category may cover after merging: the size
-/// of one /12 (1/512 of global unicast). Real data covers about 2^110.
-pub const SCORING_MAX_V6: u128 = 1 << 116;
+/// Most IPv6 addresses one scoring category may cover after merging: 2^112.
+/// Measured 2026-11-18: pinned X4BNet covers 2^109.76 and the union with the
+/// fetched cloud endpoints stays 2^109.76, so the cap has about 2.2 bits
+/// (4.7x) of headroom while refusing any /16 or wider carrier aggregate.
+pub const SCORING_MAX_V6: u128 = 1 << 112;
 
 /// Static refusal codes; no file content is interpolated.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

@@ -3,7 +3,7 @@ id: sot:root/ip-reputation
 title: Operator IP reputation feed
 status: draft
 created: 2026-11-18T13:30:00Z
-updated: 2026-11-18T20:00:00Z
+updated: 2026-11-18T20:30:00Z
 verify: cargo test --locked -p humanymous-runtime --all-features network::intel && cargo test --locked -p humanymous-runtime --all-features --test network_ip_intel && cargo test --locked -p humanymous-cli --features ip-intel ip_intel
 rel:
   governs: [crates/sdk/humanymous-runtime/src/network/intel/**, crates/sdk/humanymous-runtime/src/gateway/configuration/ip_reputation.rs, crates/sdk/humanymous-runtime/tests/network/ip_intel.rs, crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/**, crates/cli/src/ip_intel/**, third_party/ip-intel/**]
@@ -12,7 +12,7 @@ rel:
 
 # Operator IP reputation feed
 
-Document version 0.2.0.
+Document version 0.3.0.
 
 ## Decision
 
@@ -71,7 +71,9 @@ Two acquisition paths exist.
     (`submodule_head_mismatch`, `submodule_dirty`,
     `submodule_gitlink_unreadable`) unless the operator passes
     `--allow-unpinned-checkout`; the snapshot then records
-    `unpinned_override: true`.
+    `unpinned_override: true`, and the runtime status reports
+    `source_unpinned:<name>` in `degraded_reasons` while that snapshot is
+    active.
   - No list data is copied into this repository.
 - **Operator fetch.** The source is only an HTTP endpoint.
   - The updater fetches it at update time over HTTPS.
@@ -152,15 +154,46 @@ Breadth guard for scoring categories (`datacenter`), checked per source by
 the updater and per category (union of all sources) on encode and on every
 runtime load:
 
-- no prefix shorter than IPv4 /8 or IPv6 /16 (`snapshot_prefix_too_broad`);
-- at most 2^30 IPv4 addresses (a quarter of the family) and 2^116 IPv6
-  addresses (one /12) after merging (`snapshot_coverage_cap`).
+- no prefix shorter than IPv4 /8 or IPv6 /19 (`snapshot_prefix_too_broad`);
+- at most 2^30 IPv4 addresses (a quarter of the family) and 2^112 IPv6
+  addresses (one /16) after merging (`snapshot_coverage_cap`).
 
-Real data on 2026-11-18: the shortest datacenter prefixes are AWS
-`3.0.0.0/8` and an IPv6 /20; all datacenter sources together cover about 10%
-of IPv4 and about 2^110 IPv6 addresses. Shadow-only categories are not bounded
-by breadth: they never reach scoring, and FireHOL level1 legitimately carries
-bogon blocks such as `224.0.0.0/3`.
+Measured 2026-11-18, the numbers these values are chosen against:
+
+| Data | Shortest IPv4 | Shortest IPv6 | IPv4 coverage | IPv6 coverage |
+|---|---|---|---|---|
+| Pinned X4BNet `c60005a4…` (`output/datacenter`) | /8 | /20 | 408,109,015 (2^28.60) | 2^109.76 |
+| AWS, Google Cloud, Oracle, DigitalOcean, Linode endpoints, each | /11 or longer | /32 or longer | at most 2^26.61 | at most 2^101.17 |
+| Union of all of the above | /8 | /20 | 2^28.65 | 2^109.76 |
+
+Azure Service Tags were not measured: the URL rotates and is operator-supplied.
+
+- IPv6 floor /19: one bit of headroom under the shortest measured prefix
+  (X4BNet /20). A /16-sized carrier block is refused by itself.
+- IPv6 cap 2^112: about 2.2 bits (4.7x) above the measured 2^109.76.
+  `2600::/12` (Comcast, Verizon, T-Mobile and other North American
+  residential and mobile carriers) is refused either way: split into /16s
+  every piece is under the floor; split into /20s the union is 2^116, over
+  the cap. The earlier values (/16 floor, 2^116 cap) let sixteen /16s covering
+  `2600::/12` pass.
+- IPv4 floor /8 and cap 2^30 are unchanged: the measured union is 2^28.65.
+- Regression coverage: a unit test refuses `2600::/12` split both ways; a
+  fixture with X4BNet's measured shortest prefixes and exact coverage passes;
+  and an ignored test reads the real pinned list when the submodule is
+  initialized and asserts it still has those exact numbers. Run without the
+  data, that ignored test fails with the reason; it is never reported as a
+  pass.
+
+Shadow-only categories are not bounded by breadth: they never reach scoring,
+and FireHOL level1 legitimately carries bogon blocks such as `224.0.0.0/3`.
+
+When every scoring source fits alone but their union exceeds the cap, the
+updater fails closed per source rather than aborting the whole update. It
+drops the `ok` source with the largest coverage in the overflowing family
+(ties: the lowest name), marks it `invalid` with the reason
+`category_union_coverage_cap`, and repeats until the union fits. Each drop is
+recorded in the snapshot and the report. The remaining sources are written, and
+a union above the cap is never written.
 
 A refused snapshot never activates scoring: on first load the store stays
 `missing`, on reload it keeps the previous snapshot, and either way the status
@@ -217,6 +250,9 @@ header on every accepted connection. The runtime reuses the existing
   shutdown request ends it at once, so a silent peer cannot hold the
   serialized accept loop or delay shutdown.
 - LOCAL or UNSPEC headers mean the request is unattributed.
+- Only the commands LOCAL (0x0) and PROXY (0x1) are accepted. A reserved
+  command (0x2 to 0xF) is refused and the connection dropped; it is never
+  treated as PROXY.
 - HTTP forwarding headers are never trusted. Native request integrity signs
   every header, and a client controls any header the edge forgets to strip.
 - Private, loopback, link-local and unspecified addresses are never classified.
@@ -240,8 +276,9 @@ Further rules:
 - The status reports `degraded` and `degraded_reasons` whenever scoring
   coverage is incomplete: `snapshot_missing|stale|expired`, `reload_refused`,
   and per registry or snapshot datacenter source `source_absent:<name>`,
-  `source_missing:<name>`, `source_invalid:<name>` or `source_stale:<name>`
-  (HTTP fetch or file read older than `max_age_s`). Old data for a failed
+  `source_missing:<name>`, `source_invalid:<name>`, `source_unpinned:<name>`
+  (a git checkout accepted with `--allow-unpinned-checkout`) or
+  `source_stale:<name>` (HTTP fetch or file read older than `max_age_s`). Old data for a failed
   source is never carried forward; its coverage is absent and named here.
   Readiness repeats the startup reasons as `startup_degraded_reasons`.
 - A missing or refused feed never denies all traffic.
@@ -274,10 +311,16 @@ binary has no HTTP client. `update` only wires these steps:
    `git status --porcelain` in the checkout.
 2. Read operator files (`--input NAME=PATH`).
 3. Fetch HTTPS bodies, with a 60 s timeout and the per-source byte bound.
-4. Call `source::normalize` and `snapshot::check_breadth` per source, then
-   `snapshot::encode`.
+4. Call `source::normalize` and `snapshot::check_breadth` per source, drop
+   sources until each scoring category's union fits the coverage cap (see
+   the breadth guard), then `snapshot::encode`.
 5. Write a private sibling file with `create_new`, sync it and rename it over
    the output.
+
+Arguments are refused, never ignored: a `--source` named twice, an unknown
+source name in `--source`, `--input` or `--url`, and `--url` for a source
+whose endpoint is fixed or pinned (anything but `azure-service-tags`) all
+fail at parse time. `update` repeats the same check before acquiring anything.
 
 `--offline` never fetches. Unit tests inject a fake fetcher, and builds and
 tests need no network or submodule access.
