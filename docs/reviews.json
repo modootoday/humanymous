@@ -5313,12 +5313,82 @@
     },
     {
       "source": "crates/sdk/humanymous-core/src/model/mod.rs",
-      "sha256": "2388b20aba7eb84d7aab801920c9af259f9bfebb43874f32b9108b464e89e5ad",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Module root for the behavioral model context (correction, inference, training), documented as separate from verdict authority.",
+      "sha256": "bffa74442376d3133adec5b6e5ea153f4bd6f0013c8e3e11583660719e6f2de6",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Module root for the behavioral model context (correction, inference, similarity, training), documented as separate from verdict authority.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/similarity/mod.rs",
+      "sha256": "b78d22c908bc578515056da05f30bf73ff2de34e6c15243650c6cb91d6f80ba6",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Module root for shadow-only similarity to confirmed abuse clusters over the bv1 vector (sot:root/abuse-similarity). Documents that nothing here mutates a verdict, writes or proposes a ban, or measures distance from typical human behavior; defines bounded SimilarityError and PolicyRefusal diagnostics without feature values or identifiers.",
+      "pages": [
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/similarity/policy.rs",
+      "sha256": "bab0acd766e558aa0411102bcc0109753293d49df92a999b4413a7609f278c67",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Versioned operator policy (deny_unknown_fields JSON): 1..16 rules, 1h..7d recurrence window, most severe matching rule wins. Fixed floors an operator cannot lower: challenge 0.80; temporary block 0.90 with cluster recurrence >=3 and subject repeats >=2; permanent-ban proposal 0.95/10/3. Behavior similarity alone reaches at most CHALLENGE and a permanent ban is only a dual-control proposal. Lab shadow defaults, not production thresholds. SHA-256 digest of canonical JSON for audit.",
+      "pages": [
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/similarity/policy/tests.rs",
+      "sha256": "5cd1205be192b45f5b42579e7f0dea9cae68a00da9752ed4c89aff09c9efdf41",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tests floor monotonicity, similarity-only cap at CHALLENGE, block requiring recurrence and subject repetition, refusal of every below-floor rule, version/rule-count/window/nonfinite/range refusals, JSON round trip with unknown-field and unknown-action refusal, invalid similarity input and digest stability.",
+      "pages": [
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/similarity/shadow.rs",
+      "sha256": "a684d7e8dc649da4230c94862477e9338b4b003fabcb5b264412610391648bd8",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Shadow ledger and preview: counts policy outcomes beside the verdict actually served (stricter, looser, agree), and event-count buckets (16/64/256/more) at a non-trivial outcome as time-to-detection evidence. Aggregates only; invalid samples count only as rejected; preview replays held de-identified samples under a candidate policy and never changes a verdict.",
+      "pages": [
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/similarity/shadow/tests.rs",
+      "sha256": "bd139eac1dedf3225973bacf301028cf8a79abd51cca17ea33f60b20dccd2357",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tests latency bucket edges, agreement direction and latency counting, rejected-only accounting for invalid samples, refusal of an invalid policy, and preview equality with a live ledger including a bad sample.",
+      "pages": [
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/similarity/store.rs",
+      "sha256": "e16ed60e30b47c4123c19ce696cb31462622d7500e8b5a07867ed582b2c93fb1",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Bounded confirmed-abuse cluster store: admission only from catalog sessions or operator confirmation; Welford mean/variance (floor 0.01) per bv1 dimension, join radius 2.0, at most 256 clusters (refuses rather than evicts), matchable only with >=5 members, similarity exp(-d^2/2) of RMS standardized distance. Probing is read-only; recorded matches feed recurrence (bounded 1024) and never move centroids. Caller clock must not regress; 30-day retention, match expiry and per-cluster retirement. No raw vectors or identifiers kept.",
+      "pages": [
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/similarity/store/tests.rs",
+      "sha256": "81fdc3581eae234432643a94c2267e5ba378e6ce455485a0e326b0a3fff27d72",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tests similarity shape, joining and splitting, minimum support, near/far ordering, read-only probing, recurrence without centroid movement, bounded match history, nonfinite and clock-regression refusal without state change, capacity refusal, retention expiry and non-reused retired ids.",
+      "pages": [
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
       ]
     },
     {
