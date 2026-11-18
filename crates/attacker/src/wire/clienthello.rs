@@ -721,11 +721,14 @@ mod tests {
 
     #[test]
     fn static_presets_match_the_shape_captured_from_the_oracle_toolchain() {
-        // Extension type sequences and handshake lengths observed from utls
-        // v1.8.2 / Go 1.25.3 ClientHellos for SNI owned.test, captured in a
-        // scratch Go program (not shipped). GREASE positions are shown as
-        // GREASE_A/GREASE_B. Equal lengths mean every extension body length
-        // (key shares, ECH payload, padding) matches the oracle encoding.
+        // Extension type sequences and handshake lengths from utls v1.8.2 /
+        // Go 1.25.3 ClientHellos for SNI owned.test, captured in a scratch Go
+        // program (not shipped). Chrome_100, Firefox and Go stock match those
+        // captures exactly. Chrome_Auto (HelloChrome_133) shuffles its
+        // extensions on every build and picks a random ECH payload length, so
+        // its two rows assert utls's pre-shuffle declaration order and the
+        // handshake length for the first ECH candidate; they are not one
+        // observed capture. GREASE positions are shown as GREASE_A/GREASE_B.
         let cases: [(ClientHelloBuilder, &[u16], usize); 5] = [
             (
                 ClientHelloBuilder::new(Profile::Chrome100).force_http11(),

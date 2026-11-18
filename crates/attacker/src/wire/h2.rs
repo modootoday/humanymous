@@ -74,23 +74,11 @@ const LIBRARY_SETTINGS: &[Setting] = &[
         value: 10485760,
     },
 ];
-/// x/net/http2 v0.57.0 Transport initial SETTINGS (push off, 4 MiB stream
-/// window, 1 MiB max read frame, 10 MiB header list).
-const GO_TRANSPORT_SETTINGS: &[Setting] = &[
-    Setting { id: 2, value: 0 },
-    Setting {
-        id: 4,
-        value: 4194304,
-    },
-    Setting {
-        id: 5,
-        value: 1048576,
-    },
-    Setting {
-        id: 6,
-        value: 10485760,
-    },
-];
+/// x/net/http2 v0.57.0 `&http2.Transport{}` initial SETTINGS (push off, 4 MiB
+/// stream window, 16 KiB max read frame, 10 MiB header list). An unset
+/// `MaxReadFrameSize` is clipped to 16384 (`http2/config.go`), so these equal
+/// `LIBRARY_SETTINGS`: the oracle's `h2SettingsSplit` copied Go's own SETTINGS.
+const GO_TRANSPORT_SETTINGS: &[Setting] = LIBRARY_SETTINGS;
 const CHROME_WINDOW: u32 = 15663105;
 const ONE_GIB: u32 = 1_073_741_824;
 
@@ -185,7 +173,10 @@ fn owned_authority(authority: &str) -> bool {
         })
 }
 fn valid_port(port: &str) -> bool {
-    !port.is_empty() && port.len() <= 5 && port.parse::<u16>().is_ok()
+    !port.is_empty()
+        && port.len() <= 5
+        && port.bytes().all(|b| b.is_ascii_digit())
+        && port.parse::<u16>().is_ok()
 }
 
 /// A single raw-h2 request to the owned runtime.
@@ -483,8 +474,14 @@ mod tests {
         );
         assert_eq!(fp.pseudo_order, vec!["a", "m", "p", "s"]);
         assert_eq!(fp.engine(), "unknown");
-        assert!(!fp.has_setting(1));
-        assert_eq!(fp.window_update, ONE_GIB);
+        // Captured from `&http2.Transport{}` (x/net v0.57.0): SETTINGS
+        // 2=0, 4=4194304, 5=16384, 6=10485760, then WINDOW_UPDATE 1073741824.
+        let settings: Vec<(u16, u32)> = fp.settings.iter().map(|s| (s.id, s.value)).collect();
+        assert_eq!(
+            settings,
+            vec![(2, 0), (4, 4194304), (5, 16384), (6, 10485760)]
+        );
+        assert_eq!(fp.window_update, 1_073_741_824);
         assert_eq!(fp.headers_priority, "");
     }
 
@@ -515,6 +512,8 @@ mod tests {
             "owned.test.example.com",
             "owned.test:99999",
             "owned.test:",
+            "owned.test:+443",
+            "[::1]:+443",
             "",
         ] {
             assert!(
