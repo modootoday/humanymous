@@ -318,6 +318,31 @@ mod tests {
         assert!(known_unsupported_tests().contains("sdk_package_and_real_host_matrix"));
     }
     #[test]
+    fn dotnet_sdk_download_is_accounted_by_the_dotnet_job_on_every_os() {
+        let packages = Packages::fixture();
+        let delivery = json!({"package_id":"opaque-humanymous-delivery","kind":["bin"],"target":"humanymous-delivery"});
+        for (os, arch) in [
+            ("linux", "x86_64"),
+            ("macos", "aarch64"),
+            ("windows", "x86_64"),
+        ] {
+            let found = declared(&delivery, &packages, os, arch).unwrap();
+            assert_eq!(found.ids, ["dotnet-sdk-download"]);
+            assert_eq!(found.jobs.len(), 1);
+            assert_eq!(found.jobs[0]["job"], "dotnet");
+            assert!(found.receipt_tests.is_empty() && found.unsupported_ids.is_empty());
+            assert_eq!(
+                found.ignored,
+                ["components::dotnet_host::sdk::tests::actual_pinned_sdk_download_verifies"]
+            );
+            assert_eq!(found.row(true)["required_execution_scope"], "job");
+        }
+        // Only that exact ignored name is accepted for the delivery binary.
+        let mut lib = delivery.clone();
+        lib["kind"] = json!(["lib"]);
+        assert!(declared(&lib, &packages, "linux", "x86_64").unwrap().is_empty());
+    }
+    #[test]
     fn authority_helper_is_declared_but_never_receipted() {
         let entry = json!({"package_id":"path+file:///C:/workspaces/humanymous/crates/sdk/humanymous-runtime#0.1.0","kind":["test"],"target":"authority-native-process"});
         let found = declared(&entry, &Packages::fixture(), "linux", "x86_64").unwrap();

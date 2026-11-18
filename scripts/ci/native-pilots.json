@@ -171,6 +171,23 @@
         "sdk_package_and_real_host_matrix"
       ],
       "helpers": []
+    },
+    {
+      "id": "dotnet-sdk-download",
+      "package": "humanymous-delivery",
+      "target": "humanymous-delivery",
+      "kind": "bin",
+      "os": ["linux", "macos", "windows"],
+      "executor": "job",
+      "job": {
+        "workflow": ".github/workflows/rust-validation.yml",
+        "name": "dotnet",
+        "run": "cargo run --locked -p humanymous-delivery -- component dotnet-host"
+      },
+      "tests": [
+        "components::dotnet_host::sdk::tests::actual_pinned_sdk_download_verifies"
+      ],
+      "helpers": []
     }
   ],
   "unsupported": [
