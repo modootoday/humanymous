@@ -5061,9 +5061,9 @@
     },
     {
       "source": "crates/sdk/humanymous-core/src/model/correction/bundle.rs",
-      "sha256": "88bb243cfd993f8328ae3f7b5c8ee547106c5324c52ecab40702ed80c4df0977",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Lab bundle identity lifecycle: stage() bounds one immutable buffer (non-empty, <=1 MiB), checks an optional exact lowercase SHA-256 pin, decodes a shape-valid MLP and requires the running feature schema hash; promote/rollback move only staged/active/previous identities and never touch an inference Runtime. Signed policy (with_public_key) always fails closed with SignatureUnsupported because Ed25519 is not a dependency; digest pinning is integrity only, not an authenticated supply chain.",
+      "sha256": "7fc7b37eee811983e50b1fd52e9ffd94737043e5453063697bf3836d69faf3d2",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Lab bundle identity lifecycle: stage() bounds one immutable buffer (non-empty, <=1 MiB), checks an optional exact lowercase SHA-256 pin, decodes a shape-valid MLP and requires the running feature schema hash; promote/rollback move only staged/active/previous identities and never touch an inference Runtime. Re-reviewed 2026-11-18: a BundleVerifier trait (pure detached-signature check over the exact bytes) and BundleManager::with_verifier() add a signed policy supplied by the caller (the Runtime provides Ed25519), with signed() reporting it; stage_signed() checks size, digest pin, signature, shape decode and schema pin in the legacy order, failing with Signature when a required signature is missing or invalid and ignoring a supplied signature under the unsigned lab policy. with_public_key() still fails closed with SignatureUnsupported because this package has no Ed25519 implementation. Digest pinning remains integrity only, not an authenticated supply chain.",
       "pages": [
         "docs/explanation/self-correcting-behavioral-model.md",
         "docs/how-to/operate-behavioral-model.md"
@@ -5071,9 +5071,9 @@
     },
     {
       "source": "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs",
-      "sha256": "1b46b9d11b43e2aed10c874dc51acfcae8d22bc3fc9ff0c6a6372c2dc803d5cf",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Tests for BundleManager: valid stage records version and 64-hex digest, stale schema rejected, digest pin enforced (wrong, empty and uppercase pins fail), signed policy fails closed, promote/rollback sequences including rollback to none and NoPrevious, promote without staged candidate, empty/oversized/malformed/wrong-shape buffers rejected, and concurrent stage/promote/rollback threads leave consistent identities.",
+      "sha256": "6b911486c1bab0d4c711fe27f40fdb55366eef31b08ee506316dd56a2ad4fb4c",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tests for BundleManager: valid stage records version and 64-hex digest, stale schema rejected, digest pin enforced (wrong, empty and uppercase pins fail), with_public_key fails closed, promote/rollback sequences including rollback to none and NoPrevious, promote without staged candidate, empty/oversized/malformed/wrong-shape buffers rejected, and concurrent stage/promote/rollback threads leave consistent identities. Re-reviewed 2026-11-18: with a test verifier whose signature is the SHA-256 of the bytes, the signed policy refuses missing, empty and wrong signatures (also via plain stage()), checks the digest pin before the signature and the schema after it, and stages a correctly signed bundle; the unsigned lab policy ignores a supplied signature.",
       "pages": [
         "docs/explanation/self-correcting-behavioral-model.md",
         "docs/how-to/operate-behavioral-model.md"
@@ -5181,9 +5181,9 @@
     },
     {
       "source": "crates/sdk/humanymous-core/src/model/correction/mod.rs",
-      "sha256": "d9959f52194b23c686ebf68f4f10c69ff72de8b87d0a887b82f054a4192c5bc9",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Module root for the lab-only self-correction kernels ported from the legacy correction package: re-exports bundle, calibration, canary, controller, drift, features, oracle, pass_feed and shadow, and defines CorrectionError. Documents that monitors only sense and propose, never mutate a verdict, install a production ThresholdProvider or activate a model; production weights/thresholds/bands stay frozen and invalid inputs fail closed before state changes.",
+      "sha256": "f0e54ffad9f09e22c3e98873a781cc1ed67840609705551db53508e0893d8c42",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Module root for the lab-only self-correction kernels ported from the legacy correction package: re-exports bundle, calibration, canary, controller, drift, features, oracle, pass_feed and shadow, and defines CorrectionError. Documents that monitors only sense and propose, never mutate a verdict, install a production ThresholdProvider or activate a model; production weights/thresholds/bands stay frozen and invalid inputs fail closed before state changes. Re-reviewed 2026-11-18: it also re-exports BundleVerifier and adds the CorrectionError::Signature variant for a missing or invalid signature under the signed policy.",
       "pages": [
         "docs/explanation/self-correcting-behavioral-model.md",
         "docs/how-to/operate-behavioral-model.md",
@@ -8301,12 +8301,33 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/mod.rs",
-      "sha256": "b3d4be4fee2e26cb1d98faaffc8073d60fea320f466e74a44967a1a24bddcd10",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Gateway module root of the runtime crate: declares the application, ban, browser, configuration, connection cap, control, credential, external input, guard, http, logging, management, pass proof/store, request, seams, service, session, settings, shipping, smuggle, startup, TLS, token, verdict store and virtual USB modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Doc line states loopback component support is not product qualification.",
+      "sha256": "65c2c12984c3e6b7461e5001293be791bee530265c0369b6c309502108239469",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Gateway module root of the runtime crate: declares the application, ban, browser, configuration, connection cap, control, credential, external input, guard, http, logging, management, model admission, pass proof/store, request, seams, service, session, settings, shipping, smuggle, startup, TLS, token, verdict store and virtual USB modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Re-reviewed 2026-11-18: the only change adds the public model_admission module (behavioral bundle startup admission). Doc line states loopback component support is not product qualification.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/model_admission.rs",
+      "sha256": "590f611bbc4efb9eb29ae53b1c098c53fead7103e9548929817bd75212cb2292",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Startup admission of the behavioral model bundle (legacy cmd/server ml_setup.go setupBehavioralML admission half and the Ed25519 half of internal/mlcorrect bundle.go, baseline 981d25c). admit() returns Disabled without a bundle (reporting an ignored shadow bundle), otherwise reads the optional PKIX Ed25519 public key and detached signature within 16 KiB and the bundle within MAX_BUNDLE_BYTES, then stages through the core BundleManager (unsigned lab policy without a key, signed policy with an Ed25519Verifier otherwise) so the digest pin, signature and schema pin are enforced on the exact decoded bytes, and promotes the lab identity. Every failure is a typed Refusal and the model seam keeps abstaining; Admitted reports signed and schema_pin_only and leaves installing the model into a serving seam to the caller. Documented fail-closed deltas: an empty key file is refused (legacy admitted unsigned while logging signed=true), verify_strict rejects small-order keys, only an exact Ed25519 SPKI is accepted (other algorithms are NotEd25519, malformed DER is Der) and PEM headers are refused. Calibration, canary rollback and shadow scoring are not ported; nothing in the runtime calls admit() yet.",
+      "pages": [
+        "docs/how-to/operate-behavioral-model.md",
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs",
+      "sha256": "f57614c83b373edf3703d2afa8d0c7429c31ea9e862967ba978d0596e7a4a0ac",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Ten tests porting legacy ml_setup_test.go and bundle_test.go TestStage_SignatureRequiredWhenKeyConfigured with real PKIX PEM Ed25519 keys: an unsigned bundle is admitted when no key is configured; a bundle is refused when a key is configured and the signature is missing; a properly signed bundle is admitted and serves predictions; stage requires a signature under the key; the digest pin is enforced and an empty digest flag means unset; no bundle means Disabled and a shadow bundle is reported as ignored; unreadable key, signature or bundle files and a stale schema are refused and leave the seam abstaining; an empty key file is refused rather than treated as unsigned; PEM/PKIX parsing skips leading text, refuses headers, bad base64, truncated or non-Ed25519 SPKI; and a small-order public key never verifies under verify_strict.",
+      "pages": [
+        "docs/how-to/operate-behavioral-model.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
       ]
     },
     {
