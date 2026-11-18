@@ -4,3 +4,6 @@ services:
     image: humanymous/collector-component:${HM_LAB_IMAGE_TAG:?Rust runner must supply owned tag}
     build:
       context: ${HM_LAB_BUILD_CONTEXT:?Rust runner must supply immutable source}
+    # Restated here: a nested !override through a second extends layer is not
+    # applied by every Compose release, which left /tmp on the read-only root.
+    tmpfs: !override ["/tmp:rw,noexec,nosuid,size=512m,mode=1777", "/dev/shm:rw,noexec,nosuid,nodev,size=256m"]
