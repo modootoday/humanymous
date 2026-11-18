@@ -281,7 +281,25 @@ HTTP/1.1 topology. `swarm` is not evaluated: Go's swarm asserted
 `l5.correlation.proxy_rotation`/HR-19 from three subnets, but the shipped
 runtime accepts loopback peers only (the relay hides the client subnet) and
 serves no cross-session correlation (`application::temporal` is test-only), so
-it needs an owner decision on a peer-identity protocol and serving correlation. Never relabel exit 2 as
+it needs an owner decision on a peer-identity protocol and serving correlation.
+The gate_tls stage (roadmap 4 item 2a, components.gate_tls, gate-tls-ledger.json)
+runs the attack-catalog supervisor in `tg-gate` with TLS terminated by the shipped
+runtime itself: the Gate generates an ephemeral lab CA and server pair on its
+private tmpfs (no committed key, no self-signed fallback), each session starts
+from the closed `humanymous.runtime-loopback-tls-ingress/1` launch envelope, and
+the ingress relay is L4 passthrough, so the runtime captures the original
+`tg-client` ClientHello, H1 order and H2 frames. `gate` needs the exact
+topology, 11 catalog rows with unchanged catalog expectations plus three TLS
+edge rows (truthful synthetic rustls client CHALLENGEd, replay refused,
+duplicate Content-Length closed without a response), every row's effects bound
+to the runner's measurement, no origin effect, the origin unreachable from
+ingress and only the Gate's certificate presented. `raw-tls-h2` needs raw-TLS
+and original-H2 routes decided (not 422) over TLS H1 and hand-framed H2,
+original-H2 refused over TLS H1, a Chrome claim over a rustls hello never
+forwarded, no plaintext fallback and every session ready in TLS mode. Under the
+frozen scoring no forwarded origin effect is reachable over TLS for a synthetic
+client, Go's gate admin/ban/RBAC e2e checks are not ported and browser
+ClientHellos have no Rust client. Never relabel exit 2 as
 product success. Collector is optional Firefox component evidence, never a real
 human/AT or Meari+CEF product browser. No sandbox-disabling option is supplied.
 

@@ -3,7 +3,7 @@
   "reviews": [
     {
       "source": "Cargo.lock",
-      "sha256": "0d5b3b2c7fc9d780d90d0232391c06be7094b82ef67524e1656765eeda0598b8",
+      "sha256": "316f3b8840b2d1c0dd22cba7a6d163fc1d2d2ad5c02f8feb309a165ee3781582",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
       "notes": "Cargo-generated lockfile (format version 4) pinning 664 packages, including the consolidated workspace members humanymous-core, humanymous-runtime, humanymous-platform, the adapter, browser, CEF and CLI crates and their third-party dependencies. It fixes resolution for --locked builds only; it is not install, OS-support or artifact qualification evidence.",
       "pages": [
@@ -6621,9 +6621,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "542e61e1997f556d8b87bea692c36b0654c0d7d75d7fe1abdb4e5a9da9153814",
+      "sha256": "83074635b9d9cd9cab224ae6fee3b5e9c1e078f6ef134dd2371de0abce88d4af",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 420 / macos 420 / windows 410 (410 common names, largest groups credential 50, token 42, ban 33, tests 29, observatory 26, pass_flow 25, logging 24, service 19, plus 10 Unix-only names listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 429 / macos 429 / windows 419 (419 common names, largest groups credential 50, token 42, ban 33, tests 29, observatory 26, pass_flow 25, logging 24, service 22, plus 10 Unix-only names listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/how-this-was-built.md"
@@ -8346,9 +8346,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/main.rs",
-      "sha256": "b2ed01ee0be53c52d26dd6ea67b73cf54d152661a7e20e058cf0896006709d48",
+      "sha256": "ed3572129d3405b3a277502ab490fa25978009acfa77bbee9ca2786b32c15144",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Legacy humanymous-runtime binary entry point (feature gateway). It requires non-terminal stdin and stdout and either no arguments or exactly one of attestation-provision / attestation-answer, which read one request of at most 8193 bytes from stdin, run gateway::attestation and print only its output document (the installation key never crosses the pipe). With no arguments it reads the private configuration from the inherited stdin pipe, binds a ServiceHost on a 2-worker Tokio runtime, writes one readiness JSON line to stdout, and runs until stopped. It holds no platform shutdown adapter: the watch sender is dropped locally, and the CLI/system-service adapter owns real shutdown. Errors print a static message and exit 1.",
+      "notes": "Legacy humanymous-runtime binary entry point (feature gateway). It requires non-terminal stdin and stdout and either no arguments or exactly one of attestation-provision / attestation-answer, which read one request of at most 8193 bytes from stdin, run gateway::attestation and print only its output document (the installation key never crosses the pipe). With no arguments it now reads the launch document with read_launch: a v1 configuration binds a plain ServiceHost, while the closed TLS envelope binds ServiceHost::bind_tls with the provisioned rustls config and no witness, management, tail recovery or settings policy. It then runs on a 2-worker Tokio runtime, writes one readiness JSON line to stdout and runs until stopped. It holds no platform shutdown adapter; errors print a static message and exit 1.",
       "pages": [
         "docs/reference/cli-config-policy.md",
         "docs/reference/install-requirements.md",
@@ -8567,9 +8567,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/service.rs",
-      "sha256": "6e539e3e1d2138fba1f4ef325b2dc0332c0c6c7d278507bd11630364b148dc4d",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "OS-independent ServiceHost lifecycle: read_configuration (64 KiB budget, validated), and bind variants for plain, witness, management, witnessed recovery, settings, TLS and resource operator. bind_inner validates config and TLS, requires management plus witnessed settings for an operator, opens or recovers sealed audit (never recovery without a witness), restores settings, binds the listener and builds the readiness profile. run/run_report serve application and management, then flush audit, and report drain or flush failure rather than Stopped. Blocking I/O needs an external supervisor deadline.",
+      "sha256": "89687e53f13c914ef0536fc6c8d0c8fde8af5157edca14072806dd3a0798a9ea",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "OS-independent ServiceHost lifecycle: read_configuration (64 KiB budget, validated), the new launch submodule re-exported as Launch, TLS_INGRESS_SCHEMA and read_launch, and bind variants for plain, witness, management, witnessed recovery, settings, TLS and resource operator. bind_inner validates config and TLS, requires management plus witnessed settings for an operator, opens or recovers sealed audit (never recovery without a witness), restores settings, binds the listener and builds the readiness profile. run/run_report serve application and management, then flush audit, and report drain or flush failure rather than Stopped. Blocking I/O needs an external supervisor deadline.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
@@ -8611,6 +8611,16 @@
       "notes": "Model tests for the S1 epoch gate: starting or foreign instances cannot admit or revive, first loss closes readiness without extending its clock, revoked work cannot connect or write, would-block yields no bytes and reacquisition rechecks revocation, prior partial submission is retained and manager stop is not loss, concurrent first writes linearize before loss or are refused, and a poisoned gate never recovers. No native role or real socket.",
       "pages": [
         "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/service/launch.rs",
+      "sha256": "e2e4cee3eeffda6e0d30c7a318c2d7a0b348f262f0f1273257715b3c948485ab",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Private inherited launch document for the shipped runtime binary. read_launch reads at most 65,536 bytes (zeroized buffer); a document without a schema field is parsed as the unchanged v1 Configuration (Launch::Plain). Only schema humanymous.runtime-loopback-tls-ingress/1 is accepted otherwise, with deny_unknown_fields on the envelope and on the certificate {chain,key} paths; the inner configuration is validated, so the loopback listen/origin limits still apply. The pair goes through certificate::select and load_provisioned; any non-provisioned source is refused, and there is no issuer selection and no self-signed fallback. Unit tests: v1 stays plain and refuses an unknown field; a provisioned rcgen pair yields ALPN h2 then http/1.1 on a loopback listener; wrong schema, extra field, public listen, missing key, absent key file, key-as-chain, mismatched pair and an issuer field are refused, as is a missing certificate block.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/reference/gate-origin-contract.md"
       ]
     },
     {
@@ -8957,12 +8967,31 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/tls.rs",
-      "sha256": "7008fd3e94173c1fbd9e2d23d72635f10f15a7f623fb34625c10b67148390365",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Joined blocking TLS ingress: validate_configuration requires native buffered routes, no browser policy and only http/1.1 or h2 ALPN; CapturedTls::receive dispatches H1, H2 or dual-ALPN (handshake once then branch on the negotiated protocol) on an owned worker thread that is cancelled and joined on drop. CapturedRequest parses one complete request with the shared strict parser, retains the live connection and writes one bounded response. One unit test covers configuration refusals. The owner alone does not qualify a route.",
+      "sha256": "70382f6454391bc6783275498025eec8b58a530f1d40e49ec64f05d6a6a07ba9",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Joined blocking TLS ingress, now also declaring the public certificate submodule. validate_configuration requires native buffered routes, no browser policy and only http/1.1 or h2 ALPN; CapturedTls::receive dispatches H1, H2 or dual-ALPN (handshake once then branch on the negotiated protocol) on an owned worker thread that is cancelled and joined on drop. CapturedRequest parses one complete request with the shared strict parser, retains the live connection and writes one bounded response. One unit test covers configuration refusals. The owner alone does not qualify a route.",
       "pages": [
         "docs/reference/supported-topologies.md",
         "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/tls/certificate.rs",
+      "sha256": "6e8b7e901718b66cc4449cd93bc23872bcc0e30a5c3b4d76a0f7c1ad3d2e5094",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "B02 certificate source. select() chooses exactly one of a provisioned chain/key pair or issuer domains and refuses an incomplete pair, both at once, or neither (self-signed is never a fallback). issuer_domains trims and lower-cases, requires plain DNS hosts (>=2 labels, 1-63 chars of a-z0-9-, no leading/trailing hyphen, non-numeric TLD, <=253 chars), so wildcards, trailing dots, IP literals and localhost are refused; result is sorted, deduplicated, at most 100. provisioned_config parses PEM chain and key with rustls and sets ALPN h2 then http/1.1; load_provisioned reads each file within 1 MiB. The CertificateIssuer trait and issuer_config require the issuer's domains to equal the selection and append its challenge ALPN. No issuer implementation is shipped here.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs",
+      "sha256": "4eaa0a0cd1c6d91cbe7431d1e138621c3a4ff6713cd5afe5e9892ce9929240af",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unit tests for the certificate source using rcgen-generated pairs: selection refuses absent, chain-only, key-only and pair-plus-domains input and accepts a pair; issuer domains are trimmed, lower-cased and deduplicated, while wildcard, trailing dot, localhost, IPv4 literal, leading/trailing hyphen, underscore and empty names are refused and 101 domains is TooManyDomains; a provisioned pair gives ALPN h2, http/1.1 and zero early data; empty chain, empty key and a mismatched key map to EmptyChain, MissingKey and Rejected; load_provisioned accepts the pair and refuses an oversized or absent file; issuer_config appends acme-tls/1 and refuses a domain mismatch. Test declarations only, no run result inferred.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
       ]
     },
     {

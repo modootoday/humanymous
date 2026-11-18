@@ -15,7 +15,7 @@ use crate::client::request;
 use crate::origin_audit::{emit, read_line};
 use base64::{Engine as _, engine::general_purpose::URL_SAFE_NO_PAD};
 use humanymous_attacker::{
-    network::{self, NetworkRow, Target},
+    network::{self, NetworkRow, Step, Target},
     report::Status,
 };
 use humanymous_core::{
@@ -36,7 +36,7 @@ use zeroize::Zeroizing;
 
 /// Volatile issued capability; never logged or serialized.
 pub struct Issued {
-    session: Zeroizing<String>,
+    pub(crate) session: Zeroizing<String>,
     key: Zeroizing<Vec<u8>>,
     expires: u64,
 }
@@ -47,8 +47,8 @@ pub trait Operator {
     fn call(&mut self, message: &Value) -> Result<Value, LabError>;
 }
 
-struct Pipes<R: BufRead> {
-    input: R,
+pub(crate) struct Pipes<R: BufRead> {
+    pub(crate) input: R,
 }
 impl<R: BufRead> Operator for Pipes<R> {
     fn call(&mut self, message: &Value) -> Result<Value, LabError> {
@@ -57,7 +57,7 @@ impl<R: BufRead> Operator for Pipes<R> {
     }
 }
 
-fn now_ms() -> Result<u64, LabError> {
+pub(crate) fn now_ms() -> Result<u64, LabError> {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .ok()
@@ -66,7 +66,7 @@ fn now_ms() -> Result<u64, LabError> {
 }
 
 /// Strict HTTP/1.1 response framing: exact status line and Content-Length.
-fn parse(bytes: &[u8]) -> Result<Response, LabError> {
+pub(crate) fn parse(bytes: &[u8]) -> Result<Response, LabError> {
     let bad = LabError("response framing");
     let end = bytes.windows(4).position(|w| w == b"\r\n\r\n").ok_or(bad)?;
     let head = std::str::from_utf8(&bytes[..end]).map_err(|_| bad)?;
@@ -106,7 +106,7 @@ fn parse(bytes: &[u8]) -> Result<Response, LabError> {
     })
 }
 
-fn wire(request: &Request) -> Vec<u8> {
+pub(crate) fn wire(request: &Request) -> Vec<u8> {
     let mut bytes = format!("{} {} HTTP/1.1\r\n", request.method, request.target).into_bytes();
     for (name, value) in &request.headers {
         bytes.extend_from_slice(format!("{name}: {value}\r\n").as_bytes());
@@ -116,11 +116,13 @@ fn wire(request: &Request) -> Vec<u8> {
     bytes
 }
 
-/// The Gate in the `ac-gate` container, reached through its ingress relay.
+/// The Gate in the `ac-gate` container, reached through its ingress relay;
+/// with `tls`, the Gate in `tg-gate` whose runtime terminates TLS itself.
 pub struct Remote<'a, O: Operator> {
-    address: SocketAddr,
-    config: Configuration,
-    operator: &'a mut O,
+    pub(crate) address: SocketAddr,
+    pub(crate) config: Configuration,
+    pub(crate) operator: &'a mut O,
+    pub(crate) tls: Option<&'a crate::gate_tls::client::TlsClient>,
 }
 
 impl<O: Operator> Remote<'_, O> {
@@ -140,9 +142,19 @@ impl<O: Operator> Remote<'_, O> {
         {
             return Err(LabError("request already signed or invalid counter"));
         }
+        // An H2 request is signed in the server's lower-case header view.
+        let lower = request
+            .headers
+            .iter()
+            .all(|(name, _)| !name.bytes().any(|b| b.is_ascii_uppercase()));
         request.headers.extend([
             (
-                "Authorization".into(),
+                if lower {
+                    "authorization"
+                } else {
+                    "Authorization"
+                }
+                .into(),
                 format!("Bearer {}", issued.session.as_str()),
             ),
             ("x-humanymous-counter".into(), counter.to_string()),
@@ -213,6 +225,9 @@ impl<O: Operator> Target for Remote<'_, O> {
         self.exchange_raw(&wire(request))
     }
     fn exchange_raw(&mut self, bytes: &[u8]) -> Result<Response, LabError> {
+        if let Some(tls) = self.tls {
+            return parse(&tls.exchange_h1(self.address, bytes)?);
+        }
         let mut stream = TcpStream::connect_timeout(&self.address, Duration::from_secs(5))
             .map_err(|_| LabError("Gate ingress connect"))?;
         stream
@@ -243,7 +258,7 @@ impl<O: Operator> Target for Remote<'_, O> {
 }
 
 /// Signing configuration: the Gate's scope and routes, placeholder custody.
-fn configuration() -> Result<Configuration, LabError> {
+pub(crate) fn configuration() -> Result<Configuration, LabError> {
     serde_json::from_value(super::document(
         "/unused",
         "/unused",
@@ -281,9 +296,37 @@ fn execute(
     operator: &mut impl Operator,
     gate: IpAddr,
     entry: &network::Entry,
-    mut row: NetworkRow,
+    row: NetworkRow,
 ) -> NetworkRow {
-    let started = operator.call(&json!({"op":"start","case":entry.id}));
+    let id = entry.id;
+    session(
+        operator,
+        id,
+        row,
+        |operator, steps| {
+            let mut target = Remote {
+                address: SocketAddr::new(gate, FRONTEND_PORT),
+                config: configuration()?,
+                operator,
+                tls: None,
+            };
+            network::execute_case(&mut target, id, steps)
+        },
+        |steps, delta| network::expectation_matches(id, steps, delta),
+    )
+}
+
+/// One Gate session around `steps`: the runner starts the session, the steps
+/// run, the runner stops it and returns the measured effects, and `expect`
+/// evaluates the steps against exactly those effects.
+pub(crate) fn session<O: Operator>(
+    operator: &mut O,
+    id: &str,
+    mut row: NetworkRow,
+    steps: impl FnOnce(&mut O, &mut Vec<Step>) -> Result<(), LabError>,
+    expect: impl FnOnce(&[Step], &SnapshotDelta) -> Option<bool>,
+) -> NetworkRow {
+    let started = operator.call(&json!({"op":"start","case":id}));
     if !started
         .as_ref()
         .is_ok_and(|reply| reply["op"] == "started" && reply["ok"] == true)
@@ -291,16 +334,9 @@ fn execute(
         row.reason = Some("Gate session did not start".into());
         return row;
     }
-    let execution = configuration().and_then(|config| {
-        let mut target = Remote {
-            address: SocketAddr::new(gate, FRONTEND_PORT),
-            config,
-            operator: &mut *operator,
-        };
-        network::execute_case(&mut target, entry.id, &mut row.steps)
-    });
+    let execution = steps(&mut *operator, &mut row.steps);
     let effects = operator
-        .call(&json!({"op":"stop","case":entry.id}))
+        .call(&json!({"op":"stop","case":id}))
         .and_then(|reply| {
             if reply["op"] != "effects" {
                 return Err(LabError("unexpected runner reply"));
@@ -311,7 +347,7 @@ fn execute(
         });
     match (execution, effects) {
         (Ok(()), Ok(delta)) => {
-            row.expectation_matches = network::expectation_matches(entry.id, &row.steps, &delta);
+            row.expectation_matches = expect(&row.steps, &delta);
             row.status = if row.expectation_matches.is_some() {
                 Status::Evaluated
             } else {
@@ -430,6 +466,7 @@ mod tests {
             address: "127.0.0.1:1".parse().unwrap(),
             config: configuration().unwrap(),
             operator: &mut operator,
+            tls: None,
         };
         let issued = Issued {
             session: Zeroizing::new("s".repeat(43)),
@@ -477,6 +514,7 @@ mod tests {
             address,
             config: configuration().unwrap(),
             operator: &mut operator,
+            tls: None,
         };
         let request = target.request("/effect", b"effect".to_vec());
         assert_eq!(target.exchange(&request).unwrap().status, 401);
