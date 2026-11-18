@@ -221,6 +221,28 @@ fn retained_go1263_seed0_int63_output_goldens() {
 }
 
 #[test]
+fn go_observed_seed7_public_intn_goldens() {
+    // Observed 2026-11-18 from go1.25.3 linux/amd64 math/rand:
+    // rand.New(rand.NewSource(7)); 8x Intn(4), 8x Intn(3), 4x Intn(1000000007), Int63().
+    let mut rng = GoRng::new(7, 4096).unwrap();
+    let pow2: Vec<u32> = (0..8).map(|_| rng.intn(4).unwrap()).collect();
+    assert_eq!(pow2, [2, 2, 1, 3, 0, 0, 0, 2]);
+    let odd: Vec<u32> = (0..8).map(|_| rng.intn(3).unwrap()).collect();
+    assert_eq!(odd, [1, 0, 2, 1, 2, 2, 1, 2]);
+    let large: Vec<u32> = (0..4).map(|_| rng.intn(1_000_000_007).unwrap()).collect();
+    assert_eq!(large, [493_980_905, 875_996_455, 830_120_262, 279_391_310]);
+    assert_eq!(rng.int63().unwrap(), 8_709_117_376_059_157_599);
+
+    let before = rng.snapshot();
+    assert_eq!(rng.intn(0), Err(RngError::SampleLimit));
+    assert_eq!(rng.intn(1 << 31), Err(RngError::SampleLimit));
+    let mut exhausted = GoRng::new(7, 1).unwrap();
+    exhausted.int63().unwrap();
+    assert_eq!(exhausted.intn(3), Err(RngError::DrawLimit));
+    assert_eq!(rng.snapshot(), before, "refusals consume no draws");
+}
+
+#[test]
 fn retained_go1263_seed0_normal_output_goldens() {
     let fixture: serde_json::Value = serde_json::from_str(include_str!(
         "../../../../tests/model/fixtures/go1263-normal-seed0.json"

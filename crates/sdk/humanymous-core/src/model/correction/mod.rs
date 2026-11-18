@@ -33,7 +33,7 @@ pub use controller::{Controller, ControllerSnapshot};
 pub use drift::{DriftEvent, DriftMonitor, PageHinkley, psi};
 pub use features::{DEFAULT_WINDOW, FeatureMonitor, MAX_WINDOW, PSI_BUCKETS};
 pub use oracle::{Label, MAX_BATCH_LABELS, Outcome, PassGuard, confirm};
-pub use pass_feed::{Cohort, Fed, HumanTrace, cohort_of, feed_pass_outcome};
+pub use pass_feed::{Cohort, Fed, HumanTrace, append_trace, cohort_of, feed_pass_outcome};
 pub use shadow::{ShadowComparator, ShadowStats};
 
 /// Bounded failures; diagnostics never carry features, scores or bundle bytes.

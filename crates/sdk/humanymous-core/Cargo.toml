@@ -30,6 +30,11 @@ wasmparser.workspace = true
 [dev-dependencies]
 humanymous-platform = { workspace = true, features = ["testing"] }
 
+# Offline bootstrap trainer shell (legacy cmd/ml-train); no deploy authority.
+[[bin]]
+name = "ml-train"
+path = "src/bin/ml_train.rs"
+
 # Offline retrain/promotion-gate shell (legacy cmd/mlcorrect-train); no deploy authority.
 [[bin]]
 name = "mlcorrect-train"
