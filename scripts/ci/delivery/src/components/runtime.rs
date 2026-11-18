@@ -155,7 +155,37 @@ pub(super) fn invoke(
     let log = dir.join(format!("{label}.log"));
     let code = command::json_log(root, "cargo", args, &log)?;
     report["commands"][label] = json!({"exit_code":code,"stdout_sha256":source::file(&log)?,"stderr_sha256":source::file(&log.with_extension("stderr.log"))?});
+    if code != 0 {
+        let stdout = std::fs::read_to_string(&log).unwrap_or_default();
+        let stderr = std::fs::read_to_string(log.with_extension("stderr.log")).unwrap_or_default();
+        println!("{}", diagnose(label, &format!("{stdout}\n{stderr}")));
+    }
     Ok(code == 0)
+}
+/// Bounded failure excerpt: failed and ignored names, panic sites with their
+/// message line, and summary footers. Hashes stay the evidence; this only makes
+/// a hosted failure diagnosable from the job log.
+pub(super) fn diagnose(label: &str, text: &str) -> String {
+    let mut kept = vec![format!("--- {label} failure excerpt ---")];
+    let mut take_next = false;
+    for line in text.lines() {
+        let keep = take_next
+            || (line.starts_with("test ")
+                && (line.ends_with(" FAILED") || line.contains(" ... ignored")))
+            || line.starts_with("---- ")
+            || line.starts_with("test result:")
+            || line.starts_with("error")
+            || line.contains("panicked at");
+        take_next = line.contains("panicked at");
+        if keep {
+            kept.push(line.chars().take(400).collect());
+        }
+        if kept.len() > 80 {
+            kept.push("--- excerpt truncated ---".into());
+            break;
+        }
+    }
+    kept.join("\n")
 }
 pub(super) fn run(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
     let contract = contract(root)?;
@@ -215,6 +245,13 @@ pub(super) fn run(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
             report["test_counts"][name]["validated"] = json!(true);
         } else {
             failed = true;
+            let text = std::fs::read_to_string(dir.join(format!("{name}.log"))).unwrap_or_default();
+            println!(
+                "{name}: discovery {:?}; outcome {:?}\n{}",
+                observed.as_ref().err(),
+                outcome,
+                diagnose(name, &text)
+            );
         }
     }
     require(!failed, "required independent Runtime harness incomplete")
@@ -265,5 +302,25 @@ mod tests {
             context_inventory(&log.replace("owned_case", "unreviewed_case"), &names, true).is_err()
         );
         assert!(context_inventory(&log.replace("2 tests", "3 tests"), &names, true).is_err());
+    }
+}
+#[cfg(test)]
+mod diagnose_tests {
+    use super::diagnose;
+    #[test]
+    fn excerpt_keeps_failures_panics_and_footers_and_is_bounded() {
+        let text = "test a ... ok\ntest b ... FAILED\n---- b stdout ----\nthread 'b' panicked at src/x.rs:1:1:\nboom\nnoise\ntest result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out\n";
+        let out = diagnose("x", text);
+        for kept in [
+            "test b ... FAILED",
+            "---- b stdout ----",
+            "boom",
+            "test result: FAILED.",
+        ] {
+            assert!(out.contains(kept));
+        }
+        assert!(!out.contains("test a ... ok") && !out.contains("noise"));
+        let long = "test z ... FAILED\n".repeat(500);
+        assert!(diagnose("y", &long).lines().count() <= 83);
     }
 }

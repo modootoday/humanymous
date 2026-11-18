@@ -20,6 +20,8 @@ pub struct Options {
     manifest: Option<PathBuf>,
     expected_sid: Option<String>,
     source: Option<PathBuf>,
+    /// Parent-captured `cargo metadata`; the standard-user actor has no Cargo on PATH.
+    package_metadata: Option<PathBuf>,
     actor_case: String,
 }
 fn options(
@@ -32,6 +34,7 @@ fn options(
         manifest: None,
         expected_sid: None,
         source: None,
+        package_metadata: None,
         actor_case: "normal".into(),
     };
     while let Some(flag) = args.next() {
@@ -48,6 +51,9 @@ fn options(
                 options.expected_sid = Some(value)
             }
             "--source" if options.source.is_none() => options.source = Some(value.into()),
+            "--package-metadata" if options.package_metadata.is_none() => {
+                options.package_metadata = Some(value.into())
+            }
             "--actor-case" if options.actor_case == "normal" && value == "after-grant" => {
                 options.actor_case = value
             }
