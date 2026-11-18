@@ -255,9 +255,9 @@
     },
     {
       "source": "adapters/dotnet/src/Humanymous.Native/Humanymous.Native.csproj",
-      "sha256": "9ed8f873a0251a9e92a6a008a990a98d794789b054d3340220f61470097c0994",
-      "reviewer": "codex/rust-pages",
-      "notes": "34-line net10 nullable/AOT-compatible candidate, exact two explicit sources, native package file and Windows/Linux x64 RID required. Existence/RID check does not verify native hash, provenance, dependency notices or NativeAOT compatibility.",
+      "sha256": "f4d0d4beed146279ca327fb7133823ed41cb9e72c1088d9206b6cb88e36a3639",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "34-line net10 nullable/AOT-compatible candidate, exact two explicit sources, native package file and Windows/Linux x64 RID required. Existence/RID check does not verify native hash, provenance, dependency notices or NativeAOT compatibility. 2026-11-18: the packed LICENSE-Go.txt now points to crates/sdk/humanymous-runtime/src/audit/, where the file moved; the stale crates/audit path made dotnet pack fail. Package and NativeAOT ran on Linux through the package controller.",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
@@ -3206,9 +3206,9 @@
     },
     {
       "source": "crates/dotnet-adapter/INTEGRATION.md",
-      "sha256": "2abeda5055794250175c03099ddd4e87082538cb4762227e3c3c0d546c90bff5",
-      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Integration request and handover log for the .NET adapter lane: records retained-harness and pure checkpoints, the target public names (NuGet humanymous, Humanymous namespace, humanymous-native library), the L4 consumer contract, pending byte commitments, the prebuilt Kestrel and generic ABI-only preparation, and an unresolved request for a managed binding/NativeAOT exception. It states all 21 actual-host contract cases, real GC/Kestrel, NativeAOT and package install remain NOT_RUN and the full objective is blocked, so no managed or package success is claimed. 2026-11-18: launch.rs section now describes the creator-channel admission consumer.",
+      "sha256": "4988fc1e64b1e97fdf81358c8aa2aec70e213060201d3c5b98c61a112b0e6055",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Integration request and handover log for the .NET adapter lane: records retained-harness and pure checkpoints, the target public names (NuGet humanymous, Humanymous namespace, humanymous-native library), the L4 consumer contract, pending byte commitments, the prebuilt Kestrel and generic ABI-only preparation, and an unresolved request for a managed binding/NativeAOT exception. It states all 21 actual-host contract cases, real GC/Kestrel, NativeAOT and package install remain NOT_RUN and the full objective is blocked, so no managed or package success is claimed. 2026-11-18: launch.rs section now describes the creator-channel admission consumer. 2026-11-18: adds the package-matrix controller section (derived admission per mode, borrowed original budget, short pkg scratch for the 100-byte socket bound, dotnet-package component) and supersedes HUMANYMOUS_DOTNET_FIXTURE_PARENT.",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
@@ -3278,9 +3278,9 @@
     },
     {
       "source": "crates/dotnet-adapter/tests/hosted/launch.rs",
-      "sha256": "32cd175f3d71afb302225b93587b9b37dc51c3d4d2873a66584f22faaddee2cf",
-      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Creator-channel admission consumer (SoT dotnet-protected-host-launch 3.1-3.5). Reads one bounded humanymous.dotnet-host-admission/1 envelope from stdin and refuses in table order: no pipe, malformed envelope or unqualified backend give Unsupported; nonce, digest, provenance, actor, uid 0, ACT, venue, cleanup-only, derived widening or an apphost outside its root give PermissionDenied; an exhausted budget gives TimedOut. Linux requires the systemd scope hm-dotnet-<nonce>.scope. The admission is built once, cached and never cloned; derived admission only narrows the apphost and audit root under the original private_work and never renews the budget. Five unit tests cover every refusal row. Decoded claims alone never authenticate the producer; the handle facts do.",
+      "sha256": "ac50fe2ca7cefa05d59e35052ed12bde094937ccc236885f38e098a272279942",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Creator-channel admission consumer (SoT dotnet-protected-host-launch 3.1-3.5). Reads one bounded humanymous.dotnet-host-admission/1 envelope from stdin and refuses in table order: no pipe, malformed envelope or unqualified backend give Unsupported; nonce, digest, provenance, actor, uid 0, ACT, venue, cleanup-only, derived widening or an apphost outside its root give PermissionDenied; an exhausted budget gives TimedOut. Linux requires the systemd scope hm-dotnet-<nonce>.scope. The admission is built once, cached and never cloned; derived admission only narrows the apphost and audit root under the original private_work and never renews the budget. Five unit tests cover every refusal row. Decoded claims alone never authenticate the producer; the handle facts do. 2026-11-18: Admission keeps the exact received context/binding bytes and nonce; Admission::derive re-sends them with one narrowing Derivation under the original private_work, refuses a second derivation, and never renews the budget (unit test added).",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
@@ -3314,9 +3314,9 @@
     },
     {
       "source": "crates/dotnet-adapter/tests/package.rs",
-      "sha256": "bc87e0dee455802b8b71bcad9a2cbc21e5aea03845ec2f1f9d5582cc71873f96",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Ignored, supervisor-driven SDK/package matrix. It requires canonical source, native, harness and provenance inputs, a clean HEAD matching provenance, matching lock/native/harness SHA-256 digests, rustc 1.99.1 and SDK 10.0.403. It packs into a private feed, then publishes JIT/AOT x source/packed builds with separate caches; packed native bytes must be restored, not injected. It runs the harness expecting two profiles with zero failed or ignored, rechecks package/native digests and a clean tree, and writes a projection that asserts host_contract_complete. Stage logs are retained and full_product/publication stay false. A non-ignored test only checks command env construction; no SDK or host run happens here.",
+      "sha256": "0d297ea4748b875b22ff9dd0f3a10ad4b68ff126737aed7f78870df8814d8868",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Ignored, supervisor-driven SDK/package matrix. It requires canonical source, native, harness and provenance inputs, a clean HEAD matching provenance, matching lock/native/harness SHA-256 digests, rustc 1.99.1 and SDK 10.0.403. It packs into a private feed, then publishes JIT/AOT x source/packed builds with separate caches; packed native bytes must be restored, not injected. It runs the harness expecting two profiles with zero failed or ignored, rechecks package/native digests and a clean tree, and writes a projection that asserts host_contract_complete. Stage logs are retained and full_product/publication stay false. A non-ignored test only checks command env construction; no SDK or host run happens here. 2026-11-18: the controller refuses without its own creator-channel admission, uses the admitted private work as parent (pkg scratch), and hands each mode's harness a derived envelope on a stdin pipe with the remaining original deadline. The final host_contract_complete assertion is unchanged.",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]

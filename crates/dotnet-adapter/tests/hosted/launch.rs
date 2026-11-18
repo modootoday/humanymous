@@ -5,7 +5,10 @@
 //! before any `Command` exists.
 use humanymous_platform::testing::parent_context::{
     self, UnverifiedMappedBudget, UnverifiedParentContext,
-    admission::{AdmissionProfile, Derivation, decode_envelope},
+    admission::{
+        AdmissionProfile, Derivation, DerivedMode, UnverifiedEnvelope, decode_envelope,
+        encode_envelope,
+    },
     host::{ActorIdentity, UnverifiedHostContext, decode_host, decode_host_binding},
 };
 use sha2::{Digest, Sha256};
@@ -46,6 +49,11 @@ pub struct Admission {
     context: UnverifiedHostContext,
     budget: UnverifiedMappedBudget,
     derived: Option<Derivation>,
+    /// Exact received bytes and nonce; only a narrowing [`Admission::derive`]
+    /// re-sends them, unchanged, to a same-actor child.
+    run_nonce: String,
+    context_bytes: Vec<u8>,
+    binding_bytes: Vec<u8>,
 }
 impl std::fmt::Debug for Admission {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -80,6 +88,45 @@ impl Admission {
     }
     pub fn fixed_environment(&self) -> Vec<(&'static str, String)> {
         self.context.fixed_environment()
+    }
+    /// Derived envelope for one package-matrix mode (SoT 3.5). The context and
+    /// binding bytes, actor, nonce and original budget are re-sent unchanged;
+    /// only the apphost and audit root narrow under the ORIGINAL private_work.
+    /// A derived admission never derives again.
+    #[allow(dead_code, reason = "used by the package-matrix controller only")]
+    pub fn derive(
+        &self,
+        mode: DerivedMode,
+        apphost: &Path,
+        audit_root: &Path,
+    ) -> io::Result<Vec<u8>> {
+        let text = |path: &Path| {
+            path.to_str()
+                .map(str::to_owned)
+                .ok_or_else(|| refuse(ErrorKind::PermissionDenied, "non-UTF-8 derived path"))
+        };
+        let (apphost, audit_root) = (text(apphost)?, text(audit_root)?);
+        if self.derived.is_some()
+            || !within(&apphost, &self.context.private_work)
+            || !within(&audit_root, &self.context.private_work)
+        {
+            return Err(refuse(
+                ErrorKind::PermissionDenied,
+                "derived admission widens parent",
+            ));
+        }
+        encode_envelope(&UnverifiedEnvelope {
+            profile: PROFILE,
+            run_nonce: self.run_nonce.clone(),
+            derived: Some(Derivation {
+                mode,
+                apphost,
+                audit_root,
+            }),
+            context: self.context_bytes.clone(),
+            binding: self.binding_bytes.clone(),
+        })
+        .map_err(|_| refuse(ErrorKind::PermissionDenied, "derived envelope bounds"))
     }
     /// The ONE original mapping; sequential profiles borrow it unchanged.
     pub fn deadlines(&self) -> io::Result<(Instant, Instant)> {
@@ -205,6 +252,9 @@ pub fn admit(
         context,
         budget,
         derived: envelope.derived,
+        run_nonce: envelope.run_nonce,
+        context_bytes: envelope.context,
+        binding_bytes: envelope.binding,
     })
 }
 
@@ -331,7 +381,6 @@ mod tests {
     use humanymous_platform::testing::parent_context::{
         ManagedLineage, NativeLineage, PreflightEnvironment, UnverifiedBudget, UnverifiedCleanup,
         UnverifiedProvenance,
-        admission::{DerivedMode, UnverifiedEnvelope, encode_envelope},
         host::{UnverifiedHostBinding, encode_host, encode_host_binding},
     };
 
@@ -613,6 +662,62 @@ mod tests {
                 Some(ErrorKind::PermissionDenied)
             );
         }
+    }
+
+    #[test]
+    fn derive_resends_exact_bytes_narrows_once_and_keeps_the_budget() {
+        let received = Instant::now();
+        let original = Frame::new(&context());
+        let parent = admit(&original.bytes(), &facts(), 1100, received).unwrap();
+        let frame = parent
+            .derive(
+                DerivedMode::JitPacked,
+                Path::new("/srv/work/jit-packed/published/Humanymous.HostPilot"),
+                Path::new("/srv/work/jit-packed/audit"),
+            )
+            .unwrap();
+        let decoded = decode_envelope(&frame).unwrap();
+        assert_eq!(decoded.context, original.context);
+        assert_eq!(decoded.run_nonce, NONCE);
+        assert_eq!(
+            decoded.derived.as_ref().unwrap().mode,
+            DerivedMode::JitPacked
+        );
+        let child = admit(&frame, &facts(), 1100, received).unwrap();
+        assert_eq!(child.deadlines().unwrap(), parent.deadlines().unwrap());
+        assert_eq!(child.apphost_root(), Path::new("/srv/work"));
+        // A derived admission never derives again, and never widens.
+        assert_eq!(
+            child
+                .derive(
+                    DerivedMode::AotSource,
+                    Path::new("/srv/work/a/x"),
+                    Path::new("/srv/work/a/b")
+                )
+                .unwrap_err()
+                .kind(),
+            ErrorKind::PermissionDenied
+        );
+        for (apphost, audit_root) in [
+            ("/srv/app/Humanymous.HostPilot", "/srv/work/a/audit"),
+            ("/srv/work/a/x", "/srv/handoff/audit"),
+            ("/srv/work/../x", "/srv/work/a/audit"),
+            ("/srv/work", "/srv/work/a/audit"),
+        ] {
+            assert_eq!(
+                parent
+                    .derive(
+                        DerivedMode::AotSource,
+                        Path::new(apphost),
+                        Path::new(audit_root)
+                    )
+                    .unwrap_err()
+                    .kind(),
+                ErrorKind::PermissionDenied
+            );
+        }
+        // The budget is borrowed, not renewed: a late child still times out.
+        assert_eq!(kind(&frame, &facts(), 181000), Some(ErrorKind::TimedOut));
     }
 
     #[test]

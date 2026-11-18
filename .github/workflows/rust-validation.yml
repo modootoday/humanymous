@@ -393,7 +393,7 @@ jobs:
     needs: [policy]
     if: ${{ !cancelled() && needs.policy.result == 'success' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
@@ -410,6 +410,8 @@ jobs:
       run: dotnet --info
     - name: Execute actual .NET hosted provider in a transient systemd scope
       run: cargo run --locked -p humanymous-delivery -- component dotnet-host
+    - name: Execute actual .NET package matrix (JIT and NativeAOT, source and packed) in a transient systemd scope
+      run: cargo run --locked -p humanymous-delivery -- component dotnet-package
   advisories:
     needs: [policy, node]
     if: ${{ !cancelled() && needs.policy.result == 'success' }}

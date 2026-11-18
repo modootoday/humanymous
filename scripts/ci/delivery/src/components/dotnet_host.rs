@@ -31,6 +31,9 @@ pub const TESTS: [&str; 2] = [
     "actual_kestrel_engine_audit_body_gc_and_shutdown",
     "generic::actual_generic_abi_only_process",
 ];
+/// Rows 72/73: the package-matrix controller, itself admitted, which hands
+/// each mode's harness a derived envelope (SoT 3.5).
+pub const PACKAGE_TEST: &str = "sdk_package_and_real_host_matrix";
 const RUN_MS: u64 = 180_000;
 const CLEANUP_MS: u64 = 60_000;
 const OUTPUT_LIMIT: u64 = 1_048_576;
@@ -38,6 +41,14 @@ const OUTPUT_LIMIT: u64 = 1_048_576;
 /// Verified inputs handed from the build phase to the launch phase.
 pub struct Prepared {
     pub harness: PathBuf,
+    /// Package-matrix controller test executable.
+    pub controller: PathBuf,
+    /// Release native export the package controller packs and measures.
+    pub release_native: PathBuf,
+    /// Native provenance the controller compares against actual digests.
+    pub provenance: PathBuf,
+    /// Committed source checkout the controller verifies clean and exact.
+    pub source_root: PathBuf,
     pub app_root: PathBuf,
     pub runtime_root: PathBuf,
     pub dotnet: PathBuf,
@@ -192,6 +203,7 @@ pub fn host_observations(output: &str) -> Result<Value> {
 }
 
 struct Attempt<'a> {
+    harness: &'a Path,
     uid: u32,
     gid: u32,
     name: &'a str,
@@ -203,7 +215,7 @@ struct Attempt<'a> {
 }
 
 /// One scoped harness invocation and its terminal facts.
-fn launch_one(prepared: &Prepared, dir: &Path, attempt: Attempt<'_>) -> Result<Value> {
+fn launch_one(dir: &Path, attempt: Attempt<'_>) -> Result<Value> {
     let (uid, gid) = (attempt.uid, attempt.gid);
     let unit = format!("hm-dotnet-{}.scope", attempt.nonce);
     let mut arguments = vec![
@@ -220,7 +232,7 @@ fn launch_one(prepared: &Prepared, dir: &Path, attempt: Attempt<'_>) -> Result<V
     ];
     arguments.extend(attempt.env.iter().map(|(k, v)| format!("{k}={v}")));
     arguments.extend([
-        text(&prepared.harness)?,
+        text(attempt.harness)?,
         "--exact".to_owned(),
         attempt.name.to_owned(),
         "--ignored".to_owned(),
@@ -348,10 +360,106 @@ fn lineage(sha: &str, lock: &str, receipt: &str) -> NativeLineage {
     }
 }
 
+/// Which declared harness a provider run executes.
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub enum Target {
+    /// Row 24: the two hosted tests, each in its own scope.
+    Hosted,
+    /// Rows 72/73: the package-matrix controller in one scope.
+    Package,
+}
+
+/// Original `/2` context, binding and envelope for one scoped run. The
+/// package controller later re-sends these exact bytes, narrowed per mode.
+fn envelope(
+    prepared: &Prepared,
+    actor: u32,
+    nonce: &str,
+    issued: Instant,
+    private_work: &Path,
+    handoff: &Path,
+) -> Result<Vec<u8>> {
+    let issued_ms = now_ms()?;
+    let provenance = UnverifiedProvenance {
+        managed: ManagedLineage {
+            source_sha: prepared.source_sha.clone(),
+            required_source_sha: prepared.source_sha.clone(),
+            receipt_sha256: prepared.hashes["managed_assembly"]
+                .as_str()
+                .ok_or("managed hash absent")?
+                .into(),
+        },
+        native: lineage(
+            &prepared.source_sha,
+            &prepared.cargo_lock_sha256,
+            prepared.hashes["native_library"]
+                .as_str()
+                .ok_or("native hash absent")?,
+        ),
+        harness: lineage(
+            &prepared.source_sha,
+            &prepared.cargo_lock_sha256,
+            prepared.hashes["harness"]
+                .as_str()
+                .ok_or("harness hash absent")?,
+        ),
+    };
+    let context = UnverifiedHostContext {
+        schema: "humanymous.dotnet-host-launch/2".into(),
+        apphost: text(&prepared.app_root.join("Humanymous.HostPilot"))?,
+        app_root: text(&prepared.app_root)?,
+        runtime_root: text(&prepared.runtime_root)?,
+        system_root: None,
+        private_work: text(private_work)?,
+        audit_root: text(&private_work.join("audit"))?,
+        handoff_root: text(handoff)?,
+        actor: ActorIdentity::Linux { uid: actor },
+        provenance,
+        budget: UnverifiedBudget {
+            issued_utc_ms: issued_ms,
+            run_expires_utc_ms: issued_ms + RUN_MS,
+            cleanup_expires_utc_ms: issued_ms + RUN_MS + CLEANUP_MS,
+            parent_elapsed_ms_at_dispatch: issued.elapsed().as_millis() as u64,
+        },
+    };
+    let context_bytes = encode_host(&context).map_err(|e| e.to_string())?;
+    let binding = UnverifiedHostBinding {
+        schema: "humanymous.parent-context-binding/2".into(),
+        run_nonce: nonce.to_owned(),
+        actor: context.actor.clone(),
+        source_sha: prepared.source_sha.clone(),
+        context_sha256: source::sha(&context_bytes),
+        verified_manifest_sha256: prepared.manifest_sha256.clone(),
+        provenance_sha256: source::sha(
+            &encode_provenance(&context.provenance).map_err(|e| e.to_string())?,
+        ),
+        original_budget: UnverifiedBudget { ..context.budget },
+        preflight_environment: PreflightEnvironment::GithubHosted,
+    };
+    let binding_bytes = encode_host_binding(&binding, &context).map_err(|e| e.to_string())?;
+    encode_envelope(&UnverifiedEnvelope {
+        profile: AdmissionProfile::StandardUserDotnetPrebuilt,
+        run_nonce: nonce.to_owned(),
+        derived: None,
+        context: context_bytes,
+        binding: binding_bytes,
+    })
+    .map_err(|e| e.to_string())
+}
+
+/// The declared tests a target runs, each alone with `--exact` in its scope.
+pub fn tests(target: Target) -> &'static [&'static str] {
+    match target {
+        Target::Hosted => &TESTS,
+        Target::Package => &[PACKAGE_TEST],
+    }
+}
+
 /// Create the private layout, the `/2` context, binding and envelope, then run
 /// each declared test inside its own scope. Every terminal fact must hold.
 pub fn launch(
     prepared: &Prepared,
+    target: Target,
     scratch: &Path,
     dir: &Path,
     venue: &str,
@@ -364,10 +472,9 @@ pub fn launch(
         "ordinary non-root runner actor required",
     )?;
     let mut results = Vec::new();
-    for (index, name) in TESTS.iter().enumerate() {
+    for name in tests(target) {
         let nonce = nonce()?;
         let issued = Instant::now();
-        let issued_ms = now_ms()?;
         let private_work = scratch.join(format!("run-{}", &nonce[..12]));
         let handoff = scratch.join(format!("handoff-{}", &nonce[..12]));
         for path in [
@@ -385,30 +492,6 @@ pub fn launch(
                 .map_err(|e| e.to_string())?
                 .gid()
         };
-        let provenance = UnverifiedProvenance {
-            managed: ManagedLineage {
-                source_sha: prepared.source_sha.clone(),
-                required_source_sha: prepared.source_sha.clone(),
-                receipt_sha256: prepared.hashes["managed_assembly"]
-                    .as_str()
-                    .ok_or("managed hash absent")?
-                    .into(),
-            },
-            native: lineage(
-                &prepared.source_sha,
-                &prepared.cargo_lock_sha256,
-                prepared.hashes["native_library"]
-                    .as_str()
-                    .ok_or("native hash absent")?,
-            ),
-            harness: lineage(
-                &prepared.source_sha,
-                &prepared.cargo_lock_sha256,
-                prepared.hashes["harness"]
-                    .as_str()
-                    .ok_or("harness hash absent")?,
-            ),
-        };
         let mut env = vec![
             ("HOME".to_owned(), text(&private_work.join("profile"))?),
             ("TMPDIR".to_owned(), text(&private_work.join("temp"))?),
@@ -424,52 +507,7 @@ pub fn launch(
                 "root-approved-local".to_owned(),
             )),
         }
-        let envelope = if index == 0 {
-            let context = UnverifiedHostContext {
-                schema: "humanymous.dotnet-host-launch/2".into(),
-                apphost: text(&prepared.app_root.join("Humanymous.HostPilot"))?,
-                app_root: text(&prepared.app_root)?,
-                runtime_root: text(&prepared.runtime_root)?,
-                system_root: None,
-                private_work: text(&private_work)?,
-                audit_root: text(&private_work.join("audit"))?,
-                handoff_root: text(&handoff)?,
-                actor: ActorIdentity::Linux { uid: real },
-                provenance,
-                budget: UnverifiedBudget {
-                    issued_utc_ms: issued_ms,
-                    run_expires_utc_ms: issued_ms + RUN_MS,
-                    cleanup_expires_utc_ms: issued_ms + RUN_MS + CLEANUP_MS,
-                    parent_elapsed_ms_at_dispatch: issued.elapsed().as_millis() as u64,
-                },
-            };
-            let context_bytes = encode_host(&context).map_err(|e| e.to_string())?;
-            let binding = UnverifiedHostBinding {
-                schema: "humanymous.parent-context-binding/2".into(),
-                run_nonce: nonce.clone(),
-                actor: context.actor.clone(),
-                source_sha: prepared.source_sha.clone(),
-                context_sha256: source::sha(&context_bytes),
-                verified_manifest_sha256: prepared.manifest_sha256.clone(),
-                provenance_sha256: source::sha(
-                    &encode_provenance(&context.provenance).map_err(|e| e.to_string())?,
-                ),
-                original_budget: UnverifiedBudget { ..context.budget },
-                preflight_environment: PreflightEnvironment::GithubHosted,
-            };
-            let binding_bytes =
-                encode_host_binding(&binding, &context).map_err(|e| e.to_string())?;
-            Some(
-                encode_envelope(&UnverifiedEnvelope {
-                    profile: AdmissionProfile::StandardUserDotnetPrebuilt,
-                    run_nonce: nonce.clone(),
-                    derived: None,
-                    context: context_bytes,
-                    binding: binding_bytes,
-                })
-                .map_err(|e| e.to_string())?,
-            )
-        } else {
+        let (harness, envelope) = if *name == TESTS[1] {
             let report_dir = private_work.join("generic-report");
             private_dir(&report_dir)?;
             env.extend([
@@ -482,13 +520,45 @@ pub fn launch(
                     text(&report_dir)?,
                 ),
             ]);
-            None
+            (&prepared.harness, None)
+        } else {
+            if *name == PACKAGE_TEST {
+                // The controller runs the pinned SDK and git; it measures the
+                // source, native, harness and provenance it is handed.
+                let sdk = prepared.dotnet.parent().ok_or("dotnet root absent")?;
+                env.extend([
+                    ("PATH".to_owned(), format!("{}:/usr/bin:/bin", text(sdk)?)),
+                    (
+                        "HUMANYMOUS_DOTNET_SOURCE_ROOT".to_owned(),
+                        text(&prepared.source_root)?,
+                    ),
+                    (
+                        "HUMANYMOUS_DOTNET_NATIVE_LIBRARY".to_owned(),
+                        text(&prepared.release_native)?,
+                    ),
+                    (
+                        "HUMANYMOUS_DOTNET_HOST_HARNESS".to_owned(),
+                        text(&prepared.harness)?,
+                    ),
+                    (
+                        "HUMANYMOUS_DOTNET_NATIVE_PROVENANCE".to_owned(),
+                        text(&prepared.provenance)?,
+                    ),
+                ]);
+            }
+            let frame = envelope(prepared, real, &nonce, issued, &private_work, &handoff)?;
+            let harness = if *name == PACKAGE_TEST {
+                &prepared.controller
+            } else {
+                &prepared.harness
+            };
+            (harness, Some(frame))
         };
-        let stage = format!("dotnet-host-{index}");
+        let stage = format!("dotnet-{}", name.replace("::", "-"));
         let mut result = launch_one(
-            prepared,
             dir,
             Attempt {
+                harness,
                 uid: real,
                 gid,
                 name,
@@ -506,14 +576,21 @@ pub fn launch(
             json!(std::fs::remove_dir_all(&private_work).is_ok() && !private_work.exists());
         result["handoff_removed"] =
             json!(std::fs::remove_dir_all(&handoff).is_ok() && !handoff.exists());
-        if index == 0 {
-            let output = std::fs::read_to_string(dir.join(format!("{stage}.log")))
-                .map_err(|e| e.to_string())?;
+        let output =
+            std::fs::read_to_string(dir.join(format!("{stage}.log"))).map_err(|e| e.to_string())?;
+        if *name == TESTS[0] {
             result["observations"] = host_observations(&output).unwrap_or(Value::Null);
+        }
+        if *name == PACKAGE_TEST {
+            result["package"] = package_projection(&output).unwrap_or(Value::Null);
         }
         results.push(result);
     }
-    report["dotnet_host"] = json!({
+    let key = match target {
+        Target::Hosted => "dotnet_host",
+        Target::Package => "dotnet_package",
+    };
+    report[key] = json!({
         "provider": "standard-user-dotnet-prebuilt",
         "backend": "linux-systemd-scope",
         "venue": venue,
@@ -538,8 +615,30 @@ pub fn launch(
             && result["handoff_files"] == 0
             && result["private_removed"] == true
             && result["handoff_removed"] == true
-    }) && results[0]["observations"].is_array();
-    require(clean, "dotnet host provider terminal facts incomplete")
+    }) && match target {
+        Target::Hosted => results[0]["observations"].is_array(),
+        Target::Package => results[0]["package"].is_object(),
+    };
+    require(clean, "dotnet provider terminal facts incomplete")
+}
+
+/// The controller's one public projection line: four modes, complete host
+/// contract, package install evidenced by the packed modes, no product claim.
+pub fn package_projection(output: &str) -> Result<Value> {
+    let prefix = format!("test {PACKAGE_TEST} ... ");
+    let rows: Vec<Value> = output
+        .lines()
+        .map(|line| line.strip_prefix(&prefix).unwrap_or(line))
+        .filter_map(|line| serde_json::from_str::<Value>(line).ok())
+        .filter(|row| row.get("host_contract_complete").is_some())
+        .collect();
+    require(
+        rows.len() == 1
+            && rows[0]["host_contract_complete"] == true
+            && rows[0]["full_product"] == false,
+        "dotnet package projection incomplete",
+    )?;
+    Ok(rows[0].clone())
 }
 
 /// Resolve the `dotnet` muxer actually on PATH and its runtime root.
@@ -555,18 +654,18 @@ fn muxer() -> Result<(PathBuf, PathBuf)> {
     Ok((dotnet, root))
 }
 
-fn harness_executable(log: &str) -> Result<PathBuf> {
+fn harness_executable(log: &str, name: &str) -> Result<PathBuf> {
     let paths: Vec<_> = log
         .lines()
         .filter_map(|line| serde_json::from_str::<Value>(line).ok())
         .filter(|row| {
             row["reason"] == "compiler-artifact"
-                && row["target"]["name"] == "hosted"
+                && row["target"]["name"] == name
                 && row["target"]["kind"] == json!(["test"])
         })
         .filter_map(|row| row["executable"].as_str().map(PathBuf::from))
         .collect();
-    require(paths.len() == 1, "exactly one hosted harness executable")?;
+    require(paths.len() == 1, "exactly one test harness executable")?;
     Ok(paths[0].clone())
 }
 
@@ -608,6 +707,50 @@ pub fn prepare(root: &Path, dir: &Path, report: &mut Value, work: &Path) -> Resu
     let harness = harness_executable(
         &std::fs::read_to_string(dir.join("dotnet-harness-build.log"))
             .map_err(|e| e.to_string())?,
+        "hosted",
+    )?;
+    step(
+        report,
+        "dotnet-native-release-build",
+        "cargo",
+        &[
+            "build",
+            "--locked",
+            "--release",
+            "-p",
+            "humanymous-dotnet-adapter-export",
+        ],
+        "900s",
+    )?;
+    step(
+        report,
+        "dotnet-controller-build",
+        "cargo",
+        &[
+            "test",
+            "--locked",
+            "-p",
+            "humanymous-dotnet-adapter",
+            "--test",
+            "package",
+            "--no-run",
+            "--message-format=json",
+        ],
+        "900s",
+    )?;
+    let controller = harness_executable(
+        &std::fs::read_to_string(dir.join("dotnet-controller-build.log"))
+            .map_err(|e| e.to_string())?,
+        "package",
+    )?;
+    step(report, "rustc-version", "rustc", &["-V"], "30s")?;
+    let rustc = std::fs::read_to_string(dir.join("rustc-version.log"))
+        .map_err(|e| e.to_string())?
+        .trim()
+        .to_owned();
+    require(
+        rustc.starts_with("rustc 1.99.1 ") && !rustc.contains('\n'),
+        "pinned rustc 1.99.1 required",
     )?;
     let (dotnet, runtime_root) = muxer()?;
     step(report, "dotnet-info", "dotnet", &["--info"], "60s")?;
@@ -620,10 +763,13 @@ pub fn prepare(root: &Path, dir: &Path, report: &mut Value, work: &Path) -> Resu
     )?;
     let app_root = work.join("app");
     let build = work.join("dotnet-build");
-    let target = std::env::var_os("CARGO_TARGET_DIR")
+    let target_root = std::env::var_os("CARGO_TARGET_DIR")
         .map(PathBuf::from)
-        .unwrap_or_else(|| root.join("target"))
-        .join("debug");
+        .unwrap_or_else(|| root.join("target"));
+    let target = target_root.join("debug");
+    let release_native = target_root
+        .join("release")
+        .join("libhumanymous_dotnet_adapter_export.so");
     let (app, build_text) = (text(&app_root)?, text(&build)?);
     step(
         report,
@@ -679,7 +825,30 @@ pub fn prepare(root: &Path, dir: &Path, report: &mut Value, work: &Path) -> Resu
         serde_json::to_vec(&generic).map_err(|e| e.to_string())?,
     )
     .map_err(|e| e.to_string())?;
+    // Provenance the package controller re-measures; it is a claim, never proof.
+    let provenance = work.join("package-provenance.json");
+    std::fs::write(
+        &provenance,
+        serde_json::to_vec(&json!({
+            "source_sha": report["source_sha"],
+            "cargo_lock_sha256": source::file(&root.join("Cargo.lock"))?,
+            "native_sha256": source::file(&release_native)?,
+            "harness_sha256": hashes["harness"],
+            "rustc": rustc,
+            "target": "x86_64-unknown-linux-gnu",
+            "native_profile": "release",
+            "generic_sha256": null,
+        }))
+        .map_err(|e| e.to_string())?,
+    )
+    .map_err(|e| e.to_string())?;
+    hashes["controller"] = json!(source::file(&controller)?);
+    hashes["release_native"] = json!(source::file(&release_native)?);
     Ok(Prepared {
+        controller,
+        release_native,
+        provenance,
+        source_root: root.to_path_buf(),
         harness,
         app_root,
         runtime_root,
@@ -695,6 +864,19 @@ pub fn prepare(root: &Path, dir: &Path, report: &mut Value, work: &Path) -> Resu
     })
 }
 
+/// Private launch scratch on the runner's short temp root. The authority
+/// socket lives under each audit root and the runtime bounds endpoints at
+/// 100 bytes; the repository evidence bundle path is too long for that.
+fn launch_scratch(fallback: &Path) -> Result<PathBuf> {
+    let parent = std::env::var_os("RUNNER_TEMP")
+        .map(PathBuf::from)
+        .filter(|path| path.is_absolute() && path.is_dir())
+        .unwrap_or_else(|| fallback.to_path_buf());
+    let scratch = parent.join(format!("hm{}", &nonce()?[..6]));
+    private_dir(&scratch)?;
+    Ok(scratch)
+}
+
 /// Hosted component: one runner user builds, then launches under scopes.
 pub(super) fn run(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
     backend_observed()?;
@@ -702,9 +884,38 @@ pub(super) fn run(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
     private_dir(&work)?;
     let prepared = prepare(root, dir, report, &work)?;
     report["dotnet_sdk_muxer_sha256"] = json!(source::file(&prepared.dotnet)?);
-    let outcome = launch(&prepared, &work, dir, "github-hosted", report);
+    let scratch = launch_scratch(&work)?;
+    let outcome = launch(
+        &prepared,
+        Target::Hosted,
+        &scratch,
+        dir,
+        "github-hosted",
+        report,
+    );
     report["full_native_qualified"] = json!(false);
     report["package_qualification_receipt_created"] = json!(false);
+    outcome
+}
+
+/// Hosted package component: the same provider admits the package controller,
+/// which derives one narrowing envelope per mode.
+pub(super) fn run_package(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
+    backend_observed()?;
+    let work = dir.join("dotnet-package-work");
+    private_dir(&work)?;
+    let prepared = prepare(root, dir, report, &work)?;
+    report["dotnet_sdk_muxer_sha256"] = json!(source::file(&prepared.dotnet)?);
+    let scratch = launch_scratch(&work)?;
+    let outcome = launch(
+        &prepared,
+        Target::Package,
+        &scratch,
+        dir,
+        "github-hosted",
+        report,
+    );
+    report["full_native_qualified"] = json!(false);
     outcome
 }
 
@@ -720,6 +931,8 @@ impl Prepared {
     fn to_json(&self) -> Result<Value> {
         Ok(json!({
             "harness": text(&self.harness)?, "app_root": text(&self.app_root)?,
+            "controller": text(&self.controller)?, "release_native": text(&self.release_native)?,
+            "provenance": text(&self.provenance)?, "source_root": text(&self.source_root)?,
             "runtime_root": text(&self.runtime_root)?, "dotnet": text(&self.dotnet)?,
             "source_sha": self.source_sha, "manifest_sha256": self.manifest_sha256,
             "cargo_lock_sha256": self.cargo_lock_sha256, "hashes": self.hashes,
@@ -741,6 +954,10 @@ impl Prepared {
                 .ok_or_else(|| format!("prepared {key} absent"))
         };
         let prepared = Self {
+            controller: path("controller")?,
+            release_native: path("release_native")?,
+            provenance: path("provenance")?,
+            source_root: path("source_root")?,
             harness: path("harness")?,
             app_root: path("app_root")?,
             runtime_root: path("runtime_root")?,
@@ -753,6 +970,8 @@ impl Prepared {
         };
         for (label, file) in [
             ("harness", prepared.harness.clone()),
+            ("controller", prepared.controller.clone()),
+            ("release_native", prepared.release_native.clone()),
             (
                 "native_library",
                 prepared
@@ -797,7 +1016,12 @@ pub fn local(root: &Path, args: &[String]) -> Result<()> {
             )
             .map_err(|e| e.to_string())
         }
-        Some("launch") => {
+        Some(mode @ ("launch" | "launch-package")) => {
+            let target = if mode == "launch" {
+                Target::Hosted
+            } else {
+                Target::Package
+            };
             let scratch = argument(2)?;
             let dir = scratch.join("launch-evidence");
             private_dir(&dir)?;
@@ -809,6 +1033,7 @@ pub fn local(root: &Path, args: &[String]) -> Result<()> {
             )?;
             let outcome = launch(
                 &prepared,
+                target,
                 &scratch,
                 &dir,
                 "root-allocated-local",
@@ -828,7 +1053,7 @@ pub fn local(root: &Path, args: &[String]) -> Result<()> {
             );
             outcome
         }
-        _ => Err("local provider mode must be prepare or launch".into()),
+        _ => Err("local provider mode must be prepare, launch or launch-package".into()),
     }
 }
 
@@ -908,10 +1133,35 @@ mod tests {
             row("package", "test", "/t/package-1")
         );
         assert_eq!(
-            harness_executable(&log).unwrap(),
+            harness_executable(&log, "hosted").unwrap(),
             PathBuf::from("/t/hosted-1")
         );
-        assert!(harness_executable(&format!("{log}{log}")).is_err());
-        assert!(harness_executable("").is_err());
+        assert_eq!(
+            harness_executable(&log, "package").unwrap(),
+            PathBuf::from("/t/package-1")
+        );
+        assert!(harness_executable(&format!("{log}{log}"), "hosted").is_err());
+        assert!(harness_executable("", "hosted").is_err());
+    }
+    #[test]
+    fn package_projection_requires_one_complete_line_without_product_claim() {
+        let line = json!({"schema":"humanymous.dotnet-component-summary/1","host_contract_complete":true,"full_product":false}).to_string();
+        assert!(package_projection(&format!("{line}\n")).is_ok());
+        assert!(package_projection(&format!("test {PACKAGE_TEST} ... {line}\nok\n")).is_ok());
+        assert!(package_projection(&format!("{line}\n{line}\n")).is_err());
+        assert!(
+            package_projection(&line.replace(
+                "\"host_contract_complete\":true",
+                "\"host_contract_complete\":false"
+            ))
+            .is_err()
+        );
+        assert!(
+            package_projection(&line.replace("\"full_product\":false", "\"full_product\":true"))
+                .is_err()
+        );
+        assert!(package_projection("").is_err());
+        assert_eq!(tests(Target::Package), [PACKAGE_TEST]);
+        assert_eq!(tests(Target::Hosted), TESTS);
     }
 }

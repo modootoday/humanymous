@@ -275,6 +275,7 @@ fn request(entry: EntryPoint, kind: &str) -> Result<Request<'_>> {
                 | "runtime"
                 | "node-host"
                 | "dotnet-host"
+                | "dotnet-package"
                 | "pilots"
         ),
         "unknown hosted component",
@@ -356,6 +357,7 @@ fn execute(root: &Path, request: Request<'_>) -> Result<()> {
         "runtime" => runtime::run(root, &dir, &mut report),
         "node-host" => node_host::run(root, &dir, &mut report),
         "dotnet-host" => dotnet_host::run(root, &dir, &mut report),
+        "dotnet-package" => dotnet_host::run_package(root, &dir, &mut report),
         "pilots" => pilots::run(root, &dir, &mut report),
         "archive" => native_archive::run(root, &dir, &mut report, &before),
         _ => header(root, &dir, &mut report),
