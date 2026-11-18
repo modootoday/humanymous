@@ -12,6 +12,19 @@ rel:
 
 # ASP.NET Core Rust adapter lifecycle
 
+## Proposed protected host launch design (2026-11-18)
+
+Owner decision D1(a) (issue #75) approved the SoT design path for protected
+`Host::start()` admission. The design is drafted in
+sot:root/dotnet-protected-host-launch, status draft. It covers:
+- creator-channel producer identity;
+- `standard-user-dotnet-prebuilt` custody on Windows and Linux;
+- the fail-closed refusal table;
+- the evidence that would turn the hosted and package accounting rows green.
+
+Its native operations remain UNAPPROVED until reviewed. `Host::start()` still
+refuses with `Unsupported`, and nothing here changes current qualification.
+
 ## RUNTIME-SLICE-02 consumer source handoff
 
 The pre-edit search found no old humanymous_runtime root in this adapter's Rust
