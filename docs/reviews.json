@@ -5313,12 +5313,82 @@
     },
     {
       "source": "crates/sdk/humanymous-core/src/model/mod.rs",
-      "sha256": "2388b20aba7eb84d7aab801920c9af259f9bfebb43874f32b9108b464e89e5ad",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Module root for the behavioral model context (correction, inference, training), documented as separate from verdict authority.",
+      "sha256": "bffa74442376d3133adec5b6e5ea153f4bd6f0013c8e3e11583660719e6f2de6",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Module root for the behavioral model context (correction, inference, similarity, training), documented as separate from verdict authority.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/similarity/mod.rs",
+      "sha256": "b78d22c908bc578515056da05f30bf73ff2de34e6c15243650c6cb91d6f80ba6",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Module root for shadow-only similarity to confirmed abuse clusters over the bv1 vector (sot:root/abuse-similarity). Documents that nothing here mutates a verdict, writes or proposes a ban, or measures distance from typical human behavior; defines bounded SimilarityError and PolicyRefusal diagnostics without feature values or identifiers.",
+      "pages": [
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/similarity/policy.rs",
+      "sha256": "bab0acd766e558aa0411102bcc0109753293d49df92a999b4413a7609f278c67",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Versioned operator policy (deny_unknown_fields JSON): 1..16 rules, 1h..7d recurrence window, most severe matching rule wins. Fixed floors an operator cannot lower: challenge 0.80; temporary block 0.90 with cluster recurrence >=3 and subject repeats >=2; permanent-ban proposal 0.95/10/3. Behavior similarity alone reaches at most CHALLENGE and a permanent ban is only a dual-control proposal. Lab shadow defaults, not production thresholds. SHA-256 digest of canonical JSON for audit.",
+      "pages": [
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/similarity/policy/tests.rs",
+      "sha256": "5cd1205be192b45f5b42579e7f0dea9cae68a00da9752ed4c89aff09c9efdf41",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tests floor monotonicity, similarity-only cap at CHALLENGE, block requiring recurrence and subject repetition, refusal of every below-floor rule, version/rule-count/window/nonfinite/range refusals, JSON round trip with unknown-field and unknown-action refusal, invalid similarity input and digest stability.",
+      "pages": [
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/similarity/shadow.rs",
+      "sha256": "a684d7e8dc649da4230c94862477e9338b4b003fabcb5b264412610391648bd8",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Shadow ledger and preview: counts policy outcomes beside the verdict actually served (stricter, looser, agree), and event-count buckets (16/64/256/more) at a non-trivial outcome as time-to-detection evidence. Aggregates only; invalid samples count only as rejected; preview replays held de-identified samples under a candidate policy and never changes a verdict.",
+      "pages": [
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/similarity/shadow/tests.rs",
+      "sha256": "bd139eac1dedf3225973bacf301028cf8a79abd51cca17ea33f60b20dccd2357",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tests latency bucket edges, agreement direction and latency counting, rejected-only accounting for invalid samples, refusal of an invalid policy, and preview equality with a live ledger including a bad sample.",
+      "pages": [
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/similarity/store.rs",
+      "sha256": "e16ed60e30b47c4123c19ce696cb31462622d7500e8b5a07867ed582b2c93fb1",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Bounded confirmed-abuse cluster store: admission only from catalog sessions or operator confirmation; Welford mean/variance (floor 0.01) per bv1 dimension, join radius 2.0, at most 256 clusters (refuses rather than evicts), matchable only with >=5 members, similarity exp(-d^2/2) of RMS standardized distance. Probing is read-only; recorded matches feed recurrence (bounded 1024) and never move centroids. Caller clock must not regress; 30-day retention, match expiry and per-cluster retirement. No raw vectors or identifiers kept.",
+      "pages": [
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/similarity/store/tests.rs",
+      "sha256": "81fdc3581eae234432643a94c2267e5ba378e6ce455485a0e326b0a3fff27d72",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tests similarity shape, joining and splitting, minimum support, near/far ordering, read-only probing, recurrence without centroid movement, bounded match history, nonfinite and clock-regression refusal without state change, capacity refusal, retention expiry and non-reused retired ids.",
+      "pages": [
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
       ]
     },
     {
@@ -6719,7 +6789,7 @@
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
       "sha256": "aff9bc0ee6b783c52cf4392dec7da17677da9fd979a4cf328da97191626ec3d8",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 452 / macos 452 / windows 440 (440 common names plus 12 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b (codex/rust plus PR heads #70 and #83): the name lists are the union of all parents' already-reviewed additions, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 431 listed common plus Unix-only names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect. Re-reviewed 2026-11-18 for claude/fm11-residual-4: adds the 21 gateway::admin_approval::tests names to the common list and raises every count by 21; on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 452 gateway:: names, equal to the 440 common plus 12 Unix-only names. macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for claude/fm11-residual-5 (stacked on claude/fm11-residual-4 and claude/gate-residual-ws): the common list is the union of both parents (459 names) plus 25 gateway::admin_plane::tests names, and unix_extra_test_names gains the four admin_plane dual_control tests and ban::tests::dual_control::temporary_ban_cannot_replace_permanent (17 names). Expected counts are linux 501 / macos 501 / windows 484; on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 501 gateway:: names, equal to the 484 common plus 17 Unix-only names. macOS and Windows inventories were not re-run.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 501 / macos 501 / windows 484 (484 common names plus 17 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for claude/gate-residual-ws: 19 common names were added for the attested-route floor, operations (audit search, counters, erasure hold) and bulk ban tests, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 450 listed names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect. Re-reviewed 2026-11-18 for claude/fm11-residual-4: adds the 21 gateway::admin_approval::tests names to the common list and raises every count by 21; on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 452 gateway:: names, equal to the 440 common plus 12 Unix-only names. macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for the merge of codex/rust into claude/fm11-residual-4: the common list is the union of both sides' additions (21 gateway::admin_approval names and 19 claude/gate-residual-ws names), giving expected counts linux 471 / macos 471 / windows 459, and on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 471 gateway:: names, equal to the 459 common plus 12 Unix-only names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for claude/fm11-residual-5 (stacked on claude/fm11-residual-4 and claude/gate-residual-ws): the common list is the union of both parents (459 names) plus 25 gateway::admin_plane::tests names, and unix_extra_test_names gains the four admin_plane dual_control tests and ban::tests::dual_control::temporary_ban_cannot_replace_permanent (17 names). Expected counts are linux 501 / macos 501 / windows 484; on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 501 gateway:: names, equal to the 484 common plus 17 Unix-only names. macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for the merge of claude/fm11-residual-4 (with codex/rust) into claude/fm11-residual-5: the merged name lists are the union of both sides and equal the claude/fm11-residual-5 lists, keeping expected counts linux 501 / macos 501 / windows 484, and on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 501 gateway:: names, equal to the 484 common plus 17 Unix-only names; macOS and Windows inventories were not re-run.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/how-this-was-built.md"
@@ -8503,7 +8573,7 @@
       "source": "crates/sdk/humanymous-runtime/src/gateway/mod.rs",
       "sha256": "40c455a928b2d71adaf8646c54d5884ce8764eb7d1b320692ae6090d3a87e0e2",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway module root of the runtime crate: declares the application, attestation, ban, browser, configuration, connection cap, control, coordinator, credential, external input, guard, http, logging, management, model admission, observatory, pass proof/store, request, seams, service, session, settings, shipping, smuggle, startup, TLS, token, verdict store and virtual USB modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b: the change unions both parents' module declarations (the B23 coordinator module from PR #70 and the G7 target attestation module from PR #83, beside the existing model_admission and observatory modules). Doc line states loopback component support is not product qualification. Re-reviewed 2026-11-18 for claude/fm11-residual-4: the only change declares the admin_approval module (Go adminauth.go and approval.go kernel). Re-reviewed 2026-11-18 for claude/fm11-residual-5: unions both parents' declarations (admin_approval from claude/fm11-residual-4; attest_floor and operations from claude/gate-residual-ws) and declares the admin_plane module (Go admin.go HTTP route subset).",
+      "notes": "Gateway module root of the runtime crate: declares the application, attestation, ban, browser, configuration, connection cap, control, coordinator, credential, external input, guard, http, logging, management, model admission, observatory, pass proof/store, request, seams, service, session, settings, shipping, smuggle, startup, TLS, token, verdict store and virtual USB modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b: the change unions both parents' module declarations (the B23 coordinator module from PR #70 and the G7 target attestation module from PR #83, beside the existing model_admission and observatory modules). Doc line states loopback component support is not product qualification. Re-reviewed 2026-11-18 for claude/gate-residual-ws: declares the new attest_floor and operations modules. Re-reviewed 2026-11-18 for claude/fm11-residual-4: the only change declares the admin_approval module (Go adminauth.go and approval.go kernel). Re-reviewed 2026-11-18 for the merge of codex/rust into claude/fm11-residual-4: the merged file declares admin_approval, attest_floor and operations together with no other change; the gateway:: library inventory is now linux 471 / macos 471 / windows 459. Re-reviewed 2026-11-18 for claude/fm11-residual-5: unions both parents' declarations (admin_approval from claude/fm11-residual-4; attest_floor and operations from claude/gate-residual-ws) and declares the admin_plane module (Go admin.go HTTP route subset). Re-reviewed 2026-11-18 for the merge of claude/fm11-residual-4 (with codex/rust) into claude/fm11-residual-5: the merged file declares admin_approval, admin_plane, attest_floor and operations together with no other change; the gateway:: library inventory is linux 501 / macos 501 / windows 484.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
