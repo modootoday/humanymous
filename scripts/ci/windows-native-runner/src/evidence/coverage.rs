@@ -8,6 +8,7 @@ const NATIVE_TESTS: [&str; 5] = [
     "sealed_startup_retains_custody_and_reuses_existing_identity",
 ];
 pub(super) fn row(raw: &Value, public: &mut Value) {
+    let helpers = crate::harness::pilot_helpers();
     public["index"] = json!(raw["index"].as_u64());
     public["required_native_tests_verified"] =
         json!(raw["required_native_tests_verified"].as_bool());
@@ -23,7 +24,38 @@ pub(super) fn row(raw: &Value, public: &mut Value) {
     public["required_execution_scope"] = json!(
         raw["required_execution_scope"]
             .as_str()
-            .filter(|value| *value == "privileged-docker")
+            .filter(|value| matches!(*value, "native-pilots" | "job"))
+    );
+    let ids = crate::harness::pilot_ids();
+    public["pilot_ids"] = json!(
+        raw["pilot_ids"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .filter_map(Value::as_str)
+            .filter(|id| ids.contains(*id))
+            .collect::<Vec<_>>()
+    );
+    public["pilot_receipt_verified"] = json!(raw["pilot_receipt_verified"].as_bool());
+    public["failed_test_names"] = json!(
+        raw["failed_test_names"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .filter_map(Value::as_str)
+            .filter(|name| test_path(name))
+            .take(16)
+            .collect::<Vec<_>>()
+    );
+    public["panic_locations"] = json!(
+        raw["panic_locations"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .filter_map(Value::as_str)
+            .filter(|location| source_location(location))
+            .take(16)
+            .collect::<Vec<_>>()
     );
     public["declared_subprocess_helpers"] = json!(
         raw["declared_subprocess_helpers"]
@@ -31,9 +63,37 @@ pub(super) fn row(raw: &Value, public: &mut Value) {
             .into_iter()
             .flatten()
             .filter_map(Value::as_str)
-            .filter(|name| *name == "unix_unprivileged_connect_probe")
+            .filter(|name| helpers.contains(*name))
             .collect::<Vec<_>>()
     );
+}
+/// A failed libtest name is published only when it is a plain Rust test path.
+fn test_path(name: &str) -> bool {
+    !name.is_empty()
+        && name.len() <= 200
+        && name
+            .bytes()
+            .all(|b| b.is_ascii_alphanumeric() || b == b'_' || b == b':')
+}
+/// A panic location is published only as a repository-relative `file.rs:line:col`.
+fn source_location(location: &str) -> bool {
+    let mut parts = location.rsplitn(3, ':');
+    let (Some(column), Some(line), Some(file)) = (parts.next(), parts.next(), parts.next()) else {
+        return false;
+    };
+    location.len() <= 200
+        && !column.is_empty()
+        && column.bytes().all(|b| b.is_ascii_digit())
+        && !line.is_empty()
+        && line.bytes().all(|b| b.is_ascii_digit())
+        && file.ends_with(".rs")
+        && !file.starts_with('/')
+        && !file
+            .split('/')
+            .any(|part| part.is_empty() || part == "." || part == "..")
+        && file
+            .bytes()
+            .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'_' | b'-' | b'.' | b'/'))
 }
 pub(super) fn failures(raw: &Value) -> Value {
     json!(
@@ -63,13 +123,34 @@ mod tests {
     use super::*;
     #[test]
     fn named_assertions_are_preserved_without_publishing_private_strings() {
-        let raw = json!({"index":4,"required_native_tests_verified":true,"required_native_tests":[NATIVE_TESTS[0],"private-path"],"required_execution_scope":"privileged-docker","declared_subprocess_helpers":["unix_unprivileged_connect_probe","private-path"]});
+        let raw = json!({"index":4,"required_native_tests_verified":true,"required_native_tests":[NATIVE_TESTS[0],"private-path"],"required_execution_scope":"native-pilots","pilot_ids":["runtime-audit-native-source","private-path"],"declared_subprocess_helpers":["unix_unprivileged_connect_probe","private-path"]});
         let mut public = json!({});
         row(&raw, &mut public);
         assert_eq!(public["index"], 4);
         assert_eq!(public["required_native_tests"].as_array().unwrap().len(), 1);
         assert_eq!(public["required_native_tests_verified"], true);
+        assert_eq!(public["required_execution_scope"], "native-pilots");
+        assert_eq!(public["pilot_ids"], json!(["runtime-audit-native-source"]));
+        assert_eq!(
+            public["declared_subprocess_helpers"],
+            json!(["unix_unprivileged_connect_probe"])
+        );
         assert!(!public.to_string().contains("private-path"));
+    }
+    #[test]
+    fn failed_test_names_publish_only_plain_test_paths() {
+        let raw = json!({"failed_test_names":["a::b_c","/private/path","x ... y","",null]});
+        let mut public = json!({});
+        row(&raw, &mut public);
+        assert_eq!(public["failed_test_names"], json!(["a::b_c"]));
+        assert!(!public.to_string().contains("private"));
+    }
+    #[test]
+    fn panic_locations_publish_only_relative_source_positions() {
+        let raw = json!({"panic_locations":["src/a.rs:57:9","/Users/runner/x.rs:1:1","../x.rs:1:1","C:\\x.rs:1:1","src/a.rs:x:1","src/a.txt:1:1"]});
+        let mut public = json!({});
+        row(&raw, &mut public);
+        assert_eq!(public["panic_locations"], json!(["src/a.rs:57:9"]));
     }
     #[test]
     fn indexed_failure_projection_excludes_private_diagnostics() {
