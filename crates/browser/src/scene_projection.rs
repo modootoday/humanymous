@@ -1,8 +1,10 @@
 //! Commit shell changes through Meari's retained source owner, including AX metadata.
-use meari::domain::{Attribute, NodeKind, Value};
+use meari::domain::{Attribute, Component, NodeKind, Value};
 use meari_native::infrastructure::document::InteractiveDocument;
 
-pub(crate) fn commit(doc: &mut InteractiveDocument) -> Result<(), String> {
+/// The original-schema source a replacement must carry: the retained projected
+/// tree plus the owned state hooks that projection does not keep on `doc.source`.
+pub(crate) fn replacement_source(doc: &InteractiveDocument) -> Component {
     let mut source = doc.source.clone();
     source.states = crate::ui::native_states();
     if let NodeKind::Element { attributes, .. } = &mut source.root.kind {
@@ -12,6 +14,11 @@ pub(crate) fn commit(doc: &mut InteractiveDocument) -> Result<(), String> {
             value: Value::State("browserReady".into()),
         });
     }
+    source
+}
+
+pub(crate) fn commit(doc: &mut InteractiveDocument) -> Result<(), String> {
+    let source = replacement_source(doc);
     let next = meari_native::domain::widgets::Session::from_tree(&source.root)?;
     let allowed: std::collections::BTreeSet<_> = doc
         .elements()
