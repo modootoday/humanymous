@@ -1,38 +1,30 @@
-# humanymous Gate — persistent volumes.
+# humanymous runtime: persistent volume.
 #
-# Two claims, mirroring the compose.release.yaml named volumes:
-#   hmn-data  -> /data       keystore (sealed audit identity) + audit WAL
-#   hmn-acme  -> /acme-cache issued Let's Encrypt certificates
+# One claim, mounted at /var/lib/humanymous:
+#   audit/  the durable audit WAL         (configuration audit.directory)
+#   keys/   the sealed audit custody      (configuration audit.keys.directory)
 #
-# Both are ReadWriteOnce (one node mounts them) — which is why the Deployment
-# runs a single replica. To scale out, switch to an RWX StorageClass and give
-# each pod its own keystore identity.
+# The Go manifest also had hmn-acme for Let's Encrypt certificates. The Rust
+# runtime has no ACME or TLS listener, so that claim is gone; certificates
+# belong to your TLS front proxy.
 #
-# storageClassName is omitted so your cluster's default StorageClass is used.
-# Set it explicitly if you need a specific class. Sizes are conservative — the
-# WAL grows with audit volume; raise hmn-data if you retain a long history.
+# The runtime refuses audit/ and keys/ unless they are owned by uid 65532 with
+# mode 0700, and refuses any ancestor directory that another unprivileged user
+# owns or that is group- or world-writable. Check what your StorageClass
+# provisions for the volume root before the first start.
+#
+# ReadWriteOnce, which is why the Deployment runs one replica. storageClassName
+# is omitted so your cluster's default StorageClass is used. The WAL grows with
+# audit volume; raise the size if you retain a long history.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: hmn-data
   labels:
-    app.kubernetes.io/name: humanymous-gate
+    app.kubernetes.io/name: humanymous-runtime
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 5Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: hmn-acme
-  labels:
-    app.kubernetes.io/name: humanymous-gate
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 128Mi
