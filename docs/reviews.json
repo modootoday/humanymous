@@ -4618,9 +4618,9 @@
     },
     {
       "source": "crates/sdk/humanymous-core/Cargo.toml",
-      "sha256": "ef0fbd146fe68eacd0fb5e5dde804c9e2e04f743dffd544e5d30979450834b70",
+      "sha256": "6a9b331d04c39166731572c167b70c5844c70760bb67a1a908940476c5cd51b7",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Manifest for the humanymous-core library (security contracts and pure automation-resistance engines; readme README.md and publish = [\"crates-io\"] in the first crates.io wave, which performs no upload): workspace serde, serde_json, time, sha2, hex, hmac, base64, subtle, zeroize, png and wasmparser dependencies, dev-dependency on humanymous-platform testing, workspace lints, and an opt-in qualification feature that grants no runtime authority and only enables the integrity_canonical_performance example.",
+      "notes": "Manifest for the humanymous-core library (security contracts and pure automation-resistance engines; readme README.md and publish = [\"crates-io\"] in the first crates.io wave, which performs no upload): workspace serde, serde_json, time, sha2, hex, hmac, base64, subtle, zeroize, png and wasmparser dependencies, dev-dependency on humanymous-platform testing, workspace lints, and an opt-in qualification feature that grants no runtime authority and only enables the integrity_canonical_performance example. Re-reviewed 2026-11-18 on the mlcorrect-train branch: it now also declares the mlcorrect-train binary (src/bin/mlcorrect_train.rs), an offline retrain/promotion-gate shell with no deploy authority.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/detection-engine-internals.md"
@@ -4711,6 +4711,16 @@
       "notes": "Pure feature/inference implementation and fixtures are migration-only, not an operational training/update loop. Reader page makes no automatic learning or deployment claim and preserves sparse-input/accessibility counterexamples. Carried unchanged from crates/behavior/src/lib.rs: identical SHA-256 after the crate consolidation, so the reviewed bytes are the same.",
       "pages": [
         "docs/reference/production-vs-reference.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/bin/mlcorrect_train.rs",
+      "sha256": "e7baf905343edf34f4adfc7a8d604b333b0a4bfe2f235232f37ba9e305c7ba7c",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "mlcorrect-train binary entry point (legacy cmd/mlcorrect-train): passes the command-line arguments, a UTC version stamp (mlp-corrected-YYYYMMDD-HHMMSS) and locked stdout/stderr to model::training::mlcorrect_train::run and exits with its code. The doc states it never deploys, stages or activates a model; all behaviour lives in the library module.",
+      "pages": [
+        "docs/how-to/operate-behavioral-model.md",
         "docs/explanation/self-correcting-behavioral-model.md"
       ]
     },
@@ -5342,10 +5352,50 @@
       ]
     },
     {
+      "source": "crates/sdk/humanymous-core/src/model/training/gate.rs",
+      "sha256": "7b7952b18aac12f59315a66ea6e5b109956a0cf94dbd5bc92181b6646eca87d6",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Offline promotion gate ported from legacy cmd/mlcorrect-train gate.go runGate (baseline 981d25c). run_gate() requires at least 100 samples, time-splits them into a newest-fraction TESSERACT holdout, standardizes the training window, trains via the crate-private SGD (optionally warm-starting from a base bundle), evaluates the candidate through the existing Mlp inference boundary, and reports accuracy, aggregate human FPR (reported, not gated), bot TPR, AUT over 5 buckets and per-cohort human FPR. The candidate is returned only if every gate passes: per-cohort human FPR at most max_human_fpr with at least min_cohort_humans humans, bot TPR at least min_bot_tpr, and any required cohorts present. Fail-closed deltas from Go are documented: a window with no humans or no bots fails, nonfinite or out-of-range parameters are a Config error, and split/standardize/training/evaluation refusals are typed errors. Gate criteria come from the caller; emitting a candidate is not promotion and no production model, threshold or verdict band is touched.",
+      "pages": [
+        "docs/how-to/operate-behavioral-model.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/training/gate/tests.rs",
+      "sha256": "539b788393082f42490eed95ed900a9cc5ac8c4641eec450cb1b7ddc30d940c2",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Ports of legacy gate_test.go plus the documented fail-closed deltas, on deterministic 3 bot : 2 typical human : 1 edge human fixtures: clean data emits a candidate; a poisoned accessibility (edge) cohort blocks the candidate; fewer than 100 samples is a precondition error; all-bot and all-human windows fail closed (Go passed them); undersampled and missing required cohorts block the candidate; a bot TPR below the floor blocks it as catalog regression; invalid configuration and inputs are typed preconditions; warm start needs a matching base and keeps its shape; and the gate is deterministic for a seed.",
+      "pages": [
+        "docs/how-to/operate-behavioral-model.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/training/mlcorrect_train.rs",
+      "sha256": "e7440f097ebd63707bbbc083b2945ee20343678f6e3dc49a5517c43a7ce23966",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Library process shell of the offline retrain step (legacy cmd/mlcorrect-train main.go, baseline 981d25c). run() parses Go flag syntax (-anchor required, -oracle, -base, -out default candidate.json, -hidden 16, -epochs 60, -lr 0.05, -seed 1, -test-frac 0.25, -max-human-fpr 0.005, -min-bot-tpr 0.8, -min-cohort-humans 20, repeatable -require-cohort), reads the gold anchor and optional oracle JSONL through the shared bounded reader, admits only oracle records with ReviewRequired admission and reports how many weak-provenance records were quarantined (Go admitted them), reads the base bundle once within MAX_BUNDLE_BYTES and validates that buffer, then runs the promotion gate. Exit codes: 0 written or help, 1 input/precondition/output error, 2 usage (unknown flag, bad number, missing value, positional argument), 3 gate failed with nothing written and an existing output untouched. A passing candidate is written as one-space-indented serde_json and only its SHA-256 digest is printed on stdout for the separate signing/staging step; it never deploys.",
+      "pages": [
+        "docs/how-to/operate-behavioral-model.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs",
+      "sha256": "267d2cb963f25a8d7163a63c36c409194b97a15e9084be40947c98258da7c409",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Process-shell tests over owned temp files: passing gates write the candidate, print only its digest on stdout, report the excluded weak-provenance (challenge) oracle record and the TESSERACT split, and the written bundle loads with the expected version and schema hash; warm-starting from that candidate works while a base with a different hidden width fails with exit 1 and no output; a failed gate exits 3 and leaves an existing output untouched; missing -anchor, too few samples, bad JSONL, an invalid or oversized base and a missing anchor file exit 1 without output; -h/--help exit 0, unknown flags, bad numbers, a missing value and positional arguments exit 2 with usage on stderr and nothing on stdout; defaults and inline/repeatable flags parse as in Go; and version_stamp yields mlp-corrected-20270115-080000.",
+      "pages": [
+        "docs/how-to/operate-behavioral-model.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
       "source": "crates/sdk/humanymous-core/src/model/training/mod.rs",
-      "sha256": "2c4b21ef747e098f2add19b8b8b2624e2df3a592539dddd1356dca2f1b81c96a",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Module root for offline training inputs (evaluate, record, rng, sink, standardize, crate-private sgd) with no serving or model-activation authority; sgd is marked expected dead code outside tests until its bootstrap caller exists.",
+      "sha256": "ac7f2aac7259743cb126d68abb59bd362982572e2ef2155a5bf31cf3b27c9b62",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Module root for offline training inputs and the offline retrain path: public evaluate, gate, mlcorrect_train, record, rng, sink and standardize, plus the crate-private sgd trainer, which is now reached through the promotion gate so its dead-code expectation was removed. Re-reviewed 2026-11-18. No serving or model-activation authority.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/self-correcting-behavioral-model.md",
@@ -5459,9 +5509,9 @@
     },
     {
       "source": "crates/sdk/humanymous-core/src/model/training/sgd.rs",
-      "sha256": "df8eed499eae69be7c838f0994138c48b3be13bb0d22634d5fa58f95bd856e3b",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Crate-private bounded offline online-SGD trainer following legacy train.go operation order: validates tightenable limits (samples, hidden, epochs, updates, work units, RNG draws), schema, finite learning rate, labels, statistics and warm base; initializes weights on a seeded GoRng, shuffles each epoch, applies per-row ReLU-MLP updates with every intermediate checked finite and no FMA, and returns an owned candidate MlpBundle (calibration reset to 1/0) plus a summary. No serving, publication or activation; Go bit parity is unproven.",
+      "sha256": "22fced3665e9bc0a35c296b5b0332c69c796997c6a6cd4580550565e1d676902",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Crate-private bounded offline online-SGD trainer following legacy train.go operation order: validates tightenable limits (samples, hidden, epochs, updates, work units, RNG draws), schema, finite learning rate, labels, statistics and warm base; initializes weights on a seeded GoRng, shuffles each epoch, applies per-row ReLU-MLP updates with every intermediate checked finite and no FMA, and returns an owned candidate MlpBundle (calibration reset to 1/0) plus a summary. No serving, publication or activation; Go bit parity is unproven. Re-reviewed 2026-11-18: the only change marks TrainingResult.summary as expected dead code outside tests, since the promotion gate consumes only the candidate; training behaviour is unchanged.",
       "pages": [
         "docs/how-to/operate-behavioral-model.md",
         "docs/explanation/self-correcting-behavioral-model.md"
