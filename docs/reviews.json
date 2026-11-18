@@ -3,9 +3,9 @@
   "reviews": [
     {
       "source": "Cargo.lock",
-      "sha256": "0d5b3b2c7fc9d780d90d0232391c06be7094b82ef67524e1656765eeda0598b8",
+      "sha256": "7c330997ce3bb584885d9be6dda787e893f5b801c6dec1837864652ec6f3dea5",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Cargo-generated lockfile (format version 4) pinning 664 packages, including the consolidated workspace members humanymous-core, humanymous-runtime, humanymous-platform, the adapter, browser, CEF and CLI crates and their third-party dependencies. Re-reviewed 2026-11-18: the only change since the prior review adds the already-locked getrandom 0.4.3 to humanymous-delivery's dependency list; the package count is unchanged. It fixes resolution for --locked builds only; it is not install, OS-support or artifact qualification evidence.",
+      "notes": "Cargo-generated lockfile (format version 4) pinning 664 packages, including the consolidated workspace members humanymous-core, humanymous-runtime, humanymous-platform, the adapter, browser, CEF and CLI crates and their third-party dependencies. Re-reviewed 2026-11-18: the only change since the prior review adds the already-locked rustix 1.1.6 to the dependency list of humanymous-runtime-pilot (test/lab/runtime, a Unix-only target dependency for clearing close-on-exec on inherited witness pipes); the package count is unchanged and `cargo metadata --locked` resolves. It fixes resolution for --locked builds only; it is not install, OS-support or artifact qualification evidence.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/start-here/developer.md",
