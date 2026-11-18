@@ -113,6 +113,7 @@ async fn origin_failure_acknowledges_consumed_counter_without_claiming_zero_effe
     let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
     let address = listener.local_addr().unwrap();
     let app = Application::new(config, Default::default(), Box::new(audit.clone())).unwrap();
+    let health = app.epoch_health();
     let server = tokio::spawn(app.serve(listener));
     let bootstrap = call(
         address,
@@ -147,7 +148,13 @@ async fn origin_failure_acknowledges_consumed_counter_without_claiming_zero_effe
     complete(&mut client, &failed);
     assert!(!client.is_closed());
     assert_eq!(effects.load(Ordering::SeqCst), 1);
-    assert_eq!(audit.records.lock().unwrap().len(), 2);
+    // Legacy TestUpstreamErrorAudited: the origin failure after the committed
+    // ALLOW is itself audited, linked to that decision, with a static class.
+    {
+        let records = audit.records.lock().unwrap();
+        assert_eq!(records.len(), 3);
+        assert_upstream_error(&records[1], &records[2], "unreachable", "origin_framing");
+    }
     assert_eq!(call(address, &protected).await.status, 409);
     let mut collect = browser_request("POST", "/_humanymous/browser/collect", client_report(""));
     signed(
@@ -159,9 +166,74 @@ async fn origin_failure_acknowledges_consumed_counter_without_claiming_zero_effe
     assert_eq!(response.status, 200);
     complete(&mut client, &response);
     assert_eq!(effects.load(Ordering::SeqCst), 1);
+    // The origin listener is closed now: a dial failure (Go's dead upstream).
     origin_task.await.unwrap();
+    let mut refused = browser_request("POST", "/effect", b"second bytes".to_vec());
+    signed(
+        &mut client,
+        &mut refused,
+        crate::authority::now_ms().unwrap(),
+    );
+    let failed = call(address, &refused).await;
+    assert_eq!(failed.status, 503);
+    assert_eq!(failed.body, br#"{"error":"origin_connect"}"#);
+    complete(&mut client, &failed);
+    {
+        let records = audit.records.lock().unwrap();
+        assert_eq!(records.len(), 6);
+        assert_upstream_error(
+            &records[4],
+            &records[5],
+            "connection_refused",
+            "origin_connect",
+        );
+    }
+    // A failed upstream.error append is not dropped silently: the epoch is
+    // poisoned and the client sees durable_audit (Go only logged and went on).
+    audit.fail_upstream.store(true, Ordering::SeqCst);
+    let mut unaudited = browser_request("POST", "/effect", b"third bytes".to_vec());
+    signed(
+        &mut client,
+        &mut unaudited,
+        crate::authority::now_ms().unwrap(),
+    );
+    let failed = call(address, &unaudited).await;
+    assert_eq!(failed.status, 503);
+    assert_eq!(failed.body, br#"{"error":"durable_audit"}"#);
+    assert!(!health.serving());
+    assert_eq!(audit.records.lock().unwrap().len(), 7);
+    assert_eq!(effects.load(Ordering::SeqCst), 1);
     server.abort();
     let _ = server.await;
+}
+
+/// One `upstream.error` record after its ALLOW decision record: same opaque
+/// request id, commitment, route class and revision; no verdict, no raw text.
+fn assert_upstream_error(decision: &Record, record: &Record, class: &str, code: &str) {
+    assert_eq!(
+        (decision.event_type.as_str(), decision.verdict.as_str()),
+        ("runtime.decision", "ALLOW")
+    );
+    assert_eq!(record.event_type, "upstream.error");
+    assert_eq!(record.actor.kind, "system");
+    assert_eq!(record.tenant_id, "tenant");
+    assert_eq!(record.host, "owned.test");
+    assert!(!record.request_id.is_empty() && !record.correlation_id.is_empty());
+    assert_eq!(record.request_id, decision.request_id);
+    assert_eq!(record.correlation_id, decision.correlation_id);
+    assert_eq!(record.route_class, decision.route_class);
+    assert_eq!(record.config_version, decision.config_version);
+    assert_eq!(record.verdict, "");
+    assert_eq!(
+        (record.enforcement_mode.as_str(), record.fail_mode.as_str()),
+        ("enforce", "degraded")
+    );
+    assert_eq!(record.fail_reason, format!("upstream {class}: {code}"));
+    let upstream = record.upstream.as_ref().unwrap();
+    assert_eq!(
+        (upstream.status, upstream.error_class.as_str()),
+        (503, class)
+    );
 }
 
 /// Hosted-only socket boundary: a resource429 still carries the consumed ACK.

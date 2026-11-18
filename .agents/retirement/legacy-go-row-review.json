@@ -2976,22 +2976,22 @@
     "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::route_class_follows_legacy_priority",
     "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::upstream_errors_map_to_stable_classes_without_raw_text",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::audit_is_minimized_and_failure_poison_is_permanent",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::origin_failure_acknowledges_consumed_counter_without_claiming_zero_effects",
     "crates/sdk/humanymous-runtime/src/gateway/tests/tls/dispatch.rs::truthful_native_tls_profile_preserves_policy_and_origin_agreement",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::bindings_and_subnets_match_legacy_shapes"
    ],
    "go_test_map": {},
-   "gaps": [
-    "upstream_error_class and latency_us are not yet written into origin-failure audit records"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Route class (now recorded on runtime.decision audit records), saturating latency, correlation ids and upstream error classes are ported in gateway/request.rs; socket subnet is token::client_subnet. Go context plumbing and the hsid cookie are replaced by the RIT design.",
+   "notes": "Route class, saturating latency, correlation ids and upstream error classes are ported in gateway/request.rs and are written into runtime.decision and upstream.error audit records (Application::upstream_failure; origin refusals without a transport error use request::origin_error_class); socket subnet is token::client_subnet. Go context plumbing and the hsid cookie are replaced by the RIT design: the upstream.error record reuses the ALLOW record's opaque request id and commitment as correlation, and latency is measured from the decision clock in milliseconds.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::audit_is_minimized_and_failure_poison_is_permanent": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::correlation_ids_are_sixteen_hex_and_fresh": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::latency_saturates_and_never_goes_negative": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::route_class_follows_legacy_priority": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::upstream_errors_map_to_stable_classes_without_raw_text": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::audit_is_minimized_and_failure_poison_is_permanent": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::origin_failure_acknowledges_consumed_counter_without_claiming_zero_effects": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests/tls/dispatch.rs::truthful_native_tls_profile_preserves_policy_and_origin_agreement": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::bindings_and_subnets_match_legacy_shapes": "passed"
    }
@@ -3407,22 +3407,25 @@
    "baseline_path": "internal/gate/upstream_error_test.go",
    "disposition": "partial",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/application.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/application.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application/tls.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/request.rs"
    ],
    "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::upstream_errors_map_to_stable_classes_without_raw_text",
     "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::origin_failure_acknowledges_consumed_counter_without_claiming_zero_effects"
    ],
    "go_test_map": {
     "TestUpstreamErrorAudited": "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::origin_failure_acknowledges_consumed_counter_without_claiming_zero_effects"
    },
    "gaps": [
-    "upstream error class audit record",
-    "502 empty-body client response"
+    "client response stays 503 with the consumed-counter ACK and a static JSON code, and upstream.status records that 503; Go answers 502 with an empty body. runtime-application SoT pins 503 for post-consumption origin errors, so adopting 502 is an owner/SoT decision"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust returns 503 origin_* refusals; no upstream-error audit class.",
+   "notes": "Ported: an origin refusal after the committed ALLOW and before any client byte appends one upstream.error record (actor system, tenant, host, route class, the ALLOW record's request id and commitment as correlation, revision, latency_us, mode enforce, fail_mode degraded, upstream.status and a stable error_class) through Application::upstream_failure on the plaintext and TLS paths; event_id is stamped by the durable log (audit/log/stamp.rs). The socket test covers a malformed origin frame (unreachable) and a closed origin port (connection_refused, Go's dead-upstream case); the TLS path shares the helper but has no origin-failure socket test. Deliberate fail-closed differences: fail_reason carries the static refusal code, never transport error text; a failed upstream.error append poisons the epoch and answers durable_audit (Go logged and continued); a malformed or truncated buffered origin frame is audited because Rust buffers the whole frame before the first client byte. Go oracle at 981d25c: go test ./internal/gate -run TestUpstreamErrorAudited PASS (go1.25.3).",
    "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::upstream_errors_map_to_stable_classes_without_raw_text": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::origin_failure_acknowledges_consumed_counter_without_claiming_zero_effects": "passed"
    }
   },
