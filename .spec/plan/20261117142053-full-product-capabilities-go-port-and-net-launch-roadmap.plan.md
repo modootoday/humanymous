@@ -3,7 +3,7 @@ id: plan:root/20261117142053
 title: "Full-product capabilities, Go port and .NET launch roadmap"
 status: draft
 created: 2026-11-17T14:20:53Z
-updated: 2026-11-18T13:48:57Z
+updated: 2026-11-18T14:20:00Z
 rel:
   depends_on: [plan:root/20261116060213]
 ---
@@ -141,7 +141,14 @@ golden `crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-overlay-go
 was captured offline in `mirror.gcr.io/library/golang:1.26.3-alpine@sha256:91eda9776261207ea25fd06b5b7fed8d397dd2c0a283e77f2ab6e91bfa71079d`
 (`--network none`, `GOPROXY=off`, `GOFLAGS=-mod=readonly`, `GOTOOLCHAIN=local`);
 the fixture's `provenance` records the command and input and output hashes.
-`enforce` and `pass_scoring` remain frozen-unported.
+The route-policy slice (`internal/gate/config.go` presets and resolution,
+`enforce.go` action mapping, `cmd/gate/routes.go`) is ported under B1 in
+`crates/sdk/humanymous-runtime/src/gateway/route_policy` with the golden
+`crates/sdk/humanymous-runtime/tests/fixtures/gateway/route-policy-go-golden.json`,
+captured the same way. One reported difference is kept: an `Unknown` verdict
+always challenges, where Go passed it on safe methods of balanced, monitor and
+off routes (owner decisions 2026-11-16 and C1). `pass_scoring` and the
+HTTP-level attestation floor (`attestfloor`, `t4_promotion`) remain unported.
 
 When every row is `ported_unit` or explicitly oracle-only, remove the Go sources,
 `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at
@@ -170,3 +177,7 @@ pilot, and `delivery ready` on every axis. Summarise in #65 and update #22.
   ports of frozen scoring rows. The settings slice moved eight ledger rows to
   `ported_unit` with a Go-captured differential golden. The overlay is a pure
   library and is not wired into the hosted gateway.
+- 2026-11-18: the B1 route-policy slice moved five ledger rows to
+  `ported_unit` (enforce, ws5_test, resolve_test, cmd/gate routes and
+  routes_test) and mapped R081-R085 and R171-R173. It is a pure library and
+  is not wired into the hosted gateway.
