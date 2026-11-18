@@ -11,13 +11,15 @@
   "partial": "some behaviors ported; gaps listed",
   "missing": "no Rust counterpart",
   "retire_candidate": "intentionally dropped, quoted SoT basis",
-  "not_applicable": "Go-only helper without product responsibility"
+  "not_applicable": "Go-only helper without product responsibility",
+  "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
   "ported_unit": 170,
-  "partial": 94,
-  "missing": 48,
-  "not_applicable": 2
+  "partial": 90,
+  "missing": 43,
+  "not_applicable": 2,
+  "oracle_only": 9
  },
  "by_package": {
   "cmd/gate": {
@@ -32,19 +34,19 @@
    "missing": 3
   },
   "cmd/redteam": {
-   "partial": 2,
-   "missing": 1
+   "oracle_only": 3
   },
   "cmd/report": {
    "ported_unit": 1
   },
   "cmd/server": {
-   "missing": 11,
-   "partial": 21,
-   "ported_unit": 10
+   "missing": 9,
+   "partial": 20,
+   "ported_unit": 10,
+   "oracle_only": 3
   },
   "cmd/tlsparrot": {
-   "missing": 1
+   "oracle_only": 1
   },
   "cmd/wasm": {
    "ported_unit": 1
@@ -78,9 +80,10 @@
   },
   "internal/gate": {
    "partial": 46,
-   "missing": 18,
+   "missing": 17,
    "not_applicable": 1,
-   "ported_unit": 20
+   "ported_unit": 20,
+   "oracle_only": 1
   },
   "internal/httpx": {
    "not_applicable": 1
@@ -107,7 +110,7 @@
   },
   "internal/network": {
    "ported_unit": 19,
-   "partial": 1
+   "oracle_only": 1
   },
   "internal/pass": {
    "ported_unit": 3
@@ -430,7 +433,7 @@
   },
   {
    "baseline_path": "cmd/redteam/attacks.go",
-   "disposition": "partial",
+   "disposition": "oracle_only",
    "rust_paths": [
     "crates/attacker/src/network/cases.rs",
     "crates/attacker/src/network/mod.rs"
@@ -445,14 +448,14 @@
     "pow-fast-solve, pow-launder",
     "h2/header-order protocol-split"
    ],
-   "retire_basis": null,
+   "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "medium",
-   "notes": "Rust attacker catalog covers RIT replay/body/target/header-order mutation, forged pass signal, missing report/session and forwarded admin forgery against the owned runtime; TLS/proxy/PoW attack families are absent.",
+   "notes": "Rust attacker catalog covers RIT replay/body/target/header-order mutation, forged pass signal, missing report/session and forwarded admin forgery against the owned runtime; TLS/proxy/PoW attack families are absent. Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; previously partial): Go attacker catalog (uTLS/proxy/PoW/flood families) against the legacy stack; the Rust defense-only attacker catalog in crates/attacker is the owned-deployment replacement and the listed families are not ported. The Go source stays in the tree until the step 5 needs-human Go-removal PR; the gaps above are not ported and are not claimed as Rust behavior.",
    "test_verification": {}
   },
   {
    "baseline_path": "cmd/redteam/h2raw.go",
-   "disposition": "missing",
+   "disposition": "oracle_only",
    "rust_paths": [],
    "rust_tests": [],
    "go_test_map": {},
@@ -461,14 +464,14 @@
     "h2 settings/flow-control/priority split attacks",
     "coherent browser H2 control"
    ],
-   "retire_basis": null,
+   "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "high",
-   "notes": "No raw H2 attack client in crates/attacker or test/lab; runtime only has H2 capture (server side).",
+   "notes": "No raw H2 attack client in crates/attacker or test/lab; runtime only has H2 capture (server side). Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; previously missing): Go raw HTTP/2 attacker client; not ported to crates/attacker. The Go source stays in the tree until the step 5 needs-human Go-removal PR; the gaps above are not ported and are not claimed as Rust behavior.",
    "test_verification": {}
   },
   {
    "baseline_path": "cmd/redteam/main.go",
-   "disposition": "partial",
+   "disposition": "oracle_only",
    "rust_paths": [
     "crates/attacker/src/main.rs",
     "crates/attacker/src/network/mod.rs",
@@ -481,9 +484,9 @@
     "-attack selector CLI over the Go attack list",
     "cookie session bootstrap against /api/collect"
    ],
-   "retire_basis": null,
+   "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "medium",
-   "notes": "Rust attacker runs a seeded catalog against an OwnedLab runtime; Go -attack CLI and uTLS transport are not ported.",
+   "notes": "Rust attacker runs a seeded catalog against an OwnedLab runtime; Go -attack CLI and uTLS transport are not ported. Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; previously partial): Go redteam CLI and uTLS transport; the Rust attacker runs its seeded catalog against an owned lab runtime instead. The Go source stays in the tree until the step 5 needs-human Go-removal PR; the gaps above are not ported and are not claimed as Rust behavior.",
    "test_verification": {}
   },
   {
@@ -896,7 +899,7 @@
   },
   {
    "baseline_path": "cmd/server/launch.go",
-   "disposition": "missing",
+   "disposition": "oracle_only",
    "rust_paths": [],
    "rust_tests": [],
    "go_test_map": {},
@@ -906,9 +909,9 @@
     "detection state reset",
     "loopback origin check"
    ],
-   "retire_basis": null,
+   "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "high",
-   "notes": "No Rust playground launcher (grep playground/launch empty); plan B11.",
+   "notes": "No Rust playground launcher (grep playground/launch empty); plan B11. Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; previously missing): Go playground attack launcher; no Rust playground launcher is ported. The Go source stays in the tree until the step 5 needs-human Go-removal PR; the gaps above are not ported and are not claimed as Rust behavior.",
    "test_verification": {}
   },
   {
@@ -1432,7 +1435,7 @@
   },
   {
    "baseline_path": "cmd/server/playground.go",
-   "disposition": "missing",
+   "disposition": "oracle_only",
    "rust_paths": [],
    "rust_tests": [],
    "go_test_map": {},
@@ -1442,9 +1445,9 @@
     "loopback host guard",
     "explain view"
    ],
-   "retire_basis": null,
+   "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "high",
-   "notes": "No Rust counterpart; plan B11.",
+   "notes": "No Rust counterpart; plan B11. Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; previously missing): Go playground (HMN_PLAYGROUND, SSE live feed, explain view); not ported. The Go source stays in the tree until the step 5 needs-human Go-removal PR; the gaps above are not ported and are not claimed as Rust behavior.",
    "test_verification": {}
   },
   {
@@ -1588,7 +1591,7 @@
   },
   {
    "baseline_path": "cmd/server/sot31_test.go",
-   "disposition": "partial",
+   "disposition": "oracle_only",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/pass_store.rs",
     "crates/sdk/humanymous-runtime/src/gateway/request.rs",
@@ -1605,9 +1608,9 @@
    "gaps": [
     "No address-keyed connection registry exists to clear: Rust binds H2 fingerprints and abuse state to the connection owner, so the leak class is structurally absent but has no counterpart test"
    ],
-   "retire_basis": null,
+   "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "medium",
-   "notes": "Random identifiers are fresh lowercase hex and fail closed on entropy failure (503 or a typed refusal) instead of Go panicking into a 500. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "notes": "Random identifiers are fresh lowercase hex and fail closed on entropy failure (503 or a typed refusal) instead of Go panicking into a 500. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged. Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; previously partial): TestConnRegistryRemoveClearsAllMaps tests an address-keyed connection registry that Rust does not have (owner decision 2026-11-16 DIFF); TestRandHex stays mapped. The Go source stays in the tree until the step 5 needs-human Go-removal PR; the gaps above are not ported and are not claimed as Rust behavior.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::nonce_is_36_hex_and_fresh": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::correlation_ids_are_sixteen_hex_and_fresh": "passed"
@@ -1644,16 +1647,16 @@
   },
   {
    "baseline_path": "cmd/tlsparrot/main.go",
-   "disposition": "missing",
+   "disposition": "oracle_only",
    "rust_paths": [],
    "rust_tests": [],
    "go_test_map": {},
    "gaps": [
     "uTLS Chrome ClientHello parrot client POSTing /api/collect"
    ],
-   "retire_basis": null,
+   "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "high",
-   "notes": "No uTLS/parrot client in crates/attacker or test/lab.",
+   "notes": "No uTLS/parrot client in crates/attacker or test/lab. Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; previously missing): Go uTLS ClientHello parrot client; not ported to crates/attacker. The Go source stays in the tree until the step 5 needs-human Go-removal PR; the gaps above are not ported and are not claimed as Rust behavior.",
    "test_verification": {}
   },
   {
@@ -2268,7 +2271,7 @@
   },
   {
    "baseline_path": "internal/gate/console_test.go",
-   "disposition": "missing",
+   "disposition": "oracle_only",
    "rust_paths": [],
    "rust_tests": [],
    "go_test_map": {
@@ -2277,9 +2280,9 @@
     "TestConsoleJavaScriptSyntax": null
    },
    "gaps": [],
-   "retire_basis": null,
+   "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "high",
-   "notes": "No Rust admin console assets.",
+   "notes": "No Rust admin console assets. Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; previously missing): Go admin console CSS/JavaScript asset tests; no Rust admin console assets are ported. The Go source stays in the tree until the step 5 needs-human Go-removal PR; the gaps above are not ported and are not claimed as Rust behavior.",
    "test_verification": {}
   },
   {
@@ -5410,7 +5413,7 @@
   },
   {
    "baseline_path": "internal/network/fuzz_test.go",
-   "disposition": "partial",
+   "disposition": "oracle_only",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/network/tls/hello.rs",
     "crates/sdk/humanymous-runtime/src/capture/tls/hello/tests.rs"
@@ -5428,9 +5431,9 @@
    "gaps": [
     "no coverage-guided fuzz target (no cargo-fuzz/proptest). Only deterministic corpus and truncated-prefix tests"
    ],
-   "retire_basis": null,
+   "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "medium",
-   "notes": "The Go fuzz seeds assert no panic. Rust uses the frozen Go corpus and exhaustive prefix refusal instead.",
+   "notes": "The Go fuzz seeds assert no panic. Rust uses the frozen Go corpus and exhaustive prefix refusal instead. Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; previously partial): Go fuzz seeds asserting no panic; Rust keeps the frozen Go corpus and exhaustive prefix-refusal tests, without a coverage-guided fuzz target. The Go source stays in the tree until the step 5 needs-human Go-removal PR; the gaps above are not ported and are not claimed as Rust behavior.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/capture/tls/hello/tests.rs::every_truncated_wire_prefix_refuses_instead_of_using_tolerant_parser": "passed",
     "crates/sdk/humanymous-runtime/src/capture/tls/hello/tests.rs::malformed_and_over_budget_inputs_are_terminal": "passed",
