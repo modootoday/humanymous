@@ -5,6 +5,7 @@ use std::path::Path;
 mod maintenance;
 mod native_archive;
 mod node_host;
+pub mod pilots;
 mod runtime;
 
 const CAPTURE_CASES: [&str; 5] = [
@@ -266,7 +267,7 @@ fn request(entry: EntryPoint, kind: &str) -> Result<Request<'_>> {
     require(
         matches!(
             kind,
-            "capture" | "header" | "archive" | "maintenance" | "runtime" | "node-host"
+            "capture" | "header" | "archive" | "maintenance" | "runtime" | "node-host" | "pilots"
         ),
         "unknown hosted component",
     )?;
@@ -325,7 +326,7 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
 fn execute(root: &Path, request: Request<'_>) -> Result<()> {
     let kind = request.kind;
     require(
-        (matches!(kind, "maintenance" | "runtime")
+        (matches!(kind, "maintenance" | "runtime" | "pilots")
             || cfg!(all(target_os = "linux", target_arch = "x86_64")))
             && std::env::var("GITHUB_ACTIONS").as_deref() == Ok("true")
             && std::env::var_os("ACT").is_none()
@@ -346,6 +347,7 @@ fn execute(root: &Path, request: Request<'_>) -> Result<()> {
         "maintenance" => maintenance::run(root, &dir, &mut report),
         "runtime" => runtime::run(root, &dir, &mut report),
         "node-host" => node_host::run(root, &dir, &mut report),
+        "pilots" => pilots::run(root, &dir, &mut report),
         "archive" => native_archive::run(root, &dir, &mut report, &before),
         _ => header(root, &dir, &mut report),
     };

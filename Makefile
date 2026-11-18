@@ -129,9 +129,9 @@ report-html: report
 	  $(RPT_OUT) -in test/e2e/results.json -out docs/report.html; \
 	fi
 
-## docker: build the public demo image (detection engine only; build/core.Dockerfile)
+## docker: build the Rust runtime candidate image (build/rust/runtime-candidate.Dockerfile)
 docker:
-	docker build -f build/core.Dockerfile -t $(IMAGE) .
+	docker build -f build/rust/runtime-candidate.Dockerfile -t $(IMAGE) .
 
 # --- Local Docker detector-vs-bots stack (modular compose in deployments/) -----
 
