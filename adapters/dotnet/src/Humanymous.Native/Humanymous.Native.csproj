@@ -22,7 +22,7 @@
     <None Include="../../README.md" Pack="true" PackagePath="/" />
     <None Include="../../../../LICENSE" Pack="true" PackagePath="/" />
     <None Include="../../NOTICE" Pack="true" PackagePath="/" />
-    <None Include="../../../../crates/audit/LICENSE-Go.txt" Pack="true" PackagePath="licenses/" />
+    <None Include="../../../../crates/sdk/humanymous-runtime/src/audit/LICENSE-Go.txt" Pack="true" PackagePath="licenses/" />
   </ItemGroup>
   <ItemGroup Condition="'$(NativeArtifact)' != ''">
     <None Include="$(NativeArtifact)" Pack="true" PackagePath="runtimes/$(NativeRid)/native/" />

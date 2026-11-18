@@ -3,7 +3,7 @@ id: sot:root/dotnet-protected-host-launch
 title: Protected .NET host launch admission and B2 custody
 status: draft
 created: 2026-11-18T00:00:00Z
-updated: 2026-11-18T18:00:00Z
+updated: 2026-11-18T23:00:00Z
 verify: manual
 rel:
   governs: [crates/dotnet-adapter/tests/hosted/retained.rs]
@@ -12,7 +12,7 @@ rel:
 
 # Protected .NET host launch admission and B2 custody
 
-Document version: 0.2.0. Status: **proposed**. The owner chose the SoT design
+Document version: 0.2.1. Status: **proposed**. The owner chose the SoT design
 path under decision D1(a) on 2026-11-18 (issue #75 comment 6968092014). D1(a)
 approves *drafting* this SoT. It does not accept the native operations listed
 below. Every item marked UNAPPROVED here needs the review that the structural
@@ -29,6 +29,10 @@ option (b) (issue #75 comment 6979694428):
   (`authority::decision::TestExpiry`). Only the dotnet-adapter dev-dependency
   enables it, and a `compile_error!` refuses it in any build without debug
   assertions, so release and production builds cannot contain it.
+
+Version 0.2.1 update (2026-11-18). No new decision. The package controller
+is wired to the derived admission (3.5), all four package modes ran on Linux
+(5), and `dotnet-package-linux` is declared (4.3). N3 and N4 stay proposed.
 
 Scope: how `Host::start()` in `crates/dotnet-adapter/tests/hosted/retained.rs`
 gets protected host admission; who holds custody of the process tree, account,
@@ -222,6 +226,15 @@ A derived admission cannot become an Admin-staged closure claim. Package
 receipts keep `component_qualified=false` and `cleanup=null` until the
 provider's terminal facts are joined.
 
+Implemented 2026-11-18. `tests/package.rs` includes the consumer
+`hosted/launch.rs` and refuses before any `Command` without its own original,
+non-derived admission. `Admission::derive` re-sends the exact context and
+binding bytes and the nonce, and narrows only the apphost and audit root under
+the original `private_work`; a derived admission never derives again. Each
+per-mode harness timeout is the remaining original run deadline. The whole
+matrix (pack, four restores and publishes, four host runs) therefore has to
+fit the one 180 s original budget. Observed on Linux: 108-113 s.
+
 ## 4. Wiring
 
 ### 4.1 Windows backend (windows-native-runner, existing actor)
@@ -270,6 +283,11 @@ Declared in the change that adds the job (2026-11-18): only
 `dotnet-hosted-linux` (hosted target, `os: [linux]`, job `dotnet`). Windows
 hosted and both package rows stay undeclared, because nothing there has run.
 
+Declared 2026-11-18 with the step `component dotnet-package` in the same
+`dotnet` job: `dotnet-package-linux` (package target, `os: [linux]`). Windows
+hosted and Windows package stay undeclared: they need N3 and N4, which are not
+approved, and nothing has run on Windows.
+
 Also declared 2026-11-18: `dotnet-sdk-download` (package
 `humanymous-delivery`, binary target, `os: [linux, macos, windows]`, job
 `dotnet`). It names the ignored provider test
@@ -305,6 +323,18 @@ These steps come after the source exists:
   human-gated paths, so they go to owner review. Known gap: other jobs'
   `actions/setup-node` and `oven-sh/setup-bun` downloads are not yet
   hash-verified this way.
+- `component dotnet-package` runs the same SDK custody itself (its own
+  download, SHA-512 check and exact-version check; the two steps share no
+  SDK). The controller's `PATH` names only that private SDK root. Its
+  original envelope's harness lineage is the package controller binary that
+  runs in the scope, and its native lineage is the release export it packs;
+  each scoped result also records the SHA-256 of the binary it ran. Provider
+  scratch lives under the canonical temp root (`/tmp` on hosted runners), not
+  `RUNNER_TEMP`: the package socket
+  `<private_work>/pkg/<mode>/audit/<profile>/decision.sock` adds 46 bytes, so
+  `/home/runner/work/_temp` leaves no room under the 100-byte bound, while
+  `/tmp/hm-dotnet-<12>/run-<12>` keeps 10 bytes of margin. The provider checks
+  that real path before any build starts.
 - The rows are declared only in the same change that adds the named job step.
   Delivery tests reject a `job` row whose step does not exist.
 
@@ -415,7 +445,25 @@ sandbox, cgroup v2), with the creator channel a FIFO and the scope
 `package-install` stays not-run. This is not hosted CI qualification and
 claims nothing for Windows.
 
-So **`Host::start()` alone cannot turn rows 72/73 green**. The package test
+Run evidence, package matrix (2026-11-18): four local runs on Linux x86_64,
+the last on 55d76b1f, venue `root-allocated-local`, through
+`dotnet-host-local launch-package` as uid 1000 in a transient scope (systemd
+255 as PID 1 in a private namespace sandbox with a read-only host root, cgroup
+v2), creator channel a FIFO, scope `Collected`. In those runs the SDK 10.0.403
+tarball was checked against Microsoft's published SHA-512 by hand before
+installation; the provider code did not check it then. Since the PR #120
+review fix the provider itself performs that check, in CI and in local
+`prepare` alike (4.3). Those four runs predate that fix, the canonical
+temp-root scratch and the controller lineage fix. All four modes passed:
+jit-source, jit-packed, aot-source and aot-packed, each with both profiles on
+runtime 10.0.14. The projection reported `host_contract_complete: true` with
+no required case unrun (`package-install` evidenced by the packed modes),
+status `fixture-complete-cleanup-unverified`, `component_qualified: false`
+and `cleanup: null`. The controller finished in 108-113 s of its 180 s budget.
+This is not hosted CI qualification and claims nothing for Windows.
+
+Historical note, before the controller wiring above:
+**`Host::start()` alone cannot turn rows 72/73 green**. The package test
 would still fail on its final assertion, and it must keep failing until those
 fixtures exist. Nobody may weaken that assertion.
 
@@ -458,6 +506,9 @@ Receipts keep `full_product=false`.
   Windows design needs a fresh review.
 - Parent death leaves account, profile and private residue as Unknown.
 - The prebuilt plan already blocks a clean pass on profile residue (N5).
-- All host cases except `package-install` now run on Linux JIT. Rows 72/73
-  still need the derived-admission package run in four modes, including
-  NativeAOT, which has not run.
+- Rows 72/73 ran locally on Linux in four modes, NativeAOT included; the
+  hosted CI job has not run yet. The whole matrix shares one 180 s original
+  budget, and the local margin is about 65 s. A slow hosted NuGet restore can
+  exhaust it; the remedy would be a budget decision, never a renewed budget.
+- Windows rows 24 and 73 need N3 and N4 approved and implemented, plus the N1
+  fixture on a Windows runner.

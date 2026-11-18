@@ -113,6 +113,36 @@ the original private work, and never renews the budget. `Host::start()` in
 hosted/retained.rs launches only from this admission, with a cleared, fixed
 environment.
 
+### Package-matrix controller (rows 72/73, SoT 3.5)
+
+Since 2026-11-18 the package controller in tests/package.rs is itself admitted
+through its creator channel (the same launch.rs, included by path). It refuses
+before any `Command` without an original, non-derived admission, and uses the
+admitted private work as its parent instead of
+HUMANYMOUS_DOTNET_FIXTURE_PARENT, which it no longer reads. For each of the
+four modes it calls `Admission::derive`: the exact context and binding bytes,
+nonce, actor and original budget are re-sent unchanged; only the apphost and
+audit root narrow under the original private work, and a derived admission
+never derives again. The envelope goes to the per-mode harness's stdin pipe,
+whose only write end is closed after writing. The harness timeout is the
+remaining original run budget, never a fresh 180 s. The scratch directory is
+named `pkg` because the authority socket under each mode's audit root must stay
+inside the runtime's 100-byte endpoint bound.
+
+The Linux provider runs it as `delivery component dotnet-package` (local:
+`dotnet-host-local launch-package`). Prepare adds the release native export,
+the controller test binary, `rustc -V` and the strict provenance file. Like the
+hosted component, it first downloads SDK 10.0.403 itself, checks the pinned
+SHA-512 and the exact `dotnet --version`, and gives the controller only that
+private SDK on `PATH`. Launch scratch lives under the canonical temp root
+(`/tmp` on hosted runners), not `RUNNER_TEMP`: the deepest package socket,
+`<private_work>/pkg/<mode>/audit/<profile>/decision.sock`, adds 46 bytes,
+which `/home/runner/work/_temp` cannot hold under the 100-byte bound. The
+provider checks that real path before any build, deletes the scratch after
+launch and requires that deletion as its last fact, as the hosted component
+does. The original envelope's harness lineage is the controller binary and its
+native lineage the release export.
+
 Evidence:root/20261107124134 records four consumer, eight protocol and one managed
 scope test passes plus all-target check/strict Clippy. Source is b482d5be plus six
 exact overlays. All6847source/registry/config rows and recorded flags matched;
@@ -331,7 +361,8 @@ deadline is30minutes, below a60minute workflow job; timeout is a real failure,
 and job-empty/account-deleted/scratch-deleted proof is mandatory. The owner must
 confirm the bounded launch API rather than silently using an incompatible limit.
 
-The existing private success report is dotnet-package-run/package-observation.json
+The existing private success report is pkg/package-observation.json (formerly
+dotnet-package-run/)
 with schema humanymous.dotnet-package-observation/1. A prepared additive
 HUMANYMOUS_DOTNET_OBSERVATION_PATH will hold a bounded typed controller outcome
 on success or failure so the native wrapper can recover it before cleanup.
@@ -543,7 +574,8 @@ hosted job under the updated root policy. Benchmark quiet has ended.
 
 The new ignored sdk_package_and_real_host_matrix test accepts these absolute
 supervisor inputs: HUMANYMOUS_DOTNET_SOURCE_ROOT (clean committed checkout),
-HUMANYMOUS_DOTNET_FIXTURE_PARENT (existing verified private ordinary-user parent),
+HUMANYMOUS_DOTNET_FIXTURE_PARENT (superseded 2026-11-18: the admitted private
+work is now the parent; see "Package-matrix controller"),
 HUMANYMOUS_DOTNET_NATIVE_LIBRARY (release DLL/SO),
 HUMANYMOUS_DOTNET_HOST_HARNESS (prebuilt hosted.rs test executable) and
 HUMANYMOUS_DOTNET_NATIVE_PROVENANCE (strict JSON). The JSON fields are source_sha,

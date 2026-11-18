@@ -156,6 +156,23 @@
       "helpers": []
     },
     {
+      "id": "dotnet-package-linux",
+      "package": "humanymous-dotnet-adapter",
+      "target": "package",
+      "kind": "test",
+      "os": ["linux"],
+      "executor": "job",
+      "job": {
+        "workflow": ".github/workflows/rust-validation.yml",
+        "name": "dotnet",
+        "run": "cargo run --locked -p humanymous-delivery -- component dotnet-package"
+      },
+      "tests": [
+        "sdk_package_and_real_host_matrix"
+      ],
+      "helpers": []
+    },
+    {
       "id": "dotnet-sdk-download",
       "package": "humanymous-delivery",
       "target": "humanymous-delivery",
