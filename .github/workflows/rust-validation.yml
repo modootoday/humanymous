@@ -391,6 +391,23 @@ jobs:
           target/delivery-node/
           adapters/node/native/provenance.json
         if-no-files-found: error
+  dotnet:
+    needs: [policy]
+    if: ${{ !cancelled() && needs.policy.result == 'success' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        persist-credentials: false
+        fetch-depth: 1
+    - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+      with:
+        toolchain: 1.99.1
+    - name: Fetch the SHA-512-pinned .NET SDK and execute the hosted provider in a transient systemd scope
+      run: cargo run --locked -p humanymous-delivery -- component dotnet-host
+    - name: Fetch the SHA-512-pinned .NET SDK and execute the .NET package matrix (JIT and NativeAOT, source and packed) in a transient systemd scope
+      run: cargo run --locked -p humanymous-delivery -- component dotnet-package
   advisories:
     needs: [policy, node]
     if: ${{ !cancelled() && needs.policy.result == 'success' }}
@@ -466,6 +483,7 @@ jobs:
     - images
     - packages
     - node
+    - dotnet
     - advisories
     - documentation
     - docker
@@ -498,6 +516,7 @@ jobs:
     - images
     - packages
     - node
+    - dotnet
     - advisories
     - documentation
     - pages

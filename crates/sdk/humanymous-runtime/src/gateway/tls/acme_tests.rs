@@ -58,18 +58,88 @@ fn settings_accept_https_directories_and_plain_contacts_only() {
 
 #[test]
 fn renewal_is_due_when_absent_or_within_thirty_days() {
+    // A 90-day leaf keeps the Go autocert 30-day window.
     let not_after = 10_000_000;
+    let ninety_days = Validity {
+        not_before: not_after - 90 * 24 * 60 * 60,
+        not_after,
+    };
+    assert_eq!(renewal_window(ninety_days), RENEW_BEFORE_SECONDS);
     assert!(renewal_due(None, 0));
     assert!(!renewal_due(
-        Some(not_after),
+        Some(ninety_days),
         not_after - RENEW_BEFORE_SECONDS - 1
     ));
     assert!(renewal_due(
-        Some(not_after),
+        Some(ninety_days),
         not_after - RENEW_BEFORE_SECONDS
     ));
-    assert!(renewal_due(Some(not_after), not_after + 1));
-    assert!(renewal_due(Some(i64::MIN), 0));
+    assert!(renewal_due(Some(ninety_days), not_after + 1));
+    assert!(renewal_due(
+        Some(Validity {
+            not_before: i64::MIN,
+            not_after: i64::MIN
+        }),
+        0
+    ));
+}
+
+#[test]
+fn short_lived_leaf_is_not_due_right_after_issuance() {
+    // step-ca default: 24-hour leaves renew in their last third (8 hours).
+    let issued_at = 1_000_000;
+    let day = Validity {
+        not_before: issued_at,
+        not_after: issued_at + 24 * 60 * 60,
+    };
+    assert_eq!(renewal_window(day), 8 * 60 * 60);
+    assert!(!renewal_due(Some(day), issued_at));
+    assert!(!renewal_due(Some(day), issued_at + 16 * 60 * 60 - 1));
+    assert!(renewal_due(Some(day), issued_at + 16 * 60 * 60));
+    // Pebble's 6-day shortlived profile is likewise not due when issued.
+    let six_days = Validity {
+        not_before: issued_at,
+        not_after: issued_at + 6 * 24 * 60 * 60,
+    };
+    assert!(!renewal_due(Some(six_days), issued_at));
+    // A leaf cached on disk: the loaded validity drives the same window.
+    let cache = scratch("short");
+    let key = rcgen::KeyPair::generate().unwrap();
+    let mut params = rcgen::CertificateParams::new(vec!["example.com".to_owned()]).unwrap();
+    let now = time::OffsetDateTime::from(SystemTime::now());
+    params.not_before = now - time::Duration::minutes(1);
+    params.not_after = now + time::Duration::hours(24);
+    let certificate = params.self_signed(&key).unwrap();
+    let settings = AcmeSettings::lets_encrypt(cache.clone());
+    let names = domains(&["example.com"]);
+    let issuer = AcmeIssuer::new(settings.clone(), names.clone()).unwrap();
+    issuer
+        .write_cache(CHAIN_FILE, pem("CERTIFICATE", certificate.der()).as_bytes())
+        .unwrap();
+    issuer
+        .write_cache(
+            KEY_FILE,
+            pem("PRIVATE KEY", &key.serialize_der()).as_bytes(),
+        )
+        .unwrap();
+    let issuer = AcmeIssuer::new(settings, names).unwrap();
+    assert!(issuer.validity().is_some());
+    assert!(!issuer.due(unix_now()));
+    fs::remove_dir_all(cache).unwrap();
+}
+
+#[test]
+fn failed_attempts_back_off_exponentially() {
+    let interval = Duration::from_secs(60);
+    assert_eq!(retry_delay(interval, 0), interval);
+    assert_eq!(retry_delay(interval, 1), Duration::from_secs(120));
+    assert_eq!(retry_delay(interval, 2), Duration::from_secs(240));
+    assert_eq!(retry_delay(interval, 3), Duration::from_secs(480));
+    assert_eq!(retry_delay(interval, 20), MAX_RETRY_BACKOFF);
+    assert_eq!(retry_delay(interval, u32::MAX), MAX_RETRY_BACKOFF);
+    // An interval longer than the cap is never shortened.
+    let daily = Duration::from_secs(24 * 60 * 60);
+    assert_eq!(retry_delay(daily, 5), daily);
 }
 
 #[test]
@@ -97,13 +167,14 @@ fn challenge_certificate_names_the_domain_and_carries_the_critical_digest() {
 fn issued_pair_must_cover_every_domain_and_match_its_key() {
     let (chain, key, _) = issued(&["a.example.com", "b.example.com"]);
     let (_, other_key, _) = issued(&["a.example.com"]);
-    let (_, not_after) = certified(
+    let (_, validity) = certified(
         chain.as_bytes(),
         key.as_bytes(),
         &domains(&["a.example.com", "b.example.com"]),
     )
     .unwrap();
-    assert!(not_after > unix_now());
+    assert!(validity.not_after > unix_now());
+    assert!(validity.not_before <= unix_now());
     assert_eq!(
         certified(
             chain.as_bytes(),
@@ -543,7 +614,11 @@ async fn renewal_failures_are_recorded_with_kind_and_time() {
     let failure = facts.last_failure.expect("failure recorded");
     assert_eq!(failure.kind, AcmeErrorKind::Protocol);
     assert!(failure.at >= before && failure.at <= unix_now());
-    // The renewal loop records each retried failure instead of discarding it.
+    assert_eq!(facts.consecutive_failures, 1);
+    // The renewal loop records each retried failure instead of discarding it,
+    // and backs off: with a 10 ms interval and no backoff it would try about
+    // 50 times in 500 ms; doubling delays (40, 80, 160, 320 ms) allow at most
+    // a handful.
     assert!(
         tokio::time::timeout(
             Duration::from_millis(500),
@@ -553,7 +628,8 @@ async fn renewal_failures_are_recorded_with_kind_and_time() {
         .is_err()
     );
     let facts = issuer.renewal_facts();
-    assert!(facts.attempts >= 2, "{facts:?}");
+    assert!((2..=6).contains(&facts.attempts), "{facts:?}");
+    assert_eq!(u64::from(facts.consecutive_failures), facts.attempts);
     assert_eq!(facts.generation, 0);
     assert_eq!(
         facts.last_failure.map(|failure| failure.kind),
