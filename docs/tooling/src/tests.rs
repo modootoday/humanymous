@@ -15,6 +15,10 @@ impl Fixture {
             NEXT.fetch_add(1, Ordering::Relaxed)
         ));
         fs::create_dir(&root).unwrap();
+        // macOS temp lives under the /var -> /private/var link, which the
+        // packager refuses as a linked path; hand it the resolved path.
+        #[cfg(unix)]
+        let root = fs::canonicalize(&root).unwrap();
         fs::create_dir(root.join("docs")).unwrap();
         fs::create_dir(root.join("site")).unwrap();
         fs::create_dir_all(root.join("docs/_data/nav")).unwrap();
