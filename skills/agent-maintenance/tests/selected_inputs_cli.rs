@@ -22,6 +22,10 @@ impl Fixture {
                 .as_nanos()
         ));
         fs::create_dir(&root).unwrap();
+        // macOS temp lives under the /var -> /private/var link, which the
+        // tool refuses as a linked ancestor; hand it the resolved path.
+        #[cfg(unix)]
+        let root = fs::canonicalize(&root).unwrap();
         Self(root)
     }
     fn request(&self, selected: &str, complete: bool) -> PathBuf {

@@ -24,6 +24,10 @@ impl Fixture {
                 .as_nanos()
         ));
         fs::create_dir(&path).unwrap();
+        // macOS temp lives under the /var -> /private/var link, which the
+        // tool refuses as a linked ancestor; hand it the resolved path.
+        #[cfg(unix)]
+        let path = fs::canonicalize(&path).unwrap();
         Self(path)
     }
     fn selection(&self, files: &[&str], complete: bool, limits: &Limits) -> FrozenSelection {

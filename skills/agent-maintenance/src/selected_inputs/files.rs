@@ -266,6 +266,10 @@ mod boundary_tests {
                 .as_nanos()
         ));
         fs::create_dir(&directory).unwrap();
+        // macOS temp lives under the /var -> /private/var link, which
+        // `checked_path` refuses as a linked ancestor.
+        #[cfg(unix)]
+        let directory = fs::canonicalize(&directory).unwrap();
         let path = directory.join("input");
         fs::write(&path, b"before").unwrap();
         let opened = Opened::open(
