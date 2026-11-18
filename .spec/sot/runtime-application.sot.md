@@ -3,7 +3,7 @@ id: sot:root/runtime-application
 title: Runtime application and session owner
 status: active
 created: 2026-11-07T00:20:25Z
-updated: 2026-11-08T21:30:00Z
+updated: 2026-11-18T00:00:00Z
 verify: [cargo test -p humanymous-runtime --locked, cargo clippy -p humanymous-runtime --all-targets --locked -- -D warnings]
 rel:
   governs: [crates/sdk/humanymous-runtime/**]
@@ -345,6 +345,79 @@ the budget, but deadline is checked before origin. Cancellation after origin
 dispatch cannot undo an origin effect. Independent origin bypass denial and
 TLS, process isolation, real-browser/keyboard/AT controls and Docker product
 e2e are later mandatory qualification gates. No speed/motor requirement exists.
+
+### Origin failure, origin cloak and security headers (owner decision C10, 2026-11-18)
+
+Owner decision C10 on issue #75 (comment 6968092014, "decide as recommended")
+settles the questions #105 left open (comment 6965883746). Scoring is
+unchanged: no weight, threshold, hard rule, verdict band or signal ID moves.
+
+**Client status on origin failure.** After a committed ALLOW record, an origin
+refusal before any client byte answers HTTP 503 with body
+`{"error":"<code>"}`. The code is one of the gateway's static `origin_*` codes:
+`origin_connect`, `origin_write`, `origin_read`, `origin_timeout`,
+`origin_framing`, `origin_chunk_framing`, `origin_chunk_truncated`,
+`origin_chunk_count`, `origin_header_budget`, `origin_truncated_head`,
+`origin_trailing_frame`, `origin_stream_budget` or `origin_stream_truncated`.
+A consumed counter keeps its status-bound ACK. Go answered 502 with an empty
+body. That is a documented, deliberate difference: the client gets a typed
+code, and the ACK binds the actual status. Once a response has started, the
+gateway closes the socket. It never appends a 503 and never writes a record.
+
+**`upstream.error` audit record.** The runtime appends exactly one record per
+such origin failure, before the client is answered. This is legacy
+`handleUpstreamError`, PLAN-07 R16. The fields below are what
+`Application::upstream_failure` emits, on both the plaintext and TLS paths:
+
+| Field | Value |
+| --- | --- |
+| `event_type` | `upstream.error` |
+| `actor.kind` | `system`, no actor pseudonym |
+| `tenant_id`, `host`, `config_version` | configured scope tenant, authority and revision |
+| `request_id`, `correlation_id`, `route_class` | copied from the linked ALLOW `runtime.decision` record |
+| `latency_us` | decision start to failure; `0` if the clock is unavailable |
+| `enforcement_mode` / `fail_mode` | `enforce` / `degraded` |
+| `fail_reason` | `upstream <class>: <code>`, static text only |
+| `upstream.status` | the status sent, `503` |
+| `upstream.error_class` | `timeout`, `canceled`, `connection_refused`, `eof`, `dns` or `unreachable` |
+
+`verdict`, `risk_score`, `triggered_rules` and `top_signals` stay empty. Raw
+transport error text, request bytes and credentials are never recorded. With a
+transport error, the class comes from its `io::ErrorKind`. Otherwise
+`origin_timeout` maps to `timeout`, a `*truncated*` code to `eof`, and any
+other code to `unreachable`. Refusals that are not `origin_*`, such as
+`deadline`, `connection_deadline` or `service_stopping`, write no
+`upstream.error` record. Pinned by `gateway::tests::browser::origin_failure_acknowledges_consumed_counter_without_claiming_zero_effects`
+and `gateway::request::tests::upstream_errors_map_to_stable_classes_without_raw_text`.
+
+**Audit write failure poisons the epoch.** If the `upstream.error` append
+fails, the session epoch is poisoned, the serving-epoch latch withdraws
+readiness, and the client gets 503 `{"error":"durable_audit"}`. That is
+fail-closed under AGENTS.md constraint 2. Go logged and continued; Rust
+deliberately does not. No retry, and no silent drop.
+
+**Origin-cloak key supply.** The `X-Hmny-Origin-Auth` HMAC key
+(`gateway::guard::OriginKey`, at least `MIN_ORIGIN_KEY` = 32 bytes) comes only
+from the private configuration source or audit custody. There is no
+environment-variable fallback, no argv source (secret argv is already
+forbidden) and no self-generated random key: Go's `-origin-key` flag and its
+random fallback are not ported. If cloaking is enabled without a valid key,
+startup is refused (fail-closed). The key never reaches logs, readiness,
+`Debug` or audit. Status: contract only. Attaching the header on the origin
+request is not wired yet.
+
+**Add-only security headers.** This amends the opaque-frame rule above for
+proxied origin responses only. The gateway may add `X-Content-Type-Options:
+nosniff`, `Referrer-Policy: strict-origin-when-cross-origin` and
+`X-Frame-Options: SAMEORIGIN`, each only when the origin did not already send
+that field (field names compared case-insensitively). It never overwrites,
+removes or reorders an origin field, and it leaves the status, entity bytes
+and duplicate `Set-Cookie` untouched. `Strict-Transport-Security` is opt-in
+by configuration, off by default, and is never added on a plaintext listener.
+Gateway-local responses and the native-stream profile are out of scope until
+qualified separately. The ACK still binds the status only. Go parity:
+`internal/gate/gate.go` `addSecurityHeaders` and `TestSecurityHeadersAddOnly`.
+Status: SoT delta approved, implementation not yet authored.
 
 ### Review reflected
 

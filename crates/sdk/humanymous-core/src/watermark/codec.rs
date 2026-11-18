@@ -2,8 +2,9 @@
 //!
 //! The composition root must validate source grammar/format and semantics before
 //! encoding, then commit the ledger before exposing bytes. CRC alone is not a
-//! verified trace. PNG metadata and WASM custom-section modules are L2; PNG LSB
-//! stays fail-closed pending alpha/resource qualification.
+//! verified trace. Issuance composition lives in `watermark::issuance` and
+//! multi-codec recovery in `watermark::recovery`. PNG pixel LSB reproduces the
+//! legacy premultiplied model; real-resource (V3) qualification stays separate.
 
 mod base32;
 pub mod binary;
@@ -11,6 +12,34 @@ pub mod mime;
 pub mod png;
 pub mod text;
 pub mod wasm;
+
+/// A concrete carrier channel, named with its legacy ledger/report label.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum Channel {
+    /// Markup/block comment marker or JSON trailing whitespace (`text-comment`).
+    TextComment,
+    /// Opaque trailing frame (`bin-trailer`).
+    BinaryTrailer,
+    /// PNG `hmwm` tEXt chunk (`png-text`).
+    PngText,
+    /// PNG RGB low bits (`png-lsb`).
+    PngLsb,
+    /// WASM `hmwm` custom section (`wasm-section`).
+    WasmSection,
+}
+
+impl Channel {
+    /// Legacy channel label, suitable for ledger issuance metadata.
+    pub fn name(self) -> &'static str {
+        match self {
+            Self::TextComment => "text-comment",
+            Self::BinaryTrailer => "bin-trailer",
+            Self::PngText => "png-text",
+            Self::PngLsb => "png-lsb",
+            Self::WasmSection => "wasm-section",
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests {

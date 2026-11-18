@@ -38,6 +38,10 @@ pub enum Error {
     InvalidText,
     /// Resource bytes are not an admitted PNG/WASM profile or fail structural checks.
     InvalidFormat,
+    /// The resource is too small for the selected carrier channel.
+    CarrierCapacity,
+    /// No admitted watermark transform exists for the declared format.
+    UnsupportedFormat,
 }
 
 impl std::fmt::Display for Error {
@@ -60,6 +64,8 @@ impl std::fmt::Display for Error {
             Self::InvalidMime => "invalid watermark MIME declaration",
             Self::InvalidText => "invalid watermark text input",
             Self::InvalidFormat => "invalid watermark resource format",
+            Self::CarrierCapacity => "resource too small for watermark channel",
+            Self::UnsupportedFormat => "unsupported watermark resource format",
         })
     }
 }
