@@ -246,9 +246,9 @@
     },
     {
       "source": "adapters/dotnet/pilot/Program.cs",
-      "sha256": "5201fd500d688e19bd7af17d707c42b9bdc3177e792425a01894b0991a489b78",
-      "reviewer": "codex/rust-pages",
-      "notes": "194-line test host fully read in contiguous chunks. Redirected stdio/noargs, startup/control JSON, optional generic ABI probe separate from Kestrel. Loopback Kestrel limitsbody2MiB, disables minrate; actual bounded middleware/auth required separately. Contacts increment before request-body read, mutations only selectedroute; generic probe not middleware qualification. GC/control tasks waited before stopped; synchronous Emit/stdin ReadLine and post-read length check do not themselves bound memory, output or total wait. Host cannot attest runner provenance; parent must own timeout/containment. No actual process execution.",
+      "sha256": "40ffbc4691824fbeda760b3a8de91d3af37bd8ae2e5f9d7f0477b8ea7955c46d",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; prior codex/rust-pages review; owner sample pending)",
+      "notes": "200-line test host fully read; 2026-11-18 adds four pre-handoff rewrite modes (method, raw target, host, added header) beside route rewrite, accepted only from the control channel allowlist. Prior review: 194-line test host fully read in contiguous chunks. Redirected stdio/noargs, startup/control JSON, optional generic ABI probe separate from Kestrel. Loopback Kestrel limitsbody2MiB, disables minrate; actual bounded middleware/auth required separately. Contacts increment before request-body read, mutations only selectedroute; generic probe not middleware qualification. GC/control tasks waited before stopped; synchronous Emit/stdin ReadLine and post-read length check do not themselves bound memory, output or total wait. Host cannot attest runner provenance; parent must own timeout/containment. No actual process execution.",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
@@ -3251,9 +3251,9 @@
     },
     {
       "source": "crates/dotnet-adapter/tests/hosted.rs",
-      "sha256": "2066d195a297d5fa30c4ea399340f62d2cba8ebf80446ffa329250ea4050fdbf",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Ignored real Kestrel/IPC/GC pilot test (actual_kestrel_engine_audit_body_gc_and_shutdown) run twice, against production ApplicationHttp and frozen synthetic reports, with a private audit directory and per-OS authority endpoint; it covers binary replay, unknown-length EOF, GC pressure/overlap, aborts, deny/challenge, handoff rewrite/response-started/expiry, body limit, truncation, upgrade, 204/304/HEAD/stream, app error, authority down and dispose. It emits covered and not_run contract cases with full_product=false. Host::start currently always refuses with Unsupported, so the suite cannot run until a protected launch provider exists.",
+      "sha256": "7399d7ae7fc3ffaa036fecd77363ed72450b841cb081fea77f554fd94883eca4",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; prior 2026-11-16 first pass; owner sample pending)",
+      "notes": "2026-11-18: request-rewrite now mutates route, method, raw target, host and an added header one per request; response-started additionally asserts one status line, no application header and no completed chunked body. Still not run (Host::start refuses). Ignored real Kestrel/IPC/GC pilot test (actual_kestrel_engine_audit_body_gc_and_shutdown) run twice, against production ApplicationHttp and frozen synthetic reports, with a private audit directory and per-OS authority endpoint; it covers binary replay, unknown-length EOF, GC pressure/overlap, aborts, deny/challenge, handoff rewrite/response-started/expiry, body limit, truncation, upgrade, 204/304/HEAD/stream, app error, authority down and dispose. It emits covered and not_run contract cases with full_product=false. Host::start currently always refuses with Unsupported, so the suite cannot run until a protected launch provider exists.",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]

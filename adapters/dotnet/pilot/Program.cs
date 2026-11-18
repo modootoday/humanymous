@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -60,6 +61,10 @@ internal static class Program
             switch (Volatile.Read(ref handoffMode))
             {
                 case "rewrite": context.Request.Path = "/mutate"; break;
+                case "rewrite-method": context.Request.Method = HttpMethods.Put; break;
+                case "rewrite-target": context.Features.Get<IHttpRequestFeature>()!.RawTarget = "/mutate"; break;
+                case "rewrite-host": context.Request.Host = new HostString("rewritten.test"); break;
+                case "rewrite-header": context.Request.Headers["X-Pilot-Rewrite"] = "added"; break;
                 case "response-started": await context.Response.StartAsync(); break;
                 case "expire": await Task.Delay(host.TimeoutMilliseconds + 100); break;
             }
@@ -132,7 +137,8 @@ internal static class Program
                     case "dispose-host": host.Dispose(); break;
                     case "handoff-mode":
                         var mode = command.RootElement.GetProperty("mode").GetString();
-                        if (mode is not ("normal" or "rewrite" or "response-started" or "expire")) throw new InvalidDataException();
+                        if (mode is not ("normal" or "rewrite" or "rewrite-method" or "rewrite-target" or "rewrite-host" or "rewrite-header"
+                            or "response-started" or "expire")) throw new InvalidDataException();
                         Volatile.Write(ref handoffMode, mode); break;
                     case "stop": Interlocked.Exchange(ref collecting, 0); app.Lifetime.StopApplication(); return;
                     case "counters":

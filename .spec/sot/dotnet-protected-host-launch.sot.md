@@ -3,7 +3,7 @@ id: sot:root/dotnet-protected-host-launch
 title: Protected .NET host launch admission and B2 custody
 status: draft
 created: 2026-11-18T00:00:00Z
-updated: 2026-11-18T00:00:00Z
+updated: 2026-11-18T12:00:00Z
 verify: manual
 rel:
   governs: [crates/dotnet-adapter/tests/hosted/retained.rs]
@@ -300,6 +300,30 @@ authored:
 - `authority-restart`
 - `dispose-race`
 - `shutdown-active`
+
+Update 2026-11-18. The fixture now mutates each binding field the
+`request-rewrite` row names (route, method, raw target, host and a sanitized
+header), one per request. `response-started` now also checks that a started
+response keeps its single status line, carries no application header and is
+never completed. Both changes compile against SDK 10.0.403; neither has run,
+because `Host::start()` still refuses. Six cases remain unauthored, each for a
+stated reason:
+- `expired-result`. The authority sets `expires` to the request deadline
+  (`authority/decision.rs`). An authenticated result can therefore never expire
+  before the host's own deadline, so the fixture cannot tell authority expiry
+  apart from `request-deadline`. A design change is needed first: an authority
+  expiry shorter than the request deadline, or a test authority allowed to
+  issue one.
+- `drop-pending-decision`, `authority-restart`, `dispose-race`,
+  `shutdown-active`. Each is a timing race between a held authority decision
+  and host cancel, authority replacement, `HumanymousHost.Dispose` or
+  application stop. Their pass conditions depend on Kestrel and native-binding
+  ordering that only an actual run can show. Author them in the change that
+  first runs the fixture, not blind.
+- `wrong-peer`. The contract requires a real OS peer mismatch. The pilot
+  configures its host once at startup, so the fixture needs a second host
+  configuration, or a second authority endpoint with a different expected
+  peer. That is a fixture design choice for the same first-run change.
 
 So **`Host::start()` alone cannot turn rows 72/73 green**. The package test
 would still fail on its final assertion, and it must keep failing until those

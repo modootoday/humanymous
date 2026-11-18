@@ -437,8 +437,14 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() -> Result<(), Box<Host>> {
                     passed += 1;
                 }
                 covered.insert("deny-challenge");
+                // Each binding field the contract names is mutated on its own:
+                // route, method, raw target, host and sanitized headers.
                 for (mode, case) in [
                     ("rewrite", "request-rewrite"),
+                    ("rewrite-method", "request-rewrite"),
+                    ("rewrite-target", "request-rewrite"),
+                    ("rewrite-host", "request-rewrite"),
+                    ("rewrite-header", "request-rewrite"),
                     ("expire", "request-deadline"),
                     ("response-started", "response-started"),
                 ] {
@@ -447,6 +453,15 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() -> Result<(), Box<Host>> {
                     let reply = try_request(port, "POST", "/api", b"x", false, run_until);
                     if mode != "response-started" {
                         assert!(reply.unwrap().starts_with(b"HTTP/1.1 503"));
+                    } else if let Ok(wire) = reply {
+                        // The started response keeps its one status line: no
+                        // later 503, no application header and no completed body.
+                        let text = String::from_utf8_lossy(&wire).to_ascii_lowercase();
+                        assert!(wire.starts_with(b"HTTP/1.1 200"));
+                        assert_eq!(text.matches("http/1.1 ").count(), 1);
+                        assert!(!text.contains("set-cookie:"));
+                        assert!(!text.contains("x-pilot-forwarded:"));
+                        assert!(!wire.ends_with(b"0\r\n\r\n"));
                     } else if let Err(error) = reply {
                         assert!(!matches!(
                             error.kind(),
