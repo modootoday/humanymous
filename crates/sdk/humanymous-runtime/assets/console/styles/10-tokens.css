@@ -1,0 +1,22 @@
+/* SoT-34 — brand design tokens (canonical). The only place raw color/size values
+   live; every component references var(--token). Dark is default; light overrides. */
+@layer tokens {
+  :root{
+    --bg:#0a0e14;--panel:#111722;--panel-2:#0d131c;--raise:#16202c;--border:#202a38;--border-soft:#1a232f;
+    --text:#e4ecf5;--muted:#808fa3;--faint:#5a6879;
+    --accent:#35d0ba;--accent-ink:#04120f;--accent-dim:rgba(53,208,186,.13);
+    --allow:#3fb950;--challenge:#d9a441;--deny:#f0556a;--info:#4a9eff;
+    --allow-dim:rgba(63,185,80,.14);--challenge-dim:rgba(217,164,65,.15);--deny-dim:rgba(240,85,106,.14);--info-dim:rgba(74,158,255,.14);
+    --mono:ui-monospace,"Cascadia Code","SF Mono",Menlo,monospace;--sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    /* scales (SoT-34) — available to all components */
+    --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:20px;--sp-6:24px;--sp-8:32px;
+    --r-sm:6px;--r-md:10px;--r-lg:14px;--r-pill:999px;
+    --dur-fast:80ms;--dur:150ms;
+  }
+  :root[data-theme="light"]{
+    --bg:#eef1f6;--panel:#fff;--panel-2:#f6f8fb;--raise:#fff;--border:#d9e0ea;--border-soft:#e6ebf2;
+    --text:#14202e;--muted:#566579;--faint:#8695a8;--accent:#0e9c8a;--accent-ink:#fff;--accent-dim:rgba(14,156,138,.12);
+    --allow:#1f9d43;--challenge:#b3811f;--deny:#d63a52;--info:#2b7fe0;
+    --allow-dim:rgba(31,157,67,.12);--challenge-dim:rgba(179,129,31,.13);--deny-dim:rgba(214,58,82,.11);--info-dim:rgba(43,127,224,.12);
+  }
+}

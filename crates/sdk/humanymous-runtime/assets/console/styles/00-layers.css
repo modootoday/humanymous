@@ -1,0 +1,3 @@
+/* SoT-33 P2 — cascade layer order (declared once; later layers win regardless of
+   file/selector order, so overrides never need !important). */
+@layer tokens, base, layout, content, overlays, responsive;

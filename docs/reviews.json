@@ -6696,6 +6696,86 @@
       ]
     },
     {
+      "source": "crates/sdk/humanymous-runtime/assets/console/console.html",
+      "sha256": "1ffdcacbdb8e90455c6717f69569435a8833a80e1ef7fc2951ce40d37a64c403",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Operator console page markup (port of internal/gate/console.go's page) with an empty <style id=\"app-css\"> placeholder that console.rs fills, and one inline script. Nine views (overview, integrity, sessions, virtual USB lab, bans, policy, settings, compliance, approvals) call the admin API relative to the page path with an optional bearer token: /audit, /integrity, /incidents/{ref}, /bans and /bans/lift, /policy and /killswitch, /virtual-usb, /erasure and /erasures, /approvals, /settings effective/schema/dry-run/overlays/rollback, and /whoami. It renders an audit decision feed with CSV export, a session drill-down drawer, typed-word confirm modals for destructive actions, and repeatedly states limits: permanent or range bans, kill switch, erasure and protection-reducing settings need a distinct approver, retention tiers are declared and not enforced, virtual USB results are unverified lab artifacts, and settings cannot make coherent human-paced automation distinguishable. Status polls every 4 s. It is a client; it enforces none of these rules itself.",
+      "pages": [
+        "docs/how-to/audit-console-tour.md",
+        "docs/reference/console-localization.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/assets/console/styles/00-layers.css",
+      "sha256": "40fe5a3d55c4ed98f57ff4c10ac8dcc669dfd10f8bc69ad20605ffc697b11880",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "First console stylesheet partial (SoT-33 P2): declares the cascade layer order tokens, base, layout, content, overlays, responsive once, so later layers win without !important regardless of file or selector order. console.rs concatenates partials in file-name order so this declaration comes first. Reader page coverage is indirect.",
+      "pages": [
+        "docs/how-to/audit-console-tour.md",
+        "docs/reference/console-localization.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/assets/console/styles/10-tokens.css",
+      "sha256": "ff25774b238f36e0b5ca7a70caac3974ec03e5fb798a7d5437c63b4623679480",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Console design tokens (SoT-34) in @layer tokens: the only place raw values live. Dark palette is the :root default (background, panels, text, accent #35d0ba, allow/challenge/deny/info colours and dim variants, mono and sans font stacks, spacing, radius and duration scales) and :root[data-theme=\"light\"] overrides the colours. Reader page coverage is indirect.",
+      "pages": [
+        "docs/how-to/audit-console-tour.md",
+        "docs/reference/console-localization.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/assets/console/styles/20-base.css",
+      "sha256": "29233030a1f21710c2e3a10c4cd03a5e75b6c3e29ddaaf97f9a4a1bd5f4e0540",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Console base layer (SoT-33 P2) in @layer base: border-box reset, [hidden] forced to display:none, body background/colour/font from tokens at 14px/1.5, a tabular-numeric .mono class, heading weights and accent link colour. Reader page coverage is indirect.",
+      "pages": [
+        "docs/how-to/audit-console-tour.md",
+        "docs/reference/console-localization.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/assets/console/styles/30-layout.css",
+      "sha256": "71ddbfa0a0768d7c5d8a41c293569bc0497a27946c2d21eec0ede23dd40c0b7d",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Console app-shell layout (SoT-33 P2) in @layer layout: the 230px rail plus main grid, sticky rail with brand mark, nav labels and nav items with active/hover states and deny-coloured count badges, role chip, sticky blurred top bar with icon buttons and a pulsing live indicator, and the content column. Reader page coverage is indirect.",
+      "pages": [
+        "docs/how-to/audit-console-tour.md",
+        "docs/reference/console-localization.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/assets/console/styles/40-content.css",
+      "sha256": "7025b961d658a7ff7802632aa33aa74b0b8cdcf928b04e102c32787ad7e7971d",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Console content components (SoT-33 P2) in @layer content: five-column KPI cards, cards and split layout, filter chips, the decision-feed table with content-visibility:auto rows for high-velocity feeds, verdict badges (allow/challenge/deny/none), hard-rule badges with a critical variant, enforce/monitor mode badges, integrity rows, form fields, buttons, lift buttons, ban source badges, notes and empty states. Reader page coverage is indirect.",
+      "pages": [
+        "docs/how-to/audit-console-tour.md",
+        "docs/reference/console-localization.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/assets/console/styles/50-overlays.css",
+      "sha256": "c1100e93e0184e8fd6f4f8a82addf9a0b2dedd76c0355a0a9a3101ce17759109",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Console overlays and chrome (SoT-33 P2) in @layer overlays: toast, positioned tooltip, the destructive-action confirm modal and its scrim (SoT-28 WS9), a hamburger and off-canvas rail under 680px, the status bar, and the session drill-down drawer with key/value rows. Reader page coverage is indirect.",
+      "pages": [
+        "docs/how-to/audit-console-tour.md",
+        "docs/reference/console-localization.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/assets/console/styles/90-responsive.css",
+      "sha256": "f7806ad6260c86b03f25557f0d2e5b14e60611f2744b791b0e3e252a4cfce818",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Last console partial (SoT-33 P2) in @layer responsive: a visible accent focus ring, prefers-reduced-motion disabling animations and transitions, a three-column KPI grid and single-column split under 1000px, and a single-column app with the rail hidden under 680px. Reader page coverage is indirect.",
+      "pages": [
+        "docs/how-to/audit-console-tour.md",
+        "docs/reference/console-localization.md"
+      ]
+    },
+    {
       "source": "crates/sdk/humanymous-runtime/pilots/authority/Dockerfile",
       "sha256": "3dec201e655b53c9dbf56a37bf41cf453551d80592400d045fe3873fa02adacf",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
@@ -6717,9 +6797,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "d0394eb7672da5595e9c78f2f907597c786858dc2d4efb79dee88002df075bc9",
+      "sha256": "7c4d8897485e73d7a4eb5021fc3d1a29f276340c776b4b36fa53199c53bc1a31",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 426 / macos 426 / windows 416 (416 common names plus 10 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for merge train claude/merge-train-2 (codex/rust plus PR heads #70, #74 and #83): the name lists are the union of all parents' already-reviewed additions, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 426 listed common plus Unix-only names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 439 / macos 439 / windows 429 (429 common names plus 10 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for merge train claude/merge-train-2 (codex/rust plus PR heads #70, #74 and #83): the name lists are the union of all parents' already-reviewed additions, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 439 listed common plus Unix-only names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/how-this-was-built.md"
@@ -8166,6 +8246,16 @@
       ]
     },
     {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/console.rs",
+      "sha256": "3cc53a152cf021883ea1cfcec157456e2fd24ff6ffb3c6daf80ad68f4383b50e",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Serves the operator console at /__hmn/admin/console (port of internal/gate/console.go): embeds console.html and the seven SRP CSS partials with include_str!, concatenates the partials in file-name order and injects them into the <style id=\"app-css\"> placeholder once, so the page is one self-contained document with no external stylesheet request. Exposes PATH, page(), stylesheet() and inline_script(). Three unit tests assert the placeholder is filled with expected layer, token and component rules, that every on-disk .css partial is embedded in order with no partial dropped, and that the markup has exactly one non-empty inline script. Routing and authorization are not in this file.",
+      "pages": [
+        "docs/how-to/audit-console-tour.md",
+        "docs/reference/console-localization.md"
+      ]
+    },
+    {
       "source": "crates/sdk/humanymous-runtime/src/gateway/control.rs",
       "sha256": "a93da07eb4ba1298433fe3319db14d5d924875a7e2ae7608b49b4ee2bb5e366e",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
@@ -8307,6 +8397,16 @@
       ]
     },
     {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/demo.rs",
+      "sha256": "915d3b647d509a236546a19384c27966d6c489717bca4558fedd7ca81d986892",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Public read-only 'score this browser' demo page at /demo (port of cmd/server handleDemo): serves web_dir/demo.html, independent of the HMN_PLAYGROUND flag, with no launcher or target field. It reuses a non-empty hsid cookie or issues a fresh 128-bit hex session (Set-Cookie Path=/; HttpOnly; Secure; SameSite=Lax), failing the request if the CSPRNG fails, and registers the session through an injected ensure callback; other paths return None. Three tests assert the page is served and contains the score CTA and /static/js/demo.js, that sessions are issued once and reused, and that the demo works while the playground is off. Reader page coverage is indirect.",
+      "pages": [
+        "docs/how-to/detection-observatory.md",
+        "docs/how-to/run-detection-engine.md"
+      ]
+    },
+    {
       "source": "crates/sdk/humanymous-runtime/src/gateway/external_input.rs",
       "sha256": "b62a84bb21ce25ef0286cd50fd1d573103da41fe450096853552371e705ddbec",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
@@ -8371,6 +8471,26 @@
       "pages": [
         "docs/reference/gate-origin-contract.md",
         "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/inject.rs",
+      "sha256": "a461f63f578a9b74f899514849d8d261a53e39bace613cdc2c84a234827a14e5",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Streaming single-pass HTML loader injector (port of internal/gate/inject.go, SoT-20): an io::Read wrapper that inserts a snippet exactly once right after the first <head ...> tag, else before </head>, else before <body (case-insensitive; like the oracle, <head also matches <header). It is add-only and idempotent: the <!--hmn-injected--> marker causes pass-through (already_present), and with no point within a 64 KiB look-ahead (HR-27a), non-HTML or an upstream error the bytes pass through unchanged (point_not_found), with the upstream error surfaced after buffered bytes. Callers must force identity encoding upstream. Reader page coverage is indirect.",
+      "pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs",
+      "sha256": "e0dbc55e0e75ff9bf87af6e478465ab656e51fe7f0ddeeccc599fb4d35faf01e",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Seven ports of internal/gate/inject_test.go: injection right after <head> for chunk sizes 1, 3, 7 and 4096; fallback before <body>; marker prevents a second injection; non-HTML passes through as point_not_found; an unclosed <head beyond the 64 KiB look-ahead passes through byte-for-byte while an open head with a huge body injects once without loss; insertion-point order and case; and an upstream error surfaces after the buffered bytes. Reader page coverage is indirect.",
+      "pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/reference/supported-topologies.md"
       ]
     },
     {
@@ -8491,9 +8611,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/mod.rs",
-      "sha256": "858079e9d8297ae6c6928116d95970e22de776b0eb83b2cf3ac6265f712e41a4",
+      "sha256": "6dc3e7c49bcb1c131326235fb5dcc0284640e6a741c2168e08849ee543e1dff9",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway module root of the runtime crate: declares the application, ban, browser, configuration, connection cap, control, coordinator, credential, external input, guard, http, logging, management, model admission, observatory, pass proof/store, request, seams, service, session, settings, shipping, smuggle, startup, TLS, token, verdict store and virtual USB modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Re-reviewed 2026-11-18 for merge train claude/merge-train-2: the change unions both parents' module declarations (adds the public B23 coordinator module beside the existing model_admission and observatory modules). Doc line states loopback component support is not product qualification.",
+      "notes": "Gateway module root of the runtime crate: declares the application, ban, browser, configuration, connection cap, console, control, coordinator, credential, demo, external input, guard, http, inject, logging, management, model admission, observatory, pass proof/store, request, seams, service, session, settings, shipping, smuggle, startup, TLS, token, verdict store and virtual USB modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Re-reviewed 2026-11-18 for merge train claude/merge-train-2: the change unions both parents' module declarations (the B23 coordinator module from PR #70 and the B21 console, demo and inject modules from PR #74, beside the existing model_admission and observatory modules). Doc line states loopback component support is not product qualification.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
@@ -10317,9 +10437,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/observatory.rs",
-      "sha256": "fb8bb31091e366d509f4362333238d5cb5eacfb9d2f21883a28f7b70af4b629a",
+      "sha256": "703482fc3c47c519601da94a2c0abe58fbe55343f8e8ee9ad5cab5da8a43b820",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Lab-only Detection Observatory port of legacy cmd/server playground.go/launch.go (SoT-30): exists only when HMN_PLAYGROUND is exactly 1 and the listen address is loopback (enabled off loopback is a startup error), answers only loopback Host values with X-Frame-Options DENY, frame-ancestors 'none' and no-store, and serves /playground (playground.html from the web dir), an SSE live feed with Last-Event-ID or lastId replay and 15 s heartbeats, policy meta (challengeAt/denyAt bands, 24 rules, 7 stages), a nonce endpoint, abort, and a score explanation that rescores a copy of a stored report. Launch is POST-only, refuses non-loopback Origin, host/url/upstream overrides, bodies over 4 KiB, reused or expired 120 s nonces, Docker-only external-input profiles (409) and unknown profiles, clamps runs to 1..5, allows one launch in flight, resets stateful detectors first and always targets https://127.0.0.1:8443 through an injected profile runner; it opens no sockets itself and is not product qualification.",
+      "notes": "Lab-only Detection Observatory port of legacy cmd/server playground.go/launch.go (SoT-30): exists only when HMN_PLAYGROUND is exactly 1 and the listen address is loopback (enabled off loopback is a startup error), answers only loopback Host values with X-Frame-Options DENY, frame-ancestors 'none' and no-store, and serves /playground (playground.html from the web dir), an SSE live feed with Last-Event-ID or lastId replay and 15 s heartbeats, policy meta (challengeAt/denyAt bands, 24 rules, 7 stages), a nonce endpoint, abort, and a score explanation that rescores a copy of a stored report. Launch is POST-only, refuses non-loopback Origin, host/url/upstream overrides, bodies over 4 KiB, reused or expired 120 s nonces, Docker-only external-input profiles (409) and unknown profiles, clamps runs to 1..5, allows one launch in flight, resets stateful detectors first and always targets https://127.0.0.1:8443 through an injected profile runner; the shared Request type also carries the Cookie header for sibling handlers such as the demo page; it opens no sockets itself and is not product qualification.",
       "pages": [
         "docs/how-to/detection-observatory.md",
         "docs/explanation/observatory-architecture.md"
