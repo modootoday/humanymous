@@ -9,7 +9,7 @@
     "expected_counts": {
       "linux": 346,
       "macos": 346,
-      "windows": 338
+      "windows": 337
     },
     "common_test_names": [
       "gateway::application::temporal::tests::categories::configure_only_preserves_unknown_gap_until_provider_observation",
@@ -278,7 +278,6 @@
       "gateway::tests::tls::dispatch::truthful_native_tls_profile_preserves_policy_and_origin_agreement",
       "gateway::tests::tls::observation::actual_client_hello_and_negotiated_alpn_share_the_request_owner",
       "gateway::tls::acme::tests::account_files_are_keyed_by_directory",
-      "gateway::tls::acme::tests::cache_is_owner_only_and_loose_entries_are_refused",
       "gateway::tls::acme::tests::cached_pair_for_other_domains_is_not_served",
       "gateway::tls::acme::tests::challenge_certificate_names_the_domain_and_carries_the_critical_digest",
       "gateway::tls::acme::tests::issued_pair_must_cover_every_domain_and_match_its_key",
@@ -359,6 +358,7 @@
       "gateway::tests::service::settings_operator::native_operator_commit_is_witnessed_cas_and_invalidates_sessions",
       "gateway::tests::service::unix_closed_shutdown_controller_cannot_report_stopped",
       "gateway::tests::service::unix_service_management_drains_before_custody_release",
+      "gateway::tls::acme::tests::cache_is_owner_only_and_loose_entries_are_refused",
       "gateway::virtual_usb::tests::symlinked_results_and_roots_are_refused"
     ],
     "test_filter": "gateway::"
