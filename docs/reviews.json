@@ -9838,9 +9838,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/network/intel/snapshot/tests.rs",
-      "sha256": "84565c0eeebd0c9f5400efbfdd8bc5b07badaef87240f973d177ccff8a8f15b8",
+      "sha256": "489c64c1d97d8d2230df03737c09221351a42cb5c53593df42384f96dea0d3c4",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Snapshot tests: round trip, unknown fields, format, bounds, duplicate names, status/prefix agreement, commit and future-timestamp refusal. Re-reviewed 2026-11-18 for PR #123 review fixes: adds refusal cases for /0, ::/0 and /7 datacenter prefixes, unsorted and duplicate prefixes, unsorted sources, a Tor source relabelled datacenter, and inconsistent checkout records; accepts an explicit override and the floor itself; enforces the coverage cap at 64 versus 65 /8s and 16 versus 17 IPv6 /16s, including across two sources. Re-reviewed 2026-11-18 for PR #123 second review: floor and cap tests follow the new IPv6 values; carrier_scale_ipv6_aggregates_are_refused refuses 2600::/12 split into /16s (TooBroad) and into /20s (Coverage); measured_x4bnet_breadth_fits_with_headroom builds a fixture with X4BNet's measured shortest prefixes and exact merged coverage and checks it passes with headroom; the ignored pinned_x4bnet_datacenter_list_passes_the_breadth_guard reads the real submodule data and asserts the same exact numbers, and fails with a SKIPPED-not-passed reason when the data is absent.",
+      "notes": "Snapshot tests: round trip, unknown fields, format, bounds, duplicate names, status/prefix agreement, commit and future-timestamp refusal. Re-reviewed 2026-11-18 for PR #123 review fixes: adds refusal cases for /0, ::/0 and /7 datacenter prefixes, unsorted and duplicate prefixes, unsorted sources, a Tor source relabelled datacenter, and inconsistent checkout records; accepts an explicit override and the floor itself; enforces the coverage cap at 64 versus 65 /8s and 16 versus 17 IPv6 /16s, including across two sources. Re-reviewed 2026-11-18 for PR #123 second review: floor and cap tests follow the new IPv6 values; carrier_scale_ipv6_aggregates_are_refused refuses 2600::/12 split into /16s (TooBroad) and into /20s (Coverage); measured_x4bnet_breadth_fits_with_headroom builds a fixture with X4BNet's measured shortest prefixes and exact merged coverage and checks it passes with headroom; the ignored pinned_x4bnet_datacenter_list_passes_the_breadth_guard reads the real submodule data and asserts the same exact numbers, and fails with a SKIPPED-not-passed reason when the data is absent. Re-reviewed 2026-11-18 for the PR #123 native coverage-accounting failure: the ignored real-submodule test is removed, because the native job does not check out submodules and so it could not be declared as a pilot that actually runs; x4bnet_layout_fixture_normalizes_and_passes_the_breadth_guard instead reads the x4bnet-datacenter registry entry's own files and format from a committed synthetic fixture at the checkout layout, checks the normalized prefixes pass the breadth guard, and checks one appended over-broad line refuses the source. The real pinned data stays checked by the updater and the gateway on every write and load.",
       "pages": [
         "docs/how-to/update-ip-reputation-feed.md"
       ]
@@ -10491,6 +10491,24 @@
       "sha256": "86c3a7e1ca70680cdfb1bb5e17563eedbf19d7921a666301dcd2d95da10801e6",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
       "notes": "Tiny synthetic Spamhaus DROP JSON-lines fixture using only documentation ranges; no vendored list data.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/x4bnet-datacenter/output/datacenter/ipv4.txt",
+      "sha256": "b8357624d10419bf1ec0d39ed3b4201b75c061e8c2a3c640c68166ff9167fb9d",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tiny synthetic netset fixture at the X4BNet checkout path, read through the x4bnet-datacenter registry entry by snapshot tests: one floor-width /8 plus two documentation ranges; no vendored list data.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/x4bnet-datacenter/output/datacenter/ipv6.txt",
+      "sha256": "ec550ddbf503f4a6e0464b445c3e7cf0da933214bef2dbc53ffd7ba4116fd0c1",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tiny synthetic netset fixture at the X4BNet checkout path, read through the x4bnet-datacenter registry entry by snapshot tests: one /20 just above the IPv6 floor plus the documentation range; no vendored list data.",
       "pages": [
         "docs/how-to/update-ip-reputation-feed.md"
       ]

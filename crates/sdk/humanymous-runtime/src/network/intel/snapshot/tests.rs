@@ -390,44 +390,54 @@ fn measured_x4bnet_breadth_fits_with_headroom() {
     }
 }
 
-/// Reads the real pinned list. Ignored by default because the submodule is
-/// optional in a checkout; an explicit `--ignored` run without the data fails
-/// with the reason instead of reporting a pass.
-#[test]
-#[ignore = "needs the initialized third_party/ip-intel/x4bnet-datacenter submodule"]
-fn pinned_x4bnet_datacenter_list_passes_the_breadth_guard() {
+/// Reads the x4bnet-datacenter registry entry's own files, in its own
+/// format, from a committed synthetic fixture laid out like the pinned
+/// checkout. The real pinned data is not read here: CI does not check out
+/// submodules, and the updater and the gateway apply the same breadth check
+/// to the real data on every write and load.
+fn x4bnet_fixture_bytes() -> (&'static source::SourceSpec, Vec<u8>) {
     let spec = source::find("x4bnet-datacenter").unwrap();
     let source::SourceOrigin::Git { files, .. } = spec.origin else {
         panic!("x4bnet-datacenter is a git source");
     };
+    assert_eq!(
+        spec.submodule_path().as_deref(),
+        Some("third_party/ip-intel/x4bnet-datacenter")
+    );
     let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
-        .join(spec.submodule_path().unwrap());
+        .join("tests/fixtures/ip_intel/x4bnet-datacenter");
     let mut bytes = Vec::new();
     for file in files {
-        let path = root.join(file);
-        match std::fs::read(&path) {
-            Ok(body) => bytes.extend(body),
-            Err(error) => panic!(
-                "SKIPPED, not passed: pinned X4BNet data absent at {} ({error}); run \
-                 git submodule update --init third_party/ip-intel/x4bnet-datacenter",
-                path.display()
-            ),
-        }
+        bytes.extend(std::fs::read(root.join(file)).unwrap());
         bytes.push(b'\n');
     }
+    (spec, bytes)
+}
+
+#[test]
+fn x4bnet_layout_fixture_normalizes_and_passes_the_breadth_guard() {
+    let (spec, bytes) = x4bnet_fixture_bytes();
+    assert_eq!(spec.category, IntelCategory::Datacenter);
     let prefixes = source::normalize(spec.format, &bytes).unwrap();
-    assert_eq!(check_breadth(spec.category, &prefixes), Ok(()));
-    // The pinned data is exactly what the fixture above measures.
-    let shortest_v6 = prefixes
-        .iter()
-        .filter(|p| p.network().is_ipv6())
-        .map(Prefix::len)
-        .min();
-    assert_eq!(shortest_v6, Some(20));
     assert_eq!(
-        PrefixSet::new(prefixes.iter().copied()).coverage(),
-        (X4BNET_V4_COVERAGE, X4BNET_V6_COVERAGE)
+        prefixes,
+        [
+            "3.0.0.0/8",
+            "192.0.2.0/24",
+            "198.51.100.0/24",
+            "2001:db8::/32",
+            "2400::/20",
+        ]
+        .map(prefix)
+    );
+    assert_eq!(check_breadth(spec.category, &prefixes), Ok(()));
+    // One over-broad line in the same files refuses the whole source.
+    let mut broad = bytes;
+    broad.extend(b"2600::/16\n");
+    let prefixes = source::normalize(spec.format, &broad).unwrap();
+    assert_eq!(
+        check_breadth(spec.category, &prefixes),
+        Err(SnapshotError::TooBroad)
     );
 }
 
