@@ -18,7 +18,7 @@ async fn actual_runtime_session_report_and_required_capability_fail_closed() {
     assert_eq!(authority, scope.authority, "owned lab origin required");
     let mut document = SensitiveDocument::enter(&global).expect("owned sensitive document fixture");
     let routes = &fixture["routes"];
-    let session = BrowserSession::connect_with(global.clone(), scope, 5000)
+    let session = BrowserSession::connect_with(global.clone(), scope.clone(), 5000)
         .await
         .expect("actual runtime bootstrap");
     let headers = r#"[["content-type","application/octet-stream"],["authorization","Bearer owned-browser-fixture"]]"#;
@@ -81,10 +81,10 @@ async fn actual_runtime_session_report_and_required_capability_fail_closed() {
     );
     assert!(!session.is_closed());
 
-    // Preserve actual headless/browser observations. Never fabricate a benign
-    // report or interpret accepted report ingestion as human/code attestation.
+    // Stripped epoch: actual observations plus Go loader planes, hooks off.
+    // Never fabricate a benign report or treat ingestion as human attestation.
     let mut collector = crate::BrowserCollector::new().unwrap();
-    let report = collector.snapshot_json().unwrap();
+    let report = collector.report().unwrap().await.unwrap();
     collector.stop().unwrap();
     let collected = session
         .fetch(
@@ -126,7 +126,99 @@ async fn actual_runtime_session_report_and_required_capability_fail_closed() {
             .await
             .is_err()
     );
+
+    // Complete epoch: a new session whose page explicitly opts in to the guard
+    // hooks before collecting (never a collector default). Its report has fresh
+    // provenance, so the required route consumes a decision and returns an ACK.
+    let complete = BrowserSession::connect_with(global.clone(), scope.clone(), 5000)
+        .await
+        .expect("complete epoch runtime bootstrap");
+    let mut collector = crate::BrowserCollector::new().unwrap();
+    collector.enable_guard_hooks().unwrap();
+    let report = collector.report().unwrap().await.unwrap();
+    collector.stop().unwrap();
+    let collected = complete
+        .fetch(
+            "POST",
+            routes["collect"].as_str().unwrap(),
+            r#"[["content-type","application/json"]]"#,
+            report.into_bytes(),
+        )
+        .await
+        .expect("complete report ingestion must acknowledge consumed counter");
+    assert_eq!(collected.status(), 200);
+    let body: serde_json::Value = serde_json::from_slice(&collected.bytes()).unwrap();
+    assert_eq!(body["verdict"], "COLLECTED");
+    assert!(!complete.is_closed());
+    let admitted = complete
+        .fetch(
+            "POST",
+            routes["required_collector"].as_str().unwrap(),
+            headers,
+            b"effect".to_vec(),
+        )
+        .await
+        .expect("admitted required collector must acknowledge consumed decision");
+    let expected = &fixture["expected"];
+    assert_eq!(
+        u64::from(admitted.status()),
+        expected["complete_required_collector_status"]
+            .as_u64()
+            .unwrap()
+    );
+    let body: serde_json::Value = serde_json::from_slice(&admitted.bytes()).unwrap();
+    assert_eq!(
+        body["verdict"],
+        expected["complete_required_collector_verdict"]
+    );
+    assert!(!complete.is_closed());
+    complete.close().unwrap();
+
+    // Ceiling epoch (T4): a third session from the same real browser and
+    // collector, guard hooks opted in like the complete epoch, paced by the
+    // fixture's declared dwell and think times. Its decision is observed by
+    // the lab and never asserted here: ALLOW, DENY, CHALLENGE or a missing
+    // ACK all finish this test, so no verdict is pinned by the actor.
+    let pace = &fixture["ceiling"];
+    let ceiling = BrowserSession::connect_with(global.clone(), scope, 5000)
+        .await
+        .expect("ceiling epoch runtime bootstrap");
+    let mut collector = crate::BrowserCollector::new().unwrap();
+    collector.enable_guard_hooks().unwrap();
+    pause(&global, &pace["dwell_ms"]).await;
+    let report = collector.report().unwrap().await.unwrap();
+    collector.stop().unwrap();
+    let collected = ceiling
+        .fetch(
+            "POST",
+            routes["collect"].as_str().unwrap(),
+            r#"[["content-type","application/json"]]"#,
+            report.into_bytes(),
+        )
+        .await
+        .expect("ceiling report ingestion must acknowledge consumed counter");
+    assert_eq!(collected.status(), 200);
+    pause(&global, &pace["think_ms"]).await;
+    let observed = ceiling
+        .fetch(
+            "POST",
+            routes["required_collector"].as_str().unwrap(),
+            headers,
+            b"effect".to_vec(),
+        )
+        .await;
+    drop(observed);
+    ceiling.close().unwrap();
     document.restore().expect("restore owned document history");
+}
+
+/// Wait the fixture-declared milliseconds on the page's own timer.
+async fn pause(global: &JsValue, millis: &serde_json::Value) {
+    let millis = u32::try_from(millis.as_u64().unwrap()).unwrap();
+    let timer = Timer::start(global, millis).unwrap();
+    wasm_bindgen_futures::JsFuture::from(timer.promise.clone())
+        .await
+        .unwrap();
 }
 
 /// Keep the actual network pilot under a sensitive same-origin document URL.

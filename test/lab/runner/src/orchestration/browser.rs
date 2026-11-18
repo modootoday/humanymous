@@ -123,7 +123,7 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
     lab.stage = "browser_gate_start";
     lab.compose(&["create", "browser-gate"], true)?;
     let gate = lab.inspect("browser-gate")?;
-    {
+    let runtime_image = {
         let (role, actor) = ("runtime", &gate);
         let image: Value = serde_json::from_str(&lab.docker.call(&[
             "image",
@@ -131,7 +131,8 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
             actor["Image"].as_str().ok_or("image ID")?,
         ])?)?;
         snapshot::write(&lab.evidence, &format!("{role}-image.json"), &image[0])?;
-    }
+        image[0]["Id"].clone()
+    };
     let id = gate["Id"].as_str().ok_or("gate ID")?;
     let (mut child, mut input, output) =
         lab.docker
@@ -229,6 +230,7 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         browser["Image"].as_str().ok_or("browser image ID")?,
     ])?)?;
     snapshot::write(&lab.evidence, "browser-product-image.json", &image[0])?;
+    let browser_image = image[0]["Id"].clone();
     let mut command = lab.docker.command(
         &[
             "start".into(),
@@ -370,45 +372,63 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         json!("one exact feature-gated Rust WASM test"),
     )?;
     lab.stage = "browser_receipts";
+    // The ceiling epoch's decision is observed, never expected: only when it is
+    // bound to that epoch is it filled into the whole-run expectation, so the
+    // known epochs keep their exact zero-effect and audit checks below.
+    let ceiling = super::coherent_ceiling::decision(&report, &actor, &expected, &fixture).ok();
+    let whole = super::coherent_ceiling::with_decision(&expected, ceiling.as_ref());
     lab.case(
         "browser-product-zero-origin-effect",
-        report["origin_effects"] == expected["origin_effects"]
+        report["origin_effects"] == whole["origin_effects"]
             && report["offline_log_authenticated"] == true
             && report["expected"] == expected
             && actor["expected"] == expected
-            && report["audit_sequence"] == expected["audit_sequence"]
-            && report["audit_records"] == expected["audit_records"],
-        json!({"effects":report["origin_effects"],"sequence":report["audit_sequence"]}),
+            && report["audit_sequence"] == whole["audit_sequence"]
+            && report["audit_records"] == whole["audit_records"],
+        json!({"effects":report["origin_effects"],"sequence":report["audit_sequence"],
+            "ceiling_observed_effects":ceiling.as_ref().map(|c| c["origin_effects"].clone())}),
     )?;
     lab.case(
         "browser-product-clean-runtime-drain",
         status.success() && report["stopped"] == true,
         json!("actual audit flush and custody drop before Stopped"),
     )?;
-    for (key, response_expected) in expected["responses"]
+    // Whole-run accounting over all session epochs, with the observed ceiling
+    // response of a route, each with its exact count at both proxies.
+    for (key, responses_expected) in whole["responses"]
         .as_object()
         .ok_or("fixture response expectations")?
     {
-        let status = response_expected["status"]
-            .as_u64()
-            .ok_or("fixture response status")?;
-        let ack = response_expected["ack"]
-            .as_bool()
-            .ok_or("fixture response ACK")?;
-        let count = expected["request_counts"][key]
-            .as_u64()
-            .ok_or("fixture response count")?;
         let path = fixture["routes"][key].as_str().ok_or("fixture route")?;
-        let response = format!("response:{path}:{status}:ack_{ack}");
+        let mut keys = Vec::new();
+        let mut matched = true;
+        for response_expected in responses_expected
+            .as_array()
+            .ok_or("fixture response list")?
+        {
+            let status = response_expected["status"]
+                .as_u64()
+                .ok_or("fixture response status")?;
+            let ack = response_expected["ack"]
+                .as_bool()
+                .ok_or("fixture response ACK")?;
+            let count = response_expected["count"]
+                .as_u64()
+                .ok_or("fixture response count")?;
+            let response = format!("response:{path}:{status}:ack_{ack}");
+            matched &=
+                report["proxy_hits"][&response] == count && actor["proxy_hits"][&response] == count;
+            keys.push(response);
+        }
         lab.case(
             &format!("browser-response-{key}"),
-            report["proxy_hits"][&response] == count && actor["proxy_hits"][&response] == count,
-            json!(response),
+            matched && !keys.is_empty(),
+            json!(keys),
         )?;
     }
     for (key, route) in fixture["routes"].as_object().ok_or("fixture routes")? {
         let route = route.as_str().ok_or("fixture path")?;
-        let count = expected["request_counts"][key]
+        let count = whole["request_counts"][key]
             .as_u64()
             .ok_or("unknown fixture request count")?;
         lab.case(
@@ -497,24 +517,54 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
     // when a gap fails the run. Evaluated only from observed evidence; the
     // public stage stays the existing browser_receipts code.
     lab.stage = "browser_receipts";
-    let missing = super::collector_parity::missing_signals(&report, &actor, &expected, &fixture);
-    let parity = super::collector_parity::parity(&report, &actor, &expected, &fixture);
+    // Each case reads only its own observed session epoch of this one run.
+    let binding = super::browser_epochs::binding_gaps(&report, &actor);
+    let [gate, browser, epoch] =
+        super::browser_epochs::view(&report, &actor, &expected, "stripped");
+    let missing = super::collector_parity::missing_signals(&gate, &browser, &epoch, &fixture);
+    let [gate, browser, epoch] =
+        super::browser_epochs::view(&report, &actor, &expected, "complete");
+    let parity = super::collector_parity::parity(&gate, &browser, &epoch, &fixture);
     snapshot::write(
         &lab.evidence,
         "collector-parity-report.json",
         &json!({"schema":"humanymous.collector-parity-lab/1","collector_parity":parity,
-            "missing_signals_closed":missing,"full_product_qualified":false}),
+            "missing_signals_closed":missing,"epoch_binding_gaps":binding,
+            "epochs":{"collector_parity":"complete","missing_signals_closed":"stripped"},
+            "full_product_qualified":false}),
     )?;
     lab.components["collector_parity"] = json!({"collector_parity_gaps":parity["gaps"],"missing_signals_gaps":missing["gaps"],
-            "go_oracle":super::collector_parity::GO_ORACLE});
-    lab.case(
+            "epoch_binding_gaps":binding,"go_oracle":super::collector_parity::GO_ORACLE});
+    // Roadmap 4 T4 ceiling: recorded as observed, never block credit.
+    let ceiling = super::coherent_ceiling::evaluate(
+        &report,
+        &actor,
+        &expected,
+        &fixture,
+        &json!({"browser_image":browser_image,"runtime_image":runtime_image}),
+    );
+    snapshot::write(
+        &lab.evidence,
+        "coherent-browser-ceiling-report.json",
+        &json!({"schema":"humanymous.coherent-browser-ceiling-lab/1","result":ceiling,
+            "full_product_qualified":false}),
+    )?;
+    lab.components["coherent_browser_ceiling"] = ceiling["observation"].clone();
+    // Every required case is recorded before the first failure is returned.
+    let missing = lab.case(
         "missing-signals-closed",
         missing["passed"] == true,
-        json!({"gaps":missing["gaps"],"evidence":"absent report challenged; real stripped report refused 422 without ACK; real collect replayed and moved into a fresh session refused; fresh session never admitted; zero origin effect and unchanged authenticated audit"}),
-    )?;
-    lab.case(
+        json!({"gaps":missing["gaps"],"epoch":"stripped","evidence":"stripped epoch (no guard hooks): absent report challenged; real stripped report refused 422 without ACK; real collect replayed and moved into a fresh session refused; fresh session never admitted; zero origin effect and unchanged authenticated audit for that epoch"}),
+    );
+    let parity = lab.case(
         "collector-parity",
         parity["passed"] == true,
-        json!({"gaps":parity["gaps"],"evidence":"real browser Rust WASM report vs Go 981d25c report/signal sets and loader planes; collect bound to the issuing session; required-collector admission for that session only"}),
-    )
+        json!({"gaps":parity["gaps"],"epoch":"complete","evidence":"complete epoch (lab page explicitly enabled guard hooks): real browser Rust WASM report vs Go 981d25c report/signal sets and loader planes; collect bound to the issuing session; required-collector admission for that session only"}),
+    );
+    let ceiling = lab.case(
+        "coherent-browser-ceiling",
+        ceiling["passed"] == true,
+        json!({"gaps":ceiling["gaps"],"epoch":"ceiling","observation":ceiling["observation"],"evidence":"ceiling epoch (same real browser and Rust WASM collector, guard hooks opted in, declared dwell/think pace observed on both proxy clocks): the Gate's consumed decision from the authenticated audit record bound to that session, its response at both proxies and the origin's own effect count, with browser/runtime image IDs and the reported user agent. ALLOW is ceiling_reached and DENY/CHALLENGE ceiling_not_reached; neither is block credit or a detection claim"}),
+    );
+    missing.and(parity).and(ceiling)
 }

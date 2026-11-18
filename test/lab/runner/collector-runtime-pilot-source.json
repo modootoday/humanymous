@@ -2,8 +2,8 @@
   "schema": 1,
   "path": "crates/collector/src/browser/transport/runtime_pilot.rs",
   "name": "browser::transport::runtime_pilot::actual_runtime_session_report_and_required_capability_fail_closed",
-  "sha256": "abbc8badb89cc4aa879cec85e74cd776a236225df90e47707d86f17ca685d421",
-  "bytes": 6571,
+  "sha256": "45919f2a0fd11aca86317c130510e38222451fb2f337533539ea01b26e608f02",
+  "bytes": 10244,
   "sites": [
     {
       "line": 11,
@@ -118,7 +118,7 @@
     {
       "line": 87,
       "code": "browser_panic_collector_snapshot",
-      "needle": "collector.snapshot_json()"
+      "needle": "collector.report()"
     },
     {
       "line": 88,
@@ -169,6 +169,131 @@
       "line": 118,
       "code": "browser_panic_closed_refusal",
       "needle": "assert!("
+    },
+    {
+      "line": 135,
+      "code": "browser_panic_complete_bootstrap",
+      "needle": ".expect(\"complete epoch runtime bootstrap\")"
+    },
+    {
+      "line": 136,
+      "code": "browser_panic_complete_collector_start",
+      "needle": "BrowserCollector::new()"
+    },
+    {
+      "line": 137,
+      "code": "browser_panic_complete_guard_hooks",
+      "needle": "enable_guard_hooks()"
+    },
+    {
+      "line": 138,
+      "code": "browser_panic_complete_collector_report",
+      "needle": "collector.report()"
+    },
+    {
+      "line": 139,
+      "code": "browser_panic_complete_collector_stop",
+      "needle": "collector.stop()"
+    },
+    {
+      "line": 148,
+      "code": "browser_panic_complete_collect_ack",
+      "needle": ".expect(\"complete report ingestion"
+    },
+    {
+      "line": 149,
+      "code": "browser_panic_complete_collect_status",
+      "needle": "assert_eq!(collected.status()"
+    },
+    {
+      "line": 150,
+      "code": "browser_panic_complete_collect_json",
+      "needle": "serde_json::from_slice"
+    },
+    {
+      "line": 151,
+      "code": "browser_panic_complete_collect_verdict",
+      "needle": "assert_eq!(body[\"verdict\"]"
+    },
+    {
+      "line": 152,
+      "code": "browser_panic_complete_collect_epoch",
+      "needle": "assert!(!complete.is_closed())"
+    },
+    {
+      "line": 161,
+      "code": "browser_panic_complete_required_ack",
+      "needle": ".expect(\"admitted required collector"
+    },
+    {
+      "line": 163,
+      "code": "browser_panic_complete_required_status",
+      "needle": "assert_eq!("
+    },
+    {
+      "line": 167,
+      "code": "browser_panic_complete_fixture_status",
+      "needle": ".unwrap()"
+    },
+    {
+      "line": 169,
+      "code": "browser_panic_complete_required_json",
+      "needle": "serde_json::from_slice"
+    },
+    {
+      "line": 170,
+      "code": "browser_panic_complete_required_verdict",
+      "needle": "assert_eq!("
+    },
+    {
+      "line": 174,
+      "code": "browser_panic_complete_required_epoch",
+      "needle": "assert!(!complete.is_closed())"
+    },
+    {
+      "line": 175,
+      "code": "browser_panic_complete_session_close",
+      "needle": "complete.close().unwrap()"
+    },
+    {
+      "line": 185,
+      "code": "browser_panic_ceiling_bootstrap",
+      "needle": ".expect(\"ceiling epoch runtime bootstrap\")"
+    },
+    {
+      "line": 186,
+      "code": "browser_panic_ceiling_collector_start",
+      "needle": "BrowserCollector::new()"
+    },
+    {
+      "line": 187,
+      "code": "browser_panic_ceiling_guard_hooks",
+      "needle": "enable_guard_hooks()"
+    },
+    {
+      "line": 189,
+      "code": "browser_panic_ceiling_collector_report",
+      "needle": "collector.report()"
+    },
+    {
+      "line": 190,
+      "code": "browser_panic_ceiling_collector_stop",
+      "needle": "collector.stop()"
+    },
+    {
+      "line": 199,
+      "code": "browser_panic_ceiling_collect_ack",
+      "needle": ".expect(\"ceiling report ingestion"
+    },
+    {
+      "line": 200,
+      "code": "browser_panic_ceiling_collect_status",
+      "needle": "assert_eq!(collected.status()"
+    },
+    {
+      "line": 211,
+      "code": "browser_panic_ceiling_session_close",
+      "needle": "ceiling.close().unwrap()"
     }
   ]
 }

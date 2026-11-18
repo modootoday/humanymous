@@ -43,6 +43,13 @@ run explicit bounded probes; BrowserCollector::probe_cdp_json attempts the two
 legacy console-preview observations once per epoch. enable_guard_hooks explicitly
 installs owned eval/Function forwarding proxies and changes direct-eval lexical
 semantics. These optional APIs do not become implicit detect_json measurements.
+BrowserCollector::report_json is the explicit Go loader.js assembly (981d25c):
+it measures snapshot_json now, then runs the environment and advanced probes
+and computes fingerprintId (advanced.js computeFingerprintId: canvas, WebGL,
+screen, time zone, languages, threads, platform; WebCrypto SHA-256 first 12
+bytes, or the oracle fallback hash when digest throws or rejects). fingerprintId
+is an unscored report field, not a signal. Probe failure rejects the report;
+guard reported stays true only after enable_guard_hooks, never assumed.
 This is not a qualified runtime collector, human proof or full Pass implementation.
 Required runtime collector routes remain fail-closed rather than accepting this
 partial report as a substitute for missing evidence.

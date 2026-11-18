@@ -64,8 +64,32 @@ fn owned_runtime_fixture_and_webdriver_proxy_cannot_drift_independently() {
         && !path.contains(['?', '#', '%', '\\'])));
     assert_eq!(fixture["expected"]["required_collector_status"], 422);
     assert_eq!(fixture["expected"]["required_collector_ack"], false);
+    // The complete (hooks opted in) epoch is admitted with a consumed, non-ALLOW
+    // decision, so the whole two-epoch pilot still has zero origin effects.
+    assert_eq!(fixture["expected"]["complete_required_collector_ack"], true);
+    assert_ne!(
+        fixture["expected"]["complete_required_collector_status"],
+        fixture["expected"]["required_collector_status"]
+    );
+    assert!(matches!(
+        fixture["expected"]["complete_required_collector_verdict"].as_str(),
+        Some("DENY" | "CHALLENGE")
+    ));
     assert_eq!(fixture["expected"]["origin_effects"], 0);
     assert_eq!(fixture["expected"]["effect_requests"], 2);
+    // The T4 ceiling epoch declares only its pacing. Its decision is observed
+    // by the lab, so the fixture carries no ceiling verdict, status or effect.
+    assert_eq!(
+        keys(&fixture["ceiling"]),
+        BTreeSet::from(["dwell_ms".into(), "think_ms".into()])
+    );
+    for pace in ["dwell_ms", "think_ms"] {
+        assert!(
+            fixture["ceiling"][pace]
+                .as_u64()
+                .is_some_and(|ms| (1000..=30_000).contains(&ms))
+        );
+    }
     assert_eq!(fixture["test_selection"]["selected"], 1);
     assert_eq!(fixture["test_selection"]["component_tests_filtered"], 66);
     assert_eq!(

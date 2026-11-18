@@ -57,6 +57,7 @@
     "declared_filtered",
     "summary_verified",
     "proxy_hits",
+    "epochs",
     "namespace_controls",
     "connection_refusals",
     "hardening",

@@ -2,11 +2,11 @@
 use humanymous_runtime::gateway::http;
 use serde::Deserialize;
 use std::{
-    collections::BTreeMap,
+    collections::{BTreeMap, BTreeSet},
     io,
     net::SocketAddr,
     sync::{Arc, Mutex},
-    time::Duration,
+    time::{Duration, Instant},
 };
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
@@ -46,30 +46,35 @@ pub struct ProxyConfig {
     /// Browser F accepts absolute-form and serves assets from its own S.
     pub browser: bool,
 }
-/// Counters, collect entities and (Gate side) the exact forwarded collect
-/// requests. Requests stay in process memory for the post-browser controls and
+/// Counters, collect entities and the per-session-epoch ledger. Session IDs,
+/// request commitments and (Gate side) the exact forwarded collect requests
+/// stay in process memory for attribution and the post-browser controls; they
 /// are never written to a frame, log or HTTP response.
 #[derive(Clone, Default)]
 pub struct Receipts(
     Arc<Mutex<BTreeMap<String, u64>>>,
     Arc<Mutex<Vec<Vec<u8>>>>,
-    Arc<Mutex<Vec<Vec<u8>>>>,
+    Arc<Mutex<Vec<Epoch>>>,
 );
-/// Collect entities retained per proxy; the pilot posts exactly one.
+/// Collect entities retained per proxy; the pilot posts one per epoch.
 const COLLECT_CAPTURE_MAX: usize = 4;
+/// Session epochs retained per proxy; the pilot opens three.
+const EPOCH_MAX: usize = 4;
+/// One browser session epoch: every API request from one bootstrap request up
+/// to the next, in arrival order (the pilot's requests are sequential).
+/// `elapsed_ms` is this proxy's own clock from the bootstrap request's
+/// arrival to the latest request's arrival: observed pacing, never declared.
+#[derive(Default)]
+struct Epoch {
+    hits: BTreeMap<String, u64>,
+    opened: Option<Instant>,
+    elapsed_ms: u64,
+    sessions: BTreeSet<String>,
+    commitments: BTreeSet<String>,
+    reports: Vec<usize>,
+    requests: Vec<Vec<u8>>,
+}
 impl Receipts {
-    /// Retain the exact forwarded collect request bytes, bounded.
-    fn capture_request(&self, request: &[u8]) {
-        if let Ok(mut requests) = self.2.lock()
-            && requests.len() < COLLECT_CAPTURE_MAX
-        {
-            requests.push(request.to_vec());
-        }
-    }
-    /// Forwarded collect requests in arrival order (Gate frontend only).
-    pub fn collect_requests(&self) -> Vec<Vec<u8>> {
-        self.2.lock().map(|v| v.clone()).unwrap_or_default()
-    }
     fn hit(&self, key: &str) {
         if let Ok(mut counts) = self.0.lock() {
             *counts.entry(key.into()).or_default() += 1;
@@ -79,17 +84,127 @@ impl Receipts {
         self.0.lock().map(|v| v.clone()).unwrap_or_default()
     }
     /// Retain the exact collect entity the runtime received, bounded.
-    fn capture(&self, body: &[u8]) {
-        if let Ok(mut reports) = self.1.lock()
-            && reports.len() < COLLECT_CAPTURE_MAX
-        {
+    fn capture(&self, body: &[u8]) -> Option<usize> {
+        let mut reports = self.1.lock().ok()?;
+        (reports.len() < COLLECT_CAPTURE_MAX).then(|| {
             reports.push(body.to_vec());
-        }
+            reports.len() - 1
+        })
     }
     /// Collect entities in arrival order, as forwarded to the runtime.
     pub fn collect_entities(&self) -> Vec<Vec<u8>> {
         self.1.lock().map(|v| v.clone()).unwrap_or_default()
     }
+    /// Attribute one API request: a bootstrap opens a new epoch, every other
+    /// request joins the latest one. Requests before any bootstrap, or past
+    /// the epoch bound, are unattributed (counted, never assigned).
+    fn enter(&self, frame: &http::Request) -> Option<usize> {
+        let bootstrap = fixture()["routes"]["session"].as_str() == Some(frame.target.as_str());
+        let index = self.2.lock().ok().and_then(|mut epochs| {
+            if bootstrap {
+                if epochs.len() >= EPOCH_MAX {
+                    return None;
+                }
+                epochs.push(Epoch {
+                    opened: Some(Instant::now()),
+                    ..Epoch::default()
+                });
+            }
+            let index = epochs.len().checked_sub(1)?;
+            let epoch = &mut epochs[index];
+            *epoch.hits.entry(frame.target.clone()).or_default() += 1;
+            if let Some(opened) = epoch.opened {
+                epoch.elapsed_ms = u64::try_from(opened.elapsed().as_millis()).unwrap_or(u64::MAX);
+            }
+            if let Some(session) = frame.header("x-humanymous-session") {
+                epoch.sessions.insert(session.to_owned());
+                // The runtime's audit request_id for this consumed request.
+                if let Some(counter) = frame
+                    .header("x-humanymous-counter")
+                    .and_then(|c| c.parse::<u64>().ok())
+                {
+                    epoch.commitments.insert(commitment(session, counter));
+                }
+            }
+            Some(index)
+        });
+        if index.is_none() {
+            self.hit("epoch_unattributed");
+        }
+        index
+    }
+    fn epoch_hit(&self, index: Option<usize>, key: &str) {
+        if let (Some(index), Ok(mut epochs)) = (index, self.2.lock())
+            && let Some(epoch) = epochs.get_mut(index)
+        {
+            *epoch.hits.entry(key.into()).or_default() += 1;
+        }
+    }
+    fn epoch_collect(&self, index: Option<usize>, report: Option<usize>, request: Vec<u8>) {
+        if let (Some(index), Ok(mut epochs)) = (index, self.2.lock())
+            && let Some(epoch) = epochs.get_mut(index)
+        {
+            epoch.reports.extend(report);
+            if epoch.requests.len() < COLLECT_CAPTURE_MAX {
+                epoch.requests.push(request);
+            }
+        }
+    }
+    /// Forwarded collect requests of one epoch, in arrival order (Gate only).
+    pub fn collect_requests(&self, epoch: usize) -> Vec<Vec<u8>> {
+        self.2
+            .lock()
+            .ok()
+            .and_then(|epochs| epochs.get(epoch).map(|e| e.requests.clone()))
+            .unwrap_or_default()
+    }
+    /// Epochs whose consumed requests include this audit request_id.
+    pub fn attribute(&self, request_id: &str) -> Vec<usize> {
+        self.2
+            .lock()
+            .map(|epochs| {
+                (0..epochs.len())
+                    .filter(|i| epochs[*i].commitments.contains(request_id))
+                    .collect()
+            })
+            .unwrap_or_default()
+    }
+    /// Frame-safe epoch ledger: counters, the number of distinct sessions the
+    /// epoch's requests named, how many of those another epoch also named, and
+    /// indices into `collect_entities`. No session value is projected.
+    pub fn epochs(&self) -> Vec<serde_json::Value> {
+        let Ok(epochs) = self.2.lock() else {
+            return Vec::new();
+        };
+        epochs
+            .iter()
+            .enumerate()
+            .map(|(index, epoch)| {
+                let shared = epoch
+                    .sessions
+                    .iter()
+                    .filter(|session| {
+                        epochs
+                            .iter()
+                            .enumerate()
+                            .any(|(other, e)| other != index && e.sessions.contains(*session))
+                    })
+                    .count();
+                serde_json::json!({"proxy_hits":epoch.hits,"sessions":epoch.sessions.len(),
+                    "shared_sessions":shared,"collector_reports":epoch.reports,
+                    "elapsed_ms":epoch.elapsed_ms})
+            })
+            .collect()
+    }
+}
+
+/// The runtime's audit `request_id`: SHA-256 of `session:counter`, lowercase hex.
+fn commitment(session: &str, counter: u64) -> String {
+    use sha2::{Digest, Sha256};
+    format!(
+        "{:x}",
+        Sha256::digest(format!("{session}:{counter}").as_bytes())
+    )
 }
 
 fn destination(method: &str, target: &str, browser: bool) -> Result<(String, bool)> {
@@ -223,13 +338,15 @@ fn encode(request: &http::Request) -> Vec<u8> {
 
 async fn exchange(socket: &mut TcpStream, config: &ProxyConfig, receipts: &Receipts) -> Result<()> {
     let (frame, api) = request(socket, config.browser).await?;
+    let mut epoch = None;
     if api {
         record_wire(receipts, frame.header("origin"), frame.header("referer"))?;
+        epoch = receipts.enter(&frame);
         // The Gate frontend keeps the exact report entity the real collector
         // posted, so other topologies replay collector bytes, not fixtures.
         if !config.browser && fixture()["routes"]["collect"].as_str() == Some(&frame.target) {
-            receipts.capture(&frame.body);
-            receipts.capture_request(&encode(&frame));
+            let report = receipts.capture(&frame.body);
+            receipts.epoch_collect(epoch, report, encode(&frame));
         }
     }
     let upstream = if api {
@@ -273,7 +390,9 @@ async fn exchange(socket: &mut TcpStream, config: &ProxyConfig, receipts: &Recei
             .skip(1)
             .filter_map(|line| line.split_once(':'))
             .any(|(name, _)| name.eq_ignore_ascii_case("x-humanymous-ack"));
-        receipts.hit(&format!("response:{}:{status}:ack_{ack}", frame.target));
+        let key = format!("response:{}:{status}:ack_{ack}", frame.target);
+        receipts.hit(&key);
+        receipts.epoch_hit(epoch, &key);
     }
     socket.write_all(&reply).await?;
     socket.shutdown().await?;
@@ -391,6 +510,114 @@ mod tests {
             ASSET_RESPONSE_MAX > required,
             "ASSET_RESPONSE_MAX ({ASSET_RESPONSE_MAX}) must exceed measured debug wasm + 64KiB margin ({required})"
         );
+    }
+    #[test]
+    fn epochs_split_at_each_bootstrap_and_attribute_consumed_requests() {
+        const A: &str = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        const B: &str = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+        let fixture = fixture();
+        let route = |key: &str| fixture["routes"][key].as_str().unwrap().to_owned();
+        let request = |target: String, session: Option<&str>, counter: &str| {
+            let mut headers = vec![("Host".to_owned(), authority())];
+            if let Some(session) = session {
+                headers.push(("X-Humanymous-Session".into(), session.into()));
+                headers.push(("X-Humanymous-Counter".into(), counter.into()));
+            }
+            http::Request {
+                method: "POST".into(),
+                target,
+                headers,
+                body: Vec::new(),
+            }
+        };
+        let receipts = Receipts::default();
+        // Nothing precedes the first bootstrap.
+        assert_eq!(
+            receipts.enter(&request(route("effect"), Some(A), "1")),
+            None
+        );
+        assert_eq!(receipts.snapshot()["epoch_unattributed"], 1);
+        let first = receipts.enter(&request(route("session"), None, ""));
+        assert_eq!(first, Some(0));
+        receipts.epoch_hit(first, "response:/_humanymous/browser/session:200:ack_false");
+        let collect = receipts.enter(&request(route("collect"), Some(A), "1"));
+        assert_eq!(collect, Some(0));
+        let report = receipts.capture(b"{\"guard\":{\"reported\":false}}");
+        receipts.epoch_collect(collect, report, b"request-a".to_vec());
+        assert_eq!(
+            receipts.enter(&request(route("session"), None, "")),
+            Some(1)
+        );
+        let collect = receipts.enter(&request(route("collect"), Some(B), "1"));
+        let report = receipts.capture(b"{\"guard\":{\"reported\":true}}");
+        receipts.epoch_collect(collect, report, b"request-b".to_vec());
+        // Audit request_id attribution follows the consumed (session, counter).
+        assert_eq!(receipts.attribute(&commitment(A, 1)), vec![0]);
+        assert_eq!(receipts.attribute(&commitment(B, 1)), vec![1]);
+        assert!(receipts.attribute(&commitment(A, 2)).is_empty());
+        assert_eq!(receipts.collect_requests(0), vec![b"request-a".to_vec()]);
+        assert_eq!(receipts.collect_requests(1), vec![b"request-b".to_vec()]);
+        assert!(receipts.collect_requests(2).is_empty());
+        let mut epochs = receipts.epochs();
+        assert_eq!(epochs.len(), 2);
+        // Observed pacing on this proxy's clock: a number, never declared.
+        for epoch in &mut epochs {
+            let elapsed = epoch
+                .as_object_mut()
+                .and_then(|epoch| epoch.remove("elapsed_ms"));
+            assert!(elapsed.is_some_and(|ms| ms.is_u64()));
+        }
+        assert_eq!(
+            epochs[0],
+            serde_json::json!({"proxy_hits":{"/_humanymous/browser/session":1,
+                "/_humanymous/browser/collect":1,
+                "response:/_humanymous/browser/session:200:ack_false":1},
+                "sessions":1,"shared_sessions":0,"collector_reports":[0]})
+        );
+        assert_eq!(epochs[1]["collector_reports"], serde_json::json!([1]));
+        let text = serde_json::to_string(&epochs).unwrap();
+        assert!(!text.contains(A) && !text.contains(B));
+        // A session named in two epochs is visible as shared in both.
+        receipts.enter(&request(route("effect"), Some(A), "2"));
+        let epochs = receipts.epochs();
+        assert_eq!(
+            (
+                epochs[0]["shared_sessions"].clone(),
+                epochs[1]["sessions"].clone()
+            ),
+            (serde_json::json!(1), serde_json::json!(2))
+        );
+        assert_eq!(epochs[1]["shared_sessions"], 1);
+        // The epoch ledger is bounded; later bootstraps are unattributed.
+        for index in 2..EPOCH_MAX {
+            assert_eq!(
+                receipts.enter(&request(route("session"), None, "")),
+                Some(index)
+            );
+        }
+        assert_eq!(receipts.enter(&request(route("session"), None, "")), None);
+        assert_eq!(receipts.snapshot()["epoch_unattributed"], 2);
+    }
+    #[test]
+    fn epoch_pacing_is_measured_from_bootstrap_arrival_on_the_proxy_clock() {
+        let fixture = fixture();
+        let request = |key: &str| http::Request {
+            method: "POST".into(),
+            target: fixture["routes"][key].as_str().unwrap().to_owned(),
+            headers: vec![("Host".to_owned(), authority())],
+            body: Vec::new(),
+        };
+        let receipts = Receipts::default();
+        receipts.enter(&request("session"));
+        std::thread::sleep(Duration::from_millis(30));
+        receipts.enter(&request("required_collector"));
+        let paced = receipts.epochs()[0]["elapsed_ms"].as_u64().unwrap();
+        assert!(paced >= 30, "{paced}");
+        // A new bootstrap restarts the clock for its own epoch only.
+        receipts.enter(&request("session"));
+        let epochs = receipts.epochs();
+        assert!(epochs[1]["elapsed_ms"].as_u64().unwrap() < paced);
+        assert_eq!(epochs[0]["elapsed_ms"], paced);
     }
     #[test]
     fn origin_classes_initialize_zeroes_and_never_retain_foreign_values() {

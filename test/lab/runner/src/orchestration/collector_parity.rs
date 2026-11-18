@@ -2,7 +2,9 @@
 //! `collector-parity` and `missing-signals-closed` cases from what the real
 //! browser-product run observed (the collect entity captured at the Gate
 //! frontend, both proxies' wire counters, the authenticated offline audit and
-//! the Gate's post-browser missing-signal controls).
+//! the Gate's post-browser missing-signal controls). The run holds two session
+//! epochs; `browser_epochs` feeds `collector-parity` the complete (hooks
+//! opted in) epoch and `missing-signals-closed` the stripped one.
 //!
 //! The Go oracle is measured at 981d25c, never guessed:
 //! - `internal/signals/signals.go` `ClientReport`/`Signal` JSON field sets;
@@ -147,7 +149,7 @@ fn base64(text: &str) -> Option<Vec<u8>> {
 
 /// The single collect entity the real browser posted, verified against its
 /// digest and length and decoded with duplicate/size refusal.
-fn captured(gate: &Value) -> Option<Value> {
+pub(super) fn captured(gate: &Value) -> Option<Value> {
     let [one] = gate["collector_reports"].as_array()?.as_slice() else {
         return None;
     };
@@ -470,10 +472,19 @@ mod tests {
                 "ack":false,"failure":null})).collect::<Vec<_>>()})
     }
 
-    /// Today's fixture flow: stripped report refused, controls refused.
+    /// One epoch's view of the fixture flow: a refused (422) required route is
+    /// the stripped epoch's expectation, an admitted one the complete epoch's.
+    /// Controls are refused either way (the browser_epochs tests cover the
+    /// whole two-epoch run).
     fn run(report: &Value, required_key: &str) -> (Value, Value, Value) {
         let fixture = fixture();
-        let expected = crate::browser_expectations::from_fixture(&fixture).unwrap();
+        let epoch = if required_key.contains(":422:") {
+            "stripped"
+        } else {
+            "complete"
+        };
+        let expected =
+            crate::browser_expectations::from_fixture(&fixture).unwrap()["epochs"][epoch].clone();
         let mut hits = json!({
             "/_humanymous/browser/collect":1,
             "response:/_humanymous/browser/collect:200:ack_true":1,
