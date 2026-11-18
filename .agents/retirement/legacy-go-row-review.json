@@ -14,9 +14,9 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "ported_unit": 165,
-  "partial": 95,
-  "missing": 52,
+  "ported_unit": 170,
+  "partial": 94,
+  "missing": 48,
   "not_applicable": 2
  },
  "by_package": {
@@ -122,9 +122,7 @@
    "ported_unit": 3
   },
   "internal/resource": {
-   "missing": 4,
-   "partial": 1,
-   "ported_unit": 1
+   "ported_unit": 6
   },
   "internal/scoring": {
    "ported_unit": 21
@@ -8170,90 +8168,170 @@
   },
   {
    "baseline_path": "internal/resource/classify.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "Tier classification by path/MIME/size/Sec-Fetch-Dest"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/integrity/resource/classify.rs",
+    "crates/sdk/humanymous-core/src/integrity/resource/mod.rs",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs",
+    "crates/sdk/humanymous-core/tests/integrity/fixtures/resource_gate.json"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/integrity/resource/classify.rs::extension_is_taken_from_final_path_element_only",
+    "crates/sdk/humanymous-core/src/integrity/resource/classify.rs::precedence_and_strict_size_boundaries",
+    "crates/sdk/humanymous-core/src/integrity/resource/classify.rs::lowercasing_matches_legacy_simple_mapping",
+    "crates/sdk/humanymous-core/src/integrity/resource/classify.rs::labels_are_stable",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::classify_matches_go_table",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::classify_gate_embed_and_media_match_go_oracle"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust resource tier classifier found.",
-   "test_verification": {}
+   "notes": "Tier enum, labels and classify() ported in integrity/resource/classify.rs. Exact Go path.Ext and per-rune strings.ToLower semantics (U+0130 -> i) reproduced; checked against 2379 Go-generated cases (oracle 981d25c). Not wired into a runtime resource handler.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/integrity/resource/classify.rs::extension_is_taken_from_final_path_element_only": "passed",
+    "crates/sdk/humanymous-core/src/integrity/resource/classify.rs::precedence_and_strict_size_boundaries": "passed",
+    "crates/sdk/humanymous-core/src/integrity/resource/classify.rs::lowercasing_matches_legacy_simple_mapping": "passed",
+    "crates/sdk/humanymous-core/src/integrity/resource/classify.rs::labels_are_stable": "passed",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::classify_matches_go_table": "passed",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::classify_gate_embed_and_media_match_go_oracle": "passed"
+   }
   },
   {
    "baseline_path": "internal/resource/embed.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "l5.embed.origin_disallowed / l5.embed.token_stripped inspection"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/integrity/resource/embed.rs",
+    "crates/sdk/humanymous-core/src/integrity/resource/mod.rs",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs",
+    "crates/sdk/humanymous-core/tests/integrity/fixtures/resource_gate.json"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/integrity/resource/embed.rs::non_embed_destinations_yield_nothing",
+    "crates/sdk/humanymous-core/src/integrity/resource/embed.rs::origin_normalization_and_empty_allow_list",
+    "crates/sdk/humanymous-core/src/integrity/resource/embed.rs::emitted_signals_use_registry_definitions",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::embed_token_stripped_and_origin_disallowed",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::classify_gate_embed_and_media_match_go_oracle"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Signal IDs absent from Rust tree.",
-   "test_verification": {}
+   "notes": "EmbedContext/inspect() ported in integrity/resource/embed.rs; emits only existing catalog IDs l5.embed.origin_disallowed and l5.embed.token_stripped via Signal::new (registry weights unchanged). 504 Go-generated cases match on the decoded wire form. Not wired into a runtime resource handler.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/integrity/resource/embed.rs::non_embed_destinations_yield_nothing": "passed",
+    "crates/sdk/humanymous-core/src/integrity/resource/embed.rs::origin_normalization_and_empty_allow_list": "passed",
+    "crates/sdk/humanymous-core/src/integrity/resource/embed.rs::emitted_signals_use_registry_definitions": "passed",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::embed_token_stripped_and_origin_disallowed": "passed",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::classify_gate_embed_and_media_match_go_oracle": "passed"
+   }
   },
   {
    "baseline_path": "internal/resource/gate.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "Tier x verdict x RIT x liveness decision matrix"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/integrity/resource/gate.rs",
+    "crates/sdk/humanymous-core/src/integrity/resource/mod.rs",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs",
+    "crates/sdk/humanymous-core/tests/integrity/fixtures/resource_gate.json"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/integrity/resource/gate.rs::full_matrix_matches_legacy_rules",
+    "crates/sdk/humanymous-core/src/integrity/resource/gate.rs::verdict_labels_are_the_session_wire_vocabulary",
+    "crates/sdk/humanymous-core/src/integrity/resource/gate.rs::labels_are_stable",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::gate_matrix_matches_go_table",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::classify_gate_embed_and_media_match_go_oracle"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart found.",
-   "test_verification": {}
+   "notes": "Decision enum and gate() ported in integrity/resource/gate.rs; verdict stays an exact-match wire string so unknown labels keep the Go default branch. Full 5 tiers x 6 verdicts x RIT x liveness matrix checked against Go. Not wired into a runtime resource handler.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/integrity/resource/gate.rs::full_matrix_matches_legacy_rules": "passed",
+    "crates/sdk/humanymous-core/src/integrity/resource/gate.rs::verdict_labels_are_the_session_wire_vocabulary": "passed",
+    "crates/sdk/humanymous-core/src/integrity/resource/gate.rs::labels_are_stable": "passed",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::gate_matrix_matches_go_table": "passed",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::classify_gate_embed_and_media_match_go_oracle": "passed"
+   }
   },
   {
    "baseline_path": "internal/resource/media.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "MediaTracker range_storm/hotlink/rit_absent signals"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/integrity/resource/media.rs",
+    "crates/sdk/humanymous-core/src/integrity/resource/mod.rs",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs",
+    "crates/sdk/humanymous-core/tests/integrity/fixtures/resource_gate.json"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/integrity/resource/media.rs::storm_fires_at_eighth_range_inside_window_and_window_is_exclusive",
+    "crates/sdk/humanymous-core/src/integrity/resource/media.rs::sessions_are_isolated_and_non_range_events_do_not_count",
+    "crates/sdk/humanymous-core/src/integrity/resource/media.rs::hotlink_and_rit_absent_follow_storm_in_order",
+    "crates/sdk/humanymous-core/src/integrity/resource/media.rs::earliest_instant_does_not_overflow",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::media_range_storm_after_rapid_ranges",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::media_no_storm_when_spread",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::classify_gate_embed_and_media_match_go_oracle"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Signal IDs absent from Rust tree.",
-   "test_verification": {}
+   "notes": "MediaTracker ported in integrity/resource/media.rs with frozen 8-in-3s storm threshold, strict-after window, caller-supplied clock and Mutex-guarded per-session history (no global eviction, as in Go). Emits only existing catalog IDs l5.media.range_storm, l5.media.hotlink, l5.resource.rit_absent. 600-event Go-generated multi-session sequence matches. Not wired into a runtime resource handler.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/integrity/resource/media.rs::storm_fires_at_eighth_range_inside_window_and_window_is_exclusive": "passed",
+    "crates/sdk/humanymous-core/src/integrity/resource/media.rs::sessions_are_isolated_and_non_range_events_do_not_count": "passed",
+    "crates/sdk/humanymous-core/src/integrity/resource/media.rs::hotlink_and_rit_absent_follow_storm_in_order": "passed",
+    "crates/sdk/humanymous-core/src/integrity/resource/media.rs::earliest_instant_does_not_overflow": "passed",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::media_range_storm_after_rapid_ranges": "passed",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::media_no_storm_when_spread": "passed",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::classify_gate_embed_and_media_match_go_oracle": "passed"
+   }
   },
   {
    "baseline_path": "internal/resource/resource_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-core/src/integrity/resource/mod.rs",
-    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs"
+    "crates/sdk/humanymous-core/src/integrity/resource/classify.rs",
+    "crates/sdk/humanymous-core/src/integrity/resource/embed.rs",
+    "crates/sdk/humanymous-core/src/integrity/resource/gate.rs",
+    "crates/sdk/humanymous-core/src/integrity/resource/media.rs",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs",
+    "crates/sdk/humanymous-core/tests/integrity/fixtures/resource_gate.json"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/integrity/resource/mod.rs::signature_binds_session_asset_key_and_inclusive_expiry",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::classify_matches_go_table",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::embed_token_stripped_and_origin_disallowed",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::gate_matrix_matches_go_table",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::media_no_storm_when_spread",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::media_range_storm_after_rapid_ranges",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::classify_gate_embed_and_media_match_go_oracle",
+    "crates/sdk/humanymous-core/src/integrity/resource/mod.rs::url_preserves_signed_asset_and_trims_one_slash_only",
     "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::signed_urls_and_expiry_match_go"
    ],
    "go_test_map": {
-    "TestClassify": null,
-    "TestGateMatrix": null,
-    "TestMediaRangeStorm": null,
-    "TestMediaNoStormWhenSpread": null,
+    "TestClassify": "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::classify_matches_go_table",
+    "TestGateMatrix": "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::gate_matrix_matches_go_table",
+    "TestMediaRangeStorm": "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::media_range_storm_after_rapid_ranges",
+    "TestMediaNoStormWhenSpread": "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::media_no_storm_when_spread",
     "TestSignedURL_ExpiryAndTamper": "crates/sdk/humanymous-core/src/integrity/resource/mod.rs::signature_binds_session_asset_key_and_inclusive_expiry",
-    "TestEmbedTokenStripped": null
+    "TestEmbedTokenStripped": "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::embed_token_stripped_and_origin_disallowed"
    },
-   "gaps": [
-    "classify",
-    "gate matrix",
-    "media range storm",
-    "embed token stripped"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Only signed-URL behavior ported.",
+   "notes": "All six Go tests mapped one-to-one, plus a Go-generated oracle fixture (classify/gate/embed/media) from oracle commit 981d25c.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/integrity/resource/mod.rs::signature_binds_session_asset_key_and_inclusive_expiry": "passed",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::classify_matches_go_table": "passed",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::embed_token_stripped_and_origin_disallowed": "passed",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::gate_matrix_matches_go_table": "passed",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::media_no_storm_when_spread": "passed",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::media_range_storm_after_rapid_ranges": "passed",
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::classify_gate_embed_and_media_match_go_oracle": "passed",
+    "crates/sdk/humanymous-core/src/integrity/resource/mod.rs::url_preserves_signed_asset_and_trims_one_slash_only": "passed",
     "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::signed_urls_and_expiry_match_go": "passed"
    }
   },
