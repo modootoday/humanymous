@@ -99,9 +99,13 @@ fn parse_headers(bytes: &[u8]) -> Result<(Request, usize), Rejection> {
     }
     let length = if request.header("content-length").is_none()
         && matches!(request.method.as_str(), "GET" | "HEAD")
-        && request.header("x-humanymous-protocol")
+        && (request.header("x-humanymous-protocol")
             == Some(humanymous_core::integrity::request::browser::PROTOCOL)
+            || crate::gateway::legacy::surface_path(request.target.split('?').next().unwrap_or("")))
     {
+        // A legacy surface path is admitted bodyless here for framing only;
+        // the application still refuses it with the prior error unless that
+        // surface is explicitly enabled (see `Application::framed`).
         0
     } else {
         usize::try_from(request.number("content-length")?).map_err(|_| bad)?

@@ -36,6 +36,8 @@ pub enum Decision {
         /// UTC deadline in milliseconds.
         deadline: u64,
     },
+    /// Complete response bytes from an explicitly mounted legacy surface.
+    Legacy(Vec<u8>),
 }
 
 /// Serialized bounded-context owner; a single accept loop owns this value.
@@ -45,6 +47,7 @@ pub struct Application {
     engine: Engine,
     audit: Box<dyn DurableAudit>,
     managed_settings: Option<settings::ManagedSettings>,
+    legacy: Option<crate::gateway::legacy::Surfaces>,
 }
 impl Application {
     /// Compose existing services without changing policy or deriving new tells.
@@ -54,12 +57,20 @@ impl Application {
         audit: Box<dyn DurableAudit>,
     ) -> Result<Self, Rejection> {
         config.validate()?;
+        let legacy = config
+            .legacy
+            .as_ref()
+            .map(|policy| {
+                crate::gateway::legacy::Surfaces::new(policy, &engine, config.session_capacity)
+            })
+            .transpose()?;
         Ok(Self {
             config,
             sessions: Sessions::new(),
             engine,
             audit,
             managed_settings: None,
+            legacy,
         })
     }
 
@@ -101,20 +112,52 @@ impl Application {
         clock: impl Fn() -> Result<u64, Rejection>,
         ack: &mut Option<Ack>,
     ) -> Result<Decision, Rejection> {
-        self.decide_observed(req, clock, ack, None)
+        self.decide_observed(req, clock, ack, None, None)
     }
 
-    fn decide_observed(
+    /// Bodyless GET/HEAD framing without Content-Length is admitted by the
+    /// parser for legacy surface paths only; unless that surface is mounted,
+    /// refuse with the parser's prior error before any other processing.
+    pub(in crate::gateway) fn framed(&self, req: &Request) -> Result<(), Rejection> {
+        let path = req.target.split('?').next().unwrap_or("");
+        if req.header("content-length").is_none()
+            && req.header("x-humanymous-protocol")
+                != Some(humanymous_core::integrity::request::browser::PROTOCOL)
+            && !self
+                .legacy
+                .as_ref()
+                .is_some_and(|legacy| legacy.mounted(path))
+        {
+            return Err(Rejection::new(400, "missing_integer"));
+        }
+        Ok(())
+    }
+
+    /// Mounted legacy surfaces, when configured.
+    pub fn legacy(&self) -> Option<&crate::gateway::legacy::Surfaces> {
+        self.legacy.as_ref()
+    }
+
+    /// Decide one request observed on a connection from `peer`.
+    pub(in crate::gateway) fn decide_observed(
         &mut self,
         req: &Request,
         clock: impl Fn() -> Result<u64, Rejection>,
         ack: &mut Option<Ack>,
         tls: Option<&crate::capture::tls::Connection>,
+        peer: Option<std::net::IpAddr>,
     ) -> Result<Decision, Rejection> {
         let now = clock()?;
         self.sessions.observe(now)?;
         if req.header("host") != Some(self.config.scope.authority.as_str()) {
             return Err(Rejection::new(403, "authority"));
+        }
+        if let Some(response) = self
+            .legacy
+            .as_ref()
+            .and_then(|legacy| legacy.handle(req, peer, tls.and_then(|owner| owner.client_hello())))
+        {
+            return response.map(Decision::Legacy);
         }
         let path = req.target.split('?').next().unwrap_or("");
         if path == "/_humanymous/browser/session" {
@@ -476,27 +519,41 @@ impl Application {
         ack: &mut Option<Ack>,
     ) -> Result<(), Rejection> {
         let request = http::read(stream).await?;
+        self.framed(&request)?;
         connected(stream)?;
-        let decision = match self.decide_request(&request, crate::authority::now_ms, ack) {
-            Ok(decision) => decision,
-            Err(error) => {
-                let extra = ack
-                    .as_ref()
-                    .map(|ack| ack.headers(error.status))
-                    .transpose()?
-                    .unwrap_or_default();
-                let body = serde_json::to_vec(&serde_json::json!({"error":error.code}))
-                    .map_err(|_| Rejection::new(503, "serialization"))?;
-                *response_started = true;
-                return http::write_headers(stream, error.status, &body, &extra)
-                    .await
-                    .map_err(|_| Rejection::new(503, "response_write"));
-            }
-        };
+        let peer = stream.peer_addr().ok().map(|address| address.ip());
+        let decision =
+            match self.decide_observed(&request, crate::authority::now_ms, ack, None, peer) {
+                Ok(decision) => decision,
+                Err(error) => {
+                    let extra = ack
+                        .as_ref()
+                        .map(|ack| ack.headers(error.status))
+                        .transpose()?
+                        .unwrap_or_default();
+                    let body = serde_json::to_vec(&serde_json::json!({"error":error.code}))
+                        .map_err(|_| Rejection::new(503, "serialization"))?;
+                    *response_started = true;
+                    return http::write_headers(stream, error.status, &body, &extra)
+                        .await
+                        .map_err(|_| Rejection::new(503, "response_write"));
+                }
+            };
         if Instant::now() >= connection_until {
             return Err(Rejection::new(503, "connection_deadline"));
         }
         match decision {
+            Decision::Legacy(bytes) => {
+                *response_started = true;
+                stream
+                    .write_all(&bytes)
+                    .await
+                    .map_err(|_| Rejection::new(503, "response_write"))?;
+                stream
+                    .shutdown()
+                    .await
+                    .map_err(|_| Rejection::new(503, "response_write"))
+            }
             Decision::Local(status, body) => {
                 let body = zeroize::Zeroizing::new(body);
                 let extra = ack

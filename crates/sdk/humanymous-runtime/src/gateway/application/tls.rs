@@ -57,7 +57,7 @@ impl Application {
             let pending = timeout_at(until, async {
                 let captured =
                     CapturedTls::receive(stream.into_std()?, tls.clone(), budget).await?;
-                self.captured_tls_connection(captured, until, &connection_shutdown)
+                self.captured_tls_connection(captured, until, &connection_shutdown, peer.ip())
                     .await
             });
             tokio::pin!(pending);
@@ -88,13 +88,16 @@ impl Application {
         captured: CapturedTls,
         until: Instant,
         shutdown: &watch::Receiver<Option<ShutdownRequest>>,
+        peer: std::net::IpAddr,
     ) -> io::Result<()> {
         match captured {
             CapturedTls::H1(captured) => {
-                self.captured_h1_connection(captured, until, shutdown).await
+                self.captured_h1_connection(captured, until, shutdown, peer)
+                    .await
             }
             CapturedTls::H2(captured) => {
-                self.captured_h2_connection(captured, until, shutdown).await
+                self.captured_h2_connection(captured, until, shutdown, peer)
+                    .await
             }
         }
     }
@@ -104,10 +107,15 @@ impl Application {
         mut captured: CapturedRequest,
         until: Instant,
         shutdown: &watch::Receiver<Option<ShutdownRequest>>,
+        peer: std::net::IpAddr,
     ) -> io::Result<()> {
+        // Same outcome as the parser's prior refusal of this framing.
+        if self.framed(captured.request()).is_err() {
+            return Err(io::Error::other("TLS complete request framing failed"));
+        }
         let mut ack = None;
         let response = self
-            .captured_h1_response(&mut captured, until, shutdown, &mut ack)
+            .captured_h1_response(&mut captured, until, shutdown, &mut ack, peer)
             .await;
         let bytes = match response {
             Ok(bytes) => bytes,
@@ -132,10 +140,11 @@ impl Application {
         mut captured: CapturedH2Request,
         until: Instant,
         shutdown: &watch::Receiver<Option<ShutdownRequest>>,
+        peer: std::net::IpAddr,
     ) -> io::Result<()> {
         let mut ack = None;
         let response = self
-            .captured_h2_response(&mut captured, until, shutdown, &mut ack)
+            .captured_h2_response(&mut captured, until, shutdown, &mut ack, peer)
             .await;
         let bytes = match response {
             Ok(bytes) => bytes,
@@ -161,13 +170,19 @@ impl Application {
         until: Instant,
         shutdown: &watch::Receiver<Option<ShutdownRequest>>,
         ack: &mut Option<Ack>,
+        peer: std::net::IpAddr,
     ) -> Result<Vec<u8>, Rejection> {
         let (request, connection) = captured.parts();
         connection
             .check_h1_idle()
             .map_err(|_| Rejection::new(400, "tls_client_closed"))?;
-        let decision =
-            self.decide_observed(request, crate::authority::now_ms, ack, Some(connection))?;
+        let decision = self.decide_observed(
+            request,
+            crate::authority::now_ms,
+            ack,
+            Some(connection),
+            Some(peer),
+        )?;
         connection
             .check_h1_idle()
             .map_err(|_| Rejection::new(400, "tls_client_closed"))?;
@@ -189,13 +204,20 @@ impl Application {
         until: Instant,
         shutdown: &watch::Receiver<Option<ShutdownRequest>>,
         ack: &mut Option<Ack>,
+        peer: std::net::IpAddr,
     ) -> Result<Vec<u8>, Rejection> {
         captured
             .check_stream()
             .map_err(|_| Rejection::new(400, "tls_client_closed"))?;
         let decision = {
             let (request, connection, _) = captured.parts();
-            self.decide_observed(request, crate::authority::now_ms, ack, Some(connection))?
+            self.decide_observed(
+                request,
+                crate::authority::now_ms,
+                ack,
+                Some(connection),
+                Some(peer),
+            )?
         };
         captured
             .check_stream()
@@ -224,6 +246,7 @@ impl Application {
             h1_idle,
         } = args;
         let response = match decision {
+            Decision::Legacy(bytes) => return Ok(bytes),
             Decision::Local(status, body) => {
                 let body = zeroize::Zeroizing::new(body);
                 let headers = ack

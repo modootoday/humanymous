@@ -658,7 +658,7 @@
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Ported as gateway::demo: /demo serves web/demo.html, issues or reuses the hsid cookie with Go's attributes, and needs no playground flag.",
+   "notes": "Ported as gateway::demo: /demo serves web/demo.html, issues or reuses the hsid cookie with Go's attributes, and needs no playground flag. Mounted on the live gateway listener by gateway::legacy when legacy.demo is set; /static/ assets are served from the configured web directory when legacy.static_assets is set. The page's /api/collect and /api/report flow is not mounted.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/demo.rs::tests::demo_is_independent_of_the_playground": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/demo.rs::tests::demo_issues_and_reuses_a_session": "passed",
@@ -1339,7 +1339,8 @@
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs",
     "crates/sdk/humanymous-runtime/src/gateway/pass_flow.rs",
     "crates/sdk/humanymous-runtime/src/gateway/pass_proof.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/pass_store.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/legacy.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/challenge/pass/tests.rs::canonical_solutions_verify",
@@ -1360,16 +1361,22 @@
     "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::malformed_red_team_label_is_refused_before_a_try",
     "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::kpi_aggregates_bypass_and_human_floor",
     "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::meter_clamps_out_of_order_clock_reads",
-    "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::correction_feed_emits_traces_only_for_solves"
+    "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::correction_feed_emits_traces_only_for_solves",
+    "crates/sdk/humanymous-runtime/src/gateway/legacy/tests.rs::browser_get_pass_serves_the_page_with_session_and_security_headers",
+    "crates/sdk/humanymous-runtime/src/gateway/legacy/tests.rs::pass_api_issues_a_challenge_and_enforces_post_only_routes",
+    "crates/sdk/humanymous-runtime/src/gateway/legacy/tests.rs::disabled_and_unmounted_surfaces_keep_gateway_behaviour",
+    "crates/sdk/humanymous-runtime/src/gateway/legacy/tests.rs::legacy_absent_keeps_prior_gateway_behaviour",
+    "crates/sdk/humanymous-runtime/src/gateway/legacy/tests.rs::pass_context_uses_the_peer_and_the_unavailable_ja4_form"
    ],
    "go_test_map": {},
    "gaps": [
-    "routes are not mounted in the live gateway listener: no router seam serves legacy Core page/API routes yet (demo, console and observatory are likewise unmounted); PassFlow::handle is the dispatch point",
+    "Pass reports live in a bounded in-process store (gateway::legacy::MemoryReports) that does not feed the gateway's own decision path or durable audit; Go shared a.store with collect and scoring",
+    "client IP is the accepted loopback peer: the live gateway has no trusted-proxy forwarding rewrite (Go clientIP honoured X-Forwarded-For from loopback/private peers); adding one is an owner trust decision",
     "no Docker product e2e or browser/assistive-technology run of the Pass page against the Rust flow"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "G3: page/new/pow/attest/solve/KPI and publishPass composed in gateway::pass_flow over the core pass/PoW/attestation kernels, PassStore, trace_digest, rate::Limiter, TokenKey step-up receipts and the shared feed_pass_outcome kernel, with injected engine, report store, clock, feed and hub. realEventOK is intentionally not ported (owner decision 2026-11-17): it gated Pass on pointer/keyboard timing microstructure, which the accessibility rule forbids; the soft applyPassBehavior tells are ported because they only raise risk. Deliberate fail-closed differences: unavailable rate history or a failed engine score refuses the request (503/500); a malformed red-team label is refused before a try; an undigestible trace is rejected as 'invalid interaction trace'; bodies must be exactly one JSON value; PassStore bounds apply.",
+   "notes": "G3: page/new/pow/attest/solve/KPI and publishPass composed in gateway::pass_flow over the core pass/PoW/attestation kernels, PassStore, trace_digest, rate::Limiter, TokenKey step-up receipts and the shared feed_pass_outcome kernel, with injected engine, report store, clock, feed and hub. realEventOK is intentionally not ported (owner decision 2026-11-17): it gated Pass on pointer/keyboard timing microstructure, which the accessibility rule forbids; the soft applyPassBehavior tells are ported because they only raise risk. Deliberate fail-closed differences: unavailable rate history or a failed engine score refuses the request (503/500); a malformed red-team label is refused before a try; an undigestible trace is rejected as 'invalid interaction trace'; bodies must be exactly one JSON value; PassStore bounds apply. Mounted on the live gateway listener by gateway::legacy when the explicit legacy.pass configuration is set: every method on /pass and /api/pass/{new,pow,attest,solve,kpi} dispatches to PassFlow::handle after the exact Host authority check, with Go's security headers; PassContext carries the accepted peer IP and the captured stable JA4, or the empty unavailable form when no ClientHello was captured.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/challenge/attestation/mod.rs::binds_key_subject_nonce_and_window": "passed",
     "crates/sdk/humanymous-core/src/challenge/pass/tests.rs::canonical_solutions_verify": "passed",
@@ -1389,7 +1396,12 @@
     "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::malformed_red_team_label_is_refused_before_a_try": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::kpi_aggregates_bypass_and_human_floor": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::meter_clamps_out_of_order_clock_reads": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::correction_feed_emits_traces_only_for_solves": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::correction_feed_emits_traces_only_for_solves": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/legacy/tests.rs::browser_get_pass_serves_the_page_with_session_and_security_headers": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/legacy/tests.rs::pass_api_issues_a_challenge_and_enforces_post_only_routes": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/legacy/tests.rs::disabled_and_unmounted_surfaces_keep_gateway_behaviour": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/legacy/tests.rs::legacy_absent_keeps_prior_gateway_behaviour": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/legacy/tests.rs::pass_context_uses_the_peer_and_the_unavailable_ja4_form": "passed"
    }
   },
   {
@@ -1604,7 +1616,7 @@
    ],
    "go_test_map": {},
    "gaps": [
-    "Tap A publish_scored is not yet called from the collect handler, and the observatory routes are not yet mounted in the runtime HTTP listener; both wire up with the gateway entry point (B21/B15)."
+    "Tap A publish_scored is not yet called from the collect handler, and the observatory routes remain unmounted: gateway::legacy deliberately does not mount /playground* because the SSE feed is a long-lived blocking stream the serialized one-request-per-connection gateway loop cannot serve without stalling ingress (B21/B15)."
    ],
    "retire_basis": null,
    "confidence": "high",
@@ -1750,7 +1762,7 @@
    ],
    "go_test_map": {},
    "gaps": [
-    "app route mux and security headers",
+    "app route mux beyond the explicitly mounted legacy surfaces (/pass, /api/pass/*, /demo, /static/ with Go's security headers via gateway::legacy): /, /api/session, /api/collect, /api/report*, /api/csp-report, /api/pow, /api/trace, /api/traffic/, /res/, /healthz and the ops-token endpoints remain unmounted",
     "traffic log middleware wiring",
     "datacenter/proxy-VPN/Tor CIDR datasets",
     "fingerprintChurnSignal and vpnWebRTCLeakSignal wiring into collect"
@@ -2505,7 +2517,7 @@
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Ported as gateway::console; the page and SRP partials are copied into the crate (Rust Docker contexts only ship crates/**) and assembled in file-name order into the app-css placeholder.",
+   "notes": "Ported as gateway::console; the page and SRP partials are copied into the crate (Rust Docker contexts only ship crates/**) and assembled in file-name order into the app-css placeholder. Deliberately not mounted on the public gateway listener: Go served it only on the separate authenticated admin listener (AdminHandler, never the public listener) backed by the /__hmn/admin/* API, which the Rust native management listener does not provide.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/console.rs::tests::console_css_is_non_empty_and_drops_no_partial": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/console.rs::tests::console_has_one_inline_script": "passed",
