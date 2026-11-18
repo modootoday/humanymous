@@ -299,44 +299,47 @@
   },
   {
    "baseline_path": "cmd/gate/tls_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs"
+   ],
    "go_test_map": {
     "TestBuildEdgeTLSSelfSigned": null,
-    "TestBuildEdgeTLSACME": null,
+    "TestBuildEdgeTLSACME": "gateway::tls::certificate::tests::issuer_must_cover_exactly_the_selected_domains",
     "TestBuildEdgeTLSACMEStagingDirectory": null,
-    "TestBuildEdgeTLSBadCert": null,
-    "TestSplitDomains": null
+    "TestBuildEdgeTLSBadCert": "gateway::tls::certificate::tests::provisioned_pair_refuses_empty_missing_and_mismatched_material",
+    "TestSplitDomains": "gateway::tls::certificate::tests::issuer_domains_are_normalised_and_plain_hosts_only"
    },
    "gaps": [
-    "certificate source selection",
-    "ACME/autocert with staging directory",
-    "BYO keypair load error",
-    "domain csv split"
+    "ACME staging directory",
+    "self-signed dev mode"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Rust TLS ingress takes a caller-supplied rustls ServerConfig; no certificate loader, ACME or self-signed builder outside tests (rcgen only in gateway/tests/tls.rs).",
+   "notes": "Mapped to B02 certificate source tests.",
    "test_verification": {}
   },
   {
    "baseline_path": "cmd/gate/tls.go",
-   "disposition": "missing",
+   "disposition": "partial",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/tls.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/tls.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate.rs"
    ],
-   "rust_tests": [],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs"
+   ],
    "go_test_map": {},
    "gaps": [
-    "ACME TLS-ALPN-01 issuance/cache/email/directory",
-    "BYO cert+key loading",
-    "dev self-signed fallback",
-    "splitDomains"
+    "concrete ACME TLS-ALPN-01 issuer with staging directory",
+    "dev self-signed fallback"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "gateway/tls.rs terminates TLS with an injected ServerConfig only. Plan B02 keeps provisioned certificate + automated issuer as required, not implemented.",
+   "notes": "B02 slice 1 provides source selection, bounded BYO loading and the issuer contract; concrete issuer pending.",
    "test_verification": {}
   },
   {
@@ -513,43 +516,47 @@
   },
   {
    "baseline_path": "cmd/server/acme_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs"
+   ],
    "go_test_map": {
-    "TestSplitDomains": null,
+    "TestSplitDomains": "gateway::tls::certificate::tests::issuer_domains_are_normalised_and_plain_hosts_only",
     "TestBuildTLSConfigSelfSigned": null,
-    "TestBuildTLSConfigACME": null,
-    "TestBuildTLSConfigProvidedKeyPair": null,
-    "TestBuildTLSConfigRejectsAmbiguousSources": null
+    "TestBuildTLSConfigACME": "gateway::tls::certificate::tests::issuer_must_cover_exactly_the_selected_domains",
+    "TestBuildTLSConfigProvidedKeyPair": "gateway::tls::certificate::tests::provisioned_pair_builds_h2_then_http11_ingress",
+    "TestBuildTLSConfigRejectsAmbiguousSources": "gateway::tls::certificate::tests::selection_refuses_absent_incomplete_and_ambiguous_sources"
    },
    "gaps": [
-    "domain split",
-    "self-signed/ACME/BYO selection",
-    "ambiguous source refusal"
+    "self-signed dev mode",
+    "live ACME issuance"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust certificate-source builder; plan B02 open.",
+   "notes": "Mapped to B02 certificate source tests; self-signed is refused, not ported.",
    "test_verification": {}
   },
   {
    "baseline_path": "cmd/server/acme.go",
-   "disposition": "missing",
+   "disposition": "partial",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/tls.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/tls.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate.rs"
    ],
-   "rust_tests": [],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs"
+   ],
    "go_test_map": {},
    "gaps": [
-    "ACME autocert",
-    "provided keypair load",
-    "self-signed dev fallback",
-    "ambiguous source refusal"
+    "concrete ACME TLS-ALPN-01 issuer implementing CertificateIssuer (cache, email, directory, renewal)",
+    "self-signed dev mode (production fallback refused by B02)"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Rust accepts an injected rustls ServerConfig only; plan B02 requires a certificate provider contract.",
+   "notes": "B02 slice 1: select() refuses absent/incomplete/ambiguous sources; provisioned pair loads bounded PEM with rustls key-match check; issuer contract (CertificateIssuer, issuer_config) adds challenge ALPN for exactly the selected domains. No production self-signed fallback per plan B02.",
    "test_verification": {}
   },
   {
