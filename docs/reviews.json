@@ -6546,9 +6546,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/Cargo.toml",
-      "sha256": "919eeb1304f9ae91d2e6668fc312dbd8d1b018811a7edd80eafffb1e66a93b37",
-      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Manifest for the consolidated humanymous-runtime crate (description, readme README.md, publish = [\"crates-io\"] in the first crates.io wave, which performs no upload; autobins/autotests off, default feature gateway): feature-gated contexts gateway, authority, audit, capture, network and native-security plus hosted-pilot, credential-pilot and acme, with pinned optional dependencies such as rustls 0.23.46 (ring, tls12), httlib-hpack 0.1.3, rcgen 0.14.10, interprocess 2.4.7, winsafe/keyring stores on Windows and rustix on Unix. Re-reviewed 2026-11-18: the new acme feature enables gateway plus optional instant-acme =0.8.5 (ring, hyper-rustls, no default features), rcgen and x509-parser 0.18 for the B02 ACME issuer. It declares five binaries (humanymous-runtime, humanymous-h2-product-binding-measure, humanymous-authority, audit-witness, audit-control-retainer) and named gateway, authority, audit, capture and network parity integration tests, each with required features. The manifest itself is not evidence that those binaries or tests ran.",
+      "sha256": "0186a48ae4005a0566a8a0beb99c03f1744f0890b9c6f596dc618e6f8f3160df",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Manifest for the consolidated humanymous-runtime crate (description, readme README.md, publish = [\"crates-io\"] in the first crates.io wave, which performs no upload; autobins/autotests off, default feature gateway): feature-gated contexts gateway, authority, audit, capture, network and native-security plus hosted-pilot, credential-pilot and acme, with pinned optional dependencies such as rustls 0.23.46 (ring, tls12), httlib-hpack 0.1.3, rcgen 0.14.10, interprocess 2.4.7, winsafe/keyring stores on Windows and rustix on Unix. Re-reviewed 2026-11-18: the new acme feature enables gateway plus optional instant-acme =0.8.5 (ring, hyper-rustls, no default features), rcgen and x509-parser 0.18 for the B02 ACME issuer. On the B02 dev self-signed branch it also adds the dev-self-signed feature (gateway plus optional rcgen and time), x509-parser 0.18 as a dev-dependency for certificate assertions, and the gateway-acme-pebble integration test target (requires acme). It declares five binaries (humanymous-runtime, humanymous-h2-product-binding-measure, humanymous-authority, audit-witness, audit-control-retainer) and named gateway, authority, audit, capture and network parity integration tests, each with required features. The manifest itself is not evidence that those binaries or tests ran.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/reference/supported-topologies.md",
@@ -8811,9 +8811,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/tls/certificate.rs",
-      "sha256": "6e8b7e901718b66cc4449cd93bc23872bcc0e30a5c3b4d76a0f7c1ad3d2e5094",
-      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "B02 certificate source owner. select() chooses exactly one source from operator settings: a provisioned PEM chain+key pair, or issuer domains; it refuses no source (self-signed is explicitly not a production fallback), a chain without a key or vice versa, and both at once. issuer_domains() lower-cases, trims, sorts and deduplicates plain DNS host names (at least two labels, no wildcard, trailing dot, IP literal or all-digit TLD, max 100). provisioned_config()/load_provisioned() read each PEM file within 1 MiB and build a rustls ServerConfig with no client auth and ALPN h2 then http/1.1, mapping empty chain, missing key and rustls-rejected (mismatched) pairs to distinct errors. The CertificateIssuer trait is the contract for an automated issuer (domains, handshake resolver, extra challenge ALPN); issuer_config() refuses an issuer whose domains differ from the selected ones. No issuer implementation or runtime wiring lives here.",
+      "sha256": "667b1e2565ebe600dced6ebec749a0ef489eb696fb68e99ea75147dfa52d6437",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "B02 certificate source owner. select() chooses exactly one source from operator settings: a provisioned PEM chain+key pair, or issuer domains; it refuses no source (self-signed is explicitly not a production fallback), a chain without a key or vice versa, and both at once. issuer_domains() lower-cases, trims, sorts and deduplicates plain DNS host names (at least two labels, no wildcard, trailing dot, IP literal or all-digit TLD, max 100). provisioned_config()/load_provisioned() read each PEM file within 1 MiB and build a rustls ServerConfig with no client auth and ALPN h2 then http/1.1, mapping empty chain, missing key and rustls-rejected (mismatched) pairs to distinct errors. The CertificateIssuer trait is the contract for an automated issuer (domains, handshake resolver, extra challenge ALPN); issuer_config() refuses an issuer whose domains differ from the selected ones. Behind the dev-self-signed cargo feature only, settings gain an explicit dev_self_signed flag: select() returns DevSelfSigned only when it is set and neither a provisioned pair nor issuer domains are configured (otherwise AmbiguousSource), and without the flag nothing falls back to self-signed. dev_self_signed_config() mints a fresh in-memory ECDSA P-256 certificate with CN humanymous.local, SANs localhost, humanymous.local, 127.0.0.1 and ::1, digitalSignature/keyEncipherment and serverAuth, valid from one hour ago for 365 days (Go cert.go selfSignedCert shape), with the same ingress ALPN; clients must trust it explicitly. Default builds contain none of this. No issuer implementation or runtime wiring lives here.",
       "pages": [
         "docs/how-to/https-tls-certificates.md",
         "docs/reference/supported-topologies.md"
@@ -8821,9 +8821,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs",
-      "sha256": "4eaa0a0cd1c6d91cbe7431d1e138621c3a4ff6713cd5afe5e9892ce9929240af",
-      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Unit tests for the B02 certificate source using rcgen-generated self-signed lab pairs: selection refuses absent, incomplete and ambiguous sources; issuer domains are normalised and deduplicated, and wildcard, trailing-dot, single-label, IP, leading/trailing-hyphen, underscore and empty names are refused, as is one domain over the 100 limit; a provisioned pair yields ALPN [h2, http/1.1] with zero early data; empty chain, empty key and a key from another pair map to EmptyChain, MissingKey and Rejected; load_provisioned reads temp files and refuses a missing file and one over the 1 MiB bound; a stub issuer contributes acme-tls/1 after the ingress ALPN and an issuer for other domains is refused. Synthetic material only, no network issuance.",
+      "sha256": "3c0b08ee32e8e6f67fb79d6c94bdd6814385d8f197e95c999da0035f0cfb3fe3",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unit tests for the B02 certificate source using rcgen-generated self-signed lab pairs: selection refuses absent, incomplete and ambiguous sources; issuer domains are normalised and deduplicated, and wildcard, trailing-dot, single-label, IP, leading/trailing-hyphen, underscore and empty names are refused, as is one domain over the 100 limit; a provisioned pair yields ALPN [h2, http/1.1] with zero early data; empty chain, empty key and a key from another pair map to EmptyChain, MissingKey and Rejected; load_provisioned reads temp files and refuses a missing file and one over the 1 MiB bound; a stub issuer contributes acme-tls/1 after the ingress ALPN and an issuer for other domains is refused. With the dev-self-signed feature, one more test checks that the flag alone selects DevSelfSigned, that combining it with a pair or with issuer domains is AmbiguousSource, that no flag still means NoSource, and parses the minted certificate with x509-parser for CN, the four SANs in order, a lifetime of 365 days plus one hour, serverAuth and ALPN [h2, http/1.1]. The settings helper uses struct-update syntax so the feature-gated field defaults to false. Synthetic material only, no network issuance.",
       "pages": [
         "docs/how-to/https-tls-certificates.md",
         "docs/reference/supported-topologies.md"
@@ -9767,6 +9767,16 @@
       "pages": [
         "docs/reference/versioning-derivation-index.md",
         "docs/reference/support-licensing.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/gateway/acme_pebble.rs",
+      "sha256": "1f13c6d826c5058342f356e8b44f3f79a42fae8396a54ac5800feaf66494bef5",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Ignored-by-default integration test (acme feature) for live B02 ACME issuance against Let's Encrypt's Pebble test CA: it starts digest-pinned pebble and pebble-challtestsrv containers with host networking (all challtestsrv challenge listeners disabled, every name answered with 127.0.0.1, Pebble VA sleep and random bad-nonce injection off), copies Pebble's minica root, serves the issuer's ingress configuration on 127.0.0.1:5001, and requires that issue() succeeds, that at least one handshake negotiated acme-tls/1, that the installed certificate is no longer due, that ensure() does not renew a valid certificate, and that a restarted issuer reads the same not_after from the cache. Containers are removed on drop. It needs a Docker engine and fixed local ports 5001, 8053, 8055 and 14000; this review did not run it, and the CI job that runs it is in a workflow file under owner review.",
+      "pages": [
+        "docs/how-to/https-tls-certificates.md",
+        "docs/reference/supported-topologies.md"
       ]
     },
     {
