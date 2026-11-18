@@ -560,7 +560,13 @@ pub(super) fn run(
     let (summary, report_line) = collector_report(&gate_result);
     report["collector_report"] = summary;
     let shape = topology(&network, &containers, image, browser_image);
-    let checks = outcome(&actor, &gate_result, &expected, &fixture, head.as_ref());
+    // The ceiling epoch's decision is observed, never expected: it is filled
+    // into the whole-run expectation only when bound to that epoch.
+    let ceiling =
+        crate::orchestration::coherent_ceiling::decision(&gate_result, &actor, &expected, &fixture)
+            .ok();
+    let whole = crate::orchestration::coherent_ceiling::with_decision(&expected, ceiling.as_ref());
+    let checks = outcome(&actor, &gate_result, &whole, &fixture, head.as_ref());
     {
         let st = state.lock().map_err(|_| "broker state")?;
         report["broker"] = json!({"gate_to_witness_operations":st.gate_to_witness,

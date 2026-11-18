@@ -53,6 +53,7 @@ mod browser_failure;
 pub(crate) mod cap0_product_honesty;
 pub(crate) mod clean_room_product;
 pub(crate) mod clean_room_product_matrix;
+pub(crate) mod coherent_ceiling;
 mod collector_parity;
 mod deployment;
 pub(crate) mod g2_collector_product_binding;

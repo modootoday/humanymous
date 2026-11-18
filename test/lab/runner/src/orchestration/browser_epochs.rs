@@ -1,9 +1,11 @@
-//! Roadmap 2d two-epoch feeding. One browser-product run holds two session
-//! epochs (`browser_expectations::EPOCHS`): `stripped` (no guard hooks) and
-//! `complete` (the lab page explicitly enables them). This module only splits
-//! the run's observed evidence into per-epoch views so `missing-signals-closed`
-//! reads the stripped epoch and `collector-parity` the complete one; neither
-//! evaluator's checks change.
+//! Roadmap 2d epoch feeding. One browser-product run holds three session
+//! epochs (`browser_expectations::EPOCHS`): `stripped` (no guard hooks),
+//! `complete` (the lab page explicitly enables them) and `ceiling` (the same
+//! opt-in at a declared pace, roadmap 4). This module only splits the run's
+//! observed evidence into per-epoch views so `missing-signals-closed` reads the
+//! stripped epoch, `collector-parity` the complete one and
+//! `coherent-browser-ceiling` the ceiling one; neither 2d evaluator's checks
+//! change.
 //!
 //! The split is observed, never positional: both proxies open an epoch at each
 //! bootstrap request and record every later API hit into it; the Gate frontend
@@ -66,10 +68,19 @@ pub(super) fn binding_gaps(gate: &Value, actor: &Value) -> Vec<String> {
 }
 
 /// The (gate, browser, expected) evidence of one epoch, shaped like the
-/// single-epoch run each evaluator consumes. Origin effects are not
-/// attributable to an epoch, so every view carries the whole run's count.
+/// single-epoch run each evaluator consumes. Origin effects carry no session,
+/// so every view carries the whole run's count, except that a stripped or
+/// complete view does not carry the ALLOW decisions the authenticated audit
+/// attributes to the bound ceiling epoch (the only decisions the origin
+/// forwards). Any other effect stays charged to every view.
 pub(super) fn view(gate: &Value, actor: &Value, expected: &Value, id: &str) -> [Value; 3] {
     let bound = binding_gaps(gate, actor).is_empty();
+    let total = gate["origin_effects"].as_u64();
+    let ceiling = super::coherent_ceiling::ceiling_allows(gate, actor);
+    let origin_effects = match total {
+        Some(total) if id != "ceiling" && total >= ceiling => json!(total - ceiling),
+        _ => gate["origin_effects"].clone(),
+    };
     let index = EPOCHS.iter().position(|epoch| *epoch == id);
     let epoch = |side: &Value| match (bound, index) {
         (true, Some(index)) => side["epochs"][index].clone(),
@@ -108,7 +119,7 @@ pub(super) fn view(gate: &Value, actor: &Value, expected: &Value, id: &str) -> [
     [
         json!({"proxy_hits":hits(&gate_epoch),"collector_reports":reports,
             "audit_records":records,"audit_sequence":sequence,
-            "origin_effects":gate["origin_effects"],
+            "origin_effects":origin_effects,
             "missing_signal_controls":gate["missing_signal_controls"]}),
         json!({"status":actor["status"],"proxy_hits":hits(&actor_epoch)}),
         expected["epochs"][id].clone(),
@@ -165,8 +176,9 @@ mod tests {
             "engineVersion":"rust-wasm-0.1.0"})
     }
 
-    /// The hit counters one proxy records for the fixture's two epochs.
-    fn epoch_hits() -> [Value; 2] {
+    /// The hit counters one proxy records for the fixture's three epochs; the
+    /// ceiling decision answered `status` with an ACK.
+    fn epoch_hits_with(status: u64) -> [Value; 3] {
         [
             json!({"/_humanymous/browser/session":1,"/effect":2,
                 "/_humanymous/browser/collect":1,"/requires-collector":1,
@@ -179,16 +191,32 @@ mod tests {
                 "response:/_humanymous/browser/session:200:ack_false":1,
                 "response:/_humanymous/browser/collect:200:ack_true":1,
                 "response:/requires-collector:403:ack_true":1}),
+            json!({"/_humanymous/browser/session":1,
+                "/_humanymous/browser/collect":1,"/requires-collector":1,
+                "response:/_humanymous/browser/session:200:ack_false":1,
+                "response:/_humanymous/browser/collect:200:ack_true":1,
+                format!("response:/requires-collector:{status}:ack_true"):1}),
         ]
     }
 
-    /// A two-epoch run shaped like the Gate and browser actor frames.
+    fn epoch_hits() -> [Value; 3] {
+        epoch_hits_with(403)
+    }
+
+    /// A three-epoch run shaped like the Gate and browser actor frames whose
+    /// ceiling decision was observed as DENY, nothing forwarded.
     fn run() -> (Value, Value, Value) {
+        run_with("DENY", 403, 0)
+    }
+
+    fn run_with(verdict: &str, status: u64, effects: u64) -> (Value, Value, Value) {
         let expected = crate::browser_expectations::from_fixture(&fixture()).unwrap();
-        let [stripped, complete] = epoch_hits();
+        let [stripped, complete, ceiling] = epoch_hits_with(status);
+        let mut records = expected["audit_records"].as_array().unwrap().clone();
+        records.push(json!({"seq":7,"event_type":"runtime.decision","verdict":verdict}));
         let epoch = |hits: &Value, reports: Value, seqs: Value| {
             json!({"proxy_hits":hits,"sessions":1,"shared_sessions":0,
-                "collector_reports":reports,"audit_seqs":seqs})
+                "collector_reports":reports,"audit_seqs":seqs,"elapsed_ms":5600})
         };
         let controls = json!({"schema":"humanymous.browser-missing-signal-controls/1",
             "epoch":"stripped","captured_collect_requests":1,"fresh_session_distinct":true,
@@ -197,13 +225,15 @@ mod tests {
                 {"id":"replayed-collect","http":409,"error":"counter_replay_or_gap","ack":false,"failure":null},
                 {"id":"foreign-session-collect","http":403,"error":"request_integrity","ack":false,"failure":null},
                 {"id":"foreign-session-required-collector-after-replay","http":422,"error":"required_capability","ack":false,"failure":null}]});
-        let gate = json!({"proxy_hits":{},"origin_effects":0,
-            "collector_reports":[entity(&report(false)),entity(&report(true))],
-            "epochs":[epoch(&stripped,json!([0]),json!([1,2,3])),epoch(&complete,json!([1]),json!([4,5]))],
-            "audit_unattributed":0,"audit_records":expected["audit_records"],
+        let gate = json!({"proxy_hits":{},"origin_effects":effects,
+            "collector_reports":[entity(&report(false)),entity(&report(true)),entity(&report(true))],
+            "epochs":[epoch(&stripped,json!([0]),json!([1,2,3])),epoch(&complete,json!([1]),json!([4,5])),
+                epoch(&ceiling,json!([2]),json!([6,7]))],
+            "audit_unattributed":0,"audit_records":records,
             "audit_sequence":expected["audit_sequence"],"missing_signal_controls":controls});
         let actor = json!({"status":"passed","proxy_hits":{},
-            "epochs":[epoch(&stripped,json!([]),Value::Null),epoch(&complete,json!([]),Value::Null)]});
+            "epochs":[epoch(&stripped,json!([]),Value::Null),epoch(&complete,json!([]),Value::Null),
+                epoch(&ceiling,json!([]),Value::Null)]});
         (gate, actor, expected)
     }
 
@@ -295,7 +325,7 @@ mod tests {
             g["collector_reports"],
             json!([gate["collector_reports"][0]])
         );
-        // Origin effects are charged to every epoch.
+        // Unattributed origin effects are charged to every epoch.
         let mut effect = gate.clone();
         effect["origin_effects"] = json!(1);
         assert_eq!(
@@ -303,5 +333,37 @@ mod tests {
             1
         );
         assert_eq!(evaluate(&effect, &actor, &expected).1["passed"], false);
+    }
+
+    #[test]
+    fn only_the_ceiling_allow_effect_is_withheld_from_the_known_epochs() {
+        // A forwarded ceiling ALLOW is the ceiling's own effect: both 2d
+        // cases still see zero and pass on their unchanged checks.
+        let (gate, actor, expected) = run_with("ALLOW", 200, 1);
+        let (parity, missing) = evaluate(&gate, &actor, &expected);
+        assert_eq!(parity["gaps"], json!([]), "{parity}");
+        assert_eq!(missing["gaps"], json!([]), "{missing}");
+        assert_eq!(
+            view(&gate, &actor, &expected, "ceiling")[0]["origin_effects"],
+            1
+        );
+        // Any effect beyond the attributed ALLOW stays charged to them.
+        let (gate, actor, expected) = run_with("ALLOW", 200, 2);
+        assert_eq!(
+            view(&gate, &actor, &expected, "stripped")[0]["origin_effects"],
+            1
+        );
+        assert_eq!(evaluate(&gate, &actor, &expected).1["passed"], false);
+        // Unbound epochs withhold nothing.
+        let (mut gate, actor, expected) = run_with("ALLOW", 200, 1);
+        gate["epochs"][2]["shared_sessions"] = json!(1);
+        assert_eq!(
+            view(&gate, &actor, &expected, "stripped")[0]["origin_effects"],
+            1
+        );
+        assert_eq!(
+            super::super::coherent_ceiling::ceiling_allows(&gate, &actor),
+            0
+        );
     }
 }

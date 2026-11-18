@@ -149,7 +149,7 @@ fn base64(text: &str) -> Option<Vec<u8>> {
 
 /// The single collect entity the real browser posted, verified against its
 /// digest and length and decoded with duplicate/size refusal.
-fn captured(gate: &Value) -> Option<Value> {
+pub(super) fn captured(gate: &Value) -> Option<Value> {
     let [one] = gate["collector_reports"].as_array()?.as_slice() else {
         return None;
     };

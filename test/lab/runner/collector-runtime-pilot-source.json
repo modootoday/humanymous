@@ -2,8 +2,8 @@
   "schema": 1,
   "path": "crates/collector/src/browser/transport/runtime_pilot.rs",
   "name": "browser::transport::runtime_pilot::actual_runtime_session_report_and_required_capability_fail_closed",
-  "sha256": "bb1a4cffcb82b1ed5862bb46dac17a6f37cbe4c8052bad9e2aa369bf63c01531",
-  "bytes": 8436,
+  "sha256": "45919f2a0fd11aca86317c130510e38222451fb2f337533539ea01b26e608f02",
+  "bytes": 10244,
   "sites": [
     {
       "line": 11,
@@ -254,6 +254,46 @@
       "line": 175,
       "code": "browser_panic_complete_session_close",
       "needle": "complete.close().unwrap()"
+    },
+    {
+      "line": 185,
+      "code": "browser_panic_ceiling_bootstrap",
+      "needle": ".expect(\"ceiling epoch runtime bootstrap\")"
+    },
+    {
+      "line": 186,
+      "code": "browser_panic_ceiling_collector_start",
+      "needle": "BrowserCollector::new()"
+    },
+    {
+      "line": 187,
+      "code": "browser_panic_ceiling_guard_hooks",
+      "needle": "enable_guard_hooks()"
+    },
+    {
+      "line": 189,
+      "code": "browser_panic_ceiling_collector_report",
+      "needle": "collector.report()"
+    },
+    {
+      "line": 190,
+      "code": "browser_panic_ceiling_collector_stop",
+      "needle": "collector.stop()"
+    },
+    {
+      "line": 199,
+      "code": "browser_panic_ceiling_collect_ack",
+      "needle": ".expect(\"ceiling report ingestion"
+    },
+    {
+      "line": 200,
+      "code": "browser_panic_ceiling_collect_status",
+      "needle": "assert_eq!(collected.status()"
+    },
+    {
+      "line": 211,
+      "code": "browser_panic_ceiling_session_close",
+      "needle": "ceiling.close().unwrap()"
     }
   ]
 }

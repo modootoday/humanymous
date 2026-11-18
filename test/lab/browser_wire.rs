@@ -260,8 +260,8 @@ mod tests {
         for count in [1, 2, 32] {
             fixture["expected"]["effect_requests"] = json!(count);
             let expected = crate::browser_expectations::from_fixture(&fixture).unwrap();
-            // Both session epochs: two bootstraps, collects and required requests.
-            let hits = json!({"wire_origin_matched":count+6,"wire_referer_absent":count+6});
+            // All three session epochs: three bootstraps, collects and required requests.
+            let hits = json!({"wire_origin_matched":count+9,"wire_referer_absent":count+9});
             assert!(origins_match(&hits, &expected));
             assert!(referers_absent(&hits, &expected));
         }

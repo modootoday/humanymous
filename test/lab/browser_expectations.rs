@@ -1,16 +1,23 @@
 //! Pure expectations from the sole collector fixture; never observed outcomes.
 //!
-//! The selected pilot runs two session epochs in one browser, in this order:
+//! The selected pilot runs three session epochs in one browser, in this order:
 //! `stripped` (no guard hooks: pre-report CHALLENGEs, a collected partial
-//! report, then a pre-consumption 422 without ACK that closes the epoch) and
+//! report, then a pre-consumption 422 without ACK that closes the epoch),
 //! `complete` (the page explicitly enables guard hooks: a collected report
 //! with fresh provenance, then a consumed, acknowledged non-ALLOW decision on
-//! the required-collector route). The top-level counts are the whole run; each
-//! epoch keeps the single-epoch shape its evaluator consumes.
+//! the required-collector route) and `ceiling` (the T4 ceiling observation:
+//! the same opt-in at the fixture's declared pace). The ceiling decision is
+//! never an expectation: only its request shape, its collect and the audit
+//! sequence slot it occupies are fixed here; its verdict, response and origin
+//! effect are observed by the lab. The top-level counts are the whole run
+//! without that observed decision; each epoch keeps the single-epoch shape its
+//! evaluator consumes.
 use serde_json::{Map, Value, json};
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 /// Session epochs in browser execution order.
-pub const EPOCHS: [&str; 2] = ["stripped", "complete"];
+pub const EPOCHS: [&str; 3] = ["stripped", "complete", "ceiling"];
+/// Verdicts a consumed ceiling decision may be observed with; none is expected.
+pub const CEILING_VERDICTS: [&str; 3] = ["ALLOW", "DENY", "CHALLENGE"];
 pub fn from_fixture(fixture: &Value) -> Result<Value> {
     let expected = fixture["expected"]
         .as_object()
@@ -88,10 +95,31 @@ pub fn from_fixture(fixture: &Value) -> Result<Value> {
         "responses":{"collect":response(status("collect_status")?,true),
             "required_collector":response(status("complete_required_collector_status")?,true)},
         "audit_sequence":count+3,"audit_records":complete_records,"origin_effects":0});
+    // The declared pace is the actor's definition, chosen before any run and
+    // never adjusted to a verdict.
+    let pace = fixture["ceiling"]
+        .as_object()
+        .filter(|pace| pace.len() == 2)
+        .ok_or("browser ceiling pace must declare exactly dwell_ms and think_ms")?;
+    let millis = |key: &str| {
+        pace.get(key)
+            .and_then(Value::as_u64)
+            .filter(|ms| (1000..=30_000).contains(ms))
+            .ok_or("browser ceiling pace invalid")
+    };
+    let (dwell, think) = (millis("dwell_ms")?, millis("think_ms")?);
+    let ceiling = json!({"effect_requests":0,
+        "request_counts":{"session":1,"effect":0,"collect":1,"required_collector":1},
+        "responses":{"collect":response(status("collect_status")?,true)},
+        "audit_sequence":count+5,
+        "audit_records":[record(count + 4, "runtime.collect", &json!("COLLECTED"))],
+        "observed":{"route":"required_collector","decision_seq":count+5,
+            "verdicts":CEILING_VERDICTS},
+        "pace":{"dwell_ms":dwell,"think_ms":think,"minimum_elapsed_ms":dwell+think}});
     // Whole-run accounting: summed request counts and every distinct response.
     let mut request_counts = Map::new();
     let mut responses = Map::new();
-    for epoch in [&stripped, &complete] {
+    for epoch in [&stripped, &complete, &ceiling] {
         for route in ROUTES {
             let n = epoch["request_counts"][route].as_u64().unwrap_or(0);
             let total = request_counts.entry(route).or_insert(json!(0));
@@ -114,7 +142,7 @@ pub fn from_fixture(fixture: &Value) -> Result<Value> {
             }
         }
     }
-    let records: Vec<Value> = [&stripped, &complete]
+    let records: Vec<Value> = [&stripped, &complete, &ceiling]
         .iter()
         .flat_map(|epoch| {
             epoch["audit_records"]
@@ -123,10 +151,12 @@ pub fn from_fixture(fixture: &Value) -> Result<Value> {
                 .unwrap_or_default()
         })
         .collect();
+    // `origin_effects` is the known epochs' zero; a forwarded ceiling ALLOW
+    // is an observation added by the lab, never part of this expectation.
     Ok(
         json!({"effect_requests":count,"request_counts":request_counts,"responses":responses,
-        "audit_sequence":count+3,"audit_records":records,"origin_effects":0,
-        "epochs":{"stripped":stripped,"complete":complete}}),
+        "audit_sequence":count+5,"audit_records":records,"origin_effects":0,
+        "epochs":{"stripped":stripped,"complete":complete,"ceiling":ceiling}}),
     )
 }
 #[cfg(test)]
@@ -142,13 +172,15 @@ mod tests {
             fixture["expected"]["effect_requests"] = json!(count);
             let value = from_fixture(&fixture).unwrap();
             assert_eq!(value["request_counts"]["effect"], count);
-            assert_eq!(value["request_counts"]["session"], 2);
-            assert_eq!(value["request_counts"]["collect"], 2);
-            assert_eq!(value["request_counts"]["required_collector"], 2);
-            assert_eq!(value["audit_sequence"], count + 3);
+            assert_eq!(value["request_counts"]["session"], 3);
+            assert_eq!(value["request_counts"]["collect"], 3);
+            assert_eq!(value["request_counts"]["required_collector"], 3);
+            // The sequence includes the ceiling decision slot; its record is
+            // observed, so the known records stop one short of it.
+            assert_eq!(value["audit_sequence"], count + 5);
             assert_eq!(
                 value["audit_records"].as_array().unwrap().len(),
-                count as usize + 3
+                count as usize + 4
             );
             assert_eq!(
                 value["responses"]["effect"],
@@ -160,8 +192,21 @@ mod tests {
             );
             assert_eq!(
                 value["responses"]["collect"],
-                json!([{"status":200,"ack":true,"count":2}])
+                json!([{"status":200,"ack":true,"count":3}])
             );
+            let ceiling = &value["epochs"]["ceiling"];
+            assert_eq!(ceiling["responses"]["required_collector"], Value::Null);
+            assert_eq!(ceiling["request_counts"]["required_collector"], 1);
+            assert_eq!(
+                ceiling["audit_records"],
+                json!([{"seq":count+4,"event_type":"runtime.collect","verdict":"COLLECTED"}])
+            );
+            assert_eq!(ceiling["observed"]["decision_seq"], count + 5);
+            assert_eq!(
+                ceiling["pace"],
+                json!({"dwell_ms":4000,"think_ms":1500,"minimum_elapsed_ms":5500})
+            );
+            assert_eq!(ceiling["origin_effects"], Value::Null);
             // Each epoch keeps the single-epoch shape and owns a disjoint,
             // contiguous slice of the authenticated audit.
             let stripped = &value["epochs"]["stripped"];
@@ -214,6 +259,23 @@ mod tests {
             .as_object_mut()
             .unwrap()
             .remove("effect_requests");
+        assert!(from_fixture(&missing).is_err());
+    }
+    #[test]
+    fn ceiling_pace_is_declared_exactly_and_carries_no_verdict() {
+        for (field, value) in [
+            ("dwell_ms", json!(999)),
+            ("think_ms", json!(30_001)),
+            ("dwell_ms", json!("4000")),
+            ("think_ms", Value::Null),
+            ("verdict", json!("ALLOW")),
+        ] {
+            let mut fixture = fixture();
+            fixture["ceiling"][field] = value;
+            assert!(from_fixture(&fixture).is_err(), "{field}");
+        }
+        let mut missing = fixture();
+        missing.as_object_mut().unwrap().remove("ceiling");
         assert!(from_fixture(&missing).is_err());
     }
     #[test]

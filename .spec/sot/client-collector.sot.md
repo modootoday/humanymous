@@ -494,7 +494,7 @@ the unchanged oracle in the same browser without changing the66-test inventory.
 Guard hooks stay an explicit enable_guard_hooks opt-in; report_json never enables
 them and reports `reported` as measured. The runtime admits `required.collector`
 only on a receipt with guard `reported=true`, so one captured report cannot
-serve both lab cases. The selected runtime pilot therefore runs two session
+serve both lab cases. The selected runtime pilot therefore runs three session
 epochs in one browser, in this order:
 
 - **stripped**: the unchanged contract. Two pre-report effects are CHALLENGEd,
@@ -510,6 +510,12 @@ epochs in one browser, in this order:
   native console.log (`console_disabled`), and headless Firefox reports
   `outer_eq_inner`. It is a harness artefact, not a scoring change or a human
   claim.
+- **ceiling** (roadmap 4, `coherent-browser-ceiling`): a third BrowserSession
+  with the same explicit guard-hook opt-in, paced by the fixture's declared
+  `ceiling.dwell_ms` (before report_json) and `ceiling.think_ms` (before the
+  required route). The test never asserts this decision: ALLOW, DENY,
+  CHALLENGE or a missing ACK all finish it. The fixture carries no ceiling
+  verdict, status or effect.
 
 Both lab proxies open an epoch at each bootstrap request. They count every
 later API request into that epoch. The Gate frontend also assigns each collect
@@ -517,10 +523,21 @@ entity to its epoch and attributes each authenticated audit record by its
 `request_id` (SHA-256 of the consumed session and counter). The runner feeds
 `missing-signals-closed` the stripped epoch's evidence, including the
 post-browser controls that replay that epoch's collect. It feeds
-`collector-parity` the complete epoch's evidence. Neither evaluator's checks
-change. If the epochs are not exactly bound (two epochs, one distinct session
-each, every audit record attributed exactly once), both views are empty and
-both cases fail. Whole-run route, response, audit (5 records) and zero-origin
-checks still apply across both epochs. Product-e2e drivers keep replaying the
+`collector-parity` the complete epoch's evidence and `coherent-browser-ceiling`
+the ceiling epoch's. Neither 2d evaluator's checks change. If the epochs are
+not exactly bound (three epochs, one distinct session each, every audit record
+attributed exactly once), every view is empty and every case fails. Both
+proxies also record each epoch's `elapsed_ms` from its bootstrap arrival on
+their own clock. The ceiling decision is read only from the authenticated
+audit record bound to that epoch, its response from both proxies and its
+effect from the origin count; every origin effect must be an ALLOW decision
+of that epoch. Only then is it filled into the whole-run expectation, so the
+route, response, audit (7 records) and known-epoch zero-origin checks still
+apply exactly; the stripped and complete views exclude only that attributed
+ALLOW effect. ALLOW forwarded once is `ceiling_reached`, DENY or CHALLENGE
+with nothing forwarded is `ceiling_not_reached` with the actor's own reported
+BOT signals listed; neither is block credit or a detection claim. The case
+fails on missing, unbound, unpaced (below dwell+think on either proxy),
+unprovenanced (browser/runtime image ID, user agent) or inconsistent evidence. Product-e2e drivers keep replaying the
 stripped epoch's report. Native and isolated headless Firefox component results
 are not Docker product evidence.

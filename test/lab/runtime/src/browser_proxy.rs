@@ -6,7 +6,7 @@ use std::{
     io,
     net::SocketAddr,
     sync::{Arc, Mutex},
-    time::Duration,
+    time::{Duration, Instant},
 };
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
@@ -58,13 +58,17 @@ pub struct Receipts(
 );
 /// Collect entities retained per proxy; the pilot posts one per epoch.
 const COLLECT_CAPTURE_MAX: usize = 4;
-/// Session epochs retained per proxy; the pilot opens two.
+/// Session epochs retained per proxy; the pilot opens three.
 const EPOCH_MAX: usize = 4;
 /// One browser session epoch: every API request from one bootstrap request up
 /// to the next, in arrival order (the pilot's requests are sequential).
+/// `elapsed_ms` is this proxy's own clock from the bootstrap request's
+/// arrival to the latest request's arrival: observed pacing, never declared.
 #[derive(Default)]
 struct Epoch {
     hits: BTreeMap<String, u64>,
+    opened: Option<Instant>,
+    elapsed_ms: u64,
     sessions: BTreeSet<String>,
     commitments: BTreeSet<String>,
     reports: Vec<usize>,
@@ -101,11 +105,17 @@ impl Receipts {
                 if epochs.len() >= EPOCH_MAX {
                     return None;
                 }
-                epochs.push(Epoch::default());
+                epochs.push(Epoch {
+                    opened: Some(Instant::now()),
+                    ..Epoch::default()
+                });
             }
             let index = epochs.len().checked_sub(1)?;
             let epoch = &mut epochs[index];
             *epoch.hits.entry(frame.target.clone()).or_default() += 1;
+            if let Some(opened) = epoch.opened {
+                epoch.elapsed_ms = u64::try_from(opened.elapsed().as_millis()).unwrap_or(u64::MAX);
+            }
             if let Some(session) = frame.header("x-humanymous-session") {
                 epoch.sessions.insert(session.to_owned());
                 // The runtime's audit request_id for this consumed request.
@@ -181,7 +191,8 @@ impl Receipts {
                     })
                     .count();
                 serde_json::json!({"proxy_hits":epoch.hits,"sessions":epoch.sessions.len(),
-                    "shared_sessions":shared,"collector_reports":epoch.reports})
+                    "shared_sessions":shared,"collector_reports":epoch.reports,
+                    "elapsed_ms":epoch.elapsed_ms})
             })
             .collect()
     }
@@ -547,8 +558,15 @@ mod tests {
         assert_eq!(receipts.collect_requests(0), vec![b"request-a".to_vec()]);
         assert_eq!(receipts.collect_requests(1), vec![b"request-b".to_vec()]);
         assert!(receipts.collect_requests(2).is_empty());
-        let epochs = receipts.epochs();
+        let mut epochs = receipts.epochs();
         assert_eq!(epochs.len(), 2);
+        // Observed pacing on this proxy's clock: a number, never declared.
+        for epoch in &mut epochs {
+            let elapsed = epoch
+                .as_object_mut()
+                .and_then(|epoch| epoch.remove("elapsed_ms"));
+            assert!(elapsed.is_some_and(|ms| ms.is_u64()));
+        }
         assert_eq!(
             epochs[0],
             serde_json::json!({"proxy_hits":{"/_humanymous/browser/session":1,
@@ -579,6 +597,27 @@ mod tests {
         }
         assert_eq!(receipts.enter(&request(route("session"), None, "")), None);
         assert_eq!(receipts.snapshot()["epoch_unattributed"], 2);
+    }
+    #[test]
+    fn epoch_pacing_is_measured_from_bootstrap_arrival_on_the_proxy_clock() {
+        let fixture = fixture();
+        let request = |key: &str| http::Request {
+            method: "POST".into(),
+            target: fixture["routes"][key].as_str().unwrap().to_owned(),
+            headers: vec![("Host".to_owned(), authority())],
+            body: Vec::new(),
+        };
+        let receipts = Receipts::default();
+        receipts.enter(&request("session"));
+        std::thread::sleep(Duration::from_millis(30));
+        receipts.enter(&request("required_collector"));
+        let paced = receipts.epochs()[0]["elapsed_ms"].as_u64().unwrap();
+        assert!(paced >= 30, "{paced}");
+        // A new bootstrap restarts the clock for its own epoch only.
+        receipts.enter(&request("session"));
+        let epochs = receipts.epochs();
+        assert!(epochs[1]["elapsed_ms"].as_u64().unwrap() < paced);
+        assert_eq!(epochs[0]["elapsed_ms"], paced);
     }
     #[test]
     fn origin_classes_initialize_zeroes_and_never_retain_foreign_values() {

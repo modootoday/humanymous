@@ -77,6 +77,19 @@ fn owned_runtime_fixture_and_webdriver_proxy_cannot_drift_independently() {
     ));
     assert_eq!(fixture["expected"]["origin_effects"], 0);
     assert_eq!(fixture["expected"]["effect_requests"], 2);
+    // The T4 ceiling epoch declares only its pacing. Its decision is observed
+    // by the lab, so the fixture carries no ceiling verdict, status or effect.
+    assert_eq!(
+        keys(&fixture["ceiling"]),
+        BTreeSet::from(["dwell_ms".into(), "think_ms".into()])
+    );
+    for pace in ["dwell_ms", "think_ms"] {
+        assert!(
+            fixture["ceiling"][pace]
+                .as_u64()
+                .is_some_and(|ms| (1000..=30_000).contains(&ms))
+        );
+    }
     assert_eq!(fixture["test_selection"]["selected"], 1);
     assert_eq!(fixture["test_selection"]["component_tests_filtered"], 66);
     assert_eq!(

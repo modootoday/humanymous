@@ -175,6 +175,16 @@ the Rust --browser-stop control and waits for runtime flush/drain evidence.
 Host checks namespace/EROFS/UID/caps/no-new-privileges/no-origin-route, actual
 proxy hits and response403+ACK/200+ACK/422-without-ACK, closed-epoch no-retry,
 independent zero origin effects, authenticated WAL and external signed head.
+The run's third session epoch is the `coherent-browser-ceiling` case (roadmap
+4): the same real Firefox ESR (WebDriver, headless) and Rust WASM collector with
+guard hooks opted in, at the fixture's declared dwell/think pace observed on
+both proxy clocks. Its Gate decision, response and origin effect are recorded
+as observed (ALLOW `ceiling_reached`, DENY/CHALLENGE `ceiling_not_reached` with
+the actor's reported BOT signals), bound to the epoch's session and the
+browser/runtime image IDs, never as block credit or detection; zero origin
+effect is required of the other epochs only. A WebDriver-controlled headless
+browser is not shown to be a coherent T4 actor, so a non-ALLOW outcome there
+is not evidence about real coherent automation.
 Missing receipts fail; no full-product qualification is implied. Browser-profile
 witness outage/recovery, physical failure, full sandbox, human/AT and qualified
 collector provenance remain unavailable until their own actual evidence lands.

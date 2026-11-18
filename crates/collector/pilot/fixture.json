@@ -34,5 +34,9 @@
     "complete_required_collector_ack": true,
     "origin_effects": 0
   },
+  "ceiling": {
+    "dwell_ms": 4000,
+    "think_ms": 1500
+  },
   "qualification": "actual browser HTTP session join; full product requires independent isolation and witness receipts"
 }
