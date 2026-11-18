@@ -1,7 +1,9 @@
 //! Operator ops routes on the admin plane's loopback listener: the liveness,
 //! score-explanation and counters handlers of legacy cmd/server/ops.go
-//! (`handleHealthz`, `handleExplain`, `handleCounters`, `operatorAuthorized`,
-//! `configureOps` and `canReadSession`) at baseline 981d25c.
+//! (`handleHealthz`, `handleExplain`, `handleCounters` and `configureOps`) at
+//! baseline 981d25c. The bearer check reuses `operations::mlcorrect::
+//! operator_authorized` (Go `operatorAuthorized`); Go `canReadSession` is
+//! `gateway::resource::can_read_session`.
 //!
 //! Go mounted `/healthz`, `/api/explain/{id}` and `/api/counters` on the public
 //! Core server. Here they are served only under [`OPS_PREFIX`] on the admin
@@ -38,11 +40,11 @@ use super::{Clock, Response};
 use crate::gateway::http::Request;
 use crate::gateway::observatory::Sessions;
 use crate::gateway::operations::counters;
+use crate::gateway::operations::mlcorrect::operator_authorized;
 use humanymous_core::model::correction::Controller;
 use humanymous_core::scoring::engine::Engine;
 use serde_json::json;
 use std::sync::Arc;
-use subtle::ConstantTimeEq;
 use zeroize::Zeroizing;
 
 /// Ops route prefix on the admin listener (Go mounted the routes at the root
@@ -67,32 +69,6 @@ pub fn resolve_token(flag: &str, environment: Option<&str>) -> Option<Zeroizing<
 pub fn token_from_environment(flag: &str) -> Option<Zeroizing<String>> {
     let environment = std::env::var(TOKEN_ENV).ok().map(Zeroizing::new);
     resolve_token(flag, environment.as_deref().map(String::as_str))
-}
-
-/// Go `operatorAuthorized`: never authorizes without a configured token; one
-/// leading `Bearer ` is stripped and the rest must equal it in constant time.
-pub fn operator_authorized(token: Option<&str>, authorization: Option<&str>) -> bool {
-    let Some(token) = token.filter(|token| !token.is_empty()) else {
-        return false;
-    };
-    let header = authorization.unwrap_or("");
-    let presented = header.strip_prefix("Bearer ").unwrap_or(header);
-    presented.as_bytes().ct_eq(token.as_bytes()).into()
-}
-
-/// Go `canReadSession`: the owner (its `hsid` cookie equals the non-empty
-/// session id) or an authorized operator may read one session's data.
-/// Refusal is the caller's non-discoverable 404.
-pub fn can_read_session(
-    token: Option<&str>,
-    owner_cookie: Option<&str>,
-    session: &str,
-    authorization: Option<&str>,
-) -> bool {
-    if !session.is_empty() && owner_cookie == Some(session) {
-        return true;
-    }
-    operator_authorized(token, authorization)
 }
 
 /// Live values behind the counters rollup. Defaults describe a process with
@@ -163,7 +139,7 @@ impl Ops {
         }
         // Unregistered without a token; a wrong or missing bearer looks the same.
         if !operator_authorized(
-            self.token.as_deref().map(String::as_str),
+            self.token.as_deref().map_or("", String::as_str),
             request.header("authorization"),
         ) {
             return Some(Response::not_found());

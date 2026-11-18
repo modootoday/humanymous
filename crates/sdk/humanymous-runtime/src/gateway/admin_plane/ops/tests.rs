@@ -365,10 +365,10 @@ fn can_read_session_matches_go_golden() {
     assert_eq!(cases.len(), 11);
     for case in cases {
         let token = case["ops_token"].as_str().unwrap();
-        let allowed = can_read_session(
-            Some(token).filter(|token| !token.is_empty()),
+        let allowed = crate::gateway::resource::can_read_session(
             case["hsid_cookie"].as_str(),
             case["session"].as_str().unwrap(),
+            token,
             case["authorization"].as_str(),
         );
         assert_eq!(allowed, case["allowed"].as_bool().unwrap(), "{case}");
@@ -383,8 +383,8 @@ fn can_read_session_matches_go_golden() {
             );
         }
     }
-    assert!(!operator_authorized(None, Some("Bearer ")));
-    assert!(!operator_authorized(Some(""), Some("")));
+    assert!(!operator_authorized("", Some("Bearer ")));
+    assert!(!operator_authorized("", Some("")));
 }
 
 /// The ops token and the admin bearer table are independent credentials.
