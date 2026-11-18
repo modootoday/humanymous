@@ -15,8 +15,8 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 211,
-  "partial": 80,
+  "ported_unit": 213,
+  "partial": 78,
   "missing": 12,
   "not_applicable": 2,
   "oracle_only": 9
@@ -79,10 +79,10 @@
    "ported_unit": 5
   },
   "internal/gate": {
-   "partial": 43,
+   "partial": 41,
    "missing": 5,
    "not_applicable": 1,
-   "ported_unit": 35,
+   "ported_unit": 37,
    "oracle_only": 1
   },
   "internal/httpx": {
@@ -2102,29 +2102,37 @@
   },
   {
    "baseline_path": "internal/gate/adminauth.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/management/mod.rs",
     "crates/sdk/humanymous-runtime/src/gateway/management/policy.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/management/operator.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/management/operator.rs",
+    ""
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope",
     "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_refuses_browser_authority_ambiguous_headers_and_mutations",
-    "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::operator_resource_change_requires_its_own_credential_scope_and_native_envelope"
+    "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::operator_resource_change_requires_its_own_credential_scope_and_native_envelope",
+    "::role_wire_names_round_trip_exactly",
+    "::capabilities_follow_the_go_role_model",
+    "::bearer_authentication_denies_by_default",
+    "::registration_refuses_empty_and_duplicate_tokens",
+    "::r180_has_role_dpo_superset"
    ],
    "go_test_map": {},
-   "gaps": [
-    "bearer-token authentication",
-    "auditor/operator/approver/DPO role model and hasRole superset"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "medium",
-   "notes": "Rust separates observer and resource-operator credentials over native IPC; the four-role RBAC is absent (B21 M).",
+   "confidence": "high",
+   "notes": "gateway::admin_approval ports the Go bearer table and four-role model: Authorization: Bearer only, constant-time scan over every token with no early exit, deny status 404, capabilities (any role reads; operator/DPO operate; approver/DPO approve; DPO alone approves erasure) and the hasRole DPO superset. Deliberate fail-closed differences pinned by tests: empty tokens or ids and duplicate tokens are refused at registration. The native-IPC observer/operator credentials in gateway/management remain the served management surface; the HTTP admin listener that consumed adminauth.go is tracked on the admin/ws12 rows.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_refuses_browser_authority_ambiguous_headers_and_mutations": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::operator_resource_change_requires_its_own_credential_scope_and_native_envelope": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::operator_resource_change_requires_its_own_credential_scope_and_native_envelope": "passed",
+    "::role_wire_names_round_trip_exactly": "passed",
+    "::capabilities_follow_the_go_role_model": "passed",
+    "::bearer_authentication_denies_by_default": "passed",
+    "::registration_refuses_empty_and_duplicate_tokens": "passed",
+    "::r180_has_role_dpo_superset": "passed"
    }
   },
   {
@@ -2178,34 +2186,65 @@
   },
   {
    "baseline_path": "internal/gate/approval.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/audit/control/policy.rs",
     "crates/sdk/humanymous-runtime/src/audit/control/operations.rs",
-    "crates/sdk/humanymous-runtime/src/audit/control/ledger.rs"
+    "crates/sdk/humanymous-runtime/src/audit/control/ledger.rs",
+    ""
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::two_independent_signatures_bind_every_operation_field",
     "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::missing_duplicate_unknown_and_invalid_approvals_fail_closed",
     "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::exact_time_bounds_and_canonical_ids_are_required",
     "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::aliases_and_weak_keys_cannot_form_quorum",
-    "crates/sdk/humanymous-runtime/tests/audit/control_operations.rs::durable_consumption_rejects_replay_and_whole_file_rollback"
+    "crates/sdk/humanymous-runtime/tests/audit/control_operations.rs::durable_consumption_rejects_replay_and_whole_file_rollback",
+    "::approval_store_rules",
+    "::r071_approval_expired_cannot_commit",
+    "::ttl_boundary_and_clock_regression_do_not_expire",
+    "::r072_approval_unknown_id_rejected",
+    "::r073_concurrent_approve_exactly_once",
+    "::r074_double_commit_after_success_fails",
+    "::r075_dpo_can_approve_ban_role",
+    "::r076_approver_cannot_self_request_ban_then_approve",
+    "::erasure_needs_dpo_not_approver",
+    "::r077_pending_list_hides_expired",
+    "::r078_ticket_binds_params",
+    "::r178_approval_ticket_differs_by_approver",
+    "::r179_approval_ticket_differs_by_kind",
+    "::r180_has_role_dpo_superset",
+    "::r188_concurrent_create_distinct_ids",
+    "::r189_pending_params_immutable_snapshot",
+    "::full_store_refuses_after_collecting_expired"
    ],
    "go_test_map": {},
-   "gaps": [
-    "pending-action store with create/list/TTL GC",
-    "role-gated approver (approver/DPO) mapping",
-    "HMAC approval ticket"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "medium",
-   "notes": "Dual-control is redesigned as signed two-approval quorum and durable consumption in audit control.",
+   "confidence": "high",
+   "notes": "gateway::admin_approval ports the Go pending store: copied params, 12-byte random hex ids, TTL collection on create and list, Go refusal order (unknown, expired-and-removed, self-approval, wrong role), exactly-once commit, and the hex HMAC-SHA256 ticket over id|kind|requester|approver plus the nine Go binding keys, pinned by a byte-layout vector. Deliberate fail-closed differences pinned by tests: entropy failure and a full store (4096) refuse create, a clock before creation never expires an entry, and the pending list is id ordered. The signed two-approval quorum and durable consumption in audit control remain the served dual-control path.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::aliases_and_weak_keys_cannot_form_quorum": "passed",
     "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::exact_time_bounds_and_canonical_ids_are_required": "passed",
     "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::missing_duplicate_unknown_and_invalid_approvals_fail_closed": "passed",
     "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::two_independent_signatures_bind_every_operation_field": "passed",
-    "crates/sdk/humanymous-runtime/tests/audit/control_operations.rs::durable_consumption_rejects_replay_and_whole_file_rollback": "passed"
+    "crates/sdk/humanymous-runtime/tests/audit/control_operations.rs::durable_consumption_rejects_replay_and_whole_file_rollback": "passed",
+    "::approval_store_rules": "passed",
+    "::r071_approval_expired_cannot_commit": "passed",
+    "::ttl_boundary_and_clock_regression_do_not_expire": "passed",
+    "::r072_approval_unknown_id_rejected": "passed",
+    "::r073_concurrent_approve_exactly_once": "passed",
+    "::r074_double_commit_after_success_fails": "passed",
+    "::r075_dpo_can_approve_ban_role": "passed",
+    "::r076_approver_cannot_self_request_ban_then_approve": "passed",
+    "::erasure_needs_dpo_not_approver": "passed",
+    "::r077_pending_list_hides_expired": "passed",
+    "::r078_ticket_binds_params": "passed",
+    "::r178_approval_ticket_differs_by_approver": "passed",
+    "::r179_approval_ticket_differs_by_kind": "passed",
+    "::r180_has_role_dpo_superset": "passed",
+    "::r188_concurrent_create_distinct_ids": "passed",
+    "::r189_pending_params_immutable_snapshot": "passed",
+    "::full_store_refuses_after_collecting_expired": "passed"
    }
   },
   {
@@ -4130,7 +4169,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/ban.rs",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs",
+    ""
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
@@ -4152,7 +4192,12 @@
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r196_sec_ch_ua_affects_bind_key",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r197_smuggle_cr_in_header_value",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r198_multi_header_obs_fold_any_key",
-    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::scan_classifies_in_legacy_precedence"
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::scan_classifies_in_legacy_precedence",
+    "::r178_approval_ticket_differs_by_approver",
+    "::r179_approval_ticket_differs_by_kind",
+    "::r180_has_role_dpo_superset",
+    "::r188_concurrent_create_distinct_ids",
+    "::r189_pending_params_immutable_snapshot"
    ],
    "go_test_map": {
     "TestWargameR161_PendingBanNotEnforcedUntilCommit": null,
@@ -4172,9 +4217,9 @@
     "TestWargameR175_StepUpBindMismatch": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r175_step_up_bind_mismatch",
     "TestWargameR176_StepUpSidMismatch": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r176_step_up_sid_mismatch",
     "TestWargameR177_ReceiptBadSig": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r177_receipt_bad_sig",
-    "TestWargameR178_ApprovalTicketDiffersByApprover": null,
-    "TestWargameR179_ApprovalTicketDiffersByKind": null,
-    "TestWargameR180_HasRoleDPOSuperset": null,
+    "TestWargameR178_ApprovalTicketDiffersByApprover": "::r178_approval_ticket_differs_by_approver",
+    "TestWargameR179_ApprovalTicketDiffersByKind": "::r179_approval_ticket_differs_by_kind",
+    "TestWargameR180_HasRoleDPOSuperset": "::r180_has_role_dpo_superset",
     "TestWargameR181_ValidBanKeyRejectsSchemeOnlyFPSpace": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
     "TestWargameR182_ValidBanKeyAcceptsIPv4Mapped": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
     "TestWargameR183_CIDRHostBitsValid": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r183_cidr_host_bits_valid",
@@ -4182,8 +4227,8 @@
     "TestWargameR185_RejectBareIPWithoutScheme": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r185_reject_bare_ip_without_scheme",
     "TestWargameR186_HTTPRejectUnknownScheme": null,
     "TestWargameR187_HTTPRejectBareIP": null,
-    "TestWargameR188_ConcurrentCreateDistinctIDs": null,
-    "TestWargameR189_PendingParamsImmutableSnapshot": null,
+    "TestWargameR188_ConcurrentCreateDistinctIDs": "::r188_concurrent_create_distinct_ids",
+    "TestWargameR189_PendingParamsImmutableSnapshot": "::r189_pending_params_immutable_snapshot",
     "TestWargameR190_OperatorLiftOtherKeyNoopOrOK": null,
     "TestWargameR191_DoubleLiftSafe": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r191_double_lift_safe",
     "TestWargameR192_ListBansIncludesManual": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r192_list_bans_includes_manual",
@@ -4199,13 +4244,12 @@
    "gaps": [
     "pending/commit/lift ban effects and meta-audit R161-R167 (B18/B19: M; dual control, plan 20261116060213 unit 19)",
     "route preset resolution R171-R173 (B12: C)",
-    "HMAC approval ticket and DPO role superset R178-R180 (B20/B21: M; dual-control redesign)",
-    "admin HTTP ban key refusal and concurrency R186-R190 (B19: M)",
+    "admin HTTP ban key refusal R186, R187 and operator lift of another key R190 (B19: M); store rounds R188 and R189 are ported in gateway::admin_approval",
     "R169 lone chunked TE: the classifier agrees with Go but the Rust HTTP parser refuses it (owner issue)"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Ban-key validation (R181-R185, R199), store lift/list (R191, R192), escalation (R193, deliberate 24h fourth tier), smuggle classifier (R168-R170, R197, R198) and step-up/receipt/bind rounds (R174-R177, R194-R196) are ported against the pure kernels. R200 re-asserts duplicate chunked TE refusal and ip: key validity, covered by the smuggle precedence and ban-key matrix tests. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#20; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "notes": "Ban-key validation (R181-R185, R199), store lift/list (R191, R192), escalation (R193, deliberate 24h fourth tier), smuggle classifier (R168-R170, R197, R198) and step-up/receipt/bind rounds (R174-R177, R194-R196) are ported against the pure kernels. R200 re-asserts duplicate chunked TE refusal and ip: key validity, covered by the smuggle precedence and ban-key matrix tests. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#20; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged. Approval ticket, DPO superset and pending-store rounds (R178-R180, R188, R189) are ported against gateway::admin_approval.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r168_smuggle_and_ban_independent": "passed",
@@ -4226,7 +4270,12 @@
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r196_sec_ch_ua_affects_bind_key": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r197_smuggle_cr_in_header_value": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r198_multi_header_obs_fold_any_key": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::scan_classifies_in_legacy_precedence": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::scan_classifies_in_legacy_precedence": "passed",
+    "::r178_approval_ticket_differs_by_approver": "passed",
+    "::r179_approval_ticket_differs_by_kind": "passed",
+    "::r180_has_role_dpo_superset": "passed",
+    "::r188_concurrent_create_distinct_ids": "passed",
+    "::r189_pending_params_immutable_snapshot": "passed"
    }
   },
   {
@@ -4234,13 +4283,22 @@
    "disposition": "partial",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/audit/control/policy.rs",
-    "crates/sdk/humanymous-runtime/src/audit/control/operations.rs"
+    "crates/sdk/humanymous-runtime/src/audit/control/operations.rs",
+    ""
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::exact_time_bounds_and_canonical_ids_are_required",
     "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::two_independent_signatures_bind_every_operation_field",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
-    "crates/sdk/humanymous-runtime/tests/audit/control_operations.rs::durable_consumption_rejects_replay_and_whole_file_rollback"
+    "crates/sdk/humanymous-runtime/tests/audit/control_operations.rs::durable_consumption_rejects_replay_and_whole_file_rollback",
+    "::r071_approval_expired_cannot_commit",
+    "::r072_approval_unknown_id_rejected",
+    "::r073_concurrent_approve_exactly_once",
+    "::r074_double_commit_after_success_fails",
+    "::r075_dpo_can_approve_ban_role",
+    "::r076_approver_cannot_self_request_ban_then_approve",
+    "::r077_pending_list_hides_expired",
+    "::r078_ticket_binds_params"
    ],
    "go_test_map": {
     "TestWargameR051_EmptyIPBanKeyRejected": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
@@ -4263,30 +4321,37 @@
     "TestWargameR068_HTTPGarbageCIDRBan400": null,
     "TestWargameR069_HTTPShortFPBan400": null,
     "TestWargameR070_BulkSkipsInvalidKeys": null,
-    "TestWargameR071_ApprovalExpiredCannotCommit": "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::exact_time_bounds_and_canonical_ids_are_required",
-    "TestWargameR072_ApprovalUnknownIDRejected": null,
-    "TestWargameR073_ConcurrentApproveExactlyOnce": "crates/sdk/humanymous-runtime/tests/audit/control_operations.rs::durable_consumption_rejects_replay_and_whole_file_rollback",
-    "TestWargameR074_DoubleCommitAfterSuccessFails": null,
-    "TestWargameR075_DPOCanApproveBanRole": null,
-    "TestWargameR076_ApproverCannotSelfRequestBanThenApprove": null,
-    "TestWargameR077_PendingListHidesExpired": null,
-    "TestWargameR078_TicketBindsParams": "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::two_independent_signatures_bind_every_operation_field",
+    "TestWargameR071_ApprovalExpiredCannotCommit": "::r071_approval_expired_cannot_commit",
+    "TestWargameR072_ApprovalUnknownIDRejected": "::r072_approval_unknown_id_rejected",
+    "TestWargameR073_ConcurrentApproveExactlyOnce": "::r073_concurrent_approve_exactly_once",
+    "TestWargameR074_DoubleCommitAfterSuccessFails": "::r074_double_commit_after_success_fails",
+    "TestWargameR075_DPOCanApproveBanRole": "::r075_dpo_can_approve_ban_role",
+    "TestWargameR076_ApproverCannotSelfRequestBanThenApprove": "::r076_approver_cannot_self_request_ban_then_approve",
+    "TestWargameR077_PendingListHidesExpired": "::r077_pending_list_hides_expired",
+    "TestWargameR078_TicketBindsParams": "::r078_ticket_binds_params",
     "TestWargameR079_ErasureRequiresDPONotApprover": null,
     "TestWargameR080_KillswitchRequiresDistinctApprover": null
    },
    "gaps": [
     "HTTP 400 for invalid ban keys and bulk skip (R066-R070)",
-    "role rules for approval/erasure/killswitch (R075,R076,R079,R080)",
-    "pending list and unknown id (R072,R077)"
+    "erasure DPO and kill-switch distinct-approver rules through the admin HTTP surface (R079,R080); the store-level role rule is covered by gateway::admin_approval erasure_needs_dpo_not_approver"
    ],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Dual-control primitives cover a few approval invariants; ban-key validation is absent.",
+   "notes": "Ban-key validation (R051-R065) is ported against the ban kernel; approval store rounds R071-R078 are ported against gateway::admin_approval. The HTTP admin rounds remain open.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::exact_time_bounds_and_canonical_ids_are_required": "passed",
     "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::two_independent_signatures_bind_every_operation_field": "passed",
     "crates/sdk/humanymous-runtime/tests/audit/control_operations.rs::durable_consumption_rejects_replay_and_whole_file_rollback": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds": "passed",
+    "::r071_approval_expired_cannot_commit": "passed",
+    "::r072_approval_unknown_id_rejected": "passed",
+    "::r073_concurrent_approve_exactly_once": "passed",
+    "::r074_double_commit_after_success_fails": "passed",
+    "::r075_dpo_can_approve_ban_role": "passed",
+    "::r076_approver_cannot_self_request_ban_then_approve": "passed",
+    "::r077_pending_list_hides_expired": "passed",
+    "::r078_ticket_binds_params": "passed"
    }
   },
   {
@@ -4638,14 +4703,16 @@
     "crates/sdk/humanymous-runtime/src/gateway/management/mod.rs",
     "crates/sdk/humanymous-runtime/src/gateway/management/policy.rs",
     "crates/sdk/humanymous-runtime/src/gateway/management/operator.rs",
-    "crates/sdk/humanymous-runtime/src/audit/control/policy.rs"
+    "crates/sdk/humanymous-runtime/src/audit/control/policy.rs",
+    ""
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope",
     "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_refuses_browser_authority_ambiguous_headers_and_mutations",
     "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::operator_resource_change_requires_its_own_credential_scope_and_native_envelope",
     "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::two_independent_signatures_bind_every_operation_field",
-    "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::missing_duplicate_unknown_and_invalid_approvals_fail_closed"
+    "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::missing_duplicate_unknown_and_invalid_approvals_fail_closed",
+    "::approval_store_rules"
    ],
    "go_test_map": {
     "TestAdminOffPublicListener": "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_refuses_browser_authority_ambiguous_headers_and_mutations",
@@ -4653,7 +4720,7 @@
     "TestAdminRBAC": "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::operator_resource_change_requires_its_own_credential_scope_and_native_envelope",
     "TestSelfLiftClosed": null,
     "TestDualControlPermanentBan": "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::two_independent_signatures_bind_every_operation_field",
-    "TestApprovalStoreRules": "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::missing_duplicate_unknown_and_invalid_approvals_fail_closed"
+    "TestApprovalStoreRules": "::approval_store_rules"
    },
    "gaps": [
     "self-lift prevention",
@@ -4661,13 +4728,14 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Private-IPC management and signed quorum cover isolation/deny/role separation; ban effects are absent.",
+   "notes": "Private-IPC management and signed quorum cover isolation/deny/role separation; ban effects are absent. TestApprovalStoreRules is ported directly against gateway::admin_approval.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::missing_duplicate_unknown_and_invalid_approvals_fail_closed": "passed",
     "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::two_independent_signatures_bind_every_operation_field": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_refuses_browser_authority_ambiguous_headers_and_mutations": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::operator_resource_change_requires_its_own_credential_scope_and_native_envelope": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::operator_resource_change_requires_its_own_credential_scope_and_native_envelope": "passed",
+    "::approval_store_rules": "passed"
    }
   },
   {
