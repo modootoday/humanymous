@@ -62,7 +62,7 @@ They apply to new commits. History is not rewritten.
 
 ## 3. Required checks
 
-- C3.1 Required checks are the project's own gate jobs plus two shared checks named exactly `Public surface` and `Secret scan`. The name is the job's `name:`.
+- C3.1 Required checks are the project's own gate jobs plus two shared checks named exactly `Public surface` and `Secret scan`. The name is the job's `name:`. Exception for `main` until the parity-gated main merge (owner direction 2026-11-16): `main` does not run `Public surface`, `Secret scan` or `merge-ready`, so `main-protected` requires the checks `main`'s own CI runs on every pull request and push, `build + unit tests` (`ci.yml`) and `analyze (go)` (`codeql.yml`). At the main merge, `main-protected` moves to the C3.1 set in the same pull request.
 - C3.2 A required check must not be skippable on pull requests.
 - C3.3 No `paths` filter on a workflow that owns a required check.
 - C3.4 CI on GitHub is the completion authority. A local or cloud-session run is a pre-check. A scaffold or stub job that passes without exercising the product is never a gate.
@@ -163,5 +163,5 @@ Each repository has `SECURITY.md`, a pull request template with an `Agent-Provid
 - Enable secret scanning and push protection.
 - Apply `allow_auto_merge: true` from `.github/settings/repository.json`; auto-merge cannot be turned on before that.
 - Confirm the exact `validate / merge-ready` context on the first pull request; rename in one pull request with the ruleset if it differs (C3.5).
-- Apply `main-protected` only once `main` carries the `merge-ready` job (the parity-gated main merge). Until then `main`'s own CI has no such check, and requiring it would block Dependabot and security fixes there.
+- Apply `main-protected` with `main`'s own checks (`build + unit tests`, `analyze (go)`; C3.1 exception). Change it to `merge-ready`, `Public surface` and `Secret scan` at the parity-gated main merge, when `main` carries those jobs.
 - Bring `.github/dependabot.yml` to `main` (Dependabot reads the default branch only).
