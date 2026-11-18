@@ -2618,9 +2618,9 @@
     },
     {
       "source": "crates/collector/INTEGRATION.md",
-      "sha256": "3359f7ea4b8ecacbeea251550158b2065e5b3e3a85ba5b599078870945e7702d",
-      "reviewer": "codex/rust-pages",
-      "notes": "Complete current100-line chronology read after29b882a7: explicit optional environment/advanced/CDP/hooks and compatibility limits, committed Fetch transport with historical66-versus65/first PID failure distinctions, real runtime join still missing. Desktop reproduction commands require allocation/actual engine identity. Narrative is not a new execution receipt.",
+      "sha256": "931c34d4b639bc073c66a78651e94b0f628a40b7363891abb9e3f4932b84b193",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Collector chronology now also records BrowserCollector::report_json as the explicit Go loader.js assembly at 981d25c: measure snapshot_json, then run the environment and advanced probes and compute fingerprintId (canvas, WebGL, screen, time zone, languages, threads, platform; WebCrypto SHA-256 first 12 bytes or the oracle fallback hash). It states fingerprintId is unscored, probe failure rejects the report and guard reported stays true only after enable_guard_hooks. Earlier limits stand: optional APIs are not implicit detect_json measurements, the real runtime join is still missing and required routes stay fail-closed. Narrative, not an execution receipt.",
       "pages": [
         "docs/reference/browser-collector.md"
       ]
@@ -2744,9 +2744,9 @@
     },
     {
       "source": "crates/collector/src/browser/advanced/tests.rs",
-      "sha256": "75a5b507e2e0ea4ab0fb2a0ffa384686a70200d73c9b4890877041d75cafe54f",
-      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
-      "notes": "Synthetic capability fixtures, legacy advanced parity binding and actual-surface test declarations; no run result inferred. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+      "sha256": "5759ce6f13198e569edf42f977e2fe6f15061d072292ee349715c7593c292917",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Synthetic capability fixtures, legacy advanced parity binding and actual-surface test declarations. This revision also binds the unchanged oracle computeFingerprintId and asserts, in the actual-surface test, that it returns the same string as the Rust loader::fingerprint_id over the same browser global. No run result inferred; source review only, not new execution or independent external certification.",
       "pages": [
         "docs/reference/browser-collector.md"
       ]
@@ -2878,10 +2878,19 @@
       ]
     },
     {
+      "source": "crates/collector/src/browser/loader.rs",
+      "sha256": "87d95b232ff323896ed79cd4ff9c89642263f6c1b7a22f2b765cb2305540746d",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "WASM port of the Go web/js/loader.js report planes at 981d25c. complete() attaches the probed environment, advanced surfaces and fingerprintId to an already measured report. fingerprint_id() follows advanced.js computeFingerprintId: a fixed canvas drawing (data URL hashed, not exported), WebGL unmasked vendor/renderer, screen WxHxDepthxDPR, time zone, languages, hardwareConcurrency and platform, joined with JS Array.join semantics under a 1,048,576-unit budget; throwing optional surfaces are skipped like the oracle's try/catch. SHA-256 via WebCrypto keeps the first 12 bytes as hex; a throwing or rejecting digest takes the oracle fallback hash, while an 800 ms timeout (absent in the oracle) and a non-ArrayBuffer result are errors. Nothing is scored; guard coverage is not touched. Source review only, no run result inferred.",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
       "source": "crates/collector/src/browser/mod.rs",
-      "sha256": "1bcfaaf10b8e7e8a6b28ac51bd2a032d8d361a5f4f9e3738d16efe03e874cafc",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Checked browser I/O root for the WASM collector: declares the advanced, behavior, cdp, environment, fingerprint, guard, integrity, reflection, resources and transport modules, and capture() synchronously reads navigator/document facts (webdriver, UA, client hints <=128 brands, plugin/language counts, Playwright/Phantom/CDP markers, window/document key lists <=16384, WebGL vendor/renderer, memory, screen, getter and iframe integrity) into a Snapshot. Its browser test checks the UA matches, the webdriver signal is reported, the environment stays unprobed, session_id is empty and iframes are cleaned up.",
+      "sha256": "a0e7dac7658c362eedaac158af3a21c9f112248e44252a93764df00206ca916c",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Browser I/O root for the WASM collector: declares the advanced, behavior, cdp, environment, fingerprint, guard, integrity, loader, reflection, resources and transport modules, and capture() synchronously reads navigator/document facts (webdriver, UA, client hints <=128 brands, plugin/language counts, Playwright/Phantom/CDP markers, window/document key lists <=16384, WebGL vendor/renderer, memory, screen, getter and iframe integrity) into a Snapshot. Its now-async browser test also checks report_json: environment and advanced probed, guard not reported, fingerprintId equals loader::fingerprint_id and is 24 hex chars, signals and engine version equal a fresh detect over the same JSON round trip, empty session_id; after enable_guard_hooks guard is reported, and report() fails after stop with iframes cleaned up. Test declarations only, no run result inferred.",
       "pages": [
         "docs/reference/browser-collector.md"
       ]
@@ -2973,9 +2982,9 @@
     },
     {
       "source": "crates/collector/src/browser/transport/runtime_pilot.rs",
-      "sha256": "abbc8badb89cc4aa879cec85e74cd776a236225df90e47707d86f17ca685d421",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Feature-gated (runtime-pilot) wasm test that runs actual Fetch against the separately owned runtime lab from pilot/fixture.json: expects the effect route to return 403 CHALLENGE with a valid ACK and no exposed x-humanymous headers, a 65537-byte body to fail locally without poisoning the epoch, the maximum body to traverse and validate, preserved real browser reports, and a missing required capability to fail before counter use and poison the ambiguous epoch; it keeps a sensitive same-origin document URL and restores it. The lab coordinator must separately prove proxy hits, isolation, no egress and audit/witness outcomes; the file itself is not proof it ran.",
+      "sha256": "1e80091a0b1020a2ce782f9e4b916e3a5599dec48fdb48c43d7b111363f53852",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Feature-gated (runtime-pilot) wasm test that runs actual Fetch against the separately owned runtime lab from pilot/fixture.json: expects the effect route to return 403 CHALLENGE with a valid ACK and no exposed x-humanymous headers, a 65537-byte body to fail locally without poisoning the epoch, the maximum body to traverse and validate, and a missing required capability to fail before counter use and poison the ambiguous epoch; it keeps a sensitive same-origin document URL and restores it. The submitted report is now the full loader report (actual observations plus environment, advanced and fingerprintId planes, guard hooks off) rather than snapshot_json, never fabricated. The lab coordinator must separately prove proxy hits, isolation, no egress and audit/witness outcomes; the file itself is not proof it ran.",
       "pages": [
         "docs/reference/browser-collector.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
@@ -3050,6 +3059,15 @@
       ]
     },
     {
+      "source": "crates/collector/src/fingerprint_id.rs",
+      "sha256": "0e42870460fc066247ba28f5323fe110185c678f728e2320e1d0c90749105e36",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Pure reductions of advanced.js computeFingerprintId: digest_id requires exactly 32 bytes and returns lowercase hex of the first 12; fallback_id folds UTF-16 code units with int32 wrapping h*31+unit and prints the unsigned hex, which matches JavaScript |0 because each step stays an exact double before ToInt32. Documented as an unscored, client-asserted correlation field, not a signal or device attestation. Unit tests pin the FIPS 180-2 SHA-256(abc) prefix, wrong digest lengths, fallback vectors including a surrogate pair and a lone surrogate. Source review only; I checked the abc fallback value by hand (0x17862), not the other vectors.",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
       "source": "crates/collector/src/guard/mod.rs",
       "sha256": "88cf317c5a192877c1350057fc4268c8beab18c553f98ae3dfc5fde8f2c7239b",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
@@ -3078,9 +3096,9 @@
     },
     {
       "source": "crates/collector/src/lib.rs",
-      "sha256": "3e7b3da1ac8a6a2338ccfd44eb6d9aa7d025d97abaa229d1c5271806539d7890",
-      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
-      "notes": "WASM public observation/epoch exports and transport reexports; snapshot combines fresh L1-L3 with behavior/guard, optional CDP; environment/advanced remain explicit separate probes. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+      "sha256": "97fde7407968e349c91c3d007c441876f037f1081971999049b75482f5af532b",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "WASM public observation/epoch exports and transport reexports, plus the new pure fingerprint_id module. snapshot() combines fresh L1-L3 with behavior/guard and optional CDP flags; snapshot_json serializes it. New report_json returns a Promise for the explicit loader report: report() refuses after stop, measures the snapshot synchronously, then browser::loader::complete adds environment, advanced and fingerprintId; any probe failure rejects and guard reported is left as measured. stop() is unchanged in behavior, only moved. Source review only, not new execution or independent external certification.",
       "pages": [
         "docs/reference/browser-collector.md"
       ]
