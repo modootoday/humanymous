@@ -1428,9 +1428,9 @@
     },
     {
       "source": "build/rust/runtime-candidate.Dockerfile",
-      "sha256": "9c53cd36945d10920570ee9b672b00cc31d68322674d81b10857a72431e79231",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Two-stage runtime candidate image recipe: pinned rust:1.99.1-alpine digest builds humanymous-runtime (gateway feature, no default features) with a separately pinned cargo-auditable 0.7.7 installed --locked, then a scratch stage copies only the binary, project LICENSE and the Go audit LICENSE (now from crates/sdk/humanymous-runtime), sets source/revision/manifest labels, UID 65532 and the runtime entrypoint with private config pipes and no default listener. Labelled candidate-component, not a qualified replacement image; embedded audit data is not authenticated provenance.",
+      "sha256": "0c8c2cf2ecd8223973cd92af29a3bbf91621604a551969545379276b93243d69",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Two-stage runtime candidate image recipe: pinned rust:1.99.1-alpine digest builds humanymous-runtime (gateway feature, no default features) with a separately pinned cargo-auditable 0.7.7 installed --locked, then a scratch stage copies only the binary, project LICENSE and the Go audit LICENSE (now from crates/sdk/humanymous-runtime), an empty /var/lib/humanymous owned by 65532:65532 with mode 0700 (owner decision C8 in #75: a new hmn-data named volume copies that owner and mode on first mount; no audit/ or keys/ custody is shipped), sets source/revision/manifest labels, UID 65532 and the runtime entrypoint with private config pipes and no default listener. Labelled candidate-component, not a qualified replacement image; embedded audit data is not authenticated provenance.",
       "pages": [
         "docs/how-to/verify-the-image.md"
       ]
@@ -5906,9 +5906,9 @@
     },
     {
       "source": "crates/sdk/humanymous-core/src/watermark/codec.rs",
-      "sha256": "a26defaeba8657ce2ba7f30aa8530ed97ec42f50ce1512ea1b38b917020a513d",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Codec module root (base32, binary, mime, png, text, wasm) stating that the composition root must validate source format and commit the ledger before exposing bytes and that CRC alone is not a verified trace. Its test ports the codec part of legacy TestRoundTrip_AllFamilies: JS, CSS, HTML, SVG, JSON and octet-stream sources are marked via the selected family, recovered, split into a 14-byte carrier and the tag verifies.",
+      "sha256": "2825ca3d50dff88db027878eb4c5254da8c85240a95eefe3015661e47e9c3de9",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Codec module root (base32, binary, mime, png, text, wasm) stating that the composition root must validate source format and commit the ledger before exposing bytes and that CRC alone is not a verified trace. Re-reviewed 2026-11-18: it now defines the Channel enum (text-comment, bin-trailer, png-text, png-lsb, wasm-section legacy labels via name()) and points to watermark::issuance and watermark::recovery for composition and multi-codec recovery, noting PNG pixel LSB reproduces the legacy premultiplied model with real-resource qualification separate. Its test ports the codec part of legacy TestRoundTrip_AllFamilies: JS, CSS, HTML, SVG, JSON and octet-stream sources are marked via the selected family, recovered, split into a 14-byte carrier and the tag verifies.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
@@ -5946,9 +5946,9 @@
     },
     {
       "source": "crates/sdk/humanymous-core/src/watermark/codec/mime.rs",
-      "sha256": "7cc33e4d858f205c796f6094d51ba0785026c10bce6e87daaa8e3eed36fcd43f",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Strict MIME selection for watermark carriers: bounded printable-ASCII declaration (<=256 bytes, CR/LF/NUL forbidden), token type/subtype and validated token or quoted parameters, mapped case-insensitively to Json (incl. +json), Markup (HTML/XML/SVG, +xml), BlockComment (JS/ECMAScript/CSS), Opaque (octet-stream only), Png, Wasm or Unsupported with no substring or trailer fallback. Tests cover normalization, parameters and malformed declarations.",
+      "sha256": "4d366c693a4fe7ad1e86285b71cef899327b86834f28e7ec10410216d2fca764",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Strict MIME selection for watermark carriers: bounded printable-ASCII declaration (<=256 bytes, CR/LF/NUL forbidden), token type/subtype and validated token or quoted parameters, mapped case-insensitively to Json (incl. +json), Markup (HTML/XML/SVG, +xml), BlockComment (JS/ECMAScript/CSS), Opaque (octet-stream only), Png, Wasm or Unsupported with no substring or trailer fallback. Tests cover normalization, parameters and malformed declarations. Re-reviewed 2026-11-18: only the Png variant's doc changed, now describing metadata and legacy-model pixel LSB carriers with real-resource (V3) qualification pending; selection is unchanged.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
@@ -5956,9 +5956,19 @@
     },
     {
       "source": "crates/sdk/humanymous-core/src/watermark/codec/png.rs",
-      "sha256": "848bc8e5df0c38565ad6eacb6c4341b158393a20576c83821aa35747b745007d",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "PNG carrier module root: exposes metadata (L2) and fail-closed pixel submodules and admit(), which requires the PNG signature and a png-crate header decode under a bounded byte budget with nonzero width and height, otherwise InvalidFormat.",
+      "sha256": "582524b4c504f2928dbde94669bde5e88bde68013e37fabf93309e9639fcfd4d",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "PNG carrier module root: exposes the hmwm tEXt metadata and RGB low-bit pixel submodules (plus cfg(test) fixtures) and admit(), which requires the PNG signature and a png-crate header decode under a 128 MiB byte budget with nonzero width and height, otherwise InvalidFormat. Re-reviewed 2026-11-18: encode() writes pixels first and inserts metadata after the final encode (correcting the legacy order whose pixel re-encode discarded the tEXt chunk while reporting png-multi), with Policy::BestEffort degrading visibly to metadata only on a capacity shortfall and RequireBoth failing; a PNG that does not decode is not marked through metadata alone. recover() reads both channels independently, reports agreeing channels, treats distinct carriers as Ambiguous, fails closed on ambiguity or resource limits, and distinguishes InvalidFormat from NoFrame.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/watermark/codec/png/fixtures.rs",
+      "sha256": "9aa182d1d346075aeff0a85f0dbcb521d6dbceb4880c10070f438e634ef9365d",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Test-only PNG builders using the png crate directly rather than the carrier code under test: encode() with explicit colour type and depth, indexed() with an optional tRNS table, legacy_real_png() (64x64 opaque gradient written as 8-bit RGB as the Go encoder writes opaque RGBA), an independent expanding decoder, a pixel-only re-encode that discards every ancillary chunk (the legacy metadata-strip attack), and legacy_minimal_png() with zero-dimension IHDR and no IDAT. Compiled only under cfg(test).",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
@@ -5976,9 +5986,29 @@
     },
     {
       "source": "crates/sdk/humanymous-core/src/watermark/codec/png/pixels.rs",
-      "sha256": "4b98710df31c4211fb1d7ccea658ca3f444e3b2e152d776da1fca44eaf010829",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Fail-closed PNG RGB LSB stub: encode and recover always return InvalidConfiguration until alpha/resource qualification lands; test asserts both paths stay closed.",
+      "sha256": "d5ef23f87be7a0538d0caf674cb79807fd1db00f178d950aa98341d78b6d73cc",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "PNG RGB least-significant-bit carrier (legacy png-lsb), replacing the earlier fail-closed stub. encode() frames the carrier, prefixes a big-endian u32 length and writes the bits MSB first into the low bit of R, G and B in row-major order, never touching alpha; capacity (3 bits per pixel) is checked before decoding, animated PNG is refused for issuance, and dimensions are capped at 8192 per axis and 4,194,304 pixels. Pixels follow the Go image.RGBA model: decode with expansion to premultiplied 8-bit RGBA (16-bit samples premultiplied at 16 bits), then re-encode as 8-bit RGB when fully opaque or as RGBA un-premultiplied with the legacy formula including its 8-bit overflow truncation, so opaque pixels change by at most one per channel. recover() reads the length (1 to 65536) and frame from the default image. Indexed or sub-8-bit output after expansion is refused. The re-encode drops ancillary chunks; the carrier survives lossless strips but not lossy or colour transforms.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/watermark/codec/png/pixels/tests.rs",
+      "sha256": "d251cc67980a71a4cc76fb056e095dcb55ec68a061e40bf34ba7b8ad227fbf0e",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unit tests for the PNG RGB low-bit carrier (ports of legacy lsb_test.go plus layout checks): direct round trip of an issued carrier; the length-prefixed row-major MSB-first RGB low-bit layout read back from an independent decode; alpha is unchanged and the premultiplied model matches the legacy codec; legacy unpremultiply golden vectors including the 8-bit overflow truncation; 16-bit grayscale and palette inputs follow the legacy conversion; capacity is checked before decoding and too-small images fail with CarrierCapacity; malformed, unmarked, oversized and animated inputs fail closed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/watermark/codec/png/tests.rs",
+      "sha256": "4560edbc82217bdae707e2eda51c231b9025d4a0138b45d28823f4ebbc453087",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unit tests for the composite PNG codec: pixels are written first and metadata inserted after the final encode, each channel alone recovers the carrier, and after an independent pixel-only re-encode only the pixel channel remains; a too-small image degrades visibly to metadata only under BestEffort and fails with CarrierCapacity under RequireBoth; distinct carriers in the two channels are Ambiguous, and non-PNG or malformed inputs fail closed as InvalidFormat.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
@@ -6016,9 +6046,9 @@
     },
     {
       "source": "crates/sdk/humanymous-core/src/watermark/error.rs",
-      "sha256": "d0834e0b50e7e2823490891c126d5ac067254a044412df1bb55e38371d456e79",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Closed non_exhaustive watermark Error enum with fixed non-sensitive messages: invalid key/payload/carrier/configuration/metadata/MIME/text/format, clock regression, ledger capacity, ID exhaustion, poisoned lock, reservation expired or mismatched, resource limit, NoFrame (explicitly not a verdict) and Ambiguous.",
+      "sha256": "412d9c37593645b4d245fda3cb687ab477b6de8c555251ef67e84507de0577aa",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Closed non_exhaustive watermark Error enum with fixed non-sensitive messages: invalid key/payload/carrier/configuration/metadata/MIME/text/format, clock regression, ledger capacity, ID exhaustion, poisoned lock, reservation expired or mismatched, resource limit, NoFrame (explicitly not a verdict) and Ambiguous. Re-reviewed 2026-11-18: adds CarrierCapacity (resource too small for the selected channel) and UnsupportedFormat (no admitted transform for the declared format).",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
@@ -6045,10 +6075,20 @@
       ]
     },
     {
+      "source": "crates/sdk/humanymous-core/src/watermark/issuance.rs",
+      "sha256": "fc3f70bc3051b9fa22d6887e38940c05c8bb845ba69f0e4a929dd5bb685677d9",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Typed issuance composition (legacy inject.go Apply): apply() checks input limits, builds the legacy-v1 carrier from the key and payload, selects the codec from the strictly parsed MIME and returns Applied with the marked bytes, the channels actually written (with legacy ledger labels), the source check performed (JSON parsed before and after, UTF-8-only for markup/script/style, PNG decoded, WASM validated, or opaque), any best-effort PNG degradation, and SHA-256 of input and output. Unlike Go, which silently fell back to a binary trailer on any codec error, the opaque-trailer fallback is opt-in, reported in Applied.fallback, limited to InvalidText or UnsupportedFormat outside PNG/WASM, and never used for malformed PNG/WASM, malformed MIME, invalid payloads or resource limits; no outcome returns unmarked bytes as success. Ledger reservation/commit ordering stays the caller's duty. Inline tests cover the reported digests and channels, opt-in fallback, never-fallback cases and visible small-PNG degradation.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
       "source": "crates/sdk/humanymous-core/src/watermark/ledger.rs",
-      "sha256": "b1c2cfa277df3115a963fcd333c7f918c560562c2cb2317e43c2f07e5b971b56",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Bounded volatile issuance ledger driven by caller-supplied monotonic instants: explicit record/reservation TTLs and capacity up to 65,536; reserve() allocates a never-recycled nonzero u32 ID; lookup() returns Live, Expired (removed) or Unknown and is privileged data that never alone authenticates a trace; gc() bounds retention and does not authorize erasure. Issuance metadata (MIME, up to 4 distinct channels, optional keyed IP pseudonym treated as personal data) is validated before commit; no raw IP, wall clock or scoring.",
+      "sha256": "b761fae7037b99b765e6b785ea1fee3c79dd6a2d79d85862e1652f3118f4efd7",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Bounded volatile issuance ledger driven by caller-supplied monotonic instants: explicit record/reservation TTLs and capacity up to 65,536; reserve() allocates a never-recycled nonzero u32 ID; lookup() returns Live, Expired (removed) or Unknown and is privileged data that never alone authenticates a trace; gc() bounds retention and does not authorize erasure. Issuance metadata (MIME, up to 4 distinct channels, optional keyed IP pseudonym treated as personal data) is validated before commit; no raw IP, wall clock or scoring. Re-reviewed 2026-11-18: the only change adds the trace submodule and re-exports its Attribution and Trace types for the authenticated Ledger::trace.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md",
@@ -6086,10 +6126,21 @@
       ]
     },
     {
+      "source": "crates/sdk/humanymous-core/src/watermark/ledger/trace.rs",
+      "sha256": "577ad666a76f33415d22ac679937efecf912c80ec79e8d1778db1436e8b97d72",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Authenticated trace (legacy Ledger.Trace): recovers the carrier from leaked bytes, parses the legacy carrier (at least fourteen bytes), looks up its tag ID in the volatile ledger and verifies the legacy HMAC against the live record. Outcomes stay distinct: Verified (attribution with record, agreeing channels and whether suffix bytes were ignored), Forged (live record but HMAC mismatch, diagnostic only and never to be serialized as a session attribution), Unknown (no live committed record, including pending reservations) and Expired. Errors cover no frame, ambiguity, short carriers, resource limits, clock regression and poisoning. The doc states unknown or expired IDs are not bot evidence and no outcome changes a score, verdict or ban.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/reference/data-processing-inventory.md"
+      ]
+    },
+    {
       "source": "crates/sdk/humanymous-core/src/watermark/mod.rs",
-      "sha256": "776d6c51fdb9dd0d4a3275dda888d15829f82d201821042957ee5453dd7d4238",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Module root for resource watermark issuance primitives and bounded volatile custody (codec, error, frame, ledger, payload). Documents that legacy-v1 carriers identify an issuance, not a human or verdict, that low-level transforms neither validate source grammar nor authorize HTTP issuance, and that PNG metadata and WASM custom sections are L2 carriers while PNG LSB/alpha and browser export remain separately gated.",
+      "sha256": "3ff339cd9bc01919c378f2587445f0ba10a78a39436e3c2cfdbd5ebcc55ae9b2",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Module root for resource watermark issuance primitives and bounded volatile custody: codec, error, frame, issuance, ledger, payload and recovery, plus the cfg(test) compatibility tests. Re-reviewed 2026-11-18: the doc now says issuance::apply composes carrier, codec selection and typed results, recovery::recover and Ledger::trace recover and verify leaked bytes, and PNG pixel LSB follows the legacy premultiplied model, while real-resource pilots, runtime wiring and browser export execution remain separately gated. Legacy-v1 carriers identify an issuance, not a human or verdict, and low-level transforms neither validate source grammar nor authorize HTTP issuance.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md",
@@ -6111,6 +6162,26 @@
       "sha256": "3b96bdd2ec0c5953f41fdbaafb5e91012ea4a0c398910a7226cbe2a1f54f5d76",
       "reviewer": "codex/rust-pages",
       "notes": "Six source-read tests cover literal preimage/byteorder, RFC4231 primitive vector, wrongkey/context/tag, explicit ID-not-MAC-bound limitation, strict/legacy suffix and key/identifier/NUL limits. Library/fixture tests not executed by Pages; passing primitive vector would not prove original14format parity. Carried unchanged from crates/watermark/src/payload/tests.rs: identical SHA-256 after the crate consolidation, so the reviewed bytes are the same.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/watermark/recovery.rs",
+      "sha256": "19af71949f2318e41ec14671f6ca147a02d3c9627e0616768d2c6056b003800a",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Carrier recovery from possibly leaked bytes (legacy extract.go Recover): the declared MIME only orders the attempts (strict family first, else the legacy familyKey heuristic over at most 256 bytes), then every codec is tried in the fixed order PNG, WASM, text, binary trailer. Agreeing channels are merged in attempt order, distinct carriers fail as Ambiguous instead of attributing the first found (a correction of Go map iteration), ambiguity or resource limits inside a codec fail closed, and nothing found is NoFrame. The doc states a recovered carrier is CRC-valid only, not a verified trace until the ledger record and HMAC are checked. Inline tests cover codec preference, fall-through for wrong or unknown declarations, merged WASM-section plus trailer channels, ambiguity, NoFrame and the input limit.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/watermark/tests.rs",
+      "sha256": "abfe3ed7a371305e38255301451971c4b4bbe9753ac905e6b6cd7ba6939635ea",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Compatibility tests mirroring legacy internal/watermark watermark_test.go and lsb_test.go through the public issuance, recovery and trace APIs: apply/recover round trips for all eight legacy families with the expected channels; watermarked JSON parses to the same value; a watermarked valid PNG keeps its signature and critical chunks and decodes; the legacy zero-dimension minimalPNG is rejected and never trailer-marked even when opted in (deliberate correction); watermarked WASM keeps its magic and validates; trace identifies the issuing session, detects a wrong-key forgery for the same ID and keeps unknown, expired and unmarked outcomes distinct; and the pixel carrier survives a metadata strip by independent pixel-only re-encode and still verifies.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
@@ -6646,9 +6717,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "7cd73fe20bab5dbbbdc5ee6415203116399d24f0616267ca806d79a13be71d73",
+      "sha256": "6536e3e452fdc6a302d3bcb1af01951a61f1fecf25d26517d6492a522c6d3575",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 330 / macos 330 / windows 322 (322 common names plus 8 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18: the 330 names equal a local Linux `cargo test --locked -p humanymous-runtime --all-features --lib -- --list gateway::` at this source; macOS and Windows counts were not re-run. The gateway-deployment-manifests integration target is not part of this inventory. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 336 / macos 336 / windows 328 (328 common names plus 8 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 on the B02 certificate-source branch: the six gateway::tls::certificate::tests names are added and the counts rise by six; the listed names and counts are internally consistent (328 unique common + 8 Unix-only), but this review did not re-run cargo test --list on any OS. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/how-this-was-built.md"
@@ -8831,12 +8902,32 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/tls.rs",
-      "sha256": "7008fd3e94173c1fbd9e2d23d72635f10f15a7f623fb34625c10b67148390365",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Joined blocking TLS ingress: validate_configuration requires native buffered routes, no browser policy and only http/1.1 or h2 ALPN; CapturedTls::receive dispatches H1, H2 or dual-ALPN (handshake once then branch on the negotiated protocol) on an owned worker thread that is cancelled and joined on drop. CapturedRequest parses one complete request with the shared strict parser, retains the live connection and writes one bounded response. One unit test covers configuration refusals. The owner alone does not qualify a route.",
+      "sha256": "70382f6454391bc6783275498025eec8b58a530f1d40e49ec64f05d6a6a07ba9",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Joined blocking TLS ingress: validate_configuration requires native buffered routes, no browser policy and only http/1.1 or h2 ALPN; CapturedTls::receive dispatches H1, H2 or dual-ALPN (handshake once then branch on the negotiated protocol) on an owned worker thread that is cancelled and joined on drop. CapturedRequest parses one complete request with the shared strict parser, retains the live connection and writes one bounded response. One unit test covers configuration refusals. Re-reviewed 2026-11-18: the only change declares the public certificate submodule (B02 certificate source selection); ingress behaviour is unchanged. The owner alone does not qualify a route.",
       "pages": [
         "docs/reference/supported-topologies.md",
         "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/tls/certificate.rs",
+      "sha256": "6e8b7e901718b66cc4449cd93bc23872bcc0e30a5c3b4d76a0f7c1ad3d2e5094",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "B02 certificate source owner. select() chooses exactly one source from operator settings: a provisioned PEM chain+key pair, or issuer domains; it refuses no source (self-signed is explicitly not a production fallback), a chain without a key or vice versa, and both at once. issuer_domains() lower-cases, trims, sorts and deduplicates plain DNS host names (at least two labels, no wildcard, trailing dot, IP literal or all-digit TLD, max 100). provisioned_config()/load_provisioned() read each PEM file within 1 MiB and build a rustls ServerConfig with no client auth and ALPN h2 then http/1.1, mapping empty chain, missing key and rustls-rejected (mismatched) pairs to distinct errors. The CertificateIssuer trait is the contract for an automated issuer (domains, handshake resolver, extra challenge ALPN); issuer_config() refuses an issuer whose domains differ from the selected ones. No issuer implementation or runtime wiring lives here.",
+      "pages": [
+        "docs/how-to/https-tls-certificates.md",
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs",
+      "sha256": "4eaa0a0cd1c6d91cbe7431d1e138621c3a4ff6713cd5afe5e9892ce9929240af",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unit tests for the B02 certificate source using rcgen-generated self-signed lab pairs: selection refuses absent, incomplete and ambiguous sources; issuer domains are normalised and deduplicated, and wildcard, trailing-dot, single-label, IP, leading/trailing-hyphen, underscore and empty names are refused, as is one domain over the 100 limit; a provisioned pair yields ALPN [h2, http/1.1] with zero early data; empty chain, empty key and a key from another pair map to EmptyChain, MissingKey and Rejected; load_provisioned reads temp files and refuses a missing file and one over the 1 MiB bound; a stub issuer contributes acme-tls/1 after the ingress ALPN and an issuer for other domains is refused. Synthetic material only, no network issuance.",
+      "pages": [
+        "docs/how-to/https-tls-certificates.md",
+        "docs/reference/supported-topologies.md"
       ]
     },
     {
@@ -9781,9 +9872,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/tests/gateway/deployment_manifests.rs",
-      "sha256": "6884d6a858988eb9c17d5a324e0665d6445b5cf733ad506ab0a5fea26672f721",
+      "sha256": "22936566172b300c5e7603f8de5542fb1ea318112ba205f586fe840793d728c0",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Byte checks of shipped deployment files plus the runtime's own configuration parser: deployments/humanymous-runtime.example.json must parse and validate with loopback listen 8444 and origin 8080, UID 65532 owner, state under /var/lib/humanymous, a REPLACE-ME passphrase placeholder and RIT-only routes; the Kubernetes Secret must embed the same document; k8s, compose, .env and systemd files must not configure Go gate flags or variables, must run ghcr.io/modootoday/humanymous-runtime via stdin configuration without args, and must keep non-root, read-only, dropped-capability and systemd sandboxing settings; the runtime-candidate Dockerfile and release workflow must name that image. Header states no cluster, systemd or container runs, so this is not deployment qualification.",
+      "notes": "Byte checks of shipped deployment files plus the runtime's own configuration parser: deployments/humanymous-runtime.example.json must parse and validate with loopback listen 8444 and origin 8080, UID 65532 owner, state under /var/lib/humanymous, a REPLACE-ME passphrase placeholder and RIT-only routes; the Kubernetes Secret must embed the same document; k8s, compose, .env and systemd files must not configure Go gate flags or variables, must run ghcr.io/modootoday/humanymous-runtime via stdin configuration without args, and must keep non-root, read-only, dropped-capability and systemd sandboxing settings; the runtime-candidate Dockerfile and release workflow must name that image. Re-reviewed 2026-11-18: manifests_keep_the_go_hardening now also requires the runtime image to create /empty/state/humanymous, chmod it 0700 and COPY it --chown=65532:65532 into /var/lib/, so a fresh named volume starts owner-only (owner decision C8). Header states no cluster, systemd or container runs, so this is not deployment qualification.",
       "pages": [
         "docs/how-to/verify-the-image.md",
         "docs/reference/production-vs-reference.md"
@@ -10237,10 +10328,10 @@
       "pages": [
         "docs/reference/nginx-adapter.md"
       ],
-      "reviewer": "codex/rust-pages",
-      "notes": "The experimental Linux nginx module exists; topology reference separates SDK/native ABI, trusted operator configuration, synthetic historical ALLOW pilots and unvalidated JSON/timer follow-through. Required Docker deployment check remains an execution obligation, not a passing current-source claim. Full native source/ABI review and platform/witness/backpressure/human qualification remain pending.",
+      "reviewer": "claude agent check rebinding 2026-11-18 (Claude Code session; prior codex/rust-pages review; owner sample pending)",
+      "notes": "The experimental Linux nginx module exists; topology reference separates SDK/native ABI, trusted operator configuration, synthetic historical ALLOW pilots and unvalidated JSON/timer follow-through. Required Docker nginx component pilot check (delivery nginx: pinned Dockerfile.native image and compose scenario groups) remains an execution obligation, not a passing current-source claim; the docker/deployment lab case covers the Go-parity runtime manifests, not nginx. Full native source/ABI review and platform/witness/backpressure/human qualification remain pending.",
       "checks": [
-        "docker/deployment"
+        "docker/nginx"
       ]
     },
     {
