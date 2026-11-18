@@ -358,7 +358,8 @@ fn step_evidence(
     Ok(json!({"step":"evidence","records":records,"checkpoints":checkpoints}))
 }
 
-/// Trusted lab supervisor: one JSON line in, one JSON line out per step.
+/// Trusted lab supervisor: one JSON line in, one JSON line out per step,
+/// ending on the runner's explicit `shutdown` step (or input EOF).
 pub fn supervisor() -> Result<()> {
     let mut input = BufReader::new(std::io::stdin().lock());
     let mut stdout = std::io::stdout();
@@ -400,6 +401,15 @@ pub fn supervisor() -> Result<()> {
             break;
         }
         let command: Value = serde_json::from_str(&line)?;
+        // Explicit end of protocol: Compose-created containers keep stdin open
+        // (StdinOnce=false) after the attached client closes its input, so EOF
+        // alone would never end this process.
+        if command["step"] == "shutdown" {
+            drop(state.take());
+            writeln!(stdout, "{}", json!({"step":"shutdown"}))?;
+            stdout.flush()?;
+            break;
+        }
         let reply = match command["step"].as_str() {
             Some("wrong_key") => step_wrong_key(&layout, &control)?,
             Some("witnessed") => step_witnessed(&layout, &control, &mut state)?,

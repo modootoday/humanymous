@@ -374,24 +374,58 @@ fn contacts(lab: &mut Lab, origin: &str) -> Result<(bool, bool, usize)> {
     Ok((ready, valid, count))
 }
 
+/// Static stage markers (safe-diagnostics vocabulary) for the stage a failed
+/// drive last entered; they name a stage, never an exact failing operation.
+pub(super) const PHASES: &[&str] = &[
+    "wtx_supervisor_attach",
+    "wtx_supervisor_ready",
+    "wtx_origin_start",
+    "wtx_origin_ready",
+    "wtx_step_wrong_key",
+    "wtx_step_witnessed",
+    "wtx_step_witness_loss",
+    "wtx_step_evidence",
+    "wtx_shutdown",
+    "wtx_supervisor_exit",
+];
+
+fn step_phase(step: &str) -> &'static str {
+    match step {
+        "wrong_key" => "wtx_step_wrong_key",
+        "witnessed" => "wtx_step_witnessed",
+        "witness_loss" => "wtx_step_witness_loss",
+        _ => "wtx_step_evidence",
+    }
+}
+
+fn send(input: &mut impl Write, value: &Value) -> Result<()> {
+    serde_json::to_writer(&mut *input, value)?;
+    input.write_all(b"\n")?;
+    input.flush()?;
+    Ok(())
+}
+
 fn drive(
     lab: &mut Lab,
     evidence: &mut Evidence,
+    phase: &mut &'static str,
     supervisor: &str,
     origin: &str,
     control: &Value,
 ) -> Result<()> {
+    *phase = "wtx_supervisor_attach";
     let (mut child, mut input, output) =
         lab.docker
             .duplex(&["start".into(), "-a".into(), "-i".into(), supervisor.into()])?;
     let lines = reader(output);
-    serde_json::to_writer(&mut input, control)?;
-    input.write_all(b"\n")?;
-    input.flush()?;
+    send(&mut input, control)?;
+    *phase = "wtx_supervisor_ready";
     if next(&lines, 120)?["role"] != "wtx_supervisor_ready" {
         return Err("supervisor readiness missing".into());
     }
+    *phase = "wtx_origin_start";
     lab.docker.call(&["start", origin])?;
+    *phase = "wtx_origin_ready";
     let deadline = Instant::now() + Duration::from_secs(60);
     while !contacts(lab, origin)?.0 {
         if Instant::now() > deadline {
@@ -400,10 +434,9 @@ fn drive(
         std::thread::sleep(Duration::from_millis(250));
     }
     for step in STEPS {
+        *phase = step_phase(step);
         let before = contacts(lab, origin)?.2;
-        serde_json::to_writer(&mut input, &json!({ "step": step }))?;
-        input.write_all(b"\n")?;
-        input.flush()?;
+        send(&mut input, &json!({ "step": step }))?;
         let reply = next(&lines, 180)?;
         // Let the origin container's log catch up, so a late contact is counted.
         std::thread::sleep(Duration::from_secs(1));
@@ -417,13 +450,40 @@ fn drive(
     let (ready, valid, _) = contacts(lab, origin)?;
     evidence.origin_ready = ready;
     evidence.origin_log_valid = valid;
-    // Keep stdin open until the last reply; `docker start -a -i` may detach
-    // early when its input closes before the attach completes.
+    // Compose creates the supervisor with stdin open and StdinOnce=false, so
+    // closing the attached input never reaches the container as EOF: end the
+    // protocol explicitly, as the witness and Go actors do, then close stdin.
+    *phase = "wtx_shutdown";
+    send(&mut input, &json!({"step":"shutdown"}))?;
+    if next(&lines, 60)?["step"] != "shutdown" {
+        return Err("supervisor shutdown acknowledgement missing".into());
+    }
     drop(input);
+    *phase = "wtx_supervisor_exit";
     if !child.wait(Duration::from_secs(60))?.success() {
         return Err("supervisor process failed".into());
     }
     Ok(())
+}
+
+/// Failed-case rows for the public diagnostics: the case (with the stage a
+/// failed drive last entered) and one static row per failed check ID.
+pub(super) fn failure_rows(
+    checks: &[(&'static str, bool)],
+    phase: Option<&'static str>,
+) -> Vec<Value> {
+    let mut rows: Vec<Value> = CHECKS
+        .iter()
+        .filter(|id| !checks.iter().any(|(name, ok)| name == *id && *ok))
+        .map(|id| json!({"id":format!("{CASE}--{id}"),"status":"failed","error_code":"assertion_failed"}))
+        .collect();
+    if let Some(phase) = phase {
+        // Only a declared stage marker is projected; anything else is generic.
+        let code = PHASES.iter().find(|known| **known == phase);
+        rows.push(json!({"id":format!("{CASE}--drive"),"status":"failed",
+            "error_code":code.copied().unwrap_or("assertion_failed")}));
+    }
+    rows
 }
 
 pub(super) fn run(lab: &mut Lab) -> Result<()> {
@@ -466,8 +526,18 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         "wrong_witness_public":keys.wrong_public,
         "writer_passphrase":hex(&random::<24>()?),"witness_passphrase":hex(&random::<24>()?)});
     lab.stage = "witness_transport_process";
-    if let Err(error) = drive(lab, &mut evidence, &supervisor_id, &origin_id, &control) {
+    let mut phase = "wtx_supervisor_attach";
+    let mut failed_phase = None;
+    if let Err(error) = drive(
+        lab,
+        &mut evidence,
+        &mut phase,
+        &supervisor_id,
+        &origin_id,
+        &control,
+    ) {
         evidence.error = Some(error.to_string());
+        failed_phase = Some(phase);
         let _ = lab.docker.invoke(
             &[
                 "logs".into(),
@@ -482,6 +552,8 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
     drop(control);
     let checks = evaluate(&evidence, &keys);
     let ok = passed(&checks, &evidence);
+    // Static labels only: check IDs and a stage marker, never evidence text.
+    lab.cases.extend(failure_rows(&checks, failed_phase));
     let checks = json!(
         checks
             .iter()

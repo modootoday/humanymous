@@ -328,4 +328,8 @@ binary authenticated witness transport"; witness independence and
 `full_product_qualified` stay false. Its private ledger is
 `runtime-binary-witness-transport-ledger.json` (public keys, raw step
 observations and checks; no seed, HMAC key, passphrase or session capability).
+The runner ends the supervisor with an explicit `shutdown` step, because a
+Compose `stdin_open` container never sees EOF when the attached input closes.
+A failed run names each failed check and the last entered drive stage in
+`safe_diagnostics` as static labels only.
 The first actual run is the next Docker job; until it passes, the entry stays.

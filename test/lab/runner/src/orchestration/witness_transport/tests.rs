@@ -330,3 +330,62 @@ fn capability_is_resolved_only_by_a_passed_case() {
         json!({"id":CASE,"status":"failed"}),
     ]));
 }
+
+#[test]
+fn failures_project_only_static_check_ids_and_stage_markers() {
+    let keys = keys();
+    let checks = evaluate(&complete(), &keys);
+    assert!(failure_rows(&checks, None).is_empty());
+
+    // A drive that stopped while entering a step: every failed check is named,
+    // plus the stage marker, and the safe projection keeps exactly those labels.
+    let mut evidence = complete();
+    evidence.steps.remove("witness_loss");
+    evidence.steps.remove("evidence");
+    evidence.contacts.remove("witness_loss");
+    evidence.contacts.remove("evidence");
+    evidence.error = Some("private detail: /tmp/witness-transport-secret".into());
+    let rows = failure_rows(&evaluate(&evidence, &keys), Some("wtx_step_witness_loss"));
+    let safe = crate::orchestration::safe_diagnostics(&rows);
+    let ids: Vec<&str> = safe["failures"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|row| row["case_id"].as_str().unwrap())
+        .collect();
+    assert!(ids.contains(&"runtime-binary-witness-transport--witness-loss-fails-closed"));
+    assert!(ids.contains(&"runtime-binary-witness-transport--durable-audit-co-signed"));
+    assert!(!ids.contains(&"runtime-binary-witness-transport--witnessed-readiness"));
+    assert_eq!(
+        safe["failures"].as_array().unwrap().last().unwrap()["error_code"],
+        "wtx_step_witness_loss"
+    );
+    assert!(!safe.to_string().contains("secret"));
+
+    // Every check row ID fits the public case-ID bound and every stage marker
+    // is in the owned vocabulary, so none degrades to an unclassified row.
+    let contract: Value =
+        serde_json::from_str(include_str!("../../../safe-diagnostics.json")).unwrap();
+    for step in STEPS {
+        assert!(PHASES.contains(&step_phase(step)));
+    }
+    let all = failure_rows(&[], Some("wtx_supervisor_exit"));
+    assert_eq!(all.len(), CHECKS.len() + 1);
+    for phase in PHASES
+        .iter()
+        .chain(&["witness_transport", "witness_transport_process"])
+    {
+        assert!(
+            contract["error_codes"]
+                .as_array()
+                .unwrap()
+                .contains(&json!(phase))
+        );
+    }
+    for row in crate::orchestration::safe_diagnostics(&all)["failures"]
+        .as_array()
+        .unwrap()
+    {
+        assert_ne!(row["case_id"], "unclassified_case");
+    }
+}

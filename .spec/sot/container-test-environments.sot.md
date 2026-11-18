@@ -1316,6 +1316,22 @@ Runner contract (`test/lab/runner/src/orchestration/witness_transport.rs`):
 - Missing, malformed or late evidence, a step mismatch or a supervisor failure
   fails the case. `required_unavailable` drops the entry only when this run
   recorded the case and every instance of it passed.
+- The protocol ends with an explicit `shutdown` step that the supervisor
+  acknowledges before it exits; only then does the runner close stdin and
+  require exit 0. Compose creates a `stdin_open` service with
+  `StdinOnce=false`, so closing the attached client's input never reaches the
+  container as EOF (the witness and Go actors end by protocol for the same
+  reason). The first Docker run (job 134583675522, head 98d66010) ended on
+  stdin EOF and failed the case as `assertion_failed` with no named check;
+  that is the most likely cause, but it is unconfirmed without a Docker run.
+- Public diagnostics name only static labels: one failed row per failed check
+  (`runtime-binary-witness-transport--<check-id>`, `assertion_failed`) and,
+  when the drive stopped, a `runtime-binary-witness-transport--drive` row whose
+  code is the stage it last entered (`wtx_supervisor_attach`,
+  `wtx_supervisor_ready`, `wtx_origin_start`, `wtx_origin_ready`,
+  `wtx_step_<step>`, `wtx_shutdown`, `wtx_supervisor_exit`). A stage marker
+  names the last entered stage, not the failing operation; error text and
+  evidence stay in the private ledger.
 
 Not claimed: witness independence (the witness and the runtime are sibling
 processes in one container under one UID; the supervisor holds both seeds),
