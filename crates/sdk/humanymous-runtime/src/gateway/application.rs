@@ -27,9 +27,13 @@ mod tls;
 #[cfg(test)]
 mod temporal;
 
+/// Audit rule name recorded when the attestation floor demotes a scoring ALLOW.
+pub const ATTEST_FLOOR_RULE: &str = "gate.attest_floor";
+
 /// Internal result: ALLOW is a one-use origin dispatch, never a reusable ticket.
 pub enum Decision {
-    /// Bounded local response; CHALLENGE has no recovery in this profile.
+    /// Bounded local response. A CHALLENGE recovers only on an `attest_floor`
+    /// route, through the mounted Pass step-up proof.
     Local(u16, Vec<u8>),
     /// Audited request allowed for this exact request until its deadline.
     Origin {
@@ -152,11 +156,14 @@ impl Application {
         if req.header("host") != Some(self.config.scope.authority.as_str()) {
             return Err(Rejection::new(403, "authority"));
         }
-        if let Some(response) = self
-            .legacy
-            .as_ref()
-            .and_then(|legacy| legacy.handle(req, peer, tls.and_then(|owner| owner.client_hello())))
-        {
+        if let Some(response) = self.legacy.as_ref().and_then(|legacy| {
+            legacy.handle(
+                req,
+                peer,
+                tls.and_then(|owner| owner.client_hello()),
+                now / 1000,
+            )
+        }) {
             return response.map(Decision::Legacy);
         }
         let path = req.target.split('?').next().unwrap_or("");
@@ -200,6 +207,7 @@ impl Application {
             ));
         }
         let collect = path == "/_humanymous/collect" || path == "/_humanymous/browser/collect";
+        let mut attest_floor = false;
         if collect {
             if req.method != "POST"
                 || req.target != path
@@ -229,6 +237,7 @@ impl Application {
             {
                 return Err(Rejection::new(422, "required_capability"));
             }
+            attest_floor = route.attest_floor;
         }
         let mut authorized = self.sessions.authorize(&self.config, req, now)?;
         *ack = authorized.ack.take();
@@ -313,6 +322,16 @@ impl Application {
             }
             (score.verdict, score.risk_score, score.hard_rule_fired)
         };
+        // Attestation floor (Go gates.go ceiling-guard #1): a scoring ALLOW on
+        // an attested route is enforced as a challenge unless the request holds
+        // a valid Pass step-up proof. The scoring verdict is recorded unchanged;
+        // a scoring CHALLENGE or DENY is never upgraded by a proof.
+        let demoted = attest_floor
+            && verdict == "ALLOW"
+            && !self
+                .legacy
+                .as_ref()
+                .is_some_and(|legacy| legacy.step_up_valid(req, peer, now / 1000));
         self.check_deadline(deadline, clock())?;
         // Commitment binds all observed body/header bytes, including unsigned fields,
         // without writing those values or a usable capability to the WAL.
@@ -347,10 +366,22 @@ impl Application {
             config_version: self.config.scope.revision.clone(),
             verdict: verdict.clone(),
             risk_score: risk as i64,
-            enforcement_action: if collect { "collect" } else { &verdict }.into(),
+            enforcement_action: if collect {
+                "collect"
+            } else if demoted {
+                "CHALLENGE"
+            } else {
+                &verdict
+            }
+            .into(),
             enforcement_mode: "enforce".into(),
             fail_mode: "fail_closed".into(),
-            triggered_rules: (!rule.is_empty()).then(|| vec![rule]),
+            triggered_rules: match (rule.is_empty(), demoted) {
+                (true, false) => None,
+                (false, false) => Some(vec![rule]),
+                (true, true) => Some(vec![ATTEST_FLOOR_RULE.into()]),
+                (false, true) => Some(vec![rule, ATTEST_FLOOR_RULE.into()]),
+            },
             ..Default::default()
         };
         if self.audit.append(record).is_err() {
@@ -358,7 +389,15 @@ impl Application {
             return Err(Rejection::new(503, "durable_audit"));
         }
         self.check_deadline(deadline, clock())?;
-        if verdict == "ALLOW" {
+        if demoted {
+            Ok(Decision::Local(
+                403,
+                serde_json::to_vec(
+                    &serde_json::json!({"verdict":"CHALLENGE","step_up":crate::gateway::pass_flow::PAGE_PATH}),
+                )
+                .map_err(|_| Rejection::new(503, "serialization"))?,
+            ))
+        } else if verdict == "ALLOW" {
             Ok(Decision::Origin { deadline })
         } else {
             Ok(Decision::Local(

@@ -1729,9 +1729,9 @@
     },
     {
       "source": "crates/attacker/INTEGRATION.md",
-      "sha256": "44fe0e235592fdf82ac84629fbe68df6433ad946efc183415102f0e47ec99483",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Wargame integration contract v0.4-v0.8 for the attacker/defender workspace members: fixes ownership and dependency direction (lab runtime -> attacker -> defender -> runtime/integrity/audit/scoring), the exported OwnedRuntime/VerifiedSnapshot/OwnedLab/network::run API, the network v2 JSON schema (26 scheduled = 19 implemented + 7 unsupported cases) and the humanymous-wargame-verify exit codes (0 scoped pass, 2 failed or --require-full unqualified, 1 malformed). It chronicles strict duplicate-key/unknown-field decoding, step attribution and terminal accounting with pure-test counts, records the actual hosted 813 run as 0 evaluated/19 errors, and states that full_product_qualified, human and assistive-technology execution stay false and hosted runtime requalification is pending. Some API text still names the pre-consolidation `humanymous_audit::log::Log` path.",
+      "sha256": "049cdef8dc25689a379d41a561cfb657bd5693509ead8cc4d6b129cbe0ecfb6c",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Wargame integration contract v0.4-v0.8 for the attacker/defender workspace members: fixes ownership and dependency direction (lab runtime -> attacker -> defender -> runtime/integrity/audit/scoring), the exported OwnedRuntime/VerifiedSnapshot/OwnedLab/network::run API, the network v2 JSON schema (26 scheduled = 19 implemented + 7 unsupported cases) and the humanymous-wargame-verify exit codes (0 scoped pass, 2 failed or --require-full unqualified, 1 malformed). It chronicles strict duplicate-key/unknown-field decoding, step attribution and terminal accounting with pure-test counts, records the actual hosted 813 run as 0 evaluated/19 errors, and states that full_product_qualified, human and assistive-technology execution stay false and hosted runtime requalification is pending. Some API text still names the pre-consolidation `humanymous_audit::log::Log` path. Its coverage table now records signed-remote-installation as unsupported only in this HTTP1 ledger, evaluated separately by the product-lab installation-target-binding and unknown-target-refused cases, with cross-host transport and listener binding still unqualified.",
       "pages": [
         "docs/reference/red-team-catalog.md",
         "docs/explanation/red-catalog-architecture.md"
@@ -1786,9 +1786,9 @@
     },
     {
       "source": "crates/attacker/src/network/cases.rs",
-      "sha256": "52ded3c3a94ba24caff7a5c81ab893516a4b063b45bea90eddccf186f7f04a8d",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Defines the network wargame catalog of 26 cases: 19 executable kinds (synthetic ALLOW/long-window controls, Selenium, missing report, forged Pass signal, RIT replay/body/target/header-order/expiry/missing-token, missing session, duplicate Content-Length, forwarded admin spoof, required TLS/H2/collector refusals, restart stale epoch, method mutation) with fixed step plans and expected statuses/origin effects/audit verdicts/rules, plus 7 unsupported human, AT, accessible Pass, remote attestation, T4 ceiling, full TLS/H2 and audit-outage rows. execute() snapshots audit before and after a spawned child and keeps execution and snapshot errors together; fixtures come from the frozen core selenium/human-chrome goldens. Unit test asserts 26 unique ids and that human/accessibility/ceiling classes stay unavailable.",
+      "sha256": "2bdf6c4e9f5e593df4cf8539dc8adfc6f6749034b03a0712bbfa644e45b7e719",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Defines the network wargame catalog of 26 cases: 19 executable kinds (synthetic ALLOW/long-window controls, Selenium, missing report, forged Pass signal, RIT replay/body/target/header-order/expiry/missing-token, missing session, duplicate Content-Length, forwarded admin spoof, required TLS/H2/collector refusals, restart stale epoch, method mutation) with fixed step plans and expected statuses/origin effects/audit verdicts/rules, plus 7 unsupported human, AT, accessible Pass, remote attestation, T4 ceiling, full TLS/H2 and audit-outage rows. The signed-remote-installation row's reason now says it is not an HTTP1 row because product-lab target-attestation cases evaluate the pinned-key fresh-nonce answer separately. execute() snapshots audit before and after a spawned child and keeps execution and snapshot errors together; fixtures come from the frozen core selenium/human-chrome goldens. Unit test asserts 26 unique ids and that human/accessibility/ceiling classes stay unavailable.",
       "pages": [
         "docs/reference/red-team-catalog.md",
         "docs/explanation/red-catalog-architecture.md"
@@ -6621,9 +6621,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "c48ca4059dd3bbe1107c902e965610fff4ba40ca4e3d66dbc27c30e39ee1c922",
+      "sha256": "542e61e1997f556d8b87bea692c36b0654c0d7d75d7fe1abdb4e5a9da9153814",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 412 / macos 412 / windows 404 (404 common names, largest groups credential 50, token 42, ban 33, tests 29, observatory 26, pass_flow 25, logging 24, service 19, plus 8 Unix-only names listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 420 / macos 420 / windows 410 (410 common names, largest groups credential 50, token 42, ban 33, tests 29, observatory 26, pass_flow 25, logging 24, service 19, plus 10 Unix-only names listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/how-this-was-built.md"
@@ -7871,9 +7871,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/INTEGRATION.md",
-      "sha256": "fca331fc5f7c5773469703b92fe0374361c336510a512572d74c7a154568158c",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Runtime gateway integration record: the current frontier states frozen source adb8e3ed passed allocated native component gates (Windows library 46 + native_process 1; WSL library 50 + 1) against qualification-contract.json, that sealed-audit custody and typed external-witness injection are used, resource operator writes are separately authenticated and witnessed, and actual TLS/H2 serving, browser/collector/human/AT, production observer broker, hosted SCM and Docker product integration remain required with full product qualification false. A long historical chronology documents the loopback HTTP/1.1 binary interface (session, collect, RIT-bound protected routes, Authorization stripping, 64 KiB bounds, audit-before-origin ALLOW), sealed startup, ServiceHost lifecycle, management listener, chunked/stream framing, quota windows, witnessed settings snapshots, TLS/H1 consumer, resource operator and kill-target data, mostly marked NOT_RUN. Several commands and paths still reference the pre-consolidation crates/runtime layout.",
+      "sha256": "cefc124015fe8f6b444efbd2277324b10bf444adea9fd3bea2ea359fa16d3fd0",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Runtime gateway integration record: the current frontier states frozen source adb8e3ed passed allocated native component gates (Windows library 46 + native_process 1; WSL library 50 + 1) against qualification-contract.json, that sealed-audit custody and typed external-witness injection are used, resource operator writes are separately authenticated and witnessed, and actual TLS/H2 serving, browser/collector/human/AT, production observer broker, hosted SCM and Docker product integration remain required with full product qualification false. A long historical chronology documents the loopback HTTP/1.1 binary interface (session, collect, RIT-bound protected routes, Authorization stripping, 64 KiB bounds, audit-before-origin ALLOW), sealed startup, ServiceHost lifecycle, management listener, chunked/stream framing, quota windows, witnessed settings snapshots, TLS/H1 consumer, resource operator and kill-target data, mostly marked NOT_RUN. Several commands and paths still reference the pre-consolidation crates/runtime layout. Newer entries document the attestation-provision and attestation-answer binary modes (possession proof only, not hardware, loader, listener or cross-host attestation, no verdict use) and the roadmap 2e Pass recovery: attest_floor routes (native profile with legacy.pass only) enforce a scoring ALLOW without a valid hmn_su step-up proof as 403 CHALLENGE with rule gate.attest_floor while recording the scoring verdict, receipts redeemed at POST /__hmn/stepup for a 30-minute socket-bound proof under a per-process key, redemption not durably audited, and Docker evidence pending an owner run.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/reference/gate-origin-contract.md",
@@ -7882,9 +7882,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/application.rs",
-      "sha256": "4b4474f7930b38fc29eef71e45a0bc21a11bfcbe3ca32c9c23e6744ccf54b624",
+      "sha256": "e6bba9fe3ec3baab941f53e282d74491982191cfe896a1ab0ae88cb5b786e184",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Single-owner gateway Application that composes sessions, the frozen scoring engine and durable audit. It enforces Host==scope authority and validates browser/native session bootstrap and collect routes, rejecting reserved routes (403), route-inventory or profile mismatch (409), missing required raw_tls/original_h2/collector evidence (422) and failed admission (429); it scores other requests and appends a runtime.decision/collect audit record (request commitment hash, fail_closed) before answering, and audit failure poisons sessions with 503. serve/serve_until are loopback-only, one request per connection with per-connection deadlines, bounded shutdown drain and settings-command handling; the code says this is an experimental loopback pilot, not a production throughput claim. An optional legacy Surfaces value (from configuration.legacy) is consulted after the Host check and before session routes, returning Decision::Legacy complete response bytes that the plaintext loop writes and then shuts down; framed() refuses bodyless GET/HEAD without Content-Length with 400 missing_integer unless the path is a mounted legacy surface or the browser protocol header is present, and decide_observed now receives the peer IP.",
+      "notes": "Single-owner gateway Application that composes sessions, the frozen scoring engine and durable audit. It enforces Host==scope authority and validates browser/native session bootstrap and collect routes, rejecting reserved routes (403), route-inventory or profile mismatch (409), missing required raw_tls/original_h2/collector evidence (422) and failed admission (429); it scores other requests and appends a runtime.decision/collect audit record (request commitment hash, fail_closed) before answering, and audit failure poisons sessions with 503. serve/serve_until are loopback-only, one request per connection with per-connection deadlines, bounded shutdown drain and settings-command handling; the code says this is an experimental loopback pilot, not a production throughput claim. An optional legacy Surfaces value (from configuration.legacy) is consulted after the Host check and before session routes, returning Decision::Legacy complete response bytes that the plaintext loop writes and then shuts down; framed() refuses bodyless GET/HEAD without Content-Length with 400 missing_integer unless the path is a mounted legacy surface or the browser protocol header is present, and decide_observed now receives the peer IP. On a route with attest_floor, a scoring ALLOW without a valid legacy step-up proof is recorded with the scoring verdict ALLOW, enforcement CHALLENGE and rule gate.attest_floor appended, and answered 403 {verdict: CHALLENGE, step_up: /pass}; a scoring CHALLENGE or DENY is never upgraded.",
       "pages": [
         "docs/reference/gate-origin-contract.md",
         "docs/reference/production-vs-reference.md",
@@ -7973,6 +7973,16 @@
       ]
     },
     {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/attestation.rs",
+      "sha256": "4643361ae574f019f31e842ddb7f4d29d6019135713679ab7c2faca291076d71",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Pinned-key, fresh-nonce target attestation for one provisioned installation. provision() takes a bounded humanymous.target-attestation-request/1 JSON naming an absolute owner-private installation directory (0700, owned by the effective uid, no symlinks) whose 0600 configuration.json must parse and validate, generates an Ed25519 seed into target-attestation.key with create_new and mode 0600 (never replacing an existing key) and returns only the enrollment public key and configuration digest. answer() refuses a challenge for another installation, then signs a domain-separated, length-prefixed statement of installation, own executable SHA-256 (/proc/self/exe on Linux), configuration SHA-256, challenger nonce and public key. verify() checks schema, lowercase fixed-length hex, the pinned key, a strict signature and each expected field, returning stable refusal codes. Non-Unix platforms refuse as unsupported. Its doc states this is possession proof only, not hardware, OS-loader, listener or remote-transport attestation, and never changes a verdict. Unit tests cover field binding, foreign or impostor keys, post-signing rewrites, malformed inputs, and on Unix real provisioning, no key replacement and unsafe custody refusals. Reader page coverage is indirect.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
       "source": "crates/sdk/humanymous-runtime/src/gateway/ban.rs",
       "sha256": "1695fadfa5457e0bcd8dc95c618fed03da2c0a238b30cf5f1219dd371ff0bbf6",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
@@ -8022,9 +8032,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
-      "sha256": "b7da2bc9e1991c121365bc36793b78024974fa6bc1826c97920dba27ae382220",
+      "sha256": "678895237c025ab3997806af512e492a68b91173b4c6c9d04fc03ca0bababa79",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Private inherited gateway configuration (deny_unknown_fields, no Debug). validate() fails closed with 503 unless listen and origin are distinct loopback addresses with a nonzero origin port, operational settings are valid, there are 1-4096 routes, scope identities and authority are well formed, the browser origin equals http://<authority>, and every route has an allowed method, a strict target, no reserved path, rit required and no duplicates. BrowserAuthOnly routes need a browser policy and cannot use NativeStream. An optional legacy policy (web_dir plus pass, demo and static_assets flags, deny_unknown_fields so console or observatory keys are refused) must have an absolute web_dir, at least one flag set, and no configured route on a path it mounts. readiness() reports profile experimental-loopback-http1 with raw_tls, original_h2, browser collector, administration and product_qualified all false.",
+      "notes": "Private inherited gateway configuration (deny_unknown_fields, no Debug). validate() fails closed with 503 unless listen and origin are distinct loopback addresses with a nonzero origin port, operational settings are valid, there are 1-4096 routes, scope identities and authority are well formed, the browser origin equals http://<authority>, and every route has an allowed method, a strict target, no reserved path, rit required and no duplicates. BrowserAuthOnly routes need a browser policy and cannot use NativeStream. An optional legacy policy (web_dir plus pass, demo and static_assets flags, deny_unknown_fields so console or observatory keys are refused) must have an absolute web_dir, at least one flag set, and no configured route on a path it mounts. A route may set attest_floor only with the native_full RIT profile and legacy.pass mounted, and readiness() reports attest_floor for such routes. readiness() reports profile experimental-loopback-http1 with raw_tls, original_h2, browser collector, administration and product_qualified all false.",
       "pages": [
         "docs/reference/cli-config-policy.md",
         "docs/reference/gate-origin-contract.md"
@@ -8278,9 +8288,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/legacy.rs",
-      "sha256": "a61ed1f5de10ff273c8114e4ea586990eac0167ccd38f3ee146c40d128e0ca07",
+      "sha256": "a5a44a7481ccb6e4924824cdaf891ab1047e0843782c9f94705b5300b6c32038",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Legacy Core page/API router for the live gateway listener (port of cmd/server server.go routes()), mounted only from an explicit LegacyPolicy: /pass and /api/pass/{new,pow,attest,solve,kpi} dispatch to PassFlow, /demo to demo::handle, and /static/ serves regular files from the canonicalized web directory (no listings, no empty segments, nothing outside the root, files capped at MAX_FILE). It runs after the Host authority check and before RIT session authorization, consumes no gateway sessions or durable audit, encodes complete close-delimited HTTP/1.1 with Go's security headers (report-only CSP, nosniff, strict-origin-when-cross-origin) and refuses non-printable header values. Startup fails if web_dir or the enabled pass.html/demo.html is missing; Pass gets a fresh random 32-byte key per process, a bounded in-memory report store and no hub, feed or step-up key. The client IP is the accepted peer and the stable JA4 is empty without a captured ClientHello. The console and the observatory are deliberately not mountable here, and Pass reports do not yet feed the gateway's own decisions.",
+      "notes": "Legacy Core page/API router for the live gateway listener (port of cmd/server server.go routes()), mounted only from an explicit LegacyPolicy: /pass and /api/pass/{new,pow,attest,solve,kpi} dispatch to PassFlow, /demo to demo::handle, and /static/ serves regular files from the canonicalized web directory (no listings, no empty segments, nothing outside the root, files capped at MAX_FILE). It runs after the Host authority check and before RIT session authorization, consumes no gateway sessions or durable audit, encodes complete close-delimited HTTP/1.1 with Go's security headers (report-only CSP, nosniff, strict-origin-when-cross-origin) and refuses non-printable header values. Startup fails if web_dir or the enabled pass.html/demo.html is missing; Pass gets a fresh random 32-byte key per process, a bounded in-memory report store and no hub, feed or step-up key. The client IP is the accepted peer and the stable JA4 is empty without a captured ClientHello. With Pass mounted it also serves POST /__hmn/stepup: an hsid session plus a valid X-Hmn-Stepup-Receipt mints a 30-minute hmn_su proof bound to the user-agent/language/client-hint fingerprint and peer subnet under a fresh per-process token key (never configured, exported or persisted, so a restart invalidates proofs), and step_up_valid() lets attest_floor routes check it; refusals grant nothing and redemption is not durably audited. The console and the observatory are deliberately not mountable here, and Pass reports never feed gateway scoring.",
       "pages": [
         "docs/reference/gate-origin-contract.md",
         "docs/reference/cli-config-policy.md",
@@ -8289,9 +8299,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/legacy/tests.rs",
-      "sha256": "a52974384e7c36ee86b7b5fa790080be8c4a25345526bc7e8bdb7f0fbed79351",
+      "sha256": "0cd76186d7f5b808d0507f78c75d270ec70f1a773ed960bc55c526f2db7d0a00",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Nine tests over a real loopback listener (stated as not a browser e2e run): with no legacy policy the prior gateway behaviour is kept; GET /pass serves the page with an hsid session and the security headers, HEAD returns no body, and no audit record is written; the Pass API issues a challenge, reuses the session and enforces POST-only routes and stale-challenge replies; /demo and /static/ follow the Go paths, missing or empty-segment files get 404 and traversal is refused by the parser with 400; disabled or unmounted surfaces keep gateway behaviour and the Host authority check still applies; configuration refuses a relative web_dir, no enabled surface, routes colliding with a mounted path (an unmounted one is allowed), a web dir lacking pass.html at startup and an unknown console key; the Pass context uses the peer and the empty JA4 form; and the memory report store is bounded.",
+      "notes": "Nine tests over a real loopback listener (stated as not a browser e2e run): with no legacy policy the prior gateway behaviour is kept; GET /pass serves the page with an hsid session and the security headers, HEAD returns no body, and no audit record is written; the Pass API issues a challenge, reuses the session and enforces POST-only routes and stale-challenge replies; /demo and /static/ follow the Go paths, missing or empty-segment files get 404 and traversal is refused by the parser with 400; disabled or unmounted surfaces keep gateway behaviour and the Host authority check still applies; configuration refuses a relative web_dir, no enabled surface, routes colliding with a mounted path (an unmounted one is allowed), a web dir lacking pass.html at startup and an unknown console key; the Pass context uses the peer and the empty JA4 form; and the memory report store is bounded. A step_up module adds three tests through the application decision path: a solved Pass receipt redeems a socket-bound proof that admits the attested route while missing PoW, forged or foreign receipts, GET, no peer, a lifted proof (other fingerprint, session or no peer) and a scoring CHALLENGE stay challenged and audit records ALLOW with enforcement CHALLENGE; expired receipts and proofs are refused; and attest_floor requires the native Pass surface and is reported in readiness.",
       "pages": [
         "docs/reference/gate-origin-contract.md",
         "docs/reference/cli-config-policy.md"
@@ -8336,9 +8346,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/main.rs",
-      "sha256": "ca73f79c7238448033b064acdbdaf7dc704af1cbfab8d5e32a0a84c8366b329b",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Legacy humanymous-runtime binary entry point (feature gateway). It requires no arguments and non-terminal stdin and stdout, reads the private configuration from the inherited stdin pipe, binds a ServiceHost on a 2-worker Tokio runtime, writes one readiness JSON line to stdout, and runs until stopped. It holds no platform shutdown adapter: the watch sender is dropped locally, and the CLI/system-service adapter owns real shutdown. Errors print a static message and exit 1.",
+      "sha256": "b2ed01ee0be53c52d26dd6ea67b73cf54d152661a7e20e058cf0896006709d48",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Legacy humanymous-runtime binary entry point (feature gateway). It requires non-terminal stdin and stdout and either no arguments or exactly one of attestation-provision / attestation-answer, which read one request of at most 8193 bytes from stdin, run gateway::attestation and print only its output document (the installation key never crosses the pipe). With no arguments it reads the private configuration from the inherited stdin pipe, binds a ServiceHost on a 2-worker Tokio runtime, writes one readiness JSON line to stdout, and runs until stopped. It holds no platform shutdown adapter: the watch sender is dropped locally, and the CLI/system-service adapter owns real shutdown. Errors print a static message and exit 1.",
       "pages": [
         "docs/reference/cli-config-policy.md",
         "docs/reference/install-requirements.md",
@@ -8387,9 +8397,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/mod.rs",
-      "sha256": "dd05818a58c1c9147ad1a8a67666784681856141162ba0f0956e3c6311c781bd",
+      "sha256": "dfb1a9b997df8646ed6d74011af86d4f9ae0a55155dc0dc91ebffdec416c79c2",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway module root of the runtime crate: declares the application, ban, browser, configuration, connection cap, console, control, credential, demo, external input, guard, http, inject, legacy, logging, management, observatory, pass flow, pass proof, pass store, request, routes, seams, service, session, settings, shipping, smuggle, startup, tls, token, verdict store and virtual usb modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Doc line states loopback component support is not product qualification.",
+      "notes": "Gateway module root of the runtime crate: declares the application, attestation, ban, browser, configuration, connection cap, console, control, credential, demo, external input, guard, http, inject, legacy, logging, management, observatory, pass flow, pass proof, pass store, request, routes, seams, service, session, settings, shipping, smuggle, startup, tls, token, verdict store and virtual usb modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Doc line states loopback component support is not product qualification.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
@@ -8841,9 +8851,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/tests.rs",
-      "sha256": "bf64b75e824b13955cc212e58cc35aff801d5fb9c088e8cb9f76e4f22ecc16ef",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Gateway unit and loopback TCP tests with fixture controls (not browser e2e): streaming requires a native profile, required external witness and recovery refusals, honest readiness, session capacity/expiry/rollback, RIT binding against 12 method/target/body/scope/deadline/header mutations, replay and cross-session collect refusal, missing client giving CHALLENGE and missing planes 422, fresh collector provenance gating, minimized audit with permanent poison, deadline and rollback never releasing origin, server-plane signal refusal with registry scores, and real TCP checks that audit precedes origin and client abort never dispatches origin.",
+      "sha256": "ed6cc60c092c0df3f2180798db521d8dc246dfed7f0afcd64710b4227a0ee2a9",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Gateway unit and loopback TCP tests with fixture controls (not browser e2e): streaming requires a native profile, required external witness and recovery refusals, honest readiness, session capacity/expiry/rollback, RIT binding against 12 method/target/body/scope/deadline/header mutations, replay and cross-session collect refusal, missing client giving CHALLENGE and missing planes 422, fresh collector provenance gating, minimized audit with permanent poison, deadline and rollback never releasing origin, server-plane signal refusal with registry scores, and real TCP checks that audit precedes origin and client abort never dispatches origin. Its request, sign, issue and collected fixture helpers are now visible within the gateway module for reuse by other gateway tests.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/reference/gate-origin-contract.md"

@@ -112,6 +112,13 @@ pub struct Route {
     /// Explicit opt-in; no automatic streaming inference from content type.
     #[serde(default)]
     pub response_profile: ResponseProfile,
+    /// Attestation floor (legacy Go route preset `attested`, ceiling-guard
+    /// #1): a scoring ALLOW is enforced as a CHALLENGE unless the request
+    /// carries a valid Pass step-up proof. Requires the legacy Pass surface,
+    /// which mints the receipt the proof is redeemed from. Never changes the
+    /// scoring verdict and never overrides a scoring CHALLENGE or DENY.
+    #[serde(default)]
+    pub attest_floor: bool,
 }
 
 /// Only bounded complete HTTP request methods have an implementation.
@@ -207,6 +214,12 @@ impl Configuration {
                 || (route.rit_profile == RitProfile::BrowserAuthOnly && self.browser.is_none())
                 || (route.rit_profile == RitProfile::BrowserAuthOnly
                     && route.response_profile == ResponseProfile::NativeStream)
+                // Go refused an attested route whose step-up receipt could
+                // never verify; here that is a route without the Pass surface.
+                // The browser profile carries no application cookies.
+                || (route.attest_floor
+                    && (route.rit_profile != RitProfile::NativeFull
+                        || !self.legacy.as_ref().is_some_and(|legacy| legacy.pass)))
                 || !seen.insert((&route.method, &route.path))
             {
                 return Err(bad);
@@ -221,12 +234,16 @@ impl Configuration {
             .routes
             .iter()
             .map(|r| {
-                serde_json::json!({
+                let mut route = serde_json::json!({
                     "method":r.method,"path":r.path,
                     "ready":!r.required.raw_tls && !r.required.original_h2 && !r.required.collector,
                     "rit_profile":r.rit_profile,
                     "response_profile":r.response_profile
-                })
+                });
+                if r.attest_floor {
+                    route["attest_floor"] = serde_json::Value::Bool(true);
+                }
+                route
             })
             .collect();
         serde_json::json!({"profile":"experimental-loopback-http1", "raw_tls":false,

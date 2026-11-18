@@ -30,3 +30,5 @@ COPY --from=runtime-compiler /source/target/release/humanymous-runtime /usr/loca
 COPY --from=runtime-compiler /source/target/release/humanymous /usr/local/bin/
 COPY --from=runtime-compiler /source/target/release/humanymous-runtime-pilot /usr/local/bin/
 COPY --from=runtime-compiler /source/target/release/audit-witness /usr/local/bin/
+# Read-only legacy Pass page for the pass-pilot attest_floor recovery case.
+COPY --from=compiler /source/web/pass.html /usr/local/share/humanymous/web/

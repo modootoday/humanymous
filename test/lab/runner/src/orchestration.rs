@@ -60,10 +60,13 @@ mod go_fixture;
 mod go_public;
 pub(crate) mod h2_product_binding;
 mod mount_probe;
+mod pass_recovery;
 mod public_receipts;
+mod qualification;
 pub(crate) mod red_blue_product;
 mod requirement;
 mod startup_failure;
+mod target_attestation;
 mod witness;
 struct Lab {
     docker: Docker,
@@ -686,6 +689,10 @@ impl Lab {
             )?;
             self.components["wargame"] = report.clone();
             self.case("actual-owned-wargame",result.success && report["scoped_passed"]==true,json!("19 actual programs plus 7 unsupported; audit verdicts and origin deltas retained"))?;
+            self.stage = "attestation_process";
+            target_attestation::run(self)?;
+            self.stage = "pass_recovery";
+            pass_recovery::run(self)?;
             self.stage = "witness_component";
             witness::run(self)?;
         } else {
@@ -1479,7 +1486,14 @@ pub fn run(args: &[String]) -> Result<i32> {
         &json!({"schema":"humanymous.lab-engine-evidence/1","observation":lab.docker.engine_identity,"actual_sdk_connection_observed":false}),
     )?;
     let failed = lab.cases.iter().any(|c| c["status"] == "failed");
-    let assessment = requirement.assess(failed, lab.go_component_verified, cleanup_verified);
+    // Derived, never hard-coded: absent or failed required cases stay unavailable.
+    let qualification = qualification::assess(&lab.cases, cleanup_verified);
+    let assessment = requirement.assess(
+        failed,
+        lab.go_component_verified,
+        cleanup_verified,
+        qualification.full_product_qualified,
+    );
     let mut evidence_types = if browser_product
         || go_product
         || mount_probe
@@ -1543,6 +1557,11 @@ pub fn run(args: &[String]) -> Result<i32> {
             "n06-owner-auth-handoff-honesty",
         ),
         ("g4_cef_at", "g4-cef-at-component"),
+        (
+            "target_attestation",
+            "pinned-key-fresh-nonce-target-attestation",
+        ),
+        ("pass_recovery", "pass-step-up-recovery"),
     ] {
         if lab.components[component].is_object() && lab.components[component]["status"] != "not_run"
         {
@@ -1553,7 +1572,21 @@ pub fn run(args: &[String]) -> Result<i32> {
     if let Some(outcome) = lab.components.get("browser_actor_diagnostic") {
         diagnostics["browser_actor"] = crate::browser_outcome::public_outcome(outcome)?;
     }
-    let report = json!({"schema":"humanymous.product-lab/2","requirement":requirement.report(&assessment),"safe_diagnostics":diagnostics,"public_receipts":lab.public_receipts,"project":lab.project,"evidence_types":evidence_types,"cases":lab.cases,"components":lab.components,"required_unavailable":["full Gate TLS/H2/capture","session-bound real browser collector","Pass recovery","human/keyboard/assistive controls","runtime binary authenticated witness transport","cross-namespace origin/audit effect product binding","signed remote target attestation","native OS qualification","provider deployment"],"full_product_qualified":false,"release_ready":false,"ttl":{"expires_unix":expires,"external_janitor_scheduled":false}});
+    let source_sha = std::fs::read(lab.evidence.join("source-manifest.json"))
+        .ok()
+        .and_then(|bytes| serde_json::from_slice::<Value>(&bytes).ok())
+        .and_then(|manifest| manifest["head"].as_str().map(str::to_owned));
+    let documentation_review_sha256 = std::fs::read(root.join("docs/reviews.json"))
+        .ok()
+        .map(|bytes| snapshot::digest(&bytes));
+    let mut report = json!({"schema":"humanymous.product-lab/2","requirement":requirement.report(&assessment),"safe_diagnostics":diagnostics,"public_receipts":lab.public_receipts,"project":lab.project,"evidence_types":evidence_types,"cases":lab.cases,"components":lab.components,"source_sha":source_sha,"documentation_review_sha256":documentation_review_sha256,"release_ready":false,"ttl":{"expires_unix":expires,"external_janitor_scheduled":false}});
+    for (key, value) in qualification
+        .report_fields()
+        .as_object()
+        .ok_or("qualification fields")?
+    {
+        report[key] = value.clone();
+    }
     snapshot::write(&lab.evidence, "lab-report.json", &report)?;
     snapshot::write(
         &lab.evidence,

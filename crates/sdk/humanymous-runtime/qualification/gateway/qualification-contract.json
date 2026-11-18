@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 412,
-      "macos": 412,
-      "windows": 404
+      "linux": 420,
+      "macos": 420,
+      "windows": 410
     },
     "common_test_names": [
       "gateway::application::temporal::tests::categories::configure_only_preserves_unknown_gap_until_provider_observation",
@@ -21,6 +21,9 @@
       "gateway::application::temporal::tests::continuity::expansion_equality_clears_only_expansion_not_unrelated_latched_loss",
       "gateway::application::temporal::tests::continuity::interrupted_or_abandoned_progress_and_clock_regression_remain_explicit",
       "gateway::application::temporal::tests::continuity::later_refusal_preserves_prior_commit_and_gap_survives_success",
+      "gateway::attestation::tests::malformed_statements_requests_and_mismatched_seed_are_refused",
+      "gateway::attestation::tests::pinned_fresh_statement_verifies_and_every_field_is_bound",
+      "gateway::attestation::tests::unknown_key_and_rewritten_fields_are_refused",
       "gateway::ban::tests::already_banned_source_reports_existing_ban",
       "gateway::ban::tests::auto_ban_escalates_and_permanent_tier_needs_dual_control",
       "gateway::ban::tests::auto_ban_flood_blocks_source_and_spares_other_address",
@@ -159,6 +162,9 @@
       "gateway::legacy::tests::memory_reports_are_bounded",
       "gateway::legacy::tests::pass_api_issues_a_challenge_and_enforces_post_only_routes",
       "gateway::legacy::tests::pass_context_uses_the_peer_and_the_unavailable_ja4_form",
+      "gateway::legacy::tests::step_up::attest_floor_needs_the_native_pass_surface_and_is_reported",
+      "gateway::legacy::tests::step_up::expired_receipt_and_proof_are_refused",
+      "gateway::legacy::tests::step_up::solved_pass_redeems_a_socket_bound_proof_that_admits_the_attested_route",
       "gateway::logging::tests::canonical_external_input_label_bounds",
       "gateway::logging::tests::core_accumulates_plain_and_jsonl_files",
       "gateway::logging::tests::core_logging_off_by_default",
@@ -418,6 +424,8 @@
       "gateway::virtual_usb::tests::trailing_json_and_oversize_files_fail_closed"
     ],
     "unix_extra_test_names": [
+      "gateway::attestation::tests::custody::provisioned_key_answers_and_is_never_replaced",
+      "gateway::attestation::tests::custody::unsafe_custody_and_invalid_configuration_are_refused",
       "gateway::ban::tests::dual_control::broad_ban_needs_matching_grant",
       "gateway::ban::tests::dual_control::permanent_ban_persists_and_resists_single_operator_lift",
       "gateway::logging::tests::file_sink_rejects_symlink",

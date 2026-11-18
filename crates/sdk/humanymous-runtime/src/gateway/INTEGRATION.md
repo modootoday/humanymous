@@ -147,6 +147,16 @@ after the native source/tests are ready; native fixture tests are separate.
   Source of the exact JSON fixture is `tests/native_process.rs`. Audit paths
   must be canonical and owner-private; audit HMAC/signing keys are stable
   provisioned values, never automatically replaced on malformed recovery.
+- Binary `humanymous-runtime attestation-provision` / `attestation-answer`
+  (`gateway::attestation`): one bounded `humanymous.target-attestation-request/1`
+  JSON on stdin naming an owner-private installation directory holding its exact
+  `configuration.json`. Provision generates the Ed25519 installation key in that
+  directory (create-new, 0600, never replaced) and prints only the public key.
+  Answer signs (installation, own executable SHA-256, configuration SHA-256,
+  challenger nonce); it refuses a challenge for another installation. The
+  challenger pins the enrollment key and `verify` refuses unknown key, signature,
+  installation, binary, configuration or nonce mismatch. Possession proof only:
+  not hardware/loader/listener or cross-host transport attestation; no verdict use.
 - POST `/_humanymous/session`: empty complete body, exact configured Host;
   returns fresh session/key/counter0/expiry. No browser cookie or admin authority.
 - POST `/_humanymous/collect`: exact session-bound ClientReport JSON plus RIT.
@@ -520,3 +530,18 @@ startup/admission serialization and retained-permit-only effect remain unwired.
 Pure classification matrix authored NOT_RUN; inventory50Unix/46Windows/native1.
 Required typed control query/Scope API producer is audit9c47f8e4dfb8dcfe0dee4e3359bb3c5e573050d5.
 Producer and this consumer remain source-only until post-quiet allocated validation.
+
+Roadmap 2e Pass recovery (Go internal/gate control.go handleStepUp, gates.go
+attestation floor, token.go receipts at 981d25c): a route may set
+`attest_floor`, which validation accepts only for a native-profile route with
+`legacy.pass` mounted. On such a route a scoring ALLOW without a valid `hmn_su`
+step-up proof is enforced as 403 `{"verdict":"CHALLENGE","step_up":"/pass"}`;
+the audit record keeps the scoring verdict ALLOW with enforcement CHALLENGE and
+rule `gate.attest_floor`. A verified Pass solve returns a session-bound receipt;
+`POST /__hmn/stepup` with the `hsid` cookie and `X-Hmn-Stepup-Receipt` mints the
+30-minute proof re-bound to the header fingerprint and peer subnet. The token key
+is a fresh per-process random key (Pass and Gate share the process), never
+configured or exported. A proof never upgrades a scoring CHALLENGE or DENY; no
+signal, weight, threshold, hard rule or verdict band changed. Redemption itself
+is not durably audited. Tests: legacy::tests::step_up (3). Docker evidence is the
+lab pass-pilot (`pass`, `pass-forgery-refused`), pending an owner Docker run.
