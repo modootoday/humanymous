@@ -16,23 +16,28 @@
 //!   that `XADD` returns stayed in the buffer and later replies were read one
 //!   line late. A server error reply keeps the connection (the stream is still
 //!   in sync); any other failure drops it and the next record redials.
-use super::RecordSink;
+//!
+//! As in Go, the dial, the command write and the reply read each have their
+//! own absolute 3 s deadline, so a server that trickles its reply cannot hold
+//! the shipper longer. Host-name lookup counts against the dial deadline; see
+//! [`DeadlineStream::connect`] for what that does not bound.
+use super::{DeadlineStream, RecordSink};
 use crate::audit::record::Record;
 use std::{
     io::{self, BufRead, BufReader, Read, Write},
-    net::{TcpStream, ToSocketAddrs},
     sync::{
         Arc, Mutex,
         atomic::{AtomicBool, AtomicU64, Ordering},
         mpsc::{self, Receiver, SyncSender},
     },
     thread::{self, Thread},
-    time::Duration,
+    time::{Duration, Instant},
 };
 
 /// Backlog used when the caller passes zero (Go `bufSize <= 0`).
 pub const DEFAULT_BACKLOG: usize = 4096;
-/// Dial, write and read timeout (Go 3 s deadlines).
+/// Separate absolute deadline for the dial, each write and each reply read
+/// (Go `DialTimeout`, `SetWriteDeadline` and `SetReadDeadline`, 3 s each).
 const IO_TIMEOUT: Duration = Duration::from_secs(3);
 /// Pause after a failed dial (Go `time.Sleep(time.Second)`).
 const RECONNECT_BACKOFF: Duration = Duration::from_secs(1);
@@ -182,7 +187,7 @@ struct Shipper {
 
 impl Shipper {
     fn run(&self, receiver: &Receiver<Box<Record>>, shared: &Shared) {
-        let mut connection: Option<BufReader<TcpStream>> = None;
+        let mut connection: Option<BufReader<DeadlineStream>> = None;
         while let Ok(record) = receiver.recv() {
             if shared.closed.load(Ordering::Acquire) {
                 shared.drop_one();
@@ -205,7 +210,7 @@ impl Shipper {
 
     fn ship(
         &self,
-        connection: &mut Option<BufReader<TcpStream>>,
+        connection: &mut Option<BufReader<DeadlineStream>>,
         record: &Record,
         shared: &Shared,
     ) {
@@ -223,23 +228,17 @@ impl Shipper {
         }
     }
 
-    fn dial(&self) -> io::Result<BufReader<TcpStream>> {
-        let mut last = None;
-        for address in self.address.to_socket_addrs()? {
-            match TcpStream::connect_timeout(&address, IO_TIMEOUT) {
-                Ok(stream) => {
-                    stream.set_read_timeout(Some(IO_TIMEOUT))?;
-                    stream.set_write_timeout(Some(IO_TIMEOUT))?;
-                    stream.set_nodelay(true)?;
-                    return Ok(BufReader::new(stream));
-                }
-                Err(error) => last = Some(error),
-            }
-        }
-        Err(last.unwrap_or_else(|| io::Error::other("address resolved to nothing")))
+    fn dial(&self) -> io::Result<BufReader<DeadlineStream>> {
+        let stream = DeadlineStream::connect(&self.address, Instant::now() + IO_TIMEOUT)?;
+        stream.socket().set_nodelay(true)?;
+        Ok(BufReader::new(stream))
     }
 
-    fn xadd(&self, connection: &mut BufReader<TcpStream>, record: &Record) -> Result<(), Failure> {
+    fn xadd(
+        &self,
+        connection: &mut BufReader<DeadlineStream>,
+        record: &Record,
+    ) -> Result<(), Failure> {
         // An unserializable record is skipped so it cannot wedge the shipper.
         let body = serde_json::to_vec(record).map_err(|_| Failure::Server)?;
         let id = format!("{}-0", record.seq);
@@ -254,10 +253,14 @@ impl Shipper {
             &body,
         ]);
         let stream = connection.get_mut();
+        stream.set_deadline(Instant::now() + IO_TIMEOUT);
         stream
             .write_all(&command)
             .and_then(|()| stream.flush())
             .map_err(|_| Failure::Transport)?;
+        connection
+            .get_mut()
+            .set_deadline(Instant::now() + IO_TIMEOUT);
         read_reply(connection)
     }
 }

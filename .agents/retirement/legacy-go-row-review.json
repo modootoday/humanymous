@@ -5352,7 +5352,11 @@
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::redis_outage_and_error_replies_are_counted",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_basic_auth_and_row_trigger",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_failures_drop_and_count",
-    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_endpoint_is_refused_unless_plain_http"
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_endpoint_is_refused_unless_plain_http",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::redis_transport_failures_are_counted_and_redial",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::redis_records_queued_at_close_are_counted",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_only_2xx_is_success",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_trickled_response_misses_the_insert_deadline"
    ],
    "go_test_map": {
     "TestRespCommandEncoding": "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::resp_command_encoding",
@@ -5364,7 +5368,7 @@
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "All five legacy cases run against in-process stand-ins: a TCP RESP server for Redis and a TCP HTTP/1.1 server for ClickHouse. The XADD stand-in answers with the bulk id real Redis returns and receives two records on one connection. Extra Rust cases pin the deliberate differences (counted Redis outage and error replies, ClickHouse auth and row trigger, refused-insert and backlog counting, plain-http endpoint validation). The Go tests re-ran green at 981d25c with go1.26.0.",
+   "notes": "All five legacy cases run against in-process stand-ins: a TCP RESP server for Redis and a TCP HTTP/1.1 server for ClickHouse. The XADD stand-in answers with the bulk id real Redis returns and receives two records on one connection. Extra Rust cases pin the deliberate differences (counted Redis outage and error replies, ClickHouse auth and row trigger, refused-insert and backlog counting, plain-http endpoint validation, Redis transport-error and close-time drops with redial, ClickHouse 1xx/3xx/5xx refusal, and the total ClickHouse insert deadline against a trickling stand-in). The Go tests re-ran green at 981d25c with go1.26.0.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::resp_command_encoding": "passed",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::redis_stream_sink_xadd": "passed",
@@ -5374,7 +5378,11 @@
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::redis_outage_and_error_replies_are_counted": "passed",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_basic_auth_and_row_trigger": "passed",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_failures_drop_and_count": "passed",
-    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_endpoint_is_refused_unless_plain_http": "passed"
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_endpoint_is_refused_unless_plain_http": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::redis_transport_failures_are_counted_and_redial": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::redis_records_queued_at_close_are_counted": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_only_2xx_is_success": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_trickled_response_misses_the_insert_deadline": "passed"
    }
   },
   {
@@ -5391,7 +5399,9 @@
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_basic_auth_and_row_trigger",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_failures_drop_and_count",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_endpoint_is_refused_unless_plain_http",
-    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::projections_receive_only_fully_sealed_records"
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::projections_receive_only_fully_sealed_records",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_only_2xx_is_success",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_trickled_response_misses_the_insert_deadline"
    ],
    "go_test_map": {},
    "gaps": [
@@ -5399,14 +5409,16 @@
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "audit::projection::clickhouse::ClickHouseSink: buffered batches (defaults 10000 rows, 1 s, 100000 backlog) flushed on max_rows, every max_wait, on flush() and on close, each POSTed over a direct HTTP/1.1 request as INSERT INTO <table> FORMAT JSONEachRow with async_insert=1, wait_for_async_insert=1 and input_format_skip_unknown_fields=1; set_auth sends HTTP Basic authentication kept out of the URL; an unsafe table name falls back to audit_log; a full backlog, a transport failure or a non-2xx status counts the rows as dropped and flush returns clickhouse insert status N: <up to 512 body bytes>. Deliberate differences: an endpoint with a query, fragment or embedded credentials is refused, an append after close is dropped and counted, and only 2xx is success (Go accepted any status below 300). Not yet composed into the gateway flag surface (cmd/gate/main.go row).",
+   "notes": "audit::projection::clickhouse::ClickHouseSink: buffered batches (defaults 10000 rows, 1 s, 100000 backlog) flushed on max_rows, every max_wait, on flush() and on close, each POSTed over a direct HTTP/1.1 request under one total 10 s deadline per insert (Go http.Client.Timeout; lookup, connect, write and response read all count against it, and a missed deadline drops the batch) as INSERT INTO <table> FORMAT JSONEachRow with async_insert=1, wait_for_async_insert=1 and input_format_skip_unknown_fields=1; set_auth sends HTTP Basic authentication kept out of the URL; an unsafe table name falls back to audit_log; a full backlog, a transport failure or a non-2xx status counts the rows as dropped and flush returns clickhouse insert status N: <up to 512 body bytes>. Deliberate differences: an endpoint with a query, fragment or embedded credentials is refused, an append after close is dropped and counted, and only 2xx is success (Go accepted any status below 300, including 1xx). Not yet composed into the gateway flag surface (cmd/gate/main.go row).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_sink_insert": "passed",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_table_name_validation": "passed",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_basic_auth_and_row_trigger": "passed",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_failures_drop_and_count": "passed",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_endpoint_is_refused_unless_plain_http": "passed",
-    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::projections_receive_only_fully_sealed_records": "passed"
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::projections_receive_only_fully_sealed_records": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_only_2xx_is_success": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_trickled_response_misses_the_insert_deadline": "passed"
    }
   },
   {
@@ -5421,16 +5433,18 @@
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::projections_receive_only_fully_sealed_records",
-    "crates/sdk/humanymous-runtime/tests/audit/control_operations.rs::independent_witness_log_and_verified_sink_restart_reject_tamper"
+    "crates/sdk/humanymous-runtime/tests/audit/control_operations.rs::independent_witness_log_and_verified_sink_restart_reject_tamper",
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::a_panicking_projection_reaches_neither_the_writer_nor_later_projections"
    ],
    "go_test_map": {},
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "audit::projection::RecordSink (append_record, flush, close) is the Go RecordSink for projections; Log::attach_projection and SealedLog::attach_projection take Arc<dyn RecordSink> (Go Config.Projections). The WAL authority is deliberately not pluggable through the trait: it stays the fixed fail-closed storage::Wal inside Log. Projections receive records in seal order only after the append and any due checkpoint succeed, and their failures never reach the writer. DurableSink remains the separate authenticated local export.",
+   "notes": "audit::projection::RecordSink (append_record, flush, close) is the Go RecordSink for projections; Log::attach_projection and SealedLog::attach_projection take Arc<dyn RecordSink> (Go Config.Projections). The WAL authority is deliberately not pluggable through the trait: it stays the fixed fail-closed storage::Wal inside Log. Projections receive records in seal order only after the append and any due checkpoint succeed, and their failures never reach the writer: an error is ignored and a panic is caught with catch_unwind and ignored the same way, so later projections still receive the record. DurableSink remains the separate authenticated local export.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::projections_receive_only_fully_sealed_records": "passed",
-    "crates/sdk/humanymous-runtime/tests/audit/control_operations.rs::independent_witness_log_and_verified_sink_restart_reject_tamper": "passed"
+    "crates/sdk/humanymous-runtime/tests/audit/control_operations.rs::independent_witness_log_and_verified_sink_restart_reject_tamper": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::a_panicking_projection_reaches_neither_the_writer_nor_later_projections": "passed"
    }
   },
   {
@@ -5446,19 +5460,23 @@
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::redis_stream_sink_xadd",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::redis_stream_sink_drops_when_full",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::redis_outage_and_error_replies_are_counted",
-    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::projections_receive_only_fully_sealed_records"
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::projections_receive_only_fully_sealed_records",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::redis_transport_failures_are_counted_and_redial",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::redis_records_queued_at_close_are_counted"
    ],
    "go_test_map": {},
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "audit::projection::redis_stream::RedisStreamSink: bounded backlog (default 4096) with drop-and-count, one background shipper thread, lazy dial with 3 s dial/write/read timeouts and a 1 s backoff after a failed dial, and one XADD <stream> MAXLEN ~ <max_len> <seq>-0 record <json> per record over a sink-local RESP encoder (the audit feature does not build the gateway B23 client). Flush is a no-op ack and Close stops the shipper without waiting, as in Go. Deliberate differences: records lost to a failed dial, an I/O error, a server error reply or a close are counted in dropped() (Go counted only a full backlog), and the whole reply is consumed (Go read one line and left the XADD bulk id buffered); a server error reply keeps the connection. Log::attach_projection feeds the sink only after the WAL append and any due checkpoint succeed. Not yet composed into the gateway flag surface (cmd/gate/main.go row).",
+   "notes": "audit::projection::redis_stream::RedisStreamSink: bounded backlog (default 4096) with drop-and-count, one background shipper thread, lazy dial, with separate absolute 3 s deadlines for the dial, each command write and each reply read (Go DialTimeout, SetWriteDeadline, SetReadDeadline; host-name lookup is waited on only until the dial deadline), and a 1 s backoff after a failed dial, and one XADD <stream> MAXLEN ~ <max_len> <seq>-0 record <json> per record over a sink-local RESP encoder (the audit feature does not build the gateway B23 client). Flush is a no-op ack and Close stops the shipper without waiting, as in Go. Deliberate differences: records lost to a failed dial, an I/O error, a server error reply or a close are counted in dropped() (Go counted only a full backlog), and the whole reply is consumed (Go read one line and left the XADD bulk id buffered); a server error reply keeps the connection. Log::attach_projection feeds the sink only after the WAL append and any due checkpoint succeed. Not yet composed into the gateway flag surface (cmd/gate/main.go row).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::resp_command_encoding": "passed",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::redis_stream_sink_xadd": "passed",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::redis_stream_sink_drops_when_full": "passed",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::redis_outage_and_error_replies_are_counted": "passed",
-    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::projections_receive_only_fully_sealed_records": "passed"
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::projections_receive_only_fully_sealed_records": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::redis_transport_failures_are_counted_and_redial": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::redis_records_queued_at_close_are_counted": "passed"
    }
   },
   {

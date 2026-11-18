@@ -15,7 +15,11 @@ pub use proofs::{CheckpointInclusion, InclusionProof};
 pub use sealed::{
     PinnedWitness, SealedLog, SealedLogError, SealedLogOptions, SealedLogStage, UnlockCredential,
 };
-use std::{io, sync::Arc};
+use std::{
+    io,
+    panic::{self, AssertUnwindSafe},
+    sync::Arc,
+};
 
 /// Required persistence strength for a separately supervised witness receipt.
 #[derive(Clone, Copy)]
@@ -170,7 +174,10 @@ impl Log {
     /// Add a best-effort projection (Go `Config.Projections`). It receives each
     /// record only after the WAL append and any due checkpoint succeed, so a
     /// refused or failed append is never projected; its own failures never
-    /// reach the writer. The WAL remains the only audit authority.
+    /// reach the writer. An error it returns is ignored, and a panic is caught
+    /// and ignored the same way (with the default `panic = "unwind"`), so later
+    /// projections still receive the record. The WAL remains the only audit
+    /// authority.
     pub fn attach_projection(&mut self, projection: Arc<dyn RecordSink>) {
         self.projections.push(projection);
     }
@@ -213,8 +220,10 @@ impl Log {
             self.checkpoint()?;
         }
         for projection in &self.projections {
-            // Best-effort: a projection counts its own losses.
-            let _ = projection.append_record(&record);
+            // Best-effort: a projection counts its own losses. Its error is
+            // ignored, and so is its panic, which is caught here so it neither
+            // unwinds through the writer nor starves the projections after it.
+            let _ = panic::catch_unwind(AssertUnwindSafe(|| projection.append_record(&record)));
         }
         Ok(record)
     }
@@ -583,6 +592,47 @@ mod tests {
         assert_eq!(*recorder.0.lock().unwrap(), vec![second.clone()]);
         assert_eq!(restored.records().unwrap()[1], second);
         drop(restored);
+        clean(&dir);
+    }
+
+    struct Panicking;
+    impl RecordSink for Panicking {
+        fn append_record(&self, _: &Record) -> io::Result<()> {
+            panic!("projection bug")
+        }
+        fn flush(&self) -> io::Result<()> {
+            Ok(())
+        }
+        fn close(&self) -> io::Result<()> {
+            Ok(())
+        }
+    }
+    /// A panicking projection is caught like an erroring one: the append and
+    /// the gated action still succeed, and the projection after it still
+    /// receives every record.
+    #[test]
+    fn a_panicking_projection_reaches_neither_the_writer_nor_later_projections() {
+        let dir = dir();
+        let mut log = Log::open(
+            Wal::open(&dir, WalOptions::default()).unwrap(),
+            config(),
+            None,
+            true,
+        )
+        .unwrap();
+        let recorder = Arc::new(Recorder::default());
+        log.attach_projection(Arc::new(Panicking));
+        log.attach_projection(recorder.clone());
+        let first = log.append(event()).unwrap();
+        let acted = log.emit_and_act(event(), |sealed| sealed.seq).unwrap();
+        assert_eq!(acted, 2);
+        let projected = recorder.0.lock().unwrap().clone();
+        assert_eq!(projected.len(), 2);
+        assert_eq!(projected[0], first);
+        assert_eq!(projected[1].seq, 2);
+        assert_eq!(log.records().unwrap(), projected);
+        log.flush().unwrap();
+        drop(log);
         clean(&dir);
     }
 

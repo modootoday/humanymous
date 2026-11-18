@@ -178,7 +178,10 @@ the owner until reopen; there is no automatic reset, discard or effect retry.
 `Log::attach_projection` adds a `projection::RecordSink`. A projection receives
 a record only after the WAL append and any due checkpoint succeed, so a refused
 or failed append is never projected. It must return without waiting on the
-network, and its failures never reach the writer. The WAL stays the only
+network, and its failures never reach the writer: an error it returns is
+ignored, and a panic is caught and ignored the same way, so the projections
+after it still receive the record. Catching a panic relies on the default
+`panic = "unwind"` build setting. The WAL stays the only
 authority: a projection outage cannot release an effect, alter a verdict or
 stand in for the authenticated history and its checkpoints.
 
@@ -190,7 +193,12 @@ plain identifier falls back to `audit_log`. HTTPS endpoints, and endpoints that
 carry a query or embedded credentials, are refused when the sink is built.
 Each sink counts every record it accepted but did not deliver in `dropped()`.
 That count covers a full backlog, a failed connection or insert, a server error
-reply and appends after close. A delivered copy is not authenticated by the
+reply and appends after close. A ClickHouse insert has one total 10 s
+deadline covering lookup, connect, request and response, and missing it drops
+the batch. A Redis dial, command write and reply read each have their own 3 s
+deadline. Host-name lookup runs on a helper thread that is waited on only until
+the deadline, so a hung system resolver can leave that thread behind but cannot
+hold the sink longer. A delivered copy is not authenticated by the
 destination, and the gateway flag surface does not yet compose these sinks.
 
 ## Prepared passphrase rotation

@@ -438,3 +438,156 @@ fn clickhouse_endpoint_is_refused_unless_plain_http() {
     .unwrap();
     assert!(sink.insert_target().starts_with("/base/?query="));
 }
+
+/// Deliberate difference: a reply that is not RESP, or a connection the server
+/// closes before replying, is a transport failure. The record is counted as
+/// dropped and the connection is discarded, so the next record redials.
+#[test]
+fn redis_transport_failures_are_counted_and_redial() {
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let address = listener.local_addr().unwrap().to_string();
+    let (sender, accepted) = mpsc::channel();
+    thread::spawn(move || {
+        for (index, stream) in listener.incoming().take(2).enumerate() {
+            let Ok(stream) = stream else { return };
+            let mut reader = BufReader::new(&stream);
+            let Some(command) = read_command(&mut reader) else {
+                return;
+            };
+            if index == 0 {
+                let _ = (&stream).write_all(b"?not resp\r\n");
+            }
+            // The second connection closes without any reply.
+            drop(reader);
+            drop(stream);
+            if sender.send(command).is_err() {
+                return;
+            }
+        }
+    });
+    let sink = RedisStreamSink::new(redis_options(address, 4)).unwrap();
+    sink.append_record(&sample_record(1)).unwrap();
+    accepted.recv_timeout(Duration::from_secs(3)).unwrap();
+    eventually("the garbage reply drop", || sink.dropped() == 1);
+    sink.append_record(&sample_record(2)).unwrap();
+    let redialled = accepted
+        .recv_timeout(Duration::from_secs(3))
+        .expect("the shipper did not redial after a transport failure");
+    assert_eq!(redialled[5], b"2-0");
+    eventually("the closed connection drop", || sink.dropped() == 2);
+    sink.close().unwrap();
+}
+
+/// Deliberate difference: records still queued when the sink closes are
+/// counted as dropped (Go lost them silently). The record already in flight
+/// completes.
+#[test]
+fn redis_records_queued_at_close_are_counted() {
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let address = listener.local_addr().unwrap().to_string();
+    let (seen, commands) = mpsc::channel();
+    let (release, released) = mpsc::channel::<()>();
+    thread::spawn(move || {
+        let Ok((stream, _)) = listener.accept() else {
+            return;
+        };
+        let mut reader = BufReader::new(&stream);
+        while let Some(command) = read_command(&mut reader) {
+            if seen.send(command).is_err() || released.recv().is_err() {
+                return;
+            }
+            if (&stream).write_all(b"+OK\r\n").is_err() {
+                return;
+            }
+        }
+    });
+    let sink = RedisStreamSink::new(redis_options(address, 8)).unwrap();
+    sink.append_record(&sample_record(1)).unwrap();
+    let in_flight = commands.recv_timeout(Duration::from_secs(3)).unwrap();
+    assert_eq!(in_flight[5], b"1-0");
+    for seq in 2..=4 {
+        sink.append_record(&sample_record(seq)).unwrap();
+    }
+    sink.close().unwrap();
+    release.send(()).unwrap();
+    eventually("the three queued records counted", || sink.dropped() == 3);
+    thread::sleep(Duration::from_millis(100));
+    assert_eq!(sink.dropped(), 3, "the in-flight record was delivered");
+    assert!(
+        commands.try_recv().is_err(),
+        "nothing queued is shipped after close"
+    );
+}
+
+/// Deliberate difference: only a 2xx status is a delivered insert. Go took
+/// any status below 300, so an informational 1xx line counted as success;
+/// Rust refuses it like a redirect or a server error, reports the status and
+/// counts the batch as dropped.
+#[test]
+fn clickhouse_only_2xx_is_success() {
+    for (status, code) in [
+        ("103 Early Hints", 103),
+        ("302 Found", 302),
+        ("500 Internal Server Error", 500),
+    ] {
+        let (endpoint, requests) = clickhouse_stand_in(status);
+        let sink = ClickHouseSink::new(clickhouse_options(endpoint, 100, Duration::from_secs(60)))
+            .unwrap();
+        sink.append_record(&sample_record(1)).unwrap();
+        sink.append_record(&sample_record(2)).unwrap();
+        let error = sink.flush().unwrap_err().to_string();
+        assert!(
+            error.starts_with(&format!("clickhouse insert status {code}:")),
+            "{status}: {error}"
+        );
+        requests.recv_timeout(Duration::from_secs(3)).unwrap();
+        assert_eq!(sink.dropped(), 2, "{status}: the batch is counted");
+        sink.close().unwrap();
+    }
+}
+
+/// Each insert has one total deadline (Go `http.Client.Timeout`). A server
+/// that accepts the request and then trickles its response headers one byte
+/// at a time cannot keep `flush` waiting past it: the insert fails and its
+/// rows count as dropped.
+#[test]
+fn clickhouse_trickled_response_misses_the_insert_deadline() {
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let endpoint = format!("http://{}", listener.local_addr().unwrap());
+    thread::spawn(move || {
+        let Ok((stream, _)) = listener.accept() else {
+            return;
+        };
+        if read_request(&stream).is_none() {
+            return;
+        }
+        let mut writer = &stream;
+        if writer.write_all(b"HTTP/1.1 200 OK\r\nX-Pad: ").is_err() {
+            return;
+        }
+        let stop = Instant::now() + Duration::from_secs(10);
+        while Instant::now() < stop && writer.write_all(b"a").is_ok() {
+            thread::sleep(Duration::from_millis(20));
+        }
+    });
+    let deadline = Duration::from_millis(300);
+    let sink = ClickHouseSink::with_request_timeout(
+        clickhouse_options(endpoint, 100, Duration::from_secs(60)),
+        deadline,
+    )
+    .unwrap();
+    sink.append_record(&sample_record(1)).unwrap();
+    let started = Instant::now();
+    let result = sink.flush();
+    let elapsed = started.elapsed();
+    assert!(
+        result.is_err(),
+        "a trickled response must not count as an insert"
+    );
+    assert!(elapsed >= deadline, "{elapsed:?}");
+    assert!(
+        elapsed < deadline + Duration::from_secs(1),
+        "flush overran its deadline: {elapsed:?}"
+    );
+    assert_eq!(sink.dropped(), 1);
+}

@@ -13,7 +13,13 @@ pub mod clickhouse;
 pub mod redis_stream;
 
 use crate::audit::record::Record;
-use std::io;
+use std::{
+    io::{self, Read, Write},
+    net::{SocketAddr, TcpStream, ToSocketAddrs},
+    sync::mpsc,
+    thread,
+    time::{Duration, Instant},
+};
 
 /// Destination for sealed records (Go `RecordSink`). The authority WAL is not
 /// pluggable through this trait; only projections implement it.
@@ -29,6 +35,104 @@ pub trait RecordSink: Send + Sync {
     fn flush(&self) -> io::Result<()>;
     /// Flush where supported and stop the background shipper.
     fn close(&self) -> io::Result<()>;
+}
+
+/// A TCP connection whose reads and writes all end by one absolute deadline,
+/// like a Go `net.Conn` deadline. Before each socket call the socket timeout is
+/// set to the time remaining, so a peer that trickles bytes cannot stretch the
+/// operation past the deadline; once it has passed, every call fails with
+/// [`io::ErrorKind::TimedOut`].
+pub(super) struct DeadlineStream {
+    stream: TcpStream,
+    deadline: Instant,
+}
+
+impl DeadlineStream {
+    /// Resolve `address` and connect, all before `deadline`.
+    ///
+    /// An IP literal needs no lookup. A host name is resolved by the system
+    /// resolver on a helper thread, because std offers no bounded lookup and
+    /// the crate takes no resolver dependency. The wait for that thread is
+    /// bounded by the deadline; the lookup itself is not, so a hung resolver
+    /// leaves the abandoned helper thread running until the resolver gives up.
+    pub(super) fn connect(address: &str, deadline: Instant) -> io::Result<Self> {
+        let resolved = resolve(address, deadline)?;
+        let mut last = None;
+        for candidate in resolved {
+            match TcpStream::connect_timeout(&candidate, remaining(deadline)?) {
+                Ok(stream) => return Ok(Self { stream, deadline }),
+                Err(error) => last = Some(error),
+            }
+        }
+        Err(last.unwrap_or_else(|| io::Error::other("address resolved to nothing")))
+    }
+
+    /// Move the deadline for the calls that follow.
+    pub(super) fn set_deadline(&mut self, deadline: Instant) {
+        self.deadline = deadline;
+    }
+
+    /// The underlying socket, for options such as `TCP_NODELAY`.
+    pub(super) fn socket(&self) -> &TcpStream {
+        &self.stream
+    }
+}
+
+impl Read for DeadlineStream {
+    fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
+        self.stream
+            .set_read_timeout(Some(remaining(self.deadline)?))?;
+        self.stream.read(buf)
+    }
+}
+
+impl Write for DeadlineStream {
+    fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
+        self.stream
+            .set_write_timeout(Some(remaining(self.deadline)?))?;
+        self.stream.write(buf)
+    }
+
+    fn flush(&mut self) -> io::Result<()> {
+        self.stream.flush()
+    }
+}
+
+/// Time left before `deadline`, or `TimedOut` once none is left. A zero
+/// socket timeout would mean "no timeout", so it is never returned.
+fn remaining(deadline: Instant) -> io::Result<Duration> {
+    deadline
+        .checked_duration_since(Instant::now())
+        .filter(|left| !left.is_zero())
+        .ok_or_else(|| io::Error::new(io::ErrorKind::TimedOut, "projection deadline passed"))
+}
+
+fn resolve(address: &str, deadline: Instant) -> io::Result<Vec<SocketAddr>> {
+    if let Ok(literal) = address.parse::<SocketAddr>() {
+        return Ok(vec![literal]);
+    }
+    let (sender, receiver) = mpsc::sync_channel(1);
+    let owned = address.to_owned();
+    thread::Builder::new()
+        .name("audit-projection-resolve".into())
+        .spawn(move || {
+            let result = owned
+                .to_socket_addrs()
+                .map(Iterator::collect::<Vec<SocketAddr>>);
+            // The caller may have given up; a closed channel is fine.
+            let _ = sender.send(result);
+        })?;
+    match receiver.recv_timeout(remaining(deadline)?) {
+        Ok(result) => {
+            let resolved = result?;
+            remaining(deadline)?;
+            Ok(resolved)
+        }
+        Err(_) => Err(io::Error::new(
+            io::ErrorKind::TimedOut,
+            "projection address lookup exceeded the deadline",
+        )),
+    }
 }
 
 #[cfg(test)]

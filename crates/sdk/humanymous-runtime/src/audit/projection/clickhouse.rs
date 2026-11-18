@@ -20,19 +20,26 @@
 //!   Credentials go through [`ClickHouseSink::set_auth`] only, never the URL.
 //! - A record appended after close is counted as dropped instead of sitting
 //!   in a buffer nothing will flush.
-//! - Only a 2xx status is success (Go accepted any status below 300).
-use super::RecordSink;
+//! - Only a 2xx status is success (Go accepted any status below 300, so an
+//!   informational 1xx status line counted as a delivered insert).
+//!
+//! Each insert has one total deadline, as Go's `http.Client.Timeout` did:
+//! resolving, connecting, writing the request and reading the response all end
+//! by it, and a server that trickles its response cannot stretch it. A missed
+//! deadline fails the insert and counts its rows as dropped. Host-name lookup
+//! is waited on only until the deadline; see [`DeadlineStream::connect`] for
+//! what that does not bound.
+use super::{DeadlineStream, RecordSink};
 use crate::audit::record::Record;
 use base64::Engine as _;
 use std::{
     io::{self, BufRead, BufReader, Read, Write},
-    net::{TcpStream, ToSocketAddrs},
     sync::{
         Arc, Condvar, Mutex, MutexGuard,
         atomic::{AtomicU64, Ordering},
     },
     thread,
-    time::Duration,
+    time::{Duration, Instant},
 };
 use zeroize::Zeroizing;
 
@@ -44,7 +51,8 @@ pub const DEFAULT_MAX_ROWS: usize = 10_000;
 pub const DEFAULT_MAX_WAIT: Duration = Duration::from_secs(1);
 /// Backlog used when the caller passes zero (Go `bufCap <= 0`).
 pub const DEFAULT_BACKLOG: usize = 100_000;
-/// Connect, write and read timeout for one insert (Go client timeout 10 s).
+/// Total deadline for one insert, from lookup to the response headers and any
+/// quoted error body (Go `http.Client{Timeout: 10 * time.Second}`).
 const REQUEST_TIMEOUT: Duration = Duration::from_secs(10);
 /// Error body bytes quoted in a failed insert (Go `io.LimitReader(.., 512)`).
 const ERROR_BODY_LIMIT: u64 = 512;
@@ -164,6 +172,8 @@ struct Shared {
     max_rows: usize,
     max_wait: Duration,
     backlog: usize,
+    /// Total deadline for one insert.
+    request_timeout: Duration,
     /// Complete `Authorization` header value, zeroized on replacement and drop.
     authorization: Mutex<Option<Zeroizing<String>>>,
     state: Mutex<State>,
@@ -215,7 +225,8 @@ impl Shared {
             head.push_str("\r\n");
         }
         head.push_str("\r\n");
-        let mut stream = connect(&self.target.dial)?;
+        let deadline = Instant::now() + self.request_timeout;
+        let mut stream = DeadlineStream::connect(&self.target.dial, deadline)?;
         stream.write_all(head.as_bytes())?;
         stream.write_all(body)?;
         stream.flush()?;
@@ -255,21 +266,6 @@ impl Shared {
             let _ = self.flush();
         }
     }
-}
-
-fn connect(address: &str) -> io::Result<TcpStream> {
-    let mut last = None;
-    for resolved in address.to_socket_addrs()? {
-        match TcpStream::connect_timeout(&resolved, REQUEST_TIMEOUT) {
-            Ok(stream) => {
-                stream.set_read_timeout(Some(REQUEST_TIMEOUT))?;
-                stream.set_write_timeout(Some(REQUEST_TIMEOUT))?;
-                return Ok(stream);
-            }
-            Err(error) => last = Some(error),
-        }
-    }
-    Err(last.unwrap_or_else(|| io::Error::other("clickhouse address resolved to nothing")))
 }
 
 /// Read the status line and skip the headers, leaving the body unread.
@@ -324,6 +320,15 @@ impl ClickHouseSink {
     /// Validate the endpoint and start the background flusher. An unsafe
     /// table name falls back to [`DEFAULT_TABLE`], as in Go.
     pub fn new(options: ClickHouseOptions) -> io::Result<Self> {
+        Self::with_request_timeout(options, REQUEST_TIMEOUT)
+    }
+
+    /// [`ClickHouseSink::new`] with another total insert deadline, so tests
+    /// can exercise a missed deadline quickly.
+    pub(super) fn with_request_timeout(
+        options: ClickHouseOptions,
+        request_timeout: Duration,
+    ) -> io::Result<Self> {
         let target = Target::parse(&options.endpoint, &options.table)?;
         let pick = |value: usize, default: usize| if value == 0 { default } else { value };
         let shared = Arc::new(Shared {
@@ -335,6 +340,7 @@ impl ClickHouseSink {
                 options.max_wait
             },
             backlog: pick(options.backlog, DEFAULT_BACKLOG),
+            request_timeout,
             authorization: Mutex::new(None),
             state: Mutex::new(State {
                 buffer: Vec::new(),
