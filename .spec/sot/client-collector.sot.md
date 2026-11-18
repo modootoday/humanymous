@@ -3,7 +3,7 @@ id: sot:root/client-collector
 title: Rust browser signal collection and generated WASM boundary
 status: active
 created: 2026-11-07T01:30:00Z
-updated: 2026-11-17T23:59:00Z
+updated: 2026-11-18T12:00:00Z
 verify:
   - cargo test -p humanymous-collector --locked
 rel:
@@ -538,6 +538,22 @@ ALLOW effect. ALLOW forwarded once is `ceiling_reached`, DENY or CHALLENGE
 with nothing forwarded is `ceiling_not_reached` with the actor's own reported
 BOT signals listed; neither is block credit or a detection claim. The case
 fails on missing, unbound, unpaced (below dwell+think on either proxy),
-unprovenanced (browser/runtime image ID, user agent) or inconsistent evidence. Product-e2e drivers keep replaying the
+unprovenanced (browser/runtime image ID, user agent) or inconsistent evidence.
+
+Owner decision C9 (issue #75, 2026-11-18) requires a coherent actor and
+approves the 3-epoch / 7-record / fixture `ceiling` contract above. The bound
+browser ceiling epoch must attest `actor_coherent: true`. `false` or any
+non-boolean value fails the case (`actor_not_coherent`). An absent attestation,
+on otherwise gap-free evidence, leaves it `not_evaluated`: the runner records
+no case, so qualification keeps `coherent browser ceiling` unavailable and the
+private report keeps the observation with `classification: null`. An absent
+attestation never passes and never masks another gap, which still fails. Only
+`actor_coherent: true` with every other check met passes, and only then is the
+observation classified `ceiling_reached` or `ceiling_not_reached`. The
+current lab actor (headless Firefox ESR under WebDriver/geckodriver) emits no
+attestation, so the case is `not_evaluated` there. How a coherent actor is
+defined and attested (headed browser, `dom.webdriver.enabled`, human input) is
+a later SoT delta; browser settings are not changed to steer a verdict. No
+score, weight, threshold, rule, signal or verdict band changes. Product-e2e drivers keep replaying the
 stripped epoch's report. Native and isolated headless Firefox component results
 are not Docker product evidence.
