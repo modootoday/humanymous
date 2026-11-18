@@ -7094,9 +7094,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/audit/log/mod.rs",
-      "sha256": "561e0ef160cd3b23c4210dbace9a18298b76e87eb980965ba64bfd75d296e4a4",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Durable per-node audit Log where the WAL is the authority: open restores an authenticated chain (or explicitly initializes one) from stable provisioned node id, non-empty HMAC key and writer seed, optionally against a trusted head from outside the WAL, and requires the witness key to differ from the writer and agree with the stored head; append seals and durably writes before advancing, checkpoint persists a signed (and, when configured, co-signed with required WitnessDurability) head every checkpoint_every records, and any checkpoint failure poisons the writer; emit_and_act runs the side effect only after append succeeds (ordering, not atomicity). Tests cover empty HMAC refusal, empty event type, tamper detection on restart, disk-failure poisoning, witnessed restart, no silent writer-only downgrade and proof persistence.",
+      "sha256": "07a3f9d80d66834bd46747f9cf3b8dc3d60705094e6d107b1a8a8770f316d73c",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Durable per-node audit Log where the WAL is the authority: open restores an authenticated chain (or explicitly initializes one) from stable provisioned node id, non-empty HMAC key and writer seed, optionally against a trusted head from outside the WAL, and requires the witness key to differ from the writer and agree with the stored head; append seals and durably writes before advancing, checkpoint persists a signed (and, when configured, co-signed with required WitnessDurability) head every checkpoint_every records, and any checkpoint failure poisons the writer; emit_and_act runs the side effect only after append succeeds (ordering, not atomicity). Tests cover empty HMAC refusal, empty event type, tamper detection on restart, disk-failure poisoning, witnessed restart, no silent writer-only downgrade and proof persistence. Re-reviewed 2026-11-18: attach_projection adds an Arc<dyn projection::RecordSink> (Go Config.Projections); append feeds projections only after the WAL append and any due checkpoint succeed and ignores their results, so a refused or failed append is never projected and projections never reach the hash chain or the fail-closed writer state. The new test projections_receive_only_fully_sealed_records pins that ordering across a checkpoint failure and restart.",
       "pages": [
         "docs/how-to/verify-audit-log.md",
         "docs/reference/security-audit.md"
@@ -7113,9 +7113,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/audit/log/sealed.rs",
-      "sha256": "23b3cecfd8f5147713e6d371b8a7043f1147049407d31086e393d1e9c92f5d1c",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "SealedLog: one non-extractable lifetime owner of existing sealed key custody and the WAL/witness writer, built from trusted composition-root options (key and WAL directories, owner, node, cadence, explicit allow_new_history, optional trusted head, require_external_witness) and a borrowed zeroizing UnlockCredential. A missing required witness or invalid options/unpinned recovery fail in preflight before any state access or credential consumption; keys are never generated; errors carry only a SealedLogStage and io::ErrorKind. recover_pinned is the explicit operator path that authenticates an independent latest head and may append a missing local checkpoint; tests cover the preflight ordering.",
+      "sha256": "e94ab1923ab7d7e27d1d3cbb9a4280c1992129630833caa4cdb8927c35da9a3c",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "SealedLog: one non-extractable lifetime owner of existing sealed key custody and the WAL/witness writer, built from trusted composition-root options (key and WAL directories, owner, node, cadence, explicit allow_new_history, optional trusted head, require_external_witness) and a borrowed zeroizing UnlockCredential. A missing required witness or invalid options/unpinned recovery fail in preflight before any state access or credential consumption; keys are never generated; errors carry only a SealedLogStage and io::ErrorKind. recover_pinned is the explicit operator path that authenticates an independent latest head and may append a missing local checkpoint; tests cover the preflight ordering. Re-reviewed 2026-11-18: attach_projection forwards a best-effort projection to the owned Log; custody and the writer stay non-extractable.",
       "pages": [
         "docs/how-to/verify-audit-log.md",
         "docs/how-to/key-management.md"
@@ -7174,12 +7174,48 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/audit/mod.rs",
-      "sha256": "4f9f9f5cfe6bb5a8d964bce1f1f9b258b2b3388ac16873434a9e501bf1b5e197",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Module root of the runtime audit subsystem: always exposes checkpoint, lifecycle, merkle, record, storage and verification, and gates control, keys, log and sink to Unix or Windows targets. It contains declarations only.",
+      "sha256": "70d39df68801040e46e4327f6cd4e1f1a465c41a19192e45f3eb43b9b59710cc",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Module root of the runtime audit subsystem: always exposes checkpoint, lifecycle, merkle, record, storage and verification, and gates control, keys, log, projection and sink to Unix or Windows targets. It contains declarations only. Re-reviewed 2026-11-18 for the added projection module.",
       "pages": [
         "docs/reference/security-audit.md",
         "docs/how-to/verify-audit-log.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/audit/projection/mod.rs",
+      "sha256": "8bd6a1315222a2a792286cb97999ba3d6d179f18ed778ec98c9fbf9419b3045e",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Projection root ported from legacy internal/audit/sink_record.go (oracle 981d25c): the RecordSink trait (append_record, flush, close) for best-effort projections that must enqueue without blocking and count every accepted record they cannot deliver. The WAL authority inside Log is deliberately not pluggable through this trait. Module docs state that a projection is never evidence of audit coverage. Declarations only, plus the redis_stream and clickhouse submodules.",
+      "pages": [
+        "docs/reference/security-audit.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/audit/projection/redis_stream.rs",
+      "sha256": "bc78012f1dea4665eec2b9c63521ac5fbbfb67f10bbe796f52a6a3dcadd37aa3",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Redis Streams projection ported from legacy internal/audit/sink_redis.go (oracle 981d25c): RedisStreamSink with a bounded mpsc backlog (default 4096) and drop-and-count, one named shipper thread, lazy dial with 3 s dial, write and read timeouts, a 1 s park after a failed dial, and one XADD <stream> MAXLEN ~ <max_len> <seq>-0 record <serde JSON> per record, so a re-ship cannot duplicate an entry. RESP encoding and a bounded single-reply reader are sink-local because the audit feature does not build the gateway B23 client. Flush is a no-op and close stops the shipper without waiting, as in Go. Deliberate differences: dial, I/O, server-error and post-close losses are counted in dropped() (Go counted only a full backlog), the bulk id reply is consumed in full (Go read one line), and a server error reply keeps the in-sync connection. No authentication, as in Go.",
+      "pages": [
+        "docs/reference/security-audit.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/audit/projection/clickhouse.rs",
+      "sha256": "64bcc55365f3f366138b0c29cc89be514c0a432e416928f2e65785226e1b9506",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "ClickHouse projection ported from legacy internal/audit/sink_clickhouse.go (oracle 981d25c): ClickHouseSink buffers rows (defaults 10000 rows, 1 s, 100000 backlog) and a condvar-driven flusher thread POSTs batches on max_rows, max_wait, flush() and close as INSERT INTO <table> FORMAT JSONEachRow with async_insert=1, wait_for_async_insert=1 and input_format_skip_unknown_fields=1 over a direct HTTP/1.1 Connection: close request with 10 s timeouts and bounded status and header parsing. valid_table_name mirrors ^[A-Za-z_][A-Za-z0-9_]*$ and an unsafe name falls back to audit_log. set_auth sends a zeroized Basic Authorization header kept out of the URL. A full backlog, transport failure or non-2xx status counts the rows as dropped, and the error quotes at most 512 body bytes. Deliberate differences: only http:// endpoints without query, fragment or embedded credentials are accepted (no TLS client in the audit feature; Go also spoke HTTPS), appends after close are dropped and counted, and only 2xx is success.",
+      "pages": [
+        "docs/reference/security-audit.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs",
+      "sha256": "411c91b6a32fdc781c1ff2ee2f8df9ccfcebb26b4995013bbcc02d08e20ba74b",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unit tests for the projections: the five legacy sink_adapters_test.go cases (RESP encoding, XADD against an in-process RESP stand-in that answers with the real bulk id across two records on one connection, drop-when-full on an unstarted sink, JSONEachRow insert against an in-process HTTP stand-in, table-name validation and fallback) plus counted Redis outage and error replies, ClickHouse Basic auth and the max_rows trigger, refused-insert and backlog counting, and plain-http endpoint validation. Stand-ins bind 127.0.0.1 only.",
+      "pages": [
+        "docs/reference/security-audit.md"
       ]
     },
     {

@@ -22,6 +22,7 @@ different questions and must be reported separately.
 | `storage::Wal` and `log::Log` | Durable local append and authenticated replay; rollback resistance needs a trusted head retained outside the local WAL |
 | External witness client/process | A separately supervised co-signer protocol; a trusted broker still owns process/peer authentication, pipe provenance, deadlines and reaping |
 | `sink::DurableSink` | Authenticated bounded local export and a receipt; no remote delivery, WORM storage or automatic personal-data sanitization is implied |
+| `projection` Redis and ClickHouse sinks | Best-effort, lossy copies of sealed records for a hot tail or a columnar store; they never gate the seal and are not evidence of audit coverage |
 | `keys::backups::BackupInventory` | Signed externally pinned inventory of exact encrypted local files; retirement requires consumed approval and does not erase unknown/remote/snapshot copies |
 
 The compatibility verifier can return `OK: true` with class `hmac-unchecked`
@@ -171,6 +172,26 @@ already authenticated by the caller, while the caller still owns scope, semantic
 revision/CAS, signed WAL correlation and audit-before-apply. A native pending
 replacement is not the runtime's semantic candidate state. Failed writes poison
 the owner until reopen; there is no automatic reset, discard or effect retry.
+
+## Redis and ClickHouse projections
+
+`Log::attach_projection` adds a `projection::RecordSink`. A projection receives
+a record only after the WAL append and any due checkpoint succeed, so a refused
+or failed append is never projected. It must return without waiting on the
+network, and its failures never reach the writer. The WAL stays the only
+authority: a projection outage cannot release an effect, alter a verdict or
+stand in for the authenticated history and its checkpoints.
+
+`RedisStreamSink` sends one `XADD <stream> MAXLEN ~ <n> <seq>-0 record <json>`
+per record from a bounded backlog. `ClickHouseSink` batches records into
+`INSERT INTO <table> FORMAT JSONEachRow` over plain HTTP, with an optional Basic
+credential that is kept out of the endpoint string. A table name that is not a
+plain identifier falls back to `audit_log`. HTTPS endpoints, and endpoints that
+carry a query or embedded credentials, are refused when the sink is built.
+Each sink counts every record it accepted but did not deliver in `dropped()`.
+That count covers a full backlog, a failed connection or insert, a server error
+reply and appends after close. A delivered copy is not authenticated by the
+destination, and the gateway flag surface does not yet compose these sinks.
 
 ## Prepared passphrase rotation
 

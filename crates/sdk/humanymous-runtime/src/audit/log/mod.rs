@@ -6,6 +6,7 @@ use crate::audit::{checkpoint::CheckpointWitness, keys::custody::Durability};
 use crate::audit::{
     checkpoint::{Checkpoint, Witness},
     merkle::Tree,
+    projection::RecordSink,
     record::{Record, record_hash, record_mac},
     storage::{RecoveryPolicy, Wal},
 };
@@ -14,7 +15,7 @@ pub use proofs::{CheckpointInclusion, InclusionProof};
 pub use sealed::{
     PinnedWitness, SealedLog, SealedLogError, SealedLogOptions, SealedLogStage, UnlockCredential,
 };
-use std::io;
+use std::{io, sync::Arc};
 
 /// Required persistence strength for a separately supervised witness receipt.
 #[derive(Clone, Copy)]
@@ -55,6 +56,7 @@ pub struct Log {
     poisoned: bool,
     external_witness: Option<Box<dyn CheckpointWitness>>,
     witness_durability: WitnessDurability,
+    projections: Vec<Arc<dyn RecordSink>>,
 }
 impl Log {
     /// Restore an authenticated chain or explicitly initialize an empty one.
@@ -161,7 +163,16 @@ impl Log {
             poisoned: false,
             external_witness,
             witness_durability,
+            projections: Vec::new(),
         })
+    }
+
+    /// Add a best-effort projection (Go `Config.Projections`). It receives each
+    /// record only after the WAL append and any due checkpoint succeed, so a
+    /// refused or failed append is never projected; its own failures never
+    /// reach the writer. The WAL remains the only audit authority.
+    pub fn attach_projection(&mut self, projection: Arc<dyn RecordSink>) {
+        self.projections.push(projection);
     }
 
     /// Seal and durably append before advancing state or releasing an action.
@@ -200,6 +211,10 @@ impl Log {
             || self.sequence - last >= self.config.checkpoint_every
         {
             self.checkpoint()?;
+        }
+        for projection in &self.projections {
+            // Best-effort: a projection counts its own losses.
+            let _ = projection.append_record(&record);
         }
         Ok(record)
     }
@@ -508,6 +523,65 @@ mod tests {
         .unwrap();
         assert_eq!(restored.sequence(), 1);
         restored.checkpoint().unwrap();
+        drop(restored);
+        clean(&dir);
+    }
+
+    #[derive(Default)]
+    struct Recorder(std::sync::Mutex<Vec<Record>>);
+    impl RecordSink for Recorder {
+        fn append_record(&self, record: &Record) -> io::Result<()> {
+            self.0.lock().unwrap().push(record.clone());
+            Ok(())
+        }
+        fn flush(&self) -> io::Result<()> {
+            Ok(())
+        }
+        fn close(&self) -> io::Result<()> {
+            Err(io::Error::other(
+                "a projection failure never reaches the writer",
+            ))
+        }
+    }
+    /// Go chain.go fed `Config.Projections` after the WAL append. Rust feeds
+    /// them only after the append and any due checkpoint succeed, so a refused
+    /// record or a failed checkpoint is never projected, and projections are
+    /// not part of the hash chain.
+    #[test]
+    fn projections_receive_only_fully_sealed_records() {
+        let dir = dir();
+        let mut log = Log::open(
+            Wal::open(&dir, WalOptions::default()).unwrap(),
+            config(),
+            None,
+            true,
+        )
+        .unwrap();
+        let recorder = Arc::new(Recorder::default());
+        log.attach_projection(recorder.clone());
+        assert!(log.append(Record::default()).is_err());
+        let sidecar = dir.join("checkpoints.jsonl");
+        fs::create_dir(&sidecar).unwrap();
+        assert!(log.emit_and_act(event(), |_| ()).is_err());
+        assert_eq!(log.sequence(), 1, "the first record is durable");
+        assert!(
+            recorder.0.lock().unwrap().is_empty(),
+            "refused records and records whose checkpoint failed are not projected"
+        );
+        fs::remove_dir(sidecar).unwrap();
+        drop(log);
+        let mut restored = Log::open(
+            Wal::open(&dir, WalOptions::default()).unwrap(),
+            config(),
+            None,
+            false,
+        )
+        .unwrap();
+        restored.attach_projection(recorder.clone());
+        let second = restored.append(event()).unwrap();
+        assert_eq!(second.seq, 2);
+        assert_eq!(*recorder.0.lock().unwrap(), vec![second.clone()]);
+        assert_eq!(restored.records().unwrap()[1], second);
         drop(restored);
         clean(&dir);
     }
