@@ -3,7 +3,7 @@ id: sot:root/runtime-application
 title: Runtime application and session owner
 status: active
 created: 2026-11-07T00:20:25Z
-updated: 2026-11-08T21:30:00Z
+updated: 2026-11-18T00:00:00Z
 verify: [cargo test -p humanymous-runtime --locked, cargo clippy -p humanymous-runtime --all-targets --locked -- -D warnings]
 rel:
   governs: [crates/sdk/humanymous-runtime/**]
@@ -345,6 +345,79 @@ the budget, but deadline is checked before origin. Cancellation after origin
 dispatch cannot undo an origin effect. Independent origin bypass denial and
 TLS, process isolation, real-browser/keyboard/AT controls and Docker product
 e2e are later mandatory qualification gates. No speed/motor requirement exists.
+
+### Origin failure, origin cloak and security headers (owner decision C10, 2026-11-18)
+
+Owner decision C10 on issue #75 (comment 6968092014, "decide as recommended")
+settles the questions #105 left open (comment 6965883746). Scoring is
+unchanged: no weight, threshold, hard rule, verdict band or signal ID moves.
+
+**Client status on origin failure.** After a committed ALLOW record, an origin
+refusal before any client byte answers HTTP 503 with body
+`{"error":"<code>"}`. The code is one of the gateway's static `origin_*` codes:
+`origin_connect`, `origin_write`, `origin_read`, `origin_timeout`,
+`origin_framing`, `origin_chunk_framing`, `origin_chunk_truncated`,
+`origin_chunk_count`, `origin_header_budget`, `origin_truncated_head`,
+`origin_trailing_frame`, `origin_stream_budget` or `origin_stream_truncated`.
+A consumed counter keeps its status-bound ACK. Go answered 502 with an empty
+body. That is a documented, deliberate difference: the client gets a typed
+code, and the ACK binds the actual status. Once a response has started, the
+gateway closes the socket. It never appends a 503 and never writes a record.
+
+**`upstream.error` audit record.** The runtime appends exactly one record per
+such origin failure, before the client is answered. This is legacy
+`handleUpstreamError`, PLAN-07 R16. The fields below are what
+`Application::upstream_failure` emits, on both the plaintext and TLS paths:
+
+| Field | Value |
+| --- | --- |
+| `event_type` | `upstream.error` |
+| `actor.kind` | `system`, no actor pseudonym |
+| `tenant_id`, `host`, `config_version` | configured scope tenant, authority and revision |
+| `request_id`, `correlation_id`, `route_class` | copied from the linked ALLOW `runtime.decision` record |
+| `latency_us` | decision start to failure; `0` if the clock is unavailable |
+| `enforcement_mode` / `fail_mode` | `enforce` / `degraded` |
+| `fail_reason` | `upstream <class>: <code>`, static text only |
+| `upstream.status` | the status sent, `503` |
+| `upstream.error_class` | `timeout`, `canceled`, `connection_refused`, `eof`, `dns` or `unreachable` |
+
+`verdict`, `risk_score`, `triggered_rules` and `top_signals` stay empty. Raw
+transport error text, request bytes and credentials are never recorded. With a
+transport error, the class comes from its `io::ErrorKind`. Otherwise
+`origin_timeout` maps to `timeout`, a `*truncated*` code to `eof`, and any
+other code to `unreachable`. Refusals that are not `origin_*`, such as
+`deadline`, `connection_deadline` or `service_stopping`, write no
+`upstream.error` record. Pinned by `gateway::tests::browser::origin_failure_acknowledges_consumed_counter_without_claiming_zero_effects`
+and `gateway::request::tests::upstream_errors_map_to_stable_classes_without_raw_text`.
+
+**Audit write failure poisons the epoch.** If the `upstream.error` append
+fails, the session epoch is poisoned, the serving-epoch latch withdraws
+readiness, and the client gets 503 `{"error":"durable_audit"}`. That is
+fail-closed under AGENTS.md constraint 2. Go logged and continued; Rust
+deliberately does not. No retry, and no silent drop.
+
+**Origin-cloak key supply.** The `X-Hmny-Origin-Auth` HMAC key
+(`gateway::guard::OriginKey`, at least `MIN_ORIGIN_KEY` = 32 bytes) comes only
+from the private configuration source or audit custody. There is no
+environment-variable fallback, no argv source (secret argv is already
+forbidden) and no self-generated random key: Go's `-origin-key` flag and its
+random fallback are not ported. If cloaking is enabled without a valid key,
+startup is refused (fail-closed). The key never reaches logs, readiness,
+`Debug` or audit. Status: contract only. Attaching the header on the origin
+request is not wired yet.
+
+**Add-only security headers.** This amends the opaque-frame rule above for
+proxied origin responses only. The gateway may add `X-Content-Type-Options:
+nosniff`, `Referrer-Policy: strict-origin-when-cross-origin` and
+`X-Frame-Options: SAMEORIGIN`, each only when the origin did not already send
+that field (field names compared case-insensitively). It never overwrites,
+removes or reorders an origin field, and it leaves the status, entity bytes
+and duplicate `Set-Cookie` untouched. `Strict-Transport-Security` is opt-in
+by configuration, off by default, and is never added on a plaintext listener.
+Gateway-local responses and the native-stream profile are out of scope until
+qualified separately. The ACK still binds the status only. Go parity:
+`internal/gate/gate.go` `addSecurityHeaders` and `TestSecurityHeadersAddOnly`.
+Status: SoT delta approved, implementation not yet authored.
 
 ### Review reflected
 
@@ -1305,3 +1378,88 @@ facts even if the Frame survived unwinding. Two regressions cover those exact
 paths. Original404 was not executed or qualified. A first corrected-source fmt
 attempt failed Windows mapped-file1224; its receipt is retained, a normal retry
 passed, and no foreign reader/process was terminated.
+
+### Shipped-binary inherited witness input (C3, 2026-11-18)
+
+Owner decision C3 option A (issue #75 comment 6968092014, options in comment
+6962606199): the shipped `humanymous-runtime` binary accepts an external
+witness through descriptors its trusted supervisor lets it inherit, using the
+existing audit `WitnessServiceClient` frame codec, with the witness public key
+pinned in private configuration. This delta precedes the implementation.
+
+Source of the input. The only source is the private stdin configuration
+document, as object `audit.witness_input`, with these fields and no defaults
+except `consistency_proof`:
+
+- `read_fd`: inherited descriptor number that carries witness-to-runtime
+  frames (the read end of the witness's stdout pipe).
+- `write_fd`: inherited descriptor number that carries runtime-to-witness
+  frames (the write end of the witness's stdin pipe).
+- `witness_public`: the pinned witness ed25519 public key, 32 bytes.
+- `writer_public`: the pinned expected writer public key, 32 bytes.
+- `durability`: `file_and_directory` or `file_synced_namespace_unconfirmed`,
+  mapped to the existing `WitnessDurability`.
+- `consistency_proof`: optional proof from `audit.trusted_head` to the
+  witness's current head (default empty, at most 64 hashes).
+
+There is no environment variable, argument, file path or fixed default number
+for the descriptors or keys, and no fallback when the object is absent.
+Descriptor numbers must be at least 3 (0, 1 and 2 stay the configuration,
+readiness and diagnostic streams) and distinct. Both keys must differ.
+`witness_input` requires `audit.require_external_witness=true`; a configured
+input without that flag is invalid configuration.
+
+Handshake. The supervisor sends the private `WitnessServiceConfig` first frame
+(with the witness passphrase) to the witness itself. The runtime never sees
+that frame or the witness passphrase. The runtime consumes the witness's
+`ready` reply with `WitnessServiceClient::from_ready`, pinning
+`witness_public`, `writer_public`, `audit.node_id` and the bootstrap:
+`audit.trusted_head` absent selects `CreateNew` (the witness must report an
+empty head); present selects `Pinned{minimum: trusted_head,
+consistency_proof}`. The client is then wrapped by the existing
+`startup::ExternalWitness::new` (that is, `PinnedWitness`) and passed to
+`ServiceHost::bind_with_witness`. No frame, signature or proof logic is copied
+into the runtime, and `crates/sdk/humanymous-runtime/src/audit/` is unchanged.
+
+Descriptor adoption. `unsafe_code` is forbidden, so the runtime cannot adopt a
+raw descriptor number. On Linux it opens `/proc/self/fd/<n>`; on other Unix it
+opens `/dev/fd/<n>`. Each open uses the expected direction (read-only or
+write-only) with `O_NONBLOCK`, which is then cleared, so the open itself never
+waits for a peer. A readerless or silent peer is not detected at open: it
+surfaces as end of stream, a write error or the supervisor's startup deadline
+during the handshake. The opened object
+must be a FIFO (anonymous pipe); sockets, regular files and terminals are
+refused. On Linux the original descriptor's access mode, read from
+`/proc/self/fdinfo/<n>`, must match the expected direction, so swapped numbers
+are refused before any read. The inherited descriptor itself stays open for
+the process lifetime; the runtime spawns no child. Windows has no inherited
+handle input in this delta: a configured `witness_input` refuses startup there
+as unsupported.
+
+Fail-closed startup. All of this runs in the binary entrypoint before the
+async runtime, before custody or the WAL is opened, and before the unlock
+credential is consumed. A missing, closed, non-FIFO or wrong-direction
+descriptor, a malformed or refused `ready` reply, a witness key different from
+the pin, a writer or node mismatch on a pinned head, a failed consistency
+proof, or a non-empty witness under `CreateNew` each refuse startup: the
+process exits nonzero with a static diagnostic and writes no readiness line.
+`require_external_witness=true` without `witness_input` keeps the existing
+refusal ("required external witness unavailable"). The handshake read has no
+in-process deadline; the supervisor's startup deadline bounds it, as for all
+blocking witness I/O in this SoT.
+
+Witness loss. After readiness, any witness I/O error, end of stream, refusal or
+invalid receipt poisons the client permanently (existing client semantics).
+The next audit append fails, so the existing application path poisons the
+serving epoch and answers 503 `durable_audit` without an origin effect. The
+epoch never recovers in that process. There is no reconnect, no writer-only
+fallback and no retry of a prior effect. Recovery is a supervised restart with
+a fresh witness handshake against an independently pinned head.
+
+Claims. This adds a transport input to the shipped binary. It is not
+independence evidence: same-host, same-UID or same-container placement stays
+possible, readiness keeps reporting witness independence as unqualified, and
+`product_qualified` stays false. Native Unix tests (real inherited descriptors
+across exec, and in-process pipes) are component evidence only. The Docker
+`runtime-binary-witness-transport` case is the completion authority; it can
+now be authored against this input but is not part of this delta.

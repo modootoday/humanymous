@@ -6,9 +6,10 @@
 //!
 //! Deliberate deltas from legacy: transitions never call an inference
 //! `Runtime` setter, so no model is activated; production activation requires a
-//! separately accepted design. Ed25519 signature verification is not available
-//! in this build (its crate is not a dependency of this package), so a signed
-//! policy fails closed via [`BundleManager::with_public_key`]; the unsigned lab
+//! separately accepted design. This package has no Ed25519 implementation, so
+//! the signed policy takes a caller-supplied [`BundleVerifier`] via
+//! [`BundleManager::with_verifier`] (the Runtime supplies the Ed25519 one);
+//! [`BundleManager::with_public_key`] still fails closed here. The unsigned lab
 //! policy is explicit via [`BundleManager::unsigned_lab`]. A digest pin is
 //! integrity only, not an authenticated supply chain.
 use super::{CorrectionError, lock};
@@ -41,10 +42,29 @@ struct Lifecycle {
     staged: Option<BundleIdentity>,
 }
 
+/// Detached-signature check over the exact bundle bytes (legacy
+/// `ed25519.Verify(pubkey, raw, sig)`). Implementations must be pure and
+/// return `false` for any malformed signature.
+pub trait BundleVerifier: Send + Sync {
+    /// Whether `signature` authenticates exactly `bundle_bytes`.
+    fn verify(&self, bundle_bytes: &[u8], signature: &[u8]) -> bool;
+}
+
 /// Lab lifecycle manager. Safe for concurrent use; every transition is atomic.
-#[derive(Debug, Default)]
+#[derive(Default)]
 pub struct BundleManager {
     state: Mutex<Lifecycle>,
+    verifier: Option<Box<dyn BundleVerifier>>,
+}
+
+impl std::fmt::Debug for BundleManager {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter
+            .debug_struct("BundleManager")
+            .field("state", &self.state)
+            .field("signed", &self.signed())
+            .finish()
+    }
 }
 
 impl BundleManager {
@@ -60,6 +80,21 @@ impl BundleManager {
         Err(CorrectionError::SignatureUnsupported)
     }
 
+    /// Signed policy: every stage requires a detached signature that
+    /// `verifier` accepts over the exact staged bytes (legacy behavior once a
+    /// public key was configured).
+    pub fn with_verifier(verifier: Box<dyn BundleVerifier>) -> Self {
+        Self {
+            state: Mutex::default(),
+            verifier: Some(verifier),
+        }
+    }
+
+    /// Whether a signature is required to stage.
+    pub fn signed(&self) -> bool {
+        self.verifier.is_some()
+    }
+
     /// Verify and stage a candidate without serving it: size bound, optional
     /// exact digest pin, shape-valid decode and running-schema match.
     ///
@@ -71,12 +106,31 @@ impl BundleManager {
         bundle_bytes: &[u8],
         expected_digest: Option<&str>,
     ) -> Result<BundleIdentity, CorrectionError> {
+        self.stage_signed(bundle_bytes, expected_digest, None)
+    }
+
+    /// [`Self::stage`] with an optional detached signature, checked in the
+    /// legacy order: size, digest pin, signature, shape decode, schema pin.
+    /// Under the signed policy a missing or invalid signature is a
+    /// `Signature` error; under the unsigned lab policy it is ignored, as in
+    /// legacy when no public key was configured.
+    pub fn stage_signed(
+        &self,
+        bundle_bytes: &[u8],
+        expected_digest: Option<&str>,
+        signature: Option<&[u8]>,
+    ) -> Result<BundleIdentity, CorrectionError> {
         if bundle_bytes.is_empty() || bundle_bytes.len() > MAX_BUNDLE_BYTES {
             return Err(CorrectionError::Limit);
         }
         let digest = digest(bundle_bytes);
         if expected_digest.is_some_and(|expected| expected != digest) {
             return Err(CorrectionError::Digest);
+        }
+        if let Some(verifier) = &self.verifier
+            && !signature.is_some_and(|signature| verifier.verify(bundle_bytes, signature))
+        {
+            return Err(CorrectionError::Signature);
         }
         let model = Mlp::from_json(bundle_bytes).map_err(|_| CorrectionError::InvalidBundle)?;
         if model.schema_hash() != schema_hash() {

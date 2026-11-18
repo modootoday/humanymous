@@ -215,10 +215,20 @@ deployments/lab/images; build/rust remains another owner's read-only surface.
 
 Output lab-report.json schema `humanymous.product-lab/2` has evidence_types,
 cases[{id,status,detail}], components.runtime (actual binary pilot report),
-components.wargame, components.independent_witness, optional components.collector,
-required_unavailable, full_product_qualified and
-release_ready. Exit 0 means scoped cases passed; --require-full returns 2 while
-full product gates are unavailable; failures return 1. Never relabel exit 2 as
+components.wargame, components.target_attestation, components.independent_witness,
+optional components.collector, required_unavailable, required_cases,
+full_product_qualified and release_ready, plus the pilot-read top-level
+status/qualification/errors/skips/source_sha/documentation_review_sha256.
+required_unavailable is derived: a capability is listed unless every one of its
+required case IDs (orchestration/qualification.rs, a superset of the delivery
+pilot IDs) was evaluated in this run and passed; skips counts required cases not
+evaluated. full_product_qualified is true only with all required cases passed,
+no failed case and owned cleanup. Exit 0 means scoped cases passed; --require-full
+returns 2 while full product gates are unavailable; failures return 1.
+The default profile's attestation-pilot (network none, same hardening) has the
+shipped runtime binary generate its installation key at lab start, pins the
+enrollment public key and verifies fresh-nonce answers; installation-target-binding
+and unknown-target-refused are recorded from that exact eight-row ledger. Never relabel exit 2 as
 product success. Collector is optional Firefox component evidence, never a real
 human/AT or Meari+CEF product browser. No sandbox-disabling option is supplied.
 
