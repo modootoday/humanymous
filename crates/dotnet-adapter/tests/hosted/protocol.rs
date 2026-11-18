@@ -11,17 +11,31 @@ const QUEUE_LIMIT: usize = 64;
 pub(super) enum HandoffMode {
     Normal,
     Rewrite,
+    RewriteMethod,
+    RewriteTarget,
+    RewriteHost,
+    RewriteHeader,
     ResponseStarted,
     Expire,
+    /// Delay handoff past a short test-authority expiry, within the request deadline.
+    Hold,
 }
 
-#[derive(Clone, Copy, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "operation", rename_all = "kebab-case", deny_unknown_fields)]
 pub(super) enum Control {
     GcStart,
     GcStop,
     DisposeHost,
-    HandoffMode { mode: HandoffMode },
+    HandoffMode {
+        mode: HandoffMode,
+    },
+    /// Install a new host configuration; the previous installation is disposed.
+    ReplaceHost {
+        configuration: serde_json::Value,
+    },
+    /// Load the adapter into a collectible context, twice; both must refuse.
+    CollectibleProbe,
     Stop,
     Counters,
 }
@@ -84,12 +98,26 @@ pub(super) enum Frame {
         #[serde(deserialize_with = "resources")]
         native_resources: Option<u64>,
     },
+    #[serde(rename = "replaced")]
+    Replaced { ok: bool },
+    #[serde(rename = "collectible")]
+    Collectible { rejected: bool, reason: Collectible },
     #[serde(rename = "stopped")]
     Stopped {
         contacts: u64,
         mutations: u64,
         collections: u64,
     },
+}
+
+/// Closed reasons for a refused collectible load.
+#[derive(Clone, Copy, Debug, Deserialize, Serialize, PartialEq, Eq)]
+#[serde(rename_all = "kebab-case")]
+pub(super) enum Collectible {
+    /// JIT: the adapter refused construction inside a collectible context.
+    CollectibleContext,
+    /// NativeAOT: no dynamic assembly loading exists to attempt.
+    NoDynamicLoading,
 }
 
 fn resources<'de, D: Deserializer<'de>>(input: D) -> Result<Option<u64>, D::Error> {
@@ -193,7 +221,13 @@ impl Ingress {
         self.phase = match (&frame, self.phase) {
             (Frame::Starting { pid }, Phase::Starting) if *pid == self.pid => Phase::Ready,
             (Frame::Ready { pid, .. }, Phase::Ready) if *pid == self.pid => Phase::Running,
-            (Frame::Contact { .. } | Frame::Counters { .. }, Phase::Running) => Phase::Running,
+            (
+                Frame::Contact { .. }
+                | Frame::Counters { .. }
+                | Frame::Replaced { .. }
+                | Frame::Collectible { .. },
+                Phase::Running,
+            ) => Phase::Running,
             (Frame::Stopped { .. }, Phase::Running) => Phase::Stopped,
             _ => return Err("host frame sequence or PID"),
         };
@@ -235,6 +269,46 @@ mod tests {
         assert!(ingress.pending.is_empty());
         ingress.eof().unwrap();
         assert_eq!(receive.try_iter().count(), 4);
+    }
+
+    #[test]
+    fn replaced_and_collectible_frames_are_closed_and_running_only() {
+        let replaced: &[u8] = b"{\"kind\":\"replaced\",\"ok\":true}\n";
+        let collectible: &[u8] =
+            b"{\"kind\":\"collectible\",\"rejected\":true,\"reason\":\"collectible-context\"}\n";
+        let (mut ingress, receive) = Ingress::new(7);
+        ingress
+            .offer_chunk(&[START, READY, replaced, collectible, STOP].concat())
+            .unwrap();
+        ingress.eof().unwrap();
+        let frames: Vec<_> = receive.try_iter().collect();
+        assert_eq!(frames[2], Frame::Replaced { ok: true });
+        assert_eq!(
+            frames[3],
+            Frame::Collectible {
+                rejected: true,
+                reason: Collectible::CollectibleContext
+            }
+        );
+        let (mut early, _receive) = Ingress::new(7);
+        early.offer_chunk(START).unwrap();
+        assert!(early.offer_chunk(replaced).is_err());
+        let (mut unknown, _receive) = Ingress::new(7);
+        unknown.offer_chunk(&[START, READY].concat()).unwrap();
+        assert!(
+            unknown
+                .offer_chunk(
+                    b"{\"kind\":\"collectible\",\"rejected\":true,\"reason\":\"unloaded\"}\n"
+                )
+                .is_err()
+        );
+        let control = Control::ReplaceHost {
+            configuration: serde_json::json!({"timeoutMs": 2000}),
+        };
+        assert_eq!(
+            serde_json::to_value(&control).unwrap(),
+            serde_json::json!({"operation":"replace-host","configuration":{"timeoutMs":2000}})
+        );
     }
 
     #[test]
@@ -430,6 +504,35 @@ mod tests {
         assert_eq!(encoded[5]["mode"], "response-started");
         assert_eq!(encoded[8]["operation"], "stop");
         assert!(controls.offer(Control::Counters).is_err());
+    }
+
+    #[test]
+    fn handoff_modes_equal_the_pilot_closed_set() {
+        for mode in [
+            "normal",
+            "rewrite",
+            "rewrite-method",
+            "rewrite-target",
+            "rewrite-host",
+            "rewrite-header",
+            "response-started",
+            "expire",
+            "hold",
+        ] {
+            let control: Control =
+                serde_json::from_value(serde_json::json!({"operation":"handoff-mode","mode":mode}))
+                    .unwrap();
+            assert_eq!(
+                serde_json::to_value(control).unwrap()["mode"],
+                serde_json::json!(mode)
+            );
+        }
+        assert!(
+            serde_json::from_value::<Control>(
+                serde_json::json!({"operation":"handoff-mode","mode":"rewrite-body"})
+            )
+            .is_err()
+        );
     }
 
     #[test]

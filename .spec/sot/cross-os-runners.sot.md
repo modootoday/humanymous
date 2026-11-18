@@ -1043,7 +1043,7 @@ humanymous.parent-context-binding/1 schema: schema, run_nonce, actor_sid,
 source_sha, context_sha256, verified_manifest_sha256, provenance_sha256,
 original_budget and preflight_environment, in that declaration order. Exact SID
 and four original budget fields must equal the decoded parent context; the
-github-hosted enum value is metadata only. Invocation source_sha is distinct
+github-hosted and root-allocated-local enum values are metadata only. Invocation source_sha is distinct
 from managed/native/harness compiled lineages. Binding uses compact typed JSON
 plus LF; provenance commitment uses typed compact declaration-order JSON without
 LF, never arbitrary map ordering. All decoded claims remain unverified; codec

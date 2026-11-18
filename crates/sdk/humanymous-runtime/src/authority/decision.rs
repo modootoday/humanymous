@@ -121,6 +121,45 @@ pub struct Authority {
     audit: Box<dyn DurableAudit>,
     poisoned: bool,
     last_now: u64,
+    #[cfg(feature = "test-authority")]
+    test_expiry: TestExpiry,
+}
+/// Test-only handle that shortens issued decision expiry (owner decision D4,
+/// issue 75). Zero means the production rule: expiry equals the request
+/// deadline. The production contract and default builds never contain this.
+#[cfg(feature = "test-authority")]
+#[derive(Clone, Default)]
+pub struct TestExpiry(std::sync::Arc<std::sync::atomic::AtomicU64>);
+#[cfg(feature = "test-authority")]
+impl TestExpiry {
+    /// Issue `expires = min(deadline, now + milliseconds)`; zero restores the
+    /// production rule. It can only shorten an expiry, never extend one.
+    pub fn set(&self, milliseconds: u64) {
+        self.0
+            .store(milliseconds, std::sync::atomic::Ordering::SeqCst);
+    }
+    fn apply(&self, deadline: u64, now: u64) -> u64 {
+        match self.0.load(std::sync::atomic::Ordering::SeqCst) {
+            0 => deadline,
+            ttl => deadline.min(now.saturating_add(ttl)),
+        }
+    }
+}
+#[cfg(all(test, feature = "test-authority"))]
+mod test_expiry_tests {
+    #[test]
+    fn test_expiry_only_shortens_and_zero_is_the_production_rule() {
+        let handle = super::TestExpiry::default();
+        assert_eq!(handle.apply(1000, 900), 1000);
+        handle.set(50);
+        assert_eq!(handle.apply(1000, 900), 950);
+        handle.set(500);
+        assert_eq!(handle.apply(1000, 900), 1000);
+        handle.set(u64::MAX);
+        assert_eq!(handle.apply(1000, 900), 1000);
+        handle.set(0);
+        assert_eq!(handle.apply(1000, 900), 1000);
+    }
 }
 impl Authority {
     /// Start a new random credential epoch around the existing shared engine.
@@ -140,7 +179,14 @@ impl Authority {
             audit,
             poisoned: false,
             last_now: 0,
+            #[cfg(feature = "test-authority")]
+            test_expiry: TestExpiry::default(),
         })
+    }
+    /// Test-only expiry handle; see [`TestExpiry`].
+    #[cfg(feature = "test-authority")]
+    pub fn test_expiry(&self) -> TestExpiry {
+        self.test_expiry.clone()
     }
     /// Fresh token for private supervisor delivery only; never log this value.
     pub fn credential(&self) -> &str {
@@ -258,16 +304,24 @@ impl Authority {
             self.poisoned = true;
             return Err(Rejection::new(503, "durable_audit"));
         }
-        if observe_time(&mut self.last_now, &mut self.poisoned, clock())? >= request.deadline() {
+        let now = observe_time(&mut self.last_now, &mut self.poisoned, clock())?;
+        if now >= request.deadline() {
             return Err(Rejection::new(503, "deadline"));
         }
+        #[cfg(feature = "test-authority")]
+        let expires = self.test_expiry.apply(request.deadline(), now);
+        #[cfg(not(feature = "test-authority"))]
+        let expires = {
+            let _ = now;
+            request.deadline()
+        };
         Ok(Response {
             protocol: "humanymous.adapter/0.1",
             id: request.id().into(),
             tenant: scope.tenant.clone(),
             origin: scope.origin.clone(),
             revision: scope.revision.clone(),
-            expires: request.deadline(),
+            expires,
             verdict: score.verdict,
         })
     }
