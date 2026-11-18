@@ -1,4 +1,5 @@
 //! Durable per-node sealing. The WAL is the authority; projections are not.
+mod live;
 mod proofs;
 mod sealed;
 mod stamp;
@@ -6,15 +7,22 @@ use crate::audit::{checkpoint::CheckpointWitness, keys::custody::Durability};
 use crate::audit::{
     checkpoint::{Checkpoint, Witness},
     merkle::Tree,
+    projection::RecordSink,
     record::{Record, record_hash, record_mac},
     storage::{RecoveryPolicy, Wal},
 };
 use ed25519_dalek::SigningKey;
+pub use live::DEFAULT_RING_CAPACITY;
 pub use proofs::{CheckpointInclusion, InclusionProof};
 pub use sealed::{
     PinnedWitness, SealedLog, SealedLogError, SealedLogOptions, SealedLogStage, UnlockCredential,
 };
-use std::io;
+use std::{
+    collections::VecDeque,
+    io,
+    panic::{self, AssertUnwindSafe},
+    sync::Arc,
+};
 
 /// Required persistence strength for a separately supervised witness receipt.
 #[derive(Clone, Copy)]
@@ -55,6 +63,10 @@ pub struct Log {
     poisoned: bool,
     external_witness: Option<Box<dyn CheckpointWitness>>,
     witness_durability: WitnessDurability,
+    projections: Vec<Arc<dyn RecordSink>>,
+    /// Bounded tail copy of durable records for `recent`; never an authority.
+    ring: VecDeque<Record>,
+    ring_capacity: usize,
 }
 impl Log {
     /// Restore an authenticated chain or explicitly initialize an empty one.
@@ -132,6 +144,11 @@ impl Log {
             .map(|r| r.record_hash.as_bytes().to_vec())
             .collect();
         let checkpoints = history.checkpoints().to_vec();
+        let window = history
+            .records()
+            .len()
+            .saturating_sub(live::DEFAULT_RING_CAPACITY);
+        let ring = history.records()[window..].iter().cloned().collect();
         if let Some(witness) = &config.witness {
             if let Some(last) = checkpoints.last() {
                 witness.restore(last).map_err(io::Error::other)?;
@@ -161,7 +178,21 @@ impl Log {
             poisoned: false,
             external_witness,
             witness_durability,
+            projections: Vec::new(),
+            ring,
+            ring_capacity: live::DEFAULT_RING_CAPACITY,
         })
+    }
+
+    /// Add a best-effort projection (Go `Config.Projections`). It receives each
+    /// record only after the WAL append and any due checkpoint succeed, so a
+    /// refused or failed append is never projected; its own failures never
+    /// reach the writer. An error it returns is ignored, and a panic is caught
+    /// and ignored the same way (with the default `panic = "unwind"`), so later
+    /// projections still receive the record. The WAL remains the only audit
+    /// authority.
+    pub fn attach_projection(&mut self, projection: Arc<dyn RecordSink>) {
+        self.projections.push(projection);
     }
 
     /// Seal and durably append before advancing state or releasing an action.
@@ -191,6 +222,7 @@ impl Log {
         self.sequence = record.seq;
         self.head = record.record_hash.clone();
         self.leaves.push(record.record_hash.as_bytes().to_vec());
+        self.remember(&record);
         let last = self.checkpoints.last().map_or(0, |cp| cp.tree_size);
         // Recovery with a required witness refuses zero anchor coverage. Seal
         // the first record immediately, so a crash before the periodic cadence
@@ -200,6 +232,12 @@ impl Log {
             || self.sequence - last >= self.config.checkpoint_every
         {
             self.checkpoint()?;
+        }
+        for projection in &self.projections {
+            // Best-effort: a projection counts its own losses. Its error is
+            // ignored, and so is its panic, which is caught here so it neither
+            // unwinds through the writer nor starves the projections after it.
+            let _ = panic::catch_unwind(AssertUnwindSafe(|| projection.append_record(&record)));
         }
         Ok(record)
     }
@@ -300,6 +338,13 @@ impl Log {
     ) -> io::Result<T> {
         let sealed = self.append(record)?;
         Ok(action(&sealed))
+    }
+
+    /// Seal an informational record with no side effect (Go `Sink.Emit`). The
+    /// same refusals as [`Log::emit_and_act`] apply: an empty event type or a
+    /// failed seal returns an error and advances nothing.
+    pub fn emit(&mut self, record: Record) -> io::Result<Record> {
+        self.emit_and_act(record, Record::clone)
     }
 
     /// Full authenticated chain export from disk; no shadow in-memory copy.
@@ -509,6 +554,106 @@ mod tests {
         assert_eq!(restored.sequence(), 1);
         restored.checkpoint().unwrap();
         drop(restored);
+        clean(&dir);
+    }
+
+    #[derive(Default)]
+    struct Recorder(std::sync::Mutex<Vec<Record>>);
+    impl RecordSink for Recorder {
+        fn append_record(&self, record: &Record) -> io::Result<()> {
+            self.0.lock().unwrap().push(record.clone());
+            Ok(())
+        }
+        fn flush(&self) -> io::Result<()> {
+            Ok(())
+        }
+        fn close(&self) -> io::Result<()> {
+            Err(io::Error::other(
+                "a projection failure never reaches the writer",
+            ))
+        }
+    }
+    /// Go chain.go fed `Config.Projections` after the WAL append. Rust feeds
+    /// them only after the append and any due checkpoint succeed, so a refused
+    /// record or a failed checkpoint is never projected, and projections are
+    /// not part of the hash chain.
+    #[test]
+    fn projections_receive_only_fully_sealed_records() {
+        let dir = dir();
+        let mut log = Log::open(
+            Wal::open(&dir, WalOptions::default()).unwrap(),
+            config(),
+            None,
+            true,
+        )
+        .unwrap();
+        let recorder = Arc::new(Recorder::default());
+        log.attach_projection(recorder.clone());
+        assert!(log.append(Record::default()).is_err());
+        let sidecar = dir.join("checkpoints.jsonl");
+        fs::create_dir(&sidecar).unwrap();
+        assert!(log.emit_and_act(event(), |_| ()).is_err());
+        assert_eq!(log.sequence(), 1, "the first record is durable");
+        assert!(
+            recorder.0.lock().unwrap().is_empty(),
+            "refused records and records whose checkpoint failed are not projected"
+        );
+        fs::remove_dir(sidecar).unwrap();
+        drop(log);
+        let mut restored = Log::open(
+            Wal::open(&dir, WalOptions::default()).unwrap(),
+            config(),
+            None,
+            false,
+        )
+        .unwrap();
+        restored.attach_projection(recorder.clone());
+        let second = restored.append(event()).unwrap();
+        assert_eq!(second.seq, 2);
+        assert_eq!(*recorder.0.lock().unwrap(), vec![second.clone()]);
+        assert_eq!(restored.records().unwrap()[1], second);
+        drop(restored);
+        clean(&dir);
+    }
+
+    struct Panicking;
+    impl RecordSink for Panicking {
+        fn append_record(&self, _: &Record) -> io::Result<()> {
+            panic!("projection bug")
+        }
+        fn flush(&self) -> io::Result<()> {
+            Ok(())
+        }
+        fn close(&self) -> io::Result<()> {
+            Ok(())
+        }
+    }
+    /// A panicking projection is caught like an erroring one: the append and
+    /// the gated action still succeed, and the projection after it still
+    /// receives every record.
+    #[test]
+    fn a_panicking_projection_reaches_neither_the_writer_nor_later_projections() {
+        let dir = dir();
+        let mut log = Log::open(
+            Wal::open(&dir, WalOptions::default()).unwrap(),
+            config(),
+            None,
+            true,
+        )
+        .unwrap();
+        let recorder = Arc::new(Recorder::default());
+        log.attach_projection(Arc::new(Panicking));
+        log.attach_projection(recorder.clone());
+        let first = log.append(event()).unwrap();
+        let acted = log.emit_and_act(event(), |sealed| sealed.seq).unwrap();
+        assert_eq!(acted, 2);
+        let projected = recorder.0.lock().unwrap().clone();
+        assert_eq!(projected.len(), 2);
+        assert_eq!(projected[0], first);
+        assert_eq!(projected[1].seq, 2);
+        assert_eq!(log.records().unwrap(), projected);
+        log.flush().unwrap();
+        drop(log);
         clean(&dir);
     }
 

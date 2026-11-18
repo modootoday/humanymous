@@ -29,7 +29,7 @@ pub(super) fn stamp(record: &mut Record) -> io::Result<()> {
         record.ts = now.format(&Rfc3339).map_err(io::Error::other)?;
     }
     if record.event_version.is_empty() {
-        record.event_version = "1.0.0".into();
+        record.event_version = crate::audit::record::events::EVENT_SCHEMA_VERSION.into();
     }
     Ok(())
 }

@@ -16,6 +16,7 @@ pub enum RegistryError {
 struct Node {
     interval_ns: i128,
     last_ns: i128,
+    public_key: Option<[u8; 32]>,
 }
 
 /// Public status without raw keys or receipt payloads.
@@ -47,6 +48,19 @@ impl NodeRegistry {
         interval_ns: i128,
         now_ns: i128,
     ) -> Result<(), RegistryError> {
+        self.expect_with_key(node_id, interval_ns, None, now_ns)
+    }
+    /// Register an expected node together with its Ed25519 receipt verification
+    /// key (Go `NodeInfo.PubKey`). The key is held for the caller's receipt
+    /// authentication; this registry does not verify signatures itself, and
+    /// `None` matches a Go registration with a nil key.
+    pub fn expect_with_key(
+        &mut self,
+        node_id: String,
+        interval_ns: i128,
+        public_key: Option<[u8; 32]>,
+        now_ns: i128,
+    ) -> Result<(), RegistryError> {
         if node_id.is_empty() || interval_ns <= 0 || interval_ns.checked_mul(2).is_none() {
             return Err(RegistryError::InvalidRegistration);
         }
@@ -58,9 +72,18 @@ impl NodeRegistry {
             Node {
                 interval_ns,
                 last_ns: now_ns,
+                public_key,
             },
         );
         Ok(())
+    }
+    /// Registered Ed25519 verification key for a node, if one was supplied.
+    /// Unknown nodes are an error rather than an absent key.
+    pub fn public_key(&self, node_id: &str) -> Result<Option<[u8; 32]>, RegistryError> {
+        self.nodes
+            .get(node_id)
+            .map(|node| node.public_key)
+            .ok_or(RegistryError::UnknownNode)
     }
     /// Record an already authenticated fresh receipt using the observer's
     /// clock, never a remote claimed timestamp. No network authentication or
@@ -105,55 +128,4 @@ impl NodeRegistry {
     }
 }
 #[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn suppression_resume_and_exact_boundary_match_source_regression() {
-        let sec = 1_000_000_000;
-        let mut registry = NodeRegistry::default();
-        for node in ["proxy-1", "proxy-2"] {
-            registry.expect(node.into(), sec, 0).unwrap();
-            registry.record_receipt(node, sec).unwrap();
-        }
-        assert!(registry.missing(sec).unwrap().is_empty());
-        assert!(registry.missing(3 * sec).unwrap().is_empty());
-        registry.record_receipt("proxy-1", 3 * sec).unwrap();
-        assert_eq!(
-            registry.missing(3 * sec + sec / 2).unwrap(),
-            vec!["proxy-2"]
-        );
-        registry.record_receipt("proxy-2", 4 * sec).unwrap();
-        assert!(registry.missing(4 * sec + sec / 2).unwrap().is_empty());
-        assert_eq!(
-            registry.nodes(4 * sec + sec / 2).unwrap()[0].last_seen_ms,
-            1500
-        );
-    }
-    #[test]
-    fn invalid_and_regressing_inputs_cannot_refresh_liveness() {
-        let mut registry = NodeRegistry::default();
-        assert_eq!(
-            registry.expect("".into(), 1, 0),
-            Err(RegistryError::InvalidRegistration)
-        );
-        assert_eq!(
-            registry.expect("n".into(), i128::MAX, 0),
-            Err(RegistryError::InvalidRegistration)
-        );
-        registry.expect("n".into(), 10, 100).unwrap();
-        assert_eq!(
-            registry.expect("n".into(), 10, 1000),
-            Err(RegistryError::AlreadyRegistered)
-        );
-        assert_eq!(
-            registry.record_receipt("n", 99),
-            Err(RegistryError::ClockRegressed)
-        );
-        assert_eq!(
-            registry.record_receipt("unknown", 100),
-            Err(RegistryError::UnknownNode)
-        );
-        assert_eq!(registry.nodes(99), Err(RegistryError::ClockRegressed));
-        assert_eq!(registry.missing(121).unwrap(), vec!["n"]);
-    }
-}
+mod tests;
