@@ -76,9 +76,11 @@ pub trait RateLimiter {
         hard: usize,
         now: Duration,
     ) -> Result<ConfigurationEffect, Unavailable>;
+    /// Sweep expired local history (a shared backend expires its own keys).
+    fn gc(&mut self, now: Duration) -> Result<(), Unavailable>;
 }
 
-impl BanLedger for Store {
+impl<L: RateLimiter> BanLedger for Store<L> {
     fn check(&mut self, key: &Key, now: Duration) -> Option<Entry> {
         Store::check(self, key, now).cloned()
     }
@@ -121,6 +123,9 @@ impl RateLimiter for Limiter {
         now: Duration,
     ) -> Result<ConfigurationEffect, Unavailable> {
         Limiter::configure(self, window, soft, hard, now)
+    }
+    fn gc(&mut self, now: Duration) -> Result<(), Unavailable> {
+        Limiter::gc(self, now).map(|_| ())
     }
 }
 

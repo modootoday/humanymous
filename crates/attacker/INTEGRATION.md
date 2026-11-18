@@ -177,7 +177,7 @@ The accepted coverage audit retains these boundaries:
 | Assistive technology |assistive-technology-human unsupported | Actual AT interaction and recovery evidence |
 | Accessible Pass |accessible-pass-human unsupported | Accessible Pass producer and participant recovery |
 | Coherent real T4 |coherent-T4-browser unsupported; synthetic ceiling is separate | Direct coherent-browser control, without claiming detection beyond T4 |
-| Remote installation |signed-remote-installation unsupported | Pinned-key fresh-nonce attestation producer |
+| Remote installation |signed-remote-installation unsupported in this HTTP1 ledger | Evaluated separately by product-lab installation-target-binding / unknown-target-refused (runtime-binary pinned-key fresh-nonce answer, same-container pipes); cross-host transport and listener binding remain unqualified |
 | Full Gate TLS/H2 |full-gate-original-tls-h2 unsupported | Original capture integrated into the qualified Gate profile |
 | Audit fault injection |audit-outage-network-injection unsupported | Safe live fault producer wired into this supervisor contract |
 

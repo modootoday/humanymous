@@ -1,10 +1,12 @@
 //! Loopback application/session owner; component support is not product qualification.
 pub mod application;
+pub mod attestation;
 pub mod ban;
 pub mod browser;
 pub mod configuration;
 pub mod connection_cap;
 pub mod control;
+pub mod coordinator;
 pub mod credential;
 pub mod external_input;
 pub mod guard;
