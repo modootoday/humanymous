@@ -201,6 +201,10 @@ an environment-variable apphost or a direct `Command`.
   - Timeout or error: main containment empty, then a same-user cleanup child in
     its own containment, then private cleanup, then cleanup containment empty,
     then account and scratch deletion.
+- **Linux provider child**: on every exit path, an early error included, the
+  provider kills the scope and its `sudo systemd-run` child and reaps that
+  child within a bounded grace. `child_reaped` is a terminal fact; a child
+  still running at the cleanup deadline never reports an exit code.
 - **Parent death**: a kill-on-close Job (Windows) or scope teardown (Linux)
   stops the tree. Account, profile and private state are recorded as
   residual/Unknown. They are never reported clean, and no recovery is promised.
@@ -273,10 +277,26 @@ These steps come after the source exists:
   - `dotnet-package` for the package target, test
     `[sdk_package_and_real_host_matrix]`;
   - both with `os: [linux, windows]` and `executor: job`.
-- The job named by those rows must be one that merge-ready requires. It pins
-  `actions/setup-dotnet` at `26b0ec14cb23fa6904739307f278c14f94c95bf1` with
-  `cache: false`, SDK 10.0.403 and x64, and runs `dotnet --info` into the
-  receipt. Workflow edits are human-gated paths, so they go to owner review.
+- The job named by those rows must be one that merge-ready requires. It uses
+  no `actions/setup-dotnet` and no runner-installed SDK. The Rust provider
+  (`scripts/ci/delivery/src/components/dotnet_host/sdk.rs`) downloads the
+  SDK 10.0.403 linux-x64 tarball from Microsoft's official
+  `builds.dotnet.microsoft.com` URL into a private owner-only temp directory.
+  Before extraction it checks the exact size and the SHA-512 pinned in that
+  file, copied from Microsoft's official release metadata
+  (`release-metadata/10.0/releases.json`, whose URL sits next to the pin). A
+  mismatch fails closed. Every SDK command runs with that private root as
+  `DOTNET_ROOT`/`PATH` (set only for the child) and with `adapters/dotnet` as
+  the working directory, so `global.json` (10.0.403, `rollForward: disable`)
+  applies. `dotnet --version` must print exactly `10.0.403`; a list that only
+  contains it is refused. The receipt records the tarball SHA-512, the
+  resolved version, the muxer SHA-256 and `dotnet --info`. The private SDK is
+  also the apphost runtime root, and it is removed after the launch phase.
+  The first green hosted run (before this rule) resolved SDK 11.0.100 from the
+  repository root; it is not evidence of the pin. Workflow edits are
+  human-gated paths, so they go to owner review. Known gap: other jobs'
+  `actions/setup-node` and `oven-sh/setup-bun` downloads are not yet
+  hash-verified this way.
 - The rows are declared only in the same change that adds the named job step.
   Delivery tests reject a `job` row whose step does not exist.
 
@@ -372,7 +392,9 @@ whose ceiling (4000 ms) outlives the 2000 ms host deadline.
 - `shutdown-active`: stop arrives with one decision held and one request
   awaiting body input. `stopped` reports no new contact, neither request
   completes with 2xx, and the process exits 0. The collectible probe refuses
-  a collectible load twice (JIT) and the observation states
+  a collectible load twice (JIT). Under NativeAOT no load is attempted, so the
+  probe is listed in `not_applicable` with reason `no-dynamic-loading` and is
+  not counted in `passed`. The observation states
   `native_runtime_unload_claimed: false`. Observed shutdown takes about
   1.96 s: pending work settles through the 2000 ms request deadline, not
   through immediate cancellation at host dispose.

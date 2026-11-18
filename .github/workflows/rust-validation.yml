@@ -399,16 +399,10 @@ jobs:
       with:
         persist-credentials: false
         fetch-depth: 1
-    - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1
-      with:
-        dotnet-version: 10.0.403
-        cache: false
     - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
       with:
         toolchain: 1.99.1
-    - name: Report the pinned .NET SDK
-      run: dotnet --info
-    - name: Execute actual .NET hosted provider in a transient systemd scope
+    - name: Fetch the SHA-512-pinned .NET SDK and execute the hosted provider in a transient systemd scope
       run: cargo run --locked -p humanymous-delivery -- component dotnet-host
   advisories:
     needs: [policy, node]
