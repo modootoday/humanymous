@@ -3,7 +3,7 @@ id: sot:root/container-test-environments
 title: Canonical Compose lab and Cloudflare test environment profiles
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-17T12:00:00Z
+updated: 2026-11-18T00:00:00Z
 verify: manual
 rel:
   governs: [deployments/lab/**, build/rust/**, test/lab/**]
@@ -1254,6 +1254,68 @@ validates it and emits `humanymous.lab-human-control-receipt/1`: `attestation`
 `clears_required_unavailable=false`. It refuses CI markers, a non-terminal stdin
 and an existing output, and requires a typed in-person confirmation. Joining such
 a receipt to the full-product ledger or delivery pilot remains an owner decision.
+
+## Audit-restart case covers audit-outage injection (owner decision C11, 2026-11-18)
+
+Owner decision C11 on issue #75 (comment 6968092014): the `audit-restart`
+product case also covers audit-outage injection. The roadmap lists it at
+step 2c (`.spec/plan/20261117142053-full-product-capabilities-go-port-and-net-launch-roadmap.plan.md`),
+and the docker delivery pilot requires it (`scripts/ci/delivery/src/pilot.rs`).
+
+**Present state.** No lab runner code emits a case with the id
+`audit-restart`. The delivery pilot reports it as `blocked`, and that stays
+true. Two existing measurements are the case's parts:
+
+- The component witness pilot (`test/lab/runner/src/orchestration/witness.rs`)
+  covers restart and outage at writer level. Restart is
+  `witness-container-recreation` (audit sequence 1 then 2 across fresh
+  containers) plus `witness-old-signed-head-refused`. Outage is
+  `witness-absent-after-readiness` and `witness-lost-before-effect` (status
+  `closed`, zero origin effects).
+- The product-e2e witnessed topology (`test/lab/runner/src/product_e2e/witnessed.rs`)
+  is the Gate-level audit-outage injection. The runner stops the witness
+  container after readiness and answers each outstanding or new counter-sign
+  request with the typed `unavailable` refusal.
+
+**Acceptance for the outage half.** The runner computes
+`witnessed::outage_assertions` from the observed facts. It never relies on the
+driver's own `failed` count, so a driver that skips or renames a case cannot
+pass silently. Every assertion must hold:
+
+1. `audit_outage_injected_after_readiness`: both containers were healthy
+   before the driver, the driver reached the loss phase, the witness exited,
+   the broker saw its stream close, and at least one `unavailable` refusal
+   was actually injected.
+2. `audit_outage_positive_control_before_loss`: a witnessed signed effect
+   answered 200 with one origin record.
+3. `audit_outage_first_append_poisons_with_durable_audit`: the pre-signed
+   effect answered 503 `{"error":"durable_audit"}`, with no transport error
+   and zero new origin records.
+4. `audit_outage_poisoned_epoch_refuses_later_request`: a later request
+   answered 503 with `session_epoch` or `durable_audit`, and zero origin
+   records.
+5. `audit_outage_session_issue_not_granted`: session issue during the outage
+   was not 2xx. A non-2xx status or a transport error is acceptable.
+6. `audit_outage_readiness_withdrawn`: the serving-epoch probe turned
+   `unhealthy` while the Gate container kept running.
+7. `audit_outage_no_fabricated_signature`: the broker fabricated no
+   signature.
+
+The witnessed `pass` requires all seven. The receipt records them under
+`audit_outage_injection`, with `product_case: "audit-restart"` and
+`qualifies_product_case: false`.
+
+Unit tests exercise each negative. They also replay the committed Docker
+receipts `20261116110546` and `20261116113042`, which satisfy all seven. The
+oldest receipt, `20261116103304`, predates readiness withdrawal and is
+rejected on assertion 6 alone. These are pure judgements over recorded facts.
+They are not a new Docker run.
+
+**Still required before `audit-restart` can pass.** Three things are still
+missing: restart and replay of the shipped runtime binary's own audit with
+its witness input (decision C3), cross-namespace origin/audit effect binding,
+and a source-bound Docker run at the candidate head. Until then the case
+stays `blocked` and `full_product_qualified` stays false.
 
 ## Official sources, checked 2026-11-07
 
