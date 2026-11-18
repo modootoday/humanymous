@@ -1,4 +1,19 @@
-//! Session-bound resource URL signatures. Serving policy belongs to enforcement.
+//! Adaptive resource gating primitives (SoT-10): cost-tier classification, the
+//! tier x verdict x RIT x liveness serving matrix, embed and media inspection,
+//! and session-bound resource URL signatures.
+//!
+//! Everything here is a pure decision or caller-clocked state; HTTP handling,
+//! serving and signal persistence belong to the runtime composition root.
+mod classify;
+mod embed;
+mod gate;
+mod media;
+
+pub use classify::{Tier, classify};
+pub use embed::{EmbedContext, inspect};
+pub use gate::{Decision, gate};
+pub use media::{MediaEvent, MediaTracker};
+
 use base64::{Engine, engine::general_purpose::URL_SAFE_NO_PAD};
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
