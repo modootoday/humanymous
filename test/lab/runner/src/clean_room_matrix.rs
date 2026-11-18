@@ -1206,10 +1206,8 @@ mod tests {
             true,
             false,
         );
-        match crate::unlock_gate::authority_cap_cli_status(
-            &crate::snapshot::root().expect("workspace root"),
-        )
-        .expect("unlock status")
+        match crate::unlock_gate::authority_cap_cli_status(&crate::snapshot::test_root())
+            .expect("unlock status")
         {
             "bound" => {
                 assert_eq!(disposition, Disposition::SerializeWhenUnlocked);

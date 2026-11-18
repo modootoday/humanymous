@@ -35,7 +35,11 @@ pub fn run(options: &Options) -> io::Result<i32> {
         let rows = manifest["harnesses"]
             .as_array()
             .ok_or_else(|| io::Error::other("service manifest absent"))?;
-        let packages = harness::packages::Packages::load(&report["source"], &options.report)?;
+        let packages = harness::packages::Packages::load(
+            &report["source"],
+            &options.report,
+            options.package_metadata.as_deref(),
+        )?;
         for case in &catalog::CASES {
             if !case.implemented_for_target() {
                 report[case.field] =
