@@ -20,6 +20,7 @@ pub mod observatory;
 pub mod pass_proof;
 pub mod pass_store;
 pub mod request;
+pub mod route_policy;
 pub mod seams;
 pub mod service;
 pub mod session;

@@ -6717,9 +6717,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "b8de05b02cc00874443f57e23d8461824d5bef0ff5702e13db70df4d60f5aef1",
+      "sha256": "2d922c3e6ed233c6b163bb1820e18acff6fbfd2e19ac70b6000e56d96cb94247",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 431 / macos 431 / windows 419 (419 common names plus 12 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b (codex/rust plus PR heads #70 and #83): the name lists are the union of all parents' already-reviewed additions, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 431 listed common plus Unix-only names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect. Re-reviewed 2026-11-18 (B1 settings slice): 25 gateway::settings::overlay names added to the common list, so expected counts are linux 456 / macos 456 / windows 444; the Linux --list gateway:: inventory equals common plus unix_extra.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 431 / macos 431 / windows 419 (419 common names plus 12 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b (codex/rust plus PR heads #70 and #83): the name lists are the union of all parents' already-reviewed additions, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 431 listed common plus Unix-only names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect. Re-reviewed 2026-11-18 (B1 settings slice): 25 gateway::settings::overlay names added to the common list, so expected counts are linux 456 / macos 456 / windows 444; the Linux --list gateway:: inventory equals common plus unix_extra. Re-reviewed 2026-11-18 (B1 route policy slice): 22 gateway::route_policy names added to the common list, so expected counts are linux 478 / macos 478 / windows 466; the Linux --list gateway:: inventory equals common plus unix_extra.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/how-this-was-built.md"
@@ -8501,9 +8501,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/mod.rs",
-      "sha256": "1ab7aa27cd72dafbbb2c62c81ef74371c5b965577de68e8ccbd17ab307cd4979",
+      "sha256": "2d2fdcfc84ad80fd703cb0d37a78079d390b5f58c6c3e4d095ecdf7fa24981bf",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway module root of the runtime crate: declares the application, attestation, ban, browser, configuration, connection cap, control, coordinator, credential, external input, guard, http, logging, management, model admission, observatory, pass proof/store, request, seams, service, session, settings, shipping, smuggle, startup, TLS, token, verdict store and virtual USB modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b: the change unions both parents' module declarations (the B23 coordinator module from PR #70 and the G7 target attestation module from PR #83, beside the existing model_admission and observatory modules). Doc line states loopback component support is not product qualification.",
+      "notes": "Gateway module root of the runtime crate: declares the application, attestation, ban, browser, configuration, connection cap, control, coordinator, credential, external input, guard, http, logging, management, model admission, observatory, pass proof/store, request, seams, service, session, settings, shipping, smuggle, startup, TLS, token, verdict store and virtual USB modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b: the change unions both parents' module declarations (the B23 coordinator module from PR #70 and the G7 target attestation module from PR #83, beside the existing model_admission and observatory modules). Doc line states loopback component support is not product qualification. Re-reviewed 2026-11-18 (B1 route policy slice): only adds the pub mod route_policy declaration.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
@@ -9155,6 +9155,56 @@
       "notes": "In-process sticky per-session verdict store ported from legacy VerdictStore (SoT-21): Verdict maps engine ALLOW/CHALLENGE/DENY with anything else as Unknown (wire none), entries carry risk, rule, top signals and caller-supplied monotonic time, get returns Unknown when absent or older than the TTL, gc evicts stale entries, and at capacity (default 2^20) new sessions are not tracked while existing ones update. It grants nothing; the legacy fail-open treatment of Unknown on safe routes is deliberately not ported. Reader page coverage is indirect.",
       "pages": [
         "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/route_policy.rs",
+      "sha256": "ff9b61a160a8ab8ef224f4fdc2b1aa59d12a1467273fcd50788a653e22282779",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Owner decision B1 (issue #75 comment 6979694428) exact-parity port of the Go oracle at 981d25c; nothing tuned. Route presets strict/balanced/monitor/off/attested with their Go flags, presetByName (unknown name is balanced), normalizeMatchPath with a byte-level Go path.Clean, segment matching, longest-prefix RouteTable::resolve with GlobalMonitor, is_unsafe_method, mode_name and edge_action (Verdict.action plus the applyVerdict enf.failclosed.mutating relabel). Reported difference: Unknown always challenges, where Go passed it on safe methods of balanced/monitor/off routes (owner decisions 2026-11-16 and 2026-11-18 C1). Equal-length prefix ties pick byte order, one of Go map-order outcomes. Pure library; the hosted gateway keeps its exact route inventory.",
+      "pages": [
+        "docs/reference/hard-rules-verdicts.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/route_policy/routes_file.rs",
+      "sha256": "18947aba1c5c42701ea1346f81a077c8ae539da766e039d16b83437890dfb7cb",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Owner decision B1 (issue #75 comment 6979694428) exact-parity port of the Go oracle at 981d25c; nothing tuned. cmd/gate routes.go: load_routes/parse_routes split lines like bufio.ScanLines (one trailing CR dropped, a line of 64 KiB or more refused with the Go scanner text), trim and split on Unicode white space, and refuse malformed lines, unknown presets and attested on the catch-all prefix with Go error text via core quote_go; validate_attested_routes reproduces the fatal shared-key error and per-route verifier warnings. Reported differences: invalid UTF-8 lines are refused (Go accepted them) and OS error text is the platform text. Not loaded by the gateway binary.",
+      "pages": [
+        "docs/reference/hard-rules-verdicts.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs",
+      "sha256": "7337b57e6d8a438ef363bf746b15d539dd16d0db7b6a464799844fe9b56f2eff",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Owner decision B1 (issue #75 comment 6979694428) exact-parity port of the Go oracle at 981d25c; nothing tuned. One-to-one ports of resolve_test.go, ws5_test.go TestFailClosedActionMapping (case 0 asserts the accepted fail-closed difference), wargame R081-R085 and R171-R173, and all 6 cmd/gate routes_test.go tests; a random temporary directory helper is removed on drop.",
+      "pages": [
+        "docs/reference/hard-rules-verdicts.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests/parity.rs",
+      "sha256": "af904bfc21ecad343136d6867c5d879364edb7aa1a8096fd9c0e23923e1c789f",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Owner decision B1 (issue #75 comment 6979694428) exact-parity port of the Go oracle at 981d25c; nothing tuned. Differential checks against route-policy-go-golden.json: 13 presets, 54 normalized paths, 169 segment pairs, 1204 resolutions (4 Go map-order ties checked as membership), 40 action cells (exactly the 3 accepted Unknown cells differ), engine verdicts, methods, 30 route files with exact error text and 20 attested-precondition cases. Five deliberate source mutations each failed these tests.",
+      "pages": [
+        "docs/reference/hard-rules-verdicts.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/gateway/route-policy-go-golden.json",
+      "sha256": "ab45c3eb52b5040e414092f579ecb5a2ffacef124a5f59f432f34674bed11018",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Owner decision B1 (issue #75 comment 6979694428) exact-parity port of the Go oracle at 981d25c; nothing tuned. Fixture data only: inputs plus outputs captured offline from 981d25c with go test in golang:1.26.3-alpine (sha256:91eda977...) under --network none, GOPROXY=off, GOFLAGS=-mod=readonly and GOTOOLCHAIN=local; provenance records the command, the uncommitted capture program hashes and the input and output SHA-256. Never regenerated to hide drift.",
+      "pages": [
+        "docs/reference/hard-rules-verdicts.md",
+        "docs/reference/cli-config-policy.md"
       ]
     },
     {
