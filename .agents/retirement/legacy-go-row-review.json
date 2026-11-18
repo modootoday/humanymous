@@ -309,8 +309,8 @@
    ],
    "go_test_map": {
     "TestBuildEdgeTLSSelfSigned": null,
-    "TestBuildEdgeTLSACME": "gateway::tls::certificate::tests::issuer_must_cover_exactly_the_selected_domains",
-    "TestBuildEdgeTLSACMEStagingDirectory": "gateway::tls::acme::tests::settings_accept_https_directories_and_plain_contacts_only",
+    "TestBuildEdgeTLSACME": "gateway::tls::acme::tests::gateway_accepts_the_acme_issuer_configuration_and_only_it",
+    "TestBuildEdgeTLSACMEStagingDirectory": "gateway::tls::acme::tests::gateway_accepts_the_acme_issuer_configuration_and_only_it",
     "TestBuildEdgeTLSBadCert": "gateway::tls::certificate::tests::provisioned_pair_refuses_empty_missing_and_mismatched_material",
     "TestSplitDomains": "gateway::tls::certificate::tests::issuer_domains_are_normalised_and_plain_hosts_only"
    },
@@ -319,7 +319,7 @@
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Mapped to B02 certificate source and ACME issuer tests.",
+   "notes": "Mapped to B02 certificate source and ACME issuer tests. TestBuildEdgeTLSACME and its staging variant are ported as one test that builds the ingress configuration from issuer_config for the production and staging directories and validates it with the gateway, and refuses acme-tls/1 with any other resolver or ALPN shape.",
    "test_verification": {}
   },
   {
@@ -337,11 +337,13 @@
    "go_test_map": {},
    "gaps": [
     "live ACME exchange against a running directory (Pebble or Let's Encrypt staging) not yet exercised",
-    "self-signed dev mode (production fallback refused by B02)"
+    "self-signed dev mode (production fallback refused by B02)",
+    "issuer not wired to a command/binary: the runtime binary (src/gateway/main.rs) has no TLS certificate source flags or settings equivalent to Go -acme-domain/-acme-cache/-acme-email/-acme-directory/-tls-cert/-tls-key, so only an embedder can build the ingress configuration and run AcmeIssuer::maintain",
+    "Application::serve_tls_until accepts only a loopback listener and loopback peers (application/tls.rs), so the TLS ingress cannot bind a public :443 for a real TLS-ALPN-01 validator"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "B02: select() refuses absent/incomplete/ambiguous sources; provisioned pair loads bounded PEM with key-match check. AcmeIssuer (feature acme) mirrors Go autocert: Let's Encrypt production default, operator directory (staging/private CA), AcceptTOS, optional contact, owner-only cache keyed by directory, ECDSA P-256 CSR, TLS-ALPN-01 answered only for declared SNI, renewal 30 days before NotAfter. No production self-signed fallback per plan B02.",
+   "notes": "B02: select() refuses absent/incomplete/ambiguous sources; provisioned pair loads bounded PEM with key-match check. AcmeIssuer (feature acme) follows Go autocert: Let's Encrypt production default, operator directory (staging/private CA), AcceptTOS, optional contact, domains normalised by issuer_domains (lower-case plain DNS names, wildcards and IP literals refused), owner-only cache whose account and certificate entries are keyed by a directory hash, cached pairs refused when expired, not yet valid or not covering every domain (Go validCert), ECDSA P-256 CSR, TLS-ALPN-01 answered only for declared SNI, renewal 30 days before NotAfter, issuance serialized per issuer, renewal facts (attempts, generation, last failure kind and time) through renewal_facts(). The gateway accepts acme-tls/1 only in the issuer_config shape with an issuer's resolver, and the ingress closes an acme-tls/1 connection after the handshake without reading a request. No production self-signed fallback per plan B02.",
    "test_verification": {}
   },
   {
@@ -603,11 +605,13 @@
    "go_test_map": {},
    "gaps": [
     "live ACME exchange against a running directory (Pebble or Let's Encrypt staging) not yet exercised",
-    "self-signed dev mode (production fallback refused by B02)"
+    "self-signed dev mode (production fallback refused by B02)",
+    "issuer not wired to a command/binary: the runtime binary (src/gateway/main.rs) has no TLS certificate source flags or settings equivalent to Go -acme-domain/-acme-cache/-acme-email/-acme-directory/-tls-cert/-tls-key, so only an embedder can build the ingress configuration and run AcmeIssuer::maintain",
+    "Application::serve_tls_until accepts only a loopback listener and loopback peers (application/tls.rs), so the TLS ingress cannot bind a public :443 for a real TLS-ALPN-01 validator"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "B02: select() refuses absent/incomplete/ambiguous sources; provisioned pair loads bounded PEM with key-match check. AcmeIssuer (feature acme) mirrors Go autocert: Let's Encrypt production default, operator directory (staging/private CA), AcceptTOS, optional contact, owner-only cache keyed by directory, ECDSA P-256 CSR, TLS-ALPN-01 answered only for declared SNI, renewal 30 days before NotAfter. No production self-signed fallback per plan B02.",
+   "notes": "B02: select() refuses absent/incomplete/ambiguous sources; provisioned pair loads bounded PEM with key-match check. AcmeIssuer (feature acme) follows Go autocert: Let's Encrypt production default, operator directory (staging/private CA), AcceptTOS, optional contact, domains normalised by issuer_domains (lower-case plain DNS names, wildcards and IP literals refused), owner-only cache whose account and certificate entries are keyed by a directory hash, cached pairs refused when expired, not yet valid or not covering every domain (Go validCert), ECDSA P-256 CSR, TLS-ALPN-01 answered only for declared SNI, renewal 30 days before NotAfter, issuance serialized per issuer, renewal facts (attempts, generation, last failure kind and time) through renewal_facts(). The gateway accepts acme-tls/1 only in the issuer_config shape with an issuer's resolver, and the ingress closes an acme-tls/1 connection after the handshake without reading a request. No production self-signed fallback per plan B02.",
    "test_verification": {}
   },
   {

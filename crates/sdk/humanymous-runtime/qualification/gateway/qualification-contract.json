@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 480,
-      "macos": 480,
-      "windows": 467
+      "linux": 487,
+      "macos": 487,
+      "windows": 473
     },
     "common_test_names": [
       "gateway::admin_approval::tests::approval_store_rules",
@@ -410,9 +410,15 @@
       "gateway::tests::tls::observation::actual_client_hello_and_negotiated_alpn_share_the_request_owner",
       "gateway::tls::acme::tests::account_files_are_keyed_by_directory",
       "gateway::tls::acme::tests::cached_pair_for_other_domains_is_not_served",
+      "gateway::tls::acme::tests::certificate_cache_is_keyed_by_directory",
       "gateway::tls::acme::tests::challenge_certificate_names_the_domain_and_carries_the_critical_digest",
+      "gateway::tls::acme::tests::expired_or_not_yet_valid_pairs_are_refused_and_not_served",
+      "gateway::tls::acme::tests::gateway_accepts_the_acme_issuer_configuration_and_only_it",
+      "gateway::tls::acme::tests::ingress_answers_the_challenge_handshake_and_reads_no_request",
       "gateway::tls::acme::tests::issued_pair_must_cover_every_domain_and_match_its_key",
+      "gateway::tls::acme::tests::issuer_domains_are_normalised_and_wildcards_refused",
       "gateway::tls::acme::tests::issuer_serves_cached_certificate_over_h2_and_refuses_other_names",
+      "gateway::tls::acme::tests::renewal_failures_are_recorded_with_kind_and_time",
       "gateway::tls::acme::tests::renewal_is_due_when_absent_or_within_thirty_days",
       "gateway::tls::acme::tests::resolver_answers_only_declared_names_and_routes_challenges",
       "gateway::tls::acme::tests::settings_accept_https_directories_and_plain_contacts_only",
@@ -490,9 +496,10 @@
       "gateway::tests::service::settings_operator::native_operator_commit_is_witnessed_cas_and_invalidates_sessions",
       "gateway::tests::service::unix_closed_shutdown_controller_cannot_report_stopped",
       "gateway::tests::service::unix_service_management_drains_before_custody_release",
-      "gateway::tls::acme::tests::cache_is_owner_only_and_loose_entries_are_refused",
       "gateway::tests::service::witness_input::inherited_pipe_witness_pins_identity_and_cosigns_durable_audit",
       "gateway::tests::service::witness_input::inherited_witness_refusals_happen_before_custody_or_unlock",
+      "gateway::tls::acme::tests::cache_is_owner_only_and_loose_entries_are_refused",
+      "gateway::tls::acme::tests::concurrent_cache_writes_never_share_a_temporary_file",
       "gateway::virtual_usb::tests::symlinked_results_and_roots_are_refused"
     ],
     "test_filter": "gateway::"

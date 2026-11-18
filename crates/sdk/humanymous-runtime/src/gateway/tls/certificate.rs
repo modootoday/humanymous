@@ -6,7 +6,13 @@ use rustls::{
     pki_types::{CertificateDer, PrivateKeyDer, pem::PemObject},
     server::ResolvesServerCert,
 };
-use std::{fmt, fs::File, io::Read, path::PathBuf, sync::Arc};
+use std::{
+    fmt,
+    fs::File,
+    io::Read,
+    path::PathBuf,
+    sync::{Arc, Mutex, Weak},
+};
 
 /// Largest PEM file accepted for a certificate chain or private key.
 pub const MAX_PEM_BYTES: u64 = 1 << 20;
@@ -14,6 +20,11 @@ pub const MAX_PEM_BYTES: u64 = 1 << 20;
 pub const MAX_ISSUER_DOMAINS: usize = 100;
 /// ALPN offered on the owned ingress: H2 first, then HTTP/1.1.
 pub const INGRESS_ALPN: [&[u8]; 2] = [b"h2", b"http/1.1"];
+/// ALPN identifier of the ACME TLS-ALPN-01 challenge (RFC 8737). The ingress
+/// offers it only in a configuration built by [`issuer_config`] for an issuer
+/// that declares it, and never carries a request on a connection that
+/// negotiates it.
+pub const CHALLENGE_ALPN: &[u8] = b"acme-tls/1";
 
 /// Operator-declared certificate settings before selection.
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
@@ -64,6 +75,8 @@ pub enum CertificateError {
     MissingKey,
     /// rustls refused the pair, including a key that does not match the chain.
     Rejected,
+    /// The issuer asked for challenge ALPN other than exactly `acme-tls/1`.
+    UnsupportedChallenge,
 }
 
 impl fmt::Display for CertificateError {
@@ -82,6 +95,7 @@ impl fmt::Display for CertificateError {
             Self::EmptyChain => "certificate chain holds no certificate",
             Self::MissingKey => "private key file holds no private key",
             Self::Rejected => "certificate chain and private key rejected",
+            Self::UnsupportedChallenge => "issuer challenge ALPN is not exactly acme-tls/1",
         })
     }
 }
@@ -195,7 +209,9 @@ pub trait CertificateIssuer: Send + Sync {
 }
 
 /// Build the ingress configuration from an issuer whose domains match the
-/// selected source exactly.
+/// selected source exactly. An issuer may add only the `acme-tls/1` challenge
+/// ALPN; its resolver is then recorded as a challenge resolver so the gateway
+/// accepts that ALPN for this configuration and no other.
 pub fn issuer_config(
     domains: &[String],
     issuer: &dyn CertificateIssuer,
@@ -203,15 +219,58 @@ pub fn issuer_config(
     if issuer.domains() != domains {
         return Err(CertificateError::AmbiguousSource);
     }
+    let challenge = issuer.challenge_alpn();
+    if !challenge.is_empty() && challenge != [CHALLENGE_ALPN] {
+        return Err(CertificateError::UnsupportedChallenge);
+    }
+    let resolver = issuer.resolver();
+    if !challenge.is_empty() {
+        record_challenge_resolver(&resolver)?;
+    }
     let mut config = ServerConfig::builder()
         .with_no_client_auth()
-        .with_cert_resolver(issuer.resolver());
+        .with_cert_resolver(resolver);
     config.alpn_protocols = INGRESS_ALPN
         .iter()
         .map(|protocol| protocol.to_vec())
         .collect();
-    config.alpn_protocols.extend(issuer.challenge_alpn());
+    config.alpn_protocols.extend(challenge);
     Ok(config)
+}
+
+/// Resolvers built by [`issuer_config`] for an issuer that answers
+/// TLS-ALPN-01. `ServerConfig` carries no record of its certificate source,
+/// so the gateway asks here whether a configuration offering `acme-tls/1`
+/// came from an ACME issuer. Weak entries keep each allocation (and so its
+/// address) reserved while listed; dead entries are pruned on every use.
+static CHALLENGE_RESOLVERS: Mutex<Vec<Weak<dyn ResolvesServerCert>>> = Mutex::new(Vec::new());
+
+fn record_challenge_resolver(
+    resolver: &Arc<dyn ResolvesServerCert>,
+) -> Result<(), CertificateError> {
+    let mut resolvers = CHALLENGE_RESOLVERS
+        .lock()
+        .map_err(|_| CertificateError::Rejected)?;
+    resolvers.retain(|entry| entry.strong_count() > 0);
+    if !resolvers
+        .iter()
+        .any(|entry| std::ptr::addr_eq(entry.as_ptr(), Arc::as_ptr(resolver)))
+    {
+        resolvers.push(Arc::downgrade(resolver));
+    }
+    Ok(())
+}
+
+/// Whether `tls` was built by [`issuer_config`] for an issuer answering the
+/// ACME TLS-ALPN-01 challenge. Fails closed when the record is unavailable.
+pub(in crate::gateway) fn answers_acme_challenge(tls: &ServerConfig) -> bool {
+    let Ok(mut resolvers) = CHALLENGE_RESOLVERS.lock() else {
+        return false;
+    };
+    resolvers.retain(|entry| entry.strong_count() > 0);
+    resolvers
+        .iter()
+        .any(|entry| std::ptr::addr_eq(entry.as_ptr(), Arc::as_ptr(&tls.cert_resolver)))
 }
 
 #[cfg(test)]

@@ -182,4 +182,23 @@ fn issuer_must_cover_exactly_the_selected_domains() {
         issuer_config(&domains, &Issuer(vec!["other.example.com".into()])).unwrap_err(),
         CertificateError::AmbiguousSource
     );
+    assert!(answers_acme_challenge(&config));
+    assert_eq!(
+        issuer_config(&domains, &OtherChallenge(domains.clone())).unwrap_err(),
+        CertificateError::UnsupportedChallenge
+    );
+}
+
+struct OtherChallenge(Vec<String>);
+
+impl CertificateIssuer for OtherChallenge {
+    fn domains(&self) -> &[String] {
+        &self.0
+    }
+    fn resolver(&self) -> Arc<dyn ResolvesServerCert> {
+        Arc::new(NoCertificate)
+    }
+    fn challenge_alpn(&self) -> Vec<Vec<u8>> {
+        vec![b"http/1.0".to_vec()]
+    }
 }
