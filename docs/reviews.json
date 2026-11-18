@@ -3,8 +3,8 @@
   "reviews": [
     {
       "source": "Cargo.lock",
-      "sha256": "79b7f5883943caec7989c4fa13e3451e5606f7d7b3d86b95e3db59ea164141c1",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
+      "sha256": "0d5b3b2c7fc9d780d90d0232391c06be7094b82ef67524e1656765eeda0598b8",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
       "notes": "Cargo-generated lockfile (format version 4) pinning 664 packages, including the consolidated workspace members humanymous-core, humanymous-runtime, humanymous-platform, the adapter, browser, CEF and CLI crates and their third-party dependencies. It fixes resolution for --locked builds only; it is not install, OS-support or artifact qualification evidence.",
       "pages": [
         "docs/reference/production-vs-reference.md",
@@ -934,17 +934,6 @@
       ]
     },
     {
-      "source": "build/core.Dockerfile",
-      "sha256": "a0524a3dbd29b5f54d558e2c9c5a64c651c8617be1060b2513c59a0c0cb2e3c1",
-      "reviewer": "codex/rust-pages",
-      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release. Reviewed canonical LF checkout bytes under the user-requested root .gitattributes; semantics unchanged by line-ending normalization.",
-      "pages": [
-        "docs/reference/production-vs-reference.md",
-        "docs/how-to/verify-the-image.md",
-        "docs/reference/red-team-rules-of-engagement.md"
-      ]
-    },
-    {
       "source": "build/external-input-browser.Dockerfile",
       "sha256": "061287d1dea563c4b7f95a3b8d8476c87b3f66aa01405e17e234d4fd6575ed3c",
       "reviewer": "codex/rust-pages",
@@ -1136,28 +1125,6 @@
       "sha256": "f379d1412d4cbd1a7439c5926db9a4eac0690ad58ae89ec3f4b54a43aba704ad",
       "reviewer": "codex/rust-pages",
       "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release. Reviewed canonical LF checkout bytes under the user-requested root .gitattributes; semantics unchanged by line-ending normalization.",
-      "pages": [
-        "docs/reference/production-vs-reference.md",
-        "docs/how-to/verify-the-image.md",
-        "docs/reference/red-team-rules-of-engagement.md"
-      ]
-    },
-    {
-      "source": "build/gate.Dockerfile",
-      "sha256": "438e94ac07bbb421a41e7174a358cb5009161d795bbf69ecb708b58efe8ee5b9",
-      "reviewer": "codex/rust-pages",
-      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release. Reviewed canonical LF checkout bytes under the user-requested root .gitattributes; semantics unchanged by line-ending normalization.",
-      "pages": [
-        "docs/reference/production-vs-reference.md",
-        "docs/how-to/verify-the-image.md",
-        "docs/reference/red-team-rules-of-engagement.md"
-      ]
-    },
-    {
-      "source": "build/gate.Dockerfile.dockerignore",
-      "sha256": "95c884d4493c73c7198f7d1d5394f521ad8f2a19d6ee605053a7f2c2642e2ee3",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Per-Dockerfile ignore list for the legacy Go Gate build (build/gate.Dockerfile): excludes VCS, agent directories, .spec/.spec.local, docs, crates, adapters, skills, target trees, node_modules, logs, Markdown except THIRD_PARTY_LICENSES.md and key/env files. It keeps cmd/gate, internal/ and go.mod in context for the historical Go oracle build, which is not a qualified Rust artifact.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/how-to/verify-the-image.md",
@@ -2284,9 +2251,9 @@
     },
     {
       "source": "crates/browser/src/scene_projection.rs",
-      "sha256": "730f4c4a82a7f28c561b13b1632d6505cb0ec931b206093cfedac98b7c23511f",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Commits browser-shell source changes through Meari's retained InteractiveDocument owner: sets native states and a data-browser-ready state attribute, rebuilds the widget session, and allows disabled-state migration only for the four standalone navigation buttons (back, forward, reload, stop), refusing changes on composite widget paths and restoring disabled paths if commit fails. One unit test asserts an unrelated widget's disabled change is refused and leaves state unchanged. Document-model behaviour only, not native GUI evidence.",
+      "sha256": "751a91bdde5bd97a8a6c7a1a6e8d01394a6f0182a2e51e2f6bd70602ba55a35d",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Commits browser-shell source changes through Meari's retained InteractiveDocument owner. replacement_source() builds the original-schema source a replacement must carry (the retained projected tree plus native states and a data-browser-ready state attribute that projection does not keep on doc.source); commit() uses it, rebuilds the widget session, and allows disabled-state migration only for the four standalone navigation buttons (back, forward, reload, stop), refusing changes on composite widget paths and restoring disabled paths if commit fails. One unit test asserts an unrelated widget's disabled change is refused and leaves state unchanged. Document-model behaviour only, not native GUI evidence.",
       "pages": [
         "docs/reference/native-browser.md"
       ]
@@ -2311,9 +2278,9 @@
     },
     {
       "source": "crates/browser/src/tabs_ui_resize_tests.rs",
-      "sha256": "f6fd0be6e17a5665151f488a44e51548b22861af68c2a06e1b5edfd066a4f502",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Meari native-document oracle tests for the tab strip under resize: viewport-only width/DPI changes must not recompile tab source, must invalidate stale stamps, and must preserve an unsubmitted focused address draft and tab-new/caption non-overlap; responsive close-button visibility must match AX click availability, real model changes must invalidate captured source work, failed projections must not bump the commit count, and a focused narrow close stays visible until focus moves. Header states these are not OS display or latency measurements.",
+      "sha256": "54fe564b63ed3bbf1f87592ee92036b7fa2c05a721ed6b9a73a3deecb2dab049",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Meari native-document oracle tests for the tab strip under resize: viewport-only width/DPI changes must not recompile tab source, must invalidate stale stamps, and must preserve an unsubmitted focused address draft and tab-new/caption non-overlap; responsive close-button visibility must match AX click availability, real model changes must invalidate captured source work, failed projections must not bump the commit count, and a focused narrow close stays visible until focus moves. Prepared replacements are built with scene_projection::replacement_source rather than a bare doc.source clone. Header states these are not OS display or latency measurements.",
       "pages": [
         "docs/reference/native-browser.md"
       ]
@@ -2357,9 +2324,9 @@
     },
     {
       "source": "crates/cli/Cargo.toml",
-      "sha256": "d89248233341f580b50f2a8f82b1673548fc439f13f685c2fe7a707f1f90aca8",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "46-line publish=false manifest for humanymous-cli with the humanymous binary and the humanymous-service-fixture binary, which needs the service-pilot feature. runtime-service adds the runtime gateway and authority features plus optional Tokio and zeroize; runtime-service-pilot adds credential-pilot and audit. Windows targets add windows-service, and Windows dev-dependencies add windows-permissions and junction. Features do not prove native execution or deployment support.",
+      "sha256": "93e95b9da635acc4e466e8da4fb92c4c5d17a734ff51a307d9443da9734c6cc6",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Manifest for humanymous-cli (description, readme INTEGRATION.md, publish = [\"crates-io\"]) with the humanymous binary and the humanymous-service-fixture binary, which needs the service-pilot feature. runtime-service adds the runtime gateway and authority features plus optional Tokio and zeroize; runtime-service-pilot adds credential-pilot and audit. Windows targets add windows-service, and Windows dev-dependencies add windows-permissions and junction. The crates-io publish setting is registry metadata only; features do not prove native execution, deployment support or that anything was published.",
       "pages": [
         "docs/reference/install-requirements.md",
         "docs/reference/cli-config-policy.md"
@@ -2642,9 +2609,9 @@
     },
     {
       "source": "crates/collector/Cargo.toml",
-      "sha256": "17c09991d49a443e8139230bad69da04fb7a93d50cfc3eedce645ba06ce0318f",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Manifest for the private humanymous-collector package (cdylib+rlib, publish=false) depending on humanymous-core, serde, serde_json, base64 and zeroize. runtime-pilot is an opt-in, never-default feature requiring the separate namespace-isolated runtime lab; wasm32-only deps pin wasm-bindgen =0.2.130, wasm-bindgen-futures =0.4.80, js-sys =0.3.107 without default features and wasm-bindgen-test =0.3.80. Manifest is not build evidence.",
+      "sha256": "9878e0c71bb0cb7a6c3cdcfda73e7dd9faf9d463282ea2376b81d351ba0b8b74",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Manifest for humanymous-collector (cdylib+rlib; description, readme INTEGRATION.md, publish = [\"crates-io\"]) depending on humanymous-core, serde, serde_json, base64 and zeroize. runtime-pilot is an opt-in, never-default feature requiring the separate namespace-isolated runtime lab; wasm32-only deps pin wasm-bindgen =0.2.130, wasm-bindgen-futures =0.4.80, js-sys =0.3.107 without default features and wasm-bindgen-test =0.3.80. Publish metadata is not a release; the manifest is not build evidence.",
       "pages": [
         "docs/reference/browser-collector.md"
       ]
@@ -3452,9 +3419,9 @@
     },
     {
       "source": "crates/go-adapter/Cargo.toml",
-      "sha256": "bc63c1746c5b0efadcdf79d57b3f7ff92e6b6c097e3a370f0b68a568de858185",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Manifest for the private humanymous-adapter-go package (publish=false) depending only on humanymous-runtime with the gateway feature and serde; no Go toolchain, cgo or SDK is embedded. Manifest is not build or Go-host qualification evidence.",
+      "sha256": "60357a9451a3376e84da16f47594ba7455f5dc09ffcd60282dd18f430cb1a644",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Manifest for humanymous-adapter-go (description 'Gate deployment contracts for external Go HTTP origins', readme INTEGRATION.md, publish = [\"crates-io\"]) depending only on humanymous-runtime with the gateway feature and serde; no Go toolchain, cgo or SDK is embedded. Manifest is not build, publication or Go-host qualification evidence.",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
@@ -3525,9 +3492,9 @@
     },
     {
       "source": "crates/humanymous/Cargo.toml",
-      "sha256": "b3dbbdce69caa5127188c3369ea15d149b199514fabbb1d76b81b874d6ea82a0",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Manifest for the humanymous facade package (publish=false, autobins=false) whose only feature, adapter-go, optionally pulls humanymous-adapter-go from ../go-adapter; dev-dependencies are serde_json and toml =1.2.1 and lints are inherited from the workspace. Defaults are empty, so a default build does not include the Go adapter.",
+      "sha256": "85212804285ac0e0c184040ba05a30f0e3448289936f1e0163cbfc95e3714b3b",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Manifest for the humanymous public facade package (description, readme ../../README.md, publish = [\"crates-io\"], autobins=false) whose only feature, adapter-go, optionally pulls humanymous-adapter-go from ../go-adapter with version 0.1.0 so the path dependency is publishable; dev-dependencies are serde_json and toml =1.2.1 and lints are inherited from the workspace. Defaults are empty, so a default build does not include the Go adapter.",
       "pages": [
         "docs/reference/supported-topologies.md",
         "docs/reference/production-vs-reference.md"
@@ -3574,9 +3541,9 @@
     },
     {
       "source": "crates/integrations/humanymous-platform/Cargo.toml",
-      "sha256": "0b1be94a33d9e86cf3e9f694654bc3a5de735d4dd6ad4834f6542a5b49202887",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Manifest for humanymous-platform (publish=false) with empty defaults and two independent opt-in features: testing (serde, serde_json) and windows-object (Windows-only windows-sys =0.61.2 filesystem/security features and windows-permissions =0.2.4). It declares the linux_tree_inventory example behind testing and local lints deny unsafe_code with a comment preserving six function-local Windows bridge exceptions.",
+      "sha256": "ac1b0fb0d6ce9324cba12c3965b427e2f99d53a5c92658aa194ce8f0a813b880",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Manifest for humanymous-platform (readme README.md, publish = [\"crates-io\"]) with empty defaults and two independent opt-in features: testing (serde, serde_json) and windows-object (Windows-only windows-sys =0.61.2 filesystem/security features and windows-permissions =0.2.4). It declares the linux_tree_inventory example behind testing and local lints deny unsafe_code with a comment preserving six function-local Windows bridge exceptions.",
       "pages": [
         "docs/reference/production-vs-reference.md"
       ]
@@ -4651,9 +4618,9 @@
     },
     {
       "source": "crates/sdk/humanymous-core/Cargo.toml",
-      "sha256": "f9dd1f726dbf4e45cf2160525b317358d247feeb5fa494d08c4af9814908dba2",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Manifest for the unpublished humanymous-core library (security contracts and pure automation-resistance engines): workspace serde, time, sha2, hex, hmac, base64, subtle, zeroize, png and wasmparser dependencies, dev-dependency on humanymous-platform testing, workspace lints, and an opt-in qualification feature that grants no runtime authority and only enables the integrity_canonical_performance example.",
+      "sha256": "ef0fbd146fe68eacd0fb5e5dde804c9e2e04f743dffd544e5d30979450834b70",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Manifest for the humanymous-core library (security contracts and pure automation-resistance engines; readme README.md, publish = [\"crates-io\"]): workspace serde, time, sha2, hex, hmac, base64, subtle, zeroize, png and wasmparser dependencies, dev-dependency on humanymous-platform testing, workspace lints, and an opt-in qualification feature that grants no runtime authority and only enables the integrity_canonical_performance example. Publish metadata is not a release.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/detection-engine-internals.md"
@@ -6524,9 +6491,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/Cargo.toml",
-      "sha256": "7993b2446d8fecabbf72223a978a4bd96dc6a519034be7e3a20cfb8cb8343895",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Manifest for the consolidated, unpublished humanymous-runtime crate (autobins/autotests off, default feature gateway): feature-gated contexts gateway, authority, audit, capture, network and native-security plus hosted-pilot and credential-pilot, with pinned optional dependencies such as rustls 0.23.46 (ring, tls12), httlib-hpack 0.1.3, rcgen 0.14.10, interprocess 2.4.7, winsafe/keyring stores on Windows and rustix on Unix. It declares five binaries (humanymous-runtime, humanymous-h2-product-binding-measure, humanymous-authority, audit-witness, audit-control-retainer) and named gateway, authority, audit, capture and network parity integration tests, each with required features. The manifest itself is not evidence that those binaries or tests ran.",
+      "sha256": "50f2461c8e2ea216929683994c4f90740636c145d4f49fa4bb532629cdc910ba",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Manifest for the consolidated humanymous-runtime crate (description, readme README.md, publish = [\"crates-io\"]; autobins/autotests off, default feature gateway): feature-gated contexts gateway, authority, audit, capture, network and native-security plus hosted-pilot and credential-pilot, with pinned optional dependencies such as rustls 0.23.46 (ring, tls12), httlib-hpack 0.1.3, rcgen 0.14.10, interprocess 2.4.7, winsafe/keyring stores on Windows and rustix on Unix. It declares five binaries (humanymous-runtime, which repeats the package description, humanymous-h2-product-binding-measure, humanymous-authority, audit-witness, audit-control-retainer) and named gateway, authority, audit, capture and network parity integration tests, each with required features. The manifest itself is not evidence that those binaries or tests ran or were published.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/reference/supported-topologies.md",
@@ -6553,6 +6520,86 @@
       ]
     },
     {
+      "source": "crates/sdk/humanymous-runtime/assets/console/console.html",
+      "sha256": "1ffdcacbdb8e90455c6717f69569435a8833a80e1ef7fc2951ce40d37a64c403",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Operator console page markup (port of internal/gate/console.go's page) with an empty <style id=\"app-css\"> placeholder that console.rs fills, and one inline script. Nine views (overview, integrity, sessions, virtual USB lab, bans, policy, settings, compliance, approvals) call the admin API relative to the page path with an optional bearer token: /audit, /integrity, /incidents/{ref}, /bans and /bans/lift, /policy and /killswitch, /virtual-usb, /erasure and /erasures, /approvals, /settings effective/schema/dry-run/overlays/rollback, and /whoami. It renders an audit decision feed with CSV export, a session drill-down drawer, typed-word confirm modals for destructive actions, and repeatedly states limits: permanent or range bans, kill switch, erasure and protection-reducing settings need a distinct approver, retention tiers are declared and not enforced, virtual USB results are unverified lab artifacts, and settings cannot make coherent human-paced automation distinguishable. Status polls every 4 s. It is a client; it enforces none of these rules itself.",
+      "pages": [
+        "docs/how-to/audit-console-tour.md",
+        "docs/reference/console-localization.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/assets/console/styles/00-layers.css",
+      "sha256": "40fe5a3d55c4ed98f57ff4c10ac8dcc669dfd10f8bc69ad20605ffc697b11880",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "First console stylesheet partial (SoT-33 P2): declares the cascade layer order tokens, base, layout, content, overlays, responsive once, so later layers win without !important regardless of file or selector order. console.rs concatenates partials in file-name order so this declaration comes first. Reader page coverage is indirect.",
+      "pages": [
+        "docs/how-to/audit-console-tour.md",
+        "docs/reference/console-localization.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/assets/console/styles/10-tokens.css",
+      "sha256": "ff25774b238f36e0b5ca7a70caac3974ec03e5fb798a7d5437c63b4623679480",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Console design tokens (SoT-34) in @layer tokens: the only place raw values live. Dark palette is the :root default (background, panels, text, accent #35d0ba, allow/challenge/deny/info colours and dim variants, mono and sans font stacks, spacing, radius and duration scales) and :root[data-theme=\"light\"] overrides the colours. Reader page coverage is indirect.",
+      "pages": [
+        "docs/how-to/audit-console-tour.md",
+        "docs/reference/console-localization.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/assets/console/styles/20-base.css",
+      "sha256": "29233030a1f21710c2e3a10c4cd03a5e75b6c3e29ddaaf97f9a4a1bd5f4e0540",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Console base layer (SoT-33 P2) in @layer base: border-box reset, [hidden] forced to display:none, body background/colour/font from tokens at 14px/1.5, a tabular-numeric .mono class, heading weights and accent link colour. Reader page coverage is indirect.",
+      "pages": [
+        "docs/how-to/audit-console-tour.md",
+        "docs/reference/console-localization.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/assets/console/styles/30-layout.css",
+      "sha256": "71ddbfa0a0768d7c5d8a41c293569bc0497a27946c2d21eec0ede23dd40c0b7d",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Console app-shell layout (SoT-33 P2) in @layer layout: the 230px rail plus main grid, sticky rail with brand mark, nav labels and nav items with active/hover states and deny-coloured count badges, role chip, sticky blurred top bar with icon buttons and a pulsing live indicator, and the content column. Reader page coverage is indirect.",
+      "pages": [
+        "docs/how-to/audit-console-tour.md",
+        "docs/reference/console-localization.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/assets/console/styles/40-content.css",
+      "sha256": "7025b961d658a7ff7802632aa33aa74b0b8cdcf928b04e102c32787ad7e7971d",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Console content components (SoT-33 P2) in @layer content: five-column KPI cards, cards and split layout, filter chips, the decision-feed table with content-visibility:auto rows for high-velocity feeds, verdict badges (allow/challenge/deny/none), hard-rule badges with a critical variant, enforce/monitor mode badges, integrity rows, form fields, buttons, lift buttons, ban source badges, notes and empty states. Reader page coverage is indirect.",
+      "pages": [
+        "docs/how-to/audit-console-tour.md",
+        "docs/reference/console-localization.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/assets/console/styles/50-overlays.css",
+      "sha256": "c1100e93e0184e8fd6f4f8a82addf9a0b2dedd76c0355a0a9a3101ce17759109",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Console overlays and chrome (SoT-33 P2) in @layer overlays: toast, positioned tooltip, the destructive-action confirm modal and its scrim (SoT-28 WS9), a hamburger and off-canvas rail under 680px, the status bar, and the session drill-down drawer with key/value rows. Reader page coverage is indirect.",
+      "pages": [
+        "docs/how-to/audit-console-tour.md",
+        "docs/reference/console-localization.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/assets/console/styles/90-responsive.css",
+      "sha256": "f7806ad6260c86b03f25557f0d2e5b14e60611f2744b791b0e3e252a4cfce818",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Last console partial (SoT-33 P2) in @layer responsive: a visible accent focus ring, prefers-reduced-motion disabling animations and transitions, a three-column KPI grid and single-column split under 1000px, and a single-column app with the rail hidden under 680px. Reader page coverage is indirect.",
+      "pages": [
+        "docs/how-to/audit-console-tour.md",
+        "docs/reference/console-localization.md"
+      ]
+    },
+    {
       "source": "crates/sdk/humanymous-runtime/pilots/authority/Dockerfile",
       "sha256": "3dec201e655b53c9dbf56a37bf41cf453551d80592400d045fe3873fa02adacf",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
@@ -6574,9 +6621,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "73fee120d3c194f0c7072f824af69bd723048019661dd0a111ad427b6adb18d2",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 106 / macos 106 / windows 102 (102 common plus 4 Unix-only test names listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
+      "sha256": "86e2e511c6fa38fb0afbc12e52e309fab33db1b74f9920e3cbf6ed5b3dd6d8d4",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 404 / macos 404 / windows 396 (396 common names, largest groups credential 50, token 42, ban 33, tests 29, observatory 26, pass_flow 25, logging 24, service 19, plus 8 Unix-only names listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/how-this-was-built.md"
@@ -8023,6 +8070,16 @@
       ]
     },
     {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/console.rs",
+      "sha256": "3cc53a152cf021883ea1cfcec157456e2fd24ff6ffb3c6daf80ad68f4383b50e",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Serves the operator console at /__hmn/admin/console (port of internal/gate/console.go): embeds console.html and the seven SRP CSS partials with include_str!, concatenates the partials in file-name order and injects them into the <style id=\"app-css\"> placeholder once, so the page is one self-contained document with no external stylesheet request. Exposes PATH, page(), stylesheet() and inline_script(). Three unit tests assert the placeholder is filled with expected layer, token and component rules, that every on-disk .css partial is embedded in order with no partial dropped, and that the markup has exactly one non-empty inline script. Routing and authorization are not in this file.",
+      "pages": [
+        "docs/how-to/audit-console-tour.md",
+        "docs/reference/console-localization.md"
+      ]
+    },
+    {
       "source": "crates/sdk/humanymous-runtime/src/gateway/control.rs",
       "sha256": "a93da07eb4ba1298433fe3319db14d5d924875a7e2ae7608b49b4ee2bb5e366e",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
@@ -8113,6 +8170,16 @@
       ]
     },
     {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/demo.rs",
+      "sha256": "915d3b647d509a236546a19384c27966d6c489717bca4558fedd7ca81d986892",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Public read-only 'score this browser' demo page at /demo (port of cmd/server handleDemo): serves web_dir/demo.html, independent of the HMN_PLAYGROUND flag, with no launcher or target field. It reuses a non-empty hsid cookie or issues a fresh 128-bit hex session (Set-Cookie Path=/; HttpOnly; Secure; SameSite=Lax), failing the request if the CSPRNG fails, and registers the session through an injected ensure callback; other paths return None. Three tests assert the page is served and contains the score CTA and /static/js/demo.js, that sessions are issued once and reused, and that the demo works while the playground is off. Reader page coverage is indirect.",
+      "pages": [
+        "docs/how-to/detection-observatory.md",
+        "docs/how-to/run-detection-engine.md"
+      ]
+    },
+    {
       "source": "crates/sdk/humanymous-runtime/src/gateway/external_input.rs",
       "sha256": "b62a84bb21ce25ef0286cd50fd1d573103da41fe450096853552371e705ddbec",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
@@ -8177,6 +8244,26 @@
       "pages": [
         "docs/reference/gate-origin-contract.md",
         "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/inject.rs",
+      "sha256": "a461f63f578a9b74f899514849d8d261a53e39bace613cdc2c84a234827a14e5",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Streaming single-pass HTML loader injector (port of internal/gate/inject.go, SoT-20): an io::Read wrapper that inserts a snippet exactly once right after the first <head ...> tag, else before </head>, else before <body (case-insensitive; like the oracle, <head also matches <header). It is add-only and idempotent: the <!--hmn-injected--> marker causes pass-through (already_present), and with no point within a 64 KiB look-ahead (HR-27a), non-HTML or an upstream error the bytes pass through unchanged (point_not_found), with the upstream error surfaced after buffered bytes. Callers must force identity encoding upstream. Reader page coverage is indirect.",
+      "pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs",
+      "sha256": "e0dbc55e0e75ff9bf87af6e478465ab656e51fe7f0ddeeccc599fb4d35faf01e",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Seven ports of internal/gate/inject_test.go: injection right after <head> for chunk sizes 1, 3, 7 and 4096; fallback before <body>; marker prevents a second injection; non-HTML passes through as point_not_found; an unclosed <head beyond the 64 KiB look-ahead passes through byte-for-byte while an open head with a huge body injects once without loss; insertion-point order and case; and an upstream error surfaces after the buffered bytes. Reader page coverage is indirect.",
+      "pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/reference/supported-topologies.md"
       ]
     },
     {
@@ -8279,12 +8366,72 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/mod.rs",
-      "sha256": "b3d4be4fee2e26cb1d98faaffc8073d60fea320f466e74a44967a1a24bddcd10",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Gateway module root of the runtime crate: declares the application, ban, browser, configuration, connection cap, control, credential, external input, guard, http, logging, management, pass proof/store, request, seams, service, session, settings, shipping, smuggle, startup, TLS, token, verdict store and virtual USB modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Doc line states loopback component support is not product qualification.",
+      "sha256": "90cbb0eb0485d604ad9efc5fae6bf36ef1c9d63d7a7c0f0f7b8b6f9cb2d658f6",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Gateway module root of the runtime crate: declares the application, ban, browser, configuration, connection cap, console, control, credential, demo, external input, guard, http, inject, logging, management, observatory, pass flow, pass proof, pass store, request, routes, seams, service, session, settings, shipping, smuggle, startup, tls, token, verdict store and virtual usb modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Doc line states loopback component support is not product qualification.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/observatory.rs",
+      "sha256": "fab7ec6428f825453c24c9b472678bed48db2e8a2920fce3bd7b59b308322caa",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Lab-only Detection Observatory port of legacy cmd/server playground.go/launch.go (SoT-30): exists only when HMN_PLAYGROUND is exactly 1 and the listen address is loopback (enabled off loopback is a startup error), answers only loopback Host values with X-Frame-Options DENY, frame-ancestors 'none' and no-store, and serves /playground (playground.html from the web dir), an SSE live feed with Last-Event-ID or lastId replay and 15 s heartbeats, policy meta (challengeAt/denyAt bands, 24 rules, 7 stages), a nonce endpoint, abort, and a score explanation that rescores a copy of a stored report. Launch is POST-only, refuses non-loopback Origin, host/url/upstream overrides, bodies over 4 KiB, reused or expired 120 s nonces, Docker-only external-input profiles (409) and unknown profiles, clamps runs to 1..5, allows one launch in flight, resets stateful detectors first and always targets https://127.0.0.1:8443 through an injected profile runner; the shared Request type also carries the Cookie header for sibling handlers such as the demo page; it opens no sockets itself and is not product qualification.",
+      "pages": [
+        "docs/how-to/detection-observatory.md",
+        "docs/explanation/observatory-architecture.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/observatory/hub.rs",
+      "sha256": "cd7937888a347f68e2020857bed5800975511204e522b8c04dec7b92676d5c63",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "In-process broadcast hub for the observatory live feed (port of internal/livefeed/hub.go): monotonic event ids from 1, a bounded replay ring and bounded per-subscriber sync channels (default 256 each). Publish never blocks; a full subscriber drops the event and increments its lagged counter, disconnected subscribers are pruned, and unencodable payloads publish as {}. Subscribe takes the backlog newer than last_id under the same lock as registration so no event is both replayed and streamed; cancel and Drop unregister the reader. States that only detection telemetry passes through it.",
+      "pages": [
+        "docs/explanation/observatory-architecture.md",
+        "docs/how-to/detection-observatory.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs",
+      "sha256": "15b8dd7db9470c2abe048c3262f67eb12143cb03f34c3821d49a8e90ef28c97f",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "26 unit tests ported from livefeed hub_test.go and playground/launch parity tests: hub ordering, non-blocking drop counting, bounded backlog replay without duplicates, idempotent cancel and event shape; observatory disabled unless HMN_PLAYGROUND=1 and refused off loopback, anti-embed headers and policy bands (30/70, layer cap 60, 24 rules, 7 stages), non-loopback Host 403, SSE retry/backlog/live/heartbeat and lastId fallback, tap-A scored-session events, single-use nonces, rejection of target overrides, unknown profiles, GET, foreign Origin, bad and oversized bodies, Docker-only profiles answered 409 without running, serialized launches (429), reset plus loopback base and 5-run clamp, abort, explanation without mutating the stored report, and loopback parsing cases. Parity tests read test/e2e/runner.mjs and web/playground.html so the launch and Docker-only profile lists stay in lock-step.",
+      "pages": [
+        "docs/how-to/detection-observatory.md",
+        "docs/explanation/observatory-architecture.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/pass_flow.rs",
+      "sha256": "0b99007307a3219e3fe8ee86cbd2264c2ada0bf9dca2843f825ac9debfbcf211",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "humanymous Pass HTTP flow (port of cmd/server pass_handler.go, SoT-36; roadmap G3), transport-free: /pass serves pass.html and issues or reuses the hsid session; /api/pass/new issues a fresh instance (nonce, risk-derived difficulty, challenge, proof of work bound to session and instance nonce, attestation flag); /api/pass/pow and /api/pass/attest carry the crypto axis with a per-fingerprint attestation budget (hard at 3 per 30 s); /api/pass/solve checks instance binding, paid PoW, attestation when the session is velocity-flagged, freshness (expiry is not a wrong answer), server-side placement re-simulation and single-use trace digests, then sets solved, rescores with l7.pass.solved and returns a step-up receipt (120 s) when a shared Gate key exists; /api/pass/kpi reports the wargame scoreboard. Velocity metering (soft 4, hard 8 per 30 s) only raises risk and PoW cost. Documented differences from Go: the realEventOK motor/timing pre-filter is not ported (accessibility rule), meter, store or engine failures refuse with 503/500, malformed red-team labels are refused before consuming a try, and undigestable traces are rejected. Its own header states the module is not mounted on the live listener yet.",
+      "pages": [
+        "docs/help/challenge-accessibility.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/pass_flow/scoring.rs",
+      "sha256": "829a50c3ea7c2447a2a60c7755ae0a9d852cb7580c8743c39a473d29a9ca6cf7",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Engine fusion for Pass attempts (Go-identical port of pass_scoring.go per owner decision 2026-11-17): emits only already-registered signal IDs, l7.pass.solved (OK, trust upgrade), l7.pass.velocity (SUSPICIOUS) and l7.pass.flood (BOT) for velocity levels, and soft behaviour tells l4.key.machine_speed (mean key gap under 15 ms), l4.key.flight_std (stddev under 6 ms), l4.event.perfect_timing (whole-millisecond key or pointer timings) and l2.adv.mobile_inconsistent (touch or pressure claim without motion jitter above 0.01), each at most once. Also the fingerprint key ja4_stable|subnet (first three IPv4 octets), difficulty trunc((risk-20)/15) clamped 0..3 or 3 for red-team probes, PoW bits 14 + difficulty + 2 x velocity rank capped at 20, KPI labels (red-team strategy, bot >= 70, human < 30, unknown) and mean/stddev/integer-ms helpers. None of these functions blocks or delays an attempt; the motor-gating realEventOK filter is deliberately absent.",
+      "pages": [
+        "docs/help/challenge-accessibility.md",
+        "docs/explanation/detection-engine-internals.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs",
+      "sha256": "ac0a862626a91c6875d212b8dacc378422fe28497ef601a495a78e07528d15da",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "25 tests porting pass_handler_test.go plus flow tests with a controllable clock: PoW bound to the instance nonce, Pass signal IDs registered with legacy weights (solved 0, velocity 25, flood 45) and existing behaviour IDs, velocity meter normal/soft/hard thresholds that self-clear, attestation budget, behaviour tells soft, deduplicated and ordered, difficulty/label/fingerprint parity with Go, page session issuance, fresh instance per call, difficulty scaling with risk and red team, solve granting the trust upgrade with and without a receipt, nonce and crypto-axis requirements, retry cap, misaligned versus expired reporting, single-use traces, machine-like keyboard traces still clearing while raising risk, velocity raising risk once per level and requiring attestation, shared-fingerprint velocity taxing PoW only, attestation binding and budget, Go transport errors (405, 400 no session, 400 bad body, oversize, long session), malformed labels refused before a try, KPI aggregation, out-of-order clock clamping and correction-feed traces only for solves.",
+      "pages": [
+        "docs/help/challenge-accessibility.md",
+        "docs/reference/production-vs-reference.md"
       ]
     },
     {
@@ -8345,6 +8492,26 @@
       "pages": [
         "docs/concepts/how-gate-sees-a-request.md",
         "docs/reference/data-processing-inventory.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/routes.rs",
+      "sha256": "ba947bcb7d6b2307108ab642232e81ce6f48c605db44dd51dc5d398405f00699",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Enforcement route presets and route table (port of internal/gate config.go resolution, configsign.go and cmd/gate routes.go; roadmap B12). Five presets select only enforcement behaviour (inject, enforce, fail closed, synchronous re-score, attestation floor): strict, balanced (default and fallback for unknown names), monitor, off and attested (strict plus floor); presets carry no weight, threshold or signal. resolve() picks the longest segment-anchored prefix on a lexically cleaned path so /./admin, //admin and /x/../admin hit the protected route, and global monitor clears enforce. parse_routes() reads '<prefix> <preset>' lines with # comments and refuses malformed lines, unknown presets and attested on the catch-all; validate_attested_routes() makes attested without a shared HMN_TOKEN_KEY fatal and without a possession verifier a warning. config_version() is an HMAC-SHA256 'cfg-' plus 12 hex digest over monitor, kill switch, routes and rate limits (defaults 10 s window, soft 60, hard 120).",
+      "pages": [
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs",
+      "sha256": "2565b53ecbda871a85eae3d7bd52b020b555cfbcd97b7c5a03000c1c5f388195",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Ten ports of cmd/gate routes_test.go, internal/gate resolve_test.go and configsign_test.go: valid routes files with comments and blank lines, unknown preset and malformed lines refused with line numbers, attested accepted on specific routes but refused on /, attested preconditions (missing shared key fatal, missing verifier one warning), missing file reported as a read error, path-confusion variants resolving to strict while /healthstatus-secret does not match /health, longest-prefix selection with global monitor clearing enforce but keeping the attestation floor, lexical path cleaning, and a known-answer config version cfg-694cb55271dd that changes with the kill switch and the key.",
+      "pages": [
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/cli-config-policy.md"
       ]
     },
     {
@@ -9709,9 +9876,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/tests/gateway/native_process.rs",
-      "sha256": "a4150470704dc5962ca478bbaf91fa547654099db07a6db4fb4e67e3de9fa6b0",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Real humanymous-runtime child process with loopback HTTP and a non-Docker, non-browser fixture. A /effect route requires RIT, sealed keys are held by Custody, and readiness must report product_qualified=false. A signed request before collect gets 403 CHALLENGE with no origin contact. After a signed collect, the origin sees exactly one effect, and replaying the same counter gets 403. After restart, sessions do not survive (401). A wrong key passphrase fails with empty stdout, and the WAL holds runtime.decision records without session ID or user-agent plaintext.",
+      "sha256": "f710ca443693a5aeae015e2ebaeee87dc0b28c301488c5238a0e7fddd26dce46",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Real humanymous-runtime child process with loopback HTTP and a non-Docker, non-browser fixture. A /effect route requires RIT, sealed keys are held by Custody, and readiness must report product_qualified=false. A signed request before collect gets 403 CHALLENGE with no origin contact. After a signed collect, the origin sees exactly one effect, and replaying the same counter gets 403. After restart, sessions do not survive (401). A wrong key passphrase fails with empty stdout, and the WAL holds runtime.decision records without session ID or user-agent plaintext. On Windows the key directory gets a protected owner-only DACL for the actual creating owner (user SID or BUILTIN Administrators on elevated runners) via windows-permissions, and a Custody refusal panics with the directory and lock SDDL.",
       "pages": [
         "docs/reference/gate-origin-contract.md",
         "docs/reference/browser-collector.md",
