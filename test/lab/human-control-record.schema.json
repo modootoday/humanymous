@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "humanymous.human-control-record/1",
+  "title": "Human-control record",
+  "description": "Filled by hand by the person who performed docs/how-to/run-human-test-lab.md. Holds no personal data: no names, contact details, account identifiers, links, screenshots or timestamps finer than a date. `humanymous-lab-runner human-control-receipt` enforces the same closed shape (plus duplicate-key refusal) and emits a receipt labelled human-attested; it never produces or edits a record.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "date", "source_sha", "venue", "environment", "steps"],
+  "$defs": {
+    "plain": {
+      "type": "string",
+      "maxLength": 64,
+      "pattern": "^[^@\\u0000-\\u001f\\u007f]*$",
+      "not": {"pattern": "://"}
+    }
+  },
+  "properties": {
+    "schema": {"const": "humanymous.human-control-record/1"},
+    "date": {
+      "description": "Test day only, YYYY-MM-DD.",
+      "type": "string",
+      "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$"
+    },
+    "source_sha": {
+      "description": "Commit the lab images were built from (git rev-parse HEAD).",
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "venue": {
+      "description": "local: browser to host loopback through the lab CA. provider-fronted: through Cloudflare Tunnel and Access; Cloudflare re-originates TLS, so raw TLS/H2 facts are provider facts.",
+      "enum": ["local", "provider-fronted"]
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["os", "browser", "assistive_technology", "input_methods"],
+      "properties": {
+        "os": {"$ref": "#/$defs/plain", "minLength": 1, "description": "Product and version, e.g. Windows 11 24H2."},
+        "browser": {"$ref": "#/$defs/plain", "minLength": 1, "description": "Product and major version, e.g. Firefox 145."},
+        "assistive_technology": {
+          "type": "array",
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "version"],
+            "properties": {
+              "name": {"$ref": "#/$defs/plain", "minLength": 1},
+              "version": {"$ref": "#/$defs/plain", "minLength": 1}
+            }
+          }
+        },
+        "input_methods": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"enum": ["keyboard", "pointer", "touch", "screen-reader", "magnifier", "switch", "voice"]}
+        }
+      }
+    },
+    "steps": {
+      "description": "Each runbook step exactly once. Use not_run for a step you skipped or that waits on an unported feature.",
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "outcome"],
+        "properties": {
+          "id": {"enum": ["ca-trusted", "gate-reached", "ordinary-pass", "pass-keyboard-only", "pass-screen-reader", "pass-zero-pointer"]},
+          "outcome": {"enum": ["passed", "failed", "blocked", "not_run"]},
+          "note": {
+            "type": "string",
+            "maxLength": 280,
+            "pattern": "^[^@\\u0000-\\u001f\\u007f]*$",
+            "not": {"pattern": "://"}
+          }
+        }
+      }
+    }
+  }
+}
