@@ -13,6 +13,7 @@ use std::{
 pub(crate) struct Packages {
     root: PathBuf,
     entries: BTreeMap<String, Value>,
+    source_sha: Option<String>,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Role {
@@ -30,11 +31,10 @@ pub(crate) enum Role {
     CliBinary,
 }
 impl Packages {
-    pub(crate) fn load(source: &Value, base: &Path) -> io::Result<Self> {
-        evidence::verify_snapshot(source)?;
-        // Keep Cargo's logical absolute spelling; Windows canonicalize adds a
-        // verbatim prefix that metadata workspace_root does not necessarily use.
-        let root = std::env::current_dir()?;
+    /// Runs `cargo metadata` and keeps its private output beside `base`.
+    /// The provisioning parent calls this before launching the standard-user
+    /// actor, whose PATH holds only System32 and therefore no Cargo.
+    pub(crate) fn capture_metadata(base: &Path) -> io::Result<Vec<u8>> {
         let output = capture_with_stderr(
             Command::new("cargo").args([
                 "metadata",
@@ -56,12 +56,22 @@ impl Packages {
         if !output.status.success() {
             return Err(io::Error::other("workspace package metadata failed"));
         }
-        let metadata: Value = humanymous_platform::testing::json::decode_strict_json(
-            &output.stdout,
-            16 * 1024 * 1024,
-        )
-        .map_err(io::Error::other)?;
-        let packages = Self::from_metadata(&metadata, root)?;
+        Ok(output.stdout)
+    }
+    pub(crate) fn load(source: &Value, base: &Path, captured: Option<&Path>) -> io::Result<Self> {
+        evidence::verify_snapshot(source)?;
+        // Keep Cargo's logical absolute spelling; Windows canonicalize adds a
+        // verbatim prefix that metadata workspace_root does not necessarily use.
+        let root = logical(std::env::current_dir()?);
+        let stdout = match captured {
+            Some(path) => std::fs::read(path)?,
+            None => Self::capture_metadata(base)?,
+        };
+        let metadata: Value =
+            humanymous_platform::testing::json::decode_strict_json(&stdout, 16 * 1024 * 1024)
+                .map_err(io::Error::other)?;
+        let mut packages = Self::from_metadata(&metadata, root)?;
+        packages.source_sha = source["source_sha"].as_str().map(str::to_owned);
         let files = source["files"]
             .as_object()
             .ok_or_else(|| io::Error::other("source files absent"))?;
@@ -130,10 +140,40 @@ impl Packages {
             }
             entries.insert(id.to_owned(), package.clone());
         }
-        Ok(Self { root, entries })
+        Ok(Self {
+            root,
+            entries,
+            source_sha: None,
+        })
     }
 }
 
 mod roles;
 #[cfg(test)]
 mod tests;
+
+impl Packages {
+    /// Cargo package name for a workspace manifest entry, if it is a member.
+    pub(crate) fn name(&self, entry: &Value) -> Option<&str> {
+        entry["package_id"]
+            .as_str()
+            .and_then(|id| self.entries.get(id))
+            .and_then(|package| package["name"].as_str())
+    }
+    pub(crate) fn root(&self) -> &Path {
+        &self.root
+    }
+    /// Observed source revision; absent for metadata-only fixtures.
+    pub(crate) fn source_sha(&self) -> Option<&str> {
+        self.source_sha.as_deref()
+    }
+}
+
+/// Drops a `\\?\` verbatim prefix in front of a drive letter, which a child
+/// launched in a canonicalized directory can observe as its current directory.
+fn logical(path: PathBuf) -> PathBuf {
+    match path.to_str().and_then(|text| text.strip_prefix(r"\\?\")) {
+        Some(rest) if rest.as_bytes().get(1) == Some(&b':') => PathBuf::from(rest),
+        _ => path,
+    }
+}

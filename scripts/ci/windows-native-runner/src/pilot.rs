@@ -109,7 +109,11 @@ pub fn run(options: &Options) -> io::Result<i32> {
                 &report["source"],
             )?,
         };
-        let packages = harness::packages::Packages::load(&report["source"], &options.report)?;
+        let packages = harness::packages::Packages::load(
+            &report["source"],
+            &options.report,
+            options.package_metadata.as_deref(),
+        )?;
         for (name, role) in [
             ("humanymous", harness::packages::Role::CliBinary),
             ("humanymous-runtime", harness::packages::Role::GatewayBinary),

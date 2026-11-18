@@ -12,6 +12,8 @@ pub fn run(options: &Options) -> io::Result<i32> {
     };
     evidence::verify_snapshot(&source)?;
     let mut report = json!({"schema":"humanymous.workspace-probe/1","kind":"workspace","scope":"workspace-default-features","qualification":"implemented-workspace-component","full_runtime_qualified":false,"status":"failed","source_sha":source["source_sha"],"source":source,"os":std::env::consts::OS,"arch":std::env::consts::ARCH,"actor":identity,"errors":0,"skips":0});
+    // Closed stage names for the public summary; the error text stays private.
+    let stage = std::cell::Cell::new("prepare");
     let result = (|| -> io::Result<()> {
         let manifest = match &options.manifest {
             Some(path) => serde_json::from_slice(&fs::read(path)?)?,
@@ -26,7 +28,13 @@ pub fn run(options: &Options) -> io::Result<i32> {
             return Err(io::Error::other("default full workspace manifest required"));
         }
         report["manifest"] = manifest.clone();
-        let packages = harness::packages::Packages::load(&report["source"], &options.report)?;
+        stage.set("packages");
+        let packages = harness::packages::Packages::load(
+            &report["source"],
+            &options.report,
+            options.package_metadata.as_deref(),
+        )?;
+        stage.set("execute");
         harness::execute(
             &manifest["harnesses"],
             &options.report,
@@ -34,6 +42,7 @@ pub fn run(options: &Options) -> io::Result<i32> {
             harness::Scope::Workspace,
             &packages,
         )?;
+        stage.set("accounting");
         let rows = report["coverage"]["harnesses"]
             .as_array()
             .ok_or_else(|| io::Error::other("workspace coverage absent"))?;
@@ -59,6 +68,7 @@ pub fn run(options: &Options) -> io::Result<i32> {
         report["raw_ignored_tests"] = ignored.into();
         report["ignored_subprocess_helpers"] = helpers.into();
         report["zero_test_harnesses"] = json!(zero);
+        stage.set("snapshot");
         evidence::verify_snapshot(&report["source"])?;
         Ok(())
     })();
@@ -67,6 +77,8 @@ pub fn run(options: &Options) -> io::Result<i32> {
         Err(error) => {
             report["errors"] = 1.into();
             report["error"] = error.to_string().into();
+            report["error_stage"] = stage.get().into();
+            report["error_kind"] = format!("{:?}", error.kind()).into();
         }
     }
     evidence::write(&options.report, &report)?;
