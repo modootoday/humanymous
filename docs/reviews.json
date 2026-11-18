@@ -6667,9 +6667,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "0fd072094d6fd2c2ee708b0b3f759583aca50b50263e223f3ee098044b51741e",
+      "sha256": "2496cb06abd23d37d190c89e74ed0ac62a9d47c52f9d928b0eee55b050146a10",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 373 / macos 373 / windows 365 (365 common names plus 8 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for merge train claude/merge-train-1 (codex/rust plus PR heads #87, #88, #77, #103, #106 and #113): the name lists are the union of all parents' already-reviewed additions, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 373 listed common plus Unix-only names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 383 / macos 383 / windows 375 (375 common names plus 8 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for merge train claude/merge-train-1 (codex/rust plus PR heads #87, #88, #77, #103, #106 and #113): the name lists are the union of all parents' already-reviewed additions, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 383 listed common plus Unix-only names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/how-this-was-built.md"
@@ -8284,19 +8284,37 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/logging.rs",
-      "sha256": "1cc8b3cfa7234bb4c8143aa46f204e8c5c0f03abe56b561a8ce64e8cd654ca48",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Operational logging kernel for the Gate and Core roles, ported from legacy logging.go. Diagnostics only: it never changes decisions and holds no global state or environment reads. resolve_setting applies flag, then environment, then fallback precedence. Settings validate level, format, stream and absolute non-duplicate file sinks, and an empty level is refused. OperationalLogger emits synchronously to console, plain and JSONL sinks, counting write errors per sink. Fatal records carry only a static class, observability records an allowlisted method with no path or panic material, and canonical_external_input_label is defined here. No runtime consumer of OperationalLogger was found outside the module. Reader page coverage is indirect.",
+      "sha256": "08b9cac2e48ca4d165c3fd9df94e2b190b8f7495a47a55ca4e4c2281a05944b2",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Operational logging kernel for the Gate and Core roles, ported from legacy logging.go. Diagnostics only: it never changes decisions and holds no global state or environment reads. resolve_setting applies flag, then environment, then fallback precedence. Settings validate level, format, stream and absolute non-duplicate file sinks, and an empty level is refused. OperationalLogger emits synchronously to console, plain and JSONL sinks, counting write errors per sink; per the 2026-11-16 owner decision this synchronous path is the one the gateway uses. Fatal records carry only a static class, observability records an allowlisted method with no path or panic material, and canonical_external_input_label is defined here. No runtime consumer of OperationalLogger was found outside the module. Re-reviewed 2026-11-18: it now declares the queue submodule, re-exports QueuedLogger, LogHandle, their stats and refusal types and the owned Attr/AttrValue, and factors record writing into write_record so the queue worker stamps sequence numbers in queue order; nothing in the gateway constructs the queued logger. Reader page coverage is indirect.",
       "pages": [
         "docs/how-to/observability-siem.md",
         "docs/reference/data-processing-inventory.md"
       ]
     },
     {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/logging/queue.rs",
+      "sha256": "f50a7f99ffa6ebd79ca3557713702d66155e757cfea193d95baed36ffa88368b",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Opt-in bounded asynchronous operational logger ported from legacy internal/logger logger.go and handler.go. QueuedLogger moves an OperationalLogger onto one worker thread behind a queue of 1024 items by default (zero selects the default; more than 65536 is refused with a static code). Producers never wait: a full queue or a closed logger drops the record and counts it per level under queue_full or closed. The worker assigns sequence numbers in queue order; flush waits until earlier records reached every sink and file sinks synced, close stops intake and drains, and both stop at a caller-supplied Instant deadline without discarding queued records. LogHandle with_attrs/with_group nest attributes like Go slog.Handler. A worker panic still marks the logger closed and done. Nothing in the gateway constructs it; the gateway keeps the synchronous logger. Reader page coverage is indirect.",
+      "pages": [
+        "docs/how-to/observability-siem.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs",
+      "sha256": "c2e5338f6450044770a08c471c80b9575a3834e16ee0b901b1386f91365f3a51",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Queued-logger tests ported from legacy logger_test.go and sink_test.go plus a Go-measured attrs/groups golden. They assert queued plain/JSONL bytes match the synchronous golden, filtered records are neither written nor counted as drops, queue size zero selects the default and oversize is refused, concurrent producers yield intact JSON lines, saturation against a blocked writer does not block producers and counts drops exactly, one failed sink does not suppress another, flush and close are idempotent and honor their deadline while a sink is blocked (the queued record still drains after release), WithAttrs/WithGroup nesting matches Go output, and a file sink appends after close and reopen. Waits use generous deadlines; no assertion depends on a sleep.",
+      "pages": [
+        "docs/how-to/observability-siem.md"
+      ]
+    },
+    {
       "source": "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs",
-      "sha256": "8c71ce4c1665dcc503c07307a81cecb2f925be1a9fbe596a8dd444ac2e746f49",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Canonical operational log record shared by the plain and JSONL encodings (schema 1.0.0). Lines are capped at 4096 bytes and records at 64 fields, with message and field bounds; fields are dropped, then the message shortened, to fit. It strips ANSI, control and bidirectional characters, has no error or bytes value variant, writes non_finite for non-finite floats and uses RFC 3339 nanosecond timestamps. The documented approximations versus Go are plain quoting of a fixed escape set and serde float text.",
+      "sha256": "0dc41f6411cd5bb70703e412cabceb6b8958edea9b476092548dacd936d2ee76",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Canonical operational log record shared by the plain and JSONL encodings (schema 1.0.0). Lines are capped at 4096 bytes and records at 64 fields, with message and field bounds; fields are dropped, then the message shortened, to fit. It strips ANSI, control and bidirectional characters, has no error or bytes value variant, writes non_finite for non-finite floats and uses RFC 3339 nanosecond timestamps. The documented approximations versus Go are plain quoting of a fixed escape set and serde float text. Re-reviewed 2026-11-18: adds owned Attr/AttrValue values with a Group variant for the queued logger; group children are recorded under the dot-joined sanitized key, only top-level component and event keys set the envelope, and at top level a key that sanitizes to empty is dropped and marks the record truncated. The borrowed-attribute path used by the synchronous logger is unchanged in behavior.",
       "pages": [
         "docs/how-to/observability-siem.md"
       ]

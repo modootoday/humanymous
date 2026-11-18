@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 373,
-      "macos": 373,
-      "windows": 365
+      "linux": 383,
+      "macos": 383,
+      "windows": 375
     },
     "common_test_names": [
       "gateway::application::temporal::tests::categories::configure_only_preserves_unknown_gap_until_provider_observation",
@@ -138,6 +138,16 @@
       "gateway::http::tests::origin_request_drops_forged_trust_headers",
       "gateway::http::tests::origin_response_preserves_cookie_bytes_and_rejects_ambiguity",
       "gateway::http::tests::strict_framing_rejects_smuggling_and_normalization",
+      "gateway::logging::queue::tests::attrs_and_groups_nest_like_go_handler",
+      "gateway::logging::queue::tests::concurrent_producers_produce_intact_json_lines",
+      "gateway::logging::queue::tests::flush_and_close_are_bounded_and_idempotent",
+      "gateway::logging::queue::tests::flush_and_close_honor_deadline_when_sink_is_blocked",
+      "gateway::logging::queue::tests::queue_saturation_does_not_block_producer",
+      "gateway::logging::queue::tests::queue_size_zero_selects_default_and_oversize_is_refused",
+      "gateway::logging::queue::tests::queued_failed_sink_does_not_suppress_another",
+      "gateway::logging::queue::tests::queued_file_sink_appends_on_reopen_after_close",
+      "gateway::logging::queue::tests::queued_level_threshold_filters_before_enqueue",
+      "gateway::logging::queue::tests::queued_plain_and_jsonl_share_canonical_record",
       "gateway::logging::tests::canonical_external_input_label_bounds",
       "gateway::logging::tests::core_accumulates_plain_and_jsonl_files",
       "gateway::logging::tests::core_logging_off_by_default",

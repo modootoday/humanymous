@@ -14,8 +14,8 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "ported_unit": 184,
-  "partial": 94,
+  "ported_unit": 188,
+  "partial": 90,
   "missing": 34,
   "not_applicable": 2
  },
@@ -92,8 +92,7 @@
    "ported_unit": 2
   },
   "internal/logger": {
-   "ported_unit": 2,
-   "partial": 4
+   "ported_unit": 6
   },
   "internal/mlcorrect": {
    "ported_unit": 14,
@@ -7195,90 +7194,108 @@
   },
   {
    "baseline_path": "internal/logger/handler.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/logging.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::invalid_event_and_field_cap_mark_truncation"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::invalid_event_and_field_cap_mark_truncation",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::attrs_and_groups_nest_like_go_handler"
    ],
    "go_test_map": {},
-   "gaps": [
-    "slog.Handler attrs/groups nesting has no counterpart: Rust callers pass a flat attribute slice to OperationalLogger::emit"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Attribute flattening into the canonical record is covered; slog grouping is a Go API adapter. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24, DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "notes": "Attribute flattening into the canonical record is covered. slog WithAttrs/WithGroup and Group values are ported as LogHandle::with_attrs/with_group and Attr::group, pinned by a golden measured from Go internal/logger at 981d25c (top-level-only component/event override, sanitized group names, empty group key dropped with truncation). Gateway path: the gateway constructs only the synchronous OperationalLogger (owner decision 2026-11-16, .agents/retirement/owner-decisions-2026-11-16.md); the Go queue semantics live in the opt-in gateway::logging::QueuedLogger/LogHandle, which no gateway composition constructs.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::invalid_event_and_field_cap_mark_truncation": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::invalid_event_and_field_cap_mark_truncation": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::attrs_and_groups_nest_like_go_handler": "passed"
    }
   },
   {
    "baseline_path": "internal/logger/logger_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/logging.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::sanitizes_hostile_text_and_caps_physical_lines",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::concurrent_producers_produce_intact_json_lines",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queue_saturation_does_not_block_producer",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::flush_and_close_are_bounded_and_idempotent"
    ],
    "go_test_map": {
     "TestPlainAndJSONLShareCanonicalRecord": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record",
     "TestLevelValidationAndFiltering": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters",
     "TestSanitizesHostileTextAndCapsPhysicalLines": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::sanitizes_hostile_text_and_caps_physical_lines",
-    "TestConcurrentProducersProduceIntactJSONLines": null,
-    "TestQueueSaturationDoesNotBlockProducer": null,
+    "TestConcurrentProducersProduceIntactJSONLines": "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::concurrent_producers_produce_intact_json_lines",
+    "TestQueueSaturationDoesNotBlockProducer": "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queue_saturation_does_not_block_producer",
     "TestOneFailedSinkDoesNotSuppressAnother": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another",
-    "TestFlushAndCloseAreBoundedAndIdempotent": null
+    "TestFlushAndCloseAreBoundedAndIdempotent": "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::flush_and_close_are_bounded_and_idempotent"
    },
-   "gaps": [
-    "Concurrency, queue saturation and bounded close tests have no counterpart because emission is synchronous behind &mut (deliberate difference)"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Four of seven Go tests map one-to-one. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "notes": "All seven Go tests map. The saturation port keeps the sink blocked for the whole burst and asserts the exact drop count (1000) instead of Go's 250 ms elapsed-time bound. Gateway path: the gateway constructs only the synchronous OperationalLogger (owner decision 2026-11-16, .agents/retirement/owner-decisions-2026-11-16.md); the Go queue semantics live in the opt-in gateway::logging::QueuedLogger/LogHandle, which no gateway composition constructs.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::sanitizes_hostile_text_and_caps_physical_lines": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::concurrent_producers_produce_intact_json_lines": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queue_saturation_does_not_block_producer": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::flush_and_close_are_bounded_and_idempotent": "passed"
    }
   },
   {
    "baseline_path": "internal/logger/logger.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/logging.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/logging.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::empty_level_is_refused_for_both_roles",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_accumulates_plain_and_jsonl_files"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_accumulates_plain_and_jsonl_files",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queue_size_zero_selects_default_and_oversize_is_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::concurrent_producers_produce_intact_json_lines",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queue_saturation_does_not_block_producer",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::flush_and_close_are_bounded_and_idempotent",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::flush_and_close_honor_deadline_when_sink_is_blocked",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queued_failed_sink_does_not_suppress_another"
    ],
    "go_test_map": {},
-   "gaps": [
-    "Bounded asynchronous queue and bounded flush/close are not ported: Rust emits synchronously and counts write errors (deliberate difference documented in gateway/logging.rs)"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Open/level validation/filtering, multi-sink isolation and per-sink stats are ported in OperationalLogger. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24, DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "notes": "Open/level validation/filtering, multi-sink isolation and per-sink stats are ported in OperationalLogger. The bounded queue (zero selects 1024, above 65536 refused), single sink worker with queue-order sequence numbers, per-level queue_full/closed drop counters, queue depth, and deadline-bounded idempotent flush/close are ported in QueuedLogger; the Go context deadline is a caller-supplied Instant. Pre-existing accepted differences stay: empty level refused, Role-bound service name, no Discard helper (an off threshold is the equivalent), Healthy is write_errors == 0. Gateway path: the gateway constructs only the synchronous OperationalLogger (owner decision 2026-11-16, .agents/retirement/owner-decisions-2026-11-16.md); the Go queue semantics live in the opt-in gateway::logging::QueuedLogger/LogHandle, which no gateway composition constructs.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::empty_level_is_refused_for_both_roles": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_accumulates_plain_and_jsonl_files": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_accumulates_plain_and_jsonl_files": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queue_size_zero_selects_default_and_oversize_is_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::concurrent_producers_produce_intact_json_lines": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queue_saturation_does_not_block_producer": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::flush_and_close_are_bounded_and_idempotent": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::flush_and_close_honor_deadline_when_sink_is_blocked": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queued_failed_sink_does_not_suppress_another": "passed"
    }
   },
   {
@@ -7309,31 +7326,34 @@
   },
   {
    "baseline_path": "internal/logger/sink_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/logging/sink.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/sink.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_appends_on_reopen",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_same_path_and_non_regular_targets",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::flush_and_close_honor_deadline_when_sink_is_blocked",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queued_file_sink_appends_on_reopen_after_close"
    ],
    "go_test_map": {
     "TestFileSinkAppendsOnReopen": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_appends_on_reopen",
     "TestFileSinkRejectsSamePathAndNonRegularTargets": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_same_path_and_non_regular_targets",
     "TestFileSinkRejectsSymlink": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink",
-    "TestFlushHonorsContextWhenSinkIsBlocked": null
+    "TestFlushHonorsContextWhenSinkIsBlocked": "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::flush_and_close_honor_deadline_when_sink_is_blocked"
    },
-   "gaps": [
-    "Context-bounded flush has no counterpart: Rust emission is synchronous (deliberate difference documented in gateway/logging.rs)"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Three of four Go tests map one-to-one. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "notes": "All four Go tests map; the deadline port also bounds close and checks the queued record drains after release. Gateway path: the gateway constructs only the synchronous OperationalLogger (owner decision 2026-11-16, .agents/retirement/owner-decisions-2026-11-16.md); the Go queue semantics live in the opt-in gateway::logging::QueuedLogger/LogHandle, which no gateway composition constructs.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_appends_on_reopen": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_same_path_and_non_regular_targets": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::flush_and_close_honor_deadline_when_sink_is_blocked": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queued_file_sink_appends_on_reopen_after_close": "passed"
    }
   },
   {
