@@ -596,20 +596,21 @@
     },
     {
       "source": "adapters/node/README.md",
-      "sha256": "62b0a8bc33045d9de3a05cefca7c7d29060f458a4776329bb6b35de65bd4af57",
-      "reviewer": "claude/node-qualification (author of the 2026-11-16 qualification-producer edit; not an independent reviewer)",
-      "notes": "Experimental APIs are explicit. releaseQualifiedTuples now lists only linux-x64-gnu, conditional on a same-run delivery receipt from actual Node/Bun host runs; no production browser ALLOW evidence, other tuples unqualified, npm publication still gated. Node>=22 install floor is not the stricter dev-toolchain floor or all-version support. No host execution is claimed by this review.",
+      "sha256": "03ca875d121b76061e80afe6fc7e9e20ada33ea844998f3849d826843e51e7fc",
+      "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+      "notes": "Experimental APIs and unknown release tuples are explicit. Claims about pending HEAD/304/cloning tests and memory hold are source-checkpoint history, not current executions. Node>=22 install floor is not the stricter dev-toolchain floor or all-version support. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
       "pages": [
         "docs/reference/node-adapter.md"
       ]
     },
     {
       "source": "adapters/node/capabilities.json",
-      "sha256": "2e20c711e3df40620cdcd6e8df3621856b4a9c4b1118f7b8fbe9798cc94b23a1",
-      "reviewer": "claude/node-qualification (author of the 2026-11-16 qualification-producer edit; not an independent reviewer)",
-      "notes": "Conditional raw Node HTTP1 versus normalized Bun/Fetch capabilities; original TLS/H2/H3, upload streaming, recovery/admin unavailable. releaseQualifiedTuples lists only linux-x64-gnu and must exactly equal the same-run receipt's advertised tuples, or delivery fails closed. The native capabilities() function still reports an empty list. No host execution is claimed by this review.",
+      "sha256": "e30b2a2ea43644b7e0c1c6d89a8c75ee5f8263d996e7f3cebacd87f457e6815c",
+      "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+      "notes": "Conditional raw Node HTTP1 versus normalized Bun/Fetch capabilities; original TLS/H2/H3, upload streaming, recovery/admin unavailable. Empty releaseQualifiedTuples and required actual receipt remain authoritative. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
       "pages": [
-        "docs/reference/node-adapter.md"
+        "docs/reference/node-adapter.md",
+        "docs/start-here/integrator.md"
       ]
     },
     {
@@ -4294,8 +4295,8 @@
     {
       "source": "crates/node-adapter/tests/host_process.rs",
       "sha256": "06a68bb2633fcf7334eb61dd65deb7b7bcfd446c3a9f020d5f70ccf1296919b9",
-      "reviewer": "Codex Go owner delegated read-only Node review; 2026-11-16 verdict-reporting edit by claude/node-qualification (author, not independent)",
-      "notes": "Production rows now print the observed CHALLENGE (409) or DENY (403) verdict; any other status still fails. Three ignored-by-default actual-host groups plus two included framing groups. Separate real-production non-ALLOW and synthetic-evidence real-engine ALLOW/audit counters; sixty current required cases include seven positives per tuple. Tests need exact addon/framework/authority provisioning; default green or old36/52 results cannot discharge current corpus. Cleanup kills/waits child but is not independent full-product containment proof. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
+      "reviewer": "independent review pending; this hash is recorded by the change author (claude/node-qualification), which is not an independent review",
+      "notes": "Author record, not an independent review. Three ignored-by-default real-process tests across node/bun x express/hono run the HUMANYMOUS_NODE_ADDON host-pilot cdylib with HUMANYMOUS_NODE_HOST_PILOT=1, not the release addon: a production authority binary from HUMANYMOUS_AUTHORITY_BIN must yield 409 (printed as CHALLENGE) or 403 (printed as DENY), any other status fails, with no origin effect and a non-empty audit directory; synthetic evidence in the real Rust engine must ALLOW seven cases preserving binary bodies, headers, SSE and async iterators with seven origin effects and seven audit records while aborted/stalled bodies and (express) Upgrade/CONNECT never reach origin; and a missing authority endpoint must return 503 on /api, admin and unknown paths. Needs a built addon and installed upstream modules; Host Drop kill/wait is cleanup, not containment proof, and no fullProduct claim is made.",
       "pages": [
         "docs/reference/node-adapter.md"
       ]

@@ -25,7 +25,5 @@
     "auditDurability": "conditional:shared Rust authority and qualified deployment witness policy",
     "authenticatedPeer": "conditional:supervisor-provisioned actual Rust authority peer and IPC ACL"
   },
-  "releaseQualifiedTuples": [
-    {"target": "linux-x64-gnu", "os": "linux", "arch": "x64", "libc": "gnu", "qualified": true}
-  ]
+  "releaseQualifiedTuples": []
 }

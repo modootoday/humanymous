@@ -1792,12 +1792,20 @@ cases stay in a separate per-profile count. Host Node 24/Bun 1.3.14 must load
 both production loaders without host-pilot, and provenance must list the tested
 tuple's binary. full_native_qualified is derived from these checks, and the
 producer runs node_receipt before it writes the public summary.
-releaseQualifiedTuples lists only linux-x64-gnu. The component still cannot
-create the receipt itself. The receipt scope excludes production browser ALLOW
-and full-product qualification. The tested addon is the debug host-pilot build
-of the same source. Node then rebuilds the release package and must reproduce
-the same provenance bytes, so the bound artifact is source-bound, not
-byte-identical to the tested one.
+The component still cannot create the receipt itself. The receipt scope
+excludes production browser ALLOW and full-product qualification. The tested
+addon is the debug host-pilot build of the same source. Node then rebuilds the
+release package and must reproduce the same provenance bytes, so the bound
+artifact is source-bound, not byte-identical to the tested one.
+
+Qualification decision (2026-11-18): the release binary is never itself driven
+through the host request path, so linux-x64-gnu is not release-qualified.
+adapters/node/capabilities.json and native capabilities() both keep
+releaseQualifiedTuples empty. The receipt still names the tested tuple, so
+node_receipt fails closed on the descriptor mismatch and npm publication stays
+blocked. Qualifying the tuple requires host runs on the release artifact, or a
+byte-identical tested artifact, and then one change to the descriptor and the
+native list together.
 
 ### Retired Go core/gate image builders (2026-11-16)
 

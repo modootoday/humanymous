@@ -15,7 +15,11 @@ this experimental profile.
 ## Experimental Rust Node-API framework bridge
 
 Current source exposes the following interfaces. Release qualification is still
-in progress: `capabilities()` reports an empty `releaseQualifiedTuples` list.
+in progress: `capabilities()` and the package descriptor
+`adapters/node/capabilities.json` both report an empty `releaseQualifiedTuples`
+list. The delivery job records actual Node/Bun host runs for linux-x64-gnu, but
+those runs exercise the debug host-pilot addon, not the release binary, so no
+tuple is release-qualified and npm publication stays blocked.
 Earlier component runs do not qualify later source changes or every Node/Bun,
 OS, architecture and framework combination.
 
