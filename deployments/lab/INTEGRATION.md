@@ -216,6 +216,7 @@ deployments/lab/images; build/rust remains another owner's read-only surface.
 Output lab-report.json schema `humanymous.product-lab/2` has evidence_types,
 cases[{id,status,detail}], components.runtime (actual binary pilot report),
 components.wargame, components.target_attestation, components.pass_recovery,
+components.origin_audit,
 components.independent_witness,
 optional components.collector, required_unavailable, required_cases,
 full_product_qualified and release_ready, plus the pilot-read top-level
@@ -241,7 +242,25 @@ forged, wrong-session and expired receipt, lifted and wrong-session proof,
 replayed solve, a proof never overriding a scoring CHALLENGE, positive control
 after negatives). The expired-receipt row waits for receipt expiry plus skew,
 about four minutes. Keyboard/AT human Pass runs remain human-attested and are
-not part of this case. Never relabel exit 2 as
+not part of this case.
+The default profile's origin/audit stage (roadmap 2c, components.origin_audit,
+origin-audit-ledger.json) reuses the internal `ingress` and `backend` bridges:
+oa-origin (backend only) logs every TCP contact with its peer; oa-gate (both
+bridges, custody and WAL on the oa-keys/oa-wal volumes) runs the shipped runtime
+binary behind two plain TCP relays, because the gateway accepts loopback
+addresses and peers only; oa-client (ingress only) and a network-none oa-tamper
+that mounts only the WAL volume. The runner supplies the passphrase privately and
+retains the signed head between sessions as the trusted anchor. Sessions:
+provision, restart, `docker kill` crash, five tampered copies (copy and torn tail
+must start; forged, truncated and rolled-back copies must be refused by runtime
+startup authentication) and a final positive control. `origin-isolation` needs
+the exact topology, every client row (origin and Gate loopback ports
+unreachable, unsigned and absolute-form refused, signed effect forwarded once,
+replay refused) and exactly one origin contact per phase, all from the Gate's
+backend address. `audit-restart` needs one contiguous verified chain across all
+live sessions, ALLOW decisions equal to origin contacts and the exact tamper
+outcomes. Ingress is plain HTTP/1.1, not TLS/H2, and this Gate has no
+independent witness. Never relabel exit 2 as
 product success. Collector is optional Firefox component evidence, never a real
 human/AT or Meari+CEF product browser. No sandbox-disabling option is supplied.
 
