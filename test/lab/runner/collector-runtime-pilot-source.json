@@ -2,8 +2,8 @@
   "schema": 1,
   "path": "crates/collector/src/browser/transport/runtime_pilot.rs",
   "name": "browser::transport::runtime_pilot::actual_runtime_session_report_and_required_capability_fail_closed",
-  "sha256": "abbc8badb89cc4aa879cec85e74cd776a236225df90e47707d86f17ca685d421",
-  "bytes": 6571,
+  "sha256": "1e80091a0b1020a2ce782f9e4b916e3a5599dec48fdb48c43d7b111363f53852",
+  "bytes": 6582,
   "sites": [
     {
       "line": 11,
@@ -118,7 +118,7 @@
     {
       "line": 87,
       "code": "browser_panic_collector_snapshot",
-      "needle": "collector.snapshot_json()"
+      "needle": "collector.report()"
     },
     {
       "line": 88,
