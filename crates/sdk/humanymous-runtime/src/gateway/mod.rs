@@ -1,5 +1,6 @@
 //! Loopback application/session owner; component support is not product qualification.
 pub mod admin_approval;
+pub mod admin_plane;
 pub mod application;
 pub mod attest_floor;
 pub mod attestation;
@@ -9,6 +10,7 @@ pub mod configuration;
 pub mod connection_cap;
 pub mod console;
 pub mod control;
+pub mod control_flood;
 pub mod coordinator;
 pub mod credential;
 pub mod demo;
@@ -25,6 +27,7 @@ pub mod observatory;
 pub mod operations;
 pub mod pass_proof;
 pub mod pass_store;
+pub mod recon;
 pub mod request;
 pub mod route_policy;
 pub mod seams;
