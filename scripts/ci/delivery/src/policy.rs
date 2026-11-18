@@ -16,6 +16,7 @@ const REQUIRED: &[&str] = &[
     "images",
     "packages",
     "node",
+    "dotnet",
     "advisories",
     "documentation",
     "pages",
@@ -841,7 +842,8 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
                         || disabled("cache-binary"))
                     && (!action.starts_with("actions/setup-node@")
                         || disabled("package-manager-cache"))
-                    && (!action.starts_with("oven-sh/setup-bun@") || enabled("no-cache")),
+                    && (!action.starts_with("oven-sh/setup-bun@") || enabled("no-cache"))
+                    && (!action.starts_with("actions/setup-dotnet@") || disabled("cache")),
                 format!("implicit action cache writes must be disabled: {action}"),
             )?;
         }

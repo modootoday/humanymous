@@ -8,6 +8,11 @@
   "error_codes": [
     "initialization", "compose_config", "controls_build", "topology_controls",
     "runtime_build", "runtime_process", "wargame_process", "witness_component",
+    "witness_transport", "witness_transport_process",
+    "wtx_supervisor_attach", "wtx_supervisor_ready", "wtx_origin_start",
+    "wtx_origin_ready", "wtx_step_wrong_key", "wtx_step_witnessed",
+    "wtx_step_witness_loss", "wtx_step_evidence", "wtx_shutdown",
+    "wtx_supervisor_exit",
     "go_runtime_build_deadline", "go_runtime_build_capture", "go_runtime_build_exit",
     "go_canary_build_deadline", "go_canary_build_capture", "go_canary_build_exit",
     "collector_build", "collector_process", "collector_tests_failed",

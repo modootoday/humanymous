@@ -12,6 +12,8 @@ use std::{
 
 mod create;
 mod query;
+mod stdio;
+pub use stdio::stdin_is_pipe;
 
 /// Redacted bridge failure; no raw path, SID or context is exposed.
 #[derive(Debug, PartialEq, Eq)]

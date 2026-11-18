@@ -1,4 +1,6 @@
 //! Frozen signals integration contracts.
+#[path = "signals/float_go_parity.rs"]
+mod float_go_parity;
 #[path = "signals/observation_parity.rs"]
 mod observation_parity;
 #[path = "signals/registry_integrity.rs"]
