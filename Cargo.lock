@@ -2284,7 +2284,6 @@ dependencies = [
  "time",
  "tokio",
  "unicode-normalization",
- "ureq",
  "widestring",
  "windows-native-keyring-store",
  "windows-permissions",

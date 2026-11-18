@@ -11,6 +11,7 @@
 //!   A fourth auto strike therefore keeps the 24h term and reports
 //!   `dual_control_required` instead of Go's automatic permanent ban.
 //! - Lifting a permanent ban is refused here; its control action is not defined.
+//!   A temporary ban cannot replace a permanent one either (Go `Add` overwrote it).
 //! - Stores are bounded; a full store refuses instead of evicting a ban.
 use super::seams::RateLimiter;
 use crate::audit::control::{Action, RetainedActionPermit, Scope, target_commitment};
@@ -23,6 +24,8 @@ use std::time::Duration;
 const HOUR: Duration = Duration::from_secs(3600);
 /// A strike is remembered this long after its last breach (SoT-27 section 2).
 pub const STRIKE_DECAY: Duration = Duration::from_secs(7 * 24 * 3600);
+/// Exclusive upper bound on a bulk temporary term (legacy `maxBanDurationSec`).
+pub const MAX_BULK_TERM: Duration = Duration::from_secs(400 * 24 * 3600);
 /// Domain separation for the dual-control target commitment.
 const TARGET_DOMAIN: &[u8] = b"humanymous.ban.permanent/1\0";
 
@@ -287,7 +290,8 @@ impl<L: RateLimiter> Store<L> {
         Ok(entry)
     }
 
-    /// Single-operator temporary ban of a narrow key.
+    /// Single-operator temporary ban of a narrow key. Refuses with
+    /// `DualControlRequired` when the key already has a permanent ban.
     pub fn add_temporary(
         &mut self,
         key: &Key,
@@ -302,6 +306,10 @@ impl<L: RateLimiter> Store<L> {
         if term.is_zero() {
             return Err(Refusal::Duration);
         }
+        // A temporary ban must not replace (and so downgrade) a permanent one.
+        if self.bans.get(key).is_some_and(Entry::permanent) {
+            return Err(Refusal::DualControlRequired);
+        }
         let entry = Entry {
             key: key.clone(),
             reason: reason(why)?,
@@ -312,6 +320,39 @@ impl<L: RateLimiter> Store<L> {
             strike: 0,
         };
         self.insert(entry)
+    }
+
+    /// Operator bulk temporary ban (port of legacy `adminBulkBan`). The term
+    /// must be positive and below [`MAX_BULK_TERM`]; unparsable keys and broad
+    /// keys (which need dual control) are skipped and counted, never applied,
+    /// as are keys a permanent ban already holds.
+    /// Returns `(applied, skipped)`; a capacity refusal stops the batch.
+    pub fn bulk_temporary(
+        &mut self,
+        keys: &[&str],
+        why: &str,
+        term: Duration,
+        now: Duration,
+    ) -> Result<(usize, usize), Refusal> {
+        if term.is_zero() || term >= MAX_BULK_TERM {
+            return Err(Refusal::Duration);
+        }
+        reason(why)?;
+        let (mut applied, mut skipped) = (0, 0);
+        for raw in keys {
+            match Key::parse(raw) {
+                Ok(key) if !key.is_broad() => {
+                    match self.add_temporary(&key, why, None, term, now) {
+                        Ok(_) => applied += 1,
+                        // A permanent ban already holds this key; never downgrade it.
+                        Err(Refusal::DualControlRequired) => skipped += 1,
+                        Err(refusal) => return Err(refusal),
+                    }
+                }
+                _ => skipped += 1,
+            }
+        }
+        Ok((applied, skipped))
     }
 
     /// Permanent or broad ban: consumes a retained dual-control grant bound to

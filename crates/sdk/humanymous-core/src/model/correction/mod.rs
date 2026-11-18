@@ -24,7 +24,7 @@ mod shadow;
 #[cfg(test)]
 mod test_support;
 
-pub use bundle::{BundleIdentity, BundleManager, MAX_BUNDLE_BYTES, digest};
+pub use bundle::{BundleIdentity, BundleManager, BundleVerifier, MAX_BUNDLE_BYTES, digest};
 pub use calibration::{CalibrationStats, ConformalThreshold};
 pub use canary::{
     CanaryBudget, CanaryGuard, CanaryState, CanaryStats, MIN_CANARY_OBSERVE, RollbackCallback,
@@ -57,6 +57,8 @@ pub enum CorrectionError {
     Digest,
     /// Signature verification is not available in this build.
     SignatureUnsupported,
+    /// The signed policy is configured and the signature is missing or invalid.
+    Signature,
     /// The bundle schema differs from the running feature schema.
     StaleSchema,
     /// The bundle bytes do not decode into a shape-valid model.

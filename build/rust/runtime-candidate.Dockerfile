@@ -5,6 +5,11 @@ WORKDIR /source
 RUN cargo install --locked --version 0.7.7 --root /opt/cargo-auditable cargo-auditable
 COPY . .
 RUN PATH="/opt/cargo-auditable/bin:${PATH}" cargo auditable build --release --locked -p humanymous-runtime --no-default-features --features gateway --bin humanymous-runtime
+# Empty state directory for the manifests' hmn-data volume. Docker copies its
+# owner and mode into a new named volume on first mount; the runtime refuses
+# group- or world-accessible audit and custody directories.
+RUN ["mkdir","-p","/empty/state/humanymous"]
+RUN ["chmod","0700","/empty/state/humanymous"]
 
 FROM scratch AS runtime-candidate
 ARG HUMANYMOUS_SOURCE_REV
@@ -17,7 +22,9 @@ LABEL org.opencontainers.image.source="https://github.com/modootoday/humanymous"
 COPY --from=compiler /source/target/release/humanymous-runtime /usr/local/bin/humanymous-runtime
 COPY --from=compiler /source/LICENSE /usr/share/licenses/humanymous/LICENSE
 COPY --from=compiler /source/crates/sdk/humanymous-runtime/src/audit/LICENSE-Go.txt /usr/share/licenses/humanymous/Go.txt
-# State/custody and private configuration pipes are supplied by the owning host.
+COPY --from=compiler --chown=65532:65532 /empty/state/ /var/lib/
+# /var/lib/humanymous is empty: audit/ and keys/ custody and the private
+# configuration pipe are supplied by the owning host.
 # The binary has no public config argv, secret environment or default listener.
 USER 65532:65532
 ENTRYPOINT ["/usr/local/bin/humanymous-runtime"]

@@ -35,7 +35,41 @@ pub enum Decision {
     Origin {
         /// UTC deadline in milliseconds.
         deadline: u64,
+        /// Linkage for a later `upstream.error` record; no secrets or values.
+        upstream: Upstream,
     },
+}
+
+/// Minimized linkage from the ALLOW decision record to an origin failure
+/// record (legacy PLAN-07 R15 correlation): the same opaque request id and
+/// commitment, the route class and the decision start time.
+pub struct Upstream {
+    request_id: String,
+    correlation_id: String,
+    route_class: String,
+    started_ms: u64,
+}
+
+/// Origin-side refusal plus the transport error class when one was observed.
+pub(in crate::gateway) struct OriginError {
+    rejection: Rejection,
+    class: Option<&'static str>,
+}
+impl From<Rejection> for OriginError {
+    fn from(rejection: Rejection) -> Self {
+        Self {
+            rejection,
+            class: None,
+        }
+    }
+}
+impl OriginError {
+    pub(in crate::gateway) fn io(code: &'static str, error: &std::io::Error) -> Self {
+        Self {
+            rejection: Rejection::new(503, code),
+            class: Some(crate::gateway::request::upstream_error_class(error)),
+        }
+    }
 }
 
 /// Serialized bounded-context owner; a single accept loop owns this value.
@@ -288,6 +322,16 @@ impl Application {
         let request_id = hex::encode(Sha256::digest(
             format!("{id}:{}", authorized.counter).as_bytes(),
         ));
+        let correlation_id = hex::encode(hash.finalize());
+        let route_class: String = crate::gateway::request::route_class(&req.headers)
+            .as_str()
+            .into();
+        let upstream = Upstream {
+            request_id: request_id.clone(),
+            correlation_id: correlation_id.clone(),
+            route_class: route_class.clone(),
+            started_ms: now,
+        };
         let record = Record {
             event_type: if collect {
                 "runtime.collect"
@@ -297,10 +341,8 @@ impl Application {
             .into(),
             tenant_id: self.config.scope.tenant.clone(),
             request_id,
-            correlation_id: hex::encode(hash.finalize()),
-            route_class: crate::gateway::request::route_class(&req.headers)
-                .as_str()
-                .into(),
+            correlation_id,
+            route_class,
             config_version: self.config.scope.revision.clone(),
             verdict: verdict.clone(),
             risk_score: risk as i64,
@@ -316,7 +358,7 @@ impl Application {
         }
         self.check_deadline(deadline, clock())?;
         if verdict == "ALLOW" {
-            Ok(Decision::Origin { deadline })
+            Ok(Decision::Origin { deadline, upstream })
         } else {
             Ok(Decision::Local(
                 if collect { 200 } else { 403 },
@@ -324,6 +366,57 @@ impl Application {
                     .map_err(|_| Rejection::new(503, "serialization"))?,
             ))
         }
+    }
+
+    /// Legacy `handleUpstreamError` (PLAN-07 R16): an origin refusal before
+    /// any client byte appends one `upstream.error` record linked to the ALLOW
+    /// record, then the caller answers with the unchanged refusal. Only static
+    /// classes and codes are recorded, never transport error text. A failed
+    /// append poisons the epoch and answers `durable_audit` (fail closed).
+    pub(in crate::gateway) fn upstream_failure(
+        &mut self,
+        upstream: &Upstream,
+        error: OriginError,
+        response_started: bool,
+    ) -> Rejection {
+        let OriginError { rejection, class } = error;
+        if response_started || !rejection.code.starts_with("origin_") {
+            return rejection;
+        }
+        let class = class.unwrap_or(crate::gateway::request::origin_error_class(rejection.code));
+        let latency_us = crate::authority::now_ms().map_or(0, |now| {
+            crate::gateway::request::latency_us(
+                Some(Duration::from_millis(upstream.started_ms)),
+                Duration::from_millis(now),
+            )
+        });
+        let record = Record {
+            event_type: "upstream.error".into(),
+            actor: crate::audit::record::Actor {
+                kind: "system".into(),
+                ..Default::default()
+            },
+            tenant_id: self.config.scope.tenant.clone(),
+            request_id: upstream.request_id.clone(),
+            correlation_id: upstream.correlation_id.clone(),
+            host: self.config.scope.authority.clone(),
+            route_class: upstream.route_class.clone(),
+            latency_us,
+            config_version: self.config.scope.revision.clone(),
+            enforcement_mode: "enforce".into(),
+            fail_mode: "degraded".into(),
+            fail_reason: format!("upstream {class}: {}", rejection.code),
+            upstream: Some(crate::audit::record::Upstream {
+                status: i64::from(rejection.status),
+                error_class: class.into(),
+            }),
+            ..Default::default()
+        };
+        if self.audit.append(record).is_err() {
+            self.sessions.poison();
+            return Rejection::new(503, "durable_audit");
+        }
+        rejection
     }
 
     fn check_deadline(
@@ -509,7 +602,7 @@ impl Application {
                     .await
                     .map_err(|_| Rejection::new(503, "response_write"))
             }
-            Decision::Origin { deadline } => {
+            Decision::Origin { deadline, upstream } => {
                 if shutdown.borrow().is_some() {
                     return Err(Rejection::new(503, "service_stopping"));
                 }
@@ -528,26 +621,26 @@ impl Application {
                             == crate::gateway::configuration::ResponseProfile::NativeStream
                 });
                 let bytes = http::origin_request(&request, &self.config.scope.authority);
-                let response = timeout_at(until, async {
-                    let mut upstream = TcpStream::connect(origin)
+                let outcome = timeout_at(until, async {
+                    let mut origin_stream = TcpStream::connect(origin)
                         .await
-                        .map_err(|_| Rejection::new(503, "origin_connect"))?;
+                        .map_err(|error| OriginError::io("origin_connect", &error))?;
                     // Cancellation/expiry before the first origin byte has no effect.
                     if shutdown.borrow().is_some() {
-                        return Err(Rejection::new(503, "service_stopping"));
+                        return Err(Rejection::new(503, "service_stopping").into());
                     }
                     connected(stream)?;
                     self.check_deadline(deadline, crate::authority::now_ms())?;
                     if Instant::now() >= connection_until {
-                        return Err(Rejection::new(503, "connection_deadline"));
+                        return Err(Rejection::new(503, "connection_deadline").into());
                     }
-                    upstream
+                    origin_stream
                         .write_all(&bytes)
                         .await
-                        .map_err(|_| Rejection::new(503, "origin_write"))?;
+                        .map_err(|error| OriginError::io("origin_write", &error))?;
                     if streaming {
                         http::stream::forward(
-                            &mut upstream,
+                            &mut origin_stream,
                             stream,
                             request.method == "HEAD",
                             response_started,
@@ -556,15 +649,23 @@ impl Application {
                         return Ok(None);
                     }
                     let mut response = Vec::new();
-                    upstream
+                    origin_stream
                         .take((http::MAX_ORIGIN_FRAME + 1) as u64)
                         .read_to_end(&mut response)
                         .await
-                        .map_err(|_| Rejection::new(503, "origin_read"))?;
-                    http::Response::parse(&response, request.method == "HEAD").map(Some)
+                        .map_err(|error| OriginError::io("origin_read", &error))?;
+                    Ok::<_, OriginError>(
+                        http::Response::parse(&response, request.method == "HEAD").map(Some)?,
+                    )
                 })
                 .await
-                .map_err(|_| Rejection::new(503, "origin_timeout"))??;
+                .unwrap_or_else(|_| Err(Rejection::new(503, "origin_timeout").into()));
+                let response = match outcome {
+                    Ok(response) => response,
+                    Err(error) => {
+                        return Err(self.upstream_failure(&upstream, error, *response_started));
+                    }
+                };
                 let Some(response) = response else {
                     return Ok(());
                 };

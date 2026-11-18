@@ -1,5 +1,6 @@
 //! Actual Unix IPC/listener/custody boundaries; execution requires allocation.
 mod settings_operator;
+mod witness_input;
 use super::*;
 use crate::audit::keys::{
     KeyMaterial,

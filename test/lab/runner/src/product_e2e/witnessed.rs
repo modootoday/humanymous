@@ -255,6 +255,92 @@ pub(super) fn assertions(
     ]
 }
 
+/// Product case whose audit-outage injection half this topology measures
+/// (owner decision C11, issue #75). Restart/replay and cross-namespace binding
+/// stay unqualified, so this topology never emits the case as passed.
+pub(super) const AUDIT_RESTART_CASE: &str = "audit-restart";
+
+fn driver_case<'a>(report: &'a Value, id: &str) -> Option<&'a Value> {
+    report["driver"]["cases"]
+        .as_array()?
+        .iter()
+        .find(|case| case["id"] == id)
+}
+
+/// A Gate-local refusal: the exact status and `{"error":code}` body, no
+/// transport error, and no new origin record.
+fn refused(case: Option<&Value>, status: u16, codes: &[&str]) -> bool {
+    case.is_some_and(|case| {
+        case["observed_status"] == status
+            && case["origin_delta"] == 0
+            && case["transport_error"].is_null()
+            && case["gate_local_body"]["error"]
+                .as_str()
+                .is_some_and(|code| codes.contains(&code))
+    })
+}
+
+/// Audit-outage injection judgement (C11), computed by the runner from the
+/// observed facts and never from the driver's own failed count, so a driver
+/// that skips or renames a case cannot pass silently. Per the runtime SoT the
+/// first append after the loss fails, poisons the epoch and answers
+/// 503 `durable_audit`; later work, including session issue, stays refused.
+pub(super) fn outage_assertions(report: &Value) -> Vec<(&'static str, bool)> {
+    let issued = driver_case(report, "witness_lost_session_issue_observed");
+    vec![
+        (
+            "audit_outage_injected_after_readiness",
+            report["driver_reached_loss_phase"] == true
+                && report["health_before_driver"]["witness"] == "healthy"
+                && report["health_before_driver"]["wgate"] == "healthy"
+                && report["witness_after_loss"]["state"] == "exited"
+                && report["witness_after_loss"]["broker_observed_witness_stream_closed"] == true
+                && report["broker"]["injected_unavailable_after_loss"]
+                    .as_u64()
+                    .is_some_and(|n| n > 0),
+        ),
+        (
+            "audit_outage_positive_control_before_loss",
+            driver_case(report, "witnessed_signed_effect_forwarded")
+                .is_some_and(|case| case["observed_status"] == 200 && case["origin_delta"] == 1),
+        ),
+        (
+            "audit_outage_first_append_poisons_with_durable_audit",
+            refused(
+                driver_case(report, "witness_lost_presigned_effect_fails_closed"),
+                503,
+                &["durable_audit"],
+            ),
+        ),
+        (
+            "audit_outage_poisoned_epoch_refuses_later_request",
+            refused(
+                driver_case(report, "witness_lost_unsigned_request_fails_closed"),
+                503,
+                &["session_epoch", "durable_audit"],
+            ),
+        ),
+        (
+            "audit_outage_session_issue_not_granted",
+            issued.is_some_and(|case| {
+                case["observed_status"]
+                    .as_u64()
+                    .map_or(!case["transport_error"].is_null(), |code| {
+                        !(200..300).contains(&code)
+                    })
+            }),
+        ),
+        (
+            "audit_outage_readiness_withdrawn",
+            report["wgate_readiness_withdrawn_after_failed_append"] == true,
+        ),
+        (
+            "audit_outage_no_fabricated_signature",
+            report["broker"]["signatures_fabricated"] == 0,
+        ),
+    ]
+}
+
 /// Run the witnessed topology and its witness-loss-after-readiness case.
 /// `report_line` is the captured collector report line (with its newline), or empty.
 pub(super) fn run(lab: &mut Lab, image: &str, report_line: &str) -> Result<Value> {
@@ -443,8 +529,15 @@ pub(super) fn run(lab: &mut Lab, image: &str, report_line: &str) -> Result<Value
     let readiness_withdrawn = report["wgate_after_loss"]["health"] == "unhealthy"
         && report["wgate_after_loss"]["state"] == "running";
     report["wgate_readiness_withdrawn_after_failed_append"] = json!(readiness_withdrawn);
+    let outage = outage_assertions(&report);
+    let outage_pass = outage.iter().all(|(_, p)| *p);
+    report["audit_outage_injection"] = json!({"product_case":AUDIT_RESTART_CASE,
+        "scope":"audit-outage injection half only; restart/replay and cross-namespace origin/audit binding stay required_unavailable",
+        "qualifies_product_case":false,"pass":outage_pass,
+        "assertions":outage.iter().map(|(id,pass)|json!({"id":id,"pass":pass})).collect::<Vec<_>>()});
     let pass = driver_pass
         && loss_pass
+        && outage_pass
         && readiness_withdrawn
         && signed > 0
         && checks.iter().all(|(_, p)| *p)
@@ -493,6 +586,153 @@ mod tests {
         assert!(!assertions(&internal, &shared, "sha256:i", &ready)[3].1);
         let unwitnessed = json!({"profile":{"audit_external_witness":false}});
         assert!(!assertions(&internal, &good, "sha256:i", &unwitnessed)[6].1);
+    }
+    /// Shape of the measured witnessed receipts
+    /// (.spec/evidence/20261116113042-product-e2e-dns-collector-reports).
+    fn measured_outage() -> Value {
+        json!({"driver_reached_loss_phase":true,
+            "health_before_driver":{"witness":"healthy","wgate":"healthy"},
+            "witness_after_loss":{"state":"exited","broker_observed_witness_stream_closed":true},
+            "broker":{"injected_unavailable_after_loss":1,"signatures_fabricated":0},
+            "wgate_readiness_withdrawn_after_failed_append":true,
+            "driver":{"failed":0,"cases":[
+                {"id":"witnessed_signed_effect_forwarded","observed_status":200,"origin_delta":1,"pass":true},
+                {"id":"witness_lost_presigned_effect_fails_closed","observed_status":503,
+                 "gate_local_body":{"error":"durable_audit"},"origin_delta":0,"transport_error":null,"pass":true},
+                {"id":"witness_lost_session_issue_observed","observed_status":503,"transport_error":null,
+                 "observation_only":true,"pass":true},
+                {"id":"witness_lost_unsigned_request_fails_closed","observed_status":503,
+                 "gate_local_body":{"error":"session_epoch"},"origin_delta":0,"transport_error":null,"pass":true}]}})
+    }
+    fn failing(report: &Value) -> Vec<&'static str> {
+        outage_assertions(report)
+            .into_iter()
+            .filter(|(_, pass)| !pass)
+            .map(|(id, _)| id)
+            .collect()
+    }
+    fn set_case(report: &mut Value, id: &str, key: &str, value: Value) {
+        let cases = report["driver"]["cases"].as_array_mut().unwrap();
+        let case = cases.iter_mut().find(|case| case["id"] == id).unwrap();
+        case[key] = value;
+    }
+    #[test]
+    fn audit_outage_injection_passes_only_on_measured_fail_closed_shape() {
+        assert_eq!(failing(&measured_outage()), Vec::<&str>::new());
+        assert_eq!(outage_assertions(&measured_outage()).len(), 7);
+    }
+    #[test]
+    fn audit_outage_driver_self_report_cannot_pass_silently() {
+        // A driver that reports failed=0 but never ran the outage cases.
+        let mut skipped = measured_outage();
+        skipped["driver"]["cases"] = json!([skipped["driver"]["cases"][0].clone()]);
+        assert_eq!(
+            failing(&skipped),
+            [
+                "audit_outage_first_append_poisons_with_durable_audit",
+                "audit_outage_poisoned_epoch_refuses_later_request",
+                "audit_outage_session_issue_not_granted"
+            ]
+        );
+        // No refusal was ever injected: the outage was not exercised.
+        let mut idle = measured_outage();
+        idle["broker"]["injected_unavailable_after_loss"] = json!(0);
+        assert_eq!(failing(&idle), ["audit_outage_injected_after_readiness"]);
+        let mut never_paused = measured_outage();
+        never_paused["driver_reached_loss_phase"] = json!(false);
+        assert_eq!(
+            failing(&never_paused),
+            ["audit_outage_injected_after_readiness"]
+        );
+        // Refusals after a broken positive control prove nothing.
+        let mut no_control = measured_outage();
+        set_case(
+            &mut no_control,
+            "witnessed_signed_effect_forwarded",
+            "origin_delta",
+            json!(0),
+        );
+        assert_eq!(
+            failing(&no_control),
+            ["audit_outage_positive_control_before_loss"]
+        );
+    }
+    #[test]
+    fn audit_outage_requires_poison_and_zero_origin_effect() {
+        let presigned = "witness_lost_presigned_effect_fails_closed";
+        let first = "audit_outage_first_append_poisons_with_durable_audit";
+        for (key, value) in [
+            ("origin_delta", json!(1)),
+            ("observed_status", json!(200)),
+            ("observed_status", json!(403)),
+            ("gate_local_body", json!({"error":"session"})),
+            ("gate_local_body", Value::Null),
+            ("transport_error", json!("reset")),
+        ] {
+            let mut report = measured_outage();
+            set_case(&mut report, presigned, key, value);
+            assert_eq!(failing(&report), [first], "{key}");
+        }
+        let unsigned = "witness_lost_unsigned_request_fails_closed";
+        let later = "audit_outage_poisoned_epoch_refuses_later_request";
+        let mut poisoned_again = measured_outage();
+        set_case(
+            &mut poisoned_again,
+            unsigned,
+            "gate_local_body",
+            json!({"error":"durable_audit"}),
+        );
+        assert!(failing(&poisoned_again).is_empty());
+        for (key, value) in [
+            ("origin_delta", json!(1)),
+            ("observed_status", json!(401)),
+            ("gate_local_body", json!({"error":"session"})),
+        ] {
+            let mut report = measured_outage();
+            set_case(&mut report, unsigned, key, value);
+            assert_eq!(failing(&report), [later], "{key}");
+        }
+        let issued = "witness_lost_session_issue_observed";
+        let granted = "audit_outage_session_issue_not_granted";
+        let mut report = measured_outage();
+        set_case(&mut report, issued, "observed_status", json!(200));
+        assert_eq!(failing(&report), [granted]);
+        let mut silent = measured_outage();
+        set_case(&mut silent, issued, "observed_status", Value::Null);
+        assert_eq!(failing(&silent), [granted]);
+        set_case(&mut silent, issued, "transport_error", json!("closed"));
+        assert!(failing(&silent).is_empty());
+    }
+    #[test]
+    fn audit_outage_requires_withdrawn_readiness_and_no_fabrication() {
+        let mut ready = measured_outage();
+        ready["wgate_readiness_withdrawn_after_failed_append"] = json!(false);
+        assert_eq!(failing(&ready), ["audit_outage_readiness_withdrawn"]);
+        let mut forged = measured_outage();
+        forged["broker"]["signatures_fabricated"] = json!(1);
+        assert_eq!(failing(&forged), ["audit_outage_no_fabricated_signature"]);
+        assert_eq!(AUDIT_RESTART_CASE, "audit-restart");
+    }
+    /// The committed Docker receipts that measured readiness withdrawal already
+    /// satisfy every outage assertion; the oldest receipt predates readiness
+    /// withdrawal and is honestly rejected on that assertion alone.
+    #[test]
+    fn audit_outage_assertions_hold_on_committed_measured_receipts() {
+        let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../.spec/evidence");
+        let witnessed = |bundle: &str| -> Value {
+            let bytes = std::fs::read(root.join(bundle).join("receipt.json")).unwrap();
+            serde_json::from_slice::<Value>(&bytes).unwrap()["witnessed"].clone()
+        };
+        for bundle in [
+            "20261116110546-product-e2e-browser-collector",
+            "20261116113042-product-e2e-dns-collector-reports",
+        ] {
+            assert_eq!(failing(&witnessed(bundle)), Vec::<&str>::new(), "{bundle}");
+        }
+        assert_eq!(
+            failing(&witnessed("20261116103304-product-e2e-witnessed-health")),
+            ["audit_outage_readiness_withdrawn"]
+        );
     }
     #[test]
     fn frame_kind_is_typed_or_untyped() {

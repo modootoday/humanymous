@@ -7,6 +7,8 @@ use crate::audit::{
 };
 use crate::authority::configuration::Peer;
 use crate::gateway::configuration::Configuration;
+mod inherited;
+pub use inherited::inherited_witness;
 
 /// Trusted broker input, never deserialized from application HTTP or startup JSON.
 /// Pinning a key does not establish process or organizational independence.
