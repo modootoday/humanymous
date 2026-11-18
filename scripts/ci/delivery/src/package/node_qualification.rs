@@ -4,7 +4,9 @@
 //! passed node-host component bundle (Docker Node/Bun host groups against the
 //! real authority executable) and the production package build/inspection this
 //! command runs. Nothing is copied from fixtures or earlier runs; a missing or
-//! mismatched input refuses the receipt. `node_receipt` remains the verifier.
+//! mismatched input refuses the receipt. `node_receipt` remains the verifier:
+//! the receipt is staged outside target/node-native/, checked there, and only
+//! then renamed into place, so a refused receipt never stays on disk.
 use crate::components::node_host;
 use crate::{Result, command, evidence, read_json, require, source, write_json};
 use serde_json::{Value, json};
@@ -12,6 +14,11 @@ use std::path::{Path, PathBuf};
 
 const RUNTIMES: [&str; 2] = ["node", "bun"];
 const PRODUCTION: &str = "production-application-http";
+/// The only provenance `qualification` value that marks a production build.
+/// The generator writes "component-only" today, so no tuple qualifies yet.
+const PRODUCTION_PROVENANCE: &str = "production";
+const RECEIPT: &str = "target/node-native/qualification.json";
+const STAGED: &str = "target/node-qualification.staged.json";
 
 fn hex64(value: &Value) -> bool {
     value
@@ -93,6 +100,18 @@ fn host_evidence(root: &Path, snapshot: &Value, directory: &Path, report: &Value
         "tested authority executable digest missing",
     )?;
     stage_log(directory, report, "node-authority-copy")?;
+    // The addon the stopped container loaded, and whether its build enabled
+    // host-pilot, re-derived from this exact source's fixture Dockerfile.
+    stage_log(directory, report, "node-addon-copy")?;
+    let addon = &report["tested_addon"];
+    let dockerfile = std::fs::read_to_string(root.join("adapters/node/Dockerfile.pilot"))
+        .map_err(|e| e.to_string())?;
+    require(
+        addon["path"] == node_host::addon_path(&inspected)?
+            && hex64(&addon["sha256"])
+            && addon["host_pilot_enabled"] == node_host::host_glue_host_pilot(&dockerfile),
+        "tested addon digest or host-pilot record missing or stale",
+    )?;
     let tests = stage_log(directory, report, "node-host-tests")?;
     let counts = node_host::counts(&tests)?;
     require(
@@ -113,6 +132,9 @@ fn host_evidence(root: &Path, snapshot: &Value, directory: &Path, report: &Value
         "image_id": image_id,
         "tuple": tuple,
         "authority_sha256": authority["sha256"],
+        "addon_path": addon["path"],
+        "addon_sha256": addon["sha256"],
+        "host_pilot_enabled": addon["host_pilot_enabled"],
         "versions": versions,
         "counts": counts,
         "rows": node_host::rows(&tests),
@@ -187,13 +209,18 @@ fn host_run(runtime: &str, host: &Value) -> Result<Value> {
         "verdict_counts": verdicts,
         "origin_effect_count": origin_effects,
         "authority_artifact_sha256": host["authority_sha256"],
+        "tested_addon_sha256": host["addon_sha256"],
+        "host_pilot_enabled": host["host_pilot_enabled"],
         "image_id": host["image_id"],
         "component_case_counts": profiles,
         "production_browser_evidence": false,
     }))
 }
 /// Build and inspect the production package; inspection loads both generated
-/// loaders under host Node and Bun and requires the production feature receipt.
+/// loaders under host Node and Bun, and every load must print its capability
+/// receipt with `hostPilotEnabled` false. The generated provenance supplies the
+/// release binary digest and its `qualification`/`productionFeatures` record,
+/// which `release_blockers` reads.
 fn package_evidence(root: &Path, tuple: &str) -> Result<Value> {
     let folder = root.join("adapters/node");
     let npm = if cfg!(windows) { "npm.cmd" } else { "npm" };
@@ -266,7 +293,59 @@ fn package_evidence(root: &Path, tuple: &str) -> Result<Value> {
         "bun_version": bun,
         "native_binary": binary,
         "native_binary_sha256": binary_sha256,
+        "provenance_qualification": provenance["qualification"],
+        "provenance_production_features": provenance["productionFeatures"],
     }))
+}
+/// Why the tested addon does not release-qualify its tuple; empty means it does.
+/// The tested bytes must be the provenance-bound release binary, built without
+/// host-pilot, and the provenance must itself record a production build.
+fn release_blockers(host: &Value, package: &Value) -> Vec<&'static str> {
+    let mut blockers = Vec::new();
+    if !(hex64(&host["addon_sha256"]) && host["addon_sha256"] == package["native_binary_sha256"]) {
+        blockers.push("tested addon sha256 differs from the provenance release binary");
+    }
+    if host["host_pilot_enabled"] != false {
+        blockers.push("tested addon was built with host-pilot");
+    }
+    if package["provenance_qualification"] != PRODUCTION_PROVENANCE {
+        blockers.push("native provenance does not record a production qualification");
+    }
+    if !package["provenance_production_features"]
+        .as_array()
+        .is_some_and(|features| !features.iter().any(|feature| feature == "host-pilot"))
+    {
+        blockers.push("native provenance production features absent or include host-pilot");
+    }
+    blockers
+}
+/// Stage the receipt outside target/node-native/, verify the staged bytes, and
+/// only then rename them into place. Any refusal leaves neither file behind.
+fn publish(
+    target: &Path,
+    staged: &Path,
+    receipt: &Value,
+    check: impl FnOnce(&Path) -> Result<()>,
+) -> Result<()> {
+    remove_stale(target)?;
+    write_json(staged, receipt)?;
+    let placed = check(staged).and_then(|()| {
+        let parent = target.parent().ok_or("receipt parent absent")?;
+        std::fs::create_dir_all(parent).map_err(|e| e.to_string())?;
+        std::fs::rename(staged, target).map_err(|e| e.to_string())
+    });
+    if placed.is_err() {
+        remove_stale(staged)?;
+    }
+    placed
+}
+fn remove_stale(path: &Path) -> Result<()> {
+    match std::fs::remove_file(path) {
+        Err(error) if error.kind() != std::io::ErrorKind::NotFound => {
+            Err(format!("{}: {error}", path.display()))
+        }
+        _ => Ok(()),
+    }
 }
 fn hosted_source(root: &Path) -> Result<Value> {
     require(
@@ -285,6 +364,9 @@ fn hosted_source(root: &Path) -> Result<Value> {
     Ok(snapshot)
 }
 pub fn produce(root: &Path) -> Result<()> {
+    // No earlier receipt may outlive a refusal of this run.
+    remove_stale(&root.join(RECEIPT))?;
+    remove_stale(&root.join(STAGED))?;
     let snapshot = hosted_source(root)?;
     let (directory, report) = component_bundle(root)?;
     let host = host_evidence(root, &snapshot, &directory, &report)?;
@@ -305,9 +387,9 @@ pub fn produce(root: &Path) -> Result<()> {
         .map(|runtime| host_run(runtime, &host))
         .collect::<Result<Vec<_>>>()?;
     let (os, arch, libc) = tuple_fields(&tuple)?;
-    // Derived, not asserted: every run passed with zero failed/ignored cases,
-    // the tested image was cleaned up and both production loaders loaded.
-    let qualified = runs.iter().all(|run| {
+    // Host evidence must be complete: every run passed with zero failed/ignored
+    // cases, the tested image was cleaned up and both production loaders loaded.
+    let passed = runs.iter().all(|run| {
         run["status"] == "passed"
             && run["mock"] == false
             && run["failed"] == 0
@@ -317,10 +399,11 @@ pub fn produce(root: &Path) -> Result<()> {
             && run["arch"] == arch
     }) && report["container_cleanup_observed"] == true
         && package["loader_loads"] == 4;
-    require(
-        qualified,
-        "Node/Bun host evidence does not qualify the tuple",
-    )?;
+    require(passed, "Node/Bun host evidence is incomplete")?;
+    // Derived, not asserted: passing host runs qualify the tuple only when they
+    // exercised the provenance-bound production release binary itself.
+    let blockers = release_blockers(&host, &package);
+    let qualified = blockers.is_empty();
     let folder = root.join("adapters/node");
     let manifest = read_json(&folder.join("package.json"))?;
     let stamp = directory
@@ -335,7 +418,13 @@ pub fn produce(root: &Path) -> Result<()> {
         "package_version": manifest["version"],
         "provenance_sha256": source::file(&folder.join("native/provenance.json"))?,
         "full_native_qualified": qualified,
-        "qualification_scope": "production-application-http non-ALLOW authority enforcement before origin plus synthetic-evidence engine compatibility for the listed tuple; no production browser ALLOW evidence and no full-product qualification",
+        "qualification_scope": "production-application-http non-ALLOW authority enforcement before origin plus synthetic-evidence engine compatibility for the listed tuple; the tuple qualifies only when the tested addon is the provenance-bound production release binary without host-pilot; no production browser ALLOW evidence and no full-product qualification",
+        "release_blockers": blockers,
+        "tested_addon": {
+            "path": host["addon_path"],
+            "sha256": host["addon_sha256"],
+            "host_pilot_enabled": host["host_pilot_enabled"],
+        },
         "production_browser_evidence": false,
         "full_product_qualified": false,
         "host_runs": runs,
@@ -350,12 +439,17 @@ pub fn produce(root: &Path) -> Result<()> {
         },
         "advertised_tuples": [{"target": tuple, "os": os, "arch": arch, "libc": libc, "qualified": qualified}],
     });
-    write_json(
-        &root.join("target/node-native/qualification.json"),
-        &receipt,
-    )?;
-    super::node_receipt(root)?;
-    evidence::emit_public_summary("Node native qualification receipt", &receipt)
+    let published = publish(&root.join(RECEIPT), &root.join(STAGED), &receipt, |path| {
+        super::node_receipt_at(root, path)
+    });
+    // The derived record is public either way; only a verified one is kept.
+    let title = if published.is_ok() {
+        "Node native qualification receipt"
+    } else {
+        "Node native qualification refused (receipt not written)"
+    };
+    evidence::emit_public_summary(title, &receipt)?;
+    published
 }
 
 #[cfg(test)]
@@ -402,6 +496,75 @@ mod tests {
             let rows = vec![production("node", "express", "DENY"), bad];
             assert!(host_run("node", &host(rows)).is_err());
         }
+    }
+    fn release(addon: &str, host_pilot: bool) -> (Value, Value) {
+        let host = json!({"addon_sha256":addon,"host_pilot_enabled":host_pilot});
+        let package = json!({"native_binary_sha256":"c".repeat(64),"provenance_qualification":PRODUCTION_PROVENANCE,"provenance_production_features":[]});
+        (host, package)
+    }
+    #[test]
+    fn only_the_provenance_bound_release_binary_can_qualify() {
+        let (host, package) = release(&"c".repeat(64), false);
+        assert!(release_blockers(&host, &package).is_empty());
+        // The current pipeline: debug host-pilot addon with different bytes.
+        let (host, package) = release(&"d".repeat(64), true);
+        assert_eq!(release_blockers(&host, &package).len(), 2);
+    }
+    #[test]
+    fn host_pilot_addon_cannot_qualify_even_with_matching_bytes() {
+        let (host, package) = release(&"c".repeat(64), true);
+        assert_eq!(
+            release_blockers(&host, &package),
+            ["tested addon was built with host-pilot"]
+        );
+        let (mut host, package) = release(&"c".repeat(64), false);
+        host["host_pilot_enabled"] = Value::Null;
+        assert!(!release_blockers(&host, &package).is_empty());
+        let (host, mut package) = release(&"c".repeat(64), false);
+        package["provenance_production_features"] = json!(["host-pilot"]);
+        assert!(!release_blockers(&host, &package).is_empty());
+    }
+    #[test]
+    fn hash_mismatched_or_absent_addon_cannot_qualify() {
+        for addon in [json!("d".repeat(64)), json!(""), Value::Null] {
+            let (mut host, package) = release(&"c".repeat(64), false);
+            host["addon_sha256"] = addon;
+            assert_eq!(
+                release_blockers(&host, &package),
+                ["tested addon sha256 differs from the provenance release binary"]
+            );
+        }
+    }
+    #[test]
+    fn component_only_provenance_cannot_qualify() {
+        for qualification in [json!("component-only"), json!("full-product"), Value::Null] {
+            let (host, mut package) = release(&"c".repeat(64), false);
+            package["provenance_qualification"] = qualification;
+            assert_eq!(
+                release_blockers(&host, &package),
+                ["native provenance does not record a production qualification"]
+            );
+        }
+    }
+    #[test]
+    fn refused_receipts_are_never_left_on_disk() {
+        let directory =
+            std::env::temp_dir().join(format!("humanymous-node-publish-{}", std::process::id()));
+        let target = directory.join("node-native/qualification.json");
+        let staged = directory.join("staged.json");
+        std::fs::create_dir_all(target.parent().unwrap()).unwrap();
+        std::fs::write(&target, b"{\"full_native_qualified\":true}").unwrap();
+        let receipt = json!({"full_native_qualified":false});
+        let refused = publish(&target, &staged, &receipt, |path| {
+            assert!(path.is_file());
+            Err("unqualified".into())
+        });
+        assert!(refused.is_err());
+        assert!(!target.exists() && !staged.exists());
+        publish(&target, &staged, &receipt, |_| Ok(())).unwrap();
+        assert!(!staged.exists());
+        assert_eq!(read_json(&target).unwrap(), receipt);
+        std::fs::remove_dir_all(&directory).unwrap();
     }
     #[test]
     fn unknown_tuples_are_never_mapped() {

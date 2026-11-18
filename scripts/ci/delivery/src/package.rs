@@ -292,7 +292,12 @@ pub fn node(root: &Path) -> Result<PathBuf> {
     Ok(archive)
 }
 pub fn node_receipt(root: &Path) -> Result<()> {
-    let receipt = read_json(&root.join("target/node-native/qualification.json"))?;
+    node_receipt_at(root, &root.join("target/node-native/qualification.json"))
+}
+/// Verify a qualification receipt at `path`; the producer checks its staged
+/// file here before the receipt may appear at its published location.
+pub(crate) fn node_receipt_at(root: &Path, path: &Path) -> Result<()> {
+    let receipt = read_json(path)?;
     require(
         receipt["schema"] == "humanymous.node-native-qualification/1"
             && receipt["full_native_qualified"] == true,

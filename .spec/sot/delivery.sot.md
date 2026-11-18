@@ -1790,22 +1790,36 @@ test_count and verdict_counts cover only the two production-application-http
 rows; ALLOW is 0, not inferred from synthetic evidence. Synthetic and unavailable
 cases stay in a separate per-profile count. Host Node 24/Bun 1.3.14 must load
 both production loaders without host-pilot, and provenance must list the tested
-tuple's binary. full_native_qualified is derived from these checks, and the
-producer runs node_receipt before it writes the public summary.
+tuple's binary. Incomplete host evidence refuses the receipt.
 The component still cannot create the receipt itself. The receipt scope
-excludes production browser ALLOW and full-product qualification. The tested
-addon is the debug host-pilot build of the same source. Node then rebuilds the
-release package and must reproduce the same provenance bytes, so the bound
-artifact is source-bound, not byte-identical to the tested one.
+excludes production browser ALLOW and full-product qualification.
 
-Qualification decision (2026-11-18): the release binary is never itself driven
-through the host request path, so linux-x64-gnu is not release-qualified.
+Release binding (2026-11-18): the component also copies the host-glue addon
+out of the stopped tested container and records its SHA256 as tested_addon,
+with host_pilot_enabled derived from the fixture Dockerfile's host-glue napi
+build. The value is fail-closed: it is false only when exactly one such build
+exists and names no host-pilot feature. The producer re-checks both. The
+tuple's qualified flag and full_native_qualified are true only when all of the
+following hold. The tested addon SHA256 equals the provenance digest of
+humanymous-node.<tuple>.node. host_pilot_enabled is false. The provenance
+`qualification` is exactly "production". Its productionFeatures is an array
+without host-pilot. Otherwise the receipt lists release_blockers.
+The producer stages the receipt at target/node-qualification.staged.json,
+runs node_receipt on the staged file, and renames it into
+target/node-native/qualification.json only when the check passes. A refusal
+removes the staged file, and any earlier receipt is removed when the producer
+starts. The derived record is printed to the public summary in both cases.
+
+Qualification decision (2026-11-18): the tested addon is the debug host-pilot
+build of the same source, so its bytes differ from the release binary. The
+provenance also records "component-only" with empty productionFeatures, so
+linux-x64-gnu is not release-qualified. The receipt derives
+full_native_qualified false with those blockers. node_receipt refuses it, so
+no receipt is written and npm publication stays blocked.
 adapters/node/capabilities.json and native capabilities() both keep
-releaseQualifiedTuples empty. The receipt still names the tested tuple, so
-node_receipt fails closed on the descriptor mismatch and npm publication stays
-blocked. Qualifying the tuple requires host runs on the release artifact, or a
-byte-identical tested artifact, and then one change to the descriptor and the
-native list together.
+releaseQualifiedTuples empty. Qualifying the tuple requires host runs on the
+production release binary itself and a production provenance record, and then
+one change to the descriptor and the native list together.
 
 ### Retired Go core/gate image builders (2026-11-16)
 

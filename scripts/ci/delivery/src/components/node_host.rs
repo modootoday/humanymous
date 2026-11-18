@@ -160,6 +160,24 @@ pub(crate) fn authority_path(value: &Value) -> Result<&'static str> {
     )?;
     Ok(AUTHORITY_BIN)
 }
+/// Whether the host-glue addon the fixture image builds enables `host-pilot`.
+/// Fail-closed: unless exactly one napi build writes the host-glue directory
+/// and that line names no `host-pilot` feature, the addon counts as host-pilot.
+pub(crate) fn host_glue_host_pilot(dockerfile: &str) -> bool {
+    let builds: Vec<&str> = dockerfile
+        .lines()
+        .filter(|line| {
+            line.contains("napi build")
+                && line.contains("--output-dir target/node-native/host-glue")
+        })
+        .collect();
+    builds.len() != 1 || builds[0].contains("host-pilot")
+}
+/// Path of the host-glue addon the host tests loaded, from the inspected image only.
+pub(crate) fn addon_path(value: &Value) -> Result<&'static str> {
+    addon_tuple(value)?;
+    Ok(LINUX_X64_GNU_ADDON)
+}
 /// Native tuple of the addon the host tests loaded, from the inspected image only.
 pub(crate) fn addon_tuple(value: &Value) -> Result<&'static str> {
     require(
@@ -387,6 +405,31 @@ pub(super) fn run(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
         // The private bundle keeps the digest, not a second copy of the executable.
         let _ = std::fs::remove_file(&copy);
         report["authority_artifact"] = json!({"path":path,"sha256":copied?});
+        // Hash the addon the stopped test container actually loaded, so release
+        // qualification can compare it with the provenance-bound package binary.
+        let addon = addon_path(&inspected)?;
+        let copy = dir.join("tested-addon.bin");
+        let source = format!("{name}:{addon}");
+        let copied = invoke(
+            root,
+            dir,
+            report,
+            "node-addon-copy",
+            "docker",
+            &[
+                "cp",
+                &source,
+                copy.to_str().ok_or("Node addon copy path invalid")?,
+            ],
+            "120s",
+        )
+        .and_then(|()| crate::source::file(&copy));
+        let _ = std::fs::remove_file(&copy);
+        report["tested_addon"] = json!({
+            "path": addon,
+            "sha256": copied?,
+            "host_pilot_enabled": host_glue_host_pilot(&dockerfile),
+        });
         report["image_platform"] =
             json!({"os":inspected[0]["Os"],"architecture":inspected[0]["Architecture"]});
         Ok(())
@@ -532,6 +575,20 @@ mod tests {
         moved[0]["Config"]["Env"] = json!(["HUMANYMOUS_AUTHORITY_BIN=/tmp/other"]);
         assert!(authority_path(&moved).is_err());
         assert!(addon_tuple(&moved).is_err());
+    }
+    #[test]
+    fn host_glue_host_pilot_is_fail_closed() {
+        let actual = include_str!("../../../../../adapters/node/Dockerfile.pilot");
+        assert!(host_glue_host_pilot(actual));
+        let line = "RUN napi build --output-dir target/node-native/host-glue --features host-pilot";
+        assert!(host_glue_host_pilot(line));
+        assert!(!host_glue_host_pilot(
+            &line.replace(" --features host-pilot", "")
+        ));
+        // Absent or ambiguous host-glue builds never prove host-pilot is off.
+        assert!(host_glue_host_pilot(""));
+        let release = line.replace(" --features host-pilot", "");
+        assert!(host_glue_host_pilot(&format!("{release}\n{release}")));
     }
     #[test]
     fn image_identity_cannot_substitute_other_actor_or_source() {
