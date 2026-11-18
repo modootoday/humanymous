@@ -291,3 +291,19 @@ observation ledgers, never runtime success or participants. Exact base
 retained privately. This does not qualify the whole dirty dependency graph or
 hosted runtime. Raw evidence07070124/public summary07070333 retain separation
 from earlier source results. No dependency or runtime execution was added.
+
+## Wire clients (PR #80) and live lab execution
+
+`src/wire` ports the Go `cmd/redteam` / `cmd/tlsparrot` clients (oracle
+981d25c) as plans and bytes only. `--attack <name>` prints the ported request
+plan; nothing is sent. The only network client, `wire::client::LoopbackClient`,
+refuses every non-loopback socket address, and `wire::h2::H2Request::new`
+accepts only a loopback, `localhost` or reserved `.test` `:authority`. The
+Docker lab's container addresses are therefore unreachable from these clients
+by design. Executing the plans against the lab will need an explicit own-lab
+address allowlist (bound to the lab manifest, not a caller flag) plus a TLS/h2
+transport that can present the modelled ClientHello; neither exists yet and the
+loopback guard is not loosened. ClientHello output is structurally modelled on
+the utls v1.8.2 / Go 1.25.3 presets and accepted by the runtime capture; it is
+not a byte-for-byte copy (filler key shares and ECH payload, fixed GREASE,
+deterministic Chrome_Auto shuffle).
