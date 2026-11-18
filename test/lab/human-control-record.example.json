@@ -1,0 +1,22 @@
+{
+  "schema": "humanymous.human-control-record/1",
+  "date": "2026-11-17",
+  "source_sha": "0000000000000000000000000000000000000000",
+  "venue": "local",
+  "environment": {
+    "os": "Windows 11 24H2",
+    "browser": "Microsoft Edge 142",
+    "assistive_technology": [
+      {"name": "NVDA", "version": "2025.3"}
+    ],
+    "input_methods": ["keyboard", "screen-reader"]
+  },
+  "steps": [
+    {"id": "ca-trusted", "outcome": "not_run"},
+    {"id": "gate-reached", "outcome": "not_run"},
+    {"id": "ordinary-pass", "outcome": "not_run"},
+    {"id": "pass-keyboard-only", "outcome": "not_run"},
+    {"id": "pass-screen-reader", "outcome": "not_run"},
+    {"id": "pass-zero-pointer", "outcome": "not_run"}
+  ]
+}

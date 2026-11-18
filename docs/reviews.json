@@ -1380,9 +1380,9 @@
     },
     {
       "source": "build/rust/product-e2e.Dockerfile",
-      "sha256": "b5cbecae1d9e0dcc90a1abb3a81c992ab43f1dd17a4928a8b774a7de3b83206d",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Multi-stage roadmap-unit-35 lab image definition: compiles humanymous-runtime and humanymous-runtime-pilot from source (optional build-secret egress CA), builds the collector runtime-pilot wasm32 test, and a separate --target browser stage with Firefox ESR, sha256-checked geckodriver 0.37.1 and wasm-bindgen-test-runner 0.2.130. Final images run humanymous-runtime-pilot as UID 65532 with no shell entrypoint or published ports; labelled partial-topology because authority is absent. Lab-only, not full product qualification.",
+      "sha256": "c162f81f11449b96b5a169e1327a3aa2b766d4594f6e7656d8201170de4d1b13",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Multi-stage roadmap-unit-35 lab image definition: compiles humanymous-runtime and humanymous-runtime-pilot from source (optional build-secret egress CA), builds the collector runtime-pilot wasm32 test, and a separate --target browser stage with Firefox ESR, sha256-checked geckodriver 0.37.1 and wasm-bindgen-test-runner 0.2.130. Final images run humanymous-runtime-pilot as UID 65532 with no shell entrypoint or published ports; labelled partial-topology because authority is absent. The default final image also copies read-only legacy pages (pass.html, demo.html) and the web/js, features and honeypot scripts they reference into /usr/local/share/humanymous/web for the --human-test-gate profile only; --product-gate never reads them. Lab-only, not full product qualification.",
       "pages": [
         "docs/how-to/verify-the-image.md",
         "docs/reference/browser-collector.md"
@@ -1390,9 +1390,9 @@
     },
     {
       "source": "build/rust/product-e2e.Dockerfile.dockerignore",
-      "sha256": "5426fc262efae11ffe183ea6930f6e3839930ea86328847517d16783583b115f",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Deny-all build context allowlist for product-e2e.Dockerfile: re-includes Cargo manifests/lock, crates/, selected test/lab contracts and runtime/runner sources, the Go pilot contract, docs/tooling, skills/agent-maintenance, scripts/ci and the read-only legacy web/js mouse, keystroke and advanced oracles the collector WASM tests import. Excludes target dirs, node_modules, Python/PowerShell/shell scripts, logs, PEM/key files, .env and INTEGRATION.md (some exclusion lines are duplicated, harmlessly).",
+      "sha256": "88b550f8ec0a0f42fe771bc3ca6e9a3bc3a0fadad2b08a457e228c7b59ef87d7",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Deny-all build context allowlist for product-e2e.Dockerfile: re-includes Cargo manifests/lock, crates/, selected test/lab contracts and runtime/runner sources, the Go pilot contract, docs/tooling, skills/agent-maintenance, scripts/ci and the read-only legacy web/js mouse, keystroke and advanced oracles the collector WASM tests import, plus pass.html, demo.html, web/js demo, injector, collector, env, transport, rit, pow and wasm_exec scripts and web/honeypot/analytics.js shipped read-only for the human tester hosting profile. Excludes target dirs, node_modules, Python/PowerShell/shell scripts, logs, PEM/key files, .env and INTEGRATION.md (some exclusion lines are duplicated, harmlessly).",
       "pages": [
         "docs/how-to/verify-the-image.md"
       ]

@@ -59,6 +59,14 @@ ENTRYPOINT ["/usr/local/bin/humanymous-runtime-pilot"]
 FROM debian:bookworm-slim@sha256:734a72b3d6142a71993b4bc580ca01d8ca687f77a2c422d96a961d3376b179bc
 COPY --from=compiler /src/target/release/humanymous-runtime /usr/local/bin/humanymous-runtime
 COPY --from=compiler /src/target/release/humanymous-runtime-pilot /usr/local/bin/humanymous-runtime-pilot
+# Read-only legacy pages and the static assets they reference. Only the human
+# tester Gate (--human-test-gate) mounts them; --product-gate never reads them.
+COPY --from=compiler /src/web/pass.html /src/web/demo.html /usr/local/share/humanymous/web/
+COPY --from=compiler /src/web/js/demo.js /src/web/js/injector.js /src/web/js/collector.js \
+    /src/web/js/env.js /src/web/js/advanced.js /src/web/js/transport.js /src/web/js/rit.js \
+    /src/web/js/pow.js /src/web/js/wasm_exec.js /usr/local/share/humanymous/web/js/
+COPY --from=compiler /src/web/js/features/mouse.js /src/web/js/features/keystroke.js /usr/local/share/humanymous/web/js/features/
+COPY --from=compiler /src/web/honeypot/analytics.js /usr/local/share/humanymous/web/honeypot/
 LABEL org.humanymous.owner=product-e2e org.humanymous.scope=partial-topology
 USER 65532:65532
 ENTRYPOINT ["/usr/local/bin/humanymous-runtime-pilot"]

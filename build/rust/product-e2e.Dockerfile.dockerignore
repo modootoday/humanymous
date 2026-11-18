@@ -18,6 +18,20 @@
 !web/js/features/mouse.js
 !web/js/features/keystroke.js
 !web/js/advanced.js
+# Legacy pages and the static assets they reference, shipped read-only in the
+# final image for the human tester hosting profile (--human-test-gate).
+!web/pass.html
+!web/demo.html
+!web/js/demo.js
+!web/js/injector.js
+!web/js/collector.js
+!web/js/env.js
+!web/js/transport.js
+!web/js/rit.js
+!web/js/pow.js
+!web/js/wasm_exec.js
+!web/honeypot/
+!web/honeypot/analytics.js
 !test/lab/runtime/
 !test/lab/runtime/Cargo.toml
 !test/lab/runtime/Cargo.lock

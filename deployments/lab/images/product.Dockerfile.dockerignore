@@ -41,3 +41,6 @@
 !test/lab/runtime/**/*.rs
 !test/lab/runtime/Cargo.toml
 !test/lab/runtime/Cargo.lock
+!web/
+!web/pass.html
+!web/demo.html

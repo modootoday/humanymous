@@ -58,6 +58,9 @@ fn main() {
         }
         Some("--product-origin") => product_e2e::origin().expect("owned recording origin"),
         Some("--product-gate") => product_e2e::gate().expect("owned Gate supervisor"),
+        Some("--human-test-gate") => {
+            product_e2e::gate_human_test().expect("human tester Gate supervisor")
+        }
         Some("--product-driver") => product_e2e::driver().expect("product e2e driver"),
         Some("--product-health") => product_e2e::health(std::env::args().nth(2).as_deref()),
         Some("--product-witness") => product_e2e::witness().expect("independent audit witness"),

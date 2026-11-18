@@ -1,0 +1,128 @@
+# Human tester hosting profile: the repository owner runs the real Rust Gate
+# and owned origin on their own machine (Docker Desktop on Windows is the
+# baseline, rule 96) and tests it by hand with their real browser, keyboard
+# and assistive technology. Runbook: docs/how-to/run-human-test-lab.md.
+# Design note: .spec/sot/container-test-environments.sot.md, section
+# "Human tester hosting profile".
+#
+# Evidence label: human-attested, venue `local` (default) or
+# `provider-fronted` (profile `tunnel`). A person performs every step; no
+# service here drives a browser. Results never become rust-product-lab,
+# pass_product_clean_room, full-product or release evidence. Detection freeze;
+# defense-only: the only targets are these owned containers.
+#
+# Topology (default):
+#   host 127.0.0.1:8443 --TLS--> edge (lab TLS terminator)
+#     --HTTP/1.1 over loopback--> gate 127.0.0.1:18443 --> origin 127.0.0.1:18080
+# The shipped gateway accepts only loopback listen/origin addresses and
+# loopback peers, so edge and origin join the Gate's network namespace, the
+# same pattern product-e2e uses for origin and attacker. Port publication is
+# on the Gate namespace and bound to host loopback only. Nothing else is
+# published: no admin, management, witness, origin or terminator admin port.
+#
+# TLS: edge generates a fresh local CA in the `human-ca` volume the first time
+# the topology starts. The tester exports only the public root certificate and
+# trusts it by hand; the CA key never leaves the volume. `down --volumes`
+# destroys the CA, so each new topology has its own CA.
+#
+# Witness/Core: the witnessed Gate needs the trusted runner broker on private
+# stdio (product-e2e profile `witnessed`) and cannot run under plain Compose;
+# authority/Core is absent exactly as in product-e2e. This profile is
+# unwitnessed. Pass: the Gate runs `--human-test-gate`, the product-e2e Gate
+# plus the explicit legacy section, so it serves `/pass`, `/api/pass/{new,pow,
+# attest,solve,kpi}`, `/demo` and `/static/*` from the in-image web copy.
+# `/api/collect`, `/api/report` and the other legacy APIs stay unmounted.
+name: humanymous-human-test
+services:
+  gate:
+    extends: {file: compose.product-e2e.yaml, service: gate}
+    command: ["--human-test-gate"]
+    build:
+      context: ../..
+      dockerfile: build/rust/product-e2e.Dockerfile
+    networks: [product, human-edge]
+    # Docker cannot publish from an internal network. human-edge has no
+    # outbound masquerade and the namespace has a deny-only resolver; both are
+    # residual controls, not an egress-isolation proof.
+    ports: ["127.0.0.1:8443:8443"]
+    dns: [127.0.0.1]
+    dns_opt: ["attempts:1", "timeout:1", "ndots:0"]
+    labels:
+      org.humanymous.owner: human-test
+      org.humanymous.evidence: human-attested
+      org.humanymous.venue: local
+  origin:
+    extends: {file: compose.product-e2e.yaml, service: origin}
+    labels: {org.humanymous.owner: human-test, org.humanymous.evidence: human-attested}
+    network_mode: "service:gate"
+    depends_on:
+      gate: {condition: service_healthy}
+  edge:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    # Lab TLS terminator only. Raw ClientHello/H2 facts at this hop belong to
+    # the terminator, never to the Gate (terminated-proxy capability loss).
+    image: caddy:2.10.2-alpine@sha256:4c6e91c6ed0e2fa03efd5b44747b625fec79bc9cd06ac5235a779726618e530d
+    command: [caddy, run, --config, /etc/caddy/Caddyfile, --adapter, caddyfile]
+    # Root owns the image's /data volume seed. The shared sandbox policy still
+    # applies: cap_drop ALL, no-new-privileges, read-only root filesystem.
+    user: "0:0"
+    # The image binary carries a file capability; exec needs it in the bounding
+    # set. Ports here are unprivileged, so it is never exercised.
+    cap_add: [NET_BIND_SERVICE]
+    network_mode: "service:gate"
+    depends_on:
+      gate: {condition: service_healthy}
+      origin: {condition: service_healthy}
+    configs:
+      - {source: edge-caddyfile, target: /etc/caddy/Caddyfile}
+    volumes: [human-ca:/data]
+    tmpfs:
+      - "/tmp:rw,noexec,nosuid,size=8m,mode=1777"
+      - "/config:rw,noexec,nosuid,size=4m,mode=0700"
+    environment:
+      XDG_DATA_HOME: /data
+      XDG_CONFIG_HOME: /config
+    labels: {org.humanymous.owner: human-test, org.humanymous.evidence: human-attested}
+  tunnel:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    # Optional Cloudflare named Tunnel. Requires Cloudflare Access on the
+    # public hostname (runbook). The token is read from HM_TUNNEL_TOKEN on the
+    # host at start time; no value lives in this repository. An empty token
+    # makes cloudflared refuse to start.
+    image: cloudflare/cloudflared:2025.11.1@sha256:89ee50efb1e9cb2ae30281a8a404fed95eb8f02f0a972617526f8c5b417acae2
+    command: [tunnel, --no-autoupdate, run]
+    environment:
+      TUNNEL_TOKEN: ${HM_TUNNEL_TOKEN:-}
+    # Gate-facing network plus its own egress bridge. Never the origin/product
+    # network, host network, Docker socket or the CA volume.
+    networks: [human-edge, tunnel-egress]
+    depends_on:
+      gate: {condition: service_healthy}
+      edge: {condition: service_started}
+    labels:
+      org.humanymous.owner: human-test
+      org.humanymous.evidence: human-attested
+      org.humanymous.venue: provider-fronted
+    profiles: [tunnel]
+configs:
+  edge-caddyfile:
+    # A file config: Compose accepts only `file:` for a read-only service.
+    file: human-test/Caddyfile
+volumes:
+  human-ca:
+    labels:
+      org.humanymous.owner: human-test
+      org.humanymous.evidence: human-attested
+networks:
+  product:
+    internal: true
+  human-edge:
+    enable_ipv6: false
+    driver_opts:
+      com.docker.network.bridge.enable_ip_masquerade: "false"
+    labels:
+      org.humanymous.owner: human-test
+  tunnel-egress:
+    enable_ipv6: false
+    labels:
+      org.humanymous.owner: human-test

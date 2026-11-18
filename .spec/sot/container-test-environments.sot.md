@@ -3,7 +3,7 @@ id: sot:root/container-test-environments
 title: Canonical Compose lab and Cloudflare test environment profiles
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-08T16:40:00Z
+updated: 2026-11-17T12:00:00Z
 verify: manual
 rel:
   governs: [deployments/lab/**, build/rust/**, test/lab/**]
@@ -1211,6 +1211,56 @@ require a separate explicit-root checkout gate. Its ignored-by-default status is
 not success: execute that named gate explicitly and record its own denominator.
 Keep public/private DTO shapes, diagnostic vocabulary, scoring/Origin policy,
 witness/drain ordering and product assertion denominators unchanged.
+
+## Human tester hosting profile (2026-11-17)
+
+`deployments/lab/compose.human-test.yaml` lets the owner run the unwitnessed
+product-e2e Gate (`--human-test-gate`, shipped gateway) and owned origin on their
+own Docker Desktop and test by hand with a real browser, keyboard and AT
+(runbook `docs/how-to/run-human-test-lab.md`). It is the only supported source
+of the `human-control` case; an automated browser run is never a human baseline.
+
+- Publication: only `127.0.0.1:8443` on the Gate namespace. Docker cannot publish
+  from an internal network, so the Gate also joins `human-edge`, a bridge with
+  outbound masquerade disabled, plus a deny-only resolver. These are residual
+  controls, not an egress-isolation proof. No admin, management, terminator
+  admin (`admin off`), witness or origin port exists.
+- TLS: a pinned third-party terminator (`edge`, Caddy `tls internal`) shares the
+  Gate namespace because the gateway accepts loopback peers only. It mints a
+  per-topology CA in the `human-ca` volume; the tester exports and trusts only
+  the public root, and `down --volumes` destroys it. It rewrites Host to the
+  configured authority and strips inbound `X-Forwarded-*`. This is the
+  `terminated-proxy` capability loss: raw TLS/H2 facts belong to the terminator,
+  never the Gate. A Rust terminator was not authored because it needs a new
+  rustls/rcgen dependency edge (human-gated `Cargo.lock`). Like product-e2e's
+  attacker, a same-namespace actor could reach the origin's loopback port; this
+  profile is not an origin-isolation proof.
+- Pass: `--human-test-gate` is `--product-gate` plus the explicit gateway
+  `legacy` section (`pass`, `demo`, `static_assets`; absolute `web_dir`
+  `/usr/local/share/humanymous/web`, a read-only copy of `web/pass.html`,
+  `web/demo.html` and the static files they reference in the final product-e2e
+  image). The Gate serves `/pass`, `/api/pass/{new,pow,attest,solve,kpi}`,
+  `/demo` and `/static/*`; the protected routes do not collide with them. The
+  `--product-gate` document is unchanged (pilot golden test). `/api/collect`,
+  `/api/report`, `/api/pow`, `/api/session` and `detector.wasm` are absent, so
+  the demo scoring flow does not work, and the in-memory Pass verdict does not
+  feed the gateway decision path.
+- Tunnel (`--profile tunnel`): pinned `cloudflared` on `human-edge` plus its own
+  egress bridge only; token from `HM_TUNNEL_TOKEN` at start time (empty refuses).
+  Access protection of the exact hostname is an owner dashboard prerequisite.
+  The connector-to-Gate hop is plain HTTP on a private bridge, so the preferred
+  route's origin TLS verification is not met by this profile.
+
+Evidence labels: `human-attested/local` and `human-attested/provider-fronted`
+(Cloudflare re-originates TLS; raw TLS/H2 observations are provider facts). The
+tester fills `test/lab/human-control-record.schema.json` by hand (closed shape,
+no personal data, every step once). `humanymous-lab-runner human-control-receipt`
+validates it and emits `humanymous.lab-human-control-receipt/1`: `attestation`
+`human-attested`, `automated=false`, status `attested_complete|attested_incomplete`
+(never `passed`), `full_product_qualified=false`, `release_ready=false`,
+`clears_required_unavailable=false`. It refuses CI markers, a non-terminal stdin
+and an existing output, and requires a typed in-person confirmation. Joining such
+a receipt to the full-product ledger or delivery pilot remains an owner decision.
 
 ## Official sources, checked 2026-11-07
 

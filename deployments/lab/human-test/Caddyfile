@@ -1,0 +1,52 @@
+# Lab TLS terminator config for deployments/lab/compose.human-test.yaml.
+# Mounted read-only as a file config: Compose refuses inline `content:`
+# configs on read-only services. Edits are lab-only; see the compose file.
+
+{
+  admin off
+  persist_config off
+  skip_install_trust
+  local_certs
+  default_sni 127.0.0.1
+  http_port 8080
+  https_port 8443
+  auto_https disable_redirects
+  servers {
+    protocols h1 h2
+  }
+}
+(gate) {
+  # Fixed loopback Gate ingress; never the origin port.
+  reverse_proxy 127.0.0.1:18443 {
+    header_up Host owned.test
+    header_up -X-Forwarded-For
+    header_up -X-Forwarded-Proto
+    header_up -X-Forwarded-Host
+    transport http {
+      versions 1.1
+    }
+  }
+}
+(routes) {
+  # Pass page and API: served by the Gate's legacy surfaces
+  # (--human-test-gate); every other path meets the route inventory.
+  handle /pass {
+    import gate
+  }
+  handle /api/pass/* {
+    import gate
+  }
+  handle {
+    import gate
+  }
+}
+# Local venue: host loopback only, lab CA.
+https://localhost:8443, https://127.0.0.1:8443 {
+  tls internal
+  import routes
+}
+# Tunnel venue: reachable only on the private human-edge bridge (not
+# published). Cloudflare terminates and re-originates TLS.
+http://:8080 {
+  import routes
+}
