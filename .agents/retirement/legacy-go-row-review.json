@@ -15,8 +15,8 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 218,
-  "partial": 74,
+  "ported_unit": 220,
+  "partial": 72,
   "missing": 11,
   "not_applicable": 2,
   "oracle_only": 9
@@ -78,10 +78,10 @@
    "ported_unit": 5
   },
   "internal/gate": {
-   "partial": 38,
+   "partial": 36,
    "missing": 5,
    "not_applicable": 1,
-   "ported_unit": 40,
+   "ported_unit": 42,
    "oracle_only": 1
   },
   "internal/httpx": {
@@ -2314,29 +2314,38 @@
    "disposition": "partial",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/ban.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/gate.rs",
     "crates/sdk/humanymous-runtime/src/gateway/token.rs"
    ],
    "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::flood_is_auto_banned_audited_and_spares_other_address",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::ip_rotating_flood_is_banned_by_fingerprint",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::manual_temporary_ban_blocks_with_retry_after_until_lifted",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::monitor_and_shadow_modes_are_audit_only",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::ledger_refusal_is_returned_not_passed",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::auto_ban_flood_blocks_source_and_spares_other_address",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::fingerprint_key_bans_ip_rotating_flood",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::manual_temporary_ban_lifecycle",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::already_banned_source_reports_existing_ban"
    ],
    "go_test_map": {
-    "TestAutoBanEndToEnd": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::auto_ban_flood_blocks_source_and_spares_other_address",
-    "TestFingerprintAutoBan": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::fingerprint_key_bans_ip_rotating_flood",
-    "TestConsoleBanManagement": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::manual_temporary_ban_lifecycle"
+    "TestAutoBanEndToEnd": "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::flood_is_auto_banned_audited_and_spares_other_address",
+    "TestFingerprintAutoBan": "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::ip_rotating_flood_is_banned_by_fingerprint",
+    "TestConsoleBanManagement": "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::manual_temporary_ban_blocks_with_retry_after_until_lifted"
    },
    "gaps": [
-    "No Runtime ban gate wired into request routing: the HTTP 403, origin-not-contacted and audit-only modes are unported",
-    "No ban.applied audit emission and no audit-chain verification after an auto-ban",
-    "No Runtime owner composes the ip:+fp: key set per request",
-    "Authenticated admin bans API (add/list/lift), RBAC and Retry-After are unported"
+    "gateway::ban::gate is not run by Application: the served path has no HTTP 403 with Retry-After, no origin skip for a banned source and no per-request ip:+fp: metering (owner decision 2026-11-16 leaves serving composition undecided)",
+    "Authenticated admin bans HTTP API (add, list, lift) with RBAC, which TestConsoleBanManagement drives over HTTP, is unported here (open PR #122 serves it)"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Kernel-level ports only; temporary auto and manual bans need no dual control, permanent and cidr bans do (pinned by existing dual-control tests).",
+   "notes": "All three Go tests pass on the oracle (981d25c, Go 1.25.3). Their kernel halves are ported against gateway::ban::gate with the Go-measured sequence: with soft 8 and hard 10 requests 8 and 9 record ratelimit.soft_exceeded and request 10 is blocked with ban.applied then ban.enforced; the records are appended to a real audit Log and the chain verifies; an unrelated address passes; an IP-rotating flood is banned by fp:d_Tues8bRjsNLZHw (Go bindKey); a manual temporary ban blocks with Retry-After until lifted. The HTTP response, origin and admin halves stay gaps. Temporary auto and manual bans need no dual control; permanent and cidr bans do (pinned by the dual-control tests).",
    "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::flood_is_auto_banned_audited_and_spares_other_address": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::ip_rotating_flood_is_banned_by_fingerprint": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::manual_temporary_ban_blocks_with_retry_after_until_lifted": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::monitor_and_shadow_modes_are_audit_only": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::ledger_refusal_is_returned_not_passed": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::auto_ban_flood_blocks_source_and_spares_other_address": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::fingerprint_key_bans_ip_rotating_flood": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::manual_temporary_ban_lifecycle": "passed",
@@ -2374,30 +2383,62 @@
   },
   {
    "baseline_path": "internal/gate/ban.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/ban.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/ban.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/seams.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::strikes_decay_after_seven_days",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::already_banned_source_reports_existing_ban",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::capacity_refuses_instead_of_evicting",
-    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::dual_control::broad_ban_needs_matching_grant"
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::dual_control::broad_ban_needs_matching_grant",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::auto_ban_escalates_and_permanent_tier_needs_dual_control",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::temporary_ban_expires",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::dual_control::permanent_ban_persists_and_resists_single_operator_lift",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::list_returns_only_active_bans",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::gc_sweeps_stale_strikes_and_expired_bans",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r104_temp_ban_not_permanent",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r106_lift_removes_ban",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r107_r193_escalation_terms",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r191_double_lift_safe",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r192_list_bans_includes_manual",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_configure_preserves_rolling_hits_and_applies_cutpoints"
    ],
-   "go_test_map": {},
-   "gaps": [
-    "front-of-path enforcement and audit events in the Gate composition (B13/B18)",
-    "BanLedger seam for a shared fleet ledger (B23)",
-    "dual-controlled lift of permanent bans (no control action defined)"
-   ],
+   "go_test_map": {
+    "TestAutoBanEscalation": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::auto_ban_escalates_and_permanent_tier_needs_dual_control",
+    "TestBanExpiry": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::temporary_ban_expires",
+    "TestPermanentBanAndLift": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::dual_control::permanent_ban_persists_and_resists_single_operator_lift",
+    "TestBanList": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::list_returns_only_active_bans",
+    "TestBanStoreGCSweepsStrikesAndExpired": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::gc_sweeps_stale_strikes_and_expired_bans",
+    "TestWargameR104_TempBanNotPermanent": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r104_temp_ban_not_permanent",
+    "TestWargameR106_LiftRemovesBan": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r106_lift_removes_ban",
+    "TestWargameR107_AutoBanEscalatesStrike": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r107_r193_escalation_terms",
+    "TestWargameR191_DoubleLiftSafe": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r191_double_lift_safe",
+    "TestWargameR192_ListBansIncludesManual": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r192_list_bans_includes_manual",
+    "TestWargameR193_EscalationMonotonicNonIncreasingDurationOrPermanent": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r107_r193_escalation_terms",
+    "TestSettingsRateHotApplyPreservesCounters": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_configure_preserves_rolling_hits_and_applies_cutpoints"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Store, strike escalation with 7-day decay, expiry, list, GC and bounded capacity are ported over network/history/rate; permanent and broad bans consume a retained dual-control grant. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#23; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "notes": "Every BanStore behaviour of ban.go is ported over network/history/rate: Check with lazy expiry, Observe with 1h/6h/24h escalation and 7-day strike decay, ObserveRate (monitor), ConfigureRate (the RateLimiter seam), Add, Lift, remainingSecs (Entry::remaining), GC and List, with bounded capacity. The BanLedger seam is in gateway/seams.rs and the fleet-shared ledger (B23) is coordinator::ledger::SharedBanLedger, so the former seam gap is closed. Owner decision 2026-11-16 (#23, decisions 1 and 2; .agents/retirement/owner-decisions-2026-11-16.md) accepts the fail-closed differences as intended: no automatic permanent ban, permanent and cidr: bans need dual control, and a permanent ban has no lift (only erasure). Go oracle tests TestAutoBanEscalation, TestBanExpiry, TestPermanentBanAndLift and TestBanList were run at 981d25c with Go 1.25.3 and pass. Front-of-path enforcement is not part of ban.go: its kernel is gateway::ban::gate (port of gates.go banGate) and wiring it into Application stays a gap on the gates.go and ban_integration_test.go rows. Signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::strikes_decay_after_seven_days": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::already_banned_source_reports_existing_ban": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::capacity_refuses_instead_of_evicting": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::dual_control::broad_ban_needs_matching_grant": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::dual_control::broad_ban_needs_matching_grant": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::auto_ban_escalates_and_permanent_tier_needs_dual_control": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::temporary_ban_expires": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::dual_control::permanent_ban_persists_and_resists_single_operator_lift": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::list_returns_only_active_bans": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::gc_sweeps_stale_strikes_and_expired_bans": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r104_temp_ban_not_permanent": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r106_lift_removes_ban": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r107_r193_escalation_terms": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r191_double_lift_safe": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r192_list_bans_includes_manual": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_configure_preserves_rolling_hits_and_applies_cutpoints": "passed"
    }
   },
   {
@@ -2837,9 +2878,12 @@
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::clean_request_has_no_spoof",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::enforcing_spoof_gate_denies_each_forged_trust_header",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::epoch_buckets_by_hour",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::monitoring_spoof_gate_audits_strips_and_continues",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::origin_handler_example_direct_hit_fails",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::short_origin_key_is_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::spoof_gate_without_a_claim_records_nothing_but_still_strips",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::spoofed_trust_headers_are_reported_and_stripped",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_is_hmac_hex",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_matches_go_golden_bytes",
@@ -2850,24 +2894,27 @@
    ],
    "go_test_map": {},
    "gaps": [
-    "Forwarding does not yet attach the origin-cloak header",
-    "The HR-27b spoof record (gateway/smuggle.rs::spoof_record) is not yet appended by the gateway"
+    "Forwarding does not attach the origin-cloak header: legacy gate.go Rewrite set X-Hmny-Origin-Auth from originAuth(originEpoch(now)) on every upstream request, and no origin key is provisioned in the Rust configuration",
+    "guard::spoof_gate (HR-27b strip, record and deny) is not run by Application, so the record is never appended on the served path (gates.go spoof-header gate)"
    ],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Spoof scan, inbound strip and origin-cloak token/grace are ported as pure kernels in gateway/guard.rs; the existing Rust forwarder strips only its own x-humanymous-* namespace. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "notes": "Every guard.go function is ported as a pure kernel: spoofScan, stripInbound, originAuth/originEpoch/originEpochGrace/ValidateOriginAuth (OriginKey, byte-identical to Go) and spoofRecord (smuggle::spoof_record). guard::spoof_gate ports gates.go spoofHeaderGate with the Go-measured output (Go 1.25.3 at 981d25c): enforce denies with the HR-27b record listing non-empty names in legacy order, and monitor and shadow both record mode monitor and continue with the headers stripped. The existing Rust forwarder already drops every internal header (http::origin_request). Owner decision 2026-11-16 (#24; .agents/retirement/owner-decisions-2026-11-16.md) accepts the fail-closed differences (short origin keys refused) and leaves wiring into serving composition undecided, so the two wiring gaps remain. Signal IDs and scoring are unchanged.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/http/stream.rs::complete_chunk_stream_reframes_and_strips_forged_gateway_fields": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::real_shared_client_consumption_ack_and_origin_fidelity": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::clean_request_has_no_spoof": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::enforcing_spoof_gate_denies_each_forged_trust_header": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::epoch_buckets_by_hour": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::monitoring_spoof_gate_audits_strips_and_continues": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::origin_handler_example_direct_hit_fails": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::short_origin_key_is_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::spoof_gate_without_a_claim_records_nothing_but_still_strips": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::spoofed_trust_headers_are_reported_and_stripped": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_is_hmac_hex": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_matches_go_golden_bytes": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::valid_with_symmetric_grace": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::spoof_record_lists_only_static_header_names": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/http/stream.rs::complete_chunk_stream_reframes_and_strips_forged_gateway_fields": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::spoof_record_lists_only_static_header_names": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::real_shared_client_consumption_ack_and_origin_fidelity": "passed"
    }
   },
   {
@@ -3130,11 +3177,11 @@
    ],
    "go_test_map": {},
    "gaps": [
-    "gateway listener wiring with a configured allowlist and read deadline (needs the public-role profile, B01/B26)"
+    "WrapProxyProto/proxyListener accept loop is unported: no Rust listener applies the allowlist with a 5 s header deadline, drops a trusted peer's malformed header and keeps serving, or substitutes the declared address (B01/B26; open PR #123 wires network::proxy into the gateway listener)"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Header decoding, the /8 minimum allowlist and the trust gate are ported as a pure Network kernel; no listener uses it yet, and it never creates TLS provenance (network-capture N01).",
+   "notes": "ParseCIDRs (with the /8 floor), the trusted-peer gate and readProxyV2 (IPv4, IPv6, LOCAL, UNSPEC/UDP, truncation and short blocks) are ported as the pure Network kernel network::proxy; it never creates TLS provenance (network-capture N01). The Go proxyproto_test.go cases pass on the oracle (981d25c, Go 1.25.3) and are mapped on the proxyproto_test.go row. This slice changes no proxy code because open PR #123 edits the same module.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::trust_gate_over_real_tcp": "passed",
     "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::recovers_ipv6_source": "passed",
@@ -3761,7 +3808,7 @@
   },
   {
    "baseline_path": "internal/gate/token.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/token.rs"
    ],
@@ -3770,22 +3817,44 @@
     "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::receipt_checks_session_expiry_with_skew_and_domain",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::malformed_and_ambiguous_tokens_fail_closed",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::bindings_and_subnets_match_legacy_shapes",
-    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::nonce_cache_expires_and_saturates_closed"
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::nonce_cache_expires_and_saturates_closed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::verdict_token_round_trip",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::lifted_token_fails_fingerprint_binding",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::token_is_bound_to_subnet_and_session",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::forged_token_fails_signature",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::expired_token_is_rejected",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::nonce_is_single_use_across_bindings",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/golden.rs::tokens_and_receipts_match_go_bytes",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/golden.rs::bindings_match_go_bytes",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/golden.rs::wire_names_match_go"
    ],
-   "go_test_map": {},
-   "gaps": [
-    "hmn_vt/hmn_su cookies and X-Hmn-Stepup-Receipt header handling in the Gate composition (B16/B17)",
-    "owner approval of tokens as a trust upgrade (B17)"
-   ],
+   "go_test_map": {
+    "TestVerdictTokenRoundTrip": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::verdict_token_round_trip",
+    "TestVerdictTokenBindingMismatch": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::lifted_token_fails_fingerprint_binding",
+    "TestVerdictTokenSubnetAndSidBinding": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::token_is_bound_to_subnet_and_session",
+    "TestVerdictTokenForgery": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::forged_token_fails_signature",
+    "TestVerdictTokenExpiry": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::expired_token_is_rejected",
+    "TestNonceReplay": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::nonce_is_single_use_across_bindings"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Verdict and step-up tokens, receipts, bindings, subnets and the bounded nonce cache are ported as a pure kernel; no route issues or accepts them yet.",
+   "notes": "Every token.go item is ported in gateway::token: verdict tokens, step-up proofs and receipts with typed reasons and the 120 s receipt skew, bindKey, tokenBind, the bounded single-use NonceCache and the hmn_vt, hmn_su and X-Hmn-Stepup-Receipt wire names. Wire bytes are pinned by goldens measured on the Go oracle (981d25c, Go 1.25.3): tokens, receipts and bindings match byte for byte and Go-minted tokens verify in Rust. The token_test.go cases pass on the oracle and map as listed. Deliberate fail-closed differences are pinned by tests (empty expected session, empty nonce, separator-bearing fields, short keys). Issuing and accepting the cookies is composition owned by other rows (control.go step-up endpoint, control_collect.go verdict token issuance on allow, gates.go verdict-token and upgrade gates), and accepting a token as a trust upgrade still needs owner approval (B17) before any route uses this kernel.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::step_up_and_verdict_tokens_are_domain_separated": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::receipt_checks_session_expiry_with_skew_and_domain": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::malformed_and_ambiguous_tokens_fail_closed": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::bindings_and_subnets_match_legacy_shapes": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::nonce_cache_expires_and_saturates_closed": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::nonce_cache_expires_and_saturates_closed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::verdict_token_round_trip": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::lifted_token_fails_fingerprint_binding": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::token_is_bound_to_subnet_and_session": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::forged_token_fails_signature": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::expired_token_is_rejected": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::nonce_is_single_use_across_bindings": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/golden.rs::tokens_and_receipts_match_go_bytes": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/golden.rs::bindings_match_go_bytes": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/golden.rs::wire_names_match_go": "passed"
    }
   },
   {

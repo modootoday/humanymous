@@ -412,5 +412,7 @@ impl<L: RateLimiter> Store<L> {
     }
 }
 
+pub mod gate;
+
 #[cfg(test)]
 mod tests;
