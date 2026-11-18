@@ -1357,7 +1357,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         // Refuse before CEF when freeze/module/bundle prerequisites fail (Cap conservation).
         g4_cef_at::require_freeze_preimages(&root)?;
         g4_cef_at::require_cap_module(&root)?;
-        g4_cef_at::require_cef_bundle()?;
+        g4_cef_at::require_cef_bundle(&root)?;
         if collector
             || topology_only
             || browser_product
