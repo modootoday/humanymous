@@ -117,9 +117,36 @@ pub fn gate() -> Result<()> {
         if plan.needs_checkpoint_append(){return Err("normal browser shutdown unexpectedly requires checkpoint repair".into());}
         let history=plan.history();
         let records:Vec<_>=history.records().iter().map(|record|json!({"seq":record.seq,"event_type":record.event_type,"verdict":record.verdict})).collect();
-        service::write_frame(&mut io::stdout(),&json!({"role":"browser_gate_result","expected":expected,"stopped":exit.stopped,"origin_effects":installation.origin.effects(),"proxy_hits":receipts.snapshot(),"collector_reports":collector_reports(&receipts.collect_entities()),"missing_signal_controls":controls,"audit_sequence":history.sequence(),"audit_records":records,"audit_checkpoints":history.checkpoints(),"offline_log_authenticated":true,"witness_coverage":plan.coverage(),"checkpoint_repair_performed":false,"full_product_qualified":false}))?;
+        let (epochs,unattributed)=audit_epochs(&receipts,history.records());
+        service::write_frame(&mut io::stdout(),&json!({"role":"browser_gate_result","expected":expected,"stopped":exit.stopped,"origin_effects":installation.origin.effects(),"proxy_hits":receipts.snapshot(),"collector_reports":collector_reports(&receipts.collect_entities()),"epochs":epochs,"audit_unattributed":unattributed,"missing_signal_controls":controls,"audit_sequence":history.sequence(),"audit_records":records,"audit_checkpoints":history.checkpoints(),"offline_log_authenticated":true,"witness_coverage":plan.coverage(),"checkpoint_repair_performed":false,"full_product_qualified":false}))?;
         Ok::<(),Box<dyn std::error::Error>>(())
     })
+}
+
+/// The Gate frontend's epoch ledger with each authenticated audit record
+/// attributed by its `request_id` to the one epoch whose consumed request
+/// (session, counter) it commits to. A record matching no epoch, or several,
+/// is counted as unattributed and assigned to none.
+pub(crate) fn audit_epochs(
+    receipts: &Receipts,
+    records: &[humanymous_runtime::audit::record::Record],
+) -> (Vec<serde_json::Value>, u64) {
+    let mut epochs = receipts.epochs();
+    for epoch in &mut epochs {
+        epoch["audit_seqs"] = json!([]);
+    }
+    let mut unattributed = 0;
+    for record in records {
+        match receipts.attribute(&record.request_id).as_slice() {
+            [one] if *one < epochs.len() => {
+                if let Some(seqs) = epochs[*one]["audit_seqs"].as_array_mut() {
+                    seqs.push(json!(record.seq));
+                }
+            }
+            _ => unattributed += 1,
+        }
+    }
+    (epochs, unattributed)
 }
 
 /// Largest collect entity carried inside the bounded private result frame.
@@ -261,7 +288,7 @@ pub fn browser() -> Result<()> {
             if !refused {return Err("proxy negative control failed".into());}
         }
         stop.send(true).map_err(|_|io::Error::other("proxy stopped"))?;proxy.await??;
-        let mut report=json!({"schema":"humanymous.browser-product-actor/1","expected":expected,"status":if passed{"passed"}else{"failed"},"test_output":output,"test_stderr":String::from_utf8_lossy(&result.stderr),"test_inventory":inventory,"selected_test":name,"declared_selected":1,"declared_filtered":inventory.len()-1,"summary_verified":passed,"proxy_hits":receipts.snapshot(),"namespace_controls":negatives,"connection_refusals":refusals,"hardening":hardening,"dns_control":dns_control,"dns_policy":null,"test_process_success":process_success,"test_exit_code":result.status.code(),"parser_summary_matched":parser_summary_matched,"dns_finish":"unknown","full_product_qualified":false});
+        let mut report=json!({"schema":"humanymous.browser-product-actor/1","expected":expected,"status":if passed{"passed"}else{"failed"},"test_output":output,"test_stderr":String::from_utf8_lossy(&result.stderr),"test_inventory":inventory,"selected_test":name,"declared_selected":1,"declared_filtered":inventory.len()-1,"summary_verified":passed,"proxy_hits":receipts.snapshot(),"epochs":receipts.epochs(),"namespace_controls":negatives,"connection_refusals":refusals,"hardening":hardening,"dns_control":dns_control,"dns_policy":null,"test_process_success":process_success,"test_exit_code":result.status.code(),"parser_summary_matched":parser_summary_matched,"dns_finish":"unknown","full_product_qualified":false});
         eprintln!("HM-LAB-ACTOR-STEP actor_browser_dns_finish");
         let dns_error=match dns.finish(){
             Ok(policy)=>{report["dns_policy"]=policy;report["dns_finish"]=json!("succeeded");eprintln!("HM-LAB-ACTOR-STEP actor_browser_dns_finished");None},

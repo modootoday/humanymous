@@ -3,7 +3,7 @@ id: sot:root/client-collector
 title: Rust browser signal collection and generated WASM boundary
 status: active
 created: 2026-11-07T01:30:00Z
-updated: 2026-11-08T21:30:00Z
+updated: 2026-11-17T23:59:00Z
 verify:
   - cargo test -p humanymous-collector --locked
 rel:
@@ -466,3 +466,61 @@ describe Origin/referrer processing but do not prove empty-referrer causality in
 this Firefox run. Actual isolated browser and Docker product execution must
 measure the new source; no manual Origin, Referer authorization fallback, CORS
 mode change, policy relaxation or successful wire result is claimed.
+
+## Go loader report assembly (roadmap 2d collector-parity)
+
+The 2d `collector-parity` lab case measures the real browser report against the
+Go oracle at 981d25c, whose `web/js/loader.js` always posted a probed
+`environment`, an `advanced` plane, a `fingerprintId` and `guard.reported=true`.
+BrowserCollector::report_json is the explicit Rust assembly of that report. It
+measures snapshot_json first (L1-L3, behavior, guard), then runs the existing
+environment and advanced probes and computes fingerprintId. The order differs
+from the oracle only in that guard/behavior are read before the probes, so the
+collector's own probes cannot appear in its guard observation. The oracle's
+2500ms advanced race and 6000ms behavior window are page pacing, not ported.
+Probe failure rejects the report, instead of the oracle's silent default.
+
+fingerprintId ports `advanced.js` computeFingerprintId: fixed canvas data URL,
+`webgl` vendor/renderer, screen width/height/colorDepth/devicePixelRatio, time
+zone, languages, hardwareConcurrency and platform, joined with JavaScript join
+semantics and hashed with WebCrypto SHA-256 (first12 bytes, lowercase hex).
+Surfaces the oracle wrapped in try are skipped on throw; a throwing or rejecting
+digest takes the oracle's Int32 fallback hash; a digest timeout rejects. Joined
+surfaces are bounded to1MiB UTF-16 units. The value is an unscored client
+assertion, not a signal, device attestation or correlation implementation; the
+Rust runtime does not consume it. An amended existing WASM test compares it with
+the unchanged oracle in the same browser without changing the66-test inventory.
+
+Guard hooks stay an explicit enable_guard_hooks opt-in; report_json never enables
+them and reports `reported` as measured. The runtime admits `required.collector`
+only on a receipt with guard `reported=true`, so one captured report cannot
+serve both lab cases. The selected runtime pilot therefore runs two session
+epochs in one browser, in this order:
+
+- **stripped**: the unchanged contract. Two pre-report effects are CHALLENGEd,
+  the report_json report without hooks is collected, and the required route
+  refuses it with a pre-consumption 422 without ACK, which closes the epoch.
+- **complete**: a new BrowserSession whose lab page explicitly calls
+  enable_guard_hooks before report_json. The collector default is unchanged.
+  The report is collected, and the required route consumes a decision with an
+  ACK. The fixture's `complete_required_collector_*` fields fix that decision at
+  403 DENY. It must stay a local non-ALLOW decision, so the run keeps zero
+  origin effects. An isolated headless Firefox 153 ESR run under
+  wasm-bindgen-test-runner 0.2.130 measured this as HR-13: the runner replaces
+  native console.log (`console_disabled`), and headless Firefox reports
+  `outer_eq_inner`. It is a harness artefact, not a scoring change or a human
+  claim.
+
+Both lab proxies open an epoch at each bootstrap request. They count every
+later API request into that epoch. The Gate frontend also assigns each collect
+entity to its epoch and attributes each authenticated audit record by its
+`request_id` (SHA-256 of the consumed session and counter). The runner feeds
+`missing-signals-closed` the stripped epoch's evidence, including the
+post-browser controls that replay that epoch's collect. It feeds
+`collector-parity` the complete epoch's evidence. Neither evaluator's checks
+change. If the epochs are not exactly bound (two epochs, one distinct session
+each, every audit record attributed exactly once), both views are empty and
+both cases fail. Whole-run route, response, audit (5 records) and zero-origin
+checks still apply across both epochs. Product-e2e drivers keep replaying the
+stripped epoch's report. Native and isolated headless Firefox component results
+are not Docker product evidence.

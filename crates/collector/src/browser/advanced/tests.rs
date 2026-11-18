@@ -9,6 +9,8 @@ use wasm_bindgen_test::wasm_bindgen_test;
 extern "C" {
     #[wasm_bindgen(catch, js_name = collectAdvanced)]
     fn legacy_advanced() -> Result<Promise, JsValue>;
+    #[wasm_bindgen(catch, js_name = computeFingerprintId)]
+    fn legacy_fingerprint_id() -> Result<Promise, JsValue>;
 }
 
 fn set(object: &JsValue, key: &str, value: &JsValue) {
@@ -316,6 +318,14 @@ async fn advanced_export_attempts_actual_owned_browser_surfaces() {
     assert!(report.media_device_count >= 0 && report.voice_count >= 0);
     assert!(report.audio_sample_rate.is_finite());
     assert!(report.web_rtc_host_addrs.is_none() && report.web_rtc_public_addrs.is_none());
+    // The unchanged oracle and the Rust port hash the same actual surfaces.
+    let original = wasm_bindgen_futures::JsFuture::from(legacy_fingerprint_id().unwrap())
+        .await
+        .unwrap();
+    let ported = crate::browser::loader::fingerprint_id(&global)
+        .await
+        .unwrap();
+    assert_eq!(original.as_string().unwrap(), ported);
 }
 
 #[wasm_bindgen_test(async)]

@@ -1,7 +1,7 @@
 //! The collect report the product drivers submit (unit 35 increment 4).
 //!
-//! It is the exact entity the real Rust WASM collector
-//! (`BrowserCollector::snapshot_json`) posted from Firefox ESR in the browser
+//! It is the exact entity the real Rust WASM collector (the
+//! `BrowserCollector::report_json` loader report) posted from Firefox ESR in the browser
 //! topology, as received at the browser Gate frontend. The runner hands it to
 //! each driver as one stdin line. The only change a driver makes is to set
 //! `sessionId` to the session it collects for, because the native collect

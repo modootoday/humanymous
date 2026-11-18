@@ -21,6 +21,7 @@ No observation establishes universal natural-person presence.
 | `BrowserCollector` | Own one passive-listener epoch, partial guard baseline and script-mutation observation |
 | `behavior_json()` | Reduced behavior features; no input text, key identities or ordered raw samples |
 | `snapshot_json()` | Combine browser observations, measured behavior and partial guard state |
+| `report_json()` | Promise of the Go `loader.js` report shape: `snapshot_json()` measured now, then the environment, advanced and `fingerprintId` probes; any probe failure rejects, guard stays as measured |
 | `enable_guard_hooks()` | Explicitly opt in to managed `eval`/`Function` forwarding hooks for this collector epoch |
 | `probe_cdp_json()` | Explicit once-per-epoch synthetic console-preview observations, with separate attempted/unsupported/failed states |
 | `stop()` | Freeze the summary, clear transient pairing/buffers and detach owned callbacks; failures remain visible |
@@ -45,7 +46,8 @@ baseline; neither mode attests code integrity or human presence.
 default construction does not run it. Its `console.groupEnd` call can change
 developer-console grouping. Repeated calls return the cached attempt, and a
 stopped collector rejects a new probe. An incomplete requested observation
-rejects `snapshot_json()` rather than becoming a negative detection flag.
+rejects `snapshot_json()` and `report_json()` rather than becoming a negative
+detection flag.
 The result does not identify every CDP client or attest automation or human use.
 
 The passive implementation does not read input text, clipboard values or

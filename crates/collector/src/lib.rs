@@ -3,6 +3,7 @@ pub mod behavior;
 #[cfg(target_arch = "wasm32")]
 mod browser;
 pub mod detection;
+pub mod fingerprint_id;
 pub mod guard;
 pub mod session;
 #[cfg(target_arch = "wasm32")]
@@ -84,6 +85,46 @@ impl BrowserCollector {
     }
     /// Combine actual L1-L3 and measured behavior; all other planes remain unqualified.
     pub fn snapshot_json(&self) -> Result<String, wasm_bindgen::JsValue> {
+        serde_json::to_string(&self.snapshot()?)
+            .map_err(|_| wasm_bindgen::JsValue::from_str("report serialization failed"))
+    }
+    /// Explicitly assemble the Go loader.js report: measure L1-L3, behavior and
+    /// guard now, then run the environment, advanced and fingerprintId probes.
+    /// Guard `reported` stays as measured (true only after enable_guard_hooks).
+    /// Any probe failure rejects; this is not session qualification or human proof.
+    pub fn report_json(&self) -> Result<js_sys::Promise, wasm_bindgen::JsValue> {
+        let pending = self.report()?;
+        Ok(wasm_bindgen_futures::future_to_promise(async move {
+            pending.await.map(wasm_bindgen::JsValue::from)
+        }))
+    }
+    /// Freeze the summary, clear raw pairing/buffers and detach all owned callbacks.
+    pub fn stop(&mut self) -> Result<(), wasm_bindgen::JsValue> {
+        self.stopped = true;
+        let behavior = self.collection.stop();
+        let guard = self.guard.stop();
+        behavior.and(guard)
+    }
+}
+
+#[cfg(target_arch = "wasm32")]
+impl BrowserCollector {
+    /// The measured synchronous part; the returned future owns no collector borrow.
+    pub(crate) fn report(
+        &self,
+    ) -> Result<
+        impl std::future::Future<Output = Result<String, wasm_bindgen::JsValue>> + 'static,
+        wasm_bindgen::JsValue,
+    > {
+        if self.stopped {
+            return Err(wasm_bindgen::JsValue::from_str("collector stopped"));
+        }
+        let report = self.snapshot()?;
+        Ok(browser::loader::complete(report))
+    }
+    fn snapshot(
+        &self,
+    ) -> Result<humanymous_core::signals::report::ClientReport, wasm_bindgen::JsValue> {
         let mut snapshot = browser::capture()?;
         if let Some(observation) = &self.cdp {
             snapshot.cdp_flags = observation.flags().ok_or_else(|| {
@@ -93,14 +134,6 @@ impl BrowserCollector {
         let mut report = detection::detect(&snapshot).map_err(wasm_bindgen::JsValue::from_str)?;
         report.behavior = self.collection.summary()?;
         report.guard = self.guard.snapshot()?;
-        serde_json::to_string(&report)
-            .map_err(|_| wasm_bindgen::JsValue::from_str("report serialization failed"))
-    }
-    /// Freeze the summary, clear raw pairing/buffers and detach all owned callbacks.
-    pub fn stop(&mut self) -> Result<(), wasm_bindgen::JsValue> {
-        self.stopped = true;
-        let behavior = self.collection.stop();
-        let guard = self.guard.stop();
-        behavior.and(guard)
+        Ok(report)
     }
 }

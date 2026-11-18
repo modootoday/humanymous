@@ -6,6 +6,7 @@ pub(crate) mod environment;
 mod fingerprint;
 pub(crate) mod guard;
 mod integrity;
+pub(crate) mod loader;
 mod reflection;
 mod resources;
 pub(crate) mod transport;
@@ -141,8 +142,8 @@ mod tests {
     use super::*;
     use wasm_bindgen_test::*;
     wasm_bindgen_test_configure!(run_in_browser);
-    #[wasm_bindgen_test]
-    fn actual_browser_report_and_iframe_cleanup() {
+    #[wasm_bindgen_test(async)]
+    async fn actual_browser_report_and_iframe_cleanup() {
         let global: JsValue = js_sys::global().into();
         let document = get(&global, "document").unwrap();
         let before = call(
@@ -175,5 +176,36 @@ mod tests {
         .unwrap();
         assert_eq!(length(&after).unwrap(), before);
         assert!(!crate::detect_json().unwrap().is_empty());
+
+        // The explicit Go loader report: same L1-L3 wire, probed planes and a
+        // fingerprintId; guard stays partial until hooks are explicitly enabled.
+        let mut collector = crate::BrowserCollector::new().unwrap();
+        let promise = collector.report_json().unwrap();
+        let text = wasm_bindgen_futures::JsFuture::from(promise).await.unwrap();
+        let loaded: humanymous_core::signals::report::ClientReport =
+            serde_json::from_str(&text.as_string().unwrap()).unwrap();
+        assert!(loaded.environment.probed && loaded.advanced.probed);
+        assert!(!loaded.guard.reported);
+        assert_eq!(
+            loaded.fingerprint_id,
+            loader::fingerprint_id(&global).await.unwrap()
+        );
+        assert_eq!(loaded.fingerprint_id.len(), 24);
+        // Same JSON wire round trip as `loaded`, so number forms compare equal.
+        let fresh: humanymous_core::signals::report::ClientReport = serde_json::from_str(
+            &serde_json::to_string(&crate::detection::detect(&capture().unwrap()).unwrap())
+                .unwrap(),
+        )
+        .unwrap();
+        assert_eq!(loaded.signals, fresh.signals);
+        assert_eq!(loaded.engine_version, fresh.engine_version);
+        assert!(loaded.session_id.is_empty());
+        collector.enable_guard_hooks().unwrap();
+        let hooked: humanymous_core::signals::report::ClientReport =
+            serde_json::from_str(&collector.report().unwrap().await.unwrap()).unwrap();
+        assert!(hooked.guard.reported);
+        collector.stop().unwrap();
+        assert!(collector.report().is_err());
+        assert_eq!(length(&after).unwrap(), before);
     }
 }
