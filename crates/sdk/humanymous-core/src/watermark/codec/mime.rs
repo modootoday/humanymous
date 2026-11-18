@@ -13,7 +13,7 @@ pub enum Family {
     BlockComment,
     /// Explicit application/octet-stream, still requiring owner qualification.
     Opaque,
-    /// PNG family; metadata L2 admitted, LSB pending alpha/resource qualification.
+    /// PNG family; metadata and legacy-model pixel LSB carriers (V3 pending).
     Png,
     /// WASM family; custom-section L2 admitted after wasmparser validation.
     Wasm,

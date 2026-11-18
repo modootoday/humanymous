@@ -28,6 +28,15 @@ license. The source identities are recorded in the model RNG provenance evidence
 This attribution covers those translated sources and snippets; it does not prove
 complete dependency or notice contents for a particular distributed artifact.
 
+## Rust Go float formatting compatibility source — BSD-3-Clause
+
+The shortest float64 digit selection in
+`crates/sdk/humanymous-core/src/signals/wire/mod.rs` translates Go 1.26.3
+`internal/strconv` (`ftoadbox.go`, the Dragonbox algorithm by Junekey Jeon, and
+its `math.go` helpers and `pow10gen.go` table definition) into Rust.
+Copyright 2025 The Go Authors. All rights reserved. The same complete notice is
+retained in [the RNG license](crates/sdk/humanymous-core/src/model/training/rng/LICENSE).
+
 ## Historical Go standard library & WASM loader — BSD-3-Clause
 
 > Copyright (c) 2009 The Go Authors. All rights reserved.

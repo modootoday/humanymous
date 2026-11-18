@@ -3,7 +3,7 @@ id: sot:root/container-test-environments
 title: Canonical Compose lab and Cloudflare test environment profiles
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-17T12:00:00Z
+updated: 2026-11-18T12:00:00Z
 verify: manual
 rel:
   governs: [deployments/lab/**, build/rust/**, test/lab/**]
@@ -1254,6 +1254,153 @@ validates it and emits `humanymous.lab-human-control-receipt/1`: `attestation`
 `clears_required_unavailable=false`. It refuses CI markers, a non-terminal stdin
 and an existing output, and requires a typed in-person confirmation. Joining such
 a receipt to the full-product ledger or delivery pilot remains an owner decision.
+
+## Runtime binary witness transport case (2b, 2026-11-18)
+
+Case `runtime-binary-witness-transport` is the Docker completion authority named
+by the runtime-application SoT section "Shipped-binary inherited witness input
+(C3, 2026-11-18)". It resolves the `required_unavailable` entry "runtime binary
+authenticated witness transport" and nothing else. It runs in the default
+product-lab profile (`run`, also with `--require-full`), after the independent
+witness component, and is skipped with `--topology-only`.
+
+Topology (`deployments/lab/compose.rust.witness-transport.yaml`, profile
+`witness-transport`, runtime image):
+
+- `wtx-supervisor`: network none, UID 65532, read-only root, `/tmp` tmpfs. The
+  trusted lab supervisor (`humanymous-runtime-pilot
+  --witness-transport-supervisor`) starts the separate `audit-witness` process,
+  writes its private `WitnessServiceConfig` first frame, clears close-on-exec on
+  only the two runtime-side pipe ends, and starts the shipped
+  `/usr/local/bin/humanymous-runtime` with `audit.witness_input` naming them and
+  `require_external_witness=true`. The runtime spawns nothing.
+- `wtx-origin`: an owned origin in its own container that joins only the
+  supervisor's loopback namespace (`network_mode: service:wtx-supervisor`; the
+  gateway accepts loopback origins only). It prints one JSON line per TCP
+  contact to its own stdout before reading the request.
+
+Runner contract (`test/lab/runner/src/orchestration/witness_transport.rs`):
+
+- The runner generates the synthetic writer seed, HMAC key, witness seed and a
+  wrong witness pin, and passes them to the supervisor only on its private
+  stdin. It derives every public key itself. Session capabilities never leave
+  the supervisor: session responses are relayed as status, `issued` and error
+  code only.
+- Four steps, one runner command each: `wrong_key`, `witnessed`,
+  `witness_loss`, `evidence`. The supervisor answers each with raw observations
+  only and never reports a pass. Before and after each step the runner counts
+  origin contacts from `docker logs` of the origin container.
+- Pass requires every check, judged by the runner:
+  - topology: supervisor network mode `none`; origin network mode
+    `container:<supervisor>` with no network of its own; origin log well formed;
+  - wrong key: the configured pin is the runner's wrong key; the binary exits
+    nonzero with an empty readiness line, the audit directory stays empty and no
+    origin contact occurs;
+  - witnessed: the configured pin is the runner's witness key with distinct
+    descriptors >= 3; the raw readiness line reports
+    `audit_external_witness=true`, `audit_witness_required_durability=
+    file_and_directory`, `audit_witness_independence_qualified=false`,
+    `product_qualified=false` and a loopback listener; session, collect and a
+    signed effect answer 200, the witness head is non-empty and exactly one
+    origin contact is counted;
+  - witness loss (SIGKILL of `audit-witness`): the next signed effect answers 503
+    `durable_audit`; a repeated effect and session issuance answer 503 with
+    `durable_audit` or `session_epoch` and issue nothing; zero origin contacts
+    during this and the evidence step;
+  - durable audit: after the runtime stops, the WAL records and checkpoints
+    pass `verify_with_witness` with the runner's HMAC, writer and witness keys;
+    every checkpoint is writer- and witness-signed and not signed by the wrong
+    key; a `runtime.collect` and an ALLOW `runtime.decision` are covered by a
+    checkpoint; at most one record (the append that met the lost witness) lies
+    beyond the last checkpoint.
+- Missing, malformed or late evidence, a step mismatch or a supervisor failure
+  fails the case. `required_unavailable` drops the entry only when this run
+  recorded the case and every instance of it passed.
+- The protocol ends with an explicit `shutdown` step that the supervisor
+  acknowledges before it exits; only then does the runner close stdin and
+  require exit 0. Compose creates a `stdin_open` service with
+  `StdinOnce=false`, so closing the attached client's input never reaches the
+  container as EOF (the witness and Go actors end by protocol for the same
+  reason). The first Docker run (job 134583675522, head 98d66010) ended on
+  stdin EOF and failed the case as `assertion_failed` with no named check;
+  that is the most likely cause, but it is unconfirmed without a Docker run.
+- Public diagnostics name only static labels: one failed row per failed check
+  (`runtime-binary-witness-transport--<check-id>`, `assertion_failed`) and,
+  when the drive stopped, a `runtime-binary-witness-transport--drive` row whose
+  code is the stage it last entered (`wtx_supervisor_attach`,
+  `wtx_supervisor_ready`, `wtx_origin_start`, `wtx_origin_ready`,
+  `wtx_step_<step>`, `wtx_shutdown`, `wtx_supervisor_exit`). A stage marker
+  names the last entered stage, not the failing operation; error text and
+  evidence stay in the private ledger.
+
+Not claimed: witness independence (the witness and the runtime are sibling
+processes in one container under one UID; the supervisor holds both seeds),
+power-loss durability (tmpfs), restart against a pinned head, socket or
+Windows transport, and `full_product_qualified` (other capabilities stay
+unavailable). Unit tests of the evaluator and a native process run are not this
+case; only an actual Docker run of the default profile is.
+
+## Audit-restart case covers audit-outage injection (owner decision C11, 2026-11-18)
+
+Owner decision C11 on issue #75 (comment 6968092014): the `audit-restart`
+product case also covers audit-outage injection. The roadmap lists it at
+step 2c (`.spec/plan/20261117142053-full-product-capabilities-go-port-and-net-launch-roadmap.plan.md`),
+and the docker delivery pilot requires it (`scripts/ci/delivery/src/pilot.rs`).
+
+**Present state.** No lab runner code emits a case with the id
+`audit-restart`. The delivery pilot reports it as `blocked`, and that stays
+true. Two existing measurements are the case's parts:
+
+- The component witness pilot (`test/lab/runner/src/orchestration/witness.rs`)
+  covers restart and outage at writer level. Restart is
+  `witness-container-recreation` (audit sequence 1 then 2 across fresh
+  containers) plus `witness-old-signed-head-refused`. Outage is
+  `witness-absent-after-readiness` and `witness-lost-before-effect` (status
+  `closed`, zero origin effects).
+- The product-e2e witnessed topology (`test/lab/runner/src/product_e2e/witnessed.rs`)
+  is the Gate-level audit-outage injection. The runner stops the witness
+  container after readiness and answers each outstanding or new counter-sign
+  request with the typed `unavailable` refusal.
+
+**Acceptance for the outage half.** The runner computes
+`witnessed::outage_assertions` from the observed facts. It never relies on the
+driver's own `failed` count, so a driver that skips or renames a case cannot
+pass silently. Every assertion must hold:
+
+1. `audit_outage_injected_after_readiness`: both containers were healthy
+   before the driver, the driver reached the loss phase, the witness exited,
+   the broker saw its stream close, and at least one `unavailable` refusal
+   was actually injected.
+2. `audit_outage_positive_control_before_loss`: a witnessed signed effect
+   answered 200 with one origin record.
+3. `audit_outage_first_append_poisons_with_durable_audit`: the pre-signed
+   effect answered 503 `{"error":"durable_audit"}`, with no transport error
+   and zero new origin records.
+4. `audit_outage_poisoned_epoch_refuses_later_request`: a later request
+   answered 503 with `session_epoch` or `durable_audit`, and zero origin
+   records.
+5. `audit_outage_session_issue_not_granted`: session issue during the outage
+   was not 2xx. A non-2xx status or a transport error is acceptable.
+6. `audit_outage_readiness_withdrawn`: the serving-epoch probe turned
+   `unhealthy` while the Gate container kept running.
+7. `audit_outage_no_fabricated_signature`: the broker fabricated no
+   signature.
+
+The witnessed `pass` requires all seven. The receipt records them under
+`audit_outage_injection`, with `product_case: "audit-restart"` and
+`qualifies_product_case: false`.
+
+Unit tests exercise each negative. They also replay the committed Docker
+receipts `20261116110546` and `20261116113042`, which satisfy all seven. The
+oldest receipt, `20261116103304`, predates readiness withdrawal and is
+rejected on assertion 6 alone. These are pure judgements over recorded facts.
+They are not a new Docker run.
+
+**Still required before `audit-restart` can pass.** Three things are still
+missing: restart and replay of the shipped runtime binary's own audit with
+its witness input (decision C3), cross-namespace origin/audit effect binding,
+and a source-bound Docker run at the candidate head. Until then the case
+stays `blocked` and `full_product_qualified` stays false.
 
 ## Official sources, checked 2026-11-07
 

@@ -1,5 +1,7 @@
 //! Contextual Docker pilots; native unsupported targets never report success.
 #[cfg(unix)]
+mod attestation;
+#[cfg(unix)]
 mod browser_dns;
 #[cfg(any(unix, test))]
 #[path = "../../browser_expectations.rs"]
@@ -36,6 +38,8 @@ mod scenario;
 mod wargame;
 #[cfg(unix)]
 mod witness;
+#[cfg(unix)]
+mod witness_transport;
 
 #[cfg(unix)]
 fn main() {
@@ -75,11 +79,18 @@ fn main() {
             product_e2e::dns_probe().expect("owned DNS canary positive control")
         }
         Some("--wargame") => wargame::run(),
+        Some("--attestation") => attestation::run(),
         Some("--witness-transaction") => {
             witness::transaction().expect("private witness transaction")
         }
         Some("--witness-writer") => witness::writer().expect("private writer broker"),
         Some("--witness-key-denied") => witness::key_denied().expect("key access negative"),
+        Some("--witness-transport-supervisor") => {
+            witness_transport::supervisor().expect("witness transport lab supervisor")
+        }
+        Some("--witness-transport-origin") => {
+            witness_transport::origin().expect("witness transport owned origin")
+        }
         _ => scenario::run(),
     }
 }

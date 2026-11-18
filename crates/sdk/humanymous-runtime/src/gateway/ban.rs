@@ -12,6 +12,7 @@
 //!   `dual_control_required` instead of Go's automatic permanent ban.
 //! - Lifting a permanent ban is refused here; its control action is not defined.
 //! - Stores are bounded; a full store refuses instead of evicting a ban.
+use super::seams::RateLimiter;
 use crate::audit::control::{Action, RetainedActionPermit, Scope, target_commitment};
 use crate::network::history::rate::{self, Level, Limiter, Observation};
 use std::collections::BTreeMap;
@@ -22,6 +23,8 @@ use std::time::Duration;
 const HOUR: Duration = Duration::from_secs(3600);
 /// A strike is remembered this long after its last breach (SoT-27 section 2).
 pub const STRIKE_DECAY: Duration = Duration::from_secs(7 * 24 * 3600);
+/// Exclusive upper bound on a bulk temporary term (legacy `maxBanDurationSec`).
+pub const MAX_BULK_TERM: Duration = Duration::from_secs(400 * 24 * 3600);
 /// Domain separation for the dual-control target commitment.
 const TARGET_DOMAIN: &[u8] = b"humanymous.ban.permanent/1\0";
 
@@ -176,11 +179,12 @@ struct Strike {
     last: Duration,
 }
 
-/// Bounded ban store over the existing rate history.
-pub struct Store {
+/// Bounded ban store over a rate counter: the local history by default, or a
+/// fleet-shared counter (B23) behind the same [`RateLimiter`] seam.
+pub struct Store<L = Limiter> {
     bans: BTreeMap<Key, Entry>,
     strikes: BTreeMap<Key, Strike>,
-    limiter: Limiter,
+    limiter: L,
     capacity: usize,
 }
 
@@ -194,15 +198,27 @@ fn reason(text: &str) -> Result<String, Refusal> {
 impl Store {
     /// Empty store; `capacity` bounds both active bans and strike records.
     pub fn new(rate: rate::Config, capacity: usize) -> Result<Self, Refusal> {
+        Self::with_limiter(Limiter::new(rate), capacity)
+    }
+}
+
+impl<L: RateLimiter> Store<L> {
+    /// Empty store over an explicit rate counter.
+    pub fn with_limiter(limiter: L, capacity: usize) -> Result<Self, Refusal> {
         if capacity == 0 {
             return Err(Refusal::Capacity);
         }
         Ok(Self {
             bans: BTreeMap::new(),
             strikes: BTreeMap::new(),
-            limiter: Limiter::new(rate),
+            limiter,
             capacity,
         })
+    }
+
+    /// The rate counter, for configuration and degradation reporting.
+    pub fn limiter(&mut self) -> &mut L {
+        &mut self.limiter
     }
 
     /// Active ban for a key, expiring it lazily.
@@ -215,9 +231,7 @@ impl Store {
 
     /// Count a request and apply an escalating auto-ban on a hard breach.
     pub fn observe(&mut self, key: &Key, now: Duration) -> Result<Outcome, Refusal> {
-        let level = match self
-            .limiter
-            .observe(key.as_str(), now)
+        let level = match RateLimiter::observe(&mut self.limiter, key.as_str(), now)
             .map_err(Refusal::Rate)?
         {
             Observation::Counted { level, .. } => level,
@@ -261,11 +275,7 @@ impl Store {
 
     /// Classify without mutating ban state (monitor/shadow mode).
     pub fn observe_rate(&mut self, key: &Key, now: Duration) -> Result<Level, Refusal> {
-        match self
-            .limiter
-            .observe(key.as_str(), now)
-            .map_err(Refusal::Rate)?
-        {
+        match RateLimiter::observe(&mut self.limiter, key.as_str(), now).map_err(Refusal::Rate)? {
             Observation::Counted { level, .. } => Ok(level),
             Observation::IgnoredEmptyKey => Err(Refusal::Key),
         }
@@ -304,6 +314,34 @@ impl Store {
             strike: 0,
         };
         self.insert(entry)
+    }
+
+    /// Operator bulk temporary ban (port of legacy `adminBulkBan`). The term
+    /// must be positive and below [`MAX_BULK_TERM`]; unparsable keys and broad
+    /// keys (which need dual control) are skipped and counted, never applied.
+    /// Returns `(applied, skipped)`; a capacity refusal stops the batch.
+    pub fn bulk_temporary(
+        &mut self,
+        keys: &[&str],
+        why: &str,
+        term: Duration,
+        now: Duration,
+    ) -> Result<(usize, usize), Refusal> {
+        if term.is_zero() || term >= MAX_BULK_TERM {
+            return Err(Refusal::Duration);
+        }
+        reason(why)?;
+        let (mut applied, mut skipped) = (0, 0);
+        for raw in keys {
+            match Key::parse(raw) {
+                Ok(key) if !key.is_broad() => {
+                    self.add_temporary(&key, why, None, term, now)?;
+                    applied += 1;
+                }
+                _ => skipped += 1,
+            }
+        }
+        Ok((applied, skipped))
     }
 
     /// Permanent or broad ban: consumes a retained dual-control grant bound to
@@ -360,7 +398,7 @@ impl Store {
 
     /// Evict expired bans and stale strikes; rate history runs its own bounded GC.
     pub fn gc(&mut self, now: Duration) -> Result<(), Refusal> {
-        self.limiter.gc(now).map_err(Refusal::Rate)?;
+        RateLimiter::gc(&mut self.limiter, now).map_err(Refusal::Rate)?;
         self.bans.retain(|_, b| b.active(now));
         self.strikes
             .retain(|_, s| now.saturating_sub(s.last) <= STRIKE_DECAY);

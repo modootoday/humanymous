@@ -685,3 +685,14 @@ fixture lifetime is distinct from production/per-exchange transport deadlines
 and assumes service binaries do not spawn descendants holding those pipes.
 The real no-startup-config stalled-handshake regression requires read EOF and
 TimedOut, not merely any child exit; it adds no ignored helper entrypoint.
+
+### Runtime binary witness consumer (C3, 2026-11-18)
+
+Owner decision C3 option A (issue #75 comment 6968092014) adds a third
+consumer of the audit-owned `WitnessServiceClient`: the shipped
+`humanymous-runtime` binary, through supervisor-inherited pipe descriptors
+named in its private configuration. It reuses `from_ready`, the frame codec
+and `PinnedWitness` unchanged; audit wire, persistence and refusal semantics
+are not modified. Transport provenance, deadlines and child reaping stay
+supervisor owned. The contract lives in sot:root/runtime-application, section
+"Shipped-binary inherited witness input (C3, 2026-11-18)".

@@ -27,6 +27,15 @@ pub fn current_uid() -> u32 {
     rustix::process::geteuid().as_raw()
 }
 
+/// Real and effective native Unix identity, in that order.
+#[cfg(unix)]
+pub fn current_uids() -> (u32, u32) {
+    (
+        rustix::process::getuid().as_raw(),
+        rustix::process::geteuid().as_raw(),
+    )
+}
+
 #[cfg(any(windows, test))]
 fn installer_token_allowed(elevated: bool, enabled_administrator: bool) -> bool {
     !elevated && !enabled_administrator

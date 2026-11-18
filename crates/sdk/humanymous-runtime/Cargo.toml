@@ -21,6 +21,8 @@ network = ["dep:humanymous-core", "dep:serde", "dep:serde_json", "dep:sha2", "de
 native-security = ["dep:zeroize", "dep:rustix", "dep:winsafe", "dep:windows-permissions", "dep:keyring-core", "dep:windows-native-keyring-store"]
 hosted-pilot = ["capture", "dep:rcgen"]
 credential-pilot = ["native-security"]
+# Owner decision D4 (2026-11-18): test-only short decision expiry. Debug builds only.
+test-authority = ["authority"]
 
 [dependencies]
 humanymous-core = { workspace = true, optional = true }
@@ -98,6 +100,11 @@ required-features = ["audit"]
 [[test]]
 name = "gateway-native-process"
 path = "tests/gateway/native_process.rs"
+required-features = ["gateway"]
+
+[[test]]
+name = "gateway-witness-input"
+path = "tests/gateway/witness_input.rs"
 required-features = ["gateway"]
 
 [[test]]

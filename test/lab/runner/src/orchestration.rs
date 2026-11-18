@@ -61,10 +61,13 @@ mod go_public;
 pub(crate) mod h2_product_binding;
 mod mount_probe;
 mod public_receipts;
+mod qualification;
 pub(crate) mod red_blue_product;
 mod requirement;
 mod startup_failure;
+mod target_attestation;
 mod witness;
+mod witness_transport;
 struct Lab {
     docker: Docker,
     project: String,
@@ -286,6 +289,10 @@ impl Lab {
                 self.config_file("deployments/lab/compose.rust.witness.yaml")?,
                 "--profile".into(),
                 "witness".into(),
+                "-f".into(),
+                self.config_file("deployments/lab/compose.rust.witness-transport.yaml")?,
+                "--profile".into(),
+                "witness-transport".into(),
             ]);
         }
         if self.collector {
@@ -686,8 +693,12 @@ impl Lab {
             )?;
             self.components["wargame"] = report.clone();
             self.case("actual-owned-wargame",result.success && report["scoped_passed"]==true,json!("19 actual programs plus 7 unsupported; audit verdicts and origin deltas retained"))?;
+            self.stage = "attestation_process";
+            target_attestation::run(self)?;
             self.stage = "witness_component";
             witness::run(self)?;
+            self.stage = "witness_transport";
+            witness_transport::run(self)?;
         } else {
             self.components["runtime"] =
                 json!({"status":"not_run","reason":"explicit topology-only phase"});
@@ -1479,7 +1490,14 @@ pub fn run(args: &[String]) -> Result<i32> {
         &json!({"schema":"humanymous.lab-engine-evidence/1","observation":lab.docker.engine_identity,"actual_sdk_connection_observed":false}),
     )?;
     let failed = lab.cases.iter().any(|c| c["status"] == "failed");
-    let assessment = requirement.assess(failed, lab.go_component_verified, cleanup_verified);
+    // Derived, never hard-coded: absent or failed required cases stay unavailable.
+    let qualification = qualification::assess(&lab.cases, cleanup_verified);
+    let assessment = requirement.assess(
+        failed,
+        lab.go_component_verified,
+        cleanup_verified,
+        qualification.full_product_qualified,
+    );
     let mut evidence_types = if browser_product
         || go_product
         || mount_probe
@@ -1543,6 +1561,14 @@ pub fn run(args: &[String]) -> Result<i32> {
             "n06-owner-auth-handoff-honesty",
         ),
         ("g4_cef_at", "g4-cef-at-component"),
+        (
+            "target_attestation",
+            "pinned-key-fresh-nonce-target-attestation",
+        ),
+        (
+            "runtime_binary_witness_transport",
+            "runtime-binary-witness-transport",
+        ),
     ] {
         if lab.components[component].is_object() && lab.components[component]["status"] != "not_run"
         {
@@ -1553,7 +1579,21 @@ pub fn run(args: &[String]) -> Result<i32> {
     if let Some(outcome) = lab.components.get("browser_actor_diagnostic") {
         diagnostics["browser_actor"] = crate::browser_outcome::public_outcome(outcome)?;
     }
-    let report = json!({"schema":"humanymous.product-lab/2","requirement":requirement.report(&assessment),"safe_diagnostics":diagnostics,"public_receipts":lab.public_receipts,"project":lab.project,"evidence_types":evidence_types,"cases":lab.cases,"components":lab.components,"required_unavailable":["full Gate TLS/H2/capture","session-bound real browser collector","Pass recovery","human/keyboard/assistive controls","runtime binary authenticated witness transport","cross-namespace origin/audit effect product binding","signed remote target attestation","native OS qualification","provider deployment"],"full_product_qualified":false,"release_ready":false,"ttl":{"expires_unix":expires,"external_janitor_scheduled":false}});
+    let source_sha = std::fs::read(lab.evidence.join("source-manifest.json"))
+        .ok()
+        .and_then(|bytes| serde_json::from_slice::<Value>(&bytes).ok())
+        .and_then(|manifest| manifest["head"].as_str().map(str::to_owned));
+    let documentation_review_sha256 = std::fs::read(root.join("docs/reviews.json"))
+        .ok()
+        .map(|bytes| snapshot::digest(&bytes));
+    let mut report = json!({"schema":"humanymous.product-lab/2","requirement":requirement.report(&assessment),"safe_diagnostics":diagnostics,"public_receipts":lab.public_receipts,"project":lab.project,"evidence_types":evidence_types,"cases":lab.cases,"components":lab.components,"source_sha":source_sha,"documentation_review_sha256":documentation_review_sha256,"release_ready":false,"ttl":{"expires_unix":expires,"external_janitor_scheduled":false}});
+    for (key, value) in qualification
+        .report_fields()
+        .as_object()
+        .ok_or("qualification fields")?
+    {
+        report[key] = value.clone();
+    }
     snapshot::write(&lab.evidence, "lab-report.json", &report)?;
     snapshot::write(
         &lab.evidence,
@@ -1742,6 +1782,29 @@ pub fn cleanup_expired() -> Result<()> {
 }
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn witness_transport_leaves_required_unavailable_only_when_its_case_passed() {
+        use super::{qualification, witness_transport};
+        use serde_json::json;
+        // The case this module records is the one the derived claim requires.
+        assert!(qualification::CAPABILITIES.contains(&(
+            witness_transport::CAPABILITY,
+            &[witness_transport::CASE][..]
+        )));
+        let all = qualification::CAPABILITIES.len();
+        let unavailable =
+            |cases: &[serde_json::Value]| qualification::assess(cases, true).required_unavailable;
+        assert_eq!(unavailable(&[]).len(), all);
+        let failed = [json!({"id":witness_transport::CASE,"status":"failed"})];
+        assert!(unavailable(&failed).contains(&witness_transport::CAPABILITY));
+        let passed = [json!({"id":witness_transport::CASE,"status":"passed"})];
+        let remaining = unavailable(&passed);
+        assert_eq!(remaining.len(), all - 1);
+        assert!(!remaining.contains(&witness_transport::CAPABILITY));
+        // Unrelated passing cases never resolve another capability.
+        let other = [json!({"id":"actual-runtime-process","status":"passed"})];
+        assert_eq!(unavailable(&other).len(), all);
+    }
     #[test]
     fn collector_failures_are_named_by_enumerated_public_codes() {
         use super::collector_outcome as outcome;
