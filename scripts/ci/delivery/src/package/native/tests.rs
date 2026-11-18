@@ -50,13 +50,16 @@ fn canonical_writer_preserves_owned_file_and_hardlink_bytes_as_regular_members()
     file.write_all(b"end").unwrap();
     file.flush().unwrap();
     drop(file);
-    #[cfg(unix)]
+    // Linux filesystems leave the extended range as a hole, so the sparse
+    // writer path is exercised there. APFS on macOS runners allocates it, so
+    // the macOS run checks the same member bytes from a dense fixture.
+    #[cfg(target_os = "linux")]
     {
         use std::os::unix::fs::MetadataExt;
         let meta = fs::metadata(&input).unwrap();
         assert!(
             meta.blocks() * 512 < meta.len(),
-            "Unix fixture must contain an observed sparse region"
+            "Linux fixture must contain an observed sparse region"
         );
     }
     fs::hard_link(&input, &link).unwrap();
