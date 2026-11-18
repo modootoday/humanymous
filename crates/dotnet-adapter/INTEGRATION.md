@@ -132,7 +132,9 @@ inside the runtime's 100-byte endpoint bound.
 The Linux provider runs it as `delivery component dotnet-package` (local:
 `dotnet-host-local launch-package`). Prepare adds the release native export,
 the controller test binary, `rustc -V` and the strict provenance file. Launch
-scratch lives under `RUNNER_TEMP` when set, for the same socket bound.
+scratch lives under `RUNNER_TEMP` when set, otherwise under the canonical
+temp root, for the same socket bound. The provider deletes it after launch and
+requires that deletion as its last fact, as the hosted component does.
 
 Evidence:root/20261107124134 records four consumer, eight protocol and one managed
 scope test passes plus all-target check/strict Clippy. Source is b482d5be plus six

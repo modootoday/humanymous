@@ -385,6 +385,16 @@ mod tests {
     };
 
     const NONCE: &str = "0123456789abcdef0123456789abcdef";
+    /// Fixture path that is absolute on the host OS: `within()` requires
+    /// `Path::is_absolute()`, and a drive-less rooted path is not on Windows.
+    #[cfg(windows)]
+    fn at(posix: &str) -> String {
+        format!("C:{}", posix.replace('/', "\\"))
+    }
+    #[cfg(not(windows))]
+    fn at(posix: &str) -> String {
+        posix.to_owned()
+    }
     fn provenance() -> UnverifiedProvenance {
         let native = || NativeLineage {
             source_sha: "a".repeat(40),
@@ -412,13 +422,13 @@ mod tests {
     fn context() -> UnverifiedHostContext {
         UnverifiedHostContext {
             schema: "humanymous.dotnet-host-launch/2".into(),
-            apphost: "/srv/app/Humanymous.HostPilot".into(),
-            app_root: "/srv/app".into(),
-            runtime_root: "/srv/runtime".into(),
+            apphost: at("/srv/app/Humanymous.HostPilot"),
+            app_root: at("/srv/app"),
+            runtime_root: at("/srv/runtime"),
             system_root: None,
-            private_work: "/srv/work".into(),
-            audit_root: "/srv/work/audit".into(),
-            handoff_root: "/srv/handoff".into(),
+            private_work: at("/srv/work"),
+            audit_root: at("/srv/work/audit"),
+            handoff_root: at("/srv/handoff"),
             actor: ActorIdentity::Linux { uid: 1000 },
             provenance: provenance(),
             budget: budget(),
@@ -488,9 +498,9 @@ mod tests {
         let admission = admit(&Frame::new(&context()).bytes(), &facts(), 1100, received).unwrap();
         assert_eq!(
             admission.apphost(),
-            Path::new("/srv/app/Humanymous.HostPilot")
+            Path::new(&at("/srv/app/Humanymous.HostPilot"))
         );
-        assert_eq!(admission.apphost_root(), Path::new("/srv/app"));
+        assert_eq!(admission.apphost_root(), Path::new(&at("/srv/app")));
         let (run, cleanup) = admission.deadlines().unwrap();
         assert_eq!(run.duration_since(received), Duration::from_millis(179_900));
         assert_eq!(cleanup.duration_since(run), Duration::from_secs(60));
@@ -610,19 +620,19 @@ mod tests {
     #[test]
     fn apphost_and_derived_narrowing_never_widen_the_parent() {
         let mut outside = context();
-        outside.apphost = "/srv/other/Humanymous.HostPilot".into();
+        outside.apphost = at("/srv/other/Humanymous.HostPilot");
         assert_eq!(
             kind(&Frame::new(&outside).bytes(), &facts(), 1100),
             Some(ErrorKind::PermissionDenied)
         );
         let mut dotted = context();
-        dotted.apphost = "/srv/app/../work/Humanymous.HostPilot".into();
+        dotted.apphost = at("/srv/app/../work/Humanymous.HostPilot");
         assert_eq!(
             kind(&Frame::new(&dotted).bytes(), &facts(), 1100),
             Some(ErrorKind::PermissionDenied)
         );
         let mut audit = context();
-        audit.audit_root = "/srv/audit".into();
+        audit.audit_root = at("/srv/audit");
         assert_eq!(
             kind(&Frame::new(&audit).bytes(), &facts(), 1100),
             Some(ErrorKind::PermissionDenied)
@@ -631,8 +641,8 @@ mod tests {
             let mut frame = Frame::new(&context());
             frame.derived = Some(Derivation {
                 mode: DerivedMode::AotSource,
-                apphost: apphost.into(),
-                audit_root: audit_root.into(),
+                apphost: at(apphost),
+                audit_root: at(audit_root),
             });
             frame.bytes()
         };
@@ -646,10 +656,10 @@ mod tests {
             Instant::now(),
         )
         .unwrap();
-        assert_eq!(narrowed.apphost_root(), Path::new("/srv/work"));
+        assert_eq!(narrowed.apphost_root(), Path::new(&at("/srv/work")));
         assert_eq!(
             narrowed.audit_root(),
-            Path::new("/srv/work/aot-source/audit")
+            Path::new(&at("/srv/work/aot-source/audit"))
         );
         for (apphost, audit_root) in [
             ("/srv/app/Humanymous.HostPilot", "/srv/work/a/audit"),

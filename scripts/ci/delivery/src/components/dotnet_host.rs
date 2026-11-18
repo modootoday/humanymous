@@ -37,6 +37,11 @@ pub const PACKAGE_TEST: &str = "sdk_package_and_real_host_matrix";
 const RUN_MS: u64 = 180_000;
 const CLEANUP_MS: u64 = 60_000;
 const OUTPUT_LIMIT: u64 = 1_048_576;
+/// The runtime's Unix authority listener refuses an endpoint longer than this
+/// (`authority/transport/unix.rs`), below the kernel's 108-byte `sun_path`.
+const SOCKET_ENDPOINT_LIMIT: usize = 100;
+/// Longest endpoint the Kestrel case binds under the admitted audit root.
+const SOCKET_SUFFIX: &str = "/audit/production/decision.sock";
 
 /// Verified inputs handed from the build phase to the launch phase.
 pub struct Prepared {
@@ -85,6 +90,38 @@ fn private_dir(path: &Path) -> Result<()> {
         .mode(0o700)
         .create(path)
         .map_err(|e| format!("private directory: {e}"))
+}
+
+/// Whether the authority socket under this private work root fits the
+/// listener's endpoint bound. A longer root fails the Kestrel case at bind.
+pub fn socket_endpoint_fits(private_work: &Path) -> bool {
+    private_work
+        .to_str()
+        .is_some_and(|root| root.len() + SOCKET_SUFFIX.len() <= SOCKET_ENDPOINT_LIMIT)
+}
+
+/// Hosted scratch: a fresh owner-only directory under `RUNNER_TEMP` when it is
+/// an absolute directory, else under the canonical temp root, never under the
+/// evidence bundle. The name stays short because the package matrix nests each
+/// mode's audit root below the private work and the authority socket under it
+/// must fit the listener's endpoint bound.
+fn hosted_scratch() -> Result<PathBuf> {
+    let base = std::env::var_os("RUNNER_TEMP")
+        .map(PathBuf::from)
+        .filter(|path| path.is_absolute() && path.is_dir())
+        .unwrap_or_else(std::env::temp_dir)
+        .canonicalize()
+        .map_err(|e| format!("temp root: {e}"))?;
+    let scratch = base.join(format!("hm{}", &nonce()?[..6]));
+    private_dir(&scratch)?;
+    Ok(scratch)
+}
+
+/// Remove hosted scratch after launch; its deletion is the last provider fact.
+fn remove_scratch(scratch: &Path, report: &mut Value, key: &str) -> bool {
+    let removed = std::fs::remove_dir_all(scratch).is_ok() && !scratch.exists();
+    report[key] = json!(removed);
+    removed
 }
 
 /// L2 prerequisites (systemd PID 1, cgroup v2, system bus) must be Observed.
@@ -477,6 +514,10 @@ pub fn launch(
         let issued = Instant::now();
         let private_work = scratch.join(format!("run-{}", &nonce[..12]));
         let handoff = scratch.join(format!("handoff-{}", &nonce[..12]));
+        require(
+            socket_endpoint_fits(&private_work),
+            "dotnet host scratch too long for the authority socket endpoint",
+        )?;
         for path in [
             &private_work,
             &handoff,
@@ -864,19 +905,6 @@ pub fn prepare(root: &Path, dir: &Path, report: &mut Value, work: &Path) -> Resu
     })
 }
 
-/// Private launch scratch on the runner's short temp root. The authority
-/// socket lives under each audit root and the runtime bounds endpoints at
-/// 100 bytes; the repository evidence bundle path is too long for that.
-fn launch_scratch(fallback: &Path) -> Result<PathBuf> {
-    let parent = std::env::var_os("RUNNER_TEMP")
-        .map(PathBuf::from)
-        .filter(|path| path.is_absolute() && path.is_dir())
-        .unwrap_or_else(|| fallback.to_path_buf());
-    let scratch = parent.join(format!("hm{}", &nonce()?[..6]));
-    private_dir(&scratch)?;
-    Ok(scratch)
-}
-
 /// Hosted component: one runner user builds, then launches under scopes.
 pub(super) fn run(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
     backend_observed()?;
@@ -884,7 +912,9 @@ pub(super) fn run(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
     private_dir(&work)?;
     let prepared = prepare(root, dir, report, &work)?;
     report["dotnet_sdk_muxer_sha256"] = json!(source::file(&prepared.dotnet)?);
-    let scratch = launch_scratch(&work)?;
+    // Private work and handoff live in short provider scratch, not under the
+    // evidence bundle; scratch deletion is the last provider fact.
+    let scratch = hosted_scratch()?;
     let outcome = launch(
         &prepared,
         Target::Hosted,
@@ -893,9 +923,11 @@ pub(super) fn run(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
         "github-hosted",
         report,
     );
+    let scratch_removed = remove_scratch(&scratch, report, "dotnet_host_scratch_removed");
     report["full_native_qualified"] = json!(false);
     report["package_qualification_receipt_created"] = json!(false);
-    outcome
+    outcome?;
+    require(scratch_removed, "dotnet host provider scratch not removed")
 }
 
 /// Hosted package component: the same provider admits the package controller,
@@ -906,7 +938,7 @@ pub(super) fn run_package(root: &Path, dir: &Path, report: &mut Value) -> Result
     private_dir(&work)?;
     let prepared = prepare(root, dir, report, &work)?;
     report["dotnet_sdk_muxer_sha256"] = json!(source::file(&prepared.dotnet)?);
-    let scratch = launch_scratch(&work)?;
+    let scratch = hosted_scratch()?;
     let outcome = launch(
         &prepared,
         Target::Package,
@@ -915,8 +947,13 @@ pub(super) fn run_package(root: &Path, dir: &Path, report: &mut Value) -> Result
         "github-hosted",
         report,
     );
+    let scratch_removed = remove_scratch(&scratch, report, "dotnet_package_scratch_removed");
     report["full_native_qualified"] = json!(false);
-    outcome
+    outcome?;
+    require(
+        scratch_removed,
+        "dotnet package provider scratch not removed",
+    )
 }
 
 fn local_allocation() -> Result<()> {
@@ -1121,6 +1158,24 @@ mod tests {
         assert!(host_observations(&shared).is_ok());
         let other = format!("test {} ... {good}", TESTS[1]);
         assert!(host_observations(&other).is_err());
+    }
+    #[test]
+    fn socket_endpoint_bound_refuses_the_evidence_bundle_root() {
+        // The hosted run 134858913712 placed private work here; the Kestrel
+        // case's authority socket could not bind under it.
+        let bundle = Path::new(
+            "/home/runner/work/humanymous/humanymous/.spec.local/root/evidence/20261118140959-delivery-pilot/dotnet-host-work/run-0123456789ab",
+        );
+        assert!(!socket_endpoint_fits(bundle));
+        assert!(socket_endpoint_fits(Path::new(
+            "/tmp/hm012345/run-0123456789ab"
+        )));
+        let edge = format!(
+            "/{}",
+            "a".repeat(SOCKET_ENDPOINT_LIMIT - SOCKET_SUFFIX.len() - 1)
+        );
+        assert!(socket_endpoint_fits(Path::new(&edge)));
+        assert!(!socket_endpoint_fits(Path::new(&format!("{edge}a"))));
     }
     #[test]
     fn harness_executable_is_the_one_hosted_test_artifact() {
