@@ -6621,9 +6621,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "49581edf4ec5a5a4074fa6d57529dc7fc0867fd14433e90b98ec4303da4f74a4",
+      "sha256": "86e2e511c6fa38fb0afbc12e52e309fab33db1b74f9920e3cbf6ed5b3dd6d8d4",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 379 / macos 379 / windows 371 (371 common names, largest groups credential 50, token 42, ban 33, tests 29, observatory 26, logging 24, service 19, shipping 19, plus 8 Unix-only names listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 404 / macos 404 / windows 396 (396 common names, largest groups credential 50, token 42, ban 33, tests 29, observatory 26, pass_flow 25, logging 24, service 19, plus 8 Unix-only names listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/how-this-was-built.md"
@@ -8366,9 +8366,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/mod.rs",
-      "sha256": "2f059fcdee10ebf0cb75ad758e9ad732cdc4c17de3c5a4564164c88cd4c4619e",
+      "sha256": "90cbb0eb0485d604ad9efc5fae6bf36ef1c9d63d7a7c0f0f7b8b6f9cb2d658f6",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway module root of the runtime crate: declares the application, ban, browser, configuration, connection cap, console, control, credential, demo, external input, guard, http, inject, logging, management, observatory, pass proof, pass store, request, routes, seams, service, session, settings, shipping, smuggle, startup, tls, token, verdict store and virtual usb modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Doc line states loopback component support is not product qualification.",
+      "notes": "Gateway module root of the runtime crate: declares the application, ban, browser, configuration, connection cap, console, control, credential, demo, external input, guard, http, inject, logging, management, observatory, pass flow, pass proof, pass store, request, routes, seams, service, session, settings, shipping, smuggle, startup, tls, token, verdict store and virtual usb modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Doc line states loopback component support is not product qualification.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
@@ -8376,7 +8376,7 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/observatory.rs",
-      "sha256": "703482fc3c47c519601da94a2c0abe58fbe55343f8e8ee9ad5cab5da8a43b820",
+      "sha256": "fab7ec6428f825453c24c9b472678bed48db2e8a2920fce3bd7b59b308322caa",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
       "notes": "Lab-only Detection Observatory port of legacy cmd/server playground.go/launch.go (SoT-30): exists only when HMN_PLAYGROUND is exactly 1 and the listen address is loopback (enabled off loopback is a startup error), answers only loopback Host values with X-Frame-Options DENY, frame-ancestors 'none' and no-store, and serves /playground (playground.html from the web dir), an SSE live feed with Last-Event-ID or lastId replay and 15 s heartbeats, policy meta (challengeAt/denyAt bands, 24 rules, 7 stages), a nonce endpoint, abort, and a score explanation that rescores a copy of a stored report. Launch is POST-only, refuses non-loopback Origin, host/url/upstream overrides, bodies over 4 KiB, reused or expired 120 s nonces, Docker-only external-input profiles (409) and unknown profiles, clamps runs to 1..5, allows one launch in flight, resets stateful detectors first and always targets https://127.0.0.1:8443 through an injected profile runner; the shared Request type also carries the Cookie header for sibling handlers such as the demo page; it opens no sockets itself and is not product qualification.",
       "pages": [
@@ -8402,6 +8402,36 @@
       "pages": [
         "docs/how-to/detection-observatory.md",
         "docs/explanation/observatory-architecture.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/pass_flow.rs",
+      "sha256": "0b99007307a3219e3fe8ee86cbd2264c2ada0bf9dca2843f825ac9debfbcf211",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "humanymous Pass HTTP flow (port of cmd/server pass_handler.go, SoT-36; roadmap G3), transport-free: /pass serves pass.html and issues or reuses the hsid session; /api/pass/new issues a fresh instance (nonce, risk-derived difficulty, challenge, proof of work bound to session and instance nonce, attestation flag); /api/pass/pow and /api/pass/attest carry the crypto axis with a per-fingerprint attestation budget (hard at 3 per 30 s); /api/pass/solve checks instance binding, paid PoW, attestation when the session is velocity-flagged, freshness (expiry is not a wrong answer), server-side placement re-simulation and single-use trace digests, then sets solved, rescores with l7.pass.solved and returns a step-up receipt (120 s) when a shared Gate key exists; /api/pass/kpi reports the wargame scoreboard. Velocity metering (soft 4, hard 8 per 30 s) only raises risk and PoW cost. Documented differences from Go: the realEventOK motor/timing pre-filter is not ported (accessibility rule), meter, store or engine failures refuse with 503/500, malformed red-team labels are refused before consuming a try, and undigestable traces are rejected. Its own header states the module is not mounted on the live listener yet.",
+      "pages": [
+        "docs/help/challenge-accessibility.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/pass_flow/scoring.rs",
+      "sha256": "829a50c3ea7c2447a2a60c7755ae0a9d852cb7580c8743c39a473d29a9ca6cf7",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Engine fusion for Pass attempts (Go-identical port of pass_scoring.go per owner decision 2026-11-17): emits only already-registered signal IDs, l7.pass.solved (OK, trust upgrade), l7.pass.velocity (SUSPICIOUS) and l7.pass.flood (BOT) for velocity levels, and soft behaviour tells l4.key.machine_speed (mean key gap under 15 ms), l4.key.flight_std (stddev under 6 ms), l4.event.perfect_timing (whole-millisecond key or pointer timings) and l2.adv.mobile_inconsistent (touch or pressure claim without motion jitter above 0.01), each at most once. Also the fingerprint key ja4_stable|subnet (first three IPv4 octets), difficulty trunc((risk-20)/15) clamped 0..3 or 3 for red-team probes, PoW bits 14 + difficulty + 2 x velocity rank capped at 20, KPI labels (red-team strategy, bot >= 70, human < 30, unknown) and mean/stddev/integer-ms helpers. None of these functions blocks or delays an attempt; the motor-gating realEventOK filter is deliberately absent.",
+      "pages": [
+        "docs/help/challenge-accessibility.md",
+        "docs/explanation/detection-engine-internals.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs",
+      "sha256": "ac0a862626a91c6875d212b8dacc378422fe28497ef601a495a78e07528d15da",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "25 tests porting pass_handler_test.go plus flow tests with a controllable clock: PoW bound to the instance nonce, Pass signal IDs registered with legacy weights (solved 0, velocity 25, flood 45) and existing behaviour IDs, velocity meter normal/soft/hard thresholds that self-clear, attestation budget, behaviour tells soft, deduplicated and ordered, difficulty/label/fingerprint parity with Go, page session issuance, fresh instance per call, difficulty scaling with risk and red team, solve granting the trust upgrade with and without a receipt, nonce and crypto-axis requirements, retry cap, misaligned versus expired reporting, single-use traces, machine-like keyboard traces still clearing while raising risk, velocity raising risk once per level and requiring attestation, shared-fingerprint velocity taxing PoW only, attestation binding and budget, Go transport errors (405, 400 no session, 400 bad body, oversize, long session), malformed labels refused before a try, KPI aggregation, out-of-order clock clamping and correction-feed traces only for solves.",
+      "pages": [
+        "docs/help/challenge-accessibility.md",
+        "docs/reference/production-vs-reference.md"
       ]
     },
     {

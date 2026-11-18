@@ -362,14 +362,14 @@ pub struct Response {
 }
 
 impl Response {
-    fn text(status: u16, message: &str) -> Self {
+    pub(in crate::gateway) fn text(status: u16, message: &str) -> Self {
         Self {
             status,
             headers: vec![("Content-Type", "text/plain; charset=utf-8".into())],
             body: Body::Bytes(format!("{message}\n").into_bytes()),
         }
     }
-    fn json(value: &impl Serialize) -> Self {
+    pub(in crate::gateway) fn json(value: &impl Serialize) -> Self {
         Self {
             status: 200,
             headers: vec![("Content-Type", "application/json".into())],
