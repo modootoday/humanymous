@@ -272,6 +272,30 @@ fn incident_handles_are_stable_opaque_and_keyed() {
     assert_ne!(h, key(b"other").incident_handle(7));
 }
 
+/// Go `resolveIncident` (internal/gate/incident.go): the handle resolves to
+/// the record behind it, an unknown or foreign handle to nothing. Goldens are
+/// Go 1.25 `incidentHandle` output for the same key bytes.
+#[test]
+fn incident_handles_resolve_to_their_record_only() {
+    let k = key(b"server-only-token-key");
+    assert_eq!(k.incident_handle(7), "INC-ADC2D7949B");
+    assert_eq!(k.incident_handle(42), "INC-3B5E9E3617");
+    let records = || (1..=50u64).map(|seq| (seq, format!("record-{seq}")));
+    assert_eq!(
+        k.resolve_incident("INC-3B5E9E3617", records()),
+        Some((42, "record-42".to_owned()))
+    );
+    assert_eq!(k.resolve_incident("INC-NOPE", records()), None);
+    assert_eq!(k.resolve_incident("", records()), None);
+    assert_eq!(k.resolve_incident("inc-3b5e9e3617", records()), None);
+    let foreign = key(b"other").incident_handle(42);
+    assert_eq!(k.resolve_incident(&foreign, records()), None);
+    assert_eq!(
+        k.resolve_incident("INC-3B5E9E3617", (1..=41u64).map(|s| (s, ()))),
+        None
+    );
+}
+
 #[test]
 fn step_up_rejects_wrong_bind_expiry_and_garbage_receipts() {
     let k = key(b"server-only-token-key");

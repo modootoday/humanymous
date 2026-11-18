@@ -1,5 +1,5 @@
 //! Verdict tokens, step-up proofs and receipts, epochs, single-use nonces and
-//! opaque incident handles (shipping row B17; legacy internal/gate token.go,
+//! opaque incident handles and their resolution (shipping row B17; legacy internal/gate token.go,
 //! epoch.go and incident.go at baseline 981d25c).
 //!
 //! The wire format matches Go: `b64url(payload) "." b64url(HMAC-SHA256(key,
@@ -97,6 +97,25 @@ impl TokenKey {
         let mut payload = b"incident|".to_vec();
         payload.extend_from_slice(&seq.to_be_bytes());
         format!("INC-{}", hex::encode_upper(&self.mac(&payload)[..5]))
+    }
+
+    /// Resolve an opaque incident handle against `(seq, record)` pairs (Go
+    /// `resolveIncident`): the first record whose sequence produces `handle`,
+    /// or `None`. The handle is recomputed at read time and never stored, so
+    /// a handle from another key resolves to nothing. Per-operator lookup caps
+    /// belong to the admin API that calls this.
+    pub fn resolve_incident<R>(
+        &self,
+        handle: &str,
+        records: impl IntoIterator<Item = (u64, R)>,
+    ) -> Option<(u64, R)> {
+        records.into_iter().find(|(seq, _)| {
+            bool::from(
+                self.incident_handle(*seq)
+                    .as_bytes()
+                    .ct_eq(handle.as_bytes()),
+            )
+        })
     }
 
     /// Mint a verdict token bound to session, client binding, expiry and epoch.
