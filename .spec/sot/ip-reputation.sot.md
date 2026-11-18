@@ -3,7 +3,7 @@ id: sot:root/ip-reputation
 title: Operator IP reputation feed
 status: draft
 created: 2026-11-18T13:30:00Z
-updated: 2026-11-18T20:30:00Z
+updated: 2026-11-18T16:30:00Z
 verify: cargo test --locked -p humanymous-runtime --all-features network::intel && cargo test --locked -p humanymous-runtime --all-features --test network_ip_intel && cargo test --locked -p humanymous-cli --features ip-intel ip_intel
 rel:
   governs: [crates/sdk/humanymous-runtime/src/network/intel/**, crates/sdk/humanymous-runtime/src/gateway/configuration/ip_reputation.rs, crates/sdk/humanymous-runtime/tests/network/ip_intel.rs, crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/**, crates/cli/src/ip_intel/**, third_party/ip-intel/**]

@@ -42,7 +42,8 @@ pub const SCORING_MAX_V4: u64 = 1 << 30;
 /// Most IPv6 addresses one scoring category may cover after merging: 2^112.
 /// Measured 2026-11-18: pinned X4BNet covers 2^109.76 and the union with the
 /// fetched cloud endpoints stays 2^109.76, so the cap has about 2.2 bits
-/// (4.7x) of headroom while refusing any /16 or wider carrier aggregate.
+/// (4.7x) of headroom. Coverage above one /16 (2^112) is refused; exactly one
+/// /16, for example split into eight /19s, still fits.
 pub const SCORING_MAX_V6: u128 = 1 << 112;
 
 /// Static refusal codes; no file content is interpolated.
