@@ -50,6 +50,7 @@ Lab mirrors (include only): `deployments/lab/adapters/<name>/`.
 | witness overlay | `scenarios/witness/` | `humanymous-lab-witness` | (file-defined) | none | file-defined | witness composition |
 | oracle detector-vs-bots | `scenarios/oracle-detector-bots/` → `deployments/compose.yaml` | `humanymous-oracle-*` | `swarm` etc. | host `:8443`/`:8444`/`:8445` | make e2e / scripts | **Go oracle** e2e (not Rust full-product) |
 | pages/docs preview | `scenarios/pages-docs-preview/README.md` only | **do not** use `humanymous-pages-preview` | — | — | — | docs/Pages; not product Gate |
+| human tester (by hand) | `compose.human-test.yaml` (runbook `docs/how-to/run-human-test-lab.md`) | `humanymous-human-test` | default; `tunnel` | host `127.0.0.1:8443` only (Gate namespace, lab CA) | Gate/origin exec health | human-attested (`local` / `provider-fronted`); **never** rust-product-lab or full product |
 
 Existing single-file overlays retained (also listed above via scenarios):
 `compose.yaml`, `compose.rust*.yaml`, `compose.authority.yaml`,
