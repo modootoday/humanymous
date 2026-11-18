@@ -108,7 +108,9 @@ fn viewport_only_work_keeps_prepared_source_current_and_preserves_dirty_focus() 
                 })
                 .unwrap();
             let prepared = handle
-                .try_with(|doc| doc.prepare_source_replacement(doc.source.clone()))
+                .try_with(|doc| {
+                    doc.prepare_source_replacement(crate::scene_projection::replacement_source(doc))
+                })
                 .unwrap()
                 .unwrap();
             for width in [1100, 1008, 900, 640, 914, 1100] {
@@ -191,7 +193,9 @@ fn responsive_close_actions_and_real_model_changes_keep_native_metadata_current(
             .unwrap();
     }
     let captured = handle
-        .try_with(|doc| doc.prepare_source_replacement(doc.source.clone()))
+        .try_with(|doc| {
+            doc.prepare_source_replacement(crate::scene_projection::replacement_source(doc))
+        })
         .unwrap()
         .unwrap();
     views[0].selected = false;

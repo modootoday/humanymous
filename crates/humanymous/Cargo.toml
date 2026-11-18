@@ -1,11 +1,13 @@
 [package]
 name = "humanymous"
+description = "Humanymous public Rust library facade"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-publish = false
+readme = "../../README.md"
+publish = ["crates-io"]
 autobins = false
 
 [features]
@@ -13,7 +15,7 @@ default = []
 adapter-go = ["dep:humanymous-adapter-go"]
 
 [dependencies]
-humanymous-adapter-go = { path = "../go-adapter", optional = true }
+humanymous-adapter-go = { path = "../go-adapter", version = "0.1.0", optional = true }
 
 [dev-dependencies]
 serde_json.workspace = true
