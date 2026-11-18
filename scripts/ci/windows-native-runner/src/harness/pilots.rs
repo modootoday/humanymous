@@ -1,0 +1,271 @@
+//! Declared ignored native pilots (scripts/ci/native-pilots.json).
+//!
+//! An ignored test is accepted only when its exact name is declared for this
+//! harness and OS, and either the same-job pilot receipt shows it passed on the
+//! same source or a named step of another required job executes it. Anything
+//! else stays a coverage-accounting failure; nothing here is a waiver.
+use super::packages::Packages;
+use serde_json::{Value, json};
+use sha2::Digest;
+use std::{collections::BTreeSet, io};
+
+const DECLARATIONS: &str = include_str!("../../../native-pilots.json");
+const RECEIPT_SCHEMA: &str = "humanymous.native-pilots-receipt/1";
+
+#[derive(Debug, Default)]
+pub(super) struct Declared {
+    pub(super) ids: Vec<String>,
+    /// Every declared ignored name (tests and subprocess helpers).
+    pub(super) ignored: Vec<String>,
+    pub(super) helpers: Vec<String>,
+    pub(super) receipt_tests: Vec<(String, String)>,
+    pub(super) jobs: Vec<Value>,
+}
+impl Declared {
+    pub(super) fn is_empty(&self) -> bool {
+        self.ignored.is_empty()
+    }
+    pub(super) fn row(&self, verified: bool) -> Value {
+        let tests: Vec<_> = self
+            .ignored
+            .iter()
+            .filter(|name| !self.helpers.contains(name))
+            .collect();
+        json!({"required_not_run":tests,"declared_subprocess_helpers":self.helpers,"pilot_ids":self.ids,"required_execution_scope":if self.jobs.is_empty(){"native-pilots"}else{"job"},"pilot_job_executors":self.jobs,"pilot_receipt_verified":verified})
+    }
+}
+
+fn declarations() -> io::Result<Value> {
+    let value: Value = serde_json::from_str(DECLARATIONS).map_err(io::Error::other)?;
+    if value["schema"] != "humanymous.native-pilots/1" || !value["pilots"].is_array() {
+        return Err(io::Error::other("native pilot declaration schema mismatch"));
+    }
+    Ok(value)
+}
+
+/// Declared pilot ids, for the closed public vocabulary.
+pub(super) fn known_ids() -> BTreeSet<String> {
+    declarations()
+        .ok()
+        .and_then(|value| value["pilots"].as_array().cloned())
+        .into_iter()
+        .flatten()
+        .filter_map(|pilot| pilot["id"].as_str().map(str::to_owned))
+        .collect()
+}
+/// Declared helper names, for the closed public vocabulary.
+pub(super) fn known_helpers() -> BTreeSet<String> {
+    declarations()
+        .ok()
+        .and_then(|value| value["pilots"].as_array().cloned())
+        .into_iter()
+        .flatten()
+        .flat_map(|pilot| pilot["helpers"].as_array().cloned().unwrap_or_default())
+        .filter_map(|name| name.as_str().map(str::to_owned))
+        .collect()
+}
+
+fn names(value: &Value) -> io::Result<Vec<String>> {
+    value
+        .as_array()
+        .ok_or_else(|| io::Error::other("pilot list absent"))?
+        .iter()
+        .map(|v| {
+            v.as_str()
+                .map(str::to_owned)
+                .ok_or_else(|| io::Error::other("pilot name not a string"))
+        })
+        .collect()
+}
+
+pub(super) fn declared(
+    entry: &Value,
+    packages: &Packages,
+    os: &str,
+    arch: &str,
+) -> io::Result<Declared> {
+    let mut found = Declared::default();
+    let Some(name) = packages.name(entry) else {
+        return Ok(found);
+    };
+    for pilot in declarations()?["pilots"].as_array().into_iter().flatten() {
+        let applies = pilot["os"]
+            .as_array()
+            .is_some_and(|list| list.iter().any(|v| v == os))
+            && pilot["arch"].as_str().is_none_or(|a| a == arch);
+        if !applies
+            || pilot["package"] != name
+            || entry["target"] != pilot["target"]
+            || entry["kind"] != json!([pilot["kind"]])
+        {
+            continue;
+        }
+        let id = pilot["id"]
+            .as_str()
+            .ok_or_else(|| io::Error::other("pilot id absent"))?;
+        let tests = names(&pilot["tests"])?;
+        let helpers = names(&pilot["helpers"])?;
+        found.ids.push(id.to_owned());
+        match pilot["executor"].as_str() {
+            Some("native-pilots") => found
+                .receipt_tests
+                .extend(tests.iter().map(|t| (id.to_owned(), t.clone()))),
+            Some("job") if helpers.is_empty() => {
+                found.jobs.push(json!({"pilot":id,"workflow":pilot["job"]["workflow"],"job":pilot["job"]["name"],"run":pilot["job"]["run"]}));
+            }
+            _ => return Err(io::Error::other("unknown pilot executor")),
+        }
+        found.ignored.extend(tests);
+        found.ignored.extend(helpers.iter().cloned());
+        found.helpers.extend(helpers);
+    }
+    Ok(found)
+}
+
+/// The observed ignored names must equal the declared names exactly.
+pub(super) fn ignored_matches(log: &str, expected: &[String]) -> bool {
+    let mut observed: Vec<&str> = log
+        .lines()
+        .filter_map(|line| {
+            line.strip_prefix("test ")
+                .and_then(|s| s.split_once(" ... ignored").map(|(name, _)| name))
+        })
+        .collect();
+    let mut expected: Vec<&str> = expected.iter().map(String::as_str).collect();
+    observed.sort_unstable();
+    expected.sort_unstable();
+    observed == expected
+}
+
+/// Same-job receipt: exact source, OS, architecture, declarations and a single
+/// passed row for every declared receipt test of this harness.
+pub(super) fn verify_receipt(
+    declared: &Declared,
+    source_sha: Option<&str>,
+    receipt: Option<&str>,
+    os: &str,
+    arch: &str,
+) -> io::Result<()> {
+    if declared.receipt_tests.is_empty() {
+        return Ok(());
+    }
+    let refused = || io::Error::other("declared native pilot receipt absent or mismatched");
+    let receipt: Value =
+        serde_json::from_str(receipt.ok_or_else(refused)?).map_err(|_| refused())?;
+    let digest = format!("{:x}", sha2::Sha256::digest(DECLARATIONS.as_bytes()));
+    if receipt["schema"] != RECEIPT_SCHEMA
+        || source_sha.is_none_or(|sha| receipt["source_sha"] != sha)
+        || receipt["os"] != os
+        || receipt["arch"] != arch
+        || receipt["declarations_sha256"] != digest
+    {
+        return Err(refused());
+    }
+    let rows = receipt["tests"].as_array().ok_or_else(refused)?;
+    for (pilot, name) in &declared.receipt_tests {
+        let matching: Vec<_> = rows
+            .iter()
+            .filter(|row| row["pilot"] == pilot.as_str() && row["name"] == name.as_str())
+            .collect();
+        if matching.len() != 1 || matching[0]["status"] != "passed" {
+            return Err(refused());
+        }
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    fn runtime_entry() -> Value {
+        json!({"package_id":"path+file:///C:/workspaces/humanymous/crates/sdk/humanymous-runtime#0.1.0","kind":["lib"],"target":"humanymous_runtime"})
+    }
+    #[test]
+    fn declarations_select_only_the_matching_harness_and_os() {
+        let packages = Packages::fixture();
+        let found = declared(&runtime_entry(), &packages, "linux", "x86_64").unwrap();
+        assert_eq!(found.ids, ["runtime-audit-native-source"]);
+        assert_eq!(found.receipt_tests.len(), 6);
+        assert!(
+            declared(&runtime_entry(), &packages, "macos", "x86_64")
+                .unwrap()
+                .is_empty()
+        );
+        assert!(
+            declared(&runtime_entry(), &packages, "linux", "aarch64")
+                .unwrap()
+                .is_empty()
+        );
+        let mut other = runtime_entry();
+        other["target"] = json!("gateway-native-process");
+        assert!(
+            declared(&other, &packages, "linux", "x86_64")
+                .unwrap()
+                .is_empty()
+        );
+    }
+    #[test]
+    fn authority_helper_is_declared_but_never_receipted() {
+        let entry = json!({"package_id":"path+file:///C:/workspaces/humanymous/crates/sdk/humanymous-runtime#0.1.0","kind":["test"],"target":"authority-native-process"});
+        let found = declared(&entry, &Packages::fixture(), "linux", "x86_64").unwrap();
+        assert_eq!(found.helpers, ["unix_unprivileged_connect_probe"]);
+        assert_eq!(found.receipt_tests.len(), 1);
+        assert_eq!(
+            found.row(true)["required_not_run"],
+            json!(["unix_other_user_is_denied_by_actual_socket_acl"])
+        );
+    }
+    #[test]
+    fn ignored_names_must_match_exactly() {
+        let expected = vec!["a::b".to_owned(), "c".to_owned()];
+        assert!(ignored_matches(
+            "test c ... ignored\ntest a::b ... ignored, reason\ntest d ... ok\n",
+            &expected
+        ));
+        assert!(!ignored_matches("test c ... ignored\n", &expected));
+        assert!(!ignored_matches(
+            "test c ... ignored\ntest a::b ... ignored\ntest e ... ignored\n",
+            &expected
+        ));
+        assert!(ignored_matches("", &[]));
+    }
+    #[test]
+    fn receipt_must_bind_source_os_declarations_and_each_pass() {
+        let found = declared(&runtime_entry(), &Packages::fixture(), "linux", "x86_64").unwrap();
+        let digest = format!("{:x}", sha2::Sha256::digest(DECLARATIONS.as_bytes()));
+        let rows: Vec<_> = found
+            .receipt_tests
+            .iter()
+            .map(|(p, n)| json!({"pilot":p,"name":n,"status":"passed"}))
+            .collect();
+        let good = json!({"schema":RECEIPT_SCHEMA,"source_sha":"a".repeat(40),"os":"linux","arch":"x86_64","declarations_sha256":digest,"tests":rows});
+        let check = |value: &Value, sha: Option<&str>| {
+            verify_receipt(&found, sha, Some(&value.to_string()), "linux", "x86_64")
+        };
+        let sha = "a".repeat(40);
+        assert!(check(&good, Some(&sha)).is_ok());
+        assert!(check(&good, None).is_err());
+        assert!(check(&good, Some(&"b".repeat(40))).is_err());
+        assert!(verify_receipt(&found, Some(&sha), None, "linux", "x86_64").is_err());
+        for (key, value) in [
+            ("os", json!("macos")),
+            ("arch", json!("aarch64")),
+            ("declarations_sha256", json!("0")),
+            ("schema", json!("x")),
+        ] {
+            let mut bad = good.clone();
+            bad[key] = value;
+            assert!(check(&bad, Some(&sha)).is_err());
+        }
+        let mut failed = good.clone();
+        failed["tests"][0]["status"] = json!("failed");
+        assert!(check(&failed, Some(&sha)).is_err());
+        let mut missing = good.clone();
+        missing["tests"].as_array_mut().unwrap().pop();
+        assert!(check(&missing, Some(&sha)).is_err());
+        let mut duplicated = good.clone();
+        let first = duplicated["tests"][0].clone();
+        duplicated["tests"].as_array_mut().unwrap().push(first);
+        assert!(check(&duplicated, Some(&sha)).is_err());
+    }
+}
