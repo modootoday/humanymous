@@ -58,6 +58,19 @@ fn scratch() -> PathBuf {
     dir
 }
 
+/// Pebble resolves challenge names over TCP DNS; it must not start validating
+/// before pebble-challtestsrv accepts on that port.
+fn wait_for_dns() {
+    let deadline = Instant::now() + Duration::from_secs(60);
+    while Instant::now() < deadline {
+        if std::net::TcpStream::connect("127.0.0.1:8053").is_ok() {
+            return;
+        }
+        thread::sleep(Duration::from_millis(250));
+    }
+    panic!("pebble-challtestsrv DNS did not start");
+}
+
 fn wait_for_directory(root: &Path) {
     let deadline = Instant::now() + Duration::from_secs(60);
     while Instant::now() < deadline {
@@ -98,7 +111,7 @@ fn pebble_issues_over_tls_alpn_01_and_the_cache_survives_restart() {
         "127.0.0.1",
         "-defaultIPv6",
         "",
-        "-dns01",
+        "-dnsserver",
         "127.0.0.1:8053",
         "-http01",
         "",
@@ -111,6 +124,7 @@ fn pebble_issues_over_tls_alpn_01_and_the_cache_survives_restart() {
         "-management",
         "127.0.0.1:8055",
     ]);
+    wait_for_dns();
     // PEBBLE_VA_NOSLEEP removes artificial validation delay only; validation
     // itself still dials this host. PEBBLE_WFE_NONCEREJECT=0 turns off random
     // bad-nonce fault injection so the run is deterministic.

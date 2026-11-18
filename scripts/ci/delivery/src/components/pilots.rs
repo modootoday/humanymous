@@ -90,6 +90,77 @@ pub fn validate(value: &Value) -> Result<()> {
             _ => return Err("unknown pilot executor".into()),
         }
     }
+    validate_unsupported(value, &mut ids)
+}
+
+/// Owner-decided unsupported tuples: a closed shape that names the exact
+/// ignored tests a harness reports on that OS. It executes nothing, claims no
+/// pass and may not overlap a pilot for the same harness and OS.
+fn validate_unsupported(value: &Value, ids: &mut std::collections::BTreeSet<String>) -> Result<()> {
+    const KEYS: [&str; 8] = [
+        "id", "package", "target", "kind", "os", "arch", "decision", "tests",
+    ];
+    let entries = value["unsupported"]
+        .as_array()
+        .ok_or("unsupported declarations absent")?;
+    let pilots = value["pilots"].as_array().ok_or("native pilots absent")?;
+    let mut names = std::collections::BTreeSet::new();
+    for entry in entries {
+        let object = entry.as_object().ok_or("unsupported entry not an object")?;
+        require(
+            object.keys().all(|key| KEYS.contains(&key.as_str())),
+            "unsupported declaration has an open field",
+        )?;
+        let id = entry["id"].as_str().ok_or("unsupported id absent")?;
+        require(ids.insert(id.to_owned()), "duplicate pilot id")?;
+        for key in ["package", "target", "kind", "decision"] {
+            require(
+                entry[key].as_str().is_some_and(|s| !s.is_empty()),
+                "unsupported declaration identity or decision incomplete",
+            )?;
+        }
+        require(
+            entry.get("arch").is_none() || entry["arch"].as_str().is_some_and(|a| !a.is_empty()),
+            "unsupported architecture invalid",
+        )?;
+        let os = strings(&entry["os"])?;
+        require(
+            !os.is_empty()
+                && os
+                    .iter()
+                    .all(|os| matches!(os.as_str(), "linux" | "macos" | "windows")),
+            "unsupported os invalid",
+        )?;
+        let tests = strings(&entry["tests"])?;
+        require(!tests.is_empty(), "unsupported declaration names no tests")?;
+        for name in &tests {
+            for os in &os {
+                require(
+                    !name.is_empty()
+                        && name
+                            .bytes()
+                            .all(|b| b.is_ascii_alphanumeric() || b == b'_' || b == b':')
+                        && names.insert(format!(
+                            "{}#{}#{os}#{name}",
+                            entry["package"], entry["target"]
+                        )),
+                    "unsupported test name invalid or duplicated",
+                )?;
+            }
+        }
+        let overlaps = pilots.iter().any(|pilot| {
+            pilot["package"] == entry["package"]
+                && pilot["target"] == entry["target"]
+                && pilot["kind"] == entry["kind"]
+                && pilot["os"]
+                    .as_array()
+                    .is_some_and(|list| list.iter().any(|v| os.iter().any(|o| v == o.as_str())))
+        });
+        require(
+            !overlaps,
+            "a harness tuple cannot be both a pilot and unsupported",
+        )?;
+    }
     Ok(())
 }
 
@@ -640,6 +711,83 @@ mod tests {
             }
         }
         assert!(verify_job_executors(&root, &value).is_err());
+    }
+    #[test]
+    fn dotnet_macos_is_declared_unsupported_and_linux_windows_stay_accounted() {
+        let value = declarations().unwrap();
+        let dotnet: Vec<_> = value["unsupported"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter(|entry| entry["package"] == "humanymous-dotnet-adapter")
+            .collect();
+        let targets: Vec<_> = dotnet.iter().map(|e| e["target"].clone()).collect();
+        assert_eq!(targets, [json!("hosted"), json!("package")]);
+        for entry in &dotnet {
+            assert_eq!(entry["os"], json!(["macos"]));
+            assert!(entry.get("arch").is_none());
+            assert!(
+                entry["decision"]
+                    .as_str()
+                    .unwrap()
+                    .contains("D2 2026-11-18")
+            );
+        }
+        assert_eq!(
+            dotnet[0]["tests"],
+            json!([
+                "actual_kestrel_engine_audit_body_gc_and_shutdown",
+                "generic::actual_generic_abi_only_process"
+            ])
+        );
+        assert_eq!(
+            dotnet[1]["tests"],
+            json!(["sdk_package_and_real_host_matrix"])
+        );
+        // Unsupported entries are never executed, so no pilot row is produced.
+        for pilot in value["pilots"].as_array().unwrap() {
+            assert!(!pilot["id"].as_str().unwrap().ends_with("-unsupported"));
+        }
+    }
+    #[test]
+    fn unsupported_declarations_are_closed_and_disjoint_from_pilots() {
+        let mut value = declarations().unwrap();
+        value["unsupported"][0]["executor"] = json!("native-pilots");
+        assert!(validate(&value).is_err());
+        let mut value = declarations().unwrap();
+        value["unsupported"][0]["decision"] = json!("");
+        assert!(validate(&value).is_err());
+        let mut value = declarations().unwrap();
+        value["unsupported"][0]["tests"] = json!([]);
+        assert!(validate(&value).is_err());
+        let mut value = declarations().unwrap();
+        value["unsupported"][0]["os"] = json!(["freebsd"]);
+        assert!(validate(&value).is_err());
+        let mut value = declarations().unwrap();
+        value["unsupported"][1]["id"] = value["pilots"][0]["id"].clone();
+        assert!(validate(&value).is_err());
+        let mut value = declarations().unwrap();
+        let first = value["unsupported"][0]["tests"][0].clone();
+        value["unsupported"][0]["tests"]
+            .as_array_mut()
+            .unwrap()
+            .push(first);
+        assert!(validate(&value).is_err());
+        let mut value = declarations().unwrap();
+        value.as_object_mut().unwrap().remove("unsupported");
+        assert!(validate(&value).is_err());
+        // The same harness cannot be both run as a pilot and unsupported on one OS.
+        let mut value = declarations().unwrap();
+        let node = value["pilots"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|p| p["id"] == "node-host-process")
+            .unwrap()
+            .clone();
+        value["unsupported"][0]["package"] = node["package"].clone();
+        value["unsupported"][0]["target"] = node["target"].clone();
+        assert!(validate(&value).is_err());
     }
     #[test]
     fn controlled_grant_is_closed_and_bound_to_identity() {
