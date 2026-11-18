@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 330,
-      "macos": 330,
-      "windows": 322
+      "linux": 333,
+      "macos": 333,
+      "windows": 323
     },
     "common_test_names": [
       "gateway::application::temporal::tests::categories::configure_only_preserves_unknown_gap_until_provider_observation",
@@ -55,6 +55,7 @@
       "gateway::ban::tests::wargame::wargame_r191_double_lift_safe",
       "gateway::ban::tests::wargame::wargame_r192_list_bans_includes_manual",
       "gateway::configuration::audit::tests::inline_keys_and_unknown_sources_are_rejected",
+      "gateway::configuration::audit::tests::witness_input_requires_flag_distinct_descriptors_and_keys",
       "gateway::configuration::operational::tests::operational_schema_excludes_frozen_detection_policy_and_secrets",
       "gateway::connection_cap::tests::close_refuses_new_and_waiting_acquisitions",
       "gateway::connection_cap::tests::connection_concurrency_is_capped",
@@ -343,6 +344,8 @@
       "gateway::tests::service::settings_operator::native_operator_commit_is_witnessed_cas_and_invalidates_sessions",
       "gateway::tests::service::unix_closed_shutdown_controller_cannot_report_stopped",
       "gateway::tests::service::unix_service_management_drains_before_custody_release",
+      "gateway::tests::service::witness_input::inherited_pipe_witness_pins_identity_and_cosigns_durable_audit",
+      "gateway::tests::service::witness_input::inherited_witness_refusals_happen_before_custody_or_unlock",
       "gateway::virtual_usb::tests::symlinked_results_and_roots_are_refused"
     ],
     "test_filter": "gateway::"

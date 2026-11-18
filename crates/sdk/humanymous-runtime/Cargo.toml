@@ -101,6 +101,11 @@ path = "tests/gateway/native_process.rs"
 required-features = ["gateway"]
 
 [[test]]
+name = "gateway-witness-input"
+path = "tests/gateway/witness_input.rs"
+required-features = ["gateway"]
+
+[[test]]
 name = "gateway-deployment-manifests"
 path = "tests/gateway/deployment_manifests.rs"
 required-features = ["gateway"]
