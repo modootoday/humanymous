@@ -7192,9 +7192,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/audit/log/mod.rs",
-      "sha256": "561e0ef160cd3b23c4210dbace9a18298b76e87eb980965ba64bfd75d296e4a4",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Durable per-node audit Log where the WAL is the authority: open restores an authenticated chain (or explicitly initializes one) from stable provisioned node id, non-empty HMAC key and writer seed, optionally against a trusted head from outside the WAL, and requires the witness key to differ from the writer and agree with the stored head; append seals and durably writes before advancing, checkpoint persists a signed (and, when configured, co-signed with required WitnessDurability) head every checkpoint_every records, and any checkpoint failure poisons the writer; emit_and_act runs the side effect only after append succeeds (ordering, not atomicity). Tests cover empty HMAC refusal, empty event type, tamper detection on restart, disk-failure poisoning, witnessed restart, no silent writer-only downgrade and proof persistence.",
+      "sha256": "ba85d7b3ab6227bf9b577f061265dec93d0c094992f20a763949194b56db3f02",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Durable per-node audit Log where the WAL is the authority: open restores an authenticated chain (or explicitly initializes one) from stable provisioned node id, non-empty HMAC key and writer seed, optionally against a trusted head from outside the WAL, and requires the witness key to differ from the writer and agree with the stored head; append seals and durably writes before advancing, checkpoint persists a signed (and, when configured, co-signed with required WitnessDurability) head every checkpoint_every records, and any checkpoint failure poisons the writer; emit_and_act runs the side effect only after append succeeds (ordering, not atomicity). Tests cover empty HMAC refusal, empty event type, tamper detection on restart, disk-failure poisoning, witnessed restart, no silent writer-only downgrade and proof persistence. Re-reviewed 2026-11-18: attach_projection adds an Arc<dyn projection::RecordSink> (Go Config.Projections); append feeds projections only after the WAL append and any due checkpoint succeed and ignores their results, so a refused or failed append is never projected and projections never reach the hash chain or the fail-closed writer state. The new test projections_receive_only_fully_sealed_records pins that ordering across a checkpoint failure and restart. Re-reviewed 2026-11-18 (PR #129 review follow-up): append wraps each projection call in std::panic::catch_unwind(AssertUnwindSafe(..)) and ignores the outcome, so a panicking RecordSink is treated like an erroring one: it neither unwinds through append or emit_and_act nor stops later projections from receiving the record (relies on the default panic = \"unwind\"). The new test a_panicking_projection_reaches_neither_the_writer_nor_later_projections attaches a panicking sink before a recording sink and checks append, emit_and_act and flush succeed and the recorder receives both sealed records. WAL, hash chain, checkpoint and fail-closed paths are unchanged.",
       "pages": [
         "docs/how-to/verify-audit-log.md",
         "docs/reference/security-audit.md"
@@ -7211,9 +7211,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/audit/log/sealed.rs",
-      "sha256": "23b3cecfd8f5147713e6d371b8a7043f1147049407d31086e393d1e9c92f5d1c",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "SealedLog: one non-extractable lifetime owner of existing sealed key custody and the WAL/witness writer, built from trusted composition-root options (key and WAL directories, owner, node, cadence, explicit allow_new_history, optional trusted head, require_external_witness) and a borrowed zeroizing UnlockCredential. A missing required witness or invalid options/unpinned recovery fail in preflight before any state access or credential consumption; keys are never generated; errors carry only a SealedLogStage and io::ErrorKind. recover_pinned is the explicit operator path that authenticates an independent latest head and may append a missing local checkpoint; tests cover the preflight ordering.",
+      "sha256": "e94ab1923ab7d7e27d1d3cbb9a4280c1992129630833caa4cdb8927c35da9a3c",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "SealedLog: one non-extractable lifetime owner of existing sealed key custody and the WAL/witness writer, built from trusted composition-root options (key and WAL directories, owner, node, cadence, explicit allow_new_history, optional trusted head, require_external_witness) and a borrowed zeroizing UnlockCredential. A missing required witness or invalid options/unpinned recovery fail in preflight before any state access or credential consumption; keys are never generated; errors carry only a SealedLogStage and io::ErrorKind. recover_pinned is the explicit operator path that authenticates an independent latest head and may append a missing local checkpoint; tests cover the preflight ordering. Re-reviewed 2026-11-18: attach_projection forwards a best-effort projection to the owned Log; custody and the writer stay non-extractable.",
       "pages": [
         "docs/how-to/verify-audit-log.md",
         "docs/how-to/key-management.md"
@@ -7272,12 +7272,48 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/audit/mod.rs",
-      "sha256": "4f9f9f5cfe6bb5a8d964bce1f1f9b258b2b3388ac16873434a9e501bf1b5e197",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Module root of the runtime audit subsystem: always exposes checkpoint, lifecycle, merkle, record, storage and verification, and gates control, keys, log and sink to Unix or Windows targets. It contains declarations only.",
+      "sha256": "70d39df68801040e46e4327f6cd4e1f1a465c41a19192e45f3eb43b9b59710cc",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Module root of the runtime audit subsystem: always exposes checkpoint, lifecycle, merkle, record, storage and verification, and gates control, keys, log, projection and sink to Unix or Windows targets. It contains declarations only. Re-reviewed 2026-11-18 for the added projection module.",
       "pages": [
         "docs/reference/security-audit.md",
         "docs/how-to/verify-audit-log.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/audit/projection/mod.rs",
+      "sha256": "5bd39c8d5be63ec4a8a47085db529e67bd1e528d8565658cd6bf61aeed1ab829",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Projection root ported from legacy internal/audit/sink_record.go (oracle 981d25c): the RecordSink trait (append_record, flush, close) for best-effort projections that must enqueue without blocking and count every accepted record they cannot deliver. The WAL authority inside Log is deliberately not pluggable through this trait. Module docs state that a projection is never evidence of audit coverage. Declarations only, plus the redis_stream and clickhouse submodules. Re-reviewed 2026-11-18 (PR #129 review follow-up): adds the shared DeadlineStream used by both sinks. Every read and write first sets the socket timeout to the time left before one absolute deadline and fails with TimedOut once none is left (a zero timeout is never set), so a trickling peer cannot stretch an operation. connect resolves and connects before the deadline: an IP literal needs no lookup; a host name is resolved by the system resolver on a helper thread that is waited on only until the deadline, and the doc comment states honestly that the lookup itself is not bounded, so a hung resolver can leave the abandoned thread behind. Each connect_timeout gets only the remaining time, and the deadline is checked again after resolution. No new dependency.",
+      "pages": [
+        "docs/reference/security-audit.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/audit/projection/redis_stream.rs",
+      "sha256": "8d38bad5bd602ef3382d71a76f5d10d1f22d6ef2f425068e4f71a43e98e6d6d2",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Redis Streams projection ported from legacy internal/audit/sink_redis.go (oracle 981d25c): RedisStreamSink with a bounded mpsc backlog (default 4096) and drop-and-count, one named shipper thread, lazy dial with 3 s dial, write and read timeouts, a 1 s park after a failed dial, and one XADD <stream> MAXLEN ~ <max_len> <seq>-0 record <serde JSON> per record, so a re-ship cannot duplicate an entry. RESP encoding and a bounded single-reply reader are sink-local because the audit feature does not build the gateway B23 client. Flush is a no-op and close stops the shipper without waiting, as in Go. Deliberate differences: dial, I/O, server-error and post-close losses are counted in dropped() (Go counted only a full backlog), the bulk id reply is consumed in full (Go read one line), and a server error reply keeps the in-sync connection. No authentication, as in Go. Re-reviewed 2026-11-18 (PR #129 review follow-up): the dial, the command write and the reply read each now get their own absolute 3 s deadline through DeadlineStream, matching Go DialTimeout, SetWriteDeadline and SetReadDeadline, instead of a per-syscall timeout; host-name lookup counts against the dial deadline.",
+      "pages": [
+        "docs/reference/security-audit.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/audit/projection/clickhouse.rs",
+      "sha256": "896c08f3b343af9853605ca63c554066c8a57ed2fafb825687c6dc7430d64f9b",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "ClickHouse projection ported from legacy internal/audit/sink_clickhouse.go (oracle 981d25c): ClickHouseSink buffers rows (defaults 10000 rows, 1 s, 100000 backlog) and a condvar-driven flusher thread POSTs batches on max_rows, max_wait, flush() and close as INSERT INTO <table> FORMAT JSONEachRow with async_insert=1, wait_for_async_insert=1 and input_format_skip_unknown_fields=1 over a direct HTTP/1.1 Connection: close request with 10 s timeouts and bounded status and header parsing. valid_table_name mirrors ^[A-Za-z_][A-Za-z0-9_]*$ and an unsafe name falls back to audit_log. set_auth sends a zeroized Basic Authorization header kept out of the URL. A full backlog, transport failure or non-2xx status counts the rows as dropped, and the error quotes at most 512 body bytes. Deliberate differences: only http:// endpoints without query, fragment or embedded credentials are accepted (no TLS client in the audit feature; Go also spoke HTTPS), appends after close are dropped and counted, and only 2xx is success. Re-reviewed 2026-11-18 (PR #129 review follow-up): the 10 s REQUEST_TIMEOUT is now one total deadline per insert, matching Go http.Client.Timeout: lookup, connect, request write, status and header read and the quoted error body all run through DeadlineStream against one Instant, so a trickling server can no longer hold flush past it; a missed deadline fails the insert and counts its rows as dropped. The crate-private with_request_timeout constructor lets tests shrink the deadline. The 1xx case of the 2xx-only difference is now spelled out in the module docs.",
+      "pages": [
+        "docs/reference/security-audit.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs",
+      "sha256": "04070f020d75a68df808189a3741e9ce4e5e44b1fbbc35cd4c55e0cada460973",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unit tests for the projections: the five legacy sink_adapters_test.go cases (RESP encoding, XADD against an in-process RESP stand-in that answers with the real bulk id across two records on one connection, drop-when-full on an unstarted sink, JSONEachRow insert against an in-process HTTP stand-in, table-name validation and fallback) plus counted Redis outage and error replies, ClickHouse Basic auth and the max_rows trigger, refused-insert and backlog counting, and plain-http endpoint validation. Stand-ins bind 127.0.0.1 only. Re-reviewed 2026-11-18 (PR #129 review follow-up): four more cases pin the remaining differences. redis_transport_failures_are_counted_and_redial: a non-RESP reply and a connection closed before replying each count one drop, and the second record redials. redis_records_queued_at_close_are_counted: with one record in flight, three records queued at close are counted as dropped and never shipped, while the in-flight one completes. clickhouse_only_2xx_is_success: 103, 302 and 500 each fail flush with the status in the error and count both rows. clickhouse_trickled_response_misses_the_insert_deadline: a stand-in trickles response headers one byte per 20 ms against a 300 ms deadline; flush fails after at least the deadline and in under deadline + 1 s, and the row is counted. Re-reviewed 2026-11-18: adds clickhouse_close_flushes_the_partial_batch, carried over from the superseded PR #71 tests, which checks that a row-triggered batch ships first and that close() then inserts the remaining partial batch (Go CHSink.Close flushed before stopping) with no rows dropped.",
+      "pages": [
+        "docs/reference/security-audit.md"
       ]
     },
     {
