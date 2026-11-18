@@ -8,6 +8,8 @@ pub mod lifecycle;
 #[cfg(any(unix, windows))]
 pub mod log;
 pub mod merkle;
+#[cfg(any(unix, windows))]
+pub mod projection;
 pub mod record;
 #[cfg(any(unix, windows))]
 pub mod sink;

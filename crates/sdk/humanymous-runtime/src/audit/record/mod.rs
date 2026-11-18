@@ -1,5 +1,6 @@
 //! Frozen audit record schema and canonical bytes, distinct from request tokens.
 mod canonical;
+pub mod events;
 mod normalization;
 mod ordering;
 pub(in crate::audit) use canonical::record_hash_bounded;
