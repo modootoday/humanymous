@@ -5,6 +5,7 @@
 
 mod reservation;
 mod state;
+mod trace;
 
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
@@ -13,6 +14,7 @@ use crate::watermark::{Error, payload::Payload};
 use state::{Slot, State};
 
 pub use reservation::Reservation;
+pub use trace::{Attribution, Trace};
 
 /// Maximum admitted live entries, including pending reservations.
 pub const MAX_ENTRIES: usize = 65_536;
