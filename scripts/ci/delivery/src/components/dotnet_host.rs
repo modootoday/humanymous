@@ -803,9 +803,47 @@ pub fn prepare(
     })
 }
 
+/// The ignored SDK download test this job executes for the declared pilot
+/// `dotnet-sdk-download` (scripts/ci/native-pilots.json).
+pub const SDK_PILOT: &str =
+    "components::dotnet_host::sdk::tests::actual_pinned_sdk_download_verifies";
+
+/// Run the declared SDK download pilot alone and require its exact
+/// single-test success footer. It downloads into its own scratch; the
+/// provider below still acquires and verifies its own SDK.
+fn sdk_pilot(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
+    super::invoke(
+        root,
+        dir,
+        report,
+        "dotnet-sdk-pilot",
+        "cargo",
+        &[
+            "test",
+            "--locked",
+            "-p",
+            "humanymous-delivery",
+            "--bin",
+            "humanymous-delivery",
+            "--",
+            "--exact",
+            SDK_PILOT,
+            "--ignored",
+            "--test-threads=1",
+        ],
+        "900s",
+    )?;
+    let log =
+        std::fs::read_to_string(dir.join("dotnet-sdk-pilot.log")).map_err(|e| e.to_string())?;
+    let passed = super::pilots::passed(&log, SDK_PILOT);
+    report["dotnet_sdk_pilot_passed"] = json!(passed);
+    require(passed, "dotnet SDK download pilot did not pass alone")
+}
+
 /// Hosted component: one runner user builds, then launches under scopes.
 pub(super) fn run(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
     backend_observed()?;
+    sdk_pilot(root, dir, report)?;
     let work = dir.join("dotnet-host-work");
     private_dir(&work)?;
     // The pinned SDK lives in its own private temp root, outside the evidence
@@ -961,6 +999,34 @@ pub fn local(root: &Path, args: &[String]) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn sdk_pilot_is_the_declared_job_row_for_this_step() {
+        let declarations = super::super::pilots::declarations().unwrap();
+        let rows: Vec<_> = declarations["pilots"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter(|pilot| pilot["package"] == "humanymous-delivery")
+            .collect();
+        assert_eq!(rows.len(), 1);
+        let row = rows[0];
+        assert_eq!(row["id"], "dotnet-sdk-download");
+        assert_eq!(row["executor"], "job");
+        assert_eq!(row["job"]["name"], "dotnet");
+        assert_eq!(
+            row["job"]["run"],
+            "cargo run --locked -p humanymous-delivery -- component dotnet-host"
+        );
+        assert_eq!(row["tests"], json!([SDK_PILOT]));
+        let good = format!(
+            "running 1 test\ntest {SDK_PILOT} ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 171 filtered out; finished in 9.0s\n"
+        );
+        assert!(super::super::pilots::passed(&good, SDK_PILOT));
+        assert!(!super::super::pilots::passed(
+            &good.replace("1 passed", "0 passed"),
+            SDK_PILOT
+        ));
+    }
     #[test]
     fn scope_terminal_fact_needs_unpopulated_or_manager_collection() {
         assert_eq!(

@@ -269,6 +269,14 @@ group never stands in for the scope.
 Declared in the change that adds the job (2026-11-18): only
 `dotnet-hosted-linux` (hosted target, `os: [linux]`, job `dotnet`). Windows
 hosted and both package rows stay undeclared, because nothing there has run.
+
+Also declared 2026-11-18: `dotnet-sdk-download` (package
+`humanymous-delivery`, binary target, `os: [linux, macos, windows]`, job
+`dotnet`). It names the ignored provider test
+`components::dotnet_host::sdk::tests::actual_pinned_sdk_download_verifies`.
+`component dotnet-host` runs that test alone with `--exact --ignored` before
+its own SDK custody and refuses unless the exact single-test success footer is
+observed. The row qualifies nothing on macOS or Windows.
 These steps come after the source exists:
 - `scripts/ci/native-pilots.json`:
   - `dotnet-hosted` for the hosted target, tests
