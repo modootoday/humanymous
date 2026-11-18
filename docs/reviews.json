@@ -14,9 +14,9 @@
     },
     {
       "source": "Cargo.toml",
-      "sha256": "d9c5e2fed2020731b87fb15497169024f88ad0d9278b47647b904c68dafdfdeb",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Root workspace manifest: lists members (umbrella crate, humanymous-core, humanymous-platform, humanymous-runtime, collector, Apache/.NET/framework/Go/native-ABI/nginx/Node/Python/Ruby adapters, native browser, CLIs, attacker/defender, docs tooling, delivery, agent-maintenance and lab runner/runtime), resolver 3, edition 2024 and rust-version 1.99.1. Pins shared dependencies (exact unicode-normalization 0.1.22 for historical audit-hash parity, png/wasmparser for watermark carriers), forbids unsafe code workspace-wide and defines an opt-in local-edit profile. Manifest is not build or distribution evidence; the reader pages give no install guarantee.",
+      "sha256": "fa18140b91747e2569902ec25d89f4eb95c5d36dd2c1a4860f036875a9792913",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Root workspace manifest: lists members (umbrella crate, humanymous-core, humanymous-platform, humanymous-runtime, collector, Apache/.NET/framework/Go/native-ABI/nginx/Node/Python/Ruby adapters, native browser, CLIs, attacker/defender, docs tooling, delivery, agent-maintenance and lab runner/runtime), resolver 3, edition 2024 and rust-version 1.99.1. Pins shared dependencies (exact unicode-normalization 0.1.22 for historical audit-hash parity, png/wasmparser for watermark carriers) and forbids unsafe code workspace-wide. Re-reviewed 2026-11-18: dev and test profiles now keep line-tables-only debug info for workspace crates and none for dependencies, release is unchanged, and the opt-in local-edit profile still inherits dev. Manifest is not build or distribution evidence; the reader pages give no install guarantee.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/start-here/developer.md",
@@ -4995,10 +4995,54 @@
       ]
     },
     {
+      "source": "crates/sdk/humanymous-core/src/integrity/resource/classify.rs",
+      "sha256": "712f052fecb6f413c7e72006cd04c64b7107f5f4b750be55a00757b931ba31b0",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Pure resource cost-tier classifier ported from legacy classify.go: an exact, case-sensitive iframe/embed/object/frame Sec-Fetch-Dest gives T4-embed, then essential extensions or html/css/javascript/wasm MIME substrings give T0, then video MIME or .mp4/.webm/.m3u8/.ts or any body over 2 MiB give T3, then audio or images over 256 KiB give T2, and everything else is T1. Lowercasing copies Go's simple per-character mapping. Unit tests pin precedence, strict size boundaries and labels. No reader page documents tier gating and no runtime route calls it yet.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/integrity/resource/embed.rs",
+      "sha256": "cdde8b381543509c2eda0af75e1d7027926469c9cd8cb39c346b2030d5c34ba1",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Embed-context inspection ported from legacy embed.go: only exact embed fetch destinations are inspected; a non-empty origin outside a non-empty allow-list (after trim, lowercase, one https:// then one http:// prefix strip and a cut at the first slash, ports kept) emits l5.embed.origin_disallowed, and a missing RIT emits l5.embed.token_stripped, both existing registry IDs with server source and confidence 1. An empty allow-list permits every origin, as the legacy demo default did. Tests pin normalization and registry lookup. Library only, not wired into serving.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/integrity/resource/gate.rs",
+      "sha256": "78c4ab1e26b8a8b72c645f04e40d78f9143676260f9dbac5fd893237b907e9d4",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Serving matrix ported from legacy gate.go: essential always serves; under ALLOW only heavy needs both a valid RIT and liveness or it challenges; CHALLENGE downgrades media and heavy and challenges embed; DENY serves light and denies the rest; any other verdict string (matched case-sensitively, so lowercase allow counts as unknown) challenges heavy and embed. A unit test walks the full five-verdict matrix and checks the wire labels match SessionVerdict. Pure decision only; no runtime route applies it yet and it changes no score or verdict band.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/integrity/resource/media.rs",
+      "sha256": "bd2cdb256fcbb3c1fd9549a451c8aea0640a2468bd906b0c6412381b9182fb0f",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Caller-clocked media tracker ported from legacy media.go: a per-session Range history keeps instants strictly within the last 3 s and emits l5.media.range_storm with the count from the eighth Range request, then l5.media.hotlink for an external referer and l5.resource.rit_absent without RIT, in that order. Histories are pruned only on that session's next Range request (no global eviction, as in Go), a poisoned lock is recovered and the earliest representable instant does not overflow. Tests pin the window edge, session isolation and order. Not wired into serving.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
       "source": "crates/sdk/humanymous-core/src/integrity/resource/mod.rs",
-      "sha256": "ccad57be6d531b02962655189289f86a87875ea48d594f47ddf40471c66e6033",
-      "reviewer": "codex/rust-pages",
-      "notes": "Integrity library and comparison vectors do not qualify route wiring. Reader pages require exact byte representation, request binding and verification before origin effects, with configuration and streaming integration still pending. Carried unchanged from crates/integrity/src/resource/mod.rs: identical SHA-256 after the crate consolidation, so the reviewed bytes are the same.",
+      "sha256": "d390b7dd5ebbc6c317b106b6f0957b5d9a7e5bc5f61b5f0e02b23b042aa30aa7",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Resource module root. Re-reviewed 2026-11-18: it now declares and re-exports the ported tier classifier, serving gate, embed inspection and media tracker beside the unchanged session-bound signed URL helpers (sign, signed_url, verify). The module comment says everything here is a pure decision or caller-clocked state and that HTTP handling, serving and signal persistence belong to the runtime; no runtime code calls the new functions yet. Integrity library and comparison vectors do not qualify route wiring. Reader pages require exact byte representation, request binding and verification before origin effects, with configuration and streaming integration still pending.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/how-to/configure-attested-routes.md",
@@ -6141,6 +6185,17 @@
       ]
     },
     {
+      "source": "crates/sdk/humanymous-core/tests/integrity/fixtures/resource_gate.json",
+      "sha256": "50ec4e357dce469232369054cd4e378c83249af0802069955ab866ed0ce72889",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "LF JSON oracle fixture generated from the legacy Go resource package (oracle 981d25c per its introducing commit) and replayed by resource_parity.rs: 2379 classify cases over size and MIME boundaries, the 120-case gate matrix including unknown and lowercase verdicts, 504 embed contexts with case-variant destinations, and a 600-event media sequence over three sessions with expected range_storm, hotlink and rit_absent signals in Go wire form. Comparison data only; it is not route or deployment evidence.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
       "source": "crates/sdk/humanymous-core/tests/integrity/fixtures/verification.json",
       "sha256": "d623988f446c2d11fce701c9b070f06771f8a10ba3cc264dec794906928908ff",
       "reviewer": "codex/rust-pages",
@@ -6164,9 +6219,9 @@
     },
     {
       "source": "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs",
-      "sha256": "5a5ce95c93f5b34858d586935454b77672e04b4ae754841756206cd49b8beb97",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Signed resource URL parity test: requires 81 Go vectors and asserts sign(), signed_url() (including Unicode assets) and verify() at i64::MAX expiry boundary match the expected signature, URL and result.",
+      "sha256": "b8445d396faa94609146b895179858eee2c2ec5c6363cec05ebebf0c82dfe8fb",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Resource parity tests against the legacy oracle: the signed URL test requires 81 Go vectors and asserts sign(), signed_url() (including Unicode assets) and verify() at the i64::MAX expiry boundary. Re-reviewed 2026-11-18: it now also maps the six legacy classify, gate, embed and media table tests and replays fixtures/resource_gate.json (2379 classify cases, the 120-case gate matrix, 504 embed contexts and a 600-event media sequence), comparing emitted signals after the same JSON encode/decode as the Go wire. Library parity only; it does not show any served route applies these decisions.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/how-to/configure-attested-routes.md",
@@ -6491,9 +6546,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/Cargo.toml",
-      "sha256": "50f2461c8e2ea216929683994c4f90740636c145d4f49fa4bb532629cdc910ba",
-      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Manifest for the consolidated humanymous-runtime crate (description, readme README.md, publish = [\"crates-io\"]; autobins/autotests off, default feature gateway): feature-gated contexts gateway, authority, audit, capture, network and native-security plus hosted-pilot and credential-pilot, with pinned optional dependencies such as rustls 0.23.46 (ring, tls12), httlib-hpack 0.1.3, rcgen 0.14.10, interprocess 2.4.7, winsafe/keyring stores on Windows and rustix on Unix. It declares five binaries (humanymous-runtime, which repeats the package description, humanymous-h2-product-binding-measure, humanymous-authority, audit-witness, audit-control-retainer) and named gateway, authority, audit, capture and network parity integration tests, each with required features. The manifest itself is not evidence that those binaries or tests ran or were published.",
+      "sha256": "68676717b0db118e93d3fb0cf3a0c7d0de3a311a653f5c2186f54a7c6b4582e2",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Manifest for the consolidated humanymous-runtime crate (description, readme README.md, publish = [\"crates-io\"] in the first crates.io wave, which performs no upload; autobins/autotests off, default feature gateway): feature-gated contexts gateway, authority, audit, capture, network and native-security plus hosted-pilot and credential-pilot, with pinned optional dependencies such as rustls 0.23.46 (ring, tls12), httlib-hpack 0.1.3, rcgen 0.14.10, interprocess 2.4.7, winsafe/keyring stores on Windows and rustix on Unix; the collector dev-dependency carries a registry version beside its path. It declares five binaries (humanymous-runtime, humanymous-h2-product-binding-measure, humanymous-authority, audit-witness, audit-control-retainer) and named gateway (now including gateway-deployment-manifests), authority, audit, capture and network parity integration tests, each with required features. The first [[bin]] table also repeats the package description line, which is not a Cargo target field. The manifest itself is not evidence that those binaries or tests ran.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/reference/supported-topologies.md",
@@ -7882,9 +7937,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/application.rs",
-      "sha256": "a53baf5df0aa2b59bbc098c62db7407b58b3154f6bccf769e33e505c5b3ddf32",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Single-owner gateway Application that composes sessions, the frozen scoring engine and durable audit. It enforces Host==scope authority and validates browser/native session bootstrap and collect routes, rejecting reserved routes (403), route-inventory or profile mismatch (409), missing required raw_tls/original_h2/collector evidence (422) and failed admission (429); it scores other requests and appends a runtime.decision/collect audit record (request commitment hash, fail_closed) before answering, and audit failure poisons sessions with 503. serve/serve_until are loopback-only, one request per connection with per-connection deadlines, bounded shutdown drain and settings-command handling; the code says this is an experimental loopback pilot, not a production throughput claim.",
+      "sha256": "7a8bce5b4da396e62a95b15087cadf9bde800591bfab2be1f3472f21450640c6",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Single-owner gateway Application that composes sessions, the frozen scoring engine and durable audit. It enforces Host==scope authority and validates browser/native session bootstrap and collect routes, rejecting reserved routes (403), route-inventory or profile mismatch (409), missing required raw_tls/original_h2/collector evidence (422) and failed admission (429); it scores other requests and appends a runtime.decision/collect audit record (request commitment hash, fail_closed) before answering, and audit failure poisons sessions with 503. Re-reviewed 2026-11-18: an origin_* refusal after the committed ALLOW and before any client byte now appends one upstream.error record linked by the ALLOW record's request id and commitment, with route class, revision, latency, a static error class and code but no transport error text; the client still gets the 503 refusal, and a failed append poisons the epoch and answers durable_audit. serve/serve_until are loopback-only, one request per connection with per-connection deadlines, bounded shutdown drain and settings-command handling; the code says this is an experimental loopback pilot, not a production throughput claim.",
       "pages": [
         "docs/reference/gate-origin-contract.md",
         "docs/reference/production-vs-reference.md",
@@ -7963,9 +8018,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/application/tls.rs",
-      "sha256": "d7d9d24acc15249800f749dd439fe2cf49150b1625b5a95a304d0d064ae79205",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Bounded TLS consumers for the Application: serve_tls_until validates the rustls config, accepts loopback peers only with admission and settings handling, and dispatches captured H1 or R14 H2 requests through the same decide_observed authority. It checks client idle or stream liveness before and after the decision and before origin dispatch, then encodes local or origin responses with ACK headers. The doc comments state there is no plaintext fallback, no early data and no native streaming inference.",
+      "sha256": "c07ff283f37eb9acb34393e3d6a9cf4f8825e561555ccce921ea45d1b922c8ff",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Bounded TLS consumers for the Application: serve_tls_until validates the rustls config, accepts loopback peers only with admission and settings handling, and dispatches captured H1 or R14 H2 requests through the same decide_observed authority. It checks client idle or stream liveness before and after the decision and before origin dispatch, then encodes local or origin responses with ACK headers. Re-reviewed 2026-11-18: origin connect, write, read, frame-parse and timeout refusals now go through the Application's upstream.error audit before the refusal is encoded, since no TLS response byte precedes it. The doc comments state there is no plaintext fallback, no early data and no native streaming inference.",
       "pages": [
         "docs/how-to/https-tls-certificates.md",
         "docs/reference/gate-origin-contract.md",
@@ -8446,9 +8501,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/request.rs",
-      "sha256": "7dc72a3091ff20231098288bb222bbbf4c242135873bfae3f05a84320ed2bd73",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Request-derivation helpers ported from legacy request.go/helpers.go: route_class (upgrade/html/api/static by Go header priority, used for audit), saturating latency_us, 8-byte random correlation ids failing closed with 503 entropy, stable upstream error classes without raw text, Unix day_bucket clamped before epoch, and traffic_ip_hash as the first 8 bytes of HMAC-SHA256 over ipwm|ip, refusing an empty key.",
+      "sha256": "787b34aba81946b4eedc70113fcc2125fbcedec2a3925bdb5c44969addee712b",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Request-derivation helpers ported from legacy request.go/helpers.go: route_class (upgrade/html/api/static by Go header priority, used for audit), saturating latency_us, 8-byte random correlation ids failing closed with 503 entropy, stable upstream error classes without raw text, Unix day_bucket clamped before epoch, and traffic_ip_hash as the first 8 bytes of HMAC-SHA256 over ipwm|ip, refusing an empty key. Re-reviewed 2026-11-18: adds origin_error_class, which maps a refusal code with no transport error to the same closed class set (origin_timeout to timeout, truncated frames to eof, anything else to unreachable).",
       "pages": [
         "docs/concepts/how-gate-sees-a-request.md",
         "docs/reference/data-processing-inventory.md"
@@ -8456,9 +8511,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs",
-      "sha256": "543af6600a11bfe8024ca92ce5095c2bc25eaa8cf73f4c1a902a4230645f7199",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Tests pinning the legacy request helper branch order: route class priority, latency saturation and non-negative behaviour, sixteen-hex fresh correlation ids, upstream error class mapping without raw text, traffic_ip_hash matching a Go 1.25.3 golden and needing a key, and day_bucket matching Go with pre-epoch clamping.",
+      "sha256": "4d2ba8751a8eade2de77973c34804f1ccf28e63d9f195aa2e10bd29d417c65a3",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tests pinning the legacy request helper branch order: route class priority, latency saturation and non-negative behaviour, sixteen-hex fresh correlation ids, upstream error class mapping without raw text (now also origin_error_class for timeout, two truncated codes, framing and stream budget), traffic_ip_hash matching a Go 1.25.3 golden and needing a key, and day_bucket matching Go with pre-epoch clamping.",
       "pages": [
         "docs/concepts/how-gate-sees-a-request.md",
         "docs/reference/data-processing-inventory.md"
@@ -8770,9 +8825,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/tests.rs",
-      "sha256": "bf64b75e824b13955cc212e58cc35aff801d5fb9c088e8cb9f76e4f22ecc16ef",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Gateway unit and loopback TCP tests with fixture controls (not browser e2e): streaming requires a native profile, required external witness and recovery refusals, honest readiness, session capacity/expiry/rollback, RIT binding against 12 method/target/body/scope/deadline/header mutations, replay and cross-session collect refusal, missing client giving CHALLENGE and missing planes 422, fresh collector provenance gating, minimized audit with permanent poison, deadline and rollback never releasing origin, server-plane signal refusal with registry scores, and real TCP checks that audit precedes origin and client abort never dispatches origin.",
+      "sha256": "4b16b07267bc8a4290511be1de70fdee8b110ab565326a8aac86caafe462110e",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Gateway unit and loopback TCP tests with fixture controls (not browser e2e): streaming requires a native profile, required external witness and recovery refusals, honest readiness, session capacity/expiry/rollback, RIT binding against 12 method/target/body/scope/deadline/header mutations, replay and cross-session collect refusal, missing client giving CHALLENGE and missing planes 422, fresh collector provenance gating, minimized audit with permanent poison, deadline and rollback never releasing origin, server-plane signal refusal with registry scores, and real TCP checks that audit precedes origin and client abort never dispatches origin. Re-reviewed 2026-11-18: the shared Audit fixture gains a fail_upstream switch that fails only upstream.error appends; no test here changed.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/reference/gate-origin-contract.md"
@@ -8780,9 +8835,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs",
-      "sha256": "df4fbaeb0fd3fd216568df9b7ac0636630330a4330f34a1ef9d9f7248c19ec4d",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Native TCP tests with the real shared collector client session for the browser auth-only profile (fixture controls, not ordinary-browser, human or AT evidence): origin failure acknowledges the consumed counter without claiming zero effects, authenticated session quota 429 still carries the ACK and cannot debit another session, explicit profile, Origin, cookie and report-binding negatives, and consumption, ACK and origin fidelity end to end over sockets.",
+      "sha256": "027bae2692f986450336dd869b28e17c3c7f303bd9dc76725daeb32a49af310f",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Native TCP tests with the real shared collector client session for the browser auth-only profile (fixture controls, not ordinary-browser, human or AT evidence): origin failure acknowledges the consumed counter without claiming zero effects, authenticated session quota 429 still carries the ACK and cannot debit another session, explicit profile, Origin, cookie and report-binding negatives, and consumption, ACK and origin fidelity end to end over sockets. Re-reviewed 2026-11-18: the origin-failure test now also asserts the linked upstream.error record for a framing failure (unreachable) and a closed origin (connection_refused / origin_connect), and that a failed upstream.error append answers durable_audit and stops the epoch serving without a second origin effect.",
       "pages": [
         "docs/reference/browser-collector.md",
         "docs/reference/gate-origin-contract.md"
@@ -9822,6 +9877,16 @@
       "pages": [
         "docs/reference/versioning-derivation-index.md",
         "docs/reference/support-licensing.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/gateway/deployment_manifests.rs",
+      "sha256": "6884d6a858988eb9c17d5a324e0665d6445b5cf733ad506ab0a5fea26672f721",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Byte checks of shipped deployment files plus the runtime's own configuration parser: deployments/humanymous-runtime.example.json must parse and validate with loopback listen 8444 and origin 8080, UID 65532 owner, state under /var/lib/humanymous, a REPLACE-ME passphrase placeholder and RIT-only routes; the Kubernetes Secret must embed the same document; k8s, compose, .env and systemd files must not configure Go gate flags or variables, must run ghcr.io/modootoday/humanymous-runtime via stdin configuration without args, and must keep non-root, read-only, dropped-capability and systemd sandboxing settings; the runtime-candidate Dockerfile and release workflow must name that image. Header states no cluster, systemd or container runs, so this is not deployment qualification.",
+      "pages": [
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/production-vs-reference.md"
       ]
     },
     {
