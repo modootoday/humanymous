@@ -10,8 +10,10 @@
 //! Nothing here is wired into `Application`: the owner decision of 2026-11-16
 //! leaves serving composition undecided. Deliberate differences, pinned by
 //! tests:
-//! - A ledger refusal (capacity, rate history) is returned as an error; the
-//!   caller must refuse the request. Go's store could not fail.
+//! - In enforce mode a ledger refusal (capacity, rate history) is returned as
+//!   an error; the caller must refuse the request. Go's store could not fail.
+//!   Monitor and shadow never block: a refusal there is recorded as
+//!   `ratelimit.unavailable` with action `would_refuse` and the gate continues.
 //! - Records use the Runtime verdict vocabulary `DENY`, as
 //!   `smuggle::spoof_record` does, and carry no `key_id` (Go wrote `deny` and
 //!   `k1`). A dual-control ban renders as `manual`, its operator origin.
@@ -27,7 +29,7 @@ pub const BLOCK_STATUS: u16 = 403;
 /// Static body of a blocked request; no ban detail is reflected.
 pub const BLOCK_BODY: &str = "Source temporarily blocked (rate limit / abuse protection).";
 /// Incident pointer header; the detail lives only in the audit chain.
-pub const INCIDENT_HEADER: (&str, &str) = ("X-Hmn-Incident", "see-audit-log");
+pub use crate::gateway::guard::INCIDENT_HEADER;
 
 /// Settings-driven module mode of `gate.ban` (SoT-39).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -214,10 +216,24 @@ pub fn evaluate<B: BanLedger + ?Sized>(
     }
     for key in keys {
         if mode != Mode::Enforce {
-            let (event, action) = match ledger.observe_rate(key, now)? {
-                Level::Normal => continue,
-                Level::Soft => ("ratelimit.soft_exceeded", "would_rate_limit"),
-                Level::Hard => ("ratelimit.hard_exceeded", "would_auto_ban"),
+            let (event, action) = match ledger.observe_rate(key, now) {
+                Ok(Level::Normal) => continue,
+                Ok(Level::Soft) => ("ratelimit.soft_exceeded", "would_rate_limit"),
+                Ok(Level::Hard) => ("ratelimit.hard_exceeded", "would_auto_ban"),
+                // Audit-only modes never deny: record the refusal and continue.
+                Err(_) => {
+                    gate.records.push(Record {
+                        fail_reason: "rate history unavailable (audit only)".into(),
+                        ..record(
+                            "ratelimit.unavailable",
+                            "subject",
+                            subject,
+                            "would_refuse",
+                            mode,
+                        )
+                    });
+                    continue;
+                }
             };
             gate.records
                 .push(record(event, "subject", subject, action, mode));

@@ -64,6 +64,10 @@ pub fn strip_inbound(headers: &mut Vec<(String, String)>) {
     headers.retain(|(name, _)| !is_internal(name));
 }
 
+/// Incident pointer header set on every gate deny (legacy `deny` and
+/// `enforceBan`); the detail lives only in the audit chain.
+pub const INCIDENT_HEADER: (&str, &str) = ("X-Hmn-Incident", "see-audit-log");
+
 /// Static body of a request the enforcing spoof gate denies (legacy `deny`).
 pub const SPOOF_DENY_BODY: &str = "Request blocked by humanymous (automation detected).";
 
@@ -75,6 +79,18 @@ pub struct Spoof {
     pub record: Record,
     /// Deny instead of forwarding.
     pub deny: bool,
+}
+
+impl Spoof {
+    /// Response metadata of a deny: the incident pointer. Empty when the
+    /// request continues (monitor), since nothing is answered locally.
+    pub fn headers(&self) -> Vec<(&'static str, String)> {
+        if self.deny {
+            vec![(INCIDENT_HEADER.0, INCIDENT_HEADER.1.to_owned())]
+        } else {
+            Vec::new()
+        }
+    }
 }
 
 /// Legacy `spoofHeaderGate`: strip every internal header and, when any carried

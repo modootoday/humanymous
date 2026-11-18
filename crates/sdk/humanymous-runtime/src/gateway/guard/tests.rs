@@ -185,3 +185,21 @@ fn spoof_gate_without_a_claim_records_nothing_but_still_strips() {
     assert_eq!(spoof_gate(&mut clean, true, "node-1", "psn"), None);
     assert_eq!(clean, headers(&[("Host", "x")]));
 }
+
+/// Go `deny()` set `X-Hmn-Incident: see-audit-log` on the 403; the spoof deny
+/// carries the same pointer and a monitored request carries none.
+#[test]
+fn spoof_deny_carries_the_incident_pointer() {
+    assert_eq!(INCIDENT_HEADER, ("X-Hmn-Incident", "see-audit-log"));
+    let mut h = headers(&[("X-Real-Ip", "9.9.9.9")]);
+    let denied = spoof_gate(&mut h, true, "node-1", "psn").unwrap();
+    assert_eq!(
+        denied.headers(),
+        vec![("X-Hmn-Incident", "see-audit-log".to_owned())]
+    );
+    let mut h = headers(&[("X-Real-Ip", "9.9.9.9")]);
+    let monitored = spoof_gate(&mut h, false, "node-1", "psn").unwrap();
+    assert!(monitored.headers().is_empty());
+    // The ban gate shares the same constant.
+    assert_eq!(crate::gateway::ban::gate::INCIDENT_HEADER, INCIDENT_HEADER);
+}

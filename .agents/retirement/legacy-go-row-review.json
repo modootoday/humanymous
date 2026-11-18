@@ -2326,7 +2326,9 @@
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::auto_ban_flood_blocks_source_and_spares_other_address",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::fingerprint_key_bans_ip_rotating_flood",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::manual_temporary_ban_lifecycle",
-    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::already_banned_source_reports_existing_ban"
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::already_banned_source_reports_existing_ban",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::monitor_and_shadow_record_rate_refusal_and_never_block",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::fourth_strike_block_flags_dual_control"
    ],
    "go_test_map": {
     "TestAutoBanEndToEnd": "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::flood_is_auto_banned_audited_and_spares_other_address",
@@ -2339,7 +2341,7 @@
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "All three Go tests pass on the oracle (981d25c, Go 1.25.3). Their kernel halves are ported against gateway::ban::gate with the Go-measured sequence: with soft 8 and hard 10 requests 8 and 9 record ratelimit.soft_exceeded and request 10 is blocked with ban.applied then ban.enforced; the records are appended to a real audit Log and the chain verifies; an unrelated address passes; an IP-rotating flood is banned by fp:d_Tues8bRjsNLZHw (Go bindKey); a manual temporary ban blocks with Retry-After until lifted. The HTTP response, origin and admin halves stay gaps. Temporary auto and manual bans need no dual control; permanent and cidr bans do (pinned by the dual-control tests).",
+   "notes": "All three Go tests pass on the oracle (981d25c, Go 1.25.3). Their kernel halves are ported against gateway::ban::gate with the Go-measured sequence: with soft 8 and hard 10 requests 8 and 9 record ratelimit.soft_exceeded and request 10 is blocked with ban.applied then ban.enforced; the records are appended to a real audit Log and the chain verifies; an unrelated address passes; an IP-rotating flood is banned by fp:d_Tues8bRjsNLZHw (Go bindKey); a manual temporary ban blocks with Retry-After until lifted. The HTTP response, origin and admin halves stay gaps. Temporary auto and manual bans need no dual control; permanent and cidr bans do (pinned by the dual-control tests). Review follow-up: monitor and shadow never block; a rate-history refusal there is recorded as ratelimit.unavailable (would_refuse) and the request continues, while enforce mode still returns the refusal for the caller to fail closed. A fourth auto strike blocks with the 24h term and Block.dual_control_required set.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::flood_is_auto_banned_audited_and_spares_other_address": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::ip_rotating_flood_is_banned_by_fingerprint": "passed",
@@ -2349,7 +2351,9 @@
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::auto_ban_flood_blocks_source_and_spares_other_address": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::fingerprint_key_bans_ip_rotating_flood": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::manual_temporary_ban_lifecycle": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::already_banned_source_reports_existing_ban": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::already_banned_source_reports_existing_ban": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::monitor_and_shadow_record_rate_refusal_and_never_block": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::fourth_strike_block_flags_dual_control": "passed"
    }
   },
   {
@@ -2806,8 +2810,8 @@
    ],
    "go_test_map": {},
    "gaps": [
-    "ban gate",
-    "spoof-header gate",
+    "ban gate: the kernel gateway::ban::gate (port of banGate, enforceBan, banReason) exists, but Application does not run it",
+    "spoof-header gate: the kernel guard::spoof_gate (port of spoofHeaderGate) exists, but Application does not run it",
     "verdict-token gate",
     "upgrade gate",
     "agent-auth, PAT and WebAuthn gates",
@@ -2890,7 +2894,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::valid_with_symmetric_grace",
     "crates/sdk/humanymous-runtime/src/gateway/http/stream.rs::complete_chunk_stream_reframes_and_strips_forged_gateway_fields",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::spoof_record_lists_only_static_header_names",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::real_shared_client_consumption_ack_and_origin_fidelity"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::real_shared_client_consumption_ack_and_origin_fidelity",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::spoof_deny_carries_the_incident_pointer"
    ],
    "go_test_map": {},
    "gaps": [
@@ -2899,7 +2904,7 @@
    ],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Every guard.go function is ported as a pure kernel: spoofScan, stripInbound, originAuth/originEpoch/originEpochGrace/ValidateOriginAuth (OriginKey, byte-identical to Go) and spoofRecord (smuggle::spoof_record). guard::spoof_gate ports gates.go spoofHeaderGate with the Go-measured output (Go 1.25.3 at 981d25c): enforce denies with the HR-27b record listing non-empty names in legacy order, and monitor and shadow both record mode monitor and continue with the headers stripped. The existing Rust forwarder already drops every internal header (http::origin_request). Owner decision 2026-11-16 (#24; .agents/retirement/owner-decisions-2026-11-16.md) accepts the fail-closed differences (short origin keys refused) and leaves wiring into serving composition undecided, so the two wiring gaps remain. Signal IDs and scoring are unchanged.",
+   "notes": "Every guard.go function is ported as a pure kernel: spoofScan, stripInbound, originAuth/originEpoch/originEpochGrace/ValidateOriginAuth (OriginKey, byte-identical to Go) and spoofRecord (smuggle::spoof_record). guard::spoof_gate ports gates.go spoofHeaderGate with the Go-measured output (Go 1.25.3 at 981d25c): enforce denies with the HR-27b record listing non-empty names in legacy order, and monitor and shadow both record mode monitor and continue with the headers stripped. The existing Rust forwarder already drops every internal header (http::origin_request). Owner decision 2026-11-16 (#24; .agents/retirement/owner-decisions-2026-11-16.md) accepts the fail-closed differences (short origin keys refused) and leaves wiring into serving composition undecided, so the two wiring gaps remain. Signal IDs and scoring are unchanged. Review follow-up: the spoof deny carries Go's X-Hmn-Incident: see-audit-log pointer through guard::INCIDENT_HEADER and Spoof::headers(), shared with the ban gate.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::clean_request_has_no_spoof": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::enforcing_spoof_gate_denies_each_forged_trust_header": "passed",
@@ -2914,7 +2919,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::valid_with_symmetric_grace": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/http/stream.rs::complete_chunk_stream_reframes_and_strips_forged_gateway_fields": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::spoof_record_lists_only_static_header_names": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::real_shared_client_consumption_ack_and_origin_fidelity": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::real_shared_client_consumption_ack_and_origin_fidelity": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::spoof_deny_carries_the_incident_pointer": "passed"
    }
   },
   {

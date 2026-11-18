@@ -7,7 +7,7 @@ use super::*;
 use crate::audit::log::{Config as LogConfig, Log};
 use crate::audit::storage::{Wal, WalOptions};
 use crate::audit::verification::verify;
-use crate::gateway::ban::Store;
+use crate::gateway::ban::{Store, escalation};
 use crate::gateway::token::bind_key;
 use crate::network::history::rate::{Config, Limits};
 use std::sync::atomic::{AtomicU64, Ordering};
@@ -373,4 +373,67 @@ fn ledger_refusal_is_returned_not_passed() {
         Err(Refusal::Key),
         "a fingerprint shorter than a key allows is refused"
     );
+}
+
+/// Review finding: an audit-only mode must never deny. A rate-history refusal
+/// (clock regression here) is recorded as `ratelimit.unavailable` and the
+/// request continues, while enforce mode still returns the refusal.
+#[test]
+fn monitor_and_shadow_record_rate_refusal_and_never_block() {
+    for (mode, name) in [(Mode::Monitor, "monitor"), (Mode::Shadow, "shadow")] {
+        let mut ledger = store(8, 10);
+        let metered = keys_for("203.0.113.9");
+        evaluate(&mut ledger, &metered, mode, &SUBJECT, at(10)).unwrap();
+        let gate = evaluate(&mut ledger, &metered, mode, &SUBJECT, at(0))
+            .unwrap_or_else(|refusal| panic!("{name} must not refuse: {refusal:?}"));
+        assert_eq!(gate.block, None, "{name} must never block");
+        assert_eq!(
+            events(&gate),
+            [("ratelimit.unavailable", "subject", "would_refuse")],
+            "{name}"
+        );
+        assert_eq!(gate.records[0].enforcement_mode, name);
+        assert_eq!(
+            gate.records[0].fail_reason,
+            "rate history unavailable (audit only)"
+        );
+        assert!(BanLedger::list(&mut ledger, at(11)).is_empty());
+    }
+    let mut ledger = store(8, 10);
+    let metered = keys_for("203.0.113.9");
+    evaluate(&mut ledger, &metered, Mode::Enforce, &SUBJECT, at(10)).unwrap();
+    assert!(evaluate(&mut ledger, &metered, Mode::Enforce, &SUBJECT, at(0)).is_err());
+}
+
+/// The fourth auto strike keeps the 24h term (no automatic permanent ban) and
+/// the gate's Block carries `dual_control_required` so the composition can
+/// propose the dual-controlled permanent ban.
+#[test]
+fn fourth_strike_block_flags_dual_control() {
+    let mut ledger = store(8, 10);
+    let metered = keys_for("203.0.113.9");
+    let mut i = 0;
+    for strike in 1..=4u32 {
+        let block = loop {
+            let gate = evaluate(&mut ledger, &metered, Mode::Enforce, &SUBJECT, at(i)).unwrap();
+            i += 1;
+            if let Some(block) = gate.block.clone() {
+                assert_eq!(
+                    events(&gate),
+                    [
+                        ("ban.applied", "system", "block"),
+                        ("ban.enforced", "subject", "block")
+                    ]
+                );
+                break block;
+            }
+        };
+        assert_eq!(block.entry.strike, strike);
+        assert_eq!(block.dual_control_required, strike == 4, "strike {strike}");
+        assert!(!block.entry.permanent());
+        let term = block.entry.until.unwrap() - block.entry.created;
+        assert_eq!(term, escalation(strike));
+        assert!(block.retry_after.is_some());
+        assert_eq!(BanLedger::lift(&mut ledger, &block.entry.key), Ok(true));
+    }
 }
