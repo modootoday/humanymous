@@ -10,6 +10,7 @@ use sha2::{Digest, Sha256};
 
 const PROTOCOL: &str = "humanymous.operational/0.1";
 const DOMAIN: &[u8] = b"humanymous/runtime/operational-state/0.1\0";
+pub mod overlay;
 mod store;
 pub use store::{CommittedSettings, SettingsBootstrap, SettingsPolicy, SettingsStore};
 

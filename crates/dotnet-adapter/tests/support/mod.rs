@@ -15,6 +15,19 @@ pub fn execution_environment() -> &'static str {
     ).expect("actual .NET tests require allocated local or genuine standard hosted execution; ACT is not qualification")
 }
 
+/// Non-panicking venue classification for admission; `None` refuses.
+#[allow(dead_code, reason = "used by the hosted admission consumer only")]
+pub fn venue() -> Option<&'static str> {
+    classify(
+        std::env::var("GITHUB_ACTIONS").ok().as_deref(),
+        std::env::var("RUNNER_ENVIRONMENT").ok().as_deref(),
+        std::env::var_os("ACT").is_some(),
+        std::env::var("HUMANYMOUS_DOTNET_LOCAL_ALLOCATION")
+            .ok()
+            .as_deref(),
+    )
+}
+
 fn classify(
     actions: Option<&str>,
     runner: Option<&str>,

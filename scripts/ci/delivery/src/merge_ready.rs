@@ -19,6 +19,7 @@ pub const SUCCESS: &[&str] = &[
     "images",
     "packages",
     "node",
+    "dotnet",
     "advisories",
     "documentation",
 ];
