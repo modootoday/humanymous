@@ -542,7 +542,8 @@ fn profile_absent(sid: &str, directory: &Path) -> io::Result<bool> {
     let mut handle: HKEY = null_mut();
     // SAFETY: `key` is an owned NUL-terminated UTF-16 buffer live for the call;
     // `handle` is a local out-parameter closed below when the open succeeds.
-    let status = unsafe { RegOpenKeyExW(HKEY_LOCAL_MACHINE, key.as_ptr(), 0, KEY_READ, &mut handle) };
+    let status =
+        unsafe { RegOpenKeyExW(HKEY_LOCAL_MACHINE, key.as_ptr(), 0, KEY_READ, &mut handle) };
     let registry_absent = match status {
         ERROR_SUCCESS => {
             // SAFETY: `handle` was returned open by the successful call above.
@@ -712,13 +713,13 @@ fn launch(
         true,
         (Logon::WithProfile, None),
     )
-        .map_err(|failure| match failure {
-            StartFailure::NotStarted(error) => error,
-            StartFailure::Retained(OwnedProcessFailure { owner, error }) => {
-                drop(owner);
-                error
-            }
-        })?;
+    .map_err(|failure| match failure {
+        StartFailure::NotStarted(error) => error,
+        StartFailure::Retained(OwnedProcessFailure { owner, error }) => {
+            drop(owner);
+            error
+        }
+    })?;
     let natural =
         owner.wait_run(std::time::Instant::now() + std::time::Duration::from_secs(1200))?;
     let proof = owner.contain(std::time::Instant::now() + std::time::Duration::from_secs(5))?;
