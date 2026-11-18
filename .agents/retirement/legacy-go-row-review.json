@@ -15,8 +15,8 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 231,
-  "partial": 64,
+  "ported_unit": 235,
+  "partial": 60,
   "missing": 8,
   "not_applicable": 2,
   "oracle_only": 9
@@ -60,8 +60,8 @@
    "ported_unit": 2
   },
   "internal/audit": {
-   "partial": 6,
-   "ported_unit": 22
+   "partial": 2,
+   "ported_unit": 26
   },
   "internal/behavior": {
    "ported_unit": 2
@@ -5224,7 +5224,9 @@
     "crates/sdk/humanymous-runtime/src/audit/log/sealed.rs",
     "crates/sdk/humanymous-runtime/src/audit/log/stamp.rs",
     "crates/sdk/humanymous-runtime/src/audit/checkpoint/mod.rs",
-    "crates/sdk/humanymous-runtime/src/audit/storage/wal.rs"
+    "crates/sdk/humanymous-runtime/src/audit/storage/wal.rs",
+    "crates/sdk/humanymous-runtime/src/audit/log/live.rs",
+    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering",
@@ -5232,23 +5234,28 @@
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::witnessed_heads_survive_restart_and_missing_signatures_block_boot",
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::witness_refusal_is_not_silently_downgraded_to_writer_only",
     "crates/sdk/humanymous-runtime/tests/audit/checkpoint_parity.rs::checkpoint_keys_signature_bytes_and_hmacs_match_go",
-    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_hmac_key_is_refused_before_any_append"
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_hmac_key_is_refused_before_any_append",
+    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::ring_window_is_bounded_while_the_wal_keeps_the_full_chain",
+    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::restart_refills_the_window_from_the_authenticated_wal",
+    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::self_verify_replays_the_live_chain_and_never_passes_empty"
    ],
    "go_test_map": {},
    "gaps": [
-    "no bounded in-memory ring window or Recent(n)/Len accessors (Rust reads records from disk; intentional design difference, needs owner acceptance)",
-    "no in-memory-only Log without a WAL (intentional design difference, needs owner acceptance)"
+    "no in-memory-only Log without a WAL: the Rust Log always opens over the authenticated WAL authority (SoT-32 durability; adapter-authority 'never ephemeral replacement'), so Go's ephemeral unbounded mode is an intended design difference"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Append/seal, periodic checkpoint, witness counter-sign, WAL replay and fail-closed poisoning are ported. The Rust design drops the memory ring on purpose. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "notes": "Append/seal, periodic checkpoint, witness counter-sign, WAL replay and fail-closed poisoning are ported. The bounded in-memory tail window (Go RingCap, default 4096, cut back to the newest cap past twice the cap), Recent(n) and Len are ported additively as Log::set_ring_capacity/recent/len in log/live.rs; the window is refilled from the authenticated WAL on open and never feeds recovery or proofs. Owner decision 2026-11-16 accepted the WAL-only fail-closed Rust design (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::checkpoint_disk_failure_prevents_action_and_poisons_writer": "passed",
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering": "passed",
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::witness_refusal_is_not_silently_downgraded_to_writer_only": "passed",
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::witnessed_heads_survive_restart_and_missing_signatures_block_boot": "passed",
     "crates/sdk/humanymous-runtime/tests/audit/checkpoint_parity.rs::checkpoint_keys_signature_bytes_and_hmacs_match_go": "passed",
-    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_hmac_key_is_refused_before_any_append": "passed"
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_hmac_key_is_refused_before_any_append": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::ring_window_is_bounded_while_the_wal_keeps_the_full_chain": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::restart_refills_the_window_from_the_authenticated_wal": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::self_verify_replays_the_live_chain_and_never_passes_empty": "passed"
    }
   },
   {
@@ -5410,42 +5417,44 @@
    "baseline_path": "internal/audit/noderegistry_test.go",
    "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry.rs"
+    "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry.rs",
+    "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry/tests.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry.rs::suppression_resume_and_exact_boundary_match_source_regression"
+    "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry/tests.rs::suppression_resume_and_exact_boundary_match_source_regression"
    ],
    "go_test_map": {
-    "TestNodeSuppressionDetected": "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry.rs::suppression_resume_and_exact_boundary_match_source_regression"
+    "TestNodeSuppressionDetected": "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry/tests.rs::suppression_resume_and_exact_boundary_match_source_regression"
    },
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
    "notes": "",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry.rs::suppression_resume_and_exact_boundary_match_source_regression": "passed"
+    "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry/tests.rs::suppression_resume_and_exact_boundary_match_source_regression": "passed"
    }
   },
   {
    "baseline_path": "internal/audit/noderegistry.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry.rs"
+    "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry.rs",
+    "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry/tests.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry.rs::suppression_resume_and_exact_boundary_match_source_regression",
-    "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry.rs::invalid_and_regressing_inputs_cannot_refresh_liveness"
+    "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry/tests.rs::suppression_resume_and_exact_boundary_match_source_regression",
+    "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry/tests.rs::invalid_and_regressing_inputs_cannot_refresh_liveness",
+    "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry/tests.rs::expected_node_keeps_its_ed25519_key_beside_the_cadence"
    ],
    "go_test_map": {},
-   "gaps": [
-    "Expect does not keep a per-node Ed25519 public key (Go NodeInfo.PubKey)"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Expect, receipt-as-heartbeat, missing() and nodes() are ported with the 2x grace window.",
+   "notes": "Expect, receipt-as-heartbeat, missing() and nodes() are ported with the 2x grace window. NodeRegistry::expect_with_key keeps the per-node Ed25519 key (Go NodeInfo.PubKey, None for a nil key) and public_key() returns it; the console snapshot never exposes it.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry.rs::invalid_and_regressing_inputs_cannot_refresh_liveness": "passed",
-    "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry.rs::suppression_resume_and_exact_boundary_match_source_regression": "passed"
+    "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry/tests.rs::invalid_and_regressing_inputs_cannot_refresh_liveness": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry/tests.rs::suppression_resume_and_exact_boundary_match_source_regression": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry/tests.rs::expected_node_keeps_its_ed25519_key_beside_the_cadence": "passed"
    }
   },
   {
@@ -5520,25 +5529,27 @@
   },
   {
    "baseline_path": "internal/audit/record.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/audit/record/mod.rs",
-    "crates/sdk/humanymous-runtime/tests/audit/record_parity.rs"
+    "crates/sdk/humanymous-runtime/tests/audit/record_parity.rs",
+    "crates/sdk/humanymous-runtime/src/audit/record/events.rs",
+    "crates/sdk/humanymous-runtime/src/audit/record/events/tests.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/tests/audit/record_parity.rs::canonical_bytes_and_record_hashes_match_go_without_mutating_records",
-    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering"
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering",
+    "crates/sdk/humanymous-runtime/src/audit/record/events/tests.rs::event_taxonomy_matches_go_names_and_values"
    ],
    "go_test_map": {},
-   "gaps": [
-    "Event* event-type taxonomy constants (enforcement.*, token.*, net.*, approval.*, ...) are not defined in Rust"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "The Record wire struct and default event_version 1.0.0 are ported; record_parity round-trips frozen Go records.",
+   "notes": "The Record wire struct and default event_version 1.0.0 are ported; record_parity round-trips frozen Go records. All 74 Go Event* taxonomy constants and EventSchemaVersion are in record::events with the exact Go string values (SCREAMING_SNAKE names); the stamp uses EVENT_SCHEMA_VERSION.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering": "passed",
-    "crates/sdk/humanymous-runtime/tests/audit/record_parity.rs::canonical_bytes_and_record_hashes_match_go_without_mutating_records": "passed"
+    "crates/sdk/humanymous-runtime/tests/audit/record_parity.rs::canonical_bytes_and_record_hashes_match_go_without_mutating_records": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/record/events/tests.rs::event_taxonomy_matches_go_names_and_values": "passed"
    }
   },
   {
@@ -5741,22 +5752,25 @@
    "baseline_path": "internal/audit/sink.go",
    "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs"
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs",
+    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering",
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::checkpoint_disk_failure_prevents_action_and_poisons_writer",
-    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_event_type_is_refused_before_the_action"
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_event_type_is_refused_before_the_action",
+    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::emit_seals_without_an_action_and_refuses_an_untyped_record"
    ],
    "go_test_map": {},
    "gaps": [],
    "retire_basis": null,
-   "confidence": "high",
-   "notes": "Log::emit_and_act runs the action only after a durable append and checkpoint; the action is skipped when sealing fails or the event type is empty, and a refusal consumes no sequence number. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged. Go Emit(r) is EmitAndAct(r, nil); Log::append is that no-action seal with the same empty event_type refusal and returns the sealed record, so no separate helper is added.",
+   "confidence": "medium",
+   "notes": "Log::emit_and_act runs the action only after a durable append and checkpoint; the action is skipped when sealing fails or the event type is empty, and a refusal consumes no sequence number. Log::emit is the no-action Emit helper (EmitAndAct with no action). Go panicked on an empty event type; Rust returns an error without advancing (owner decision 2026-11-16 fail-closed DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::checkpoint_disk_failure_prevents_action_and_poisons_writer": "passed",
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering": "passed",
-    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_event_type_is_refused_before_the_action": "passed"
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_event_type_is_refused_before_the_action": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::emit_seals_without_an_action_and_refuses_an_untyped_record": "passed"
    }
   },
   {
@@ -5792,63 +5806,69 @@
   },
   {
    "baseline_path": "internal/audit/verifier.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs",
     "crates/sdk/humanymous-runtime/src/audit/verification/checks.rs",
-    "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs"
+    "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs",
+    "crates/sdk/humanymous-runtime/src/audit/log/live.rs",
+    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs::every_verifier_result_and_priority_matches_go",
-    "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved"
+    "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved",
+    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::self_verify_replays_the_live_chain_and_never_passes_empty",
+    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::self_verify_requires_witness_cosignatures_when_configured"
    ],
    "go_test_map": {},
-   "gaps": [
-    "no SelfVerify on a live Log (admin integrity endpoint). Rust verifies at open or through the scan module"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Verify/VerifyWitness classes and precedence match 840 Go cases.",
+   "notes": "Verify/VerifyWitness classes and precedence match 840 Go cases. Log::self_verify replays the live log's durable records against its in-memory checkpoints with the HMAC and writer keys and, when a witness is configured, requires every co-signature (witness-invalid otherwise); unreadable storage verifies as empty-chain.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved": "passed",
-    "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs::every_verifier_result_and_priority_matches_go": "passed"
+    "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs::every_verifier_result_and_priority_matches_go": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::self_verify_replays_the_live_chain_and_never_passes_empty": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::self_verify_requires_witness_cosignatures_when_configured": "passed"
    }
   },
   {
    "baseline_path": "internal/audit/wal_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/audit/storage/wal.rs",
     "crates/sdk/humanymous-runtime/src/audit/storage/framing.rs",
-    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs"
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs",
+    "crates/sdk/humanymous-runtime/src/audit/log/live.rs",
+    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/audit/storage/framing.rs::recovery_keeps_only_newline_committed_frames",
     "crates/sdk/humanymous-runtime/src/audit/storage/framing.rs::framed_corruption_is_never_a_recoverable_tail",
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering",
     "crates/sdk/humanymous-runtime/src/audit/storage/wal.rs::exclusive_writer_rotation_checkpoint_and_restart",
-    "crates/sdk/humanymous-runtime/src/audit/storage/wal.rs::rotation_failure_permanently_poisoned_until_restart"
+    "crates/sdk/humanymous-runtime/src/audit/storage/wal.rs::rotation_failure_permanently_poisoned_until_restart",
+    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::ring_window_is_bounded_while_the_wal_keeps_the_full_chain"
    ],
    "go_test_map": {
     "TestWALTornTailRecovers": "crates/sdk/humanymous-runtime/src/audit/storage/framing.rs::recovery_keeps_only_newline_committed_frames",
     "TestWALRoundTripAndVerify": "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering",
     "TestWALReplayAcrossRestart": "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering",
     "TestWALSegmentRotation": "crates/sdk/humanymous-runtime/src/audit/storage/wal.rs::exclusive_writer_rotation_checkpoint_and_restart",
-    "TestWALRingBoundsMemory": null,
+    "TestWALRingBoundsMemory": "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::ring_window_is_bounded_while_the_wal_keeps_the_full_chain",
     "TestWALAppendFailClosed": "crates/sdk/humanymous-runtime/src/audit/storage/wal.rs::rotation_failure_permanently_poisoned_until_restart"
    },
-   "gaps": [
-    "bounded in-memory ring and Recent(n) have no Rust counterpart"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": " Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "notes": "TestWALRingBoundsMemory maps to the Rust ring window test (RingCap 8, 40 appends, window <= 16, full chain on disk, Recent(5) = 5). Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering": "passed",
     "crates/sdk/humanymous-runtime/src/audit/storage/framing.rs::framed_corruption_is_never_a_recoverable_tail": "passed",
     "crates/sdk/humanymous-runtime/src/audit/storage/framing.rs::recovery_keeps_only_newline_committed_frames": "passed",
     "crates/sdk/humanymous-runtime/src/audit/storage/wal.rs::exclusive_writer_rotation_checkpoint_and_restart": "passed",
-    "crates/sdk/humanymous-runtime/src/audit/storage/wal.rs::rotation_failure_permanently_poisoned_until_restart": "passed"
+    "crates/sdk/humanymous-runtime/src/audit/storage/wal.rs::rotation_failure_permanently_poisoned_until_restart": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::ring_window_is_bounded_while_the_wal_keeps_the_full_chain": "passed"
    }
   },
   {

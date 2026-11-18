@@ -7174,9 +7174,18 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry.rs",
-      "sha256": "1c47f95ea69995ab5406710acc46284b8274b8efa0449b27cd5a533b739f3cec",
-      "reviewer": "codex/rust-pages",
-      "notes": "Read full expected-node BTreeMap state, duplicate/unknown refusal, per-node observer-time regression and checked age, strict greater-than two-cadence missing threshold, millisecond output and source tests. Public incident reference requires upstream receipt authentication/replay rejection and external persistent observer, with no signed transport, complete audit or human-presence claim. No heartbeat/process run. Carried unchanged from crates/audit/src/lifecycle/registry.rs: identical SHA-256 after the crate consolidation, so the reviewed bytes are the same.",
+      "sha256": "251bcd22e2e2ca6f012a379488b840c9e984a8aa48a92ab6568c625d07c6a4fc",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Read full expected-node BTreeMap state, duplicate/unknown refusal, per-node observer-time regression and checked age, strict greater-than two-cadence missing threshold and millisecond output. Re-reviewed 2026-11-18: expect() now delegates to expect_with_key(), which stores an optional Ed25519 receipt verification key per node (Go NodeInfo.PubKey) that public_key() returns (UnknownNode for an unregistered id); the registry does not verify signatures itself, and the public status snapshot still omits raw keys. Tests moved to registry/tests.rs. Public incident reference requires upstream receipt authentication/replay rejection and external persistent observer, with no signed transport, complete audit or human-presence claim. No heartbeat/process run.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry/tests.rs",
+      "sha256": "85e04de2c1462de2463e641969054c05625dfa2bea4b9688bfc2c35552e0402e",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unit tests for NodeRegistry moved out of registry.rs: the source regression for suppression, resume and the exact two-cadence boundary with millisecond last-seen output; invalid registrations, duplicate registration, observer clock regression and unknown nodes cannot refresh liveness; and expect_with_key keeps a node's Ed25519 key beside its cadence (Go NodeInfo.PubKey), returns None for keyless nodes and UnknownNode for unregistered ones, the pinned key verifies only that node's signature, re-registration cannot replace it, the key does not change the grace window, and the JSON console snapshot never contains it.",
       "pages": [
         "docs/reference/on-call-quick-reference.md"
       ]
@@ -7191,10 +7200,30 @@
       ]
     },
     {
-      "source": "crates/sdk/humanymous-runtime/src/audit/log/mod.rs",
-      "sha256": "ba85d7b3ab6227bf9b577f061265dec93d0c094992f20a763949194b56db3f02",
+      "source": "crates/sdk/humanymous-runtime/src/audit/log/live.rs",
+      "sha256": "2882b9f3ef2072182dd6359fc0961c7ccd9552d8f55f330f0cf7a92894f6e6f0",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Durable per-node audit Log where the WAL is the authority: open restores an authenticated chain (or explicitly initializes one) from stable provisioned node id, non-empty HMAC key and writer seed, optionally against a trusted head from outside the WAL, and requires the witness key to differ from the writer and agree with the stored head; append seals and durably writes before advancing, checkpoint persists a signed (and, when configured, co-signed with required WitnessDurability) head every checkpoint_every records, and any checkpoint failure poisons the writer; emit_and_act runs the side effect only after append succeeds (ordering, not atomicity). Tests cover empty HMAC refusal, empty event type, tamper detection on restart, disk-failure poisoning, witnessed restart, no silent writer-only downgrade and proof persistence. Re-reviewed 2026-11-18: attach_projection adds an Arc<dyn projection::RecordSink> (Go Config.Projections); append feeds projections only after the WAL append and any due checkpoint succeed and ignores their results, so a refused or failed append is never projected and projections never reach the hash chain or the fail-closed writer state. The new test projections_receive_only_fully_sealed_records pins that ordering across a checkpoint failure and restart. Re-reviewed 2026-11-18 (PR #129 review follow-up): append wraps each projection call in std::panic::catch_unwind(AssertUnwindSafe(..)) and ignores the outcome, so a panicking RecordSink is treated like an erroring one: it neither unwinds through append or emit_and_act nor stops later projections from receiving the record (relies on the default panic = \"unwind\"). The new test a_panicking_projection_reaches_neither_the_writer_nor_later_projections attaches a panicking sink before a recording sink and checks append, emit_and_act and flush succeed and the recorder receives both sealed records. WAL, hash chain, checkpoint and fail-closed paths are unchanged.",
+      "notes": "Live-log reads on Log ported from Go internal/audit chain.go and verifier.go (oracle 981d25c): a bounded in-memory tail window (DEFAULT_RING_CAPACITY 4096; set_ring_capacity, zero selecting the default, trims an existing window to the newest records) that remember() lets grow to twice the capacity before cutting back; recent(n) returns up to the last n records oldest first, with zero or n beyond the window returning the whole window; len()/is_empty() report the sealed sequence, not the window size; self_verify() replays the log's own WAL records and checkpoints with its HMAC key and writer key, and requires witness co-signatures when an external or configured witness exists, while unreadable storage verifies as an empty chain that never passes. The doc states the window is a convenience copy that never feeds recovery or proofs, and production audits still need an independent public-key verifier.",
+      "pages": [
+        "docs/how-to/verify-audit-log.md",
+        "docs/reference/security-audit.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs",
+      "sha256": "2650ed29ed4badb09131fb6a29f8d6ee740aa4bf96a554a0de521329f09113fd",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unit tests for the live-log reads over a real temp-dir WAL: the window stays bounded while the WAL keeps the full chain and recent(0)/recent(usize::MAX) return the whole window; reopening refills the window from the authenticated WAL and len() resumes from the replayed sequence (Go TestWALReplayAcrossRestart), with self_verify Ok; self_verify never passes an empty log (EmptyChain), passes an untouched chain with the HMAC layer and two checkpoints checked, and reports a CheckpointMismatch at seq 4 after tampering; with a witness configured, stripping co-signatures fails as WitnessInvalid; emit() seals an informational record with no action and refuses an untyped record without advancing.",
+      "pages": [
+        "docs/how-to/verify-audit-log.md",
+        "docs/reference/security-audit.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/audit/log/mod.rs",
+      "sha256": "e8baf6d5c3ad6ec18eb57f9ff491b8b252dffbf21ab0452473057eea1b6deb42",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Durable per-node audit Log where the WAL is the authority: open restores an authenticated chain (or explicitly initializes one) from stable provisioned node id, non-empty HMAC key and writer seed, optionally against a trusted head from outside the WAL, and requires the witness key to differ from the writer and agree with the stored head; append seals and durably writes before advancing, checkpoint persists a signed (and, when configured, co-signed with required WitnessDurability) head every checkpoint_every records, and any checkpoint failure poisons the writer; emit_and_act runs the side effect only after append succeeds (ordering, not atomicity). Tests cover empty HMAC refusal, empty event type, tamper detection on restart, disk-failure poisoning, witnessed restart, no silent writer-only downgrade and proof persistence. Re-reviewed 2026-11-18: attach_projection adds an Arc<dyn projection::RecordSink> (Go Config.Projections); append feeds projections only after the WAL append and any due checkpoint succeed and ignores their results, so a refused or failed append is never projected and projections never reach the hash chain or the fail-closed writer state. The new test projections_receive_only_fully_sealed_records pins that ordering across a checkpoint failure and restart. Re-reviewed 2026-11-18 (PR #129 review follow-up): append wraps each projection call in std::panic::catch_unwind(AssertUnwindSafe(..)) and ignores the outcome, so a panicking RecordSink is treated like an erroring one: it neither unwinds through append or emit_and_act nor stops later projections from receiving the record (relies on the default panic = \"unwind\"). The new test a_panicking_projection_reaches_neither_the_writer_nor_later_projections attaches a panicking sink before a recording sink and checks append, emit_and_act and flush succeed and the recorder receives both sealed records. WAL, hash chain, checkpoint and fail-closed paths are unchanged. Re-reviewed 2026-11-18 on the audit-residual branch after merging the PR #129 projection module: Log also keeps a bounded VecDeque tail window (live submodule) refilled on open with the newest DEFAULT_RING_CAPACITY authenticated records and appended after each successful WAL write, never used as an authority, and gains emit(), Go Sink.Emit, which is emit_and_act with no side effect and the same refusals. The projection seam, its ordering after the checkpoint and the catch_unwind isolation are unchanged from PR #129.",
       "pages": [
         "docs/how-to/verify-audit-log.md",
         "docs/reference/security-audit.md"
@@ -7221,9 +7250,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/audit/log/stamp.rs",
-      "sha256": "24c612a9d55173537fe7721baa8d101a01ce1ef0ab079bfc8eeced622592ce95",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Fills missing audit record metadata before sealing: mints a UUIDv7-layout event_id from the current millisecond and OS entropy (erroring if the clock is outside the 48-bit range or entropy is unavailable), sets an RFC 3339 ts and default event_version 1.0.0, and keeps caller-set values. Tests check 10,000 mints never collide and caller fields are preserved.",
+      "sha256": "b889172982ce21990e158a97ae144a0119a24ae9fdc2fb228c72d717e6e9cf91",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Fills missing audit record metadata before sealing: mints a UUIDv7-layout event_id from the current millisecond and OS entropy (erroring if the clock is outside the 48-bit range or entropy is unavailable), sets an RFC 3339 ts and a default event_version, and keeps caller-set values. Re-reviewed 2026-11-18: the default version now comes from record::events::EVENT_SCHEMA_VERSION (still 1.0.0) instead of a literal. Tests check 10,000 mints never collide and caller fields are preserved.",
       "pages": [
         "docs/reference/security-audit.md"
       ]
@@ -7345,10 +7374,29 @@
       ]
     },
     {
+      "source": "crates/sdk/humanymous-runtime/src/audit/record/events.rs",
+      "sha256": "26f2c1929f3cc12f17b5994b07617118e4e9841ebbe83480aad6f1e2aac3aa62",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Audit event taxonomy (SoT-18 section 7) ported from Go internal/audit record.go at oracle 981d25c: 74 frozen dotted lowercase event-type constants covering session binding, TLS/H2 capture, HTML injection, scoring, verdicts, enforcement, tokens, smuggling, origin, header spoofing, score-exempt network-plane residuals (proxy, VPN, Tor, datacenter, TCP, correlation), recon, H2 DoS, upstream forward/error, Web Bot Auth, Private Access Token, WebAuthn, egress, fail-open/closed, admin access, dual-control approvals, bans, rate limits, config/key changes, operator override, erasure, integrity and instance lifecycle, plus EVENT_SCHEMA_VERSION 1.0.0. The doc states the names and values are hashed into sealed records and must not change. Constants only; no scoring weights.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/reference/data-processing-inventory.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/audit/record/events/tests.rs",
+      "sha256": "dfb12e30b54e5e2d886c0d554c9f4e88eabae82d47070910a637b5fb224deb37",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "One unit test pinning the audit event taxonomy against a table of all 74 Go Event* constants at oracle 981d25c, whose expected strings are copied from the Go source rather than from the Rust constants: each Rust value must equal its frozen Go string, Go names must start with Event and be unique, values must be unique dotted lowercase codes, there must be exactly 74 values, and EVENT_SCHEMA_VERSION must be 1.0.0.",
+      "pages": [
+        "docs/reference/security-audit.md"
+      ]
+    },
+    {
       "source": "crates/sdk/humanymous-runtime/src/audit/record/mod.rs",
-      "sha256": "9972a1dbcd9ba2d8f6d070548f4d29329fe161b9705fcf1cbfc28d81ca50c35d",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Defines the frozen audit Record schema (event ID, per-node seq, node, timestamp, type/version, pseudonymized actor, tenant, correlation handles, verdict, risk, triggered rules, top signals, enforcement/fail fields, latency, optional upstream and TLS pseudonyms, config/key/data class, chain fields prev_hash/record_hash/hmac and read-time incident) with Go-compatible null defaults. It re-exports canonical hashing and MAC functions and states producers must already pseudonymize identifiers; the type does not sanitize personal data.",
+      "sha256": "5bc65ead1e0daec87778003671619840d38440304fc9315a749275d0759bf519",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Defines the frozen audit Record schema (event ID, per-node seq, node, timestamp, type/version, pseudonymized actor, tenant, correlation handles, verdict, risk, triggered rules, top signals, enforcement/fail fields, latency, optional upstream and TLS pseudonyms, config/key/data class, chain fields prev_hash/record_hash/hmac and read-time incident) with Go-compatible null defaults. It re-exports canonical hashing and MAC functions and states producers must already pseudonymize identifiers; the type does not sanitize personal data. Re-reviewed 2026-11-18: the only change declares the public events submodule (the frozen Go event taxonomy); the Record schema is unchanged.",
       "pages": [
         "docs/reference/security-audit.md",
         "docs/reference/data-processing-inventory.md"
