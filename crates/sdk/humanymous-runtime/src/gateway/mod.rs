@@ -10,9 +10,11 @@ pub mod configuration;
 pub mod connection_cap;
 pub mod control;
 pub mod control_flood;
+pub mod control_plane;
 pub mod coordinator;
 pub mod credential;
 pub mod external_input;
+pub mod gate_config;
 pub mod guard;
 pub mod http;
 #[cfg(feature = "hosted-pilot")]
