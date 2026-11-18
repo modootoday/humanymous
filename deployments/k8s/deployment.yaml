@@ -1,122 +1,76 @@
-# humanymous Gate — Kubernetes Deployment.
+# humanymous runtime: Kubernetes Deployment.
 #
-# Mirrors deployments/compose.release.yaml: the published, distroless, non-root
-# (uid 65532), read-only-rootfs Gate image, fronting YOUR origin with ACME TLS,
-# a sealed keystore, and a durable audit WAL.
+# Runs the Rust `humanymous-runtime` image in place of the legacy Go `gate`
+# image. Hardening is unchanged: non-root uid 65532, read-only rootfs, no
+# capabilities, seccomp RuntimeDefault, durable audit storage on a PVC.
+#
+# What changed with the Rust runtime (details in README.md):
+#   - No argv. The binary refuses arguments and reads one private JSON
+#     configuration document on standard input. This pod keeps stdin open once
+#     (stdinOnce) and you feed the document with `kubectl attach -i` after each
+#     container start. Until then the container waits and serves nothing.
+#   - Loopback only. `listen` and `origin` must be loopback addresses, so the
+#     origin and the public TLS edge share this pod's network namespace. The
+#     `edge` container is a placeholder for YOUR TLS front proxy.
+#   - No admin plane, no ACME/TLS, no HTTP health endpoint, no SIGTERM drain.
 #
 # Apply order (see README.md in this directory):
-#   kubectl apply -f pvc.yaml -f configmap-routes.yaml
+#   kubectl apply -f pvc.yaml
 #   kubectl apply -f secret.example.yaml   # AFTER you replace the placeholders!
 #   kubectl apply -f deployment.yaml -f service.yaml
-#
-# The admin plane (:8445) is NOT exposed by service.yaml. Keep it cluster-internal
-# and front it with mTLS/SSO — see the admin-plane caveat in README.md.
+#   then feed the configuration with `kubectl attach -i` (README.md)
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: humanymous-gate
+  name: humanymous-runtime
   labels:
-    app.kubernetes.io/name: humanymous-gate
+    app.kubernetes.io/name: humanymous-runtime
     app.kubernetes.io/component: edge
 spec:
-  # ACME (TLS-ALPN-01) issues one cert per domain and stores it on the shared
-  # hmn-acme PVC. Running >1 replica against a single RWO PVC will not work; to
-  # scale out, use an RWX volume (or terminate TLS upstream and drop -acme-domain)
-  # and give each pod its own keystore identity. Start at 1.
+  # Sealed custody takes an exclusive lock and the PVC is ReadWriteOnce, so two
+  # pods can never share it. Recreate stops the old pod before the new one
+  # starts; a surge pod would only block on the volume or the custody lock.
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: humanymous-gate
+      app.kubernetes.io/name: humanymous-runtime
   strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 0
-      maxSurge: 1
+    type: Recreate
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: humanymous-gate
+        app.kubernetes.io/name: humanymous-runtime
         app.kubernetes.io/component: edge
     spec:
-      # >= gate -shutdown-grace (default 25s) so the in-process drain completes
-      # before the kubelet SIGKILLs the pod. Keep this >= the flag.
+      # Kept from the Go manifest for the edge proxy's own drain. The runtime
+      # binary installs no SIGTERM handler and stops immediately.
       terminationGracePeriodSeconds: 30
+      automountServiceAccountToken: false
       # Pod-level hardening (defence in depth with the container securityContext).
+      # No fsGroup: the runtime refuses audit and custody directories that a
+      # group can read or write, and fsGroup would make them group-accessible.
       securityContext:
         runAsNonRoot: true
-        runAsUser: 65532          # the image's baked-in nonroot uid (distroless)
+        runAsUser: 65532          # the image's USER and the configuration's owner.uid
         runAsGroup: 65532
-        fsGroup: 65532            # so the mounted PVCs are writable by uid 65532
         seccompProfile:
           type: RuntimeDefault
       containers:
-        - name: gate
+        - name: runtime
           # :latest tracks the newest release; pin a semver tag in production.
-          image: ghcr.io/modootoday/humanymous-gate:latest
+          # The image is a candidate component (label
+          # org.humanymous.qualification=candidate-component), not a
+          # qualified product release.
+          image: ghcr.io/modootoday/humanymous-runtime:latest
           imagePullPolicy: Always
-          args:
-            - "-addr"
-            - ":8444"               # public edge listener (Service maps 443 -> 8444)
-            - "-admin-addr"
-            - ":8445"               # admin console — NOT exposed by the Service
-            - "-upstream"
-            - "http://origin:80"    # CHANGE ME: your origin Service, e.g. http://app.default.svc:8080
-            - "-acme-domain"
-            - "example.com"         # CHANGE ME: the public domain Gate serves (real TLS via ACME).
-                                    # For BYO TLS instead, drop -acme-domain and add -tls-cert/-tls-key.
-            - "-acme-cache"
-            - "/acme-cache"         # persist issued certs on the hmn-acme PVC. MUST be an absolute
-                                    # path onto a writable volume — the default is relative and lands
-                                    # on the read-only rootfs, so ACME would fail (or re-issue every
-                                    # restart and hit the Let's Encrypt rate limit).
-            - "-routes"
-            - "/etc/hmn/routes.conf" # mounted from the routes ConfigMap
-            - "-keystore"
-            - "/data/keystore"      # persistent audit identity (needs HMN_UNSEAL below)
-            - "-audit-wal"
-            - "/data/audit"         # durable, replay-verified audit log (SoT-32)
-            # -shutdown-grace defaults to 25s (< terminationGracePeriodSeconds above); no flag needed.
-          ports:
-            - name: edge
-              containerPort: 8444
-              protocol: TCP
-            - name: admin
-              containerPort: 8445
-              protocol: TCP
-          envFrom:
-            - secretRef:
-                name: humanymous-gate-secrets   # HMN_UNSEAL + HMN_ADMIN_TOKENS (see secret.example.yaml)
-          # Liveness/readiness are HTTPS probes on the edge listener. The image is
-          # distroless (no shell), so exec probes are impossible — use httpGet.
-          # The edge speaks TLS, so scheme: HTTPS; the kubelet does not verify the
-          # cert, so a self-signed/ACME cert is fine for probes.
-          livenessProbe:
-            httpGet:
-              path: /__hmn/healthz  # always-on, unauthenticated liveness
-              port: 8444
-              scheme: HTTPS
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            timeoutSeconds: 3
-            failureThreshold: 3
-          readinessProbe:
-            httpGet:
-              path: /__hmn/readyz   # 503s during drain so the endpoint is pulled first
-              port: 8444
-              scheme: HTTPS
-            initialDelaySeconds: 3
-            periodSeconds: 5
-            timeoutSeconds: 3
-            failureThreshold: 3
-          # A preStop LB-deregistration de-race is DISABLED by default: the published image is
-          # distroless and ships NO /bin/sleep, so an exec hook would fail (FailedPreStopHook).
-          # Graceful shutdown is already covered by the readinessProbe (readyz -> 503 on drain,
-          # so the endpoint is pulled before the drain) + the in-process SIGTERM drain bounded
-          # by -shutdown-grace. Only if YOUR image bundles a shell/sleep, re-enable:
-          #   lifecycle:
-          #     preStop:
-          #       exec:
-          #         command: ["/bin/sleep", "5"]
+          # No command or args: the entrypoint is /usr/local/bin/humanymous-runtime
+          # and it refuses any argument. Configuration arrives on stdin.
+          stdin: true
+          stdinOnce: true
+          tty: false                # the binary refuses a terminal on stdin or stdout
+          # No ports: the runtime binds 127.0.0.1:8444 (`listen`), reachable only
+          # from containers in this pod. No probes: the image has no shell, the
+          # listener is not on the pod IP, and the binary serves no health path.
           resources:
             requests:
               cpu: "100m"
@@ -135,23 +89,33 @@ spec:
               type: RuntimeDefault
           volumeMounts:
             - name: tmp
-              mountPath: /tmp             # scratch on read-only rootfs
+              mountPath: /tmp               # scratch on read-only rootfs
             - name: data
-              mountPath: /data            # keystore + audit WAL (persistent)
-            - name: acme
-              mountPath: /acme-cache      # issued TLS certs (persistent)
-            - name: routes
-              mountPath: /etc/hmn         # routes.conf from the ConfigMap
-              readOnly: true
+              mountPath: /var/lib/humanymous  # audit WAL + sealed custody (persistent)
+        # PLACEHOLDER: your TLS front proxy. It terminates TLS on :8443, forwards
+        # the inventoried routes to the runtime at 127.0.0.1:8444, and serves or
+        # forwards everything else (health checks, static assets) straight to the
+        # origin. The origin must answer on 127.0.0.1:8080 inside this pod: run
+        # your app as another container here, or let this proxy forward that
+        # loopback port to your app's Service. The runtime ships none of this.
+        - name: edge
+          image: registry.example.invalid/your-tls-edge:REPLACE-ME
+          ports:
+            - name: edge
+              containerPort: 8443
+              protocol: TCP
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
       volumes:
         - name: tmp
-          emptyDir: {}                    # ephemeral /tmp for the read-only rootfs
+          emptyDir: {}                      # ephemeral /tmp for the read-only rootfs
         - name: data
           persistentVolumeClaim:
             claimName: hmn-data
-        - name: acme
-          persistentVolumeClaim:
-            claimName: hmn-acme
-        - name: routes
-          configMap:
-            name: humanymous-gate-routes  # provides routes.conf
