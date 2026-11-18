@@ -428,6 +428,27 @@ mod dual_control {
         assert!(s.check(&k, T0 + 1000 * HOUR).is_some());
     }
 
+    /// Go `Add` overwrote any entry; here a single operator's temporary ban
+    /// cannot downgrade a permanent one and then lift it.
+    #[test]
+    fn temporary_ban_cannot_replace_permanent() {
+        let mut fixture = Fixture::new();
+        let mut s = store();
+        let k = key("ip:198.51.100.7");
+        let permit = fixture.permit(Action::PermanentBan, k.commitment());
+        s.add_controlled(permit, &scope(), &k, "coordinated abuse", None, T0, 20)
+            .unwrap();
+        assert_eq!(
+            s.add_temporary(&k, "downgrade", None, HOUR, T0),
+            Err(Refusal::DualControlRequired)
+        );
+        assert_eq!(
+            s.bulk_temporary(&[k.as_str()], "downgrade", HOUR, T0),
+            Ok((0, 1))
+        );
+        assert!(s.check(&k, T0 + 2 * HOUR).is_some_and(Entry::permanent));
+    }
+
     #[test]
     fn broad_ban_needs_matching_grant() {
         let mut fixture = Fixture::new();
