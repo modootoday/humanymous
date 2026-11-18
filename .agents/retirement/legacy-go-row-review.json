@@ -15,8 +15,8 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 218,
-  "partial": 74,
+  "ported_unit": 221,
+  "partial": 71,
   "missing": 11,
   "not_applicable": 2,
   "oracle_only": 9
@@ -27,7 +27,7 @@
    "ported_unit": 4
   },
   "cmd/ml-train": {
-   "partial": 1
+   "ported_unit": 1
   },
   "cmd/mlcorrect-train": {
    "ported_unit": 3
@@ -40,8 +40,8 @@
   },
   "cmd/server": {
    "missing": 3,
-   "partial": 22,
-   "ported_unit": 14,
+   "partial": 20,
+   "ported_unit": 16,
    "oracle_only": 3
   },
   "cmd/tlsparrot": {
@@ -354,35 +354,62 @@
   },
   {
    "baseline_path": "cmd/ml-train/main.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-core/src/model/training/record.rs",
     "crates/sdk/humanymous-core/src/model/training/standardize.rs",
     "crates/sdk/humanymous-core/src/model/training/sgd.rs",
     "crates/sdk/humanymous-core/src/model/training/rng/mod.rs",
     "crates/sdk/humanymous-core/src/model/training/evaluate.rs",
-    "crates/sdk/humanymous-core/src/model/training/sgd/pilot.rs"
+    "crates/sdk/humanymous-core/src/model/training/sgd/pilot.rs",
+    "crates/sdk/humanymous-core/src/model/training/ml_train.rs",
+    "crates/sdk/humanymous-core/src/bin/ml_train.rs",
+    "crates/sdk/humanymous-core/Cargo.toml",
+    "crates/sdk/humanymous-core/src/model/go_json.rs",
+    "crates/sdk/humanymous-core/src/model/training/rng/source.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::rust_derived_legacy_separable_dataset_learns_and_reuses_existing_evaluator",
     "crates/sdk/humanymous-core/src/model/training/record.rs::actual_file_reader_accepts_rejects_and_preserves_caller_batch_on_error",
     "crates/sdk/humanymous-core/src/model/training/sgd/pilot.rs::actual_file_training_roundtrip_is_reproducible_and_never_overwrites_sentinel",
-    "crates/sdk/humanymous-core/src/model/training/standardize.rs::population_variance_feature_order_and_input_bytes_are_preserved"
+    "crates/sdk/humanymous-core/src/model/training/standardize.rs::population_variance_feature_order_and_input_bytes_are_preserved",
+    "crates/sdk/humanymous-core/src/model/training/ml_train/tests.rs::synthetic_bootstrap_matches_go_bundle_bytes",
+    "crates/sdk/humanymous-core/src/model/training/ml_train/tests.rs::negative_seed_and_learning_rate_match_go_bundle_bytes",
+    "crates/sdk/humanymous-core/src/model/training/ml_train/tests.rs::labeled_jsonl_training_matches_go_bundle_bytes",
+    "crates/sdk/humanymous-core/src/model/training/ml_train/tests.rs::too_few_samples_fails_without_writing",
+    "crates/sdk/humanymous-core/src/model/training/ml_train/tests.rs::invalid_or_missing_data_fails_without_writing",
+    "crates/sdk/humanymous-core/src/model/training/ml_train/tests.rs::generation_is_bounded_instead_of_unbounded",
+    "crates/sdk/humanymous-core/src/model/training/ml_train/tests.rs::usage_help_and_positional_arguments",
+    "crates/sdk/humanymous-core/src/model/training/ml_train/tests.rs::defaults_and_version_follow_legacy_flags",
+    "crates/sdk/humanymous-core/src/model/training/ml_train/tests.rs::legacy_default_run_fits_the_bootstrap_work_profile",
+    "crates/sdk/humanymous-core/src/model/training/rng/tests.rs::go_observed_seed7_public_intn_goldens",
+    "crates/sdk/humanymous-core/src/model/go_json/tests.rs::compact_numbers_and_strings_match_go_encoding_json",
+    "crates/sdk/humanymous-core/src/model/go_json/tests.rs::indented_layout_matches_go_marshal_indent",
+    "crates/sdk/humanymous-core/src/model/go_json/tests.rs::float_text_helpers_follow_go_exponent_cutoffs"
    ],
    "go_test_map": {},
-   "gaps": [
-    "CLI process shell with -gen/-data/-out/-hidden/-epochs/-lr/-seed",
-    "synthetic bootstrap generator",
-    "pre-split shuffle and train/test split + metrics print"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "medium",
-   "notes": "Training kernel (JSONL record, standardize, SGD, Go-compatible RNG, evaluate) exists in core; SoT model-training-correction still lists \"Thin Rust process shells\" for both commands as remaining. pilot.rs states it is NOT a CLI.",
+   "confidence": "high",
+   "notes": "ml-train [[bin]] in humanymous-core over training::ml_train::run: Go flag syntax and defaults (-gen 0 -> 20000 synthetic, -data, -out model.json, -hidden 16, -epochs 60, -lr 0.05, -seed 1), synthetic grounded generator in Go draw order (GoRng NormFloat64 and public Intn), one pre-split GoRng stream for generation then shuffle, 80/20 split, standardize, SGD under TrainLimits::legacy_bootstrap (500M work units: the legacy default run needs 414,720,000), validation metrics on stderr, mlp-bootstrap-YYYYMMDD-h<hidden> version and Go MarshalIndent bytes (model::go_json). Go-observed goldens: SHA-256 of the written bundle equals the go1.25.3 oracle built from 981d25c for three runs (synthetic, negative seed + lr, labeled JSONL), and an actual release-binary pilot of the legacy default run (-gen 20000 defaults) reproduced the Go bundle byte for byte (8199 bytes). Deltas: generation bounded at 100000 samples, positional arguments are a usage error, missing/invalid data and too few samples exit 1 without writing. Training output never activates a model. Legacy cmd/ml-train has no Go test file.",
    "test_verification": {
+    "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::rust_derived_legacy_separable_dataset_learns_and_reuses_existing_evaluator": "passed",
     "crates/sdk/humanymous-core/src/model/training/record.rs::actual_file_reader_accepts_rejects_and_preserves_caller_batch_on_error": "passed",
     "crates/sdk/humanymous-core/src/model/training/sgd/pilot.rs::actual_file_training_roundtrip_is_reproducible_and_never_overwrites_sentinel": "passed",
-    "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::rust_derived_legacy_separable_dataset_learns_and_reuses_existing_evaluator": "passed",
-    "crates/sdk/humanymous-core/src/model/training/standardize.rs::population_variance_feature_order_and_input_bytes_are_preserved": "passed"
+    "crates/sdk/humanymous-core/src/model/training/standardize.rs::population_variance_feature_order_and_input_bytes_are_preserved": "passed",
+    "crates/sdk/humanymous-core/src/model/training/ml_train/tests.rs::synthetic_bootstrap_matches_go_bundle_bytes": "passed",
+    "crates/sdk/humanymous-core/src/model/training/ml_train/tests.rs::negative_seed_and_learning_rate_match_go_bundle_bytes": "passed",
+    "crates/sdk/humanymous-core/src/model/training/ml_train/tests.rs::labeled_jsonl_training_matches_go_bundle_bytes": "passed",
+    "crates/sdk/humanymous-core/src/model/training/ml_train/tests.rs::too_few_samples_fails_without_writing": "passed",
+    "crates/sdk/humanymous-core/src/model/training/ml_train/tests.rs::invalid_or_missing_data_fails_without_writing": "passed",
+    "crates/sdk/humanymous-core/src/model/training/ml_train/tests.rs::generation_is_bounded_instead_of_unbounded": "passed",
+    "crates/sdk/humanymous-core/src/model/training/ml_train/tests.rs::usage_help_and_positional_arguments": "passed",
+    "crates/sdk/humanymous-core/src/model/training/ml_train/tests.rs::defaults_and_version_follow_legacy_flags": "passed",
+    "crates/sdk/humanymous-core/src/model/training/ml_train/tests.rs::legacy_default_run_fits_the_bootstrap_work_profile": "passed",
+    "crates/sdk/humanymous-core/src/model/training/rng/tests.rs::go_observed_seed7_public_intn_goldens": "passed",
+    "crates/sdk/humanymous-core/src/model/go_json/tests.rs::compact_numbers_and_strings_match_go_encoding_json": "passed",
+    "crates/sdk/humanymous-core/src/model/go_json/tests.rs::indented_layout_matches_go_marshal_indent": "passed",
+    "crates/sdk/humanymous-core/src/model/go_json/tests.rs::float_text_helpers_follow_go_exponent_cutoffs": "passed"
    }
   },
   {
@@ -1309,17 +1336,21 @@
     "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::digest_pin_and_flag_default_follow_legacy",
     "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::disabled_without_bundle_and_shadow_is_ignored",
     "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::unreadable_inputs_and_stale_schema_are_refused",
-    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::empty_public_key_file_is_refused_not_unsigned"
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::empty_public_key_file_is_refused_not_unsigned",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::lab_control_uses_legacy_controller_parameters_without_a_canary",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::canary_breach_rolls_the_admitted_lab_identity_back",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::shadow_candidate_is_loaded_or_refused_but_never_served",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::nonfinite_control_parameters_are_refused"
    ],
    "go_test_map": {},
    "gaps": [
-    "installing the admitted model into the serving inference seam and the self-calibration Controller as threshold provider/feature observer (model-training-correction SoT keeps L4 annotation-only; production activation needs a separately accepted design)",
-    "canary auto-rollback and shadow-bundle scoring wiring",
-    "-ml-* flag parsing in a serving binary (no Core server binary yet)"
+    "installing the lab Controller as the serving threshold provider/feature observer and the admitted/shadow models into the inference Runtime (model-training-correction SoT keeps L4 annotation-only; production activation needs a separately accepted design: owner decision)",
+    "-ml-* flag parsing in a serving binary (no Core server binary yet)",
+    "setup log lines"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Admission half of setupBehavioralML ported as gateway::model_admission::admit: bounded reads of bundle, PKIX PEM key and detached signature, stage (digest pin, Ed25519 signature when a key is configured, shape, schema pin) and promote through the core BundleManager; any failure is a typed non-fatal Refused and the model stays disabled; schema_pin_only reports the legacy production WARNING case; a shadow bundle without -ml-bundle is reported ignored. Deliberate fail-closed difference: an empty configured key file is refused (legacy admitted unsigned and logged signed=true).",
+   "notes": "Admission half of setupBehavioralML ported as gateway::model_admission::admit: bounded reads of bundle, PKIX PEM key and detached signature, stage (digest pin, Ed25519 signature when a key is configured, shape, schema pin) and promote through the core BundleManager; any failure is a typed non-fatal Refused and the model stays disabled; schema_pin_only reports the legacy production WARNING case; a shadow bundle without -ml-bundle is reported ignored. Deliberate fail-closed difference: an empty configured key file is refused (legacy admitted unsigned and logged signed=true). Control half ported as gateway::model_admission::lab_control: ControlFlags with the legacy -ml-fp-budget 0.005 / -ml-canary false / -ml-canary-max-fp 0.02 / -ml-canary-probation 200 defaults, Controller::new(fp_budget, 0.5, 0.01), canary armed with rollback on drift and pass anomaly whose breach callback rolls the BundleManager lab identity back (negative probation wraps like Go uint64), shadow bundle read bounded and decoded to a candidate Mlp that is never served; non-finite parameters refused. Nothing is installed into scoring.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/model/inference/runtime.rs::candidate_is_observed_but_never_served_and_stale_candidates_are_skipped": "passed",
     "crates/sdk/humanymous-core/src/model/inference/mlp.rs::artifact_decode_preserves_identity_and_rejects_malformed_json": "passed",
@@ -1330,14 +1361,19 @@
     "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::digest_pin_and_flag_default_follow_legacy": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::disabled_without_bundle_and_shadow_is_ignored": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::unreadable_inputs_and_stale_schema_are_refused": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::empty_public_key_file_is_refused_not_unsigned": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::empty_public_key_file_is_refused_not_unsigned": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::lab_control_uses_legacy_controller_parameters_without_a_canary": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::canary_breach_rolls_the_admitted_lab_identity_back": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::shadow_candidate_is_loaded_or_refused_but_never_served": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::nonfinite_control_parameters_are_refused": "passed"
    }
   },
   {
    "baseline_path": "cmd/server/mlcorrect_ops_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs"
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/mlcorrect/tests.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_raises_threshold_on_over_flagged_humans",
@@ -1346,22 +1382,22 @@
     "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_yields_one_labeled_cohort_tagged_human_trace",
     "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::abstaining_model_does_not_calibrate",
     "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::invalid_prediction_fails_closed_without_calibrating",
-    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::cohort_follows_input_modality"
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::cohort_follows_input_modality",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/mlcorrect/tests.rs::handle_ml_correct_gate_and_shape",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_writes_one_human_trace_line_to_the_sink"
    ],
    "go_test_map": {
     "TestFeedPassOutcome_SolvedRaisesThresholdOnOverFlaggedHumans": "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_raises_threshold_on_over_flagged_humans",
     "TestFeedPassOutcome_FailedIsNotABotLabel": "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::failed_pass_is_not_a_bot_label",
     "TestFeedPassOutcome_NilControllerIsNoop": "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::absent_controller_is_a_noop_except_for_the_trace",
-    "TestFeedPassOutcome_SolvedWritesHumanTrace": "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_yields_one_labeled_cohort_tagged_human_trace",
+    "TestFeedPassOutcome_SolvedWritesHumanTrace": "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_writes_one_human_trace_line_to_the_sink",
     "TestCohortOf_InputModality": "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::cohort_follows_input_modality",
-    "TestHandleMLCorrect_GateAndShape": null
+    "TestHandleMLCorrect_GateAndShape": "crates/sdk/humanymous-runtime/src/gateway/operations/mlcorrect/tests.rs::handle_ml_correct_gate_and_shape"
    },
-   "gaps": [
-    "TestHandleMLCorrect_GateAndShape: operator endpoint not ported"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Five of six legacy cases map to Rust tests.",
+   "notes": "All six legacy cases map to Rust tests with the same assertions; SolvedWritesHumanTrace now writes one line through the TraceSink.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_raises_threshold_on_over_flagged_humans": "passed",
     "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::failed_pass_is_not_a_bot_label": "passed",
@@ -1369,15 +1405,19 @@
     "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_yields_one_labeled_cohort_tagged_human_trace": "passed",
     "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::abstaining_model_does_not_calibrate": "passed",
     "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::invalid_prediction_fails_closed_without_calibrating": "passed",
-    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::cohort_follows_input_modality": "passed"
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::cohort_follows_input_modality": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/mlcorrect/tests.rs::handle_ml_correct_gate_and_shape": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_writes_one_human_trace_line_to_the_sink": "passed"
    }
   },
   {
    "baseline_path": "cmd/server/mlcorrect_ops.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-core/src/model/correction/pass_feed.rs",
-    "crates/sdk/humanymous-core/src/model/correction/controller.rs"
+    "crates/sdk/humanymous-core/src/model/correction/controller.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/mlcorrect.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/operations.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_raises_threshold_on_over_flagged_humans",
@@ -1386,16 +1426,19 @@
     "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_yields_one_labeled_cohort_tagged_human_trace",
     "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::abstaining_model_does_not_calibrate",
     "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::invalid_prediction_fails_closed_without_calibrating",
-    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::cohort_follows_input_modality"
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::cohort_follows_input_modality",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/mlcorrect/tests.rs::handle_ml_correct_gate_and_shape",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/mlcorrect/tests.rs::fresh_and_disabled_documents_match_go_bytes",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/mlcorrect/tests.rs::tripped_canary_with_bundle_manager_matches_go_bytes",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/mlcorrect/tests.rs::anomalous_pass_rate_matches_go_bytes",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/mlcorrect/tests.rs::operator_gate_follows_legacy_predicate",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_writes_one_human_trace_line_to_the_sink"
    ],
    "go_test_map": {},
-   "gaps": [
-    "handleMLCorrect operator endpoint (admin-gated JSON snapshot) is not ported",
-    "JSONL oracle-trace sink is not ported; the caller receives HumanTrace"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "feedPassOutcome and cohortOf are ported as a pure lab-only kernel; it never mutates a verdict or installs a threshold. Deliberate difference: an invalid prediction is an error instead of being fed.",
+   "notes": "feedPassOutcome and cohortOf are ported as a pure lab-only kernel that never mutates a verdict or installs a threshold; the JSONL oracle-trace sink write is correction::append_trace over the existing TraceSink. handleMLCorrect is ported as gateway::operations::mlcorrect::handle with the ops.go operatorAuthorized predicate (non-empty token, optional `Bearer ` stripped, constant-time compare, non-discoverable 404) and a snapshot whose bytes equal Go writeJSON output (Go-observed goldens: fresh, disabled marker, tripped canary with bundle manager, anomalous pass rate). Route mounting stays with the runtime owner (plan B09), as for counters.go. Deliberate difference: an invalid prediction is an error instead of being fed.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_raises_threshold_on_over_flagged_humans": "passed",
     "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::failed_pass_is_not_a_bot_label": "passed",
@@ -1403,7 +1446,13 @@
     "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_yields_one_labeled_cohort_tagged_human_trace": "passed",
     "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::abstaining_model_does_not_calibrate": "passed",
     "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::invalid_prediction_fails_closed_without_calibrating": "passed",
-    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::cohort_follows_input_modality": "passed"
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::cohort_follows_input_modality": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/mlcorrect/tests.rs::handle_ml_correct_gate_and_shape": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/mlcorrect/tests.rs::fresh_and_disabled_documents_match_go_bytes": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/mlcorrect/tests.rs::tripped_canary_with_bundle_manager_matches_go_bytes": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/mlcorrect/tests.rs::anomalous_pass_rate_matches_go_bytes": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/mlcorrect/tests.rs::operator_gate_follows_legacy_predicate": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_writes_one_human_trace_line_to_the_sink": "passed"
    }
   },
   {
@@ -1806,25 +1855,51 @@
    "baseline_path": "cmd/server/resource_handlers.go",
    "disposition": "partial",
    "rust_paths": [
-    "crates/sdk/humanymous-core/src/integrity/resource/mod.rs"
+    "crates/sdk/humanymous-core/src/integrity/resource/mod.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/resource.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/integrity/resource/mod.rs::signature_binds_session_asset_key_and_inclusive_expiry",
-    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::signed_urls_and_expiry_match_go"
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::signed_urls_and_expiry_match_go",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::asset_path_cleans_and_rejects_parent_segments",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::mime_type_uses_the_go_builtin_table",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::session_verdict_and_liveness_follow_legacy_lookup",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::external_referer_is_a_host_substring_check",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::gate_header_and_withheld_responses_match_legacy",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::resource_signals_cover_embed_and_media_tiers_only",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::issue_commits_the_ledger_before_returning_marked_bytes",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::watermark_failure_never_serves_unmarked_bytes",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::trace_gates_before_reading_and_bounds_the_body",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::forged_carrier_is_not_an_attribution",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::channel_label_follows_legacy_names",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::traffic_view_is_owner_or_operator_only"
    ],
    "go_test_map": {},
    "gaps": [
-    "resource/trace/traffic HTTP handlers",
-    "resource signal recording",
-    "session verdict/liveness lookup",
-    "external referer check"
+    "mounting /res/, /api/trace and /api/traffic/{sid} in a Core server (plan B05/B07; no Core server binary yet)",
+    "reading the asset from the web root (filepath.Join + readFile, 404 on error) and ensureSession cookie issuance",
+    "session-store lookup feeding SessionView and AppendNetworkSignals of the returned signals",
+    "traffic-log projection (tlog.Session) written for an authorized /api/traffic reader"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Signed resource URL kernel exists; handlers are plan B07 missing.",
+   "notes": "Handler decisions ported as pure kernel gateway::resource: asset_path (Go path.Clean + `..` reject = 400 bad path), Go built-in mime table, sessionVerdict (unknown -> CHALLENGE), sessionLiveness (mouse samples > 3 or any keystroke), externalReferer (host substring), classify+gate with X-HM-Gate `<decision>:<tier>`, the 403/451/downgrade-preview responses (http.Error text, nosniff), recordResourceSignals (embed inspect for every request, media observe for heavy/media) over the frozen L5 signals, watermark issuance via ledger reserve -> apply -> commit with no-store and X-HM-Watermark (png-multi for png-text+png-lsb), handleTrace (operator gate before the body, POST only, 32 MiB bound, read error 400) and canReadSession for /api/traffic. No score, threshold, verdict band or signal ID changes. Deliberate fail-closed deltas: W07 a watermark/ledger failure is 503 with no bytes (Go served the unmarked source with channel none); W09 a forged carrier is traced:false reason forged (Go returned traced:true with forged:true), and unknown/expired/no-frame/ambiguous carriers return stable reason codes instead of Go error text; mime uses only Go's built-in table (Go also read host mime.types); issuedAt is derived from the monotonic ledger instant plus an owner-supplied epoch, rendered in UTC. legacy file has no Go test.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/integrity/resource/mod.rs::signature_binds_session_asset_key_and_inclusive_expiry": "passed",
-    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::signed_urls_and_expiry_match_go": "passed"
+    "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::signed_urls_and_expiry_match_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::asset_path_cleans_and_rejects_parent_segments": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::mime_type_uses_the_go_builtin_table": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::session_verdict_and_liveness_follow_legacy_lookup": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::external_referer_is_a_host_substring_check": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::gate_header_and_withheld_responses_match_legacy": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::resource_signals_cover_embed_and_media_tiers_only": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::issue_commits_the_ledger_before_returning_marked_bytes": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::watermark_failure_never_serves_unmarked_bytes": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::trace_gates_before_reading_and_bounds_the_body": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::forged_carrier_is_not_an_attribution": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::channel_label_follows_legacy_names": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::traffic_view_is_owner_or_operator_only": "passed"
    }
   },
   {
@@ -7963,15 +8038,16 @@
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::unsigned_policy_ignores_a_supplied_signature",
     "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::stage_requires_signature_when_key_configured",
     "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::public_key_parsing_matches_pem_and_pkix_rules",
-    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::small_order_public_key_never_verifies"
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::small_order_public_key_never_verifies",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::canary_breach_rolls_the_admitted_lab_identity_back"
    ],
    "go_test_map": {},
    "gaps": [
-    "promote/rollback never activate a model (lab identities only, per model-training-correction SoT: 'Training output never activates a model'; production activation needs a separately accepted design)"
+    "promote/rollback never activate a model (lab identities only, per model-training-correction SoT: 'Training output never activates a model'; production activation needs a separately accepted design: owner decision)"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Exact-byte SHA-256 identity, schema pin, explicit unsigned lab policy and staged/active/previous transitions with Go's rollback semantics. Ed25519 signed policy ported without a core dependency change: core BundleVerifier seam (BundleManager::with_verifier, stage_signed) checks in legacy order size, digest, signature, decode, schema; the Runtime supplies Ed25519Verifier::from_pkix_pem (legacy NewBundleManager PEM/PKIX/ed25519 checks) over the existing ed25519-dalek dependency. BundleManager::with_public_key in core still fails closed. Deliberate fail-closed differences: verify_strict (small-order keys refused; honest ed25519.Sign signatures verify identically) and PEM blocks with RFC 1421 headers refused.",
+   "notes": "Exact-byte SHA-256 identity, schema pin, explicit unsigned lab policy and staged/active/previous transitions with Go's rollback semantics. Ed25519 signed policy ported without a core dependency change: core BundleVerifier seam (BundleManager::with_verifier, stage_signed) checks in legacy order size, digest, signature, decode, schema; the Runtime supplies Ed25519Verifier::from_pkix_pem (legacy NewBundleManager PEM/PKIX/ed25519 checks) over the existing ed25519-dalek dependency. BundleManager::with_public_key in core still fails closed. Deliberate fail-closed differences: verify_strict (small-order keys refused; honest ed25519.Sign signatures verify identically) and PEM blocks with RFC 1421 headers refused. The canary breach callback now drives rollback of the admitted lab identity (gateway::model_admission::lab_control), still without activating a model.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_accepts_a_valid_bundle": "passed",
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_rejects_a_stale_schema": "passed",
@@ -7985,7 +8061,8 @@
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::unsigned_policy_ignores_a_supplied_signature": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::stage_requires_signature_when_key_configured": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::public_key_parsing_matches_pem_and_pkix_rules": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::small_order_public_key_never_verifies": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::small_order_public_key_never_verifies": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::canary_breach_rolls_the_admitted_lab_identity_back": "passed"
    }
   },
   {

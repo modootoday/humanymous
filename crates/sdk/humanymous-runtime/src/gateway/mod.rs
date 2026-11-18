@@ -23,6 +23,7 @@ pub mod operations;
 pub mod pass_proof;
 pub mod pass_store;
 pub mod request;
+pub mod resource;
 pub mod route_policy;
 pub mod seams;
 pub mod service;
