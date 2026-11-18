@@ -233,10 +233,14 @@ fn actual_authority_decisions_are_enforced_before_origin() {
             );
             let bytes = request(port, "/api", &[0, 255, 42]);
             let wire = String::from_utf8_lossy(&bytes);
-            assert!(
-                wire.starts_with("HTTP/1.1 409") || wire.starts_with("HTTP/1.1 403"),
-                "real authority outcome must be visible: {wire}"
-            );
+            // Report the observed verdict; delivery receipts count it, never infer it.
+            let verdict = if wire.starts_with("HTTP/1.1 409") {
+                "CHALLENGE"
+            } else if wire.starts_with("HTTP/1.1 403") {
+                "DENY"
+            } else {
+                panic!("real authority outcome must be visible: {wire}")
+            };
             assert!(!wire.contains("x-origin-effect"));
             assert!(!effect_file.exists());
             assert!(
@@ -247,7 +251,7 @@ fn actual_authority_decisions_are_enforced_before_origin() {
             );
             println!(
                 "{}",
-                json!({"runtime":runtime,"framework":framework,"authority":"production-application-http","originEffects":0,"status":"passed","fullProduct":false})
+                json!({"runtime":runtime,"framework":framework,"authority":"production-application-http","verdict":verdict,"originEffects":0,"status":"passed","fullProduct":false})
             );
         }
     }

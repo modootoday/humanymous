@@ -1,8 +1,19 @@
 //! Allocated actual SDK/package orchestration; no Cargo recursion or new C# source.
+//! The controller is itself admitted through its creator channel and hands each
+//! per-mode harness a derived, narrowing envelope (SoT dotnet-protected-host-
+//! launch 3.5). Every mode borrows the one original budget.
+#[path = "hosted/launch.rs"]
+#[allow(
+    dead_code,
+    reason = "the controller uses admission and derive; Host-only accessors stay unused"
+)]
+mod launch;
 #[path = "package/projection.rs"]
 mod projection;
 mod support;
-use humanymous_platform::testing::process::capture_with_stderr;
+use humanymous_platform::testing::{
+    parent_context::admission::DerivedMode, process::capture_with_stderr,
+};
 use serde::Deserialize;
 use serde_json::{Value, json};
 use std::{
@@ -41,8 +52,19 @@ fn source_git(source: &Path) -> Command {
     command
 }
 fn run(command: &mut Command, logs: &Path, stage: &str, timeout: Duration) -> Vec<u8> {
+    run_with(command, b"", logs, stage, timeout)
+}
+/// `input` is written to a fresh stdin pipe whose only write end is closed
+/// after writing: for a harness this is its creator channel.
+fn run_with(
+    command: &mut Command,
+    input: &[u8],
+    logs: &Path,
+    stage: &str,
+    timeout: Duration,
+) -> Vec<u8> {
     let started = std::time::Instant::now();
-    let result = match capture_with_stderr(command, b"", timeout, 4_194_304) {
+    let result = match capture_with_stderr(command, input, timeout, 4_194_304) {
         Ok(result) => result,
         Err(error) => {
             std::fs::write(logs.join(format!("{stage}.result.json")),serde_json::to_vec_pretty(&json!({"success":false,"exit_code":null,"elapsed_ms":started.elapsed().as_millis(),"capture_error_kind":format!("{:?}",error.kind()),"complete_output_available":false,"descendant_cleanup_qualified":false})).unwrap()).unwrap();
@@ -183,6 +205,12 @@ impl Sdk<'_> {
 #[ignore = "actual allocated SDK, clean package install and JIT/NativeAOT process pilot"]
 fn sdk_package_and_real_host_matrix() {
     let execution_environment = support::execution_environment();
+    // Refuse before any Command: the controller needs its own original,
+    // non-derived admission; nothing here falls back to an environment path.
+    let admission = launch::admission().expect("qualified package controller admission required");
+    let (run_until, _) = admission
+        .deadlines()
+        .expect("original package controller budget required");
     let (rid, target, native_name, host_name) = match (std::env::consts::OS, std::env::consts::ARCH)
     {
         ("windows", "x86_64") => (
@@ -200,11 +228,13 @@ fn sdk_package_and_real_host_matrix() {
         _ => panic!("unqualified SDK/native tuple"),
     };
     let source = required("HUMANYMOUS_DOTNET_SOURCE_ROOT");
-    let parent = required("HUMANYMOUS_DOTNET_FIXTURE_PARENT");
+    let parent = admission.private_work().to_path_buf();
     let native = required("HUMANYMOUS_DOTNET_NATIVE_LIBRARY");
     let harness = required("HUMANYMOUS_DOTNET_HOST_HARNESS");
     assert_eq!(native.file_name(), Some(OsStr::new(native_name)));
-    let scratch = private_child(&parent, "dotnet-package-run");
+    // Short fixed name: the authority socket under each mode's audit root must
+    // stay inside the runtime's 100-byte endpoint bound.
+    let scratch = private_child(&parent, "pkg");
     private_child(&scratch, "tmp");
     let logs = private_child(&scratch, "logs");
     let feed = private_child(&scratch, "feed");
@@ -316,11 +346,11 @@ fn sdk_package_and_real_host_matrix() {
     let mut receipts = Vec::new();
     for aot in [false, true] {
         for packed in [false, true] {
-            let name = match (aot, packed) {
-                (false, false) => "jit-source",
-                (false, true) => "jit-packed",
-                (true, false) => "aot-source",
-                (true, true) => "aot-packed",
+            let (name, mode) = match (aot, packed) {
+                (false, false) => ("jit-source", DerivedMode::JitSource),
+                (false, true) => ("jit-packed", DerivedMode::JitPacked),
+                (true, false) => ("aot-source", DerivedMode::AotSource),
+                (true, true) => ("aot-packed", DerivedMode::AotPacked),
             };
             let run_root = private_child(&scratch, name);
             let build = private_child(&run_root, "build");
@@ -355,7 +385,10 @@ fn sdk_package_and_real_host_matrix() {
             );
             let app = output.join(host_name);
             assert!(app.is_file());
-            let fixture_parent = private_child(&run_root, "audit-parent");
+            let fixture_parent = private_child(&run_root, "audit");
+            let envelope = admission
+                .derive(mode, &app, &fixture_parent)
+                .expect("narrowing derived admission required");
             let mut execute = Command::new(&harness);
             execute
                 .arg("--ignored")
@@ -374,11 +407,13 @@ fn sdk_package_and_real_host_matrix() {
             } else {
                 execute.env_remove("HUMANYMOUS_DOTNET_GENERIC_PROBE");
             }
-            let observations = run(
+            // The derived run borrows the original deadline; nothing renews it.
+            let observations = run_with(
                 &mut execute,
+                &envelope,
                 &logs,
                 &format!("{name}-actual-host"),
-                Duration::from_secs(180),
+                run_until.saturating_duration_since(std::time::Instant::now()),
             );
             let summaries: Vec<Value> = String::from_utf8_lossy(&observations)
                 .lines()

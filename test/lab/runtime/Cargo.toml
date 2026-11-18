@@ -22,5 +22,11 @@ tokio.workspace = true
 humanymous-platform = { workspace = true, features = ["testing"] }
 humanymous = {path="../../../crates/humanymous", default-features=false, features=["adapter-go"]}
 
+# Clears close-on-exec on the two witness pipe ends the shipped runtime inherits
+# (unsafe_code is forbidden, so no pre_exec hook). Same version and features as
+# humanymous-runtime, so no new crate enters the lock.
+[target.'cfg(unix)'.dependencies]
+rustix = { version = "1.1", features = ["process", "fs"] }
+
 [lints.rust]
 unsafe_code = "forbid"
