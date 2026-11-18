@@ -3278,9 +3278,9 @@
     },
     {
       "source": "crates/dotnet-adapter/tests/hosted/launch.rs",
-      "sha256": "32cd175f3d71afb302225b93587b9b37dc51c3d4d2873a66584f22faaddee2cf",
+      "sha256": "afd6e740acbd9f76f71e19058cf02a3a7ab59dd17f90d2219ecaf41560359448",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Creator-channel admission consumer (SoT dotnet-protected-host-launch 3.1-3.5). Reads one bounded humanymous.dotnet-host-admission/1 envelope from stdin and refuses in table order: no pipe, malformed envelope or unqualified backend give Unsupported; nonce, digest, provenance, actor, uid 0, ACT, venue, cleanup-only, derived widening or an apphost outside its root give PermissionDenied; an exhausted budget gives TimedOut. Linux requires the systemd scope hm-dotnet-<nonce>.scope. The admission is built once, cached and never cloned; derived admission only narrows the apphost and audit root under the original private_work and never renews the budget. Five unit tests cover every refusal row. Decoded claims alone never authenticate the producer; the handle facts do.",
+      "notes": "Creator-channel admission consumer (SoT dotnet-protected-host-launch 3.1-3.5). Reads one bounded humanymous.dotnet-host-admission/1 envelope from stdin and refuses in table order: no pipe, malformed envelope or unqualified backend give Unsupported; nonce, digest, provenance, actor, uid 0, ACT, venue, cleanup-only, derived widening or an apphost outside its root give PermissionDenied; an exhausted budget gives TimedOut. Linux requires the systemd scope hm-dotnet-<nonce>.scope. The admission is built once, cached and never cloned; derived admission only narrows the apphost and audit root under the original private_work and never renews the budget. Five unit tests cover every refusal row; their fixture paths are absolute on the host OS (C:\\srv\\... on Windows, /srv/... elsewhere) because containment requires Path::is_absolute, so the same rows are meant to run on Windows; that Windows rerun has not happened yet. Decoded claims alone never authenticate the producer; the handle facts do.",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
