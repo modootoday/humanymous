@@ -1,5 +1,7 @@
 //! Contextual Docker pilots; native unsupported targets never report success.
 #[cfg(unix)]
+mod attack_catalog;
+#[cfg(unix)]
 mod attestation;
 #[cfg(unix)]
 mod browser_dns;
@@ -94,6 +96,10 @@ fn main() {
         }
         Some("--origin-audit-client") => origin_audit::client::run(),
         Some("--origin-audit-tamper") => origin_audit::tamper::run(),
+        Some("--attack-gate") => {
+            attack_catalog::gate::run().expect("attack catalog Gate supervisor")
+        }
+        Some("--attack-client") => attack_catalog::client::run(),
         Some("--witness-transaction") => {
             witness::transaction().expect("private witness transaction")
         }

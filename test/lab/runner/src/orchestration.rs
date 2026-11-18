@@ -44,6 +44,7 @@ fn safe_diagnostics(cases: &[Value]) -> Value {
         .collect();
     json!({"schema":"humanymous.lab-safe-diagnostics/1","failures":failures,"failure_count":failed.len(),"partial":failed.len()>512})
 }
+mod attack_catalog;
 mod authority;
 mod browser;
 mod browser_actor;
@@ -710,6 +711,8 @@ impl Lab {
             pass_recovery::run(self)?;
             self.stage = "origin_audit";
             origin_audit::run(self)?;
+            self.stage = "attack_catalog";
+            attack_catalog::run(self)?;
             self.stage = "witness_component";
             witness::run(self)?;
         } else {
@@ -1580,6 +1583,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         ),
         ("pass_recovery", "pass-step-up-recovery"),
         ("origin_audit", "cross-namespace-origin-audit-binding"),
+        ("attack_catalog", "docker-network-attack-catalog"),
     ] {
         if lab.components[component].is_object() && lab.components[component]["status"] != "not_run"
         {

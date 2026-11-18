@@ -216,7 +216,7 @@ deployments/lab/images; build/rust remains another owner's read-only surface.
 Output lab-report.json schema `humanymous.product-lab/2` has evidence_types,
 cases[{id,status,detail}], components.runtime (actual binary pilot report),
 components.wargame, components.target_attestation, components.pass_recovery,
-components.origin_audit,
+components.origin_audit, components.attack_catalog,
 components.independent_witness,
 optional components.collector, required_unavailable, required_cases,
 full_product_qualified and release_ready, plus the pilot-read top-level
@@ -260,7 +260,28 @@ replay refused) and exactly one origin contact per phase, all from the Gate's
 backend address. `audit-restart` needs one contiguous verified chain across all
 live sessions, ALLOW decisions equal to origin contacts and the exact tamper
 outcomes. Ingress is plain HTTP/1.1, not TLS/H2, and this Gate has no
-independent witness. Never relabel exit 2 as
+independent witness.
+The default profile's attack-catalog stage (roadmap 2, components.attack_catalog,
+attack-catalog-ledger.json) runs the `humanymous-attacker` network catalog
+(seed 42) from `ac-attacker` (ingress only) through `ac-gate` (both bridges,
+custody and WAL on its private tmpfs, same relays as oa-gate) to `ac-origin`
+(backend only). The runner starts, restarts and stops one shipped-runtime
+session per case on the attacker's request and returns that case's effects:
+the audit suffix of the Gate's offline-authenticated history (a verified
+extension of the previous one) and the origin contact delta from the origin's
+own log. `attack-catalog` needs the exact topology, all 19 supported cases
+evaluated with the catalog's exact expectations against those effects, the
+Go rules of `scripts/assert-attack.mjs` at 981d25c (no attack step forwarded or
+ALLOWed, the controls never DENY), exactly the seven unsupported rows (human,
+AT, accessible Pass, signed installation, coherent T4 and TLS/H2 are owned by
+other required cases; audit-outage injection has no producer), one runtime
+digest for every session and every origin contact from the Gate's backend
+address. Go's 72 browser/uTLS/HTTP2/proxy profiles have no Rust client in this
+HTTP/1.1 topology. `swarm` is not evaluated: Go's swarm asserted
+`l5.correlation.proxy_rotation`/HR-19 from three subnets, but the shipped
+runtime accepts loopback peers only (the relay hides the client subnet) and
+serves no cross-session correlation (`application::temporal` is test-only), so
+it needs an owner decision on a peer-identity protocol and serving correlation. Never relabel exit 2 as
 product success. Collector is optional Firefox component evidence, never a real
 human/AT or Meari+CEF product browser. No sandbox-disabling option is supplied.
 

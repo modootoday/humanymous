@@ -94,6 +94,28 @@ services:
     stdin_open: true
     network_mode: none
     volumes: [oa-wal:/writer/wal]
+  # Roadmap 2: the Rust attacker network catalog across the same internal
+  # bridges (Go parity: bots.yaml runs the catalog from a lab-network-only
+  # container against the Gate). The Gate keeps custody and WAL on its private
+  # tmpfs for the stage; the runner starts one runtime session per case.
+  ac-origin:
+    <<: *origin-audit
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --origin-audit-origin]
+    networks: [backend]
+  ac-gate:
+    <<: *origin-audit
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --attack-gate]
+    stdin_open: true
+    networks: [ingress, backend]
+    pids_limit: 128
+    mem_limit: 512m
+    cpus: 2
+    tmpfs: !override ["/tmp:rw,noexec,nosuid,size=64m,mode=1777"]
+  ac-attacker:
+    <<: *origin-audit
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --attack-client]
+    stdin_open: true
+    networks: [ingress]
 networks:
   ingress: &internal
     internal: true
