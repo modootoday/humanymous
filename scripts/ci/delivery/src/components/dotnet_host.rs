@@ -76,12 +76,42 @@ fn text(path: &Path) -> Result<String> {
         .map(str::to_owned)
         .ok_or_else(|| "non-UTF-8 provider path".to_owned())
 }
+/// The provider's only backend is the Linux systemd scope. Every Unix-only
+/// step refuses on other operating systems; nothing is reported as run.
+#[cfg(not(unix))]
+fn unsupported<T>() -> Result<T> {
+    Err("dotnet host provider unsupported on this OS: Linux systemd scope backend only".into())
+}
+#[cfg(unix)]
 fn private_dir(path: &Path) -> Result<()> {
     use std::os::unix::fs::DirBuilderExt;
     std::fs::DirBuilder::new()
         .mode(0o700)
         .create(path)
         .map_err(|e| format!("private directory: {e}"))
+}
+#[cfg(not(unix))]
+fn private_dir(_path: &Path) -> Result<()> {
+    unsupported()
+}
+/// Real and effective uid of the runner actor.
+#[cfg(unix)]
+fn runner_uids() -> Result<(u32, u32)> {
+    Ok(humanymous_runtime::native_security::process::current_uids())
+}
+#[cfg(not(unix))]
+fn runner_uids() -> Result<(u32, u32)> {
+    unsupported()
+}
+/// Owning group of a private directory the runner just created.
+#[cfg(unix)]
+fn owner_gid(path: &Path) -> Result<u32> {
+    use std::os::unix::fs::MetadataExt;
+    Ok(std::fs::metadata(path).map_err(|e| e.to_string())?.gid())
+}
+#[cfg(not(unix))]
+fn owner_gid(_path: &Path) -> Result<u32> {
+    unsupported()
 }
 
 /// Whether the authority socket under this private work root fits the
@@ -444,7 +474,7 @@ pub fn launch(
 ) -> Result<()> {
     backend_observed()?;
     preflight_environment(venue)?;
-    let (real, effective) = humanymous_runtime::native_security::process::current_uids();
+    let (real, effective) = runner_uids()?;
     require(
         real == effective && real != 0,
         "ordinary non-root runner actor required",
@@ -469,12 +499,7 @@ pub fn launch(
         ] {
             private_dir(path)?;
         }
-        let gid = {
-            use std::os::unix::fs::MetadataExt;
-            std::fs::metadata(&private_work)
-                .map_err(|e| e.to_string())?
-                .gid()
-        };
+        let gid = owner_gid(&private_work)?;
         let provenance = UnverifiedProvenance {
             managed: ManagedLineage {
                 source_sha: prepared.source_sha.clone(),
@@ -1016,6 +1041,26 @@ mod tests {
         assert!(socket_endpoint_fits(Path::new(&edge)));
         assert!(!socket_endpoint_fits(Path::new(&format!("{edge}a"))));
     }
+    #[cfg(not(unix))]
+    #[test]
+    fn non_unix_refuses_every_unix_only_step() {
+        let refused = |result: Result<()>| {
+            result
+                .unwrap_err()
+                .contains("unsupported on this OS: Linux systemd scope backend only")
+        };
+        let scratch = std::env::temp_dir().join("hm-dotnet-non-unix-refusal");
+        assert!(refused(private_dir(&scratch)));
+        assert!(!scratch.exists());
+        assert!(refused(runner_uids().map(drop)));
+        assert!(refused(owner_gid(&std::env::temp_dir()).map(drop)));
+        let mut report = json!({});
+        assert!(sdk::acquire(&scratch, &mut report).is_err());
+        assert_eq!(report, json!({}));
+        assert!(run(&scratch, &scratch, &mut report).is_err());
+        assert!(!scratch.exists());
+    }
+    #[cfg(unix)]
     #[test]
     fn scoped_child_is_killed_and_reaped_on_every_exit_path() {
         let spawn = || ScopedChild {

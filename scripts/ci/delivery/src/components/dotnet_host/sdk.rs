@@ -121,6 +121,22 @@ pub fn exact_version(output: &str) -> Result<()> {
     )
 }
 
+/// A new owner-only (0600) file; it must not already exist.
+#[cfg(unix)]
+fn owner_only_file(path: &Path) -> Result<std::fs::File> {
+    use std::os::unix::fs::OpenOptionsExt;
+    std::fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .mode(0o600)
+        .open(path)
+        .map_err(|e| format!(".NET SDK tarball: {e}"))
+}
+#[cfg(not(unix))]
+fn owner_only_file(_path: &Path) -> Result<std::fs::File> {
+    super::unsupported()
+}
+
 /// Download, verify and extract the pinned SDK into `private`, which must be
 /// a fresh owner-only directory. Records the custody facts in `report`.
 pub fn acquire(private: &Path, report: &mut Value) -> Result<Sdk> {
@@ -141,15 +157,7 @@ pub fn acquire(private: &Path, report: &mut Value) -> Result<Sdk> {
         .into_with_config()
         .limit(SIZE + 1)
         .reader();
-    let file = {
-        use std::os::unix::fs::OpenOptionsExt;
-        std::fs::OpenOptions::new()
-            .write(true)
-            .create_new(true)
-            .mode(0o600)
-            .open(&tarball)
-            .map_err(|e| format!(".NET SDK tarball: {e}"))?
-    };
+    let file = owner_only_file(&tarball)?;
     let verified = copy_verified(body, std::io::BufWriter::new(file), SIZE, SHA512);
     let digest = match verified {
         Ok(digest) => digest,
