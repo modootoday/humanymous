@@ -162,7 +162,7 @@ pub const CATALOG: &[AttackSpec] = &[
         tier: "runtime",
         class: "h2",
         transport: RawH2(H2Profile::PriorityAbsent),
-        expected: "l5.http2.priority_absent",
+        expected: "l5.http2.priority_atypical -> HR-24",
         bounded_requests: None,
         note: "coherent SETTINGS + real window, no HEADERS priority",
     },
