@@ -13,6 +13,7 @@ pub mod http;
 pub mod lab_h2_measure;
 pub mod logging;
 pub mod management;
+pub mod model_admission;
 pub mod observatory;
 pub mod pass_proof;
 pub mod pass_store;
