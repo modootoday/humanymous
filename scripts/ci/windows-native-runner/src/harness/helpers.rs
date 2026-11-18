@@ -48,29 +48,6 @@ pub(super) fn captured(
     }
     None
 }
-/// Declare an unexecuted privileged product case without granting a helper waiver.
-pub(super) fn external_scope(
-    entry: &Value,
-    output: &str,
-    unix: bool,
-    packages: &Packages,
-) -> Option<Value> {
-    const PARENT: &str = "unix_other_user_is_denied_by_actual_socket_acl";
-    const HELPER: &str = "unix_unprivileged_connect_probe";
-    if !unix
-        || entry["target"] != "authority-native-process"
-        || entry["kind"] != json!(["test"])
-        || !packages.matches(entry, Role::AuthorityNative)
-        || !output
-            .lines()
-            .any(|line| line.starts_with(&format!("test {PARENT} ... ignored")))
-    {
-        return None;
-    }
-    Some(
-        json!({"required_not_run":[PARENT],"required_execution_scope":"privileged-docker","declared_subprocess_helpers":[HELPER],"ignored_subprocess_helpers":0}),
-    )
-}
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -89,29 +66,5 @@ mod tests {
         for target in ["host_process", "runtime_service_process"] {
             assert!(captured(&json!({"package_id":"path+file:///node#humanymous-node-adapter@0.1.0","kind":["test"],"target":target}), &Packages::fixture()).is_none());
         }
-    }
-    #[test]
-    fn ignored_privileged_parent_is_required_and_never_a_verified_helper() {
-        let entry = json!({"package_id":"path+file:///C:/workspaces/humanymous/crates/sdk/humanymous-runtime#0.1.0","kind":["test"],"target":"authority-native-process"});
-        let log = "test unix_other_user_is_denied_by_actual_socket_acl ... ignored, Docker only\n";
-        let scope = external_scope(&entry, log, true, &Packages::fixture()).unwrap();
-        assert_eq!(scope["ignored_subprocess_helpers"], 0);
-        assert_eq!(
-            scope["required_not_run"][0],
-            "unix_other_user_is_denied_by_actual_socket_acl"
-        );
-        assert!(external_scope(&entry, log, false, &Packages::fixture()).is_none());
-        assert!(
-            external_scope(
-                &entry,
-                "test unix_other_user_is_denied_by_actual_socket_acl ... ok",
-                true,
-                &Packages::fixture()
-            )
-            .is_none()
-        );
-        let mut wrong = entry;
-        wrong["package_id"] = json!("path+file:///node#humanymous-node-adapter@0.1.0");
-        assert!(external_scope(&wrong, log, true, &Packages::fixture()).is_none());
     }
 }
