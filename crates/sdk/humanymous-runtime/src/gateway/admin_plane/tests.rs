@@ -1,7 +1,8 @@
 //! Ports of the admin HTTP rounds of legacy internal/gate/ws12_test.go,
 //! wargame_escalation_r51_test.go (R066-R070, R079, R080) and
 //! wargame_escalation_r161_test.go (R161-R167, R186, R187, R190) at baseline
-//! 981d25c. Every round goes through a real loopback TCP listener served by
+//! 981d25c, and of wargame_r01_ban_test.go (TestPermanentBanIgnoresBodyApprover,
+//! in `dual_control`). Every round goes through a real loopback TCP listener served by
 //! `AdminPlane::serve_until`, like Go `adminDo` through `AdminHandler`.
 use super::*;
 use crate::gateway::admin_approval::Role;
@@ -1039,4 +1040,53 @@ mod dual_control {
         let entry = s.banned("cidr:198.51.100.0/24").unwrap();
         assert_eq!(entry.until, Some(entry.created + Duration::from_secs(60)));
     }
+
+    /// Go TestPermanentBanIgnoresBodyApprover (wargame r01): forged `Operator`
+    /// and `Approver` body fields leave the permanent ban pending, the
+    /// requester cannot self-approve, and only a distinct approver bearer
+    /// commits it. Rust difference: the commit also consumes the retained
+    /// signed permit for this key. The ban is observed in the shared store an
+    /// edge gate consults (edge wiring is not in this plane).
+    #[tokio::test]
+    async fn r01_permanent_ban_ignores_body_approver() {
+        let s = stack().await;
+        let mut ledger = Ledger::new(scope());
+        s.plane
+            .retain_ban_permit(ledger.ban_permit("ip:198.51.100.77"))
+            .unwrap();
+        let body = r#"{"Key":"ip:198.51.100.77","Reason":"wargame r01","DurationSec":0,"Operator":"evil","Approver":"already-approved"}"#;
+        let aw = s.admin_do(s.token("operator"), "POST", "bans", body).await;
+        assert_eq!(aw.status, 200, "{}", aw.body);
+        let id = approval_id(&aw);
+        assert_eq!(aw.json()["pending"], true, "{}", aw.body);
+        assert!(!id.is_empty(), "{}", aw.body);
+        assert_eq!(aw.json()["needsRole"], "approver");
+        assert!(
+            s.banned("ip:198.51.100.77").is_none(),
+            "pending permanent ban must not enforce until Approver commits"
+        );
+        let pending = s.plane.approvals.pending(s.now());
+        assert_eq!(pending.len(), 1);
+        assert_eq!(pending[0].requester, "operator-1");
+        assert!(
+            !pending[0]
+                .params
+                .values()
+                .any(|value| value == "evil" || value == "already-approved")
+        );
+        let own = s
+            .admin_do(s.token("operator"), "POST", &format!("approvals/{id}"), "")
+            .await;
+        assert_ne!(own.status, 200, "operator must not self-approve");
+        let ok = commit(&s, &id).await;
+        assert_eq!(ok.status, 200, "{}", ok.body);
+        assert!(ok.body.contains("committed"), "{}", ok.body);
+        let entry = s
+            .banned("ip:198.51.100.77")
+            .expect("after Approver commit the ban must enforce");
+        assert!(entry.permanent());
+        assert_eq!(entry.source, Source::DualControl);
+    }
 }
+
+mod wargame;

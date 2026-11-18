@@ -590,3 +590,46 @@ fn wargame_r241_r250_seal_axis() {
         None
     );
 }
+
+// --- wargame axis D: shared limiter rows (R276, R277) ----------------------
+
+fn millisecond_config(max_keys: usize) -> Config {
+    let limits = Limits::new(max_keys, 64, 128, Duration::from_secs(60), 1 << 20, 64).unwrap();
+    Config::new(Duration::from_millis(1), 5, 10, limits).unwrap()
+}
+
+#[test]
+fn wargame_r276_shared_limiter_level_delegates() {
+    // Go builds the limiter around a local 1 s 5/10 limiter and never dials:
+    // classification is the local cutpoints, with no coordinator round trip.
+    let limits = Limits::new(64, 64, 128, Duration::from_secs(60), 1 << 20, 64).unwrap();
+    let config = Config::new(Duration::from_secs(1), 5, 10, limits).unwrap();
+    let (address, state) = coordinator();
+    let limiter = SharedRateLimiter::new(node(&address), config);
+    assert_eq!(limiter.level(4), Level::Normal);
+    assert_eq!(limiter.level(5), Level::Soft);
+    assert_eq!(limiter.level(9), Level::Soft);
+    assert_eq!(limiter.level(10), Level::Hard);
+    assert!(state.lock().unwrap().commands.is_empty());
+}
+
+#[test]
+fn wargame_r277_shared_limiter_gc_sweeps_the_local_fallback() {
+    // During an outage the local fallback holds the keys; GC must sweep it or
+    // a flood of distinct keys during the outage grows it without bound.
+    let mut limiter = SharedRateLimiter::new(unreachable(), millisecond_config(1));
+    assert!(matches!(
+        limiter.observe("k", T0),
+        Ok(Observation::Counted { count: 1, .. })
+    ));
+    assert_eq!(limiter.observe("other", T0), Err(Unavailable::Budget));
+    let later = T0 + Duration::from_secs(3600);
+    assert_eq!(limiter.gc(later), Ok(()));
+    assert!(matches!(
+        limiter.observe("other", later),
+        Ok(Observation::Counted { count: 1, .. })
+    ));
+    // GC runs on the local limiter's ordered clock.
+    assert_eq!(limiter.gc(T0), Err(Unavailable::TimeRegression));
+    assert_eq!(limiter.degradation().unavailable(), 3);
+}
