@@ -6717,9 +6717,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "b479e7a91bd0f1e5d76082deb2efeb014ff8e1dd4c4db7da624d668a9a475d48",
+      "sha256": "d0394eb7672da5595e9c78f2f907597c786858dc2d4efb79dee88002df075bc9",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 396 / macos 396 / windows 386 (386 common names plus 10 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for merge train claude/merge-train-1 (codex/rust plus PR heads #87, #88, #77, #103, #106 and #113): the name lists are the union of all parents' already-reviewed additions, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 396 listed common plus Unix-only names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 426 / macos 426 / windows 416 (416 common names plus 10 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for merge train claude/merge-train-2 (codex/rust plus PR heads #70, #74 and #83): the name lists are the union of all parents' already-reviewed additions, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 426 listed common plus Unix-only names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/how-this-was-built.md"
@@ -8070,9 +8070,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/ban.rs",
-      "sha256": "1695fadfa5457e0bcd8dc95c618fed03da2c0a238b30cf5f1219dd371ff0bbf6",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Pure bounded ban store ported from legacy ban.go. Keys are canonical ip:, fp: or cidr:. Auto-bans escalate 1h, 6h and 24h on hard rate breaches, with strikes decaying after 7 days; a fourth strike keeps 24h and reports dual_control_required instead of a permanent ban. Single operators may add only temporary narrow bans; permanent or cidr bans require a consumed RetainedActionPermit for Action::PermanentBan bound to the key commitment. Lifting a permanent ban is refused, and a full store refuses rather than evicting. It is referenced only by gateway seams, with no wired runtime ban gate.",
+      "sha256": "19c3e67c71acf94ee73ebef5ebdc5ad60ec08b3f18b5ca8c2825f2c688335232",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Pure bounded ban store ported from legacy ban.go. Keys are canonical ip:, fp: or cidr:. Auto-bans escalate 1h, 6h and 24h on hard rate breaches, with strikes decaying after 7 days; a fourth strike keeps 24h and reports dual_control_required instead of a permanent ban. Single operators may add only temporary narrow bans; permanent or cidr bans require a consumed RetainedActionPermit for Action::PermanentBan bound to the key commitment. Lifting a permanent ban is refused, and a full store refuses rather than evicting. Re-reviewed 2026-11-18: Store is now generic over its rate counter (Store<L = Limiter>) through the seams RateLimiter trait, with Store::new keeping the local Limiter, with_limiter() accepting e.g. the B23 fleet-shared counter, and limiter() exposing it for configuration; escalation logic is unchanged. It is referenced only by gateway seams and the coordinator ledger, with no wired runtime ban gate.",
       "pages": [
         "docs/runbooks/kill-switch-and-bans.md",
         "docs/reference/rbac-separation-of-duties.md"
@@ -8181,6 +8181,57 @@
       "notes": "KillStatus::assess joins a retained KillSwitch control state with sealed audit records. It requires exact scope, authority key and target commitment, no other consumed targets, and well-formed runtime.kill.engaged records with a 64-hex nonzero operation id. It classifies Clear (no intent, no effect), Killed (intent plus a witness-covered effect), Pending (intent without a covered effect) or an error (effect without intent). The caller must serialize issuance and admission, and the result is not a reusable grant. The test pins the classification table.",
       "pages": [
         "docs/runbooks/kill-switch-and-bans.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/coordinator.rs",
+      "sha256": "aa9a29f70da106e8b66729b0f076b9b4aea145daf795fb293051b377d30ab386",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "B23 fleet coordinator module root: declares the ledger and redis submodules. Its doc states the coordinator is the shared store several gate nodes consult for bans, verdicts and rate limits, that an outage degrades to the caller's local view, and that it never claims fleet completeness. No runtime wiring is declared here.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger.rs",
+      "sha256": "52c71f1faffccc26e2d59f905483c2e43c77d6cf1d43c507c6f42cd652dcaee0",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Fleet-shared ledgers ported from Go internal/gate redisledger.go and redisratelimit.go (oracle 981d25c), each with an in-process mirror used as write-through cache and outage fallback, and a Degradation counter of unavailable (error, open breaker, partial SCAN) and untrusted (integrity, freshness, anti-rollback) local answers. SharedRateLimiter runs an atomic Lua sliding window (ZREMRANGEBYSCORE/ZADD/PEXPIRE/ZCARD under hmn:rl:) with thresholds from the local Limiter and reports a coverage gap after the window is widened. SharedVerdictLedger stores JSON sticky verdicts under hmn:verdict: with PX TTL, refuses stale, unparseable or rolled-back values via a per-session high-water mark bounded by MAX_VERDICTS. SharedBanLedger writes ban entries under hmn:ban: (permanent bans retained 400 days), enforces bans raised by any node, records a 30-day lift epoch against resurrection, and lists by bounded SCAN (4096 rounds, 65536 keys, cycle detection) unioned with the local view. With an optional fleet SigningKey each value carries an HMAC-SHA256 tag bound to its Redis key (constant-time compare); without one, a coordinator-supplied permanent or cidr: ban is ignored, a deliberate tightening over Go because those need dual control.",
+      "pages": [
+        "docs/runbooks/kill-switch-and-bans.md",
+        "docs/reference/supported-topologies.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs",
+      "sha256": "a617e3008b5edf6e1f452f5c24a1fae98d7fac570b6b3130cdd9429dc78bf3fa",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Ports of Go redisledger_test.go, redisratelimit behaviour and wargame_axis_redis_r241_test.go (oracle 981d25c) against an in-process RESP coordinator shared by simulated gate nodes: seal binds a value to its key and refuses tampering; a verdict set on one node is seen on another, an absent verdict is Unknown, relocated, forged and stale verdicts fall back to the local view, a replayed older signed verdict is refused until the high-water mark ages out, and an outage serves the local verdict; a flood split across nodes is counted and auto-banned on aggregate, a rate outage falls back to the local counter, and widening the window reports the coverage gap; auto bans are enforced across nodes, a lifted ban cannot be resurrected by replay, relocated and expired bans are refused, an unsigned coordinator cannot impose permanent or broad bans, list unions coordinator and local views and cuts off a non-terminating SCAN cursor as degraded, a ban outage serves the local view; and the R241-R250 seal axis (relocation, cross-context, unsigned injection, spliced tag, no-key passthrough, empty payload, wrong key, truncated tag).",
+      "pages": [
+        "docs/runbooks/kill-switch-and-bans.md",
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis.rs",
+      "sha256": "9bdaaf580e50f8b59f06243948cd03c5f507db90a11e6a24abd1ad50fc2e8caa",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Dependency-free synchronous RESP2 client ported from Go internal/redis (oracle 981d25c): one mutex-guarded TCP connection dialled lazily with 3 s dial/read/write timeouts and TCP_NODELAY, AUTH (optional ACL user) on every connect, and a circuit breaker that opens for a 2 s cooldown after any error, after one reply slower than 750 ms, or when the latency EWMA (alpha 0.4) exceeds 400 ms; non-server errors drop the connection so the next command redials, while a slow success still returns its reply. Reply parsing caps bulk strings at 32 MiB, arrays at 2^20 entries, nesting at depth 8 and header lines at 64 KiB (a tightening over Go's unbounded line), requires CRLF framing and surfaces '-' replies as Server errors. Debug output never prints the password.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/coordinator/redis_tests.rs",
+      "sha256": "d513dcdce18c3abec8b4d7edac8aee66447a872a2f804b8c8623cf92c001789a",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unit tests for the RESP2 client: command encoding as an array of bulk strings; simple, integer, bulk, null and nested SCAN replies; error replies as Server errors; oversized bulk/array lengths refused before allocation; nesting deeper than the cap refused; malformed frames refused; against a closed port the first command fails with Io and the next fast-fails with BreakerOpen; against an in-process RESP server, AUTH user/password is sent once per connect and later commands reuse the connection, a rejected AUTH fails the command and opens the breaker, a slow success returns the reply but opens the breaker, sustained latency trips the EWMA, and a dropped connection is redialled after the cooldown. Loopback only, no real Redis.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/reference/production-vs-reference.md"
       ]
     },
     {
@@ -8440,9 +8491,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/mod.rs",
-      "sha256": "d2fd8bf58415007f7bc2a4623eaaca4aed575c8e35eac0e7b16b2c4f494e49f7",
+      "sha256": "858079e9d8297ae6c6928116d95970e22de776b0eb83b2cf3ac6265f712e41a4",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway module root of the runtime crate: declares the application, ban, browser, configuration, connection cap, control, credential, external input, guard, http, logging, management, model admission, observatory, pass proof/store, request, seams, service, session, settings, shipping, smuggle, startup, TLS, token, verdict store and virtual USB modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Re-reviewed 2026-11-18 for merge train claude/merge-train-1: the only change unions both parents' module declarations, the lab-only observatory module and the public model_admission module (behavioral bundle startup admission). Doc line states loopback component support is not product qualification.",
+      "notes": "Gateway module root of the runtime crate: declares the application, ban, browser, configuration, connection cap, control, coordinator, credential, external input, guard, http, logging, management, model admission, observatory, pass proof/store, request, seams, service, session, settings, shipping, smuggle, startup, TLS, token, verdict store and virtual USB modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Re-reviewed 2026-11-18 for merge train claude/merge-train-2: the change unions both parents' module declarations (adds the public B23 coordinator module beside the existing model_admission and observatory modules). Doc line states loopback component support is not product qualification.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
@@ -8510,9 +8561,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/seams.rs",
-      "sha256": "11e9cbf0c1f79680440a62b31f0cc2717f8930754720cdd725d9fc19769a5d0e",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Distribution seam traits ported from legacy seams.go: BanLedger (check, observe, monitor-mode observe_rate, temporary ban, lift, list), VerdictLedger (absent or stale is Unknown, never a grant) and RateLimiter (observe, level, hot configure), with impls for the local ban Store, VerdictStore and Limiter as compile-time drift proof. Dual-controlled bans are deliberately left off the seam.",
+      "sha256": "a77eaeb12130aea45f6ae1626f4f8b984e518cf8f0564b7e521723ef05a3ef16",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Distribution seam traits ported from legacy seams.go: BanLedger (check, observe, monitor-mode observe_rate, temporary ban, lift, list), VerdictLedger (absent or stale is Unknown, never a grant) and RateLimiter (observe, level, hot configure, and now gc to sweep expired local history), with impls for the local ban Store, VerdictStore and Limiter as compile-time drift proof. Re-reviewed 2026-11-18: BanLedger is implemented for Store<L> over any RateLimiter so the B23 shared counter plugs in, and Limiter implements the new gc method. Dual-controlled bans are deliberately left off the seam.",
       "pages": [
         "docs/runbooks/kill-switch-and-bans.md",
         "docs/reference/production-vs-reference.md"
@@ -9321,9 +9372,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/network/history/rate/config.rs",
-      "sha256": "f057982dd32bc389814ddc90bec44664b1d659e3d70be85954e1b045dae294cc",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Rate limiter configuration: Limits requires nonzero keys, hits per key, key bytes, payload bytes, a nonzero max window, a GC scan budget of at most 4096 and a representable timestamp array; Config requires window within limits, soft greater than zero and hard at least soft, derives TTL as six windows and checks the per-key sample reservation fits the payload. No production defaults are supplied. Reader page coverage is indirect.",
+      "sha256": "e23bf4a896f45c75f515dcc57499befd522e22a9213bc14b624cc35bdd163ae1",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Rate limiter configuration: Limits requires nonzero keys, hits per key, key bytes, payload bytes, a nonzero max window, a GC scan budget of at most 4096 and a representable timestamp array; Config requires window within limits, soft greater than zero and hard at least soft, derives TTL as six windows and checks the per-key sample reservation fits the payload. Re-reviewed 2026-11-18: adds a window() accessor used by the B23 shared rate counter; validation is unchanged. No production defaults are supplied. Reader page coverage is indirect.",
       "pages": [
         "docs/reference/cli-config-policy.md",
         "docs/explanation/detection-engine-internals.md"
