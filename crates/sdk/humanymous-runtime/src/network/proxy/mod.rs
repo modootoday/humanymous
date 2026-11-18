@@ -6,6 +6,19 @@
 //! client provenance (network-capture N01) and never reads HTTP forwarding fields.
 //! An untrusted peer's bytes are not inspected at all, so a spoofed header stays
 //! ordinary payload for the next layer.
+//!
+//! Port of legacy internal/gate proxyproto.go at baseline 981d25c, checked
+//! against `tests/fixtures/network/proxyproto-go-golden.json`. Only PROXY v2 is
+//! accepted; a v1 text header is refused like any other non-v2 prefix, as in
+//! Go. The accepting listener is `gateway::proxy_listener`.
+//!
+//! Deliberate fail-closed differences from Go, pinned by the golden test:
+//! - An empty allowlist is a refusal (Go returned no networks and no error).
+//! - A prefix length with a leading zero (`/08`) is refused (Go accepted it).
+//! - An IPv4-mapped IPv6 entry is an IPv4 network whose breadth is checked
+//!   after mapping: Go accepted `::ffff:0:0/96`, which trusts every IPv4 peer,
+//!   and turned a bare `::ffff:a.b.c.d` into `::/32`.
+//! - More than [`MAX_ENTRIES`] entries is a refusal.
 use std::io::Read;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
 
@@ -13,6 +26,8 @@ use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
 pub const SIGNATURE: [u8; 12] = [
     0x0D, 0x0A, 0x0D, 0x0A, 0x00, 0x0D, 0x0A, 0x51, 0x55, 0x49, 0x54, 0x0A,
 ];
+/// Length of the fixed v2 header: signature, version/command, family, length.
+pub const FIXED_LEN: usize = 16;
 /// Narrowest accepted prefix length; anything broader lets clients spoof sources.
 pub const MIN_PREFIX: u8 = 8;
 /// Bound on the number of trusted entries in one allowlist.
@@ -66,6 +81,15 @@ impl Cidr {
         if prefix > width {
             return Err(Refusal::Cidr);
         }
+        // An IPv4-mapped entry names IPv4 space, as Go matched it; its breadth
+        // is the IPv4 prefix length that remains after the 96-bit mapping.
+        let (address, prefix) = match address {
+            IpAddr::V6(v6) if prefix >= 96 => match v6.to_ipv4_mapped() {
+                Some(v4) => (IpAddr::V4(v4), prefix - 96),
+                None => (address, prefix),
+            },
+            _ => (address, prefix),
+        };
         if prefix < MIN_PREFIX {
             return Err(Refusal::TooBroad);
         }
@@ -75,16 +99,21 @@ impl Cidr {
         })
     }
 
-    /// Membership; an IPv4-mapped IPv6 peer matches IPv4 networks.
+    /// Membership. An IPv4-mapped IPv6 peer is the IPv4 peer it maps, so it
+    /// matches IPv4 networks only, as Go's `IPNet.Contains` did.
     pub fn contains(&self, ip: IpAddr) -> bool {
-        let ip = match ip {
-            IpAddr::V6(v6) if self.network.is_ipv4() => match v6.to_ipv4_mapped() {
-                Some(v4) => IpAddr::V4(v4),
-                None => return false,
-            },
-            other => other,
-        };
+        let ip = ip.to_canonical();
         ip.is_ipv4() == self.network.is_ipv4() && mask(ip, self.prefix) == self.network
+    }
+
+    /// Masked network address.
+    pub fn network(&self) -> IpAddr {
+        self.network
+    }
+
+    /// Prefix length in the family of [`network`](Self::network).
+    pub fn prefix(&self) -> u8 {
+        self.prefix
     }
 }
 
@@ -120,9 +149,19 @@ impl Allowlist {
         Ok(Self(entries))
     }
 
-    /// Whether the actual TCP peer is a trusted balancer.
+    /// Whether the actual TCP peer address is a trusted balancer.
     pub fn trusts(&self, peer: IpAddr) -> bool {
         self.0.iter().any(|cidr| cidr.contains(peer))
+    }
+
+    /// Whether the actual TCP peer socket is a trusted balancer. A scoped
+    /// (zoned) IPv6 peer is never trusted: Go could not parse its zoned
+    /// address text and kept the socket peer.
+    pub fn trusts_peer(&self, peer: SocketAddr) -> bool {
+        match peer {
+            SocketAddr::V6(v6) if v6.scope_id() != 0 => false,
+            _ => self.trusts(peer.ip()),
+        }
     }
 
     /// Parsed entries in input order.
@@ -142,20 +181,19 @@ pub enum Header {
     Source(SocketAddr),
 }
 
-/// Read exactly one PROXY v2 header and nothing after it, so the following
-/// TLS ClientHello stays on the stream. Callers bound this with a deadline.
-pub fn read_header(stream: &mut impl Read) -> Result<Header, Refusal> {
-    let mut fixed = [0u8; 16];
-    stream
-        .read_exact(&mut fixed)
-        .map_err(|_| Refusal::Truncated)?;
+/// Validate the fixed 16-byte header and return the address block length
+/// that follows it.
+pub fn block_len(fixed: &[u8; FIXED_LEN]) -> Result<usize, Refusal> {
     if fixed[..12] != SIGNATURE || fixed[12] & 0xF0 != 0x20 {
         return Err(Refusal::NotProxyV2);
     }
-    let mut block = vec![0u8; usize::from(u16::from_be_bytes([fixed[14], fixed[15]]))];
-    stream
-        .read_exact(&mut block)
-        .map_err(|_| Refusal::Truncated)?;
+    Ok(usize::from(u16::from_be_bytes([fixed[14], fixed[15]])))
+}
+
+/// Decode a complete header: the fixed part (already accepted by
+/// [`block_len`]) and its whole address block. An IPv4-mapped TCP6 source is
+/// the IPv4 source it maps, as Go rendered and keyed it.
+pub fn decode(fixed: &[u8; FIXED_LEN], block: &[u8]) -> Result<Header, Refusal> {
     if fixed[12] & 0x0F == 0x00 {
         return Ok(Header::Local);
     }
@@ -174,11 +212,25 @@ pub fn read_header(stream: &mut impl Read) -> Result<Header, Refusal> {
             }
             let mut octets = [0u8; 16];
             octets.copy_from_slice(&block[..16]);
-            let ip = Ipv6Addr::from(octets);
-            Ok(Header::Source(SocketAddr::new(ip.into(), port(32))))
+            let ip = IpAddr::V6(Ipv6Addr::from(octets)).to_canonical();
+            Ok(Header::Source(SocketAddr::new(ip, port(32))))
         }
         _ => Ok(Header::Unspecified),
     }
+}
+
+/// Read exactly one PROXY v2 header and nothing after it, so the following
+/// TLS ClientHello stays on the stream. Callers bound this with a deadline.
+pub fn read_header(stream: &mut impl Read) -> Result<Header, Refusal> {
+    let mut fixed = [0u8; FIXED_LEN];
+    stream
+        .read_exact(&mut fixed)
+        .map_err(|_| Refusal::Truncated)?;
+    let mut block = vec![0u8; block_len(&fixed)?];
+    stream
+        .read_exact(&mut block)
+        .map_err(|_| Refusal::Truncated)?;
+    decode(&fixed, &block)
 }
 
 /// Outcome of the trust gate for one accepted connection.
@@ -208,7 +260,7 @@ pub fn resolve(
     socket_peer: SocketAddr,
     stream: &mut impl Read,
 ) -> Result<Peer, Refusal> {
-    if !allowlist.trusts(socket_peer.ip()) {
+    if !allowlist.trusts_peer(socket_peer) {
         return Ok(Peer::Socket(socket_peer));
     }
     Ok(match read_header(stream)? {

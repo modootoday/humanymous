@@ -15,8 +15,8 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 238,
-  "partial": 57,
+  "ported_unit": 239,
+  "partial": 56,
   "missing": 8,
   "not_applicable": 2,
   "oracle_only": 9
@@ -76,10 +76,10 @@
    "ported_unit": 5
   },
   "internal/gate": {
-   "partial": 31,
+   "partial": 30,
    "missing": 5,
    "not_applicable": 1,
-   "ported_unit": 47,
+   "ported_unit": 48,
    "oracle_only": 1
   },
   "internal/httpx": {
@@ -3345,26 +3345,39 @@
   },
   {
    "baseline_path": "internal/gate/proxyproto.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/network/proxy/mod.rs"
+    "crates/sdk/humanymous-runtime/src/network/proxy/mod.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/proxy_listener.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::trust_gate_over_real_tcp",
     "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::recovers_ipv6_source",
-    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::unspecified_and_udp_families_keep_socket_peer"
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::unspecified_and_udp_families_keep_socket_peer",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests/golden.rs::read_header_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests/golden.rs::ipv4_mapped_source_is_keyed_as_ipv4_like_go",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests/golden.rs::parse_cidrs_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests/golden.rs::trust_gate_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/gateway/proxy_listener/tests.rs::accept_matches_go_golden_over_real_tcp",
+    "crates/sdk/humanymous-runtime/src/gateway/proxy_listener/tests.rs::default_timeout_is_the_go_five_seconds",
+    "crates/sdk/humanymous-runtime/src/gateway/proxy_listener/tests.rs::untrusted_peer_bytes_are_never_consumed"
    ],
    "go_test_map": {},
-   "gaps": [
-    "gateway listener wiring with a configured allowlist and read deadline (needs the public-role profile, B01/B26)"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Header decoding, the /8 minimum allowlist and the trust gate are ported as a pure Network kernel; no listener uses it yet, and it never creates TLS provenance (network-capture N01).",
+   "notes": "FM11 residual 13: readProxyV2, ParseCIDRs and proxyListener.trusts are the Network kernel network::proxy (B26); WrapProxyProto, proxyListener.Accept and proxyConn are gateway::proxy_listener::ProxyListener, a tokio accept loop that returns an untrusted peer unread, reads one v2 header from a trusted balancer within the Go 5 s timeout, keys a declared TCP source and keeps the socket peer for LOCAL or non-TCP families, and closes a malformed, truncated or late header and keeps accepting. Go golden crates/sdk/humanymous-runtime/tests/fixtures/network/proxyproto-go-golden.json (Go 1.25.3, provenance inside): 34 header decodes (v1 text, wrong versions, truncations, short blocks, TLVs) with their remaining bytes, 43 allowlist parses, 21 trust decisions and 10 real-TCP accepts match. Measured Go behaviour adopted: an IPv4-mapped TCP6 source and an IPv4-mapped peer are IPv4, and a zoned IPv6 peer is never trusted. Deliberate fail-closed differences, pinned in network/proxy/tests/golden.rs (AGENTS.md fail-closed): an empty allowlist, a leading-zero prefix and more than 256 entries are refused, and an IPv4-mapped entry is checked as IPv4 (Go accepted ::ffff:0:0/96, which trusts every IPv4 peer, and read a bare ::ffff:a.b.c.d as ::/32). Which gate listener is wrapped stays with serving composition (.agents/retirement/owner-decisions-2026-11-16.md); the peer never becomes TLS provenance (network-capture N01).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::trust_gate_over_real_tcp": "passed",
     "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::recovers_ipv6_source": "passed",
-    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::unspecified_and_udp_families_keep_socket_peer": "passed"
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::unspecified_and_udp_families_keep_socket_peer": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests/golden.rs::read_header_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests/golden.rs::ipv4_mapped_source_is_keyed_as_ipv4_like_go": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests/golden.rs::parse_cidrs_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests/golden.rs::trust_gate_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/proxy_listener/tests.rs::accept_matches_go_golden_over_real_tcp": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/proxy_listener/tests.rs::default_timeout_is_the_go_five_seconds": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/proxy_listener/tests.rs::untrusted_peer_bytes_are_never_consumed": "passed"
    }
   },
   {

@@ -1,0 +1,817 @@
+{
+ "provenance": {
+  "oracle_commit": "981d25cf71a5a54855d7e2b4359e832a9d5998e5",
+  "oracle_packages": [
+   "internal/gate (proxyproto.go readProxyV2, ParseCIDRs, proxyListener.trusts, proxyListener.Accept, WrapProxyProto)"
+  ],
+  "go_version": "go1.25.3 linux/amd64 (go.mod at 981d25c pins go 1.25.3)",
+  "command": "git archive 981d25c | tar -x -C <oracle>; add scratch in-package capture test internal/gate/zz_proxyproto_capture_test.go; cd <oracle>; GOLDEN_OUT=<out> GOPROXY=off GOFLAGS=-mod=readonly go test -count=1 -run ^TestZZProxyProtoCapture$ ./internal/gate/",
+  "capture_program_sha256": {
+   "internal/gate/zz_proxyproto_capture_test.go": "2df1f72a2352ce6e8fbafe2192040c75cc585a37cdce242becbf6bd0673b1d6c"
+  },
+  "capture_program_committed": false,
+  "output_sha256": "fe2ff69c46d95d3bf36a80aab2d9d7efbe25dfd68a98df5521fa034c97f9e34f",
+  "capture_notes": [
+   "read_header feeds input_hex to readProxyV2 through an in-memory net.Conn (deadline calls are no-ops); addr is TCPAddr.String() of the declared source or null, ip_len is the Go IP slice length, err is the Go error text or null, rest_hex is every byte left unread after the call",
+   "parse_cidrs calls ParseCIDRs on each input; nets are IPNet.String() and ip_lens the Go IP slice lengths, so an IPv4-mapped entry shows as an IPv4 network with a 16-byte IP",
+   "trusts parses allowlist with ParseCIDRs and asks proxyListener.trusts for a TCPAddr from net.ResolveTCPAddr(peer)",
+   "accept serves each case on a fresh 127.0.0.1 listener wrapped as proxyListener with a 300 ms header timeout (WrapProxyProto uses default_timeout_ns); first_hex is sent on a first connection and, when second_hex is set, second_hex on a second connection about 50 ms later (450 ms when first_silent, so the first header read times out); accepted is first or second for a socket-peer RemoteAddr, otherwise remote is the declared address; remaining_hex is what the accepted connection then read within 200 ms; first_closed_by_server is whether the first client saw EOF or reset"
+  ],
+  "scope": "Frozen oracle outputs for differential parity only; never regenerate to hide drift"
+ },
+ "accept": [
+  {
+   "accepted": "declared",
+   "allowlist": "127.0.0.0/8",
+   "first_hex": "0d0a0d0a000d0a515549540a2111000cc63364170a00000115b301bb7061796c6f6164",
+   "first_silent": false,
+   "name": "trusted_declared",
+   "remaining_hex": "7061796c6f6164",
+   "remote": "198.51.100.23:5555",
+   "second_hex": ""
+  },
+  {
+   "accepted": "first",
+   "allowlist": "10.0.0.0/8",
+   "first_hex": "0d0a0d0a000d0a515549540a2111000cc63364170a00000115b301bb",
+   "first_silent": false,
+   "name": "untrusted_header_is_payload",
+   "remaining_hex": "0d0a0d0a000d0a515549540a2111000cc63364170a00000115b301bb",
+   "remote": "socket",
+   "second_hex": ""
+  },
+  {
+   "accepted": "first",
+   "allowlist": "127.0.0.0/8",
+   "first_hex": "0d0a0d0a000d0a515549540a200000006863",
+   "first_silent": false,
+   "name": "trusted_local",
+   "remaining_hex": "6863",
+   "remote": "socket",
+   "second_hex": ""
+  },
+  {
+   "accepted": "first",
+   "allowlist": "127.0.0.0/8",
+   "first_hex": "0d0a0d0a000d0a515549540a2112000cc63364170a00000115b301bbaa",
+   "first_silent": false,
+   "name": "trusted_udp_unspec",
+   "remaining_hex": "aa",
+   "remote": "socket",
+   "second_hex": ""
+  },
+  {
+   "accepted": "declared",
+   "allowlist": "127.0.0.0/8",
+   "first_hex": "0d0a0d0a000d0a515549540a2121002420010db80000000000000000000000070000000000000000000000000000000120fb01bb",
+   "first_silent": false,
+   "name": "trusted_v6_declared",
+   "remaining_hex": "",
+   "remote": "[2001:db8::7]:8443",
+   "second_hex": ""
+  },
+  {
+   "accepted": "declared",
+   "allowlist": "127.0.0.0/8",
+   "first_closed_by_server": true,
+   "first_hex": "474554202f20485454502f312e310d0a486f73743a20780d0a0d0a",
+   "first_silent": false,
+   "name": "trusted_garbage_dropped",
+   "remaining_hex": "",
+   "remote": "203.0.113.9:44321",
+   "second_hex": "0d0a0d0a000d0a515549540a2111000ccb0071090a000001ad2101bb"
+  },
+  {
+   "accepted": "declared",
+   "allowlist": "127.0.0.0/8",
+   "first_closed_by_server": true,
+   "first_hex": "50524f58592054435034203230332e302e3131332e392031302e302e302e31203434333231203434330d0a",
+   "first_silent": false,
+   "name": "trusted_v1_dropped",
+   "remaining_hex": "",
+   "remote": "203.0.113.9:44321",
+   "second_hex": "0d0a0d0a000d0a515549540a2111000ccb0071090a000001ad2101bb"
+  },
+  {
+   "accepted": "declared",
+   "allowlist": "127.0.0.0/8",
+   "first_closed_by_server": true,
+   "first_hex": "0d0a0d0a000d0a515549540a2111000401020304",
+   "first_silent": false,
+   "name": "trusted_short_block_dropped",
+   "remaining_hex": "",
+   "remote": "203.0.113.9:44321",
+   "second_hex": "0d0a0d0a000d0a515549540a2111000ccb0071090a000001ad2101bb"
+  },
+  {
+   "accepted": "declared",
+   "allowlist": "127.0.0.0/8",
+   "first_closed_by_server": true,
+   "first_hex": "0d0a0d0a000d0a515549540a2111",
+   "first_silent": false,
+   "name": "trusted_truncated_dropped",
+   "remaining_hex": "",
+   "remote": "203.0.113.9:44321",
+   "second_hex": "0d0a0d0a000d0a515549540a2111000ccb0071090a000001ad2101bb"
+  },
+  {
+   "accepted": "declared",
+   "allowlist": "127.0.0.0/8",
+   "first_closed_by_server": true,
+   "first_hex": "",
+   "first_silent": true,
+   "name": "trusted_silent_timeout_dropped",
+   "remaining_hex": "",
+   "remote": "203.0.113.9:44321",
+   "second_hex": "0d0a0d0a000d0a515549540a2111000ccb0071090a000001ad2101bb"
+  }
+ ],
+ "default_timeout_ns": 5000000000,
+ "parse_cidrs": [
+  {
+   "err": "gate: trusted-proxy CIDR 0.0.0.0/0 is too broad (/0 of /32); list your balancers' addresses, never a /0",
+   "input": "0.0.0.0/0",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": "gate: trusted-proxy CIDR ::/0 is too broad (/0 of /128); list your balancers' addresses, never a /0",
+   "input": "::/0",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": "gate: trusted-proxy CIDR 10.0.0.0/4 is too broad (/4 of /32); list your balancers' addresses, never a /0",
+   "input": "10.0.0.0/4",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": "gate: trusted-proxy CIDR 10.0.0.0/7 is too broad (/7 of /32); list your balancers' addresses, never a /0",
+   "input": "10.0.0.0/7",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": null,
+   "input": "10.0.0.0/8",
+   "ip_lens": [
+    4
+   ],
+   "nets": [
+    "10.0.0.0/8"
+   ]
+  },
+  {
+   "err": "gate: trusted-proxy CIDR ::/7 is too broad (/7 of /128); list your balancers' addresses, never a /0",
+   "input": "::/7",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": null,
+   "input": "::/8",
+   "ip_lens": [
+    16
+   ],
+   "nets": [
+    "::/8"
+   ]
+  },
+  {
+   "err": null,
+   "input": "172.40.0.0/24, 10.1.2.3",
+   "ip_lens": [
+    4,
+    4
+   ],
+   "nets": [
+    "172.40.0.0/24",
+    "10.1.2.3/32"
+   ]
+  },
+  {
+   "err": null,
+   "input": "172.40.0.0/24,10.1.2.3",
+   "ip_lens": [
+    4,
+    4
+   ],
+   "nets": [
+    "172.40.0.0/24",
+    "10.1.2.3/32"
+   ]
+  },
+  {
+   "err": null,
+   "input": "172.40.0.0/24 ,, 10.1.2.3",
+   "ip_lens": [
+    4,
+    4
+   ],
+   "nets": [
+    "172.40.0.0/24",
+    "10.1.2.3/32"
+   ]
+  },
+  {
+   "err": null,
+   "input": "",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": null,
+   "input": " ",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": null,
+   "input": ",",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": null,
+   "input": " , ",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": null,
+   "input": "2001:db8::1",
+   "ip_lens": [
+    16
+   ],
+   "nets": [
+    "2001:db8::1/128"
+   ]
+  },
+  {
+   "err": null,
+   "input": "2001:db8::1/32",
+   "ip_lens": [
+    16
+   ],
+   "nets": [
+    "2001:db8::/32"
+   ]
+  },
+  {
+   "err": null,
+   "input": "192.0.2.77/24",
+   "ip_lens": [
+    4
+   ],
+   "nets": [
+    "192.0.2.0/24"
+   ]
+  },
+  {
+   "err": null,
+   "input": "10.1.2.3/32",
+   "ip_lens": [
+    4
+   ],
+   "nets": [
+    "10.1.2.3/32"
+   ]
+  },
+  {
+   "err": "invalid CIDR address: 10.1.2.3/33",
+   "input": "10.1.2.3/33",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": "invalid CIDR address: ::/129",
+   "input": "::/129",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": "invalid CIDR address: 10.1.2.3/abc",
+   "input": "10.1.2.3/abc",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": "invalid CIDR address: not-an-ip",
+   "input": "not-an-ip",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": null,
+   "input": "10.1.2.3/024",
+   "ip_lens": [
+    4
+   ],
+   "nets": [
+    "10.1.2.0/24"
+   ]
+  },
+  {
+   "err": null,
+   "input": "10.0.0.0/08",
+   "ip_lens": [
+    4
+   ],
+   "nets": [
+    "10.0.0.0/8"
+   ]
+  },
+  {
+   "err": "invalid CIDR address: 10.1.2.3/",
+   "input": "10.1.2.3/",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": "invalid CIDR address: 10.0.0/8",
+   "input": "10.0.0/8",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": "invalid CIDR address: 10.1.2.300",
+   "input": "10.1.2.300",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": "invalid CIDR address: 10.0.0.1\t10.0.0.2",
+   "input": "10.0.0.1\t10.0.0.2",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": "invalid CIDR address: fe80::1%eth0",
+   "input": "fe80::1%eth0",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": "invalid CIDR address: fe80::1%eth0/64",
+   "input": "fe80::1%eth0/64",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": null,
+   "input": "::ffff:10.0.0.0/104",
+   "ip_lens": [
+    16
+   ],
+   "nets": [
+    "10.0.0.0/8"
+   ]
+  },
+  {
+   "err": null,
+   "input": "::ffff:10.0.0.1",
+   "ip_lens": [
+    16
+   ],
+   "nets": [
+    "::/32"
+   ]
+  },
+  {
+   "err": null,
+   "input": "::ffff:0:0/96",
+   "ip_lens": [
+    16
+   ],
+   "nets": [
+    "0.0.0.0/0"
+   ]
+  },
+  {
+   "err": null,
+   "input": "::ffff:10.0.0.0/100",
+   "ip_lens": [
+    16
+   ],
+   "nets": [
+    "0.0.0.0/4"
+   ]
+  },
+  {
+   "err": null,
+   "input": "10.1.2.3/32,10.1.2.3/32",
+   "ip_lens": [
+    4,
+    4
+   ],
+   "nets": [
+    "10.1.2.3/32",
+    "10.1.2.3/32"
+   ]
+  },
+  {
+   "err": "invalid CIDR address: +10.0.0.0/8",
+   "input": "+10.0.0.0/8",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": "invalid CIDR address: 10.0.0.0/+8",
+   "input": "10.0.0.0/+8",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": "invalid CIDR address: 10.0.0.0/",
+   "input": "10.0.0.0/ 8",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": "invalid CIDR address: 010.0.0.1",
+   "input": "010.0.0.1",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": "invalid CIDR address: 10.0.0.0/8;",
+   "input": "10.0.0.0/8;",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": "invalid CIDR address: [::1]",
+   "input": "[::1]",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": "invalid CIDR address: [::1]/128",
+   "input": "[::1]/128",
+   "ip_lens": null,
+   "nets": null
+  },
+  {
+   "err": "invalid CIDR address: 1.2.3.4/0x8",
+   "input": "1.2.3.4/0x8",
+   "ip_lens": null,
+   "nets": null
+  }
+ ],
+ "read_header": [
+  {
+   "addr": "203.0.113.9:44321",
+   "err": null,
+   "input_hex": "0d0a0d0a000d0a515549540a2111000ccb0071090a000001ad2101bb544c532d434c49454e5448454c4c4f",
+   "ip_len": 4,
+   "name": "v4_payload",
+   "rest_hex": "544c532d434c49454e5448454c4c4f"
+  },
+  {
+   "addr": "198.51.100.23:5555",
+   "err": null,
+   "input_hex": "0d0a0d0a000d0a515549540a21110010c63364170a00000115b301bb04000100ff",
+   "ip_len": 4,
+   "name": "v4_tlvs_consumed",
+   "rest_hex": "ff"
+  },
+  {
+   "addr": "0.0.0.0:0",
+   "err": null,
+   "input_hex": "0d0a0d0a000d0a515549540a2111000c000000000000000000000000",
+   "ip_len": 4,
+   "name": "v4_zero",
+   "rest_hex": ""
+  },
+  {
+   "addr": "[2001:db8::7]:8443",
+   "err": null,
+   "input_hex": "0d0a0d0a000d0a515549540a2121002420010db80000000000000000000000070000000000000000000000000000000120fb01bb",
+   "ip_len": 16,
+   "name": "v6",
+   "rest_hex": ""
+  },
+  {
+   "addr": "203.0.113.9:8080",
+   "err": null,
+   "input_hex": "0d0a0d0a000d0a515549540a2121002400000000000000000000ffffcb007109000000000000000000000000000000011f9001bb",
+   "ip_len": 16,
+   "name": "v6_mapped_v4",
+   "rest_hex": ""
+  },
+  {
+   "addr": "[::]:0",
+   "err": null,
+   "input_hex": "0d0a0d0a000d0a515549540a21210024000000000000000000000000000000000000000000000000000000000000000000000000",
+   "ip_len": 16,
+   "name": "v6_unspecified",
+   "rest_hex": ""
+  },
+  {
+   "addr": null,
+   "err": null,
+   "input_hex": "0d0a0d0a000d0a515549540a20000000",
+   "name": "local_empty",
+   "rest_hex": ""
+  },
+  {
+   "addr": null,
+   "err": null,
+   "input_hex": "0d0a0d0a000d0a515549540a2011000ccb0071090a000001ad2101bbaa",
+   "name": "local_with_v4_block",
+   "rest_hex": "aa"
+  },
+  {
+   "addr": null,
+   "err": null,
+   "input_hex": "0d0a0d0a000d0a515549540a2011000401020304",
+   "name": "local_short_v4_block",
+   "rest_hex": ""
+  },
+  {
+   "addr": null,
+   "err": null,
+   "input_hex": "0d0a0d0a000d0a515549540a21000000bb",
+   "name": "proxy_unspec",
+   "rest_hex": "bb"
+  },
+  {
+   "addr": null,
+   "err": null,
+   "input_hex": "0d0a0d0a000d0a515549540a2100000401020304",
+   "name": "proxy_unspec_block",
+   "rest_hex": ""
+  },
+  {
+   "addr": null,
+   "err": null,
+   "input_hex": "0d0a0d0a000d0a515549540a2112000ccb0071090a000001ad2101bb",
+   "name": "udp4",
+   "rest_hex": ""
+  },
+  {
+   "addr": null,
+   "err": null,
+   "input_hex": "0d0a0d0a000d0a515549540a21220024000000000000000000000000000000000000000000000000000000000000000000000000",
+   "name": "udp6",
+   "rest_hex": ""
+  },
+  {
+   "addr": null,
+   "err": null,
+   "input_hex": "0d0a0d0a000d0a515549540a21310000",
+   "name": "unix_stream",
+   "rest_hex": ""
+  },
+  {
+   "addr": null,
+   "err": null,
+   "input_hex": "0d0a0d0a000d0a515549540a21ff0000",
+   "name": "family_ff",
+   "rest_hex": ""
+  },
+  {
+   "addr": "203.0.113.9:44321",
+   "err": null,
+   "input_hex": "0d0a0d0a000d0a515549540a2211000ccb0071090a000001ad2101bb",
+   "ip_len": 4,
+   "name": "command_2_is_proxy",
+   "rest_hex": ""
+  },
+  {
+   "addr": "203.0.113.9:44321",
+   "err": null,
+   "input_hex": "0d0a0d0a000d0a515549540a2f11000ccb0071090a000001ad2101bb",
+   "ip_len": 4,
+   "name": "command_f_is_proxy",
+   "rest_hex": ""
+  },
+  {
+   "addr": null,
+   "err": "gate: not a PROXY v2 header",
+   "input_hex": "0d0a0d0a000d0a515549540a1111000ccb0071090a000001ad2101bb",
+   "name": "version_1",
+   "rest_hex": "cb0071090a000001ad2101bb"
+  },
+  {
+   "addr": null,
+   "err": "gate: not a PROXY v2 header",
+   "input_hex": "0d0a0d0a000d0a515549540a3111000ccb0071090a000001ad2101bb",
+   "name": "version_3",
+   "rest_hex": "cb0071090a000001ad2101bb"
+  },
+  {
+   "addr": null,
+   "err": "gate: not a PROXY v2 header",
+   "input_hex": "0d0a0d0a000d0a515549540a0111000ccb0071090a000001ad2101bb",
+   "name": "version_0",
+   "rest_hex": "cb0071090a000001ad2101bb"
+  },
+  {
+   "addr": null,
+   "err": "gate: not a PROXY v2 header",
+   "input_hex": "0d0a0d0a000d0a515549540b2111000ccb0071090a000001ad2101bb",
+   "name": "signature_off_by_one",
+   "rest_hex": "cb0071090a000001ad2101bb"
+  },
+  {
+   "addr": null,
+   "err": "gate: not a PROXY v2 header",
+   "input_hex": "50524f58592054435034203230332e302e3131332e392031302e302e302e31203434333231203434330d0a",
+   "name": "v1_tcp4",
+   "rest_hex": "2e3131332e392031302e302e302e31203434333231203434330d0a"
+  },
+  {
+   "addr": null,
+   "err": "unexpected EOF",
+   "input_hex": "50524f585920554e4b4e4f574e0d0a",
+   "name": "v1_unknown_short",
+   "rest_hex": ""
+  },
+  {
+   "addr": null,
+   "err": "gate: not a PROXY v2 header",
+   "input_hex": "50524f585920554e4b4e4f574e0d0a474554202f20485454502f312e310d0a",
+   "name": "v1_unknown_payload",
+   "rest_hex": "4554202f20485454502f312e310d0a"
+  },
+  {
+   "addr": null,
+   "err": "gate: not a PROXY v2 header",
+   "input_hex": "474554202f20485454502f312e310d0a486f73743a20780d0a0d0a",
+   "name": "http_garbage",
+   "rest_hex": "486f73743a20780d0a0d0a"
+  },
+  {
+   "addr": null,
+   "err": "EOF",
+   "input_hex": "",
+   "name": "empty",
+   "rest_hex": ""
+  },
+  {
+   "addr": null,
+   "err": "unexpected EOF",
+   "input_hex": "0d0a0d0a000d0a515549540a",
+   "name": "signature_only",
+   "rest_hex": ""
+  },
+  {
+   "addr": null,
+   "err": "unexpected EOF",
+   "input_hex": "0d0a0d0a000d0a515549540a211100",
+   "name": "fixed_15",
+   "rest_hex": ""
+  },
+  {
+   "addr": null,
+   "err": "unexpected EOF",
+   "input_hex": "0d0a0d0a000d0a515549540a2111000ccb0071",
+   "name": "v4_block_truncated",
+   "rest_hex": ""
+  },
+  {
+   "addr": null,
+   "err": "gate: not a PROXY v2 header",
+   "input_hex": "0d0a0d0a000d0a515549540a2111000bcb0071090a000001ad2101",
+   "name": "v4_short_11",
+   "rest_hex": ""
+  },
+  {
+   "addr": null,
+   "err": "gate: not a PROXY v2 header",
+   "input_hex": "0d0a0d0a000d0a515549540a21110000",
+   "name": "v4_short_0",
+   "rest_hex": ""
+  },
+  {
+   "addr": null,
+   "err": "gate: not a PROXY v2 header",
+   "input_hex": "0d0a0d0a000d0a515549540a212100230000000000000000000000000000000000000000000000000000000000000000000000",
+   "name": "v6_short_35",
+   "rest_hex": ""
+  },
+  {
+   "addr": null,
+   "err": "gate: not a PROXY v2 header",
+   "input_hex": "0d0a0d0a000d0a515549540a2121000c000000000000000000000000",
+   "name": "v6_with_v4_len",
+   "rest_hex": ""
+  },
+  {
+   "addr": null,
+   "err": "unexpected EOF",
+   "input_hex": "0d0a0d0a000d0a515549540a2111ffffcb007109",
+   "name": "len_ffff_truncated",
+   "rest_hex": ""
+  }
+ ],
+ "trusts": [
+  {
+   "allowlist": "127.0.0.0/8",
+   "peer": "127.0.0.1:1",
+   "trusted": true
+  },
+  {
+   "allowlist": "127.0.0.0/8",
+   "peer": "[::ffff:127.0.0.1]:1",
+   "trusted": true
+  },
+  {
+   "allowlist": "127.0.0.0/8",
+   "peer": "[::1]:1",
+   "trusted": false
+  },
+  {
+   "allowlist": "10.0.0.0/8",
+   "peer": "127.0.0.1:1",
+   "trusted": false
+  },
+  {
+   "allowlist": "172.40.0.0/24, 10.1.2.3",
+   "peer": "172.40.0.200:1",
+   "trusted": true
+  },
+  {
+   "allowlist": "172.40.0.0/24, 10.1.2.3",
+   "peer": "172.40.1.1:1",
+   "trusted": false
+  },
+  {
+   "allowlist": "172.40.0.0/24, 10.1.2.3",
+   "peer": "10.1.2.3:1",
+   "trusted": true
+  },
+  {
+   "allowlist": "172.40.0.0/24, 10.1.2.3",
+   "peer": "10.1.2.4:1",
+   "trusted": false
+  },
+  {
+   "allowlist": "172.40.0.0/24, 10.1.2.3",
+   "peer": "[::ffff:10.1.2.3]:1",
+   "trusted": true
+  },
+  {
+   "allowlist": "2001:db8::/32",
+   "peer": "[2001:db8:ffff::9]:1",
+   "trusted": true
+  },
+  {
+   "allowlist": "2001:db8::/32",
+   "peer": "10.0.0.1:1",
+   "trusted": false
+  },
+  {
+   "allowlist": "192.0.2.77/24",
+   "peer": "192.0.2.1:1",
+   "trusted": true
+  },
+  {
+   "allowlist": "::ffff:0:0/96",
+   "peer": "10.0.0.1:1",
+   "trusted": true
+  },
+  {
+   "allowlist": "::ffff:0:0/96",
+   "peer": "[::ffff:10.0.0.1]:1",
+   "trusted": true
+  },
+  {
+   "allowlist": "::ffff:10.0.0.0/104",
+   "peer": "10.0.0.1:1",
+   "trusted": true
+  },
+  {
+   "allowlist": "::ffff:10.0.0.0/104",
+   "peer": "[::ffff:10.0.0.1]:1",
+   "trusted": true
+  },
+  {
+   "allowlist": "::ffff:10.0.0.1",
+   "peer": "10.0.0.1:1",
+   "trusted": false
+  },
+  {
+   "allowlist": "::/8",
+   "peer": "[::1]:1",
+   "trusted": true
+  },
+  {
+   "allowlist": "::/8",
+   "peer": "127.0.0.1:1",
+   "trusted": false
+  },
+  {
+   "allowlist": "::/8",
+   "peer": "0.0.0.1:1",
+   "trusted": false
+  },
+  {
+   "allowlist": "fe80::/10",
+   "peer": "[fe80::1%eth0]:1",
+   "trusted": false
+  }
+ ]
+}

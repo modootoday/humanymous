@@ -24,6 +24,7 @@ pub mod observatory;
 pub mod operations;
 pub mod pass_proof;
 pub mod pass_store;
+pub mod proxy_listener;
 pub mod recon;
 pub mod request;
 pub mod resource;

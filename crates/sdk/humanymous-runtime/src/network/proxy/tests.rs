@@ -4,6 +4,8 @@ use super::*;
 use std::io::{Cursor, Write};
 use std::net::{TcpListener, TcpStream};
 
+mod golden;
+
 fn v4_header(src: [u8; 4], sport: u16, dst: [u8; 4], dport: u16) -> Vec<u8> {
     let mut b = SIGNATURE.to_vec();
     b.extend_from_slice(&[0x21, 0x11, 0x00, 0x0C]);
