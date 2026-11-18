@@ -211,12 +211,7 @@ impl UnverifiedParentContext {
         if !paths.into_iter().all(|value| bounded(value))
             || !bounded(sid)
             || !provenance(source)
-            || budget.run_expires_utc_ms.checked_sub(budget.issued_utc_ms) != Some(180000)
-            || budget
-                .cleanup_expires_utc_ms
-                .checked_sub(budget.run_expires_utc_ms)
-                != Some(60000)
-            || budget.parent_elapsed_ms_at_dispatch >= if cleanup { 240000 } else { 180000 }
+            || !valid_budget(budget, cleanup)
         {
             return Err(WireError);
         }
@@ -244,45 +239,62 @@ impl UnverifiedParentContext {
             Self::Workload(v) => (&v.budget, false),
             Self::CleanupOnly(v) => (&v.budget, true),
         };
-        let elapsed = budget.parent_elapsed_ms_at_dispatch;
-        if wall_ms
-            .checked_sub(budget.issued_utc_ms)
-            .is_none_or(|wall| wall < elapsed)
-        {
-            return Err(WireError);
-        }
-        let cleanup = budget
+        map_original(budget, cleanup_only, wall_ms, received)
+    }
+}
+fn valid_budget(budget: &UnverifiedBudget, cleanup: bool) -> bool {
+    budget.run_expires_utc_ms.checked_sub(budget.issued_utc_ms) == Some(180000)
+        && budget
             .cleanup_expires_utc_ms
+            .checked_sub(budget.run_expires_utc_ms)
+            == Some(60000)
+        && budget.parent_elapsed_ms_at_dispatch < if cleanup { 240000 } else { 180000 }
+}
+/// The one budget mapping shared by every context schema; never renewed.
+fn map_original(
+    budget: &UnverifiedBudget,
+    cleanup_only: bool,
+    wall_ms: u64,
+    received: Instant,
+) -> Result<UnverifiedMappedBudget, WireError> {
+    let elapsed = budget.parent_elapsed_ms_at_dispatch;
+    if wall_ms
+        .checked_sub(budget.issued_utc_ms)
+        .is_none_or(|wall| wall < elapsed)
+    {
+        return Err(WireError);
+    }
+    let cleanup = budget
+        .cleanup_expires_utc_ms
+        .checked_sub(wall_ms)
+        .ok_or(WireError)?
+        .min(240000 - elapsed);
+    if cleanup == 0 {
+        return Err(WireError);
+    }
+    let run_until = if cleanup_only {
+        None
+    } else {
+        let run = budget
+            .run_expires_utc_ms
             .checked_sub(wall_ms)
             .ok_or(WireError)?
-            .min(240000 - elapsed);
-        if cleanup == 0 {
+            .min(180000 - elapsed);
+        if run == 0 {
             return Err(WireError);
         }
-        let run_until = if cleanup_only {
-            None
-        } else {
-            let run = budget
-                .run_expires_utc_ms
-                .checked_sub(wall_ms)
-                .ok_or(WireError)?
-                .min(180000 - elapsed);
-            if run == 0 {
-                return Err(WireError);
-            }
-            Some(
-                received
-                    .checked_add(Duration::from_millis(run))
-                    .ok_or(WireError)?,
-            )
-        };
-        Ok(UnverifiedMappedBudget {
-            run_until,
-            cleanup_until: received
-                .checked_add(Duration::from_millis(cleanup))
+        Some(
+            received
+                .checked_add(Duration::from_millis(run))
                 .ok_or(WireError)?,
-        })
-    }
+        )
+    };
+    Ok(UnverifiedMappedBudget {
+        run_until,
+        cleanup_until: received
+            .checked_add(Duration::from_millis(cleanup))
+            .ok_or(WireError)?,
+    })
 }
 /// Single local mapping of unverified clock claims, never native authorization.
 /// No Clone/Deserialize; keep one object across sequential profiles.
@@ -318,7 +330,9 @@ pub fn encode(context: &UnverifiedParentContext) -> Result<Vec<u8>, WireError> {
     Ok(bytes)
 }
 
+pub mod admission;
 mod binding;
+pub mod host;
 pub use binding::{
     PreflightEnvironment, UnverifiedBinding, decode_binding, encode_binding, encode_provenance,
 };

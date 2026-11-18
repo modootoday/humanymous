@@ -1094,8 +1094,20 @@ is an accounting failure.
 
 Executor `job`: the pilot is run by a named step of another job that
 merge-ready already requires (today the `node` job `component node-host`
-step for the three Node host_process groups). Delivery tests verify the named
-step exists in that job; the other job's own result carries the outcome.
+step for the three Node host_process groups, and the `dotnet` job
+`component dotnet-host` step for the Linux hosted rows and the delivery
+binary's SDK download test). Delivery tests verify the named step exists in
+that job; the other job's own result carries the outcome. The step itself runs
+each declared test alone with `--exact --ignored` and requires the exact
+single-test success footer; naming a step that does not run the test is not a
+declaration.
+
+The delivery binary's `actual_pinned_sdk_download_verifies` (2026-11-18)
+downloads the pinned linux-x64 .NET SDK, checks its size and SHA-512 and
+resolves exactly the pinned version. Pilot `dotnet-sdk-download` declares it
+on every native OS with the `job` executor, like the Node rows: the Linux
+`dotnet` job's `component dotnet-host` step runs it before the provider
+acquires its own SDK. The row claims no macOS or Windows SDK qualification.
 
 This replaces the single privileged-Docker scope declaration for the authority
 socket ACL test: it now runs as root on the hosted runner and its helper is
@@ -1773,6 +1785,53 @@ These are pure proxy producer/counter cases, not network/provider/browser or
 whole-product qualification. Existing preflight and full browser product gates
 remain required; this addition supplies no failure tolerance or qualification
 for the older1f87 or edc30181 executions.
+
+### Same-run Node native qualification producer (2026-11-16)
+
+The `node` job adds `node-qualification` between the node-host component and
+`node`. It writes target/node-native/qualification.json only from this job's
+executions on the exact clean GITHUB_SHA: the newest node-host component bundle
+(passed, unchanged source/manifest/lock/toolchain, cleanup observed) whose stage
+logs must still match their recorded digests, and its own package build and
+inspection. It re-runs the owning host-row parser over the test log, re-checks
+image source labels, and takes the tuple from the inspected image (linux/amd64
+plus the provisioned linux-x64-gnu host-glue addon). The component now records
+the SHA256 of the authority executable copied from the stopped tested container;
+production rows print their observed CHALLENGE or DENY verdict. Per runtime,
+test_count and verdict_counts cover only the two production-application-http
+rows; ALLOW is 0, not inferred from synthetic evidence. Synthetic and unavailable
+cases stay in a separate per-profile count. Host Node 24/Bun 1.3.14 must load
+both production loaders without host-pilot, and provenance must list the tested
+tuple's binary. Incomplete host evidence refuses the receipt.
+The component still cannot create the receipt itself. The receipt scope
+excludes production browser ALLOW and full-product qualification.
+
+Release binding (2026-11-18): the component also copies the host-glue addon
+out of the stopped tested container and records its SHA256 as tested_addon,
+with host_pilot_enabled derived from the fixture Dockerfile's host-glue napi
+build. The value is fail-closed: it is false only when exactly one such build
+exists and names no host-pilot feature. The producer re-checks both. The
+tuple's qualified flag and full_native_qualified are true only when all of the
+following hold. The tested addon SHA256 equals the provenance digest of
+humanymous-node.<tuple>.node. host_pilot_enabled is false. The provenance
+`qualification` is exactly "production". Its productionFeatures is an array
+without host-pilot. Otherwise the receipt lists release_blockers.
+The producer stages the receipt at target/node-qualification.staged.json,
+runs node_receipt on the staged file, and renames it into
+target/node-native/qualification.json only when the check passes. A refusal
+removes the staged file, and any earlier receipt is removed when the producer
+starts. The derived record is printed to the public summary in both cases.
+
+Qualification decision (2026-11-18): the tested addon is the debug host-pilot
+build of the same source, so its bytes differ from the release binary. The
+provenance also records "component-only" with empty productionFeatures, so
+linux-x64-gnu is not release-qualified. The receipt derives
+full_native_qualified false with those blockers. node_receipt refuses it, so
+no receipt is written and npm publication stays blocked.
+adapters/node/capabilities.json and native capabilities() both keep
+releaseQualifiedTuples empty. Qualifying the tuple requires host runs on the
+production release binary itself and a production provenance record, and then
+one change to the descriptor and the native list together.
 
 ### Retired Go core/gate image builders (2026-11-16)
 
