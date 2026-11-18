@@ -3,9 +3,9 @@
   "reviews": [
     {
       "source": "Cargo.lock",
-      "sha256": "0d5b3b2c7fc9d780d90d0232391c06be7094b82ef67524e1656765eeda0598b8",
+      "sha256": "922aa786262be20762b4e2a9986f6f018be5d7f89a55b1ddacff9d3a30e84139",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Cargo-generated lockfile (format version 4) pinning 664 packages, including the consolidated workspace members humanymous-core, humanymous-runtime, humanymous-platform, the adapter, browser, CEF and CLI crates and their third-party dependencies. Re-reviewed 2026-11-18: the only change since the prior review adds the already-locked getrandom 0.4.3 to humanymous-delivery's dependency list; the package count is unchanged. It fixes resolution for --locked builds only; it is not install, OS-support or artifact qualification evidence.",
+      "notes": "Cargo-generated lockfile (format version 4) pinning 664 packages, including the consolidated workspace members humanymous-core, humanymous-runtime, humanymous-platform, the adapter, browser, CEF and CLI crates and their third-party dependencies. Re-reviewed 2026-11-18 on the B24 audit-sinks branch: against the reviewed codex/rust lock the only change adds the already-locked ureq to humanymous-runtime's dependency list for the ClickHouse projection; the package count is unchanged and cargo metadata --locked resolves it. It fixes resolution for --locked builds only; it is not install, OS-support or artifact qualification evidence.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/start-here/developer.md",
@@ -6491,9 +6491,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/Cargo.toml",
-      "sha256": "50f2461c8e2ea216929683994c4f90740636c145d4f49fa4bb532629cdc910ba",
+      "sha256": "51cbe07b616bc512ca9c6a6a4316f54bc45094cb6ea036155682d3c52f73b388",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Manifest for the consolidated humanymous-runtime crate (description, readme README.md, publish = [\"crates-io\"] in the first crates.io wave, which performs no upload; autobins/autotests off, default feature gateway): feature-gated contexts gateway, authority, audit, capture, network and native-security plus hosted-pilot and credential-pilot, with pinned optional dependencies such as rustls 0.23.46 (ring, tls12), httlib-hpack 0.1.3, rcgen 0.14.10, interprocess 2.4.7, winsafe/keyring stores on Windows and rustix on Unix. It declares five binaries (humanymous-runtime, humanymous-h2-product-binding-measure, humanymous-authority, audit-witness, audit-control-retainer) and named gateway, authority, audit, capture and network parity integration tests, each with required features; on this branch there is no gateway-deployment-manifests test target. The first [[bin]] table also repeats the package description line, which is not a Cargo target field. Re-reviewed 2026-11-18 at this branch's bytes. The manifest itself is not evidence that those binaries or tests ran.",
+      "notes": "Manifest for the consolidated humanymous-runtime crate (description, readme README.md, publish = [\"crates-io\"] in the first crates.io wave, which performs no upload; autobins/autotests off, default feature gateway): feature-gated contexts gateway, authority, audit, capture, network and native-security plus hosted-pilot and credential-pilot, with pinned optional dependencies such as rustls 0.23.46 (ring, tls12), httlib-hpack 0.1.3, rcgen 0.14.10, interprocess 2.4.7, winsafe/keyring stores on Windows and rustix on Unix. It declares five binaries (humanymous-runtime, humanymous-h2-product-binding-measure, humanymous-authority, audit-witness, audit-control-retainer) and named gateway, authority, audit, capture and network parity integration tests, each with required features; on this branch there is no gateway-deployment-manifests test target. The first [[bin]] table also repeats the package description line, which is not a Cargo target field. Re-reviewed 2026-11-18 at this branch's bytes: the gateway feature now also enables an optional ureq =3.5.1 dependency (rustls, no default features) for the B24 ClickHouse audit projection. The manifest itself is not evidence that those binaries or tests ran.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/reference/supported-topologies.md",
@@ -6848,9 +6848,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/audit/log/mod.rs",
-      "sha256": "561e0ef160cd3b23c4210dbace9a18298b76e87eb980965ba64bfd75d296e4a4",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Durable per-node audit Log where the WAL is the authority: open restores an authenticated chain (or explicitly initializes one) from stable provisioned node id, non-empty HMAC key and writer seed, optionally against a trusted head from outside the WAL, and requires the witness key to differ from the writer and agree with the stored head; append seals and durably writes before advancing, checkpoint persists a signed (and, when configured, co-signed with required WitnessDurability) head every checkpoint_every records, and any checkpoint failure poisons the writer; emit_and_act runs the side effect only after append succeeds (ordering, not atomicity). Tests cover empty HMAC refusal, empty event type, tamper detection on restart, disk-failure poisoning, witnessed restart, no silent writer-only downgrade and proof persistence.",
+      "sha256": "16b061a896b31c33f1c39a93749a4a34cbc99fb6fceeeace56882516018000e4",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Durable per-node audit Log where the WAL is the authority: open restores an authenticated chain (or explicitly initializes one) from stable provisioned node id, non-empty HMAC key and writer seed, optionally against a trusted head from outside the WAL, and requires the witness key to differ from the writer and agree with the stored head; append seals and durably writes before advancing, checkpoint persists a signed (and, when configured, co-signed with required WitnessDurability) head every checkpoint_every records, and any checkpoint failure poisons the writer; emit_and_act runs the side effect only after append succeeds (ordering, not atomicity). Tests cover empty HMAC refusal, empty event type, tamper detection on restart, disk-failure poisoning, witnessed restart, no silent writer-only downgrade and proof persistence. Re-reviewed 2026-11-18: Log now holds a list of Arc<dyn Projection> registered with project(); append() feeds each projection only after the WAL write succeeded and before advancing the head, and a refused record reaches no projection, which the new projections_receive_each_sealed_record_after_the_wal test asserts. Projections never block or fail the seal.",
       "pages": [
         "docs/how-to/verify-audit-log.md",
         "docs/reference/security-audit.md"
@@ -6928,9 +6928,49 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/audit/mod.rs",
-      "sha256": "4f9f9f5cfe6bb5a8d964bce1f1f9b258b2b3388ac16873434a9e501bf1b5e197",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Module root of the runtime audit subsystem: always exposes checkpoint, lifecycle, merkle, record, storage and verification, and gates control, keys, log and sink to Unix or Windows targets. It contains declarations only.",
+      "sha256": "5dec88d95e104431821d8ecd92cc0b38a13cf0d0e1e30bd1dd41795d1a8067ab",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Module root of the runtime audit subsystem: always exposes checkpoint, lifecycle, merkle, projection, record, storage and verification, and gates control, keys, log and sink to Unix or Windows targets. It contains declarations only. Re-reviewed 2026-11-18: the only change adds the public projection module (B24 asynchronous audit projections).",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/audit/projection.rs",
+      "sha256": "721da6ece7fa0037965425e0114fc95ffa619b74ff09fbf98db9e4288e32864e",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Audit projection seam (SoT-32 Tier 1 hot tail and Tier 2 columnar store) ported from Go internal/audit sink_record.go, sink_redis.go and sink_clickhouse.go (oracle 981d25c): the Projection trait takes sealed records in sequence order via a non-blocking append that can never fail the seal, a flush whose error means this projection lost records, and a dropped counter. The doc states the local WAL is the only durability authority and projections are best-effort and replayable from it; the redis and clickhouse implementations and the tests are compiled only with the gateway feature.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/audit/projection/clickhouse.rs",
+      "sha256": "4195dde5217c5c7b72d4bf7a2629a1eb025dd1a58df6397add723d90138a904d",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "ClickHouseSink, the Go CHSink port: records buffer in memory (capacity default 100000, then drop-and-count) and a flusher thread posts them as JSONEachRow (application/x-ndjson) when max_rows (default 10000) accumulate, after max_wait (default 1 s), on flush() or on close. The insert URL carries INSERT INTO <table> FORMAT JSONEachRow with async_insert=1, wait_for_async_insert=1 and input_format_skip_unknown_fields=1; credentials go only in a Basic Authorization header held in Zeroizing strings and the Debug output omits the password. Requests use a ureq agent with a 10 s global timeout; a transport error or HTTP status of 300 or more counts the whole batch as dropped and returns an error with at most 512 bytes of the response body. Construction refuses a non-http(s) base, a table name outside [A-Za-z_][A-Za-z0-9_]* (Go silently fell back to audit_log) and zero limits. The operator creates the table.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/audit/projection/redis.rs",
+      "sha256": "3c8df9e75a2f15273a02bd807ed93a37d25929fcaa9d47ac74fa1a6a6b4f549a",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "RedisStreamSink, the Go RedisStreamSink port: a bounded sync_channel backlog (default 8192) feeds one named shipper thread that sends XADD <stream> MAXLEN ~ <max_len> (default 100000) <seq>-0 record <record JSON> over the B23 RESP client, so a re-ship of the same sequence is idempotent and the hot tier stays bounded. shipper_settings() keeps the client defaults with a 1 s breaker cooldown to mirror Go's one-second backoff. append() never blocks: a full or closed backlog, a JSON encoding failure or a failed XADD increments dropped (Go lost such records silently; they remain in the WAL). flush() is only an ack point; close()/Drop drains the backlog and joins the shipper. Empty stream, zero max_len or zero buffer are refused.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs",
+      "sha256": "96d95728e8bbab6f94fb54e79356773c2f7844f54fbd72df2bbff86c0d3f0a08",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Ports of Go internal/audit sink_adapters_test.go (oracle 981d25c) against in-process RESP and HTTP servers: RESP command encoding; the Redis sink XADDs each record with MAXLEN ~ and its {seq}-0 id and a record field whose JSON round-trips, with zero drops; it drops and counts when a stalled server fills the one-slot backlog, when the stalled XADD times out, and after close, and refuses an empty stream; the ClickHouse sink posts one JSONEachRow batch with the expected query string and Basic auth header and no password in the URL, batches on row count and on close, counts HTTP 500 failures, backlog overflow and an unreachable server as drops, and table-name validation refuses unsafe names and a non-HTTP base.",
       "pages": [
         "docs/reference/security-audit.md",
         "docs/how-to/verify-audit-log.md"
