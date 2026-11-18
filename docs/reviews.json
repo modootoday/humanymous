@@ -9878,9 +9878,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/network/http/headers.rs",
-      "sha256": "796a1a224103695a1ed9b8af5590fa38bcca88fdc4ab02b94e3d76ce37c7c62f",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "HeaderInfo: request header evidence with explicit casing_reliable and order_reliable flags plus captured UA, Accept-*, cookie names and proxy/client-IP headers. Helpers reproduce frozen Go behavior: sec-fetch and sec-ch-ua presence (EqualFold including long-s), H2 uppercase anomaly only when casing is reliable, zstd accept-encoding check, first proxy-hop label by precedence, first non-blank client-IP laundering header and comma-counted XFF hops. Tests check normalized maps cannot claim casing evidence and proxy precedence and empty chain members.",
+      "sha256": "0d2c2310d5f7abf97bef92eacf1156fe5b544b56e6f22c942e22735cd705943b",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "HeaderInfo: request header evidence with explicit casing_reliable and order_reliable flags plus captured UA, Accept-*, cookie names and proxy/client-IP headers. Helpers reproduce frozen Go behavior: sec-fetch and sec-ch-ua presence (EqualFold including long-s), H2 uppercase anomaly only when casing is reliable, zstd accept-encoding check, first proxy-hop label by precedence, first non-blank client-IP laundering header and comma-counted XFF hops. Tests check normalized maps cannot claim casing evidence and proxy precedence and empty chain members. 2026-11-18: trim_space (frozen Go strings.TrimSpace) is now pub(super) so the sibling client-address and peek transforms reuse it; no behavior change.",
       "pages": [
         "docs/reference/supported-topologies.md",
         "docs/concepts/how-gate-sees-a-request.md"
@@ -9888,11 +9888,51 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/network/http/mod.rs",
-      "sha256": "72c33358a014143140ca9c71afb8fc1cae9c2ea0153836bf3505e5144f5c4e4e",
-      "reviewer": "codex/rust-pages",
-      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed. Carried unchanged from crates/network/src/http/mod.rs: identical SHA-256 after the crate consolidation, so the reviewed bytes are the same.",
+      "sha256": "98ecbd233b362fcd14969ab466eb4afbba2ad2fe28e4d2006c06cd1d0903fd06",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed. Carried unchanged from crates/network/src/http/mod.rs: identical SHA-256 after the crate consolidation, so the reviewed bytes are the same. 2026-11-18 (FM11 residual 10): adds the client, peek and projection modules and their re-exports plus the tests module; the module declarations claim no capture qualification.",
       "pages": [
+        "docs/concepts/how-gate-sees-a-request.md",
         "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/http/peek.rs",
+      "sha256": "22456f2818dcacabcbf60ad1d4d0b7ab1d45f2336622ab40af3ed145be8f92cf",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Port of h1capture.go peekH1HeaderOrder (Go oracle 981d25c): 64 KiB cap, request line skipped, CR/LF right-trim, blank line ends the section, names lowercased with Go TrimSpace and per-byte U+FFFD for invalid UTF-8, duplicates kept, every consumed byte replayed before the live stream. peek_tcp applies one absolute 750 ms deadline and restores the previous read timeout. Only a complete, non-empty socket peek mints a WireOrder, whose apply sets names and order_reliable (legacy mergeObservation); this refuses Go partial-order reliability. Not wired into any listener.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/http/projection.rs",
+      "sha256": "04f155e1565647a1df6daa6f4dcc2beaad7b0f1fa256c14847faf95835be95f7",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Port of headerinfo.go reqToHeaderInfo at handler level: Go CanonicalMIMEHeaderKey, Header.Get first value, sorted canonical name set, 20/10/11 version mapping, X-Cache then X-Cache-Lookup, Request.Cookies name parsing with the 3000-cookie ceiling, reliability flags always false. net/http framing rewrites are out of scope and stated in the module doc.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/http/client.rs",
+      "sha256": "5f5649e1ca5369764cb72f2ec3e40e8c9c3410bc5d3d48e6a406373f4f085c2c",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Port of headerinfo.go clientIP/forwardedIP/clientSubnet/directPeer/isTrustedProxy and server.go isDatacenterIP with Go net.SplitHostPort, net.ParseIP and TrimSpace semantics; the datacenter set is a caller membership function that fails open when empty. Module doc states these are legacy scoring-input text transforms that never authenticate a peer (B26 keeps transport identity in network::proxy).",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/http/tests.rs",
+      "sha256": "cb32ae4c056d78bcff24a4a467e82a3c3d16aa55db98895fd3887775846196a7",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "One-to-one ports of the five headerinfo_test.go cases, differential checks against headerinfo-go-golden.json (59 addresses, 23 remote addresses, 29 forwarding cases, 21 projections, 15 loopback TCP peeks with byte-exact replay), WireOrder minting limits and an absolute-deadline slow-drip socket test. Three deliberate source mutations each failed the golden tests.",
+      "pages": [
         "docs/reference/supported-topologies.md",
         "docs/concepts/how-gate-sees-a-request.md"
       ]
@@ -10341,6 +10381,16 @@
       "notes": "humanymous.browser-runtime-pilot/1 contract fixture: loopback scope and listen addresses, routes for browser session, collect, effect and requires-collector, one exact selected runtime-pilot test, and expected outcomes. These are 403 CHALLENGE before a report, collect 200, required collector 422 without ack, and zero origin effects. The gateway browser contract harness consumes it. Its qualification note says full product needs independent isolation and witness receipts.",
       "pages": [
         "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/network/headerinfo-go-golden.json",
+      "sha256": "90dd7d5a3b4e7ca0a5073d8096f71fdc202cc64c56aa0e05f33d8282d196a6d8",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Fixture data only: inputs plus outputs captured from the Go oracle at 981d25c with go1.25.3 (pinned by its go.mod) through an uncommitted in-package capture test; provenance records the command, capture program hash and output hash. Projection and forwarding cases are handler-level Header.Add inputs; peeks ran over loopback TCP. Never regenerated to hide drift.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
       ]
     },
     {
