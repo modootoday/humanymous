@@ -1729,9 +1729,9 @@
     },
     {
       "source": "crates/attacker/INTEGRATION.md",
-      "sha256": "049cdef8dc25689a379d41a561cfb657bd5693509ead8cc4d6b129cbe0ecfb6c",
+      "sha256": "7fa9feffaf44091a6ccf085f64c59b6d4160f10023a44b03bfe539f24118ec01",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Wargame integration contract v0.4-v0.8 for the attacker/defender workspace members: fixes ownership and dependency direction (lab runtime -> attacker -> defender -> runtime/integrity/audit/scoring), the exported OwnedRuntime/VerifiedSnapshot/OwnedLab/network::run API, the network v2 JSON schema (26 scheduled = 19 implemented + 7 unsupported cases) and the humanymous-wargame-verify exit codes (0 scoped pass, 2 failed or --require-full unqualified, 1 malformed). It chronicles strict duplicate-key/unknown-field decoding, step attribution and terminal accounting with pure-test counts, records the actual hosted 813 run as 0 evaluated/19 errors, and states that full_product_qualified, human and assistive-technology execution stay false and hosted runtime requalification is pending. Some API text still names the pre-consolidation `humanymous_audit::log::Log` path. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b (PR #83): the only change rewrites the remote-installation boundary row to say signed-remote-installation stays unsupported in this HTTP1 ledger and is evaluated separately by product-lab installation-target-binding / unknown-target-refused (runtime-binary pinned-key fresh-nonce answer over same-container pipes), with cross-host transport and listener binding still unqualified.",
+      "notes": "Wargame integration contract v0.4-v0.8 for the attacker/defender workspace members: fixes ownership and dependency direction (lab runtime -> attacker -> defender -> runtime/integrity/audit/scoring), the exported OwnedRuntime/VerifiedSnapshot/OwnedLab/network::run API, the network v2 JSON schema (26 scheduled = 19 implemented + 7 unsupported cases) and the humanymous-wargame-verify exit codes (0 scoped pass, 2 failed or --require-full unqualified, 1 malformed). It chronicles strict duplicate-key/unknown-field decoding, step attribution and terminal accounting with pure-test counts, records the actual hosted 813 run as 0 evaluated/19 errors, and states that full_product_qualified, human and assistive-technology execution stay false and hosted runtime requalification is pending. Some API text still names the pre-consolidation `humanymous_audit::log::Log` path. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b (PR #83): the only change rewrites the remote-installation boundary row to say signed-remote-installation stays unsupported in this HTTP1 ledger and is evaluated separately by product-lab installation-target-binding / unknown-target-refused (runtime-binary pinned-key fresh-nonce answer over same-container pipes), with cross-host transport and listener binding still unqualified. Re-reviewed for PR #80: an appended section records that src/wire emits plans and bytes only, that LoopbackClient and H2Request::new restrict targets to loopback/.test, that live lab execution needs an explicit own-lab address allowlist bound to the lab manifest plus a TLS/h2 transport able to present the modelled ClientHello, and that ClientHello output is structurally modelled, not byte-for-byte.",
       "pages": [
         "docs/reference/red-team-catalog.md",
         "docs/explanation/red-catalog-architecture.md"
@@ -1777,9 +1777,9 @@
     },
     {
       "source": "crates/attacker/src/main.rs",
-      "sha256": "6e8c15223739d63b4e0f20ac9a555c1273934fe9571e47e1af7f726d11470aff",
+      "sha256": "2597a4b2b8b783acaf5c7e0b48db337c7d1a953380f15da8637f383d9c2416c5",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Read full simulation CLI and argument tests: only optional u64 seed, no caller target/runtime, pure report serialization and scoped regressions exit. Public reference separates order seed and synthetic controls from browser/human/network coverage. No simulation or process executed in this review. Re-reviewed 2026-11-18 for PR #80: the CLI additionally accepts --list-attacks (JSON name/tier/class/expected for the 41-entry catalog) or --attack <name> (that attack plan as JSON; unknown names exit 2); both only print plans and never contact a target, and --seed keeps the regression report path. A parser test covers the new shapes.",
+      "notes": "Read full simulation CLI and argument tests: only optional u64 seed, no caller target/runtime, pure report serialization and scoped regressions exit. Public reference separates order seed and synthetic controls from browser/human/network coverage. No simulation or process executed in this review. Re-reviewed 2026-11-18 for PR #80: the CLI additionally accepts --list-attacks (JSON name/tier/class/expected for the 41-entry catalog) or --attack <name> (that attack plan as JSON; unknown names exit 2); both only print plans and never contact a target, and --seed keeps the regression report path. A parser test covers the new shapes. Re-reviewed for the PR #80 honesty fixes: the module doc now states that the CLI never contacts a target, that LoopbackClient refuses every non-loopback address so the Docker lab is unreachable from it, and that live execution will need an explicit own-lab address allowlist (recorded in INTEGRATION.md) without loosening the guard.",
       "pages": [
         "docs/reference/red-team-catalog.md"
       ]
@@ -1882,9 +1882,19 @@
     },
     {
       "source": "crates/attacker/src/wire/attacks.rs",
-      "sha256": "71c17fe9bf9891b215aa823d5db1934f83cec708dbfd2c2c3a83b35170256b23",
+      "sha256": "faf620832364b79f467149af211c7a82b3fc2781973f199dbca483c2e2ddd010",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Defense-only port of the Go cmd/redteam -attack list: a static CATALOG of 41 descriptors (name, tier, class, transport = constructed ClientHello with optional single mutation, raw H2 profile, or HTTP/1.1 plan, expected residual tell, explicit request cap for volume attacks) with select() and plan_json(); no target field exists. Expected tells are documentation of intent, not scoring predicates. Tests cover one unique entry per Go attack name, rejection of unknown names, bounded volume attacks, a wire fingerprint for every TLS/H2 plan and the targeted TLS residual for each mutation. Plans are not executed against the live scorer.",
+      "notes": "Defense-only port of the Go cmd/redteam -attack list: a static CATALOG of 41 entries (name, tier, class, expected residual tell, request cap, oracle function, plan function) with select(), plan() and plan_json(); no target field exists. Each plan lists the ordered steps the Go function sent (session bootstrap, collects, PoW submits) with the ClientHello preset per connection, HTTP/1.1 or h2 frame profile, method, /api path, the header set and body the Go code composed, RIT intent (sign, replay, sign-other-body) and repeat count; server-supplied values (cookie, RIT seed/token, time bucket, PoW challenge/nonce) are {placeholders}. Every step's hello and h2 frames are run through the runtime's own ClientHello/JA3/JA4 and HTTP/2 observers. Recorded differences: Go map header order was random per request except header-order-split and the raw framer, plans list composition order; the PoW native solve loop is not ported; nothing is sent. Tests cover one unique entry per Go name, unknown-name rejection, caps equal to the collect requests sent, content plus a wire fingerprint on every step, distinct JA3 and JA4 on each collect of tls-rotate/ja4-churn/multi-axis-rotate, an identical unpermuted Chrome_100 hello across tls-static, the mutation and pq-absent residuals, the proxy/volume/header/RIT/PoW content and the h2 frame layouts. Expected tells are intent documentation, not scoring predicates.",
+      "pages": [
+        "docs/reference/red-team-catalog.md",
+        "docs/explanation/red-catalog-architecture.md"
+      ]
+    },
+    {
+      "source": "crates/attacker/src/wire/attacks/plans.rs",
+      "sha256": "e2a3441ee246636339b5c3cfb3f514bde5ceb1b87e90cf191fd4c4ccc3bb7467",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Plan data for wire/attacks.rs, ported from 981d25c cmd/redteam attacks.go, main.go and h2raw.go: the oracle UA, sec-ch-ua and report-body constants (collectBody, jsEvidenceBody, coherentReportBody, proxyBody and the inline proxy/Tor/flood/distributed/forgery/PoW bodies), header composition helpers mirroring browserHeaders/withBrowserHeaders/browserHeadersExcept/collectSeed/httpRoundTrip, the raw framer's chromeH2HeaderOrder and the Go x/net/http2 Transport framing, and one plan function per -attack name with the oracle's hello preset, XFF/Via/Forwarded/CDN headers, RIT counters and request counts. It builds values only and sends nothing; tests live in the parent module.",
       "pages": [
         "docs/reference/red-team-catalog.md",
         "docs/explanation/red-catalog-architecture.md"
@@ -1892,9 +1902,9 @@
     },
     {
       "source": "crates/attacker/src/wire/client.rs",
-      "sha256": "35beeb257758c649ae84061d8aa8a2d79a0d8b1dbe3b6a874f1de5fe1165e63e",
+      "sha256": "515004f226171cc99e1cffbdfd0b3a1e591d0bedff18599ee820ef41622693ff",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Loopback-only HTTP/1.1 client for the owned-lab families: construction and every send refuse non-loopback addresses; requests keep caller header order; responses are parsed for status, session cookie, base64url RIT seed and verdict. No TLS or H2 control. Tests cover the loopback refusal and the response parser.",
+      "notes": "Loopback-only HTTP/1.1 client for the owned-lab families: construction and every send refuse non-loopback addresses; requests keep caller header order; responses are parsed for status, session cookie, base64url RIT seed and verdict. Cleartext HTTP/1.1 only, no TLS or h2, so it cannot present the ClientHello/h2 fingerprints the plans describe; the doc records that the Docker lab's container addresses are unreachable from it and that live lab execution needs an explicit own-lab allowlist, not added here. Tests cover the loopback refusal and the response parser.",
       "pages": [
         "docs/reference/red-team-catalog.md",
         "docs/explanation/red-catalog-architecture.md"
@@ -1902,9 +1912,9 @@
     },
     {
       "source": "crates/attacker/src/wire/clienthello.rs",
-      "sha256": "c8bd691186c4e4c252cdba0873244bdedf61fb0cc86b4daaff848d6d8dfbe312",
+      "sha256": "5382d3f52d410f92defdda3e4062a75afc6afb6a5087b14401a180b06ee390a8",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Byte-exact TLS ClientHello builder for the Go uTLS parrot shapes (Chrome profile with GREASE, ALPN, PQ group and Chrome extension/cipher order; ALPS, ECH, certificate-compression and PQ single-extension mutations; a stock non-browser stack) carrying only a loopback SNI. Tests feed each record through the runtime's own ClientHello capture: the Chrome parrot reads as engine chrome, order is preserved, each mutation drops exactly its target, the stock stack reads as non-browser, and JA3 is stable and excludes GREASE. It constructs bytes only; no live handshake.",
+      "notes": "TLS ClientHello builder structurally modelled on the oracle presets: utls v1.8.2 HelloChrome_Auto (=HelloChrome_133: GREASE, X25519MLKEM768, ALPS 17613, ECH GREASE, no padding), HelloChrome_100 (no PQ, ALPS 17513, no ECH, BoringSSL padding), HelloFirefox_Auto (=HelloFirefox_120: no GREASE, ffdhe groups, delegated_credentials, record_size_limit, ECH GREASE) and Go 1.25.3 stock crypto/tls with ALPN http/1.1 only (doStock). Cipher lists, extension sets and declaration order, groups, signature algorithms, key-share lengths, ALPN (with a forceHTTP11 knob), ECH and padding follow those presets; ALPS/ECH/cert-compression strip mutations mirror the Go strip helpers; a deterministic seeded permutation models the Chrome_Auto per-connection shuffle. Not byte-for-byte: key shares, ECH enc/payload, random and session id are constant filler, GREASE values are fixed, the ECH payload uses the first utls candidate. SNI is fixed to owned.test. Tests: every profile is accepted by the runtime's strict capture, extension sequences and handshake lengths equal those captured from utls/Go for the same SNI, each mutation drops exactly its target, profiles have pairwise distinct JA3/JA4, permutation changes JA3 order but not JA4, and engine labels are as the frozen heuristic reads them (Firefox_120 reads openssl because it has no GREASE). Bytes only; no live handshake.",
       "pages": [
         "docs/reference/red-team-catalog.md",
         "docs/explanation/red-catalog-architecture.md"
@@ -1912,9 +1922,9 @@
     },
     {
       "source": "crates/attacker/src/wire/h2.rs",
-      "sha256": "a6decc14b633b350baede3f701870406c8a568194766fab143651296b6146c21",
+      "sha256": "75251f71272e8839458dd0cf0a6df7356d92c1ae7274a4516767085a25a3120a",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Hand-encoded HTTP/2 client framer like Go cmd/redteam/h2raw.go: preface, SETTINGS in profile order, connection WINDOW_UPDATE, HEADERS with HPACK literals, controlled pseudo-header order and optional priority, DATA, and optional RIT header signing. Chrome, settings-split, flow-control-split, priority-absent and coherent-ceiling profiles are each checked against the runtime's own passive HTTP/2 capture fingerprint; HPACK integer encoding above the prefix maximum is tested. Bytes only; no live TLS/h2 transport.",
+      "notes": "Hand-encoded HTTP/2 client framer like Go cmd/redteam/h2raw.go: preface, SETTINGS in profile order, connection WINDOW_UPDATE, HEADERS with HPACK literals, profile pseudo-header order and optional priority, DATA, optional RIT header signing. Profiles: Chrome, settings-split, flow-control-split, priority-absent (raw framer, m,a,s,p) and GoTransport (x/net/http2 v0.57.0 Transport: its SETTINGS, 1 GiB window, a,m,p,s). H2Request::new refuses any :authority other than a loopback IP, localhost or a reserved .test name. Frames never exceed SETTINGS_MAX_FRAME_SIZE 16384: DATA is split with END_STREAM on the last frame and large header blocks continue in CONTINUATION frames, so the 24-bit length cannot truncate. Tests check each profile against the runtime's passive HTTP/2 capture, the authority allowlist, DATA splitting accepted by the capture's 16 KiB frame budget, CONTINUATION framing and HPACK integers above the prefix maximum. Bytes only; no live TLS/h2 transport.",
       "pages": [
         "docs/reference/red-team-catalog.md",
         "docs/explanation/red-catalog-architecture.md"
@@ -1922,9 +1932,9 @@
     },
     {
       "source": "crates/attacker/src/wire/mod.rs",
-      "sha256": "cbf7990deb60727ef040b5f783aaed65ee4bf825407abb5031e439c1eeaf4f56",
+      "sha256": "897164e4479a34dc6fbf98caaaf606a8840b6c1c975aef85fd3864012386b184",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Module root for the owned-lab wire clients ported from Go cmd/redteam and cmd/tlsparrot (oracle 981d25c): states the defense-only scope (loopback client, loopback SNI/authority, no stealth beyond the oracle test knobs) and the recorded gap that rustls cannot present a byte-exact third-party ClientHello, so live handshakes against the detector are not reproduced.",
+      "notes": "Module root for the owned-lab wire clients ported from Go cmd/redteam and cmd/tlsparrot (oracle 981d25c). States the concrete defense-only guards (LoopbackClient refuses non-loopback addresses; ClientHello SNI fixed to the reserved owned.test; h2 :authority caller-supplied but restricted by H2Request::new to loopback/localhost/.test), that the builders are structurally modelled on the oracle presets and accepted by the runtime observers but use filler key material, fixed GREASE and a deterministic shuffle, and the recorded gap that rustls cannot present a third-party ClientHello, so live handshakes against the detector are not reproduced.",
       "pages": [
         "docs/reference/red-team-catalog.md",
         "docs/explanation/red-catalog-architecture.md"
@@ -1932,9 +1942,9 @@
     },
     {
       "source": "crates/attacker/src/wire/rit.rs",
-      "sha256": "69187c09a9e290fdc1c966664f6fd6b210feb73e2b6e619b55e5a374b0b33c40",
+      "sha256": "904b66a716bb665b2d188d637fb196d14ee92c1e7203b1f54d748e607404aece",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "RIT token construction matching Go cmd/server/rit.go: 10-second window bucket and base64url(HMAC-SHA256(seed, sid, counter, bucket, hex SHA-256 of body)) on newline-joined fields. Tests cover window bucketing, deterministic fixed-width URL-safe output, a golden vector and that tamper, replay and counter changes each change the token. It mints no capability of its own.",
+      "notes": "RIT token construction matching Go cmd/server/rit.go: 10-second window bucket and base64url(HMAC-SHA256(seed, sid, counter, bucket, hex SHA-256 of body)) on newline-joined fields. Tests cover window bucketing, deterministic fixed-width URL-safe output, a golden vector and that tamper, replay and counter changes each change the token. The golden vector equals the Go oracle ritToken output for the same inputs (recomputed with Go 1.25.3 outside the tree) and is what pins the canonical form. It mints no capability of its own.",
       "pages": [
         "docs/reference/red-team-catalog.md",
         "docs/explanation/red-catalog-architecture.md"
@@ -1942,9 +1952,9 @@
     },
     {
       "source": "crates/attacker/tests/loopback_rit.rs",
-      "sha256": "02311b6bbc536dd57226120b73fb8b68893e2bda4c7999376d2e5ea66535ea64",
+      "sha256": "2386d53eb489e8c7169d3186003cb11b6fd36f2c28e7d288dcccfbc1ac712db5",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Integration test: an in-process 127.0.0.1:0 HTTP/1.1 server re-implementing only the Go /api/session and /api/collect RIT check drives the loopback client through cookie bootstrap, a valid RIT-signed collect, and the rit-replay and rit-tamper families (DENY). It verifies client behaviour, not verdict parity with the real scorer, which remains a recorded FM11 gap.",
+      "notes": "Integration test: an in-process 127.0.0.1:0 HTTP/1.1 server re-implementing only the Go /api/session and /api/collect RIT check drives the loopback client through cookie bootstrap, a valid RIT-signed collect, and the rit-replay and rit-tamper families (DENY). The server reuses the client's rit_token, so its token check is circular; a comment says so and points to the rit.rs golden vector as what pins the canonical form. It verifies client behaviour, not verdict parity with the real scorer, which remains a recorded FM11 gap.",
       "pages": [
         "docs/reference/red-team-catalog.md",
         "docs/explanation/red-catalog-architecture.md"

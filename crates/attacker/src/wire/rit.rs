@@ -59,6 +59,10 @@ mod tests {
     #[test]
     fn golden_vector_pins_the_canonical_form() {
         // Regression anchor for the exact sid\nn\ntb\nhex(sha256(body)) layout.
+        // The expected value is the output of the Go oracle's `ritToken`
+        // (981d25c cmd/redteam/main.go) for these inputs, recomputed with Go
+        // 1.25.3 outside the tree; this vector, not the loopback integration
+        // test, is what pins the canonical form.
         assert_eq!(
             rit_token(SEED, SID, 7, 170_000_000, BODY),
             "dw45k1NincVSyP7tGgaGZabnyoagsbAI56IMduIKZgw"

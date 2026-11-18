@@ -83,6 +83,10 @@ fn respond(stream: &mut TcpStream, head: &str, body: &[u8], last_n: &AtomicU64) 
         let tb = header(head, "x-hm-tb")
             .and_then(|v| v.parse::<u64>().ok())
             .unwrap_or(0);
+        // This server reuses the client's own `rit_token`, so this check alone
+        // is circular: it proves client/server agreement, not the canonical
+        // form. The canonical form is pinned independently by the golden
+        // vector in `wire::rit::tests::golden_vector_pins_the_canonical_form`.
         let expected = rit_token(SERVER_SEED, SID, n, tb, body);
         if token != expected {
             (

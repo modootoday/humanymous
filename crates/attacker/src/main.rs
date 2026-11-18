@@ -1,7 +1,12 @@
-//! Local-only red-team CLI. Live network execution against the owned runtime
-//! requires the Docker lab; here the `-attack` selector emits each attack's
-//! defense-only wire plan (the fingerprint it would present), and `--seed`
-//! runs the deterministic observation-replay regression report.
+//! Local-only red-team CLI. It never contacts a target: `--attack <name>`
+//! prints that attack's defense-only request plan (steps, headers, bodies and
+//! the fingerprint each step would present), `--list-attacks` lists the
+//! catalog, and `--seed` runs the deterministic observation-replay regression
+//! report. Live execution of the plans is not implemented: the only network
+//! client, `wire::client::LoopbackClient`, refuses every non-loopback address,
+//! so the Docker lab's container addresses are unreachable from it by design.
+//! Running the plans against the lab will need an explicit own-lab address
+//! allowlist (recorded in INTEGRATION.md); the loopback guard stays as is.
 use humanymous_attacker::wire::attacks;
 
 enum Command {

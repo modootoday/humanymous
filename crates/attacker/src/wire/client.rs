@@ -3,8 +3,11 @@
 //! Defense-only. This client refuses any non-loopback target, so the ported
 //! redteam families can only ever exercise this deployment's own lab runtime.
 //! It speaks plain HTTP/1.1 with caller-ordered headers so the header-order and
-//! RIT families can present their exact wire shape. It carries no TLS/h2 control
-//! (that is a recorded gap); its fingerprint is the HTTP/1.1 request plan.
+//! RIT families can present their exact wire shape. It speaks cleartext HTTP/1.1
+//! only: no TLS or h2 (a recorded gap), so it cannot present the ClientHello or
+//! h2 fingerprints the catalog plans describe. The loopback guard also means
+//! it cannot reach the Docker lab's container addresses; live lab execution
+//! needs an explicit own-lab address allowlist, which is not added here.
 use std::io::{Read, Write};
 use std::net::{SocketAddr, TcpStream};
 use std::time::Duration;
