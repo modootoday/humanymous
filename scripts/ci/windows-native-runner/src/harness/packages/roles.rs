@@ -164,6 +164,8 @@ impl Packages {
                 json!({"name":target,"kind":[kind],"src_path":root.join(directory).join(source)}),
             );
         }
+        // A role-less member, selected only by declarations (dotnet pilots).
+        records.insert("humanymous-dotnet-adapter", json!({"id":"opaque-humanymous-dotnet-adapter","name":"humanymous-dotnet-adapter","version":"0.1.0","manifest_path":root.join("crates/dotnet-adapter/Cargo.toml"),"source":null,"targets":[]}));
         let records: Vec<_> = records.into_values().collect();
         let members: Vec<_> = records.iter().map(|record| record["id"].clone()).collect();
         Self::from_metadata(

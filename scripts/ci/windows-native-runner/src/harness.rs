@@ -400,6 +400,14 @@ fn execute_inner(
         if required_missing {
             rows.last_mut().unwrap()["validated"] = json!(false);
         }
+        if !declared.unsupported_ids.is_empty() {
+            ledger.unsupported(
+                index,
+                &entry["target"],
+                &declared.unsupported_ids,
+                &declared.unsupported_tests,
+            );
+        }
         ledger.completed(
             index,
             &entry["target"],
@@ -615,6 +623,14 @@ fn custody_account(log: &str, discovered: usize, success: bool) -> io::Result<us
 /// Closed public vocabulary of declared pilot ids.
 pub(crate) fn pilot_ids() -> std::collections::BTreeSet<String> {
     pilots::known_ids()
+}
+/// Closed public vocabulary of owner-declared unsupported tuple ids.
+pub(crate) fn unsupported_ids() -> std::collections::BTreeSet<String> {
+    pilots::known_unsupported_ids()
+}
+/// Closed public vocabulary of owner-declared unsupported test names.
+pub(crate) fn unsupported_tests() -> std::collections::BTreeSet<String> {
+    pilots::known_unsupported_tests()
 }
 /// Closed public vocabulary of declared pilot subprocess helpers.
 pub(crate) fn pilot_helpers() -> std::collections::BTreeSet<String> {

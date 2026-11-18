@@ -24,7 +24,12 @@ pub(super) fn row(raw: &Value, public: &mut Value) {
     public["required_execution_scope"] = json!(
         raw["required_execution_scope"]
             .as_str()
-            .filter(|value| matches!(*value, "native-pilots" | "job"))
+            .filter(|value| matches!(*value, "native-pilots" | "job" | "unsupported"))
+    );
+    public["unsupported_ids"] = known(&raw["unsupported_ids"], &crate::harness::unsupported_ids());
+    public["unsupported_not_run"] = known(
+        &raw["unsupported_not_run"],
+        &crate::harness::unsupported_tests(),
     );
     let ids = crate::harness::pilot_ids();
     public["pilot_ids"] = json!(
@@ -66,6 +71,31 @@ pub(super) fn row(raw: &Value, public: &mut Value) {
             .filter(|name| helpers.contains(*name))
             .collect::<Vec<_>>()
     );
+}
+/// Only names from the checked-in declaration vocabulary are published.
+fn known(raw: &Value, vocabulary: &std::collections::BTreeSet<String>) -> Value {
+    json!(
+        raw.as_array()
+            .into_iter()
+            .flatten()
+            .filter_map(Value::as_str)
+            .filter(|name| vocabulary.contains(*name))
+            .collect::<Vec<_>>()
+    )
+}
+/// Validated harnesses whose declared tests are unsupported on this tuple.
+pub(super) fn unsupported(raw: &Value) -> Value {
+    let (ids, tests) = (
+        crate::harness::unsupported_ids(),
+        crate::harness::unsupported_tests(),
+    );
+    json!(
+        raw.as_array()
+            .into_iter()
+            .flatten()
+            .map(|row| json!({"index":row["index"].as_u64(),"unsupported_ids":known(&row["unsupported_ids"],&ids),"not_run":known(&row["not_run"],&tests)}))
+            .collect::<Vec<_>>()
+    )
 }
 /// A failed libtest name is published only when it is a plain Rust test path.
 fn test_path(name: &str) -> bool {
@@ -134,6 +164,29 @@ mod tests {
         assert_eq!(
             public["declared_subprocess_helpers"],
             json!(["unix_unprivileged_connect_probe"])
+        );
+        assert!(!public.to_string().contains("private-path"));
+    }
+    #[test]
+    fn unsupported_rows_publish_only_declared_vocabulary() {
+        let raw = json!({"required_execution_scope":"unsupported","unsupported_ids":["dotnet-package-macos-unsupported","private-path"],"unsupported_not_run":["sdk_package_and_real_host_matrix","private-path"]});
+        let mut public = json!({});
+        row(&raw, &mut public);
+        assert_eq!(public["required_execution_scope"], "unsupported");
+        assert_eq!(
+            public["unsupported_ids"],
+            json!(["dotnet-package-macos-unsupported"])
+        );
+        assert_eq!(
+            public["unsupported_not_run"],
+            json!(["sdk_package_and_real_host_matrix"])
+        );
+        let projected = unsupported(
+            &json!([{"index":72,"target":"private-path","unsupported_ids":["dotnet-package-macos-unsupported","x"],"not_run":["sdk_package_and_real_host_matrix","x"]}]),
+        );
+        assert_eq!(
+            projected,
+            json!([{"index":72,"unsupported_ids":["dotnet-package-macos-unsupported"],"not_run":["sdk_package_and_real_host_matrix"]}])
         );
         assert!(!public.to_string().contains("private-path"));
     }
