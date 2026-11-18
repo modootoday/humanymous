@@ -246,9 +246,9 @@
     },
     {
       "source": "adapters/dotnet/pilot/Program.cs",
-      "sha256": "5201fd500d688e19bd7af17d707c42b9bdc3177e792425a01894b0991a489b78",
-      "reviewer": "codex/rust-pages",
-      "notes": "194-line test host fully read in contiguous chunks. Redirected stdio/noargs, startup/control JSON, optional generic ABI probe separate from Kestrel. Loopback Kestrel limitsbody2MiB, disables minrate; actual bounded middleware/auth required separately. Contacts increment before request-body read, mutations only selectedroute; generic probe not middleware qualification. GC/control tasks waited before stopped; synchronous Emit/stdin ReadLine and post-read length check do not themselves bound memory, output or total wait. Host cannot attest runner provenance; parent must own timeout/containment. No actual process execution.",
+      "sha256": "2473eadba235df9b29872ccea313939e09c7f683c4eb6720c8e48ccf081d5952",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "200-line test host fully read; 2026-11-18 adds four pre-handoff rewrite modes (method, raw target, host, added header) beside route rewrite, accepted only from the control channel allowlist. Prior review: 194-line test host fully read in contiguous chunks. Redirected stdio/noargs, startup/control JSON, optional generic ABI probe separate from Kestrel. Loopback Kestrel limitsbody2MiB, disables minrate; actual bounded middleware/auth required separately. Contacts increment before request-body read, mutations only selectedroute; generic probe not middleware qualification. GC/control tasks waited before stopped; synchronous Emit/stdin ReadLine and post-read length check do not themselves bound memory, output or total wait. Host cannot attest runner provenance; parent must own timeout/containment. No actual process execution. 2026-11-18: requests bind the installation current at arrival; replace-host installs a new configuration and disposes the old one (emits replaced{ok}); hold handoff mode (600 ms); collectible-probe refuses a collectible load twice on JIT and reports no-dynamic-loading on NativeAOT; no native unload is claimed.",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
@@ -3197,18 +3197,18 @@
     },
     {
       "source": "crates/dotnet-adapter/Cargo.toml",
-      "sha256": "0a5dd68c438a67ec5a0e0173edbd4edd3fab143ed759dfb50acfada2f3b14b5d",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Manifest for the unpublished humanymous-dotnet-adapter crate (workspace version/edition/lints, packages only src, Cargo.toml and INTEGRATION.md). It depends on humanymous-runtime with the authority feature, the framework-adapter, humanymous-core and native-abi crates plus serde/tokio; dev-dependencies add runtime audit/native-security features and platform testing. Declaring these dependencies is not ABI or managed host execution.",
+      "sha256": "f696aa8a58e16507a7dc6697aee1a914c9a790f0b085a1e60b7aabfeb312659c",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Manifest for the unpublished humanymous-dotnet-adapter crate (workspace version/edition/lints, packages only src, Cargo.toml and INTEGRATION.md). It depends on humanymous-runtime with the authority feature, the framework-adapter, humanymous-core and native-abi crates plus serde/tokio; dev-dependencies add runtime audit/native-security features and platform testing. Declaring these dependencies is not ABI or managed host execution. 2026-11-18: dev-dependencies enable runtime test-authority (D4, test-only) and platform windows-object for the N2 stdin query.",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
     },
     {
       "source": "crates/dotnet-adapter/INTEGRATION.md",
-      "sha256": "db35f741a97cc8a5d204ac2aeed5d1657a55f22ff072bad0512cb404b6baf6d0",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Integration request and handover log for the .NET adapter lane: records retained-harness and pure checkpoints, the target public names (NuGet humanymous, Humanymous namespace, humanymous-native library), the L4 consumer contract, pending byte commitments, the prebuilt Kestrel and generic ABI-only preparation, and an unresolved request for a managed binding/NativeAOT exception. It states all 21 actual-host contract cases, real GC/Kestrel, NativeAOT and package install remain NOT_RUN and the full objective is blocked, so no managed or package success is claimed.",
+      "sha256": "2abeda5055794250175c03099ddd4e87082538cb4762227e3c3c0d546c90bff5",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Integration request and handover log for the .NET adapter lane: records retained-harness and pure checkpoints, the target public names (NuGet humanymous, Humanymous namespace, humanymous-native library), the L4 consumer contract, pending byte commitments, the prebuilt Kestrel and generic ABI-only preparation, and an unresolved request for a managed binding/NativeAOT exception. It states all 21 actual-host contract cases, real GC/Kestrel, NativeAOT and package install remain NOT_RUN and the full objective is blocked, so no managed or package success is claimed. 2026-11-18: launch.rs section now describes the creator-channel admission consumer.",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
@@ -3251,9 +3251,9 @@
     },
     {
       "source": "crates/dotnet-adapter/tests/hosted.rs",
-      "sha256": "2066d195a297d5fa30c4ea399340f62d2cba8ebf80446ffa329250ea4050fdbf",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Ignored real Kestrel/IPC/GC pilot test (actual_kestrel_engine_audit_body_gc_and_shutdown) run twice, against production ApplicationHttp and frozen synthetic reports, with a private audit directory and per-OS authority endpoint; it covers binary replay, unknown-length EOF, GC pressure/overlap, aborts, deny/challenge, handoff rewrite/response-started/expiry, body limit, truncation, upgrade, 204/304/HEAD/stream, app error, authority down and dispose. It emits covered and not_run contract cases with full_product=false. Host::start currently always refuses with Unsupported, so the suite cannot run until a protected launch provider exists.",
+      "sha256": "a6173846ef0fd9c90ee875eb28e10ae209e4f41990c0f3cdcd0d0fd6883a8097",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "2026-11-18: request-rewrite now mutates route, method, raw target, host and an added header one per request; response-started additionally asserts one status line, no application header and no completed chunked body. Still not run (Host::start refuses). Ignored real Kestrel/IPC/GC pilot test (actual_kestrel_engine_audit_body_gc_and_shutdown) run twice, against production ApplicationHttp and frozen synthetic reports, with a private audit directory and per-OS authority endpoint; it covers binary replay, unknown-length EOF, GC pressure/overlap, aborts, deny/challenge, handoff rewrite/response-started/expiry, body limit, truncation, upgrade, 204/304/HEAD/stream, app error, authority down and dispose. It emits covered and not_run contract cases with full_product=false. Host::start currently always refuses with Unsupported, so the suite cannot run until a protected launch provider exists. 2026-11-18: synthetic profile adds expired-result, drop-pending-decision, wrong-peer, dispose-race, authority-restart (epoch 2 at the same endpoint) and shutdown-active plus a collectible probe; 20 of 21 host cases covered on a Linux run; audit root comes from the admission. 2026-11-18 review fix: under NativeAOT the collectible probe attempts no load, so it is listed in not_applicable (reason no-dynamic-loading) and no longer counted as passed.",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
@@ -3278,27 +3278,27 @@
     },
     {
       "source": "crates/dotnet-adapter/tests/hosted/launch.rs",
-      "sha256": "42f036d414e78133a14902dac8c7e514abe1dd42a0945c740acdde1c8a8273ee",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Pure consumer of the shared unverified parent-context wire (no Command or OS IO): decodes a context, optionally compares locator/context/provenance digests and supplied actor SID and run nonce against a binding, and maps one conserved run/cleanup budget that later stages borrow without renewal. Its eight unit tests cover consistent bindings, digest and identity mismatches, shared path/environment consumption, sequential profiles, cleanup-only contexts and exhausted budgets. Decoded claims never authenticate the parent, token, Job or cleanup.",
+      "sha256": "afd6e740acbd9f76f71e19058cf02a3a7ab59dd17f90d2219ecaf41560359448",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Creator-channel admission consumer (SoT dotnet-protected-host-launch 3.1-3.5). Reads one bounded humanymous.dotnet-host-admission/1 envelope from stdin and refuses in table order: no pipe, malformed envelope or unqualified backend give Unsupported; nonce, digest, provenance, actor, uid 0, ACT, venue, cleanup-only, derived widening or an apphost outside its root give PermissionDenied; an exhausted budget gives TimedOut. Linux requires the systemd scope hm-dotnet-<nonce>.scope. The admission is built once, cached and never cloned; derived admission only narrows the apphost and audit root under the original private_work and never renews the budget. Five unit tests cover every refusal row; their fixture paths are absolute on the host OS (C:\\srv\\... on Windows, /srv/... elsewhere) because containment requires Path::is_absolute, so the same rows are meant to run on Windows; that Windows rerun has not happened yet. Decoded claims alone never authenticate the producer; the handle facts do.",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
     },
     {
       "source": "crates/dotnet-adapter/tests/hosted/protocol.rs",
-      "sha256": "4a87557c3c4da971e0a6b569034f4642a41b963e9efb3ef9cfd930eef0f28551",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Pure host framing for the prebuilt .NET pilot: a closed control vocabulary (gc-start/stop, dispose-host, handoff-mode, stop, counters) on a bounded 64-slot queue, and a chunk-based Ingress that enforces 4096-byte frames, 256 KiB total output, explicit nullable native_resources, an exact-PID starting/ready/contact/counters/stopped order and stop-then-EOF. Malformed, duplicate, wrong-PID, overflow or disconnect states are sticky failures; eleven unit tests cover these. This is not exit, worker join or cleanup proof.",
+      "sha256": "9aa579f8924a94af6dd82d6447415708d5e5d00a1d8d793194207cf9041b4af3",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Pure host framing for the prebuilt .NET pilot: a closed control vocabulary (gc-start/stop, dispose-host, handoff-mode, stop, counters) on a bounded 64-slot queue, and a chunk-based Ingress that enforces 4096-byte frames, 256 KiB total output, explicit nullable native_resources, an exact-PID starting/ready/contact/counters/stopped order and stop-then-EOF. Malformed, duplicate, wrong-PID, overflow or disconnect states are sticky failures; eleven unit tests cover these. This is not exit, worker join or cleanup proof. 2026-11-18: closed handoff modes equal the pilot set (rewrite-method/target/host/header, hold); replace-host and collectible-probe controls; replaced and collectible frames valid only while running, with a closed collectible reason.",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
     },
     {
       "source": "crates/dotnet-adapter/tests/hosted/retained.rs",
-      "sha256": "5b9bcb9ac35e3bfec311c7b1bc29b127405c404a3a3db6866511715e4e67616a",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Host harness wrapper over the shared InteractiveAttempt owner: start() deliberately refuses with Unsupported before any Command because no protected host admission exists, and from_retained (currently dead code) borrows the owner's original run/cleanup deadlines. It polls bounded stdout chunks into the protocol Ingress, sends one startup and then only closed controls, keeps the GC-overlap HTTP worker in custody, and settles only through settle_joined; failures return the same owner. Direct worker facts are not Job or tree cleanup proof.",
+      "sha256": "0717b5cfe07c12183dad61e2b0ea6e6273ce9a7d704477ec1b1901d19a649a8b",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Host harness wrapper over the shared InteractiveAttempt owner: start() deliberately refuses with Unsupported before any Command because no protected host admission exists, and from_retained (currently dead code) borrows the owner's original run/cleanup deadlines. It polls bounded stdout chunks into the protocol Ingress, sends one startup and then only closed controls, keeps the GC-overlap HTTP worker in custody, and settles only through settle_joined; failures return the same owner. Direct worker facts are not Job or tree cleanup proof. 2026-11-18: Host::start launches only from the admission with env_clear, the fixed environment, private_work cwd and original deadlines; refuses path-variable widening and apphost outside the admitted root; http_finished_by observes a held worker without joining.",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
@@ -3341,9 +3341,9 @@
     },
     {
       "source": "crates/dotnet-adapter/tests/support/mod.rs",
-      "sha256": "f31cb1480004a9e5862af093249d9a96479e9b770dd2889ccb7cf397b270d542",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Integration-test execution-provenance label for the .NET adapter. On Unix it asserts a non-root actor, then classifies GITHUB_ACTIONS/RUNNER_ENVIRONMENT as github-hosted, HUMANYMOUS_DOTNET_LOCAL_ALLOCATION=root-approved-local as root-allocated-local, and rejects ACT emulation, self-hosted runners or no allocation. The test pins that matrix. The label comes from caller-provided environment strings; it is not an authenticated runner, parent or actor proof.",
+      "sha256": "207c855fa2f9858dbf994b605c773643065d966356e04fe9f76f0812c28b1be3",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Integration-test execution-provenance label for the .NET adapter. On Unix it asserts a non-root actor, then classifies GITHUB_ACTIONS/RUNNER_ENVIRONMENT as github-hosted, HUMANYMOUS_DOTNET_LOCAL_ALLOCATION=root-approved-local as root-allocated-local, and rejects ACT emulation, self-hosted runners or no allocation. The test pins that matrix. The label comes from caller-provided environment strings; it is not an authenticated runner, parent or actor proof. 2026-11-18: venue() exposes the existing classification to the admission consumer.",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
@@ -3633,9 +3633,9 @@
     },
     {
       "source": "crates/integrations/humanymous-platform/src/testing/parent_context.rs",
-      "sha256": "4532258e40c0a14bed340463d9e21f0555d265e6b5f646e73fa0e30c4509ab41",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Strict codec for unauthenticated .NET prebuilt parent context: tagged Workload or CleanupOnly envelopes (schemas humanymous.dotnet-prebuilt-launch/1 and -cleanup/1) with bounded path strings, actor SID, hex provenance for managed/native/harness lineages and a budget that must be exactly issued+180000 and run+60000 ms. decode/encode cap 64 KiB and reject unknown or duplicate fields; fixed_environment yields fixed SystemRoot/TEMP/DOTNET_* keys and map_budget derives local run and cleanup Instants. Docs state decoding never authenticates a parent, artifact, path or deadline and the original parent watchdog stays authoritative. Reader page coverage is indirect.",
+      "sha256": "345a5105521b5ddcf685503c306d1965c96e6919321d824859ca6a00033b74cd",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Strict codec for unauthenticated .NET prebuilt parent context: tagged Workload or CleanupOnly envelopes (schemas humanymous.dotnet-prebuilt-launch/1 and -cleanup/1) with bounded path strings, actor SID, hex provenance for managed/native/harness lineages and a budget that must be exactly issued+180000 and run+60000 ms. decode/encode cap 64 KiB and reject unknown or duplicate fields; fixed_environment yields fixed SystemRoot/TEMP/DOTNET_* keys and map_budget derives local run and cleanup Instants. Docs state decoding never authenticates a parent, artifact, path or deadline and the original parent watchdog stays authoritative. Reader page coverage is indirect. 2026-11-18: budget validation shared with the /2 host schema (admission and host modules); /1 bytes unchanged.",
       "pages": [
         "docs/reference/supported-topologies.md",
         "docs/reference/production-vs-reference.md"
@@ -3643,9 +3643,9 @@
     },
     {
       "source": "crates/integrations/humanymous-platform/src/testing/parent_context/binding.rs",
-      "sha256": "033ec4f03c4bdd67db2fe6f4ed8add0fa4172cce982a0191f4a1fdbe30588c8b",
+      "sha256": "496f3cdbd4772266526ee40409284c24e3ce52fc2d0f634160c20551dfcf7c69",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Binding codec (schema humanymous.parent-context-binding/1, 16 KiB cap) for unauthenticated carrier claims: run nonce, actor SID, invocation source SHA, context/manifest/provenance digests, the original budget and a github-hosted preflight label. Validation requires the actor and budget to equal the decoded context; encode_provenance emits compact typed JSON without newline. Tests pin golden field order, reject budget or actor drift, uppercase hex, zero nonce, unknown fields, duplicate keys and oversize input; it performs no hashing or native inspection. Reader page coverage is indirect.",
+      "notes": "Binding codec (schema humanymous.parent-context-binding/1, 16 KiB cap) for unauthenticated carrier claims: run nonce, actor SID, invocation source SHA, context/manifest/provenance digests, the original budget and a github-hosted preflight label. Validation requires the actor and budget to equal the decoded context; encode_provenance emits compact typed JSON without newline. Tests pin golden field order, reject budget or actor drift, uppercase hex, zero nonce, unknown fields, duplicate keys and oversize input; it performs no hashing or native inspection. Reader page coverage is indirect. 2026-11-18: adds a root-allocated-local preflight label so local dotnet host runs are not labeled github-hosted; both values remain venue metadata only, and \"local\" is still refused.",
       "pages": [
         "docs/reference/supported-topologies.md",
         "docs/reference/production-vs-reference.md"
@@ -3793,9 +3793,9 @@
     },
     {
       "source": "crates/integrations/humanymous-platform/src/windows_object/mod.rs",
-      "sha256": "102016dc8c1a4a08cdd57b5fb2e55db09f3daaeda31eb4a85d184994c26c260e",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Windows-only module API: redacted BridgeError, OpenedObjectObservation (24-byte volume+file identity, volume GUID prefix, directory flag) that external code cannot construct (compile_fail doctest), a freely forgeable UnverifiedIdentityClaim wire type whose equality grants nothing, inspect_opened on the same live File, and create_directory_with_descriptor returning a must_use CreatedDirectory with no Drop deletion. Docs state it does not authenticate producers, processes or hosted environments and that queries may block in the kernel.",
+      "sha256": "eb27376e362a10a4acbcd353dcf2ae4df5265bb115388e6931c2b8a1c24d69fb",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Windows-only module API: redacted BridgeError, OpenedObjectObservation (24-byte volume+file identity, volume GUID prefix, directory flag) that external code cannot construct (compile_fail doctest), a freely forgeable UnverifiedIdentityClaim wire type whose equality grants nothing, inspect_opened on the same live File, and create_directory_with_descriptor returning a must_use CreatedDirectory with no Drop deletion. Docs state it does not authenticate producers, processes or hosted environments and that queries may block in the kernel. 2026-11-18: exports stdin_is_pipe (SoT N2, D3).",
       "pages": [
         "docs/reference/production-vs-reference.md"
       ]
@@ -6755,9 +6755,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/Cargo.toml",
-      "sha256": "0b1157d8c55ada2751c7c9ba2bbb272700bb93c6eb057760d368da2f469674de",
-      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Manifest for the consolidated humanymous-runtime crate (description, readme README.md, publish = [\"crates-io\"] in the first crates.io wave, which performs no upload; autobins/autotests off, default feature gateway): feature-gated contexts gateway, authority, audit, capture, network and native-security plus hosted-pilot and credential-pilot, with pinned optional dependencies such as rustls 0.23.46 (ring, tls12), httlib-hpack 0.1.3, rcgen 0.14.10, interprocess 2.4.7, winsafe/keyring stores on Windows and rustix on Unix; the collector dev-dependency carries a registry version beside its path. It declares five binaries (humanymous-runtime, humanymous-h2-product-binding-measure, humanymous-authority, audit-witness, audit-control-retainer) and named gateway (now also gateway-witness-input, path tests/gateway/witness_input.rs, required feature gateway, beside gateway-deployment-manifests), authority, audit, capture and network parity integration tests. No dependency changed in this revision. The first [[bin]] table also repeats the package description line, which is not a Cargo target field. The manifest itself is not evidence that those binaries or tests ran.",
+      "sha256": "970143810331975f9012863f287c07b41281aa067c1d8aa30925038e262e0612",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Manifest for the consolidated humanymous-runtime crate (description, readme README.md, publish = [\"crates-io\"] in the first crates.io wave, which performs no upload; autobins/autotests off, default feature gateway): feature-gated contexts gateway, authority, audit, capture, network and native-security plus hosted-pilot and credential-pilot, with pinned optional dependencies such as rustls 0.23.46 (ring, tls12), httlib-hpack 0.1.3, rcgen 0.14.10, interprocess 2.4.7, winsafe/keyring stores on Windows and rustix on Unix; the collector dev-dependency carries a registry version beside its path. It declares five binaries (humanymous-runtime, humanymous-h2-product-binding-measure, humanymous-authority, audit-witness, audit-control-retainer) and named gateway (now also gateway-witness-input, path tests/gateway/witness_input.rs, required feature gateway, beside gateway-deployment-manifests), authority, audit, capture and network parity integration tests. No dependency changed in this revision. The first [[bin]] table also repeats the package description line, which is not a Cargo target field. The manifest itself is not evidence that those binaries or tests ran. 2026-11-18: test-authority feature (D4), test-only.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/reference/supported-topologies.md",
@@ -7733,9 +7733,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/authority/decision.rs",
-      "sha256": "5b32d5b23500bdaa1374160578a49bc4f8c8de0b1a64c0fe1d53479018fec3cb",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Core local-authority decision state: Authority holds one random credential epoch, the frozen shared scoring Engine, an Evidence provider and a DurableAudit sink, and `decide` authenticates the OS-derived peer (UID or pipe client PID) plus bearer, parses the envelope with the provisioned profile, enforces credential scope (403), revision (409), reserved and inventoried routes, rejects routes needing raw TLS, original H2, collector, RIT or unavailable raw header order (422), and reserves the nonce (409 replay, 429 capacity) before scoring. It requires an ALLOW/DENY/CHALLENGE verdict, appends a minimized adapter.decision fail_closed audit record before replying (audit failure poisons the authority), rechecks the deadline, and poisons on wall-clock rollback. ApplicationHttp evidence uses only application header names/values and explicitly omits TLS, H2, version and client address; there are no unit tests in this file.",
+      "sha256": "bfd404fc2942a80b0f30aec82f8cde540459ca5d4314eaa087650bcf61bd376e",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Core local-authority decision state: Authority holds one random credential epoch, the frozen shared scoring Engine, an Evidence provider and a DurableAudit sink, and `decide` authenticates the OS-derived peer (UID or pipe client PID) plus bearer, parses the envelope with the provisioned profile, enforces credential scope (403), revision (409), reserved and inventoried routes, rejects routes needing raw TLS, original H2, collector, RIT or unavailable raw header order (422), and reserves the nonce (409 replay, 429 capacity) before scoring. It requires an ALLOW/DENY/CHALLENGE verdict, appends a minimized adapter.decision fail_closed audit record before replying (audit failure poisons the authority), rechecks the deadline, and poisons on wall-clock rollback. ApplicationHttp evidence uses only application header names/values and explicitly omits TLS, H2, version and client address; there are no unit tests in this file. 2026-11-18: behind feature test-authority only, TestExpiry issues expires=min(deadline, now+ttl); zero is the production rule; it can only shorten. Default builds unchanged.",
       "pages": [
         "docs/standards/draft-v0/protocol/implementation-experiment.md",
         "docs/reference/hard-rules-verdicts.md",
@@ -7755,9 +7755,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/authority/mod.rs",
-      "sha256": "a7bba64ad263fe03d65d5eda16c319c2c8a7ea294f97f9b0dcdd7382358381db",
-      "reviewer": "codex/rust-pages",
-      "notes": "Read complete public module/error/clock root: source-owned static Rejection, finite UTC milliseconds and shared exports. Root exports are not actual service/authentication or conformance evidence. Carried unchanged from crates/authority/src/lib.rs: identical SHA-256 after the crate consolidation, so the reviewed bytes are the same.",
+      "sha256": "585e157afdb53b01a60de13bcfbfbc6bc87b726d04efa0bc96c752c98a21512d",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Read complete public module/error/clock root: source-owned static Rejection, finite UTC milliseconds and shared exports. Root exports are not actual service/authentication or conformance evidence. Carried unchanged from crates/authority/src/lib.rs: identical SHA-256 after the crate consolidation, so the reviewed bytes are the same. 2026-11-18: compile_error refuses test-authority without debug assertions, so release builds cannot contain it.",
       "pages": [
         "docs/standards/draft-v0/protocol/implementation-experiment.md"
       ]
@@ -9352,9 +9352,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/native_security/process/mod.rs",
-      "sha256": "63c57f28da3d2fcca691a6f22558766791bee6f6e2c79f0cd172a88a8d28c3ec",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Process identity helpers: re-exports Windows WindowsIdentity/current_identity, validates owned service names as humanymous-lab- plus 1..48 lowercase alphanumerics or hyphens, returns the Unix effective UID via rustix, and defines installer_token_allowed (neither elevated nor enabled Administrators) and enabled_admin_group (S-1-5-32-544 with the enabled bit). Tests check deny-only admin groups do not count and installation requires both conditions.",
+      "sha256": "b657be7b5d55a6a21644306a9419cae59925fddbb8eaffbd411c955b99591fc6",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Process identity helpers: re-exports Windows WindowsIdentity/current_identity, validates owned service names as humanymous-lab- plus 1..48 lowercase alphanumerics or hyphens, returns the Unix effective UID via rustix, and defines installer_token_allowed (neither elevated nor enabled Administrators) and enabled_admin_group (S-1-5-32-544 with the enabled bit). Tests check deny-only admin groups do not count and installation requires both conditions. 2026-11-18: current_uids returns real and effective uid (Unix) for the admission actor check.",
       "pages": [
         "docs/reference/install-requirements.md"
       ]
@@ -10591,6 +10591,35 @@
       "pages": [
         "docs/how-to/detection-observatory.md",
         "docs/explanation/observatory-architecture.md"
+      ]
+    },
+    {
+      "source": "crates/integrations/humanymous-platform/src/testing/parent_context/admission.rs",
+      "sha256": "8421bf2ee566522138545be87e79d2b0b564e7df6a2460bf80301f601c8154de",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Envelope codec for humanymous.dotnet-host-admission/1: a strict JSON header line (schema, profile standard-user-dotnet-prebuilt, nonce, optional derivation, exact byte counts), then the exact context and binding bytes. 96 KiB total, 64 KiB context, 16 KiB binding. It rejects trailing, truncated, duplicate-key, unknown-field and oversize frames without echoing bytes. It checks syntax only and never establishes producer identity.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/integrations/humanymous-platform/src/testing/parent_context/host.rs",
+      "sha256": "8e79681ca7cd58dd48cf1851c5bbc656222ee510b66e1acd973799db82176729",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "/2 host context and binding schemas with an OS-tagged actor (Linux uid != 0, Windows SID). system_root is present only for Windows. The fixed environment holds the Linux HOME, TMPDIR and DOTNET_* keys (no PATH) or the 11 Windows keys. Budget mapping is shared with /1, and /1 bytes stay frozen. Decoding never authenticates.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/integrations/humanymous-platform/src/windows_object/stdio.rs",
+      "sha256": "7c83d9b9d691c90145e581a3b6013e65c58a68125d1052bd09b2b9635195ff8f",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "SoT N2 (D3): stdin_is_pipe duplicates stdin and makes one read-only GetFileType call in a function-local unsafe allow with a SAFETY comment; FILE_TYPE_PIPE is the only accepting class (unit-tested classify). Windows-only, compiled and Clippy-checked for x86_64-pc-windows-gnu, never run.",
+      "pages": [
+        "docs/reference/production-vs-reference.md"
       ]
     },
     {

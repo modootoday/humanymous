@@ -14,6 +14,9 @@ pub enum PreflightEnvironment {
     /// Reported hosted venue; independent native/external preflight is required.
     #[serde(rename = "github-hosted")]
     GithubHosted,
+    /// Reported root-allocated local run; never hosted qualification.
+    #[serde(rename = "root-allocated-local")]
+    RootAllocatedLocal,
 }
 
 /// Unauthenticated protected-carrier claims with fixed declared serialization

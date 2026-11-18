@@ -136,6 +136,41 @@
         "actual_framework_failure_paths_never_reach_origin"
       ],
       "helpers": []
+    },
+    {
+      "id": "dotnet-hosted-linux",
+      "package": "humanymous-dotnet-adapter",
+      "target": "hosted",
+      "kind": "test",
+      "os": ["linux"],
+      "executor": "job",
+      "job": {
+        "workflow": ".github/workflows/rust-validation.yml",
+        "name": "dotnet",
+        "run": "cargo run --locked -p humanymous-delivery -- component dotnet-host"
+      },
+      "tests": [
+        "actual_kestrel_engine_audit_body_gc_and_shutdown",
+        "generic::actual_generic_abi_only_process"
+      ],
+      "helpers": []
+    },
+    {
+      "id": "dotnet-sdk-download",
+      "package": "humanymous-delivery",
+      "target": "humanymous-delivery",
+      "kind": "bin",
+      "os": ["linux", "macos", "windows"],
+      "executor": "job",
+      "job": {
+        "workflow": ".github/workflows/rust-validation.yml",
+        "name": "dotnet",
+        "run": "cargo run --locked -p humanymous-delivery -- component dotnet-host"
+      },
+      "tests": [
+        "components::dotnet_host::sdk::tests::actual_pinned_sdk_download_verifies"
+      ],
+      "helpers": []
     }
   ],
   "unsupported": [

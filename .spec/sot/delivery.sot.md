@@ -1094,8 +1094,20 @@ is an accounting failure.
 
 Executor `job`: the pilot is run by a named step of another job that
 merge-ready already requires (today the `node` job `component node-host`
-step for the three Node host_process groups). Delivery tests verify the named
-step exists in that job; the other job's own result carries the outcome.
+step for the three Node host_process groups, and the `dotnet` job
+`component dotnet-host` step for the Linux hosted rows and the delivery
+binary's SDK download test). Delivery tests verify the named step exists in
+that job; the other job's own result carries the outcome. The step itself runs
+each declared test alone with `--exact --ignored` and requires the exact
+single-test success footer; naming a step that does not run the test is not a
+declaration.
+
+The delivery binary's `actual_pinned_sdk_download_verifies` (2026-11-18)
+downloads the pinned linux-x64 .NET SDK, checks its size and SHA-512 and
+resolves exactly the pinned version. Pilot `dotnet-sdk-download` declares it
+on every native OS with the `job` executor, like the Node rows: the Linux
+`dotnet` job's `component dotnet-host` step runs it before the provider
+acquires its own SDK. The row claims no macOS or Windows SDK qualification.
 
 This replaces the single privileged-Docker scope declaration for the authority
 socket ACL test: it now runs as root on the hosted runner and its helper is

@@ -3,7 +3,7 @@ id: sot:root/dotnet-protected-host-launch
 title: Protected .NET host launch admission and B2 custody
 status: draft
 created: 2026-11-18T00:00:00Z
-updated: 2026-11-18T00:00:00Z
+updated: 2026-11-18T18:00:00Z
 verify: manual
 rel:
   governs: [crates/dotnet-adapter/tests/hosted/retained.rs]
@@ -12,12 +12,23 @@ rel:
 
 # Protected .NET host launch admission and B2 custody
 
-Document version: 0.1.0. Status: **proposed**. The owner chose the SoT design
+Document version: 0.2.0. Status: **proposed**. The owner chose the SoT design
 path under decision D1(a) on 2026-11-18 (issue #75 comment 6968092014). D1(a)
 approves *drafting* this SoT. It does not accept the native operations listed
 below. Every item marked UNAPPROVED here needs the review that the structural
 B2 rule asks for before anyone writes source for it. This document authorizes
 no OS execution, account, Job, SCM, SDK or Kestrel run.
+
+Version 0.2.0 update. On 2026-11-18 the owner approved D3 and chose D4
+option (b) (issue #75 comment 6979694428):
+- D3 approves N1, N2, N5 and L2 below.
+- D4(b) lets a test-only authority issue a decision expiry shorter than the
+  request deadline, so `expired-result` is distinguishable from the request
+  deadline. The production authority contract is unchanged. The test
+  authority is the `humanymous-runtime` feature `test-authority`
+  (`authority::decision::TestExpiry`). Only the dotnet-adapter dev-dependency
+  enables it, and a `compile_error!` refuses it in any build without debug
+  assertions, so release and production builds cannot contain it.
 
 Scope: how `Host::start()` in `crates/dotnet-adapter/tests/hosted/retained.rs`
 gets protected host admission; who holds custody of the process tree, account,
@@ -190,6 +201,10 @@ an environment-variable apphost or a direct `Command`.
   - Timeout or error: main containment empty, then a same-user cleanup child in
     its own containment, then private cleanup, then cleanup containment empty,
     then account and scratch deletion.
+- **Linux provider child**: on every exit path, an early error included, the
+  provider kills the scope and its `sudo systemd-run` child and reaps that
+  child within a bounded grace. `child_reaped` is a terminal fact; a child
+  still running at the cleanup deadline never reports an exit code.
 - **Parent death**: a kill-on-close Job (Windows) or scope teardown (Linux)
   stops the tree. Account, profile and private state are recorded as
   residual/Unknown. They are never reported clean, and no recovery is promised.
@@ -218,11 +233,11 @@ These reuse code that already exists: `OwnedActor`/`OwnedFailure`,
 
 | ID | Change | Status |
 |----|--------|--------|
-| N1 | Set `STARTF_USESTDHANDLES` on the existing `CreateProcessWithLogonW` `STARTUPINFOW`. `hStdInput` is the read end of a `std::io::pipe()`. Std output and error use bounded parent readers. No new Win32 function. | UNAPPROVED (changes an existing unsafe call) |
-| N2 | One read-only `GetFileType(stdin)` query in the native-security boundary. | UNAPPROVED (new unsafe scope) |
+| N1 | Set `STARTF_USESTDHANDLES` on the existing `CreateProcessWithLogonW` `STARTUPINFOW`. `hStdInput` is the read end of a `std::io::pipe()`. Std output and error use bounded parent readers. No new Win32 function. | APPROVED (D3). Implemented as an opt-in launch variant; existing modes are unchanged. Compiled and Clippy-checked for Windows; never run. |
+| N2 | One read-only `GetFileType(stdin)` query in the native-security boundary. | APPROVED (D3). Implemented as `humanymous_platform::windows_object::stdin_is_pipe`, because the runtime crate forbids unsafe code and the platform object bridge already owns the deny-with-local-allow Win32 scope. Compiled for Windows; never run. |
 | N3 | Bind `InspectedActorContext` to the envelope and make `require_exact_producer_identity` pass (rule 3.1.6). Safe Rust. | proposed |
 | N4 | Wire the `dotnet-prebuilt` runner mode: take `prebuilt.rs` out of `cfg(test)`. Allowlist two fixed selectors: the existing Kestrel selector and `generic::actual_generic_abi_only_process`. | proposed (amends the plan's single `SELECTOR`) |
-| N5 | NoProfile `logonflags 0` with actual ProfileList and directory absence before and after. | UNAPPROVED (prerequisite the plan already named) |
+| N5 | NoProfile `logonflags 0` with actual ProfileList and directory absence before and after. | APPROVED (D3). Implemented with the N1 variant: one `RegOpenKeyExW` ProfileList query plus a directory check. Compiled for Windows; never run. |
 
 N1 needs a real fixture. The fixture must show that the secondary-logon
 service delivers the std handles to the actor child, that the child sees a
@@ -234,9 +249,16 @@ which needs a fresh review. This SoT does not pre-approve that fallback.
 
 | ID | Change | Status |
 |----|--------|--------|
-| L1 | `delivery component dotnet-host` (following the `node-host` pattern) runs as the non-root hosted runner user and creates the harness with a piped creator channel. | proposed |
-| L2 | Containment is a transient systemd scope (cgroup v2), created through `sudo -n systemd-run --scope --uid=<runner uid>`. Termination goes through the scope. The terminal fact is the scope's `cgroup.events` showing `populated 0`. The existing `linux_tree_probe` prerequisites (systemd PID 1, unified cgroup, system bus) must be Observed first. | UNAPPROVED (the Linux B2 backend is unqualified) |
-| L3 | The `parent_context` wire gets an OS-tagged actor identity: a uid on Linux, a SID on Windows. This is a `/2` schema owned by the platform codec owner; `/1` bytes stay frozen. | proposed |
+| L1 | `delivery component dotnet-host` (following the `node-host` pattern) runs as the non-root hosted runner user and creates the harness with a piped creator channel. | Implemented (`scripts/ci/delivery/src/components/dotnet_host.rs`). |
+| L2 | Containment is a transient systemd scope (cgroup v2), created through `sudo -n systemd-run --scope --uid=<runner uid>`. Termination goes through the scope. The terminal fact is the scope's `cgroup.events` showing `populated 0`. The existing `linux_tree_probe` prerequisites (systemd PID 1, unified cgroup, system bus) must be Observed first. | APPROVED (D3). Implemented and run on Linux; see 5. |
+| L3 | The `parent_context` wire gets an OS-tagged actor identity: a uid on Linux, a SID on Windows. This is a `/2` schema owned by the platform codec owner; `/1` bytes stay frozen. | Implemented (`parent_context/host.rs`, `admission.rs`). |
+
+L2 terminal fact, clarified. The kernel removes a scope's cgroup only once it
+is empty, and systemd collects a transient scope once it is empty. So the
+terminal fact is either `cgroup.events` reading `populated 0`, or the scope
+unit no longer loaded together with its cgroup directory gone (`Collected`).
+`populated 1`, or an unreadable state with the unit still loaded, is never
+terminal and refuses a clean run.
 
 The dotnet SoT already rejects process-group kill and post-reap PID kill as
 proof. If L2 is not observed, Linux refuses with `Unsupported`. A process
@@ -244,6 +266,17 @@ group never stands in for the scope.
 
 ### 4.3 CI and accounting declarations (after source exists)
 
+Declared in the change that adds the job (2026-11-18): only
+`dotnet-hosted-linux` (hosted target, `os: [linux]`, job `dotnet`). Windows
+hosted and both package rows stay undeclared, because nothing there has run.
+
+Also declared 2026-11-18: `dotnet-sdk-download` (package
+`humanymous-delivery`, binary target, `os: [linux, macos, windows]`, job
+`dotnet`). It names the ignored provider test
+`components::dotnet_host::sdk::tests::actual_pinned_sdk_download_verifies`.
+`component dotnet-host` runs that test alone with `--exact --ignored` before
+its own SDK custody and refuses unless the exact single-test success footer is
+observed. The row qualifies nothing on macOS or Windows.
 These steps come after the source exists:
 - `scripts/ci/native-pilots.json`:
   - `dotnet-hosted` for the hosted target, tests
@@ -252,10 +285,26 @@ These steps come after the source exists:
   - `dotnet-package` for the package target, test
     `[sdk_package_and_real_host_matrix]`;
   - both with `os: [linux, windows]` and `executor: job`.
-- The job named by those rows must be one that merge-ready requires. It pins
-  `actions/setup-dotnet` at `26b0ec14cb23fa6904739307f278c14f94c95bf1` with
-  `cache: false`, SDK 10.0.403 and x64, and runs `dotnet --info` into the
-  receipt. Workflow edits are human-gated paths, so they go to owner review.
+- The job named by those rows must be one that merge-ready requires. It uses
+  no `actions/setup-dotnet` and no runner-installed SDK. The Rust provider
+  (`scripts/ci/delivery/src/components/dotnet_host/sdk.rs`) downloads the
+  SDK 10.0.403 linux-x64 tarball from Microsoft's official
+  `builds.dotnet.microsoft.com` URL into a private owner-only temp directory.
+  Before extraction it checks the exact size and the SHA-512 pinned in that
+  file, copied from Microsoft's official release metadata
+  (`release-metadata/10.0/releases.json`, whose URL sits next to the pin). A
+  mismatch fails closed. Every SDK command runs with that private root as
+  `DOTNET_ROOT`/`PATH` (set only for the child) and with `adapters/dotnet` as
+  the working directory, so `global.json` (10.0.403, `rollForward: disable`)
+  applies. `dotnet --version` must print exactly `10.0.403`; a list that only
+  contains it is refused. The receipt records the tarball SHA-512, the
+  resolved version, the muxer SHA-256 and `dotnet --info`. The private SDK is
+  also the apphost runtime root, and it is removed after the launch phase.
+  The first green hosted run (before this rule) resolved SDK 11.0.100 from the
+  repository root; it is not evidence of the pin. Workflow edits are
+  human-gated paths, so they go to owner review. Known gap: other jobs'
+  `actions/setup-node` and `oven-sh/setup-bun` downloads are not yet
+  hash-verified this way.
 - The rows are declared only in the same change that adds the named job step.
   Delivery tests reject a `job` row whose step does not exist.
 
@@ -301,6 +350,71 @@ authored:
 - `dispose-race`
 - `shutdown-active`
 
+Update 2026-11-18. The fixture now mutates each binding field the
+`request-rewrite` row names (route, method, raw target, host and a sanitized
+header), one per request. `response-started` now also checks that a started
+response keeps its single status line, carries no application header and is
+never completed. Both changes compile against SDK 10.0.403; neither has run,
+because `Host::start()` still refuses. Six cases remain unauthored, each for a
+stated reason:
+- `expired-result`. The authority sets `expires` to the request deadline
+  (`authority/decision.rs`). An authenticated result can therefore never expire
+  before the host's own deadline, so the fixture cannot tell authority expiry
+  apart from `request-deadline`. A design change is needed first: an authority
+  expiry shorter than the request deadline, or a test authority allowed to
+  issue one.
+- `drop-pending-decision`, `authority-restart`, `dispose-race`,
+  `shutdown-active`. Each is a timing race between a held authority decision
+  and host cancel, authority replacement, `HumanymousHost.Dispose` or
+  application stop. Their pass conditions depend on Kestrel and native-binding
+  ordering that only an actual run can show. Author them in the change that
+  first runs the fixture, not blind.
+- `wrong-peer`. The contract requires a real OS peer mismatch. The pilot
+  configures its host once at startup, so the fixture needs a second host
+  configuration, or a second authority endpoint with a different expected
+  peer. That is a fixture design choice for the same first-run change.
+
+Update 2026-11-18 (D3, D4). All six cases are now authored and have run on
+Linux. The pilot gained a `replace-host` control (a new installation becomes
+current and the old one is disposed), a `hold` handoff mode (600 ms) and a
+`collectible-probe` control. The fixture gained a `/hold-await` authority gate
+whose ceiling (4000 ms) outlives the 2000 ms host deadline.
+- `expired-result`: a test-authority expiry of 300 ms against the 600 ms hold
+  refuses with 503 and no contact. The control run with the production rule
+  (expiry 0 = request deadline) passes the same hold with exactly one contact.
+- `drop-pending-decision`: the host drops a decision the authority still holds
+  at its deadline (503, no contact, zero native resources). After release, the
+  next request adds exactly one contact.
+- `wrong-peer`: the host is reconfigured to expect server uid+1 (Linux) or
+  pipe server PID+1 (Windows). It refuses with 503, no contact and no new
+  authority verdict, then recovers when restored.
+- `dispose-race`: the installation is replaced and disposed while its request
+  holds a decision. The released decision returns 503; the replacement serves
+  exactly one new contact.
+- `authority-restart`: epoch 1 is cancelled and its runtime shut down with a
+  decision in flight (503). While nothing serves, the existing
+  `authority-down` assertions run. Epoch 2 binds the same endpoint with a new
+  credential and audit chain. The epoch 1 credential refuses with zero epoch 2
+  verdicts; after `replace-host` with the epoch 2 credential, exactly one
+  ALLOW and one contact follow.
+- `shutdown-active`: stop arrives with one decision held and one request
+  awaiting body input. `stopped` reports no new contact, neither request
+  completes with 2xx, and the process exits 0. The collectible probe refuses
+  a collectible load twice (JIT). Under NativeAOT no load is attempted, so the
+  probe is listed in `not_applicable` with reason `no-dynamic-loading` and is
+  not counted in `passed`. The observation states
+  `native_runtime_unload_claimed: false`. Observed shutdown takes about
+  1.96 s: pending work settles through the 2000 ms request deadline, not
+  through immediate cancellation at host dispose.
+
+Run evidence: three consecutive local runs on Linux x86_64 (2026-11-18),
+venue `root-allocated-local`. The provider ran the harness as uid 1000 inside
+a transient systemd scope (systemd 255 as PID 1 in a private namespace
+sandbox, cgroup v2), with the creator channel a FIFO and the scope
+`Collected`. Both hosted tests passed; 20 of 21 host cases are covered;
+`package-install` stays not-run. This is not hosted CI qualification and
+claims nothing for Windows.
+
 So **`Host::start()` alone cannot turn rows 72/73 green**. The package test
 would still fail on its final assertion, and it must keep failing until those
 fixtures exist. Nobody may weaken that assertion.
@@ -337,11 +451,13 @@ Receipts keep `full_product=false`.
 
 ## 7. Residual risks
 
-- N1, N2, N5 and L2 are UNAPPROVED native operations. Until they are reviewed
-  and pass fixtures, `Host::start()` stays `Unsupported` on that OS.
+- N1, N2 and N5 are approved (D3) but have never run. Until they pass a
+  Windows fixture, Windows hosted stays undeclared. N3 and N4 are not
+  implemented.
 - If the N1 fixture refutes std-handle delivery through secondary logon, the
   Windows design needs a fresh review.
 - Parent death leaves account, profile and private residue as Unknown.
 - The prebuilt plan already blocks a clean pass on profile residue (N5).
-- The 8 missing host cases are separate L4 fixture work, and they gate rows
-  72/73.
+- All host cases except `package-install` now run on Linux JIT. Rows 72/73
+  still need the derived-admission package run in four modes, including
+  NativeAOT, which has not run.

@@ -285,14 +285,21 @@ mod tests {
         let found = declared(&package, &packages, "macos", "x86_64").unwrap();
         assert_eq!(found.unsupported_ids, ["dotnet-package-macos-unsupported"]);
         assert_eq!(found.ignored, ["sdk_package_and_real_host_matrix"]);
-        // Linux and Windows keep strict accounting: nothing is declared there,
-        // so the ignored host pilots stay a coverage-accounting failure.
+        // Linux hosted runs in the `dotnet` job (systemd-scope provider). Its
+        // pilots are accounted there, never as unsupported.
+        let linux = declared(&hosted, &packages, "linux", "x86_64").unwrap();
+        assert_eq!(linux.jobs.len(), 1);
+        assert_eq!(linux.jobs[0]["pilot"], "dotnet-hosted-linux");
+        assert_eq!(linux.jobs[0]["job"], "dotnet");
+        assert!(linux.unsupported_ids.is_empty());
+        // Windows hosted and both package rows keep strict accounting: nothing
+        // is declared, so those ignored pilots stay a coverage failure.
+        assert!(
+            declared(&hosted, &packages, "windows", "x86_64")
+                .unwrap()
+                .is_empty()
+        );
         for os in ["linux", "windows"] {
-            assert!(
-                declared(&hosted, &packages, os, "x86_64")
-                    .unwrap()
-                    .is_empty()
-            );
             assert!(
                 declared(&package, &packages, os, "x86_64")
                     .unwrap()
@@ -308,6 +315,35 @@ mod tests {
         );
         assert!(known_unsupported_ids().contains("dotnet-package-macos-unsupported"));
         assert!(known_unsupported_tests().contains("sdk_package_and_real_host_matrix"));
+    }
+    #[test]
+    fn dotnet_sdk_download_is_accounted_by_the_dotnet_job_on_every_os() {
+        let packages = Packages::fixture();
+        let delivery = json!({"package_id":"opaque-humanymous-delivery","kind":["bin"],"target":"humanymous-delivery"});
+        for (os, arch) in [
+            ("linux", "x86_64"),
+            ("macos", "aarch64"),
+            ("windows", "x86_64"),
+        ] {
+            let found = declared(&delivery, &packages, os, arch).unwrap();
+            assert_eq!(found.ids, ["dotnet-sdk-download"]);
+            assert_eq!(found.jobs.len(), 1);
+            assert_eq!(found.jobs[0]["job"], "dotnet");
+            assert!(found.receipt_tests.is_empty() && found.unsupported_ids.is_empty());
+            assert_eq!(
+                found.ignored,
+                ["components::dotnet_host::sdk::tests::actual_pinned_sdk_download_verifies"]
+            );
+            assert_eq!(found.row(true)["required_execution_scope"], "job");
+        }
+        // Only that exact ignored name is accepted for the delivery binary.
+        let mut lib = delivery.clone();
+        lib["kind"] = json!(["lib"]);
+        assert!(
+            declared(&lib, &packages, "linux", "x86_64")
+                .unwrap()
+                .is_empty()
+        );
     }
     #[test]
     fn authority_helper_is_declared_but_never_receipted() {
