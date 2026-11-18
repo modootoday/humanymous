@@ -119,12 +119,15 @@ impl Application {
             .is_some_and(|reader| reader.classify(self.client, now_ms / 1000).datacenter)
     }
 
-    /// Trusted client-address source of this configuration, if any.
-    fn client_source(&self) -> Option<ClientAddressSource> {
-        self.config
-            .ip_reputation
-            .as_ref()
-            .map(|policy| policy.client_address)
+    /// Trusted client-address source of this configuration and its header
+    /// deadline, if any.
+    fn edge_policy(&self) -> Option<(ClientAddressSource, Duration)> {
+        self.config.ip_reputation.as_ref().map(|policy| {
+            (
+                policy.client_address,
+                Duration::from_millis(policy.proxy_header_timeout_ms),
+            )
+        })
     }
 
     /// Exact readiness manifest; no session secrets or raw client observations.
@@ -526,10 +529,12 @@ impl Application {
                 continue;
             }
             self.client = None;
-            match transport_client(self.client_source(), &mut stream, until).await {
-                Ok(client) => self.client = client,
+            match edge_client(self.edge_policy(), &mut stream, until, &mut shutdown).await? {
+                Edge::Client(client) => self.client = client,
                 // The trusted edge contract was violated; drop this connection only.
-                Err(_) => continue,
+                Edge::Drop => continue,
+                // No request was read yet, so there is nothing to drain.
+                Edge::Stop => return Ok(()),
             }
             let mut response_started = false;
             let mut ack = None;
@@ -727,18 +732,58 @@ impl Application {
     }
 }
 
-/// Recover the original client from the trusted loopback edge when the
-/// configuration requires PROXY v2. `Err` means the connection must be dropped:
-/// the edge contract was violated. LOCAL/UNSPEC gives `None` (unattributed).
-async fn transport_client(
-    source: Option<ClientAddressSource>,
+/// Outcome of waiting for the trusted edge's PROXY v2 header.
+#[derive(Debug, PartialEq, Eq)]
+enum Edge {
+    /// Header read: the original client, or `None` for LOCAL/UNSPEC (and
+    /// when no client-address source is configured).
+    Client(Option<IpAddr>),
+    /// Edge contract violated (no, malformed, truncated or late header):
+    /// drop this connection only.
+    Drop,
+    /// Shutdown was requested while waiting; no request has been read.
+    Stop,
+}
+
+/// Wait for the edge header without holding up shutdown. The wait ends at the
+/// earlier of the request deadline and the configured header deadline.
+async fn edge_client(
+    policy: Option<(ClientAddressSource, Duration)>,
     stream: &mut TcpStream,
     until: Instant,
+    shutdown: &mut tokio::sync::watch::Receiver<Option<crate::gateway::service::ShutdownRequest>>,
+) -> std::io::Result<Edge> {
+    let Some((source, header_timeout)) = policy else {
+        return Ok(Edge::Client(None));
+    };
+    let deadline = until.min(Instant::now() + header_timeout);
+    let header = transport_client(source, stream, deadline);
+    tokio::pin!(header);
+    loop {
+        tokio::select! {
+            biased;
+            changed = shutdown.changed() => {
+                changed.map_err(|_| std::io::Error::other("shutdown controller closed"))?;
+                if shutdown.borrow().is_some() {
+                    return Ok(Edge::Stop);
+                }
+            }
+            result = &mut header => return Ok(result.map_or(Edge::Drop, Edge::Client)),
+        }
+    }
+}
+
+/// Recover the original client from the trusted loopback edge. `Err` means
+/// the connection must be dropped: the edge contract was violated.
+/// LOCAL/UNSPEC gives `None` (unattributed).
+async fn transport_client(
+    source: ClientAddressSource,
+    stream: &mut TcpStream,
+    deadline: Instant,
 ) -> Result<Option<IpAddr>, Rejection> {
     match source {
-        None => Ok(None),
-        Some(ClientAddressSource::ProxyV2) => {
-            let header = timeout_at(until, read_proxy_v2(stream))
+        ClientAddressSource::ProxyV2 => {
+            let header = timeout_at(deadline, read_proxy_v2(stream))
                 .await
                 .map_err(|_| Rejection::new(408, "proxy_protocol"))??;
             Ok(match header {

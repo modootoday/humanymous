@@ -4,7 +4,16 @@
 //! canonical prefixes. [`parse`] and [`encode`] share one validation, so a file
 //! the updater can write is exactly a file the runtime accepts. Every bound is
 //! checked before the content is used; a refusal changes no caller state.
-use super::{IntelCategory, prefix_set::Prefix};
+//!
+//! Scoring categories carry a breadth guard ([`check_breadth`]): a prefix
+//! shorter than [`SCORING_FLOOR`] or a category covering more than
+//! [`SCORING_MAX_V4`]/[`SCORING_MAX_V6`] addresses refuses the whole snapshot,
+//! so one over-broad upstream line can never mark every client datacenter.
+use super::{
+    IntelCategory,
+    prefix_set::{Floor, Prefix, PrefixSet},
+    source,
+};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeSet;
 use std::fmt;
@@ -21,6 +30,15 @@ pub const MAX_PREFIXES: usize = 2_000_000;
 pub const MAX_TEXT: usize = 512;
 /// Tolerated clock skew for `generated_at` and `fetched_at` in the future.
 pub const MAX_FUTURE_SKEW_S: u64 = 300;
+/// Shortest prefix a scoring category may carry: IPv4 /8, IPv6 /16. Real
+/// cloud data reaches /8 (AWS `3.0.0.0/8`) and IPv6 /20.
+pub const SCORING_FLOOR: Floor = Floor { v4: 8, v6: 16 };
+/// Most IPv4 addresses one scoring category may cover after merging: a
+/// quarter of the family. All datacenter sources together cover about 10%.
+pub const SCORING_MAX_V4: u64 = 1 << 30;
+/// Most IPv6 addresses one scoring category may cover after merging: the size
+/// of one /12 (1/512 of global unicast). Real data covers about 2^110.
+pub const SCORING_MAX_V6: u128 = 1 << 116;
 
 /// Static refusal codes; no file content is interpolated.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -44,6 +62,18 @@ pub enum SnapshotError {
     /// A timestamp is in the future beyond the tolerated skew, or a fetch is
     /// later than generation.
     Timestamp,
+    /// A scoring-category prefix is shorter than [`SCORING_FLOOR`].
+    TooBroad,
+    /// A scoring category covers more than [`SCORING_MAX_V4`] or
+    /// [`SCORING_MAX_V6`] addresses.
+    Coverage,
+    /// Sources are not sorted by name, or a source's prefixes are not
+    /// strictly ascending (sorted and unique).
+    Order,
+    /// A registry source carries a category other than its registered one.
+    Category,
+    /// A git origin's checkout record disagrees with its commit or status.
+    Checkout,
 }
 
 impl fmt::Display for SnapshotError {
@@ -58,6 +88,11 @@ impl fmt::Display for SnapshotError {
             Self::Status => "snapshot_status",
             Self::Commit => "snapshot_commit",
             Self::Timestamp => "snapshot_timestamp",
+            Self::TooBroad => "snapshot_prefix_too_broad",
+            Self::Coverage => "snapshot_coverage_cap",
+            Self::Order => "snapshot_order",
+            Self::Category => "snapshot_category",
+            Self::Checkout => "snapshot_checkout",
         })
     }
 }
@@ -81,7 +116,8 @@ pub struct Snapshot {
 pub struct SourceRecord {
     /// Registry name, `[a-z0-9-]{1,64}`.
     pub name: String,
-    /// Category the prefixes belong to.
+    /// Category the prefixes belong to. For a registry source it must equal
+    /// the registered category, so editing a file cannot promote a source.
     pub category: IntelCategory,
     /// Licence/terms note copied from the registry.
     pub licence: String,
@@ -107,6 +143,9 @@ pub enum Origin {
         path: String,
         /// Checked-out commit SHA, when initialized.
         commit: Option<String>,
+        /// Pin and cleanliness check of the checkout; present with `commit`.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        checkout: Option<Checkout>,
     },
     /// A public HTTP endpoint fetched by the operator updater.
     Http {
@@ -120,6 +159,26 @@ pub enum Origin {
         /// Unix seconds when the updater read the file.
         read_at: u64,
     },
+}
+
+/// How a submodule checkout compared with the parent repository's pin.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Checkout {
+    /// Commit the parent repository's gitlink pins; `None` when unreadable.
+    pub gitlink: Option<String>,
+    /// The checkout had no tracked or untracked changes.
+    pub clean: bool,
+    /// The operator explicitly accepted a checkout that is not pinned and
+    /// clean. False whenever the checkout matched its gitlink and was clean.
+    pub unpinned_override: bool,
+}
+
+impl Checkout {
+    /// Whether `commit` is exactly the pinned gitlink and the tree is clean.
+    pub fn pinned(&self, commit: &str) -> bool {
+        self.clean && self.gitlink.as_deref() == Some(commit)
+    }
 }
 
 /// Acquisition outcome of one source.
@@ -199,6 +258,26 @@ fn text(value: &str, required: bool) -> Result<(), SnapshotError> {
     Ok(())
 }
 
+/// Breadth guard for one category's prefixes, shared by the updater (per
+/// source, before writing) and [`validate`] (per category, on encode and on
+/// every runtime load). Shadow-only categories are not bounded here: they
+/// never reach scoring, and blocklists legitimately carry bogon ranges.
+pub fn check_breadth(category: IntelCategory, prefixes: &[Prefix]) -> Result<(), SnapshotError> {
+    if !category.feeds_scoring() {
+        return Ok(());
+    }
+    for prefix in prefixes {
+        SCORING_FLOOR
+            .check(prefix)
+            .map_err(|_| SnapshotError::TooBroad)?;
+    }
+    let (v4, v6) = PrefixSet::new(prefixes.iter().copied()).coverage();
+    if v4 > SCORING_MAX_V4 || v6 > SCORING_MAX_V6 {
+        return Err(SnapshotError::Coverage);
+    }
+    Ok(())
+}
+
 fn validate(snapshot: &Snapshot) -> Result<(), SnapshotError> {
     if snapshot.format != FORMAT {
         return Err(SnapshotError::Format);
@@ -214,6 +293,12 @@ fn validate(snapshot: &Snapshot) -> Result<(), SnapshotError> {
         if !valid_name(&source.name) || !names.insert(source.name.as_str()) {
             return Err(SnapshotError::SourceName);
         }
+        if source::find(&source.name).is_some_and(|spec| spec.category != source.category) {
+            return Err(SnapshotError::Category);
+        }
+        if !source.prefixes.windows(2).all(|pair| pair[0] < pair[1]) {
+            return Err(SnapshotError::Order);
+        }
         text(&source.licence, true)?;
         text(&source.detail, false)?;
         match (
@@ -226,12 +311,24 @@ fn validate(snapshot: &Snapshot) -> Result<(), SnapshotError> {
             _ => return Err(SnapshotError::Status),
         }
         match &source.origin {
-            Origin::Git { path, commit } => {
+            Origin::Git {
+                path,
+                commit,
+                checkout,
+            } => {
                 text(path, true)?;
                 match commit {
                     Some(commit) if valid_commit(commit) => {}
                     None if source.status == SourceStatus::Missing => {}
                     _ => return Err(SnapshotError::Commit),
+                }
+                match (commit, checkout) {
+                    (None, None) => {}
+                    (Some(commit), Some(checkout))
+                        if checkout.gitlink.as_deref().is_none_or(valid_commit)
+                            && (source.status != SourceStatus::Ok
+                                || checkout.pinned(commit) != checkout.unpinned_override) => {}
+                    _ => return Err(SnapshotError::Checkout),
                 }
             }
             Origin::Http { url, fetched_at } => {
@@ -246,6 +343,22 @@ fn validate(snapshot: &Snapshot) -> Result<(), SnapshotError> {
                 }
             }
         }
+    }
+    if !snapshot
+        .sources
+        .windows(2)
+        .all(|pair| pair[0].name < pair[1].name)
+    {
+        return Err(SnapshotError::Order);
+    }
+    for category in IntelCategory::ALL {
+        let prefixes: Vec<Prefix> = snapshot
+            .sources
+            .iter()
+            .filter(|s| s.category == category)
+            .flat_map(|s| s.prefixes.iter().copied())
+            .collect();
+        check_breadth(category, &prefixes)?;
     }
     Ok(())
 }

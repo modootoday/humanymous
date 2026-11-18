@@ -32,6 +32,7 @@ pub(super) fn ip_reputation(
     profile["ip_reputation"]["startup_datacenter_scoring_active"] =
         json!(status.datacenter_scoring_active);
     profile["ip_reputation"]["startup_reload_error"] = json!(status.last_reload_error);
+    profile["ip_reputation"]["startup_degraded_reasons"] = json!(status.degraded_reasons);
 }
 pub(super) fn profile(
     config: &Configuration,

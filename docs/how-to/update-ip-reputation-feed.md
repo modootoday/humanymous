@@ -47,6 +47,18 @@ If a submodule is not initialized, the updater still writes the snapshot. That
 source is listed as `missing` with the reason `submodule_not_initialized`, and
 the command exits non-zero.
 
+The updater checks each checkout against the commit the repository pins (its
+gitlink) and refuses a source as `invalid` when:
+
+- the checkout's HEAD is a different commit (`submodule_head_mismatch`);
+- the checkout has local changes (`submodule_dirty`);
+- the gitlink cannot be read, for example outside a git checkout
+  (`submodule_gitlink_unreadable`).
+
+`--allow-unpinned-checkout` accepts such a checkout anyway. The snapshot then
+records `unpinned_override: true` with the gitlink and clean state it found, so
+the override stays visible in `inspect` and in the gateway status.
+
 ## 3. Write a snapshot
 
 Run the updater from the repository root:
@@ -65,6 +77,15 @@ humanymous ip-intel update --output /var/lib/humanymous/ip-intel.json \
 - **Exit status.** The command writes nothing when no source succeeds. When
   some sources fail, it writes the snapshot, prints the report and exits
   non-zero.
+- **Over-broad data.** A datacenter source with a prefix shorter than IPv4 /8
+  or IPv6 /16, or covering more than a quarter of IPv4 (or more than one IPv6
+  /12), is refused as `invalid` (`snapshot_prefix_too_broad` or
+  `snapshot_coverage_cap`). The gateway applies the same check on every load,
+  so a hand-edited snapshot with `0.0.0.0/0` is refused there too and never
+  turns scoring on.
+- **File permissions.** The updater creates the snapshot with mode `0600`,
+  owned by the user that ran it. See step 4 when the gateway runs as a
+  different user.
 
 Check the result:
 
@@ -85,6 +106,18 @@ Add the object to the gateway configuration JSON:
 
 - **Edge.** Configure your edge to send PROXY protocol v2 to the gateway
   listener. Connections without a valid header are dropped.
+- **Header deadline.** `proxy_header_timeout_ms` (default 1000, allowed
+  10 to 30000) bounds how long the gateway waits for the header after a
+  connection opens. The request deadline `timeout_ms` still applies when it is
+  shorter. A shutdown request is honoured during the wait.
+- **Read access.** The gateway reads the snapshot as its own service user. If
+  the updater runs as another user, the default `0600` file is unreadable to
+  the gateway: it reports `snapshot_io` and classifies nothing. Either run the
+  updater as the gateway's user, or give the file a group the gateway is in
+  (`chgrp` and `chmod 0640`). The updater replaces the file by rename with a
+  new `0600` file, so reapply both after every run. Keep the file and its
+  directory unwritable by the gateway and by other users: whoever can write
+  the snapshot decides which clients get challenged.
 - **Freshness.** Optional fields: `max_age_s` (default 7 days, after which the
   snapshot is reported stale) and `expire_after_s` (default 30 days, after
   which it classifies nothing).
@@ -98,6 +131,11 @@ Add the object to the gateway configuration JSON:
   returns:
   - freshness and age;
   - per-source status;
+  - `degraded` and `degraded_reasons`: any datacenter source that is missing,
+    invalid, absent from the snapshot or fetched longer than `max_age_s` ago,
+    plus a stale, expired or missing snapshot and a refused reload. A failed
+    source's old ranges are never carried forward, so its coverage is simply
+    gone until the next successful update;
   - reload errors;
   - lookup counters;
   - shadow hit counts.

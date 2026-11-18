@@ -13,6 +13,8 @@ pub enum PrefixError {
     Syntax,
     /// Canonical form was required but host bits are set.
     HostBits,
+    /// Shorter than the caller's [`Floor`] for its family.
+    TooBroad,
 }
 
 impl fmt::Display for PrefixError {
@@ -20,6 +22,7 @@ impl fmt::Display for PrefixError {
         f.write_str(match self {
             Self::Syntax => "prefix syntax",
             Self::HostBits => "prefix host bits set",
+            Self::TooBroad => "prefix too broad",
         })
     }
 }
@@ -121,6 +124,32 @@ impl From<Prefix> for String {
     }
 }
 
+/// Shortest accepted prefix length per address family. The single breadth
+/// check of the network context: a caller states its floor, and a prefix
+/// shorter than it is refused as [`PrefixError::TooBroad`].
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Floor {
+    /// Minimum IPv4 prefix length.
+    pub v4: u8,
+    /// Minimum IPv6 prefix length.
+    pub v6: u8,
+}
+
+impl Floor {
+    /// Refuse `prefix` when it is shorter than this floor for its family.
+    pub fn check(&self, prefix: &Prefix) -> Result<(), PrefixError> {
+        let floor = if prefix.network.is_ipv4() {
+            self.v4
+        } else {
+            self.v6
+        };
+        if prefix.len < floor {
+            return Err(PrefixError::TooBroad);
+        }
+        Ok(())
+    }
+}
+
 fn split(text: &str) -> Result<(IpAddr, u8), PrefixError> {
     let (address, len) = match text.split_once('/') {
         Some((address, len)) => (address, Some(len)),
@@ -207,6 +236,21 @@ impl PrefixSet {
     /// Whether no address is covered.
     pub fn is_empty(&self) -> bool {
         self.v4.is_empty() && self.v6.is_empty()
+    }
+
+    /// Number of distinct addresses covered (IPv4, IPv6). Ranges are merged,
+    /// so overlap is counted once. The IPv6 total saturates at `u128::MAX`,
+    /// which only the whole family (`::/0`) reaches.
+    pub fn coverage(&self) -> (u64, u128) {
+        let v4 = self
+            .v4
+            .iter()
+            .map(|&(start, end)| u64::from(end - start) + 1)
+            .sum();
+        let v6 = self.v6.iter().fold(0u128, |total, &(start, end)| {
+            total.saturating_add((end - start).saturating_add(1))
+        });
+        (v4, v6)
     }
 }
 

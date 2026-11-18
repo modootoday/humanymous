@@ -2365,14 +2365,14 @@
     },
     {
       "source": "crates/cli/src/commands.rs",
-      "sha256": "637a0b5d19d21c3d48dbebff172c9359c7100c6fe1d34f44a4aa4687bbd3ea41",
+      "sha256": "73e7a55fcbd3d048753418bd756af403853ae8577244ba05f690dc9570431675",
       "reviewer": "codex/rust-pages",
       "pages": [
         "docs/reference/install-requirements.md",
         "docs/reference/cli-config-policy.md",
         "docs/how-to/update-ip-reputation-feed.md"
       ],
-      "notes": "Complete147-line strict service/runtime-host CLI composition. Unknown/duplicate options refused, activate and dry mutually exclusive; doctor read-only requires observed running/diagnostic report. Install/upgrade/rollback/remove delegate to ServicePlan; mutation authorization and filesystem/native guarantees require underlying code, not argument parsing. Success JSON keeps product_qualified false. Re-reviewed 2026-11-18: adds the feature-gated ip-intel command (update, sources, inspect) with strict argument parsing; a partial update prints its report and exits non-zero."
+      "notes": "Complete147-line strict service/runtime-host CLI composition. Unknown/duplicate options refused, activate and dry mutually exclusive; doctor read-only requires observed running/diagnostic report. Install/upgrade/rollback/remove delegate to ServicePlan; mutation authorization and filesystem/native guarantees require underlying code, not argument parsing. Success JSON keeps product_qualified false. Re-reviewed 2026-11-18: adds the feature-gated ip-intel command (update, sources, inspect) with strict argument parsing; a partial update prints its report and exits non-zero. Re-reviewed 2026-11-18 for PR #123 review fixes: ip-intel update gains the strict single-use --allow-unpinned-checkout flag (duplicate refused, default off) that sets UpdatePlan.allow_unpinned; the usage text names it. No other command changes."
     },
     {
       "source": "crates/cli/src/installation/mod.rs",
@@ -2412,18 +2412,18 @@
     },
     {
       "source": "crates/cli/src/ip_intel/mod.rs",
-      "sha256": "87b61d33d7c63f0d1fe139a694aebbbe841920cf9f182af07dd6dd0515a6d351",
+      "sha256": "1e66ea0ffd7ee0ef25230a864f0b18aa6061d3bb2c642e3bf4f562bdcbd9147b",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Operator IP reputation updater behind the ip-intel feature: reads pinned submodule checkouts (commit from git metadata, no git process), operator --input files and HTTPS sources (https only, 60 s timeout, per-source byte bound), normalizes through the runtime source registry, encodes the humanymous-ip-intel/1 snapshot and writes it atomically (create_new 0600 sibling, sync, rename). Refuses to write when no source succeeded; missing/uninitialized sources stay listed with a static reason.",
+      "notes": "Operator IP reputation updater behind the ip-intel feature: reads pinned submodule checkouts (commit from git metadata, no git process), operator --input files and HTTPS sources (https only, 60 s timeout, per-source byte bound), normalizes through the runtime source registry, encodes the humanymous-ip-intel/1 snapshot and writes it atomically (create_new 0600 sibling, sync, rename). Refuses to write when no source succeeded; missing/uninitialized sources stay listed with a static reason. Re-reviewed 2026-11-18 for PR #123 review fixes: each normalized source is passed through the runtime's shared snapshot::check_breadth, so an over-broad datacenter source (shorter than IPv4 /8 or IPv6 /16, or over the coverage cap) is refused as invalid with that static code instead of written as ok. Git sources compare the checkout HEAD with the parent repository's gitlink (git ls-tree -z HEAD -- path, mode 160000 only) and require git status --porcelain to be empty; mismatch, dirt or an unreadable gitlink refuse the source as invalid (submodule_head_mismatch, submodule_dirty, submodule_gitlink_unreadable) unless allow_unpinned, and the snapshot records the checkout {gitlink, clean, unpinned_override} either way. git runs with GIT_DIR/GIT_WORK_TREE/GIT_INDEX_FILE/GIT_OBJECT_DIRECTORY removed and stdin/stderr null.",
       "pages": [
         "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
       "source": "crates/cli/src/ip_intel/tests.rs",
-      "sha256": "e5d40304d4b0c26db7080760d928575c2bbd6416d76d886ed45da0e73212d546",
+      "sha256": "2c0c591bfa92ff83748fdff2f85c580285d1258379a000a63c56bb1805f0a43e",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Updater unit tests with an injected fake fetcher and temporary checkouts: git commit recorded, uninitialized submodule reported missing, offline mode never fetches, all-failed update writes nothing, written snapshot parses back. No network access.",
+      "notes": "Updater unit tests with an injected fake fetcher and temporary checkouts: git commit recorded, uninitialized submodule reported missing, offline mode never fetches, all-failed update writes nothing, written snapshot parses back. No network access. Re-reviewed 2026-11-18 for PR #123 review fixes: the git-source test now builds a real submodule repository pinned by a real mode 160000 gitlink; new tests cover a dirty checkout and a moved HEAD (refused, then accepted and recorded with the override), an unreadable gitlink, and over-broad input (0.0.0.0/0, ::/0, /7) refused on update both alone (nothing written) and next to another source (partial, invalid, no datacenter prefixes), with /8 and /16 accepted.",
       "pages": [
         "docs/how-to/update-ip-reputation-feed.md"
       ]
@@ -4463,9 +4463,9 @@
     },
     {
       "source": "crates/python-adapter/tests/component_controller.rs",
-      "sha256": "ce7ffb6cc96b76f1b3d80b2e1e3719a029336a61e0615fd7fe58eda9695573a6",
+      "sha256": "82a16e14edff30a6f4c2fca824339df1e0b382e63995150a59053a1dfb32bb0b",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Ignored hosted coordinator (unix, host-pilot feature) whose coordinate test first calls require_safe_lifecycle, then requires a non-root GITHUB_ACTIONS actor, a fresh 0700 bundle in RUNNER_TEMP and a target dir inside it. The controller records nine steps: checks git HEAD equals GITHUB_SHA, builds a venv with hash-pinned waitress plus Flask/Django, runs check, Clippy, pure wsgi_server tests (expects exactly 2 passed 6 ignored), builds the extension module and authority, copies the harness, validates discovery and the actual 8-test/14-row/28-case receipt, and compares before/after source, dependency and artifact manifests. Summaries keep wholeProductQualified false; existing code is not an executed success.",
+      "notes": "Ignored hosted coordinator (unix, host-pilot feature) whose coordinate test first calls require_safe_lifecycle, then requires a non-root GITHUB_ACTIONS actor, a fresh 0700 bundle in RUNNER_TEMP and a target dir inside it. The controller records nine steps: checks git HEAD equals GITHUB_SHA, builds a venv with hash-pinned waitress plus Flask/Django, runs check, Clippy, pure wsgi_server tests (expects exactly 2 passed 6 ignored), builds the extension module and authority, copies the harness, validates discovery and the actual 8-test/14-row/28-case receipt, and compares before/after source, dependency and artifact manifests. Summaries keep wholeProductQualified false; existing code is not an executed success. Re-reviewed 2026-11-18 for PR #123 review fixes: adds the non-ignored source_manifest_skips_gitlinks_by_mode test, which builds a temporary git repository, adds a mode 160000 gitlink with an empty directory (an uninitialized submodule) and asserts the source manifest is unchanged by it. The ignored coordinate and coordinate_cleanup controllers are unchanged.",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
@@ -4481,9 +4481,9 @@
     },
     {
       "source": "crates/python-adapter/tests/support/component_files.rs",
-      "sha256": "f9eafed042d88a1a3abf5c9705fad9eb4cb1f624408d987efbf94ecb75fac246",
+      "sha256": "4644233ce19ed5ad22e4cc1d39bd8c792e07b54e9612b14e0837ed4b88acf58e",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Immutable source, dependency and artifact closure helpers for the Python component harness: selects exactly one Cargo wsgi_server executable from JSON output, streams SHA-256 digests, builds sorted directory manifests (symlinks record target text plus file digest or a directory-link marker), hashes exactly three copied bundle files, and hashes all Git-tracked files after a bounded clean-status check. Untracked files are ignored and compiler/registry/environment closure is not captured, so this is not artifact provenance attestation.",
+      "notes": "Immutable source, dependency and artifact closure helpers for the Python component harness: selects exactly one Cargo wsgi_server executable from JSON output, streams SHA-256 digests, builds sorted directory manifests (symlinks record target text plus file digest or a directory-link marker), hashes exactly three copied bundle files, and hashes all Git-tracked files after a bounded clean-status check. Untracked files are ignored and compiler/registry/environment closure is not captured, so this is not artifact provenance attestation. Re-reviewed 2026-11-18 for PR #123 review fixes: source_manifest lists the index with git ls-files -z -s and skips entries by mode 160000 (gitlinks are submodule commit pointers, not files), instead of reading every path and failing on the third_party/ip-intel gitlinks; the inventory bound rises to 16 MiB for the longer staged lines. The clean-status precondition and row format are unchanged.",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
@@ -6743,9 +6743,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "ff082c7d9815b02452c7bd520e62738f6d13fb5d3758c6fbed33a5670bd49552",
+      "sha256": "abb35b34510c0a94ba6540de35082a81c771d28e22ca59e01eed323ebb492c39",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 431 / macos 431 / windows 419 (419 common names plus 12 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b (codex/rust plus PR heads #70 and #83): the name lists are the union of all parents' already-reviewed additions, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 431 listed common plus Unix-only names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect. Re-reviewed 2026-11-18: four gateway IP reputation tests added to the common set (linux 435, macos 435, windows 423), equal to the --list output.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 431 / macos 431 / windows 419 (419 common names plus 12 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b (codex/rust plus PR heads #70 and #83): the name lists are the union of all parents' already-reviewed additions, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 431 listed common plus Unix-only names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect. Re-reviewed 2026-11-18: four gateway IP reputation tests added to the common set (linux 435, macos 435, windows 423), equal to the --list output. Re-reviewed 2026-11-18 for PR #123 review fixes: five more gateway IP reputation tests added to the common set (linux 440, macos 440, windows 428: 428 common plus 12 Unix-only names); on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list gateway:: inventory equals the 440 listed names. macOS and Windows inventories were not run.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/how-this-was-built.md",
@@ -8005,9 +8005,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/application.rs",
-      "sha256": "5cf86fcbdac2c9502f14d6d73648b7adf1e1f75026c90b99fd9b5627ac1aa8c0",
+      "sha256": "e126bbdd2ab60c5f6516e49814050872dfa298b766b7e12c9a60c8b53e8e2c64",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Single-owner gateway Application that composes sessions, the frozen scoring engine and durable audit. It enforces Host==scope authority and validates browser/native session bootstrap and collect routes, rejecting reserved routes (403), route-inventory or profile mismatch (409), missing required raw_tls/original_h2/collector evidence (422) and failed admission (429); it scores other requests and appends a runtime.decision/collect audit record (request commitment hash, fail_closed) before answering, and audit failure poisons sessions with 503. Re-reviewed 2026-11-18: an origin_* refusal after the committed ALLOW and before any client byte now appends one upstream.error record linked by the ALLOW record's request id and commitment, with route class, revision, latency, a static error class and code but no transport error text; the client still gets the 503 refusal, and a failed append poisons the epoch and answers durable_audit. serve/serve_until are loopback-only, one request per connection with per-connection deadlines, bounded shutdown drain and settings-command handling; the code says this is an experimental loopback pilot, not a production throughput claim. Re-reviewed 2026-11-18: optional IntelReader install; when ip_reputation is configured each loopback connection must start with a PROXY v2 header (dropped otherwise) and the recovered client address sets only the frozen is_datacenter_ip observation input. Tor and blocklist never reach the observation.",
+      "notes": "Single-owner gateway Application that composes sessions, the frozen scoring engine and durable audit. It enforces Host==scope authority and validates browser/native session bootstrap and collect routes, rejecting reserved routes (403), route-inventory or profile mismatch (409), missing required raw_tls/original_h2/collector evidence (422) and failed admission (429); it scores other requests and appends a runtime.decision/collect audit record (request commitment hash, fail_closed) before answering, and audit failure poisons sessions with 503. Re-reviewed 2026-11-18: an origin_* refusal after the committed ALLOW and before any client byte now appends one upstream.error record linked by the ALLOW record's request id and commitment, with route class, revision, latency, a static error class and code but no transport error text; the client still gets the 503 refusal, and a failed append poisons the epoch and answers durable_audit. serve/serve_until are loopback-only, one request per connection with per-connection deadlines, bounded shutdown drain and settings-command handling; the code says this is an experimental loopback pilot, not a production throughput claim. Re-reviewed 2026-11-18: optional IntelReader install; when ip_reputation is configured each loopback connection must start with a PROXY v2 header (dropped otherwise) and the recovered client address sets only the frozen is_datacenter_ip observation input. Tor and blocklist never reach the observation. Re-reviewed 2026-11-18 for PR #123 review fixes: the PROXY v2 header wait is raced against shutdown (a requested shutdown ends it with no request read, so nothing to drain) and ends at the earlier of the request deadline and the configured proxy_header_timeout_ms (default 1000 ms), so a silent loopback peer can no longer hold the serialized accept loop for the full request deadline. Malformed, truncated or late headers still drop only that connection; LOCAL/UNSPEC stay unattributed.",
       "pages": [
         "docs/reference/gate-origin-contract.md",
         "docs/reference/production-vs-reference.md",
@@ -8097,9 +8097,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/application/tls.rs",
-      "sha256": "ba09f86b6fa7985f238e7999d01310205f502b80789cc13606d28c831da973fa",
+      "sha256": "c51149e9facb7745bfae87f68d7fc604077a3ad93508a7d34d03c6c162e0758a",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Bounded TLS consumers for the Application: serve_tls_until validates the rustls config, accepts loopback peers only with admission and settings handling, and dispatches captured H1 or R14 H2 requests through the same decide_observed authority. It checks client idle or stream liveness before and after the decision and before origin dispatch, then encodes local or origin responses with ACK headers. Re-reviewed 2026-11-18: origin connect, write, read, frame-parse and timeout refusals now go through the Application's upstream.error audit before the refusal is encoded, since no TLS response byte precedes it. The doc comments state there is no plaintext fallback, no early data and no native streaming inference. Re-reviewed 2026-11-18: the same PROXY v2 client-address recovery runs before TLS capture when ip_reputation is configured.",
+      "notes": "Bounded TLS consumers for the Application: serve_tls_until validates the rustls config, accepts loopback peers only with admission and settings handling, and dispatches captured H1 or R14 H2 requests through the same decide_observed authority. It checks client idle or stream liveness before and after the decision and before origin dispatch, then encodes local or origin responses with ACK headers. Re-reviewed 2026-11-18: origin connect, write, read, frame-parse and timeout refusals now go through the Application's upstream.error audit before the refusal is encoded, since no TLS response byte precedes it. The doc comments state there is no plaintext fallback, no early data and no native streaming inference. Re-reviewed 2026-11-18: the same PROXY v2 client-address recovery runs before TLS capture when ip_reputation is configured. Re-reviewed 2026-11-18 for PR #123 review fixes: the TLS accept loop uses the same shutdown-aware, header-deadline-bounded edge wait as plaintext serving before any TLS bytes are read.",
       "pages": [
         "docs/how-to/https-tls-certificates.md",
         "docs/reference/gate-origin-contract.md",
@@ -8178,9 +8178,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/configuration/ip_reputation.rs",
-      "sha256": "de990d8755482e906d2287c4691289d6490bc36fe8e29c33803a5cd61d72823c",
+      "sha256": "26d03f9fd21aed7eef88370d8a9464c71b70db722f17efd3f34778d679cdc1a0",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Optional ip_reputation gateway configuration (snapshot path, client_address proxy_v2, max_age_s default 7 days, expire_after_s default 30 days, categories) with deny_unknown_fields and bounded validation; maps to the store policy and a readiness summary that separates scoring (datacenter only) from shadow categories.",
+      "notes": "Optional ip_reputation gateway configuration (snapshot path, client_address proxy_v2, max_age_s default 7 days, expire_after_s default 30 days, categories) with deny_unknown_fields and bounded validation; maps to the store policy and a readiness summary that separates scoring (datacenter only) from shadow categories. Re-reviewed 2026-11-18 for PR #123 review fixes: adds proxy_header_timeout_ms (default DEFAULT_PROXY_HEADER_TIMEOUT_MS = 1000, bounds 10..=30000, refused otherwise) and reports it in readiness; tests cover the default and both bounds.",
       "pages": [
         "docs/how-to/update-ip-reputation-feed.md"
       ]
@@ -8728,9 +8728,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/service/readiness.rs",
-      "sha256": "b74df816036273739fc29703db822a76b8f7a9e012fa3e253986518ca6c5c27e",
+      "sha256": "9f956ba5f4e333a3690f3e71b2f7eb77aa959d4774514dbc0c32705b4e9363b7",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Builds the readiness profile manifest: standalone_profile for the inherited-pipe executable and profile() adding external-witness flags (independence always false), startup recovery, administration flags and operational revision; tls_h1 marks the experimental-loopback-tls-h1 profile with raw_tls and per-route ready only when original H2 and collector are not required. One test asserts honest defaults and product_qualified false. Expected configuration, not runtime attestation. Re-reviewed 2026-11-18: startup readiness records the IP reputation state, whether datacenter scoring is active and the last reload error.",
+      "notes": "Builds the readiness profile manifest: standalone_profile for the inherited-pipe executable and profile() adding external-witness flags (independence always false), startup recovery, administration flags and operational revision; tls_h1 marks the experimental-loopback-tls-h1 profile with raw_tls and per-route ready only when original H2 and collector are not required. One test asserts honest defaults and product_qualified false. Expected configuration, not runtime attestation. Re-reviewed 2026-11-18: startup readiness records the IP reputation state, whether datacenter scoring is active and the last reload error. Re-reviewed 2026-11-18 for PR #123 review fixes: the startup ip_reputation readiness block also carries startup_degraded_reasons from the store status.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md",
@@ -8958,9 +8958,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/tests/ip_reputation.rs",
-      "sha256": "40686f5ec489ae1424c46563d386b7b22004a9d0791af1176137d572ca819538",
+      "sha256": "bc6073df66ccf8193ac753fdf9be0856b6ce9a55862c35123dc69450b13e65a9",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway tests: a datacenter classification yields CHALLENGE with triggered rule HR-11 while tor-exit and blocklist classifications leave the verdict unchanged; configuration is optional and reported in readiness; a PROXY v2 header source reaches the reader and a connection without the header is dropped.",
+      "notes": "Gateway tests: a datacenter classification yields CHALLENGE with triggered rule HR-11 while tor-exit and blocklist classifications leave the verdict unchanged; configuration is optional and reported in readiness; a PROXY v2 header source reaches the reader and a connection without the header is dropped. Re-reviewed 2026-11-18 for PR #123 review fixes: adds real-TCP tests for wrong signature, wrong version, short address block and truncated fixed/address parts (each dropped, nothing classified, listener keeps serving), LOCAL and UNSPEC (reader gets None) and an IPv6 source, a short header deadline that releases the accept loop from a silent peer, shutdown observed during a 30 s header wait, and an IntelStore loaded from an encoded snapshot file wired into the gateway end to end (non-datacenter client reaches the origin, the same session from 192.0.2.44 gets the frozen HR-11 CHALLENGE, datacenter_inputs 1).",
       "pages": [
         "docs/how-to/update-ip-reputation-feed.md"
       ]
@@ -9555,18 +9555,18 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/network/intel/prefix_set/mod.rs",
-      "sha256": "35c45170152e58d3be5e344b0b0a16106965626c7374ce0df770cd740c572380",
+      "sha256": "90b95466dbb2ec5b815415d463a2dc8ec8dbe714b19a992b611f62373f42b13e",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Pure IPv4/IPv6 prefix parser and set: canonical and masked parsing, host-bit refusal, merged inclusive ranges with binary-search lookup, IPv4-mapped IPv6 looked up as IPv4. Shared by the PROXY v2 allowlist.",
+      "notes": "Pure IPv4/IPv6 prefix parser and set: canonical and masked parsing, host-bit refusal, merged inclusive ranges with binary-search lookup, IPv4-mapped IPv6 looked up as IPv4. Shared by the PROXY v2 allowlist. Re-reviewed 2026-11-18 for PR #123 review fixes: adds PrefixError::TooBroad, the per-family Floor breadth check (also used by the PROXY v2 allowlist) and PrefixSet::coverage, the merged address count per family (IPv6 saturating).",
       "pages": [
         "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/network/intel/prefix_set/tests.rs",
-      "sha256": "f21b45c534f7e3fb19609e9b5c7f3279478fa09697015502d2020963d29c2857",
+      "sha256": "c4f336f79421166bd8e1c17c98a79fbe8b2055ebfda95a3fc209bd3737026a57",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Prefix-set tests covering v4 and v6 boundaries (/0, /32, /128, first and last addresses, adjacency merging), host-bit and syntax refusal, and mapped-address lookup.",
+      "notes": "Prefix-set tests covering v4 and v6 boundaries (/0, /32, /128, first and last addresses, adjacency merging), host-bit and syntax refusal, and mapped-address lookup. Re-reviewed 2026-11-18 for PR #123 review fixes: adds floor (refuses /0, /7, ::/0, /15; accepts /8, /16, hosts) and coverage (overlap counted once, /0 and ::/0 extremes) tests.",
       "pages": [
         "docs/how-to/update-ip-reputation-feed.md"
       ]
@@ -9591,18 +9591,18 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/network/intel/snapshot/mod.rs",
-      "sha256": "459110932c26454e1e6130b3e47306f66f3b6704b8a83c0e63bcbb15533a57db",
+      "sha256": "1783d47a3fe3f7e05ca1e87fbd4e334c95dadb3d26bde24a99a471537e6baead",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Versioned snapshot format humanymous-ip-intel/1: per-source provenance (git commit, http url and fetched_at, file read_at), status and canonical prefixes; parse and encode share one validation with size, count, text, commit and timestamp bounds and static refusal codes.",
+      "notes": "Versioned snapshot format humanymous-ip-intel/1: per-source provenance (git commit, http url and fetched_at, file read_at), status and canonical prefixes; parse and encode share one validation with size, count, text, commit and timestamp bounds and static refusal codes. Re-reviewed 2026-11-18 for PR #123 review fixes: the shared validator (encode and every runtime parse) now enforces the SoT: sources strictly sorted by name, prefixes strictly ascending (sorted, unique; canonical via parse), a registry source's category equal to the registered one (no promotion by edit), the git checkout record ({gitlink, clean, unpinned_override}, present exactly with commit; an ok source must be pinned or record the override), and check_breadth for scoring categories: no prefix shorter than IPv4 /8 or IPv6 /16 and at most 2^30 IPv4 / 2^116 IPv6 merged addresses per category across sources. New static codes snapshot_prefix_too_broad, snapshot_coverage_cap, snapshot_order, snapshot_category, snapshot_checkout. Shadow-only categories are not breadth-bounded.",
       "pages": [
         "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/network/intel/snapshot/tests.rs",
-      "sha256": "514b43be5ea2063ed37dff15f3cf4426afcd4104e5ce33bc2508c4382c54d717",
+      "sha256": "3694b4d3db7c0a960b2e6eebc524c702e09027f2138e682808554e9d8e7d61c7",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Snapshot tests: round trip, unknown fields, format, bounds, duplicate names, status/prefix agreement, commit and future-timestamp refusal.",
+      "notes": "Snapshot tests: round trip, unknown fields, format, bounds, duplicate names, status/prefix agreement, commit and future-timestamp refusal. Re-reviewed 2026-11-18 for PR #123 review fixes: adds refusal cases for /0, ::/0 and /7 datacenter prefixes, unsorted and duplicate prefixes, unsorted sources, a Tor source relabelled datacenter, and inconsistent checkout records; accepts an explicit override and the floor itself; enforces the coverage cap at 64 versus 65 /8s and 16 versus 17 IPv6 /16s, including across two sources.",
       "pages": [
         "docs/how-to/update-ip-reputation-feed.md"
       ]
@@ -9762,18 +9762,18 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/network/intel/store/mod.rs",
-      "sha256": "a53c0f1ed38a3f929e511a9e682d00ef18438e5fb9696ddd282e0e6cad1c6be1",
+      "sha256": "ca138d77f2b54b20f15b667c644e89ca605c9a6a885e18b1550593d4dc0d38a4",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Snapshot store I/O boundary: bounded file load, RwLock Arc swap that keeps the previous snapshot on a refused reload, freshness (missing, fresh, stale, expired) from an injected clock, change-detected reload, and an operator status with sources, reload errors, lookup counters and shadow hits but no client addresses.",
+      "notes": "Snapshot store I/O boundary: bounded file load, RwLock Arc swap that keeps the previous snapshot on a refused reload, freshness (missing, fresh, stale, expired) from an injected clock, change-detected reload, and an operator status with sources, reload errors, lookup counters and shadow hits but no client addresses. Re-reviewed 2026-11-18 for PR #123 review fixes: the status adds degraded and degraded_reasons (snapshot_missing|stale|expired, reload_refused, and per registry or snapshot scoring source source_absent/missing/invalid/stale:<name>, stale meaning an HTTP fetch or file read older than max_age_s); only enabled scoring categories count. Old data is not carried forward for a failed source.",
       "pages": [
         "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/network/intel/store/tests.rs",
-      "sha256": "818252092a53ed2d60bb20a3aaea4f0dcf2000ee23b3d9130f409f39d9f67434",
+      "sha256": "92b31ba0796517667abd8007979f781777391410cb6ac234b1db0846147c3fe6",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Store tests: classification per category, missing feed visible and denies nobody, stale still classifies and expires, malformed reloads refused without state change, change-only swap, disabled categories not loaded.",
+      "notes": "Store tests: classification per category, missing feed visible and denies nobody, stale still classifies and expires, malformed reloads refused without state change, change-only swap, disabled categories not loaded. Re-reviewed 2026-11-18 for PR #123 review fixes: adds an unchecked hand-written 0.0.0.0/0 or ::/0 snapshot refused on first load (missing, scoring inactive, last_reload_error snapshot_prefix_too_broad, degraded) and on reload (previous snapshot kept), and degraded reasons for missing, invalid, stale and absent datacenter sources, a stale snapshot and a shadow-only configuration.",
       "pages": [
         "docs/how-to/update-ip-reputation-feed.md"
       ]
@@ -9799,9 +9799,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/network/proxy/mod.rs",
-      "sha256": "96ce8d850dfb0632cd784eea815226f34dcf8c3b69aba88bd002f8bffe06b6b6",
+      "sha256": "838ca4388ad97f081edad0898de6391647734dc51e08e5db1de780f4936c3a1e",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "PROXY protocol v2 peer recovery behind a trusted-balancer allowlist (shipping-plan row B26): Cidr parses canonical prefixes and refuses anything broader than /8, Allowlist must be 1..256 entries, read_header reads exactly one v2 header (LOCAL keeps the socket peer, TCP4/TCP6 yield the declared source, other families are Unspecified) and leaves following bytes on the stream, and resolve never reads bytes from an untrusted peer. It does not create TLS or original-client provenance and ignores HTTP forwarding headers. Reader page coverage is indirect. Re-reviewed 2026-11-18: Cidr now wraps the shared intel Prefix parser instead of a local mask; refusal codes, the /8 breadth floor and containment behaviour are unchanged.",
+      "notes": "PROXY protocol v2 peer recovery behind a trusted-balancer allowlist (shipping-plan row B26): Cidr parses canonical prefixes and refuses anything broader than /8, Allowlist must be 1..256 entries, read_header reads exactly one v2 header (LOCAL keeps the socket peer, TCP4/TCP6 yield the declared source, other families are Unspecified) and leaves following bytes on the stream, and resolve never reads bytes from an untrusted peer. It does not create TLS or original-client provenance and ignores HTTP forwarding headers. Reader page coverage is indirect. Re-reviewed 2026-11-18: Cidr now wraps the shared intel Prefix parser instead of a local mask; refusal codes, the /8 breadth floor and containment behaviour are unchanged. Re-reviewed 2026-11-18 for PR #123 review fixes: the allowlist breadth limit now goes through the shared prefix_set::Floor with MIN_PREFIX for both families; behaviour and the TooBroad refusal are unchanged.",
       "pages": [
         "docs/reference/supported-topologies.md",
         "docs/concepts/how-gate-sees-a-request.md",

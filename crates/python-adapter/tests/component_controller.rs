@@ -385,3 +385,53 @@ fn coordinate_cleanup() {
         cleanup(&bundle).expect("owned process cleanup must complete");
     }
 }
+
+#[test]
+fn source_manifest_skips_gitlinks_by_mode() -> Result<()> {
+    let root = std::env::temp_dir().join(format!(
+        "humanymous-python-source-manifest-{}",
+        std::process::id()
+    ));
+    let _ = fs::remove_dir_all(&root);
+    fs::create_dir_all(root.join("third_party/pinned")).map_err(|e| e.to_string())?;
+    fs::write(root.join("tracked.txt"), b"tracked\n").map_err(|e| e.to_string())?;
+    let git = |args: &[&str]| -> Result<()> {
+        let status = Command::new("git")
+            .args([
+                "-c",
+                "user.name=manifest-test",
+                "-c",
+                "user.email=manifest-test@example.invalid",
+                "-c",
+                "commit.gpgsign=false",
+            ])
+            .args(args)
+            .current_dir(&root)
+            .env_remove("GIT_DIR")
+            .env_remove("GIT_WORK_TREE")
+            .env_remove("GIT_INDEX_FILE")
+            .status()
+            .map_err(|e| e.to_string())?;
+        status
+            .success()
+            .then_some(())
+            .ok_or(format!("git {args:?}"))
+    };
+    git(&["init", "-q"])?;
+    git(&["add", "tracked.txt"])?;
+    git(&["commit", "-q", "-m", "file"])?;
+    let without = source_manifest(&root)?;
+    // An uninitialized submodule: the gitlink is tracked, its directory is
+    // empty. Reading it as a file would fail; it is skipped by its mode.
+    git(&[
+        "update-index",
+        "--add",
+        "--cacheinfo",
+        "160000,c60005a45e8b93dbdaa5d5d750de81a76a9d6a0f,third_party/pinned",
+    ])?;
+    git(&["commit", "-q", "-m", "gitlink"])?;
+    let with = source_manifest(&root);
+    let _ = fs::remove_dir_all(&root);
+    assert_eq!(with?, without);
+    Ok(())
+}

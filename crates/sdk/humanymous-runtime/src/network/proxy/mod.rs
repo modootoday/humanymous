@@ -6,7 +6,7 @@
 //! client provenance (network-capture N01) and never reads HTTP forwarding fields.
 //! An untrusted peer's bytes are not inspected at all, so a spoofed header stays
 //! ordinary payload for the next layer.
-use crate::network::intel::prefix_set::Prefix;
+use crate::network::intel::prefix_set::{Floor, Prefix};
 use std::io::Read;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
 
@@ -45,9 +45,12 @@ impl Cidr {
     /// Parse `a.b.c.d/n`, `v6/n` or a bare address (host route).
     pub fn parse(text: &str) -> Result<Self, Refusal> {
         let prefix = Prefix::parse_masked(text).map_err(|_| Refusal::Cidr)?;
-        if prefix.len() < MIN_PREFIX {
-            return Err(Refusal::TooBroad);
+        Floor {
+            v4: MIN_PREFIX,
+            v6: MIN_PREFIX,
         }
+        .check(&prefix)
+        .map_err(|_| Refusal::TooBroad)?;
         Ok(Self(prefix))
     }
 

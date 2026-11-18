@@ -3,7 +3,7 @@ id: sot:root/ip-reputation
 title: Operator IP reputation feed
 status: draft
 created: 2026-11-18T13:30:00Z
-updated: 2026-11-18T13:30:00Z
+updated: 2026-11-18T20:00:00Z
 verify: cargo test --locked -p humanymous-runtime --all-features network::intel && cargo test --locked -p humanymous-runtime --all-features --test network_ip_intel && cargo test --locked -p humanymous-cli --features ip-intel ip_intel
 rel:
   governs: [crates/sdk/humanymous-runtime/src/network/intel/**, crates/sdk/humanymous-runtime/src/gateway/configuration/ip_reputation.rs, crates/sdk/humanymous-runtime/tests/network/ip_intel.rs, crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/**, crates/cli/src/ip_intel/**, third_party/ip-intel/**]
@@ -12,7 +12,7 @@ rel:
 
 # Operator IP reputation feed
 
-Document version 0.1.0.
+Document version 0.2.0.
 
 ## Decision
 
@@ -63,7 +63,15 @@ Two acquisition paths exist.
   - Updating data means a reviewed PR that moves the gitlink. That PR's diff
     shows the old and new SHA.
   - The updater reads the checkout. It records the checked-out commit in the
-    snapshot.
+    snapshot, with a `checkout` record: the parent repository's gitlink
+    (`git ls-tree HEAD <path>`), whether the tree is clean, and whether the
+    operator overrode a mismatch.
+  - A checkout whose HEAD differs from the gitlink, that has local changes, or
+    whose gitlink cannot be read is refused as `invalid`
+    (`submodule_head_mismatch`, `submodule_dirty`,
+    `submodule_gitlink_unreadable`) unless the operator passes
+    `--allow-unpinned-checkout`; the snapshot then records
+    `unpinned_override: true`.
   - No list data is copied into this repository.
 - **Operator fetch.** The source is only an HTTP endpoint.
   - The updater fetches it at update time over HTTPS.
@@ -119,18 +127,44 @@ The updater writes one UTF-8 JSON document, `humanymous-ip-intel/1`:
   - `name`: `[a-z0-9-]{1,64}`, unique;
   - `category`;
   - `licence`;
-  - `origin`: one of `{git:{path, commit}}`, `{http:{url, fetched_at}}` or
-    `{file:{read_at}}`;
+  - `origin`: one of `{git:{path, commit, checkout}}`,
+    `{http:{url, fetched_at}}` or `{file:{read_at}}`. `checkout` is
+    `{gitlink, clean, unpinned_override}` and is present exactly when
+    `commit` is;
   - `status`: `ok`, `missing` or `invalid`;
   - `detail`: a static reason, present unless `ok`;
   - `prefixes[]`: canonical, sorted CIDRs.
 
 Validation rules:
 
+- Sources are strictly sorted by name. Each source's prefixes are canonical
+  (no host bits), strictly ascending and therefore unique.
+- A source whose name is in the registry must carry the registered category.
+  Editing a file cannot promote `tor-bulk-exit` to `datacenter`.
 - An `ok` source needs prefixes. `missing` and `invalid` sources have none.
-- A git source with `ok` status needs a 40- or 64-hex commit.
+- A git source with `ok` status needs a 40- or 64-hex commit. Its `checkout`
+  must either match (gitlink equals commit, tree clean, no override) or record
+  `unpinned_override: true`.
 - `generated_at` may be at most 300 s in the future.
 - `fetched_at` and `read_at` may not be later than `generated_at`.
+
+Breadth guard for scoring categories (`datacenter`), checked per source by
+the updater and per category (union of all sources) on encode and on every
+runtime load:
+
+- no prefix shorter than IPv4 /8 or IPv6 /16 (`snapshot_prefix_too_broad`);
+- at most 2^30 IPv4 addresses (a quarter of the family) and 2^116 IPv6
+  addresses (one /12) after merging (`snapshot_coverage_cap`).
+
+Real data on 2026-11-18: the shortest datacenter prefixes are AWS
+`3.0.0.0/8` and an IPv6 /20; all datacenter sources together cover about 10%
+of IPv4 and about 2^110 IPv6 addresses. Shadow-only categories are not bounded
+by breadth: they never reach scoring, and FireHOL level1 legitimately carries
+bogon blocks such as `224.0.0.0/3`.
+
+A refused snapshot never activates scoring: on first load the store stays
+`missing`, on reload it keeps the previous snapshot, and either way the status
+reports the code in `last_reload_error`.
 
 Bounds:
 
@@ -164,7 +198,8 @@ optional `ip_reputation` object:
 - `client_address`: `proxy_v2`;
 - `max_age_s`: default 7 days;
 - `expire_after_s`: default 30 days;
-- `categories`: default all.
+- `categories`: default all;
+- `proxy_header_timeout_ms`: default 1000.
 
 When the object is absent, behaviour is unchanged.
 
@@ -177,6 +212,10 @@ header on every accepted connection. The runtime reuses the existing
 
 - A connection without a valid header is dropped. A misconfigured edge fails
   closed and is not classified.
+- The header wait ends at the earlier of the request deadline and
+  `proxy_header_timeout_ms` (default 1000 ms, bounds 10..=30000), and a
+  shutdown request ends it at once, so a silent peer cannot hold the
+  serialized accept loop or delay shutdown.
 - LOCAL or UNSPEC headers mean the request is unattributed.
 - HTTP forwarding headers are never trusted. Native request integrity signs
   every header, and a client controls any header the edge forgets to strip.
@@ -198,6 +237,13 @@ Further rules:
 
 - A refused reload keeps the previous snapshot. The status reports
   `last_reload_error`, `reloads_failed` and the snapshot SHA-256.
+- The status reports `degraded` and `degraded_reasons` whenever scoring
+  coverage is incomplete: `snapshot_missing|stale|expired`, `reload_refused`,
+  and per registry or snapshot datacenter source `source_absent:<name>`,
+  `source_missing:<name>`, `source_invalid:<name>` or `source_stale:<name>`
+  (HTTP fetch or file read older than `max_age_s`). Old data for a failed
+  source is never carried forward; its coverage is absent and named here.
+  Readiness repeats the startup reasons as `startup_degraded_reasons`.
 - A missing or refused feed never denies all traffic.
 - It is also never reported as clean: `datacenter_scoring_active` is false, and
   `missing` or `invalid` sources stay listed with their reason.
@@ -223,11 +269,13 @@ humanymous ip-intel update|sources|inspect
 It is behind the `ip-intel` Cargo feature, so the default offline provisioning
 binary has no HTTP client. `update` only wires these steps:
 
-1. Read submodule checkouts. The commit comes from the checkout's git metadata;
-   no git process is spawned.
+1. Read submodule checkouts. The commit comes from the checkout's git metadata.
+   The pin check runs `git ls-tree HEAD -- <path>` in the repository and
+   `git status --porcelain` in the checkout.
 2. Read operator files (`--input NAME=PATH`).
 3. Fetch HTTPS bodies, with a 60 s timeout and the per-source byte bound.
-4. Call `source::normalize`, then `snapshot::encode`.
+4. Call `source::normalize` and `snapshot::check_breadth` per source, then
+   `snapshot::encode`.
 5. Write a private sibling file with `create_new`, sync it and rename it over
    the output.
 

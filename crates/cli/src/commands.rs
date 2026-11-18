@@ -60,7 +60,7 @@ pub(super) fn ip_intel(arguments: Vec<String>) -> Result<()> {
             }
             Ok(())
         }
-        _ => Err("usage: humanymous ip-intel update --output PATH [--repository DIR] [--source NAME]... [--input NAME=PATH]... [--url NAME=URL]... [--offline] | sources | inspect PATH".into()),
+        _ => Err("usage: humanymous ip-intel update --output PATH [--repository DIR] [--source NAME]... [--input NAME=PATH]... [--url NAME=URL]... [--offline] [--allow-unpinned-checkout] | sources | inspect PATH".into()),
     }
 }
 
@@ -72,7 +72,7 @@ fn update_plan(
         repository: ".".into(),
         ..Default::default()
     };
-    let (mut output, mut repository, mut offline) = (None, None, false);
+    let (mut output, mut repository, mut offline, mut unpinned) = (None, None, false, false);
     while let Some(flag) = arguments.next() {
         let mut value = || {
             arguments
@@ -84,6 +84,7 @@ fn update_plan(
             "--output" if output.is_none() => output = Some(value()?),
             "--repository" if repository.is_none() => repository = Some(value()?),
             "--offline" if !offline => offline = true,
+            "--allow-unpinned-checkout" if !unpinned => unpinned = true,
             "--source" => plan.sources.push(value()?),
             "--input" | "--url" => {
                 let pair = value()?;
@@ -105,6 +106,7 @@ fn update_plan(
         plan.repository = repository.into();
     }
     plan.offline = offline;
+    plan.allow_unpinned = unpinned;
     Ok(plan)
 }
 
@@ -238,11 +240,13 @@ mod tests {
             "--url",
             "azure-service-tags=https://example.test/a.json",
             "--offline",
+            "--allow-unpinned-checkout",
         ])
         .unwrap();
         assert_eq!(plan.output, std::path::PathBuf::from("o.json"));
         assert_eq!(plan.repository, std::path::PathBuf::from("."));
-        assert!(plan.offline && plan.sources == ["aws-ip-ranges"]);
+        assert!(plan.offline && plan.allow_unpinned && plan.sources == ["aws-ip-ranges"]);
+        assert!(!parse(&["--output", "o.json"]).unwrap().allow_unpinned);
         for bad in [
             &[][..],
             &["--output"],
@@ -252,6 +256,12 @@ mod tests {
             &["--output", "a", "--url", "x=1", "--url", "x=2"],
             &["--output", "a", "--unknown"],
             &["--output", "a", "--offline", "--offline"],
+            &[
+                "--output",
+                "a",
+                "--allow-unpinned-checkout",
+                "--allow-unpinned-checkout",
+            ],
         ] {
             assert!(parse(bad).is_err(), "{bad:?}");
         }

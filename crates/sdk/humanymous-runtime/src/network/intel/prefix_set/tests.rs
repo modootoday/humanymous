@@ -97,3 +97,36 @@ fn canonical_parse_refuses_host_bits_and_bad_syntax() {
     assert_eq!((host.len(), host.is_empty()), (128, false));
     assert!(Prefix::parse_canonical("0.0.0.0/0").unwrap().is_empty());
 }
+
+#[test]
+fn floor_refuses_shorter_prefixes_per_family() {
+    let floor = Floor { v4: 8, v6: 16 };
+    for broad in ["0.0.0.0/0", "0.0.0.0/7", "::/0", "2000::/3", "2000::/15"] {
+        assert_eq!(
+            floor.check(&Prefix::parse_canonical(broad).unwrap()),
+            Err(PrefixError::TooBroad),
+            "{broad}"
+        );
+    }
+    for narrow in ["3.0.0.0/8", "192.0.2.7", "2001::/16", "2001:db8::/32"] {
+        assert_eq!(
+            floor.check(&Prefix::parse_canonical(narrow).unwrap()),
+            Ok(()),
+            "{narrow}"
+        );
+    }
+}
+
+#[test]
+fn coverage_counts_merged_addresses_once_and_saturates() {
+    let s = set(&[
+        "192.0.2.0/24",
+        "192.0.2.128/25",
+        "198.51.100.7",
+        "2001:db8::/64",
+    ]);
+    assert_eq!(s.coverage(), (257, 1 << 64));
+    assert_eq!(set(&["0.0.0.0/0"]).coverage(), (1 << 32, 0));
+    assert_eq!(set(&["::/0"]).coverage(), (0, u128::MAX));
+    assert_eq!(PrefixSet::new([]).coverage(), (0, 0));
+}

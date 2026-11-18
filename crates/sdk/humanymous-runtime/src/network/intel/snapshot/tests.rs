@@ -34,6 +34,11 @@ fn sample() -> Snapshot {
                 origin: Origin::Git {
                     path: "third_party/ip-intel/test-blocklist".into(),
                     commit: Some(SHA.into()),
+                    checkout: Some(Checkout {
+                        gitlink: Some(SHA.into()),
+                        clean: true,
+                        unpinned_override: false,
+                    }),
                 },
                 status: SourceStatus::Ok,
                 detail: String::new(),
@@ -46,6 +51,7 @@ fn sample() -> Snapshot {
                 origin: Origin::Git {
                     path: "third_party/ip-intel/test-missing".into(),
                     commit: None,
+                    checkout: None,
                 },
                 status: SourceStatus::Missing,
                 detail: "submodule_not_initialized".into(),
@@ -138,6 +144,63 @@ fn malformed_documents_are_refused_with_static_codes() {
             mutate(|v| v["sources"][1]["origin"]["http"]["fetched_at"] = (NOW + 1).into()),
             Timestamp,
         ),
+        // Breadth guard on the scoring category, on every load.
+        (
+            mutate(|v| v["sources"][1]["prefixes"][0] = "0.0.0.0/0".into()),
+            TooBroad,
+        ),
+        (
+            mutate(|v| v["sources"][1]["prefixes"][1] = "::/0".into()),
+            TooBroad,
+        ),
+        (
+            mutate(|v| v["sources"][1]["prefixes"][0] = "2.0.0.0/7".into()),
+            TooBroad,
+        ),
+        // Prefixes sorted and unique; sources sorted by name.
+        (
+            mutate(|v| {
+                v["sources"][1]["prefixes"] = serde_json::json!(["2001:db8::/32", "192.0.2.0/24"])
+            }),
+            Order,
+        ),
+        (
+            mutate(|v| {
+                v["sources"][1]["prefixes"] = serde_json::json!(["192.0.2.0/24", "192.0.2.0/24"])
+            }),
+            Order,
+        ),
+        (
+            mutate(|v| v["sources"][0]["name"] = "zz-last".into()),
+            Order,
+        ),
+        // A registry source keeps its registered category: no promotion by edit.
+        (
+            mutate(|v| {
+                v["sources"][2]["name"] = "tor-bulk-exit".into();
+                v["sources"][2]["category"] = "datacenter".into();
+            }),
+            Category,
+        ),
+        // Pin record: present with a commit, override exactly when unpinned.
+        (
+            mutate(|v| v["sources"][0]["origin"]["git"]["checkout"] = serde_json::Value::Null),
+            Checkout,
+        ),
+        (
+            mutate(|v| v["sources"][0]["origin"]["git"]["checkout"]["clean"] = false.into()),
+            Checkout,
+        ),
+        (
+            mutate(|v| {
+                v["sources"][0]["origin"]["git"]["checkout"]["unpinned_override"] = true.into()
+            }),
+            Checkout,
+        ),
+        (
+            mutate(|v| v["sources"][0]["origin"]["git"]["checkout"]["gitlink"] = "x".into()),
+            Checkout,
+        ),
     ];
     for (index, (bytes, expected)) in cases.into_iter().enumerate() {
         assert_eq!(parse(&bytes, NOW), Err(expected), "case {index}");
@@ -149,6 +212,79 @@ fn malformed_documents_are_refused_with_static_codes() {
         )
         .is_ok()
     );
+    // An explicitly overridden, unpinned checkout is accepted and recorded.
+    let overridden = mutate(|v| {
+        v["sources"][0]["origin"]["git"]["checkout"] =
+            serde_json::json!({"gitlink": null, "clean": false, "unpinned_override": true})
+    });
+    assert!(parse(&overridden, NOW).is_ok());
+    // A registry source with its own category is accepted.
+    assert!(
+        parse(
+            &mutate(|v| {
+                v["sources"][2]["name"] = "tor-bulk-exit".into();
+                v["sources"][2]["category"] = "tor_exit".into();
+            }),
+            NOW
+        )
+        .is_ok()
+    );
+}
+
+fn datacenter(prefixes: Vec<Prefix>) -> Snapshot {
+    let mut snapshot = sample();
+    snapshot.sources[1].prefixes = prefixes;
+    snapshot = Snapshot::new(NOW, snapshot.sources);
+    snapshot
+}
+
+#[test]
+fn scoring_floor_refuses_default_routes_and_accepts_the_floor_itself() {
+    for broad in ["0.0.0.0/0", "::/0", "0.0.0.0/7", "2000::/15"] {
+        let snapshot = datacenter(vec![prefix(broad)]);
+        assert_eq!(encode(&snapshot), Err(SnapshotError::TooBroad), "{broad}");
+        assert_eq!(
+            check_breadth(IntelCategory::Datacenter, &[prefix(broad)]),
+            Err(SnapshotError::TooBroad)
+        );
+    }
+    let at_floor = datacenter(vec![prefix("3.0.0.0/8"), prefix("2001::/16")]);
+    let bytes = encode(&at_floor).unwrap();
+    assert_eq!(parse(&bytes, NOW).unwrap(), at_floor);
+    // Shadow-only categories never reach scoring and may carry bogon blocks.
+    assert_eq!(
+        check_breadth(IntelCategory::Blocklist, &[prefix("224.0.0.0/3")]),
+        Ok(())
+    );
+}
+
+#[test]
+fn scoring_coverage_cap_is_enforced_per_category_across_sources() {
+    let slash8 = |first: u8| prefix(&format!("{first}.0.0.0/8"));
+    let at_cap: Vec<Prefix> = (1..=64).map(slash8).collect();
+    assert!(encode(&datacenter(at_cap.clone())).is_ok());
+    let over: Vec<Prefix> = (1..=65).map(slash8).collect();
+    assert_eq!(
+        encode(&datacenter(over.clone())),
+        Err(SnapshotError::Coverage)
+    );
+    // The cap applies to the category union: two sources under it alone,
+    // over it together, are refused.
+    let mut split = datacenter(over[..40].to_vec());
+    let mut second = split.sources[1].clone();
+    second.name = "test-datacenter-two".into();
+    second.prefixes = over[40..].to_vec();
+    split.sources.push(second);
+    let split = Snapshot::new(NOW, split.sources);
+    assert_eq!(encode(&split), Err(SnapshotError::Coverage));
+    let slash16 = |n: u16| prefix(&format!("{:x}::/16", 0x2000 + n));
+    assert!(encode(&datacenter((0..16).map(slash16).collect())).is_ok());
+    assert_eq!(
+        encode(&datacenter((0..17).map(slash16).collect())),
+        Err(SnapshotError::Coverage)
+    );
+    // Shadow categories are not capped.
+    assert_eq!(check_breadth(IntelCategory::TorExit, &over), Ok(()));
 }
 
 #[test]

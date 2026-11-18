@@ -247,3 +247,139 @@ fn disabled_categories_are_not_loaded() {
     assert!(!status.datacenter_scoring_active);
     assert!(status.scoring_categories.is_empty());
 }
+
+/// Serialize without the encoder's validation, as a hand-edited file would be.
+fn unchecked_bytes(snapshot: &Snapshot) -> Vec<u8> {
+    serde_json::to_vec(snapshot).unwrap()
+}
+
+#[test]
+fn over_broad_snapshot_is_refused_on_load_and_never_activates_scoring() {
+    for broad in ["0.0.0.0/0", "::/0"] {
+        let file = TempFile::new("broad");
+        file.write(&unchecked_bytes(&Snapshot::new(
+            NOW,
+            vec![record(
+                "test-datacenter",
+                IntelCategory::Datacenter,
+                &[broad],
+            )],
+        )));
+        let store = IntelStore::open(policy(&file.0), NOW);
+        for client in ["8.8.8.8", "2001:4860::8888"] {
+            assert!(!store.classify(ip(client), NOW).datacenter, "{broad}");
+        }
+        let status = store.status(NOW);
+        assert_eq!(status.state, Freshness::Missing);
+        assert!(!status.datacenter_scoring_active);
+        assert_eq!(
+            status.last_reload_error.as_deref(),
+            Some("snapshot_prefix_too_broad")
+        );
+        assert!(status.degraded);
+        assert_eq!(
+            status.degraded_reasons,
+            ["snapshot_missing", "reload_refused"]
+        );
+    }
+    // Replacing a good snapshot with an over-broad one keeps the good one and
+    // reports the refusal.
+    let file = TempFile::new("broad-reload");
+    file.write(&snapshot_bytes(NOW));
+    let store = IntelStore::open(policy(&file.0), NOW);
+    file.write(&unchecked_bytes(&Snapshot::new(
+        NOW,
+        vec![record(
+            "test-datacenter",
+            IntelCategory::Datacenter,
+            &["0.0.0.0/0"],
+        )],
+    )));
+    assert_eq!(
+        store.reload(NOW),
+        Err(LoadError::Snapshot(SnapshotError::TooBroad))
+    );
+    assert!(!store.classify(ip("8.8.8.8"), NOW).datacenter);
+    assert!(store.classify(ip("192.0.2.1"), NOW).datacenter);
+    let status = store.status(NOW);
+    assert!(
+        status
+            .degraded_reasons
+            .contains(&"reload_refused".to_owned())
+    );
+}
+
+fn every_scoring_source(edit: impl Fn(&mut SourceRecord)) -> Vec<u8> {
+    let records = crate::network::intel::source::REGISTRY
+        .iter()
+        .filter(|spec| spec.category.feeds_scoring())
+        .enumerate()
+        .map(|(i, spec)| {
+            let mut record = record(
+                spec.name,
+                spec.category,
+                &[&format!("192.0.{}.0/24", i + 1)],
+            );
+            edit(&mut record);
+            record
+        })
+        .collect();
+    encode(&Snapshot::new(NOW, records)).unwrap()
+}
+
+#[test]
+fn degraded_names_missing_invalid_absent_and_stale_scoring_sources() {
+    let file = TempFile::new("degraded");
+    file.write(&every_scoring_source(|_| {}));
+    let store = IntelStore::open(policy(&file.0), NOW);
+    let status = store.status(NOW);
+    assert!(!status.degraded, "{:?}", status.degraded_reasons);
+    assert!(status.degraded_reasons.is_empty());
+
+    file.write(&every_scoring_source(|record| match record.name.as_str() {
+        "gcp-cloud" => {
+            record.status = SourceStatus::Missing;
+            record.detail = "fetch_failed".into();
+            record.prefixes.clear();
+        }
+        "oracle-cloud" => {
+            record.status = SourceStatus::Invalid;
+            record.detail = "source_malformed:0".into();
+            record.prefixes.clear();
+        }
+        "linode-geofeed" => record.origin = Origin::File { read_at: 1 },
+        _ => {}
+    }));
+    store.reload(NOW).unwrap();
+    let status = store.status(NOW);
+    assert!(status.degraded);
+    assert_eq!(
+        status.degraded_reasons,
+        [
+            "source_missing:gcp-cloud",
+            "source_stale:linode-geofeed",
+            "source_invalid:oracle-cloud",
+        ]
+    );
+    // Missing coverage is not replaced by older data: the missing source
+    // (gcp-cloud, 192.0.2.0/24 before) contributes nothing; others still do.
+    assert!(!store.classify(ip("192.0.2.9"), NOW).datacenter);
+    assert!(store.classify(ip("192.0.1.9"), NOW).datacenter);
+
+    // A snapshot of one datacenter source reports every absent registry one.
+    file.write(&snapshot_bytes(NOW));
+    store.reload(NOW).unwrap();
+    let reasons = store.status(NOW).degraded_reasons;
+    assert!(reasons.contains(&"source_absent:aws-ip-ranges".to_owned()));
+    assert!(reasons.contains(&"source_absent:x4bnet-datacenter".to_owned()));
+    assert!(!reasons.iter().any(|r| r.contains("test-")));
+    // Stale snapshot.
+    let stale = store.status(NOW + 7 * DAY + 1).degraded_reasons;
+    assert_eq!(stale[0], "snapshot_stale");
+
+    // Shadow-only configuration never degrades scoring.
+    let mut shadow_only = policy(&file.0);
+    shadow_only.categories = vec![IntelCategory::TorExit];
+    let store = IntelStore::open(shadow_only, NOW);
+    assert!(!store.status(NOW).degraded);
+}

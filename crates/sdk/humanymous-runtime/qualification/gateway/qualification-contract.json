@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 435,
-      "macos": 435,
-      "windows": 423
+      "linux": 440,
+      "macos": 440,
+      "windows": 428
     },
     "common_test_names": [
       "gateway::application::temporal::tests::categories::configure_only_preserves_unknown_gap_until_provider_observation",
@@ -353,7 +353,12 @@
       "gateway::tests::fresh_collector_provenance_gates_required_collector",
       "gateway::tests::ip_reputation::datacenter_classification_challenges_and_shadow_categories_change_nothing",
       "gateway::tests::ip_reputation::ip_reputation_configuration_is_optional_and_reported",
+      "gateway::tests::ip_reputation::local_unspec_and_ipv6_headers_reach_the_reader_as_declared",
+      "gateway::tests::ip_reputation::malformed_or_truncated_proxy_v2_headers_drop_only_that_connection",
       "gateway::tests::ip_reputation::proxy_v2_source_reaches_the_reader_and_missing_header_drops_connection",
+      "gateway::tests::ip_reputation::shutdown_is_observed_while_waiting_for_the_header",
+      "gateway::tests::ip_reputation::silent_edge_is_bounded_by_the_header_deadline",
+      "gateway::tests::ip_reputation::snapshot_store_classifies_proxy_v2_clients_end_to_end",
       "gateway::tests::missing_client_is_challenge_and_missing_planes_are_not_ready",
       "gateway::tests::real_tcp_audit_before_origin_and_negative_counter_zero",
       "gateway::tests::recovery_without_independent_head_never_opens_state_or_calls_witness",

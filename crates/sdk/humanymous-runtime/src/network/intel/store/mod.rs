@@ -9,6 +9,7 @@ use super::{
     prefix_set::PrefixSet,
     shadow::{ShadowCounters, ShadowStats},
     snapshot::{self, MAX_SNAPSHOT_BYTES, Origin, Snapshot, SnapshotError, SourceStatus},
+    source::REGISTRY,
 };
 use serde::Serialize;
 use sha2::{Digest, Sha256};
@@ -106,6 +107,15 @@ pub struct StoreStatus {
     pub state: Freshness,
     /// Whether datacenter ranges currently reach the scoring input.
     pub datacenter_scoring_active: bool,
+    /// Whether scoring coverage is incomplete. Old data is never carried
+    /// forward for a failed source; its coverage is simply absent, and this
+    /// says so. See `degraded_reasons`.
+    pub degraded: bool,
+    /// Static reasons, in stable order: `snapshot_missing|stale|expired`,
+    /// `reload_refused`, and per scoring source `source_absent:<name>`,
+    /// `source_missing:<name>`, `source_invalid:<name>` or
+    /// `source_stale:<name>` (fetched or read longer than `max_age_s` ago).
+    pub degraded_reasons: Vec<String>,
     /// `generated_at` of the active snapshot.
     pub generated_at: Option<u64>,
     /// Age of the active snapshot in seconds.
@@ -300,9 +310,18 @@ impl IntelStore {
                     .any(|(c, set)| c.feeds_scoring() && !set.is_empty())
             });
         let load = |c: &AtomicU64| c.load(Ordering::Relaxed);
+        let last_reload_error = self
+            .last_error
+            .lock()
+            .unwrap_or_else(PoisonError::into_inner)
+            .map(|e| e.to_string());
+        let degraded_reasons =
+            self.degraded_reasons(state, active.as_deref(), last_reload_error.is_some(), now_s);
         StoreStatus {
             state,
             datacenter_scoring_active,
+            degraded: !degraded_reasons.is_empty(),
+            degraded_reasons,
             generated_at: active.as_ref().map(|l| l.generated_at),
             age_s: active
                 .as_ref()
@@ -325,11 +344,7 @@ impl IntelStore {
                 .as_ref()
                 .map(|l| l.sources.clone())
                 .unwrap_or_default(),
-            last_reload_error: self
-                .last_error
-                .lock()
-                .unwrap_or_else(PoisonError::into_inner)
-                .map(|e| e.to_string()),
+            last_reload_error,
             reloads_ok: load(&self.reloads_ok),
             reloads_failed: load(&self.reloads_failed),
             lookups: LookupStats {
@@ -342,6 +357,78 @@ impl IntelStore {
             },
             shadow: self.shadow.stats(),
         }
+    }
+
+    /// Why scoring coverage is incomplete. Only enabled scoring categories
+    /// count: shadow sources never change a verdict, so they never degrade it.
+    fn degraded_reasons(
+        &self,
+        state: Freshness,
+        active: Option<&Loaded>,
+        reload_refused: bool,
+        now_s: u64,
+    ) -> Vec<String> {
+        let scoring: Vec<IntelCategory> = self
+            .policy
+            .categories
+            .iter()
+            .copied()
+            .filter(|c| c.feeds_scoring())
+            .collect();
+        if scoring.is_empty() {
+            return Vec::new();
+        }
+        let mut reasons = Vec::new();
+        match state {
+            Freshness::Fresh => {}
+            Freshness::Missing => reasons.push("snapshot_missing".to_owned()),
+            Freshness::Stale => reasons.push("snapshot_stale".to_owned()),
+            Freshness::Expired => reasons.push("snapshot_expired".to_owned()),
+        }
+        if reload_refused {
+            reasons.push("reload_refused".to_owned());
+        }
+        let Some(active) = active else {
+            return reasons;
+        };
+        let mut names: Vec<&str> = REGISTRY
+            .iter()
+            .filter(|spec| scoring.contains(&spec.category))
+            .map(|spec| spec.name)
+            .chain(
+                active
+                    .sources
+                    .iter()
+                    .filter(|s| scoring.contains(&s.category))
+                    .map(|s| s.name.as_str()),
+            )
+            .collect();
+        names.sort_unstable();
+        names.dedup();
+        for name in names {
+            let Some(source) = active.sources.iter().find(|s| s.name == name) else {
+                reasons.push(format!("source_absent:{name}"));
+                continue;
+            };
+            let acquired_at = match source.origin {
+                Origin::Http { fetched_at, .. } => Some(fetched_at),
+                Origin::File { read_at } => Some(read_at),
+                // A pinned commit's age is the snapshot's age, reported above.
+                Origin::Git { .. } => None,
+            };
+            match source.status {
+                SourceStatus::Missing => reasons.push(format!("source_missing:{name}")),
+                SourceStatus::Invalid => reasons.push(format!("source_invalid:{name}")),
+                SourceStatus::Ok
+                    if acquired_at
+                        .is_some_and(|t| now_s.saturating_sub(t) > self.policy.max_age_s) =>
+                {
+                    reasons.push(format!("source_stale:{name}"))
+                }
+                SourceStatus::Ok => {}
+            }
+        }
+        reasons
     }
 
     fn active(&self) -> Option<Arc<Loaded>> {

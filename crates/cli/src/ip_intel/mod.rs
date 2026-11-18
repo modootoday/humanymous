@@ -5,7 +5,7 @@
 //! one snapshot and replace the output file atomically. Parsing, validation and
 //! the snapshot format live in `humanymous_runtime::network::intel`.
 use humanymous_runtime::network::intel::{
-    snapshot::{self, Origin, Snapshot, SourceRecord, SourceStatus},
+    snapshot::{self, Checkout, Origin, Snapshot, SourceRecord, SourceStatus},
     source::{self, MAX_SOURCE_BYTES, REGISTRY, SourceOrigin, SourceSpec},
 };
 use serde::Serialize;
@@ -14,6 +14,7 @@ use std::{
     fs,
     io::{self, Read},
     path::{Path, PathBuf},
+    process::Command,
 };
 
 /// Fetch one public URL with a byte bound. Unit tests inject a fake; network
@@ -71,6 +72,10 @@ pub struct UpdatePlan {
     pub urls: BTreeMap<String, String>,
     /// Never fetch over the network; HTTP sources become `missing`.
     pub offline: bool,
+    /// Accept a submodule checkout whose HEAD differs from the parent
+    /// repository's gitlink, or whose tree has changes. The snapshot records
+    /// the override; without it such a source is refused as `invalid`.
+    pub allow_unpinned: bool,
 }
 
 /// Per-source line of the update report.
@@ -86,6 +91,8 @@ pub struct SourceLine {
     pub prefixes: usize,
     /// Git commit for pinned sources, when initialized.
     pub commit: Option<String>,
+    /// Pin and cleanliness check for git sources, when initialized.
+    pub checkout: Option<Checkout>,
 }
 
 /// Result of one update run.
@@ -145,6 +152,10 @@ pub fn update(plan: &UpdatePlan, fetch: &dyn Fetch, now_s: u64) -> io::Result<Up
                 Origin::Git { commit, .. } => commit.clone(),
                 _ => None,
             },
+            checkout: match &record.origin {
+                Origin::Git { checkout, .. } => checkout.clone(),
+                _ => None,
+            },
         })
         .collect();
     Ok(UpdateReport {
@@ -155,17 +166,26 @@ pub fn update(plan: &UpdatePlan, fetch: &dyn Fetch, now_s: u64) -> io::Result<Up
     })
 }
 
-/// Bytes plus provenance, or a static reason the source is missing.
-type Acquired = Result<(Vec<Vec<u8>>, Origin), (Origin, &'static str)>;
+/// Bytes plus provenance, or the provenance, outcome and static reason of a
+/// source that is missing or refused before normalization.
+type Acquired = Result<(Vec<Vec<u8>>, Origin), (Origin, SourceStatus, &'static str)>;
 
 fn acquire(spec: &SourceSpec, plan: &UpdatePlan, fetch: &dyn Fetch, now_s: u64) -> SourceRecord {
     let acquired = if let Some(path) = plan.inputs.get(spec.name) {
         read_bounded(path)
             .map(|bytes| (vec![bytes], Origin::File { read_at: now_s }))
-            .map_err(|reason| (Origin::File { read_at: now_s }, reason))
+            .map_err(|reason| {
+                (
+                    Origin::File { read_at: now_s },
+                    SourceStatus::Missing,
+                    reason,
+                )
+            })
     } else {
         match spec.origin {
-            SourceOrigin::Git { files, .. } => git(spec, &plan.repository, files),
+            SourceOrigin::Git { files, .. } => {
+                git(spec, &plan.repository, files, plan.allow_unpinned)
+            }
             SourceOrigin::Http { urls } => http(urls, plan.offline, fetch, now_s),
             SourceOrigin::OperatorUrl { discovery } => match plan.urls.get(spec.name) {
                 Some(url) => http(&[url.as_str()], plan.offline, fetch, now_s),
@@ -174,13 +194,14 @@ fn acquire(spec: &SourceSpec, plan: &UpdatePlan, fetch: &dyn Fetch, now_s: u64) 
                         url: discovery.into(),
                         fetched_at: 0,
                     },
+                    SourceStatus::Missing,
                     "operator_url_required",
                 )),
             },
         }
     };
     let (status, detail, origin, prefixes) = match acquired {
-        Err((origin, reason)) => (SourceStatus::Missing, reason.to_owned(), origin, Vec::new()),
+        Err((origin, status, reason)) => (status, reason.to_owned(), origin, Vec::new()),
         Ok((bodies, origin)) => {
             let mut prefixes = Vec::new();
             let mut refused = None;
@@ -192,6 +213,15 @@ fn acquire(spec: &SourceSpec, plan: &UpdatePlan, fetch: &dyn Fetch, now_s: u64) 
                         break;
                     }
                 }
+            }
+            // The same breadth guard the snapshot validator applies on every
+            // runtime load: an over-broad source is refused here, by itself.
+            prefixes.sort_unstable();
+            prefixes.dedup();
+            if refused.is_none()
+                && let Err(error) = snapshot::check_breadth(spec.category, &prefixes)
+            {
+                refused = Some(error.to_string());
             }
             match refused {
                 Some(reason) => (SourceStatus::Invalid, reason, origin, Vec::new()),
@@ -210,24 +240,56 @@ fn acquire(spec: &SourceSpec, plan: &UpdatePlan, fetch: &dyn Fetch, now_s: u64) 
     }
 }
 
-fn git(spec: &SourceSpec, repository: &Path, files: &[&str]) -> Acquired {
+fn git(spec: &SourceSpec, repository: &Path, files: &[&str], allow_unpinned: bool) -> Acquired {
     let path = spec.submodule_path().unwrap_or_default();
-    let checkout = repository.join(&path);
+    let directory = repository.join(&path);
     let missing = |reason| {
         Err((
             Origin::Git {
                 path: path.clone(),
                 commit: None,
+                checkout: None,
             },
+            SourceStatus::Missing,
             reason,
         ))
     };
-    let Some(commit) = checkout_commit(&checkout) else {
+    let Some(commit) = checkout_commit(&directory) else {
         return missing("submodule_not_initialized");
     };
+    // The gitlink is the source of truth for the data version: the checkout
+    // must be exactly that commit, with no local edits, unless overridden.
+    let mut checkout = Checkout {
+        gitlink: gitlink(repository, &path),
+        clean: checkout_clean(&directory),
+        unpinned_override: false,
+    };
+    let refusal = if checkout.gitlink.is_none() {
+        Some("submodule_gitlink_unreadable")
+    } else if checkout.gitlink.as_deref() != Some(commit.as_str()) {
+        Some("submodule_head_mismatch")
+    } else if !checkout.clean {
+        Some("submodule_dirty")
+    } else {
+        None
+    };
+    if let Some(reason) = refusal {
+        if !allow_unpinned {
+            return Err((
+                Origin::Git {
+                    path,
+                    commit: Some(commit),
+                    checkout: Some(checkout),
+                },
+                SourceStatus::Invalid,
+                reason,
+            ));
+        }
+        checkout.unpinned_override = true;
+    }
     let mut bodies = Vec::new();
     for file in files {
-        match read_bounded(&checkout.join(file)) {
+        match read_bounded(&directory.join(file)) {
             Ok(bytes) => bodies.push(bytes),
             Err(_) => return missing("submodule_file_missing"),
         }
@@ -237,8 +299,55 @@ fn git(spec: &SourceSpec, repository: &Path, files: &[&str]) -> Acquired {
         Origin::Git {
             path,
             commit: Some(commit),
+            checkout: Some(checkout),
         },
     ))
+}
+
+/// Run `git` with a bounded, inherited-state-free environment; stdout on
+/// success only.
+fn run_git(directory: &Path, args: &[&str]) -> Option<Vec<u8>> {
+    let output = Command::new("git")
+        .args(args)
+        .current_dir(directory)
+        .env_remove("GIT_DIR")
+        .env_remove("GIT_WORK_TREE")
+        .env_remove("GIT_INDEX_FILE")
+        .env_remove("GIT_OBJECT_DIRECTORY")
+        .stdin(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .output()
+        .ok()?;
+    output.status.success().then_some(output.stdout)
+}
+
+/// Commit the parent repository's `HEAD` pins at `path` (a mode 160000
+/// gitlink), or `None` when it cannot be read.
+pub fn gitlink(repository: &Path, path: &str) -> Option<String> {
+    let listing = run_git(repository, &["ls-tree", "-z", "HEAD", "--", path])?;
+    let entry = listing.split(|b| *b == 0).next()?;
+    let (meta, listed) = std::str::from_utf8(entry).ok()?.split_once('\t')?;
+    let mut fields = meta.split(' ');
+    let (mode, kind, sha) = (fields.next()?, fields.next()?, fields.next()?);
+    (mode == "160000" && kind == "commit" && listed == path && valid_commit(sha))
+        .then(|| sha.to_owned())
+}
+
+/// Whether the checkout has no tracked or untracked changes. A failed status
+/// reads as not clean.
+pub fn checkout_clean(checkout: &Path) -> bool {
+    run_git(
+        checkout,
+        &["status", "--porcelain=v1", "--untracked-files=all"],
+    )
+    .is_some_and(|out| out.is_empty())
+}
+
+fn valid_commit(commit: &str) -> bool {
+    matches!(commit.len(), 40 | 64)
+        && commit
+            .bytes()
+            .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
 }
 
 fn http(urls: &[&str], offline: bool, fetch: &dyn Fetch, now_s: u64) -> Acquired {
@@ -247,16 +356,16 @@ fn http(urls: &[&str], offline: bool, fetch: &dyn Fetch, now_s: u64) -> Acquired
         fetched_at,
     };
     if offline {
-        return Err((origin(0), "offline"));
+        return Err((origin(0), SourceStatus::Missing, "offline"));
     }
     if urls.iter().any(|url| !url.starts_with("https://")) {
-        return Err((origin(0), "https_required"));
+        return Err((origin(0), SourceStatus::Missing, "https_required"));
     }
     let mut bodies = Vec::new();
     for url in urls {
         match fetch.fetch(url, MAX_SOURCE_BYTES) {
             Ok(body) => bodies.push(body),
-            Err(reason) => return Err((origin(0), reason)),
+            Err(reason) => return Err((origin(0), SourceStatus::Missing, reason)),
         }
     }
     Ok((bodies, origin(now_s)))
@@ -297,11 +406,7 @@ pub fn checkout_commit(checkout: &Path) -> Option<String> {
             }
         }
     };
-    let valid = matches!(commit.len(), 40 | 64)
-        && commit
-            .bytes()
-            .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b));
-    valid.then_some(commit)
+    valid_commit(&commit).then_some(commit)
 }
 
 fn packed_ref(git_dir: &Path, reference: &str) -> Option<String> {
