@@ -3,7 +3,7 @@ id: sot:root/common-automation-rules
 title: Common automation rules (humanymous copy and project profile)
 status: active
 created: 2026-11-16T07:44:00Z
-updated: 2026-11-16T14:40:00Z
+updated: 2026-11-17T21:00:00Z
 verify: ["spec check --no-local", "cargo test --locked --manifest-path scripts/ci/delivery/Cargo.toml", "cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- policy"]
 rel:
   depends_on: [sot:root/delivery, sot:root/milestones]
@@ -142,7 +142,7 @@ Each repository has `SECURITY.md`, a pull request template with an `Agent-Provid
 | Lock unit (C1.5) | lane (`.agents/sessions/lanes.json`); `detection-core` and `gate-edge` mutually exclusive |
 | Ruleset files | `.github/rulesets/main-protected.json` (`main`), `.github/rulesets/codex-rust-protected.json` (`codex/rust`), `.github/rulesets/v-tags.json` |
 | Settings files | `.github/labels.json`, `.github/settings/repository.json` |
-| Project gate checks | `validate / merge-ready` (the merge aggregate of the reusable Rust validation, called by job `validate`; owner decision on issue #16, option 1). It needs policy, native, msrv, quality, nginx, images, packages, node, advisories and documentation to succeed, and the Docker and browser pilots to show no regression: zero failed assertions and no error other than the honest component-only block. `validate / ready` stays the release gate and is not a merge check |
+| Project gate checks | On `codex/rust` the ruleset requires the per-check jobs `validate / policy`, `validate / quality` and `validate / msrv` (owner change to ruleset 27382552 on 2026-11-17, recorded on issue #75); `validate / merge-ready` still runs and is reported but is no longer required there. `validate / merge-ready` is the merge aggregate of the reusable Rust validation, called by job `validate`; owner decision on issue #16, option 1). It needs policy, native, msrv, quality, nginx, images, packages, node, advisories and documentation to succeed, and the Docker and browser pilots to show no regression: zero failed assertions and no error other than the honest component-only block. `validate / ready` stays the release gate and is not a merge check |
 | Shared checks | `Public surface`, `Secret scan` in `.github/workflows/surface.yml` |
 | Deny secret | `HUMANYMOUS_DENY_TERMS` (Actions and Dependabot) |
 | Public surface implementation | Rust: `delivery public-surface <base> <head>` in `scripts/ci/delivery` |
