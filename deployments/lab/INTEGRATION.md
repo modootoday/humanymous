@@ -310,3 +310,22 @@ owned exact hostname, bounded budget/expiry, cancellation janitor, qualified Gat
 source, credentials presence, and Cloudflare Access/domain constraints are
 necessary, not sufficient. No cloud API, paid resource or public Tunnel is
 created. Cloudflare uses cf CLI when no Wrangler configuration exists.
+
+Runtime binary witness transport case (2b, 2026-11-18). The default `run`
+profile (not `--topology-only`) now ends with case
+`runtime-binary-witness-transport` in
+`compose.rust.witness-transport.yaml`: a network-none `wtx-supervisor` whose
+lab supervisor starts `audit-witness` and the shipped `humanymous-runtime`
+with the witness on inherited pipe descriptors (`audit.witness_input`), and a
+`wtx-origin` container that joins only that loopback namespace and logs each
+contact. The runner generates the synthetic keys and a wrong pin, drives the
+steps wrong_key, witnessed, witness_loss and evidence, counts origin contacts
+from the origin container's own log, and verifies the WAL with its own keys.
+It never accepts a supervisor pass. The case contract and its check list are
+in the container-test-environments SoT section "Runtime binary witness
+transport case". When the case passes, `required_unavailable` drops "runtime
+binary authenticated witness transport"; witness independence and
+`full_product_qualified` stay false. Its private ledger is
+`runtime-binary-witness-transport-ledger.json` (public keys, raw step
+observations and checks; no seed, HMAC key, passphrase or session capability).
+The first actual run is the next Docker job; until it passes, the entry stays.
