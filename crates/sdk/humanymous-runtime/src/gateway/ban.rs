@@ -23,6 +23,8 @@ use std::time::Duration;
 const HOUR: Duration = Duration::from_secs(3600);
 /// A strike is remembered this long after its last breach (SoT-27 section 2).
 pub const STRIKE_DECAY: Duration = Duration::from_secs(7 * 24 * 3600);
+/// Exclusive upper bound on a bulk temporary term (legacy `maxBanDurationSec`).
+pub const MAX_BULK_TERM: Duration = Duration::from_secs(400 * 24 * 3600);
 /// Domain separation for the dual-control target commitment.
 const TARGET_DOMAIN: &[u8] = b"humanymous.ban.permanent/1\0";
 
@@ -312,6 +314,34 @@ impl<L: RateLimiter> Store<L> {
             strike: 0,
         };
         self.insert(entry)
+    }
+
+    /// Operator bulk temporary ban (port of legacy `adminBulkBan`). The term
+    /// must be positive and below [`MAX_BULK_TERM`]; unparsable keys and broad
+    /// keys (which need dual control) are skipped and counted, never applied.
+    /// Returns `(applied, skipped)`; a capacity refusal stops the batch.
+    pub fn bulk_temporary(
+        &mut self,
+        keys: &[&str],
+        why: &str,
+        term: Duration,
+        now: Duration,
+    ) -> Result<(usize, usize), Refusal> {
+        if term.is_zero() || term >= MAX_BULK_TERM {
+            return Err(Refusal::Duration);
+        }
+        reason(why)?;
+        let (mut applied, mut skipped) = (0, 0);
+        for raw in keys {
+            match Key::parse(raw) {
+                Ok(key) if !key.is_broad() => {
+                    self.add_temporary(&key, why, None, term, now)?;
+                    applied += 1;
+                }
+                _ => skipped += 1,
+            }
+        }
+        Ok((applied, skipped))
     }
 
     /// Permanent or broad ban: consumes a retained dual-control grant bound to

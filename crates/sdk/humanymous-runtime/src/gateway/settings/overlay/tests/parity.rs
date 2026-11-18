@@ -206,12 +206,24 @@ fn overlay_decode_validate_encode_resolve_classify_and_engine_match_go() {
             .err()
             .map(|error| error.to_string());
         if name.starts_with("multi_") {
-            // The oracle reports a map-order-dependent entry; compare refusal only.
-            assert_eq!(
-                validation.is_some(),
-                !expected["validate"].is_null(),
-                "{name}"
-            );
+            // Go's map iteration picks which invalid gate entry is reported, so
+            // both sides must report one of the single-entry refusals.
+            let possible: Vec<String> = overlay
+                .gates
+                .iter()
+                .filter_map(|(id, mode)| {
+                    let single = Overlay {
+                        gates: BTreeMap::from([(id.clone(), mode.clone())]),
+                        ..overlay.clone()
+                    };
+                    validate(Some(&single)).err().map(|error| error.to_string())
+                })
+                .collect();
+            assert!(possible.len() > 1, "{name}: {possible:?}");
+            let go = text(&expected["validate"]);
+            assert!(possible.iter().any(|message| message == go), "{name}: {go}");
+            let rust = validation.expect("multi-entry refusal");
+            assert!(possible.contains(&rust), "{name}: {rust}");
         } else {
             assert_eq!(
                 validation.as_deref(),

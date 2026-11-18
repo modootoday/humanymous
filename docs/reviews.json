@@ -5313,12 +5313,82 @@
     },
     {
       "source": "crates/sdk/humanymous-core/src/model/mod.rs",
-      "sha256": "2388b20aba7eb84d7aab801920c9af259f9bfebb43874f32b9108b464e89e5ad",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Module root for the behavioral model context (correction, inference, training), documented as separate from verdict authority.",
+      "sha256": "bffa74442376d3133adec5b6e5ea153f4bd6f0013c8e3e11583660719e6f2de6",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Module root for the behavioral model context (correction, inference, similarity, training), documented as separate from verdict authority.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/similarity/mod.rs",
+      "sha256": "b78d22c908bc578515056da05f30bf73ff2de34e6c15243650c6cb91d6f80ba6",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Module root for shadow-only similarity to confirmed abuse clusters over the bv1 vector (sot:root/abuse-similarity). Documents that nothing here mutates a verdict, writes or proposes a ban, or measures distance from typical human behavior; defines bounded SimilarityError and PolicyRefusal diagnostics without feature values or identifiers.",
+      "pages": [
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/similarity/policy.rs",
+      "sha256": "bab0acd766e558aa0411102bcc0109753293d49df92a999b4413a7609f278c67",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Versioned operator policy (deny_unknown_fields JSON): 1..16 rules, 1h..7d recurrence window, most severe matching rule wins. Fixed floors an operator cannot lower: challenge 0.80; temporary block 0.90 with cluster recurrence >=3 and subject repeats >=2; permanent-ban proposal 0.95/10/3. Behavior similarity alone reaches at most CHALLENGE and a permanent ban is only a dual-control proposal. Lab shadow defaults, not production thresholds. SHA-256 digest of canonical JSON for audit.",
+      "pages": [
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/similarity/policy/tests.rs",
+      "sha256": "5cd1205be192b45f5b42579e7f0dea9cae68a00da9752ed4c89aff09c9efdf41",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tests floor monotonicity, similarity-only cap at CHALLENGE, block requiring recurrence and subject repetition, refusal of every below-floor rule, version/rule-count/window/nonfinite/range refusals, JSON round trip with unknown-field and unknown-action refusal, invalid similarity input and digest stability.",
+      "pages": [
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/similarity/shadow.rs",
+      "sha256": "a684d7e8dc649da4230c94862477e9338b4b003fabcb5b264412610391648bd8",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Shadow ledger and preview: counts policy outcomes beside the verdict actually served (stricter, looser, agree), and event-count buckets (16/64/256/more) at a non-trivial outcome as time-to-detection evidence. Aggregates only; invalid samples count only as rejected; preview replays held de-identified samples under a candidate policy and never changes a verdict.",
+      "pages": [
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/similarity/shadow/tests.rs",
+      "sha256": "bd139eac1dedf3225973bacf301028cf8a79abd51cca17ea33f60b20dccd2357",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tests latency bucket edges, agreement direction and latency counting, rejected-only accounting for invalid samples, refusal of an invalid policy, and preview equality with a live ledger including a bad sample.",
+      "pages": [
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/similarity/store.rs",
+      "sha256": "e16ed60e30b47c4123c19ce696cb31462622d7500e8b5a07867ed582b2c93fb1",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Bounded confirmed-abuse cluster store: admission only from catalog sessions or operator confirmation; Welford mean/variance (floor 0.01) per bv1 dimension, join radius 2.0, at most 256 clusters (refuses rather than evicts), matchable only with >=5 members, similarity exp(-d^2/2) of RMS standardized distance. Probing is read-only; recorded matches feed recurrence (bounded 1024) and never move centroids. Caller clock must not regress; 30-day retention, match expiry and per-cluster retirement. No raw vectors or identifiers kept.",
+      "pages": [
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/similarity/store/tests.rs",
+      "sha256": "81fdc3581eae234432643a94c2267e5ba378e6ce455485a0e326b0a3fff27d72",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tests similarity shape, joining and splitting, minimum support, near/far ordering, read-only probing, recurrence without centroid movement, bounded match history, nonfinite and clock-regression refusal without state change, capacity refusal, retention expiry and non-reused retired ids.",
+      "pages": [
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
       ]
     },
     {
@@ -5886,12 +5956,12 @@
     },
     {
       "source": "crates/sdk/humanymous-core/src/signals/wire/mod.rs",
-      "sha256": "1d1559e2dea417af17f9b954d8c285764c139aef37850eaf6fd9cd57bcbd5dd0",
+      "sha256": "d14294fe3123061bd5834aa61d39ebb3e2af82b8dcb0a8d6f4e2dcc8004bccff",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
       "pages": [
         "docs/standards/draft-v0/validation/implementation-map.md"
       ],
-      "notes": "217-line complete source reread. New quote_json_go_to writes exact HTML/control/line-separator Go string escaping to an IO sink, immediately returns partial sink failure; caller must not commit partial bytes. Existing allocating encoder delegates to it. Unicode15 simple lowercase/printability and float32 representations retain separate frozen model semantics. Source tests cover all valid scalar values against prior JSON escaping and partial-sink failure; Pages did not rerun them. This is scoped project compatibility, not generic JSON canonicalization or independent Draftv0 interoperable wire. Carried unchanged from crates/signals/src/wire/mod.rs: identical SHA-256 after the crate consolidation, so the reviewed bytes are the same. Re-reviewed 2026-11-18 (B1 settings slice): adds format_float_go (%v), format_fixed_go (%.Nf, half-even) and json_float_go (encoding/json float text, None for non-finite) with a test of values captured from Go 1.26.3 at 981d25c; existing functions unchanged."
+      "notes": "217-line complete source reread. New quote_json_go_to writes exact HTML/control/line-separator Go string escaping to an IO sink, immediately returns partial sink failure; caller must not commit partial bytes. Existing allocating encoder delegates to it. Unicode15 simple lowercase/printability and float32 representations retain separate frozen model semantics. Source tests cover all valid scalar values against prior JSON escaping and partial-sink failure; Pages did not rerun them. This is scoped project compatibility, not generic JSON canonicalization or independent Draftv0 interoperable wire. Carried unchanged from crates/signals/src/wire/mod.rs: identical SHA-256 after the crate consolidation, so the reviewed bytes are the same. Re-reviewed 2026-11-18 (B1 settings slice): adds format_float_go (%v), format_fixed_go (%.Nf, half-even) and json_float_go (encoding/json float text, None for non-finite) with a test of values captured from Go 1.26.3 at 981d25c; existing functions unchanged. Re-reviewed 2026-11-18 (PR #124 review fix): shortest_digits no longer uses Rust {:e}, which breaks an exact tie between two equally short candidates upward; it now ports the Go 1.26.3 internal/strconv float64 shortest path (Dragonbox dboxFtoa64 with trimZeros, Go wrapping and shift semantics, and the pow10 table generated exactly at first use and checked against Go's pow10tab.go by sha256), so ties go to an even last digit as in Go. Only format_float_go and json_float_go change (and through them overlay canonical JSON, digest, cfg- version and Effective JSON); no scoring code calls these helpers. The format_float_go doc comment is corrected. Go attribution is in THIRD_PARTY_LICENSES.md. A Go-captured differential corpus in tests/signals/float_go_parity.rs matches exactly."
     },
     {
       "source": "crates/sdk/humanymous-core/src/signals/wire/unicode.json",
@@ -6602,13 +6672,31 @@
     },
     {
       "source": "crates/sdk/humanymous-core/tests/signals.rs",
-      "sha256": "a20a72ba0a84476cc875eab46eefca1db708a0a4689d8203b72ec8af861c6979",
+      "sha256": "a28e68372b0a82bea971eb623d2529f73f045a5985c1206c340f6f287929a4cd",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Integration-test root for frozen signals contracts; includes observation_parity, registry_integrity and report_parity via #[path] modules. No logic of its own.",
+      "notes": "Integration-test root for frozen signals contracts; includes observation_parity, registry_integrity and report_parity via #[path] modules. No logic of its own. Re-reviewed 2026-11-18 (PR #124 review fix): also includes float_go_parity.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/detection-engine-internals.md",
         "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/tests/signals/float_go_parity.rs",
+      "sha256": "1d8f80aa53090ced218a07e366bf2a2929dda35a4bc83f81a219a648e869d6b9",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Differential parity of format_float_go (%v), format_fixed_go(v, 1) (%.1f) and json_float_go (json.Marshal) against Go 1.26.3 captures: regenerates the families stream (every power of two and every parsed 1eN), the SplitMix64 seeded stream (40000 finite bit patterns, 20000 bit patterns each over [0,2] and [10,95], 20000 dyadic values each in [0,2] and [10,95], 20000 parsed decimals) and the 500000-value dyadic tie-hunt stream, and asserts the sha256 of the formatted lines equals the Go-captured digest for each (642730 values); also asserts 3000 explicit lines (29 named edge values and 2971 shortest-digit ties) exactly. Component evidence for these helpers only.",
+      "pages": [
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/tests/signals/fixtures/float-go-golden.json",
+      "sha256": "a6f2bb227a91f30ad8c315c2aed354bd91c830d27bbbb2cf851b318385d411f8",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Frozen Go float formatting golden: provenance (oracle 981d25c module context, pinned golang:1.26.3-alpine image digest, offline docker run command, private capture program path and sha256 with capture_program_committed false), the generator definition and seeds, per-stream counts and sha256 digests of the Go output lines, and 3000 explicit Go output lines (named edge values plus ties where the previous Rust formatter disagreed with Go). Never regenerated to hide drift.",
+      "pages": [
+        "docs/standards/draft-v0/validation/implementation-map.md"
       ]
     },
     {
@@ -6717,9 +6805,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "2d922c3e6ed233c6b163bb1820e18acff6fbfd2e19ac70b6000e56d96cb94247",
+      "sha256": "8d10c0519d4381019424a77224d114eea2f2dfe359eec842cb17e913325dcd15",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 431 / macos 431 / windows 419 (419 common names plus 12 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b (codex/rust plus PR heads #70 and #83): the name lists are the union of all parents' already-reviewed additions, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 431 listed common plus Unix-only names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect. Re-reviewed 2026-11-18 (B1 settings slice): 25 gateway::settings::overlay names added to the common list, so expected counts are linux 456 / macos 456 / windows 444; the Linux --list gateway:: inventory equals common plus unix_extra. Re-reviewed 2026-11-18 (B1 route policy slice): 22 gateway::route_policy names added to the common list, so expected counts are linux 478 / macos 478 / windows 466; the Linux --list gateway:: inventory equals common plus unix_extra.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 519 / macos 519 / windows 507 (507 common names plus 12 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for claude/gate-residual-ws: 19 common names were added for the attested-route floor, operations (audit search, counters, erasure hold) and bulk ban tests, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 450 listed names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect. Re-reviewed 2026-11-18 for the merge of codex/rust into claude/b1-settings-parity (PR #124): the common list is the union of both parents' additions (25 gateway::settings::overlay names and the 19 names above), so expected counts are linux 475 / macos 475 / windows 463, and the Linux exact-source --list gateway:: inventory equals the 475 listed names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 (PR #124 review fix): adds gateway::settings::overlay::tests::nan_scoring_overlay_validates_like_go_but_scoring_fails_closed, so expected counts are linux 476 / macos 476 / windows 464, and the Linux exact-source --list gateway:: inventory equals the 476 listed names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for claude/fm11-residual-4: adds the 21 gateway::admin_approval::tests names to the common list and raises every count by 21; on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 452 gateway:: names, equal to the 440 common plus 12 Unix-only names. macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for the merge of codex/rust into claude/fm11-residual-4: the common list is the union of both sides' additions (21 gateway::admin_approval names and 19 claude/gate-residual-ws names), giving expected counts linux 471 / macos 471 / windows 459, and on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 471 gateway:: names, equal to the 459 common plus 12 Unix-only names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for the merge of codex/rust (PR #121, f8382085) into claude/b1-settings-parity (PR #124): the common list is the union of both parents (26 gateway::settings::overlay names from this branch and 21 gateway::admin_approval names from claude/fm11-residual-4), so expected counts are linux 497 / macos 497 / windows 485 (485 common plus the same 12 Unix-only names), and the Linux exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 497 gateway:: names, equal to the listed names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 (B1 route policy slice): 22 gateway::route_policy names added to the common list, so expected counts are linux 478 / macos 478 / windows 466; the Linux --list gateway:: inventory equals common plus unix_extra. Re-reviewed 2026-11-18 for the merge of claude/b1-settings-parity (PR #124, which now includes codex/rust through PR #121) into claude/b1-enforce-parity (PR #125): the common list is the union of both parents (22 gateway::route_policy names from this branch beside the parent list), so expected counts are linux 519 / macos 519 / windows 507 (507 common plus the same 12 Unix-only names), and the Linux exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 519 gateway:: names, equal to the listed names; macOS and Windows inventories were not re-run.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/how-this-was-built.md"
@@ -8080,9 +8168,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/ban.rs",
-      "sha256": "19c3e67c71acf94ee73ebef5ebdc5ad60ec08b3f18b5ca8c2825f2c688335232",
+      "sha256": "d3238b761d9ae9574d25b460a162850e6d4540d3519ab31de3ea0a439ae1886a",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Pure bounded ban store ported from legacy ban.go. Keys are canonical ip:, fp: or cidr:. Auto-bans escalate 1h, 6h and 24h on hard rate breaches, with strikes decaying after 7 days; a fourth strike keeps 24h and reports dual_control_required instead of a permanent ban. Single operators may add only temporary narrow bans; permanent or cidr bans require a consumed RetainedActionPermit for Action::PermanentBan bound to the key commitment. Lifting a permanent ban is refused, and a full store refuses rather than evicting. Re-reviewed 2026-11-18: Store is now generic over its rate counter (Store<L = Limiter>) through the seams RateLimiter trait, with Store::new keeping the local Limiter, with_limiter() accepting e.g. the B23 fleet-shared counter, and limiter() exposing it for configuration; escalation logic is unchanged. It is referenced only by gateway seams and the coordinator ledger, with no wired runtime ban gate.",
+      "notes": "Pure bounded ban store ported from legacy ban.go. Keys are canonical ip:, fp: or cidr:. Auto-bans escalate 1h, 6h and 24h on hard rate breaches, with strikes decaying after 7 days; a fourth strike keeps 24h and reports dual_control_required instead of a permanent ban. Single operators may add only temporary narrow bans; permanent or cidr bans require a consumed RetainedActionPermit for Action::PermanentBan bound to the key commitment. Lifting a permanent ban is refused, and a full store refuses rather than evicting. Re-reviewed 2026-11-18: Store is now generic over its rate counter (Store<L = Limiter>) through the seams RateLimiter trait, with Store::new keeping the local Limiter, with_limiter() accepting e.g. the B23 fleet-shared counter, and limiter() exposing it for configuration; escalation logic is unchanged. It is referenced only by gateway seams and the coordinator ledger, with no wired runtime ban gate. Re-reviewed 2026-11-18 for claude/gate-residual-ws: adds Store::bulk_temporary (legacy adminBulkBan) with MAX_BULK_TERM 400 days; the term must be positive and below the cap, unparsable or broad keys are skipped and counted, valid keys go through add_temporary, and an invalid reason is refused up front (a deliberate difference from Go).",
       "pages": [
         "docs/runbooks/kill-switch-and-bans.md",
         "docs/reference/rbac-separation-of-duties.md"
@@ -8090,9 +8178,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs",
-      "sha256": "12a2f49afa7565703c01a942e30e676b23fa58f6bbbfc80b381f9a2f34406bf9",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Tests for the ban store, ported from legacy ban_test.go and wargame rounds. They assert auto-ban escalation with the dual-control flag at strike 4, 7-day strike decay, existing-ban reporting, temporary expiry, active-only listing, refusal of single-operator permanent or broad bans, capacity refusal without eviction, the key rejection matrix, canonical keys, flood/fingerprint/manual lifecycle kernels and GC. Unix-only dual_control tests use a real control authority with two administrators to show a permanent ban persists and resists single-operator lift, and that a broad ban needs a matching grant. The HTTP edge, admin API and audit halves are noted as unported.",
+      "sha256": "55a4f95c94c78ed9c29c446069851566c4d5776f8f11ecef566821c49153f0df",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tests for the ban store, ported from legacy ban_test.go and wargame rounds. They assert auto-ban escalation with the dual-control flag at strike 4, 7-day strike decay, existing-ban reporting, temporary expiry, active-only listing, refusal of single-operator permanent or broad bans, capacity refusal without eviction, the key rejection matrix, canonical keys, flood/fingerprint/manual lifecycle kernels and GC. Unix-only dual_control tests use a real control authority with two administrators to show a permanent ban persists and resists single-operator lift, and that a broad ban needs a matching grant. The HTTP edge, admin API and audit halves are noted as unported. Re-reviewed 2026-11-18: adds bulk_ban (port of ws9 TestBulkBan: 3 applied, cidr skipped, ban in force, zero and over-cap terms refused) and bulk_ban_skips_invalid_keys_and_expires.",
       "pages": [
         "docs/runbooks/kill-switch-and-bans.md"
       ]
@@ -8501,9 +8589,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/mod.rs",
-      "sha256": "2d2fdcfc84ad80fd703cb0d37a78079d390b5f58c6c3e4d095ecdf7fa24981bf",
+      "sha256": "0482dd72427bf690b016e9264f56cfb69a6a1c4a4149b583a42ba6e9c0b9483e",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway module root of the runtime crate: declares the application, attestation, ban, browser, configuration, connection cap, control, coordinator, credential, external input, guard, http, logging, management, model admission, observatory, pass proof/store, request, seams, service, session, settings, shipping, smuggle, startup, TLS, token, verdict store and virtual USB modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b: the change unions both parents' module declarations (the B23 coordinator module from PR #70 and the G7 target attestation module from PR #83, beside the existing model_admission and observatory modules). Doc line states loopback component support is not product qualification. Re-reviewed 2026-11-18 (B1 route policy slice): only adds the pub mod route_policy declaration.",
+      "notes": "Gateway module root of the runtime crate: declares the application, attestation, ban, browser, configuration, connection cap, control, coordinator, credential, external input, guard, http, logging, management, model admission, observatory, pass proof/store, request, seams, service, session, settings, shipping, smuggle, startup, TLS, token, verdict store and virtual USB modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b: the change unions both parents' module declarations (the B23 coordinator module from PR #70 and the G7 target attestation module from PR #83, beside the existing model_admission and observatory modules). Doc line states loopback component support is not product qualification. Re-reviewed 2026-11-18 for claude/gate-residual-ws: declares the new attest_floor and operations modules. Re-reviewed 2026-11-18 for claude/fm11-residual-4: the only change declares the admin_approval module (Go adminauth.go and approval.go kernel). Re-reviewed 2026-11-18 for the merge of codex/rust into claude/fm11-residual-4: the merged file declares admin_approval, attest_floor and operations together with no other change; the gateway:: library inventory is now linux 471 / macos 471 / windows 459. Re-reviewed 2026-11-18 (B1 route policy slice): only adds the pub mod route_policy declaration. Re-reviewed 2026-11-18 for the merge of claude/b1-settings-parity into claude/b1-enforce-parity (PR #125): the merged file declares admin_approval, attest_floor, operations and route_policy together with no other change.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
@@ -8735,9 +8823,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay.rs",
-      "sha256": "02e63599fdb04aba11ca3a8960e5d06723925bf170896d34fa81295c13b6ed9b",
+      "sha256": "f07e5768c3966fd08d82115555f4ec30e0e51b497d378e076de12e2edb5bb1e6",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Owner decision B1 (issue #75 comment 6979694428) exact-parity port of the Go oracle at 981d25c; nothing tuned. Settings overlay model: Mode, MutationClass, Overlay with ScoringPatch and RateLimitPatch, frozen scoring defaults 30/70/60, integrity-critical gate and hard-rule catalogs, known gates and net policy classes; CanonicalJSON, HMAC-SHA256 overlay digest (6 bytes) and cfg- configuration version byte-equal to Go. Pure library; not wired into the hosted gateway, whose operational CAS settings stay resource-only.",
+      "notes": "Owner decision B1 (issue #75 comment 6979694428) exact-parity port of the Go oracle at 981d25c; nothing tuned. Settings overlay model: Mode, MutationClass, Overlay with ScoringPatch and RateLimitPatch, frozen scoring defaults 30/70/60, integrity-critical gate and hard-rule catalogs, known gates and net policy classes; CanonicalJSON, HMAC-SHA256 overlay digest (6 bytes) and cfg- configuration version byte-equal to Go. Pure library; not wired into the hosted gateway, whose operational CAS settings stay resource-only. Re-reviewed 2026-11-18 (PR #124 review fix): Mode::Other now wraps UnknownMode, whose String field is private, so only Mode::parse and Mode::default build it and a known spelling cannot be put into Other; matching Mode::Other(_) and Mode::as_str are unchanged.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/reference/cli-config-policy.md"
@@ -8805,9 +8893,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs",
-      "sha256": "e5102439e4208a78c363612f904cee369a5ae26dc0d486ba606526ec89694d84",
+      "sha256": "738254ac0da0e53982c92c068b0257070ab13d0f6d38fff27805832dac52722b",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "One-to-one Rust ports of all 8 Go classify_test.go and 8 settings_test.go cases plus admin_settings_test.go TestConfigureEngineFromEffectiveNetPolicy, and port-specific negatives: empty overlay keeps frozen engine defaults, empty directory and invalid overlay refusal without writing, malformed and too-deep documents refused.",
+      "notes": "One-to-one Rust ports of all 8 Go classify_test.go and 8 settings_test.go cases plus admin_settings_test.go TestConfigureEngineFromEffectiveNetPolicy, and port-specific negatives: empty overlay keeps frozen engine defaults, empty directory and invalid overlay refusal without writing, malformed and too-deep documents refused. Re-reviewed 2026-11-18 (PR #124 review fix): adds a test that an overlay with a NaN challengeAt or a NaN weight multiplier passes validate as in Go, while Engine::score after configure_engine returns NonFinitePolicy (fail-closed).",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/reference/cli-config-policy.md"
@@ -8815,9 +8903,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests/parity.rs",
-      "sha256": "5d30d2556bedb4b4e1ca831d02f486f503263bdf7573ca905a120e9119681048",
+      "sha256": "ae473e053bcddd97c2c5a095f27e2f877ee4c201f75fe951e79833b4440c8977",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Differential parity against the Go-captured golden: float text, 192 overlay cases (157 decoded) through decode, validate, canonical and indented encoding, digest, resolve, configure_engine and a 1884-entry classification matrix, 32 frozen-report scores with traces, 19 file store scenarios and schema bytes (Go's map-ordered hard-rule list compared as a sorted set). Never regenerated; mismatches fail.",
+      "notes": "Differential parity against the Go-captured golden: float text, 192 overlay cases (157 decoded) through decode, validate, canonical and indented encoding, digest, resolve, configure_engine and a 1884-entry classification matrix, 32 frozen-report scores with traces, 19 file store scenarios and schema bytes (Go's map-ordered hard-rule list compared as a sorted set). Never regenerated; mismatches fail. Re-reviewed 2026-11-18 (PR #124 review fix): multi_gates_bad now requires both the Go-captured and the Rust refusal to be one of the single-entry refusals Go's map order can produce (unknown gate module \"gate.nope\" or gate.smuggle cannot be off), instead of comparing refusal only.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/reference/cli-config-policy.md"
@@ -10503,6 +10591,110 @@
       "pages": [
         "docs/how-to/detection-observatory.md",
         "docs/explanation/observatory-architecture.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/admin_approval.rs",
+      "sha256": "978861de2ab209db1339cdae1d1bd913f74298c9fba4aba79de5f3425b18f882",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Gateway-side port of legacy internal/gate/adminauth.go and approval.go: an Authorization: Bearer token table with a constant-time scan over every token and no early exit (deny status 404), the auditor/operator/approver/DPO role model with Go capabilities and the hasRole DPO superset, and a pending two-person approval store with copied params, 12-byte OS-entropy hex ids, TTL collection, Go refusal order (unknown, expired and removed, self-approval, wrong role), exactly-once commit and a hex HMAC-SHA256 ticket over id|kind|requester|approver plus the nine Go binding keys. Fail-closed differences: empty or duplicate tokens and empty ids are refused, entropy failure and a 4096-entry full store refuse create, a clock before creation never expires an entry, and the list is id ordered. It does not score, does not replace the signed quorum in audit control and is not yet wired to a served admin surface. Reader page coverage is indirect.",
+      "pages": [
+        "docs/reference/rbac-separation-of-duties.md",
+        "docs/runbooks/kill-switch-and-bans.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/admin_approval/tests.rs",
+      "sha256": "303c706e4b7f8094cafab5fe0790cc631a14721d419bc7a52e6b82699fca7e00",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "21 unit tests: Go TestApprovalStoreRules and wargame rounds R071-R078, R178-R180, R188 and R189 ported against the store, a ticket byte-layout vector computed independently with HMAC-SHA256 over the Go message, bearer parsing and deny-by-default, registration refusals, the role capability table, the erasure DPO rule, TTL boundary and clock regression, and the full-store refusal after expiry collection. Reader page coverage is indirect.",
+      "pages": [
+        "docs/reference/rbac-separation-of-duties.md",
+        "docs/runbooks/kill-switch-and-bans.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/attest_floor.rs",
+      "sha256": "4b36be609d0fc7c37f7f656c88878243bda94a83cd62ccfb74af97e0305e5327",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Attested-route floor decision ported from legacy attestFloor handling in verdictTokenGate and applyVerdict (wargame R346-R348). decide() takes whether the route has the floor, whether it is enforcing, and whether the request carries a valid verdict token, a sticky allow and a valid step-up proof. In Enforce mode an unlocked floor declines the verdict-token fast path and turns a scoring allow into a step-up challenge (legacy challenge_pow 401); Monitor and Shadow forward and report 'would require step-up'; Off forwards silently. Credentials checks verdict and step-up tokens through gateway::token with the session, binding and accepted epochs. No scoring weight, threshold or verdict band is touched, and the decision is not yet wired into the serving path.",
+      "pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests.rs",
+      "sha256": "d369fb390f6aa0857830ee920b077f8cca8459e746ab9320501cb669d46bf31d",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unit tests for the attested-route floor with real HMAC verdict and step-up tokens: R346 a valid allow token is priced to a step-up challenge on an attested route; R347 a valid step-up proof for the same session and binding unlocks it; R348 a sticky allow cannot skip the floor; verdict tokens replayed as step-up, another session's or binding's proof and expired proofs do not unlock; Monitor/Shadow forward with the matching note while Off is silent; non-allow and non-enforcing routes go to the pipeline. Unit-level only.",
+      "pages": [
+        "docs/reference/red-team-catalog.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/operations.rs",
+      "sha256": "26b3a5becdaa3aa644cd8f77a1929db04654821c0428601f8dd2be607075e24f",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Module root for operator kernels ported from the legacy admin and ops handlers: audit_search, counters and erasure_hold. The doc comment states these are pure kernels and that HTTP routes and operator roles are not mounted.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search.rs",
+      "sha256": "d96ba5dfbcb1af24e6447e1448d5a55b3c620ce1827d21257209348dfda5f673",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Audit search kernel ported from legacy adminAudit: limit defaults to 50 and only 1..=500 is accepted; filters are verdict exact, host case-insensitive substring, route exact, rule exact membership, subject matching the session or actor pseudonym, minimum risk and a before cursor. Records are scanned newest first and each hit carries an incident handle; next_before is the seq of the last returned record. Unparsable numbers fall back as in Go. No HTTP route is mounted.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/reference/rbac-separation-of-duties.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search/tests.rs",
+      "sha256": "6ff4c46d2f36a90ed42d490b5fafee7997110e849b62c499f9051a966e07152e",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unit tests porting TestAuditSearchAndPagination (deny/allow seed, filtered query returns only matching denies, limit 3 pages with an older second page) plus newest-first order, cursor and incident handles, limit and numeric fallbacks, case-insensitive host and exact route, rule and subject matching.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/operations/counters.rs",
+      "sha256": "4f07a08c0e89b49e2b99b46a8bb63a1712ad24138efb08f32a354569abb2e536",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Operator counters rollup ported from legacy handleCounters: version, uptimeSec, an ml block (enabled; with a humanymous-core correction Controller also canaryState, canaryReason when set, fireThreshold and activeBundle; always oracleTraces) and fleet.redisFallbackTotal. Nil-safe without a controller. The Go-runtime fields goroutines, heapAllocBytes and numGC are deliberately not emitted. No /api/counters route is mounted.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/operations/counters/tests.rs",
+      "sha256": "bb89f3f3479eed2e634ca9c7905df88e8fb4b1d2da07fb58a438d3766083b7eb",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unit tests porting TestHandleCounters_ShowsTrippedCanary (a real Controller with gamma 0 and an armed canary trips after 400 confirmed-human outcomes, and the rollup shows canaryState tripped with a reason) and TestHandleCounters_NilSafeWithoutModel, plus an armed canary with bundle, oracle trace and fleet fallback counts.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/operations/erasure_hold.rs",
+      "sha256": "07bff81f0b2a5a0d50092388d154a5ba5cdc3d1f8d1249b0a76965fed6b7c170",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Cancellable erasure hold queue ported from legacy ShredQueue/RunDueShreds and adminErasure reverse resolve. Approved erasures are scheduled after a hold window (default 5 minutes, zero refused), can be cancelled until due, and are bounded at 1024 pending with refusal instead of eviction. run_due calls the supplied shred with the stored approval capability; a failure keeps the entry pending, otherwise it emits erasure.completed or erasure.no_subject with the legacy erasure-cert text (root prefix, tree size, legal basis, requester->approver). The queue is generic over the permit and never mints one; composing it with the ledger-issued ErasurePermit and Vault::shred is not done here.",
+      "pages": [
+        "docs/runbooks/kill-switch-and-bans.md",
+        "docs/reference/rbac-separation-of-duties.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/operations/erasure_hold/tests.rs",
+      "sha256": "ff386c2879c6f24d821c6a5bc9d23e095bc5c543c21fa8ef69dd2b04ad242a72",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unit tests porting TestErasureHoldWindowAndReverseResolve and TestErasureCancel against the real reference Vault for pseudonyms and link/resolve: nothing executes inside the window, the shred runs once after it with the exact certificate text, and a cancelled erasure never executes. Shred is a test closure with a stand-in permit, so the tests do not show the pseudonym changing after a real shred. Also covers failed shreds staying pending, no-subject completion, missing fields, zero hold and capacity.",
+      "pages": [
+        "docs/runbooks/kill-switch-and-bans.md"
       ]
     }
   ],

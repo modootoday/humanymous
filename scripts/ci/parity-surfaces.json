@@ -258,7 +258,7 @@
     },
     {
       "id": "signals-wire",
-      "compares": "signal constructors and session report wire shape",
+      "compares": "signal constructors, session report wire shape and Go float formatting (fmt %v, %.1f, encoding/json)",
       "go_packages": [
         "internal/signals"
       ],
@@ -274,6 +274,13 @@
           "functions": [
             "complete_report_shape_and_defaults_match_go"
           ]
+        },
+        {
+          "file": "crates/sdk/humanymous-core/tests/signals/float_go_parity.rs",
+          "functions": [
+            "regenerated_streams_hash_to_go_captured_outputs",
+            "explicit_edge_and_tie_cases_match_go_exactly"
+          ]
         }
       ],
       "vectors": [
@@ -288,6 +295,15 @@
           "sha256": "84c7f771d7f70ff4473a5ced3c46a8074c58deb0fa89ec4f89688c2c8c247f13",
           "provenance": "go-recorded-differential",
           "record": "plan:root/20261106194012"
+        },
+        {
+          "path": "crates/sdk/humanymous-core/tests/signals/fixtures/float-go-golden.json",
+          "sha256": "a6f2bb227a91f30ad8c315c2aed354bd91c830d27bbbb2cf851b318385d411f8",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261117142053",
+          "oracle_commit": "981d25cf71a5a54855d7e2b4359e832a9d5998e5",
+          "go": "1.26.3",
+          "capture": "stdlib-only capture program run with git archive 981d25c go.mod and go.sum as module context in mirror.gcr.io/library/golang:1.26.3-alpine@sha256:91eda9776261207ea25fd06b5b7fed8d397dd2c0a283e77f2ab6e91bfa71079d (--network none, GOPROXY=off, GOTOOLCHAIN=local); the capture program is private evidence (sha256 cf22d2ac9821987afe1992659f4219bec785f0b02ee1d1a4f19849b572c01039) and is not committed; full provenance is in the fixture"
         }
       ]
     },
