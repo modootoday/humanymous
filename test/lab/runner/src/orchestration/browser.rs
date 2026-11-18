@@ -550,6 +550,7 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
             "full_product_qualified":false}),
     )?;
     lab.components["coherent_browser_ceiling"] = ceiling["observation"].clone();
+    lab.components["coherent_browser_ceiling"]["case_status"] = ceiling["status"].clone();
     // Every required case is recorded before the first failure is returned.
     let missing = lab.case(
         "missing-signals-closed",
@@ -561,10 +562,17 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         parity["passed"] == true,
         json!({"gaps":parity["gaps"],"epoch":"complete","evidence":"complete epoch (lab page explicitly enabled guard hooks): real browser Rust WASM report vs Go 981d25c report/signal sets and loader planes; collect bound to the issuing session; required-collector admission for that session only"}),
     );
-    let ceiling = lab.case(
-        "coherent-browser-ceiling",
-        ceiling["passed"] == true,
-        json!({"gaps":ceiling["gaps"],"epoch":"ceiling","observation":ceiling["observation"],"evidence":"ceiling epoch (same real browser and Rust WASM collector, guard hooks opted in, declared dwell/think pace observed on both proxy clocks): the Gate's consumed decision from the authenticated audit record bound to that session, its response at both proxies and the origin's own effect count, with browser/runtime image IDs and the reported user agent. ALLOW is ceiling_reached and DENY/CHALLENGE ceiling_not_reached; neither is block credit or a detection claim"}),
-    );
+    // Owner decision C9 (#75): without an actor_coherent attestation the case
+    // is not recorded, so qualification reports it not_evaluated (never
+    // passed); its observation stays in the private report and components.
+    let ceiling = if ceiling["status"] == "not_evaluated" {
+        Ok(())
+    } else {
+        lab.case(
+            "coherent-browser-ceiling",
+            ceiling["status"] == "passed",
+            json!({"gaps":ceiling["gaps"],"epoch":"ceiling","observation":ceiling["observation"],"evidence":"ceiling epoch (same real browser and Rust WASM collector, guard hooks opted in, declared dwell/think pace observed on both proxy clocks, actor_coherent attested by the bound browser epoch): the Gate's consumed decision from the authenticated audit record bound to that session, its response at both proxies and the origin's own effect count, with browser/runtime image IDs and the reported user agent. ALLOW is ceiling_reached and DENY/CHALLENGE ceiling_not_reached; neither is block credit or a detection claim"}),
+        )
+    };
     missing.and(parity).and(ceiling)
 }

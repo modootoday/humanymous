@@ -11,8 +11,16 @@
 //! `ceiling_reached`; DENY or CHALLENGE (nothing forwarded) is
 //! `ceiling_not_reached` with the actor's own reported BOT signals listed, so
 //! a non-coherent actor is visible as such. Neither outcome is block credit
-//! or a detection claim. The case fails only when the observation is
-//! missing, unbound to its epoch/session/images, unpaced or inconsistent.
+//! or a detection claim. The case fails when the observation is missing,
+//! unbound to its epoch/session/images, unpaced or inconsistent.
+//!
+//! Owner decision C9 (#75, 2026-11-18): the case also requires the ceiling
+//! epoch's actor to be a coherent T4 actor. The bound browser epoch must carry
+//! `actor_coherent: true`; `false` (or any non-boolean value) fails, and an
+//! absent attestation leaves the case `not_evaluated`, never passed. No
+//! current lab actor emits it (headless WebDriver Firefox is not coherent), so
+//! the lab records the observation without a classification and the case
+//! stays unevaluated until a coherent actor is defined.
 use super::browser_epochs::{binding_gaps, view};
 use super::collector_parity::captured;
 use crate::browser_expectations::{CEILING_VERDICTS, EPOCHS};
@@ -184,7 +192,23 @@ pub(crate) fn with_decision(expected: &Value, decision: Option<&Value>) -> Value
     whole
 }
 
-/// `coherent-browser-ceiling`: complete, bound and consistently classified.
+/// Whether the bound ceiling epoch's actor attests coherence: `None` when
+/// epochs are unbound or the attestation is absent, `Some(false)` for an
+/// explicit `false` or a malformed value, `Some(true)` only for `true`.
+fn actor_coherent(gate: &Value, actor: &Value) -> Option<bool> {
+    if !binding_gaps(gate, actor).is_empty() {
+        return None;
+    }
+    match actor["epochs"][index()].get("actor_coherent")? {
+        Value::Bool(coherent) => Some(*coherent),
+        _ => Some(false),
+    }
+}
+
+/// `coherent-browser-ceiling`: complete, bound, consistently classified and
+/// observed from a coherent actor. `status` is `passed`, `failed` or
+/// `not_evaluated`; any evidence gap fails, and only otherwise-sound evidence
+/// without an `actor_coherent` attestation is `not_evaluated`.
 /// `provenance` carries the observed browser and runtime image IDs.
 pub(super) fn evaluate(
     gate: &Value,
@@ -262,7 +286,7 @@ pub(super) fn evaluate(
         .unwrap_or_default();
     let verdict = decision.as_ref().and_then(|d| d["verdict"].as_str());
     let effects = decision.as_ref().and_then(|d| d["origin_effects"].as_u64());
-    let classification = match (verdict, effects) {
+    let outcome = match (verdict, effects) {
         (Some("ALLOW"), Some(1)) => Some("ceiling_reached"),
         (Some("DENY" | "CHALLENGE"), Some(0)) => Some("ceiling_not_reached"),
         (None, _) => None,
@@ -271,8 +295,21 @@ pub(super) fn evaluate(
             None
         }
     };
+    let coherent = actor_coherent(gate, actor);
+    if coherent == Some(false) {
+        gaps.push("actor_not_coherent".to_owned());
+    }
     gaps.sort();
     gaps.dedup();
+    // A classification is a T4 ceiling statement only for a coherent actor.
+    let classification = outcome.filter(|_| coherent == Some(true));
+    let status = if !gaps.is_empty() {
+        "failed"
+    } else if coherent == Some(true) {
+        "passed"
+    } else {
+        "not_evaluated"
+    };
     let observation = json!({"schema":SCHEMA,"tier":"T4","epoch":EPOCH,
         "classification":classification,"verdict":verdict,
         "status":decision.as_ref().map(|d| d["status"].clone()),
@@ -286,11 +323,12 @@ pub(super) fn evaluate(
             "engine_version":engine,"guard_reported":report.as_ref().map(|r| r["guard"]["reported"].clone()),
             "report_sha256":epoch_gate["collector_reports"].get(0).map(|r| r["sha256"].clone()),
             "reported_bot_signals":reported_bot,
-            "automation_disclosed":!reported_bot.is_empty()},
+            "automation_disclosed":!reported_bot.is_empty(),
+            "actor_coherent":coherent},
         "runtime_image":provenance["runtime_image"],
         "session":{"sessions":gate["epochs"][index()]["sessions"],
             "shared_sessions":gate["epochs"][index()]["shared_sessions"]}});
-    json!({"passed":gaps.is_empty(),"gaps":gaps,"observation":observation})
+    json!({"status":status,"passed":status == "passed","gaps":gaps,"observation":observation})
 }
 
 #[cfg(test)]
@@ -341,8 +379,16 @@ mod tests {
     }
 
     /// A bound three-epoch run whose ceiling decision was observed as
-    /// `verdict` with `status`, and `effects` origin contacts.
+    /// `verdict` with `status`, and `effects` origin contacts, from an actor
+    /// attesting `actor_coherent: true`.
     fn run(verdict: &str, status: u64, effects: u64) -> (Value, Value, Value) {
+        let (gate, mut actor, expected) = incoherent_run(verdict, status, effects);
+        actor["epochs"][2]["actor_coherent"] = json!(true);
+        (gate, actor, expected)
+    }
+
+    /// The same run as the current lab produces it: no `actor_coherent`.
+    fn incoherent_run(verdict: &str, status: u64, effects: u64) -> (Value, Value, Value) {
         let fixture = fixture();
         let expected = crate::browser_expectations::from_fixture(&fixture).unwrap();
         let required = route(&fixture, "required_collector");
@@ -373,6 +419,84 @@ mod tests {
 
     fn evaluated(gate: &Value, actor: &Value, expected: &Value) -> Value {
         evaluate(gate, actor, expected, &fixture(), &provenance())
+    }
+
+    #[test]
+    fn absent_actor_coherent_is_not_evaluated_never_passed() {
+        // The current lab: sound, bound evidence but no coherent actor.
+        for (verdict, status, effects) in
+            [("DENY", 403, 0), ("CHALLENGE", 403, 0), ("ALLOW", 200, 1)]
+        {
+            let (gate, actor, expected) = incoherent_run(verdict, status, effects);
+            let result = evaluated(&gate, &actor, &expected);
+            assert_eq!(result["gaps"], json!([]), "{result}");
+            assert_eq!(result["status"], "not_evaluated", "{verdict}");
+            assert_eq!(result["passed"], false, "{verdict}");
+            let observation = &result["observation"];
+            assert_eq!(observation["verdict"], verdict);
+            assert_eq!(observation["classification"], Value::Null);
+            assert_eq!(observation["actor"]["actor_coherent"], Value::Null);
+            assert_eq!(observation["block_credit"], 0);
+            assert_eq!(observation["detection_claim"], false);
+        }
+        // Absence never masks broken evidence: any gap still fails.
+        let (mut gate, actor, expected) = incoherent_run("DENY", 403, 0);
+        gate["epochs"][2]["elapsed_ms"] = json!(5499);
+        let result = evaluated(&gate, &actor, &expected);
+        assert_eq!(result["status"], "failed", "{result}");
+        assert_eq!(result["gaps"], json!(["pace_not_observed"]));
+        // An attestation on unbound epochs is not read at all.
+        let (mut gate, actor, expected) = run("DENY", 403, 0);
+        gate["epochs"][2]["shared_sessions"] = json!(1);
+        let result = evaluated(&gate, &actor, &expected);
+        assert_eq!(result["status"], "failed");
+        assert_eq!(
+            result["observation"]["actor"]["actor_coherent"],
+            Value::Null
+        );
+    }
+
+    #[test]
+    fn actor_coherent_false_or_malformed_fails() {
+        for value in [json!(false), json!("true"), json!(1), Value::Null] {
+            let (gate, mut actor, expected) = run("DENY", 403, 0);
+            actor["epochs"][2]["actor_coherent"] = value.clone();
+            let result = evaluated(&gate, &actor, &expected);
+            assert_eq!(result["status"], "failed", "{value}");
+            assert_eq!(result["passed"], false, "{value}");
+            assert_eq!(result["gaps"], json!(["actor_not_coherent"]), "{value}");
+            assert_eq!(result["observation"]["classification"], Value::Null);
+            assert_eq!(result["observation"]["actor"]["actor_coherent"], false);
+        }
+        // An attestation on another epoch does not count for the ceiling.
+        let (gate, mut actor, expected) = incoherent_run("ALLOW", 200, 1);
+        actor["epochs"][1]["actor_coherent"] = json!(true);
+        assert_eq!(
+            evaluated(&gate, &actor, &expected)["status"],
+            "not_evaluated"
+        );
+    }
+
+    #[test]
+    fn actor_coherent_true_with_the_required_evidence_passes() {
+        for (verdict, status, effects, classification) in [
+            ("ALLOW", 200, 1, "ceiling_reached"),
+            ("DENY", 403, 0, "ceiling_not_reached"),
+        ] {
+            let (gate, actor, expected) = run(verdict, status, effects);
+            let result = evaluated(&gate, &actor, &expected);
+            assert_eq!(result["gaps"], json!([]), "{result}");
+            assert_eq!(result["status"], "passed");
+            assert_eq!(result["passed"], true);
+            assert_eq!(result["observation"]["classification"], classification);
+            assert_eq!(result["observation"]["actor"]["actor_coherent"], true);
+        }
+        // Coherence never excuses a missing piece of the other evidence.
+        let (gate, mut actor, expected) = run("DENY", 403, 0);
+        actor["status"] = json!("failed");
+        let result = evaluated(&gate, &actor, &expected);
+        assert_eq!(result["status"], "failed");
+        assert_eq!(result["gaps"], json!(["actor_test_incomplete"]));
     }
 
     #[test]

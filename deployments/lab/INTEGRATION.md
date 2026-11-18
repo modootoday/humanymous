@@ -184,7 +184,11 @@ the actor's reported BOT signals), bound to the epoch's session and the
 browser/runtime image IDs, never as block credit or detection; zero origin
 effect is required of the other epochs only. A WebDriver-controlled headless
 browser is not shown to be a coherent T4 actor, so a non-ALLOW outcome there
-is not evidence about real coherent automation.
+is not evidence about real coherent automation. Owner decision C9 (#75,
+2026-11-18) therefore requires the bound ceiling epoch to attest
+`actor_coherent: true` for a pass; `false` fails, and the current lab actor,
+which attests nothing, leaves the case `not_evaluated` (unclassified, never a
+pass) while any other evidence gap still fails it.
 Missing receipts fail; no full-product qualification is implied. Browser-profile
 witness outage/recovery, physical failure, full sandbox, human/AT and qualified
 collector provenance remain unavailable until their own actual evidence lands.

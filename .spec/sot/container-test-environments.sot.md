@@ -3,7 +3,7 @@ id: sot:root/container-test-environments
 title: Canonical Compose lab and Cloudflare test environment profiles
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-17T12:00:00Z
+updated: 2026-11-18T12:00:00Z
 verify: manual
 rel:
   governs: [deployments/lab/**, build/rust/**, test/lab/**]
@@ -925,6 +925,12 @@ witness-fork-refused, witness-head-restart, human-allow-control,
 keyboard-challenge, assistive-challenge, zero-motor-control,
 coherent-browser-ceiling, container-recreation, rolling-config-epoch,
 credential-rotation and cleanup-owned-resources-only.
+
+coherent-browser-ceiling passes only for a ceiling epoch whose actor attests
+`actor_coherent: true` (owner decision C9, issue #75, 2026-11-18; contract in
+`sot:root/client-collector`). An explicit `false` fails; an absent attestation
+is `not_evaluated`, never a pass, and the current WebDriver lab actor attests
+nothing.
 
 Provider cases additionally require provider-local-remote-differences,
 provider-outbound-deny, provider-control-plane-loss, provider-data-plane-loss,
