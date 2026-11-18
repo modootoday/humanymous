@@ -8569,7 +8569,7 @@
       "source": "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs",
       "sha256": "b3501f2f28f1d68f4eb9650d192b1ab343f7273f2277661fcfcf0bde61a21c8e",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Twelve unit tests with goldens produced by Go 1.25 from the baseline's ritCanonical, SessionKey/Seed and verifyRIT HMAC: canonical, issued seed and token goldens, missing-input refusals, symmetric bucket tolerance, ParseUint-style counter parsing, a valid request, the one-shot bootstrap grace, tokenless requests after signing reported Absent, out-of-sequence counters and out-of-tolerance buckets reported stale, and tampering of any field or body failing the single HMAC check.",
+      "notes": "Twelve unit tests with goldens produced by Go 1.25 from the baseline's ritCanonical, SessionKey/Seed and verifyRIT HMAC: canonical, issued seed and token goldens, missing-input refusals, symmetric bucket tolerance, ParseUint-style counter parsing, a valid request, the one-shot bootstrap grace, tokenless requests after signing reported Absent, out-of-sequence counters and out-of-tolerance buckets reported stale, and a changed body, a truncated token or a different session id each failing the single HMAC check as Tampered.",
       "pages": [
         "docs/reference/browser-collector.md",
         "docs/reference/gate-origin-contract.md"
