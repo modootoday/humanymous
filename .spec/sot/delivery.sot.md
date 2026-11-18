@@ -1073,6 +1073,76 @@ helper, missing parent/child proof, malformed extra summary or ordinary ignored
 unit fails the gate. All other harnesses retain strict one-summary/zero-ignore
 accounting. This does not skip tests or qualify full product runtime.
 
+### Declared ignored native pilots (2026-11-16)
+
+scripts/ci/native-pilots.json is the single declaration both the workspace
+probe and the executor compile in. Each pilot names a package, target, kind,
+OS (and optional architecture), exact ignored test names, subprocess helpers
+and one executor. A harness may report ignored tests only when the observed
+ignored names equal the declared names for that harness and OS exactly; any
+extra, missing or renamed ignored test stays a coverage-accounting failure.
+
+Executor `native-pilots`: the native job runs `delivery component pilots`
+before the probe. It builds each pilot target, runs every declared test alone
+with `--exact --ignored` (root pilots through `sudo -n` from a world-executable
+copy, private-parent pilots in a fresh 0700 directory under RUNNER_TEMP) and
+requires the exact single-test success footer. It writes
+target/native-pilots/receipt.json bound to the source SHA, OS, architecture and
+declaration digest. The probe accepts the declared names only when that receipt
+shows one passed row per declared test; an absent, failed or mismatched receipt
+is an accounting failure.
+
+Executor `job`: the pilot is run by a named step of another job that
+merge-ready already requires (today the `node` job `component node-host`
+step for the three Node host_process groups). Delivery tests verify the named
+step exists in that job; the other job's own result carries the outcome.
+
+This replaces the single privileged-Docker scope declaration for the authority
+socket ACL test: it now runs as root on the hosted runner and its helper is
+declared.
+
+A pilot may set `outer_grant: true` (unprivileged only). The executor then is
+the outer supervisor that the platform controlled-capture parents require. It
+spawns the test process directly in its own process group, publishes the
+cooperative `humanymous.controlled-capture-grant/1` claim atomically, binding
+the exact selector, a fresh 128-bit nonce and the spawned PID, and kills the
+group at the 900-second deadline. The five Linux capture_attempt parents run
+this way. The claim is cooperative metadata, not OS authority. A declaration may
+add one explicit `--features` value after `--lib` when the selected tests exist
+only behind that feature.
+
+The attacker publication, lab-runner source pin and platform controlled-capture
+pilots are declared for Linux and macOS, so the macOS native job runs them
+itself through the Unix executor. The Node host_process groups are declared on
+every native OS with the `job` executor: the row names the Linux `node` job
+that runs them and claims no macOS or Windows host qualification.
+
+On Windows (2026-11-17) the attacker publication, lab-runner source pin and
+platform controlled-capture pilots are also declared, plus two Windows-only pilots: the attacker
+denied-replacement test and the two platform controlled_barrier parents
+(missing grant, live parent at the outer deadline). A Windows `outer_grant`
+pilot is supervised by the native runner's `controlled-capture` mode, which
+owns the test process in a real Windows Job and classifies the fixed case; the
+receipt row passes only when that classification qualifies the case for this
+exact test executable digest, and the capture parents must also show the
+single-test success footer. Other Windows pilots run the test process directly
+under the same 900-second deadline; a deadline kill is a failure.
+
+The standard-user Windows actor that runs the workspace probe receives only
+System32, the directories of `git.exe` and `pwsh.exe` from the provisioning
+parent's PATH, the machine-wide PATHEXT, SystemDrive, ProgramFiles,
+ProgramData and ComSpec values, a private TEMP, a command-scope `safe.directory` for the
+read-only checkout, and `cargo metadata` output captured by the parent; it has
+no Cargo of its own.
+
+Undeclared ignored tests (the dotnet hosted and package pilots, whose host
+start is Unsupported) still fail accounting until an executor exists.
+
+The native job timeout is 90 minutes. The Windows debug workspace build alone
+takes about 24 minutes, and the old 40-minute limit cancelled the later steps
+before they reported. Declarations are not waivers and qualify no full
+product runtime.
+
 ## Bounded public archive transport and measurement
 
 Run 42354873001 at a26d1c3f08b365ca93545c6a51343095868edb45 is a distinct
