@@ -615,10 +615,9 @@ async fn renewal_failures_are_recorded_with_kind_and_time() {
     assert_eq!(failure.kind, AcmeErrorKind::Protocol);
     assert!(failure.at >= before && failure.at <= unix_now());
     assert_eq!(facts.consecutive_failures, 1);
-    // The renewal loop records each retried failure instead of discarding it,
-    // and backs off: with a 10 ms interval and no backoff it would try about
-    // 50 times in 500 ms; doubling delays (40, 80, 160, 320 ms) allow at most
-    // a handful.
+    // The renewal loop records each retried failure instead of discarding it.
+    // A 10 ms interval is raised to MIN_CHECK_INTERVAL (and then backed off),
+    // so within 500 ms the loop makes exactly one further attempt.
     assert!(
         tokio::time::timeout(
             Duration::from_millis(500),
@@ -628,13 +627,37 @@ async fn renewal_failures_are_recorded_with_kind_and_time() {
         .is_err()
     );
     let facts = issuer.renewal_facts();
-    assert!((2..=6).contains(&facts.attempts), "{facts:?}");
+    assert_eq!(facts.attempts, 2, "{facts:?}");
     assert_eq!(u64::from(facts.consecutive_failures), facts.attempts);
     assert_eq!(facts.generation, 0);
     assert_eq!(
         facts.last_failure.map(|failure| failure.kind),
         Some(AcmeErrorKind::Protocol)
     );
+    fs::remove_dir_all(cache).unwrap();
+}
+
+/// `maintain(Duration::ZERO)` used to spin: with failures the backoff of a
+/// zero interval stays zero. The floor makes it wait MIN_CHECK_INTERVAL.
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn zero_check_interval_is_raised_to_the_floor_and_never_spins() {
+    assert!(MIN_CHECK_INTERVAL >= Duration::from_secs(1));
+    let cache = scratch("zero-interval");
+    let mut settings = AcmeSettings::lets_encrypt(cache.clone());
+    // Nothing listens on port 1: every attempt fails fast.
+    settings.directory = "https://127.0.0.1:1/directory".into();
+    let issuer = Arc::new(AcmeIssuer::new(settings, domains(&["example.com"])).unwrap());
+    assert!(
+        tokio::time::timeout(
+            Duration::from_millis(600),
+            issuer.clone().maintain(Duration::ZERO),
+        )
+        .await
+        .is_err()
+    );
+    let facts = issuer.renewal_facts();
+    assert_eq!(facts.attempts, 1, "{facts:?}");
+    assert_eq!(facts.consecutive_failures, 1);
     fs::remove_dir_all(cache).unwrap();
 }
 

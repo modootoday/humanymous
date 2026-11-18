@@ -38,6 +38,11 @@ pub struct Configuration {
     /// Explicit browser contract; absent preserves native-only configuration.
     #[serde(default)]
     pub browser: Option<BrowserPolicy>,
+    /// B02 TLS listener request and its one certificate source; absent keeps
+    /// the plaintext loopback listener. A request that selects no source is
+    /// refused before custody, never served with a self-signed fallback.
+    #[serde(default)]
+    pub tls: Option<crate::gateway::tls::listener::ListenerTls>,
 }
 
 /// Distinct integrity contracts. A browser subset never claims full wire binding.

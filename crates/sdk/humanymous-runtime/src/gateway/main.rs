@@ -1,7 +1,9 @@
-//! Private inherited configuration, durable audit startup and native listener.
+//! Private inherited configuration, durable audit startup and native listener,
+//! plaintext loopback or TLS with one explicitly configured certificate source.
 use humanymous_runtime::gateway::{
     service::{ServiceHost, read_configuration},
     startup::inherited_witness,
+    tls::listener,
 };
 use std::io::{self, IsTerminal, Write};
 
@@ -38,6 +40,15 @@ fn run() -> Result<(), &'static str> {
         _ => return Err("private inherited configuration/readiness pipes required"),
     }
     let config = read_configuration(io::stdin().lock()).map_err(|_| "configuration pipe")?;
+    // B02: a `tls` request selects exactly one certificate source (Go -tls-cert/
+    // -tls-key, -acme-*, or the explicit dev certificate) before custody opens.
+    // No source, an ambiguous one or an unavailable one fails closed here.
+    let mut tls = config
+        .tls
+        .as_ref()
+        .map(listener::prepare)
+        .transpose()
+        .map_err(|error| error.code())?;
     // Configured inherited witness pipes are pinned before custody is opened.
     let witness = inherited_witness(&config).map_err(|_| "witness input")?;
     let runtime = tokio::runtime::Builder::new_multi_thread()
@@ -46,11 +57,19 @@ fn run() -> Result<(), &'static str> {
         .build()
         .map_err(|_| "runtime")?;
     runtime.block_on(async move {
-        let host = match witness {
-            Some(witness) => ServiceHost::bind_with_witness(config, witness).await,
-            None => ServiceHost::bind(config).await,
+        let host = match (&tls, witness) {
+            (Some(tls), witness) => {
+                ServiceHost::bind_tls(config, witness, None, None, None, tls.server_config()).await
+            }
+            (None, Some(witness)) => ServiceHost::bind_with_witness(config, witness).await,
+            (None, None) => ServiceHost::bind(config).await,
         }
         .map_err(|_| "service startup")?;
+        // ACME renewal (Go autocert) runs beside the bound listener, which
+        // answers its TLS-ALPN-01 validation handshakes.
+        let maintenance = tls
+            .as_mut()
+            .and_then(listener::PreparedTls::start_maintenance);
         {
             let mut stdout = io::stdout().lock();
             serde_json::to_writer(&mut stdout, host.readiness()).map_err(|_| "readiness pipe")?;
@@ -62,10 +81,11 @@ fn run() -> Result<(), &'static str> {
         // Legacy inherited-pipe entrypoint has no platform shutdown adapter.
         // The CLI/system-service adapter owns and retains the real sender.
         let (_sender, receiver) = tokio::sync::watch::channel(None);
-        host.run(receiver)
-            .await
-            .map(|_| ())
-            .map_err(|_| "service stopped")
+        let stopped = host.run(receiver).await;
+        if let Some(maintenance) = maintenance {
+            maintenance.abort();
+        }
+        stopped.map(|_| ()).map_err(|_| "service stopped")
     })
 }
 fn main() {

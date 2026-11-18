@@ -2,10 +2,12 @@
 //! Encrypt production by default, any operator-chosen directory such as
 //! staging or a private CA), TLS-ALPN-01 answered by the resolver this issuer
 //! hands to [`super::certificate::issuer_config`], an owner-only cache keyed by
-//! directory, ECDSA P-256 keys and renewal 30 days before `NotAfter`.
-//! Handshakes are answered only for the declared domains. Not wired to the
-//! runtime binary: an embedder builds the ingress configuration, runs
-//! [`AcmeIssuer::maintain`] and serves the challenge on its own listener.
+//! directory, ECDSA P-256 keys and renewal 30 days before `NotAfter` (a
+//! third of the lifetime for shorter-lived leaves).
+//! Handshakes are answered only for the declared domains. The runtime binary
+//! builds it from the `tls.acme` configuration through
+//! [`super::listener::prepare`] and runs [`AcmeIssuer::maintain`] beside its
+//! loopback TLS listener; an embedder may do the same on its own listener.
 pub use super::certificate::CHALLENGE_ALPN;
 use super::certificate::{CertificateError, CertificateIssuer, issuer_domains};
 use instant_acme::{
@@ -37,6 +39,9 @@ pub const RENEW_BEFORE_SECONDS: i64 = 30 * 24 * 60 * 60;
 /// Longest wait between renewal attempts after consecutive failures, unless
 /// the check interval itself is longer.
 pub const MAX_RETRY_BACKOFF: Duration = Duration::from_secs(6 * 60 * 60);
+/// Shortest wait between renewal checks: [`AcmeIssuer::maintain`] raises any
+/// shorter interval, including zero, to this floor so it never spins.
+pub const MIN_CHECK_INTERVAL: Duration = Duration::from_secs(1);
 /// Let's Encrypt production directory, the Go `autocert` default.
 pub const LETS_ENCRYPT_PRODUCTION: &str = "https://acme-v02.api.letsencrypt.org/directory";
 /// Let's Encrypt staging directory for rehearsals.
@@ -278,10 +283,12 @@ impl AcmeIssuer {
     }
 
     /// Keep the certificate current: check every `interval`, like the Go
-    /// `autocert` renewal loop. After failed attempts the next check waits
-    /// [`retry_delay`] (exponential backoff); each failure is recorded in
-    /// [`Self::renewal_facts`].
+    /// `autocert` renewal loop. An interval shorter than
+    /// [`MIN_CHECK_INTERVAL`] (including zero) is raised to it. After failed
+    /// attempts the next check waits [`retry_delay`] (exponential backoff);
+    /// each failure is recorded in [`Self::renewal_facts`].
     pub async fn maintain(self: Arc<Self>, interval: Duration) {
+        let interval = interval.max(MIN_CHECK_INTERVAL);
         loop {
             // The failure is already recorded in the renewal facts by `issue`.
             let _recorded = self.ensure().await;

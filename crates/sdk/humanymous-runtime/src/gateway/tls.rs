@@ -3,6 +3,7 @@
 pub mod acme;
 pub mod certificate;
 mod h2;
+pub mod listener;
 
 pub use h2::CapturedH2Request;
 

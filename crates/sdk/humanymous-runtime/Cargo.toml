@@ -113,6 +113,11 @@ path = "tests/gateway/acme_pebble.rs"
 required-features = ["acme"]
 
 [[test]]
+name = "gateway-tls-startup"
+path = "tests/gateway/tls_startup.rs"
+required-features = ["gateway"]
+
+[[test]]
 name = "gateway-witness-input"
 path = "tests/gateway/witness_input.rs"
 required-features = ["gateway"]

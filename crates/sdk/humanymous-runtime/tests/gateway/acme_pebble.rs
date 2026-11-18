@@ -28,8 +28,10 @@ const CHALLTESTSRV: &str = "ghcr.io/letsencrypt/pebble-challtestsrv@sha256:0152c
 const DOMAIN: &str = "gate.humanymous.test";
 /// The pinned image's own `/test/config/pebble-config.json` with only its
 /// `default` profile (90 days). Pebble picks a random profile for an order
-/// that names none, and its `shortlived` profile (6 days) falls inside the
-/// 30-day renewal window, which made the not-due assertions flaky.
+/// that names none; its `shortlived` profile (6 days) fell inside the fixed
+/// 30-day renewal window and made the not-due assertions flaky. The window is
+/// now proportional (a third of a short lifetime, so 2 days for that profile),
+/// and pinning one profile keeps the asserted validity deterministic.
 const PEBBLE_CONFIG: &str = r#"{
   "pebble": {
     "listenAddress": "0.0.0.0:14000",

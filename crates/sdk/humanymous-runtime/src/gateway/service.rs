@@ -218,6 +218,11 @@ impl ServiceHost {
             .map_err(|_| io::Error::other("configuration invalid"))?;
         if let Some(tls) = &tls {
             crate::gateway::tls::validate_configuration(&configuration, tls)?;
+        } else if configuration.tls.is_some() {
+            // A requested TLS listener never degrades to plaintext.
+            return Err(io::Error::other(
+                "TLS listener requested without a certificate configuration",
+            ));
         }
         if operator.is_some()
             && (management_policy.is_none() || settings_policy.is_none() || witness.is_none())

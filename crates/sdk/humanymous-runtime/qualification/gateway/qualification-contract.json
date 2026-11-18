@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 539,
-      "macos": 539,
-      "windows": 525
+      "linux": 551,
+      "macos": 551,
+      "windows": 537
     },
     "common_test_names": [
       "gateway::admin_approval::tests::approval_store_rules",
@@ -472,6 +472,7 @@
       "gateway::tls::acme::tests::resolver_answers_only_declared_names_and_routes_challenges",
       "gateway::tls::acme::tests::settings_accept_https_directories_and_plain_contacts_only",
       "gateway::tls::acme::tests::short_lived_leaf_is_not_due_right_after_issuance",
+      "gateway::tls::acme::tests::zero_check_interval_is_raised_to_the_floor_and_never_spins",
       "gateway::tls::certificate::tests::dev_self_signed_is_explicit_exclusive_and_local_only",
       "gateway::tls::certificate::tests::dev_self_signed_setting_is_feature_checked_at_selection",
       "gateway::tls::certificate::tests::issuer_domains_are_normalised_and_plain_hosts_only",
@@ -483,6 +484,17 @@
       "gateway::tls::h2::tests::body_owner_retains_stream_one_data_only",
       "gateway::tls::h2::tests::h2_response_frames_end_stream_on_empty_body",
       "gateway::tls::h2::tests::settings_and_ack_frames_are_well_formed",
+      "gateway::tls::listener::tests::acme_domains_are_trimmed_and_blank_entries_refused",
+      "gateway::tls::listener::tests::acme_selection_builds_the_challenge_resolver_configuration",
+      "gateway::tls::listener::tests::acme_selection_starts_maintenance_once",
+      "gateway::tls::listener::tests::acme_staging_directory_is_honoured_and_bad_settings_are_refused",
+      "gateway::tls::listener::tests::acme_without_domains_ambiguous_or_unavailable_is_refused",
+      "gateway::tls::listener::tests::configuration_tls_object_parses_go_edge_settings_and_refuses_unknown_fields",
+      "gateway::tls::listener::tests::dev_flag_selects_the_dev_certificate_only_in_dev_builds",
+      "gateway::tls::listener::tests::missing_provisioned_files_are_a_hard_error",
+      "gateway::tls::listener::tests::no_source_fails_closed_instead_of_self_signing",
+      "gateway::tls::listener::tests::provisioned_pair_is_selected_and_served_without_challenge_alpn",
+      "gateway::tls::listener::tests::service_refuses_a_tls_request_without_server_configuration",
       "gateway::tls::tests::configuration_refuses_profiles_without_a_tls_h1_consumer",
       "gateway::token::tests::bindings_and_subnets_match_legacy_shapes",
       "gateway::token::tests::epoch_rotation_grants_one_grace_bucket",
