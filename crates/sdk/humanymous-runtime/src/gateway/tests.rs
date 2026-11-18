@@ -113,10 +113,14 @@ fn recovery_without_independent_head_never_opens_state_or_calls_witness() {
 struct Audit {
     records: Arc<Mutex<Vec<Record>>>,
     fail: Arc<AtomicBool>,
+    /// Fail only `upstream.error` appends, after the ALLOW record committed.
+    fail_upstream: Arc<AtomicBool>,
 }
 impl DurableAudit for Audit {
     fn append(&mut self, record: Record) -> std::io::Result<()> {
-        if self.fail.load(Ordering::SeqCst) {
+        if self.fail.load(Ordering::SeqCst)
+            || self.fail_upstream.load(Ordering::SeqCst) && record.event_type == "upstream.error"
+        {
             return Err(std::io::Error::other("injected disk failure"));
         }
         self.records.lock().unwrap().push(record);
