@@ -6621,9 +6621,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "05d0edf6492156b1e8f65defae36e10c5fdcc5c1c6a37e0e1fc2a68e68e1df3d",
+      "sha256": "49581edf4ec5a5a4074fa6d57529dc7fc0867fd14433e90b98ec4303da4f74a4",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 369 / macos 369 / windows 361 (361 common names, largest groups credential 50, token 42, ban 33, tests 29, observatory 26, logging 24, service 19, shipping 19, plus 8 Unix-only names listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 379 / macos 379 / windows 371 (371 common names, largest groups credential 50, token 42, ban 33, tests 29, observatory 26, logging 24, service 19, shipping 19, plus 8 Unix-only names listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/how-this-was-built.md"
@@ -8366,9 +8366,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/mod.rs",
-      "sha256": "d64f73a6b02a8195c628c39ee426accc60b79c3353cd28ab9b1feb789addf84d",
+      "sha256": "2f059fcdee10ebf0cb75ad758e9ad732cdc4c17de3c5a4564164c88cd4c4619e",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway module root of the runtime crate: declares the application, ban, browser, configuration, connection cap, console, control, credential, demo, external input, guard, http, inject, logging, management, observatory, pass proof/store, request, seams, service, session, settings, shipping, smuggle, startup, TLS, token, verdict store and virtual USB modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Doc line states loopback component support is not product qualification.",
+      "notes": "Gateway module root of the runtime crate: declares the application, ban, browser, configuration, connection cap, console, control, credential, demo, external input, guard, http, inject, logging, management, observatory, pass proof, pass store, request, routes, seams, service, session, settings, shipping, smuggle, startup, tls, token, verdict store and virtual usb modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Doc line states loopback component support is not product qualification.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
@@ -8462,6 +8462,26 @@
       "pages": [
         "docs/concepts/how-gate-sees-a-request.md",
         "docs/reference/data-processing-inventory.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/routes.rs",
+      "sha256": "ba947bcb7d6b2307108ab642232e81ce6f48c605db44dd51dc5d398405f00699",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Enforcement route presets and route table (port of internal/gate config.go resolution, configsign.go and cmd/gate routes.go; roadmap B12). Five presets select only enforcement behaviour (inject, enforce, fail closed, synchronous re-score, attestation floor): strict, balanced (default and fallback for unknown names), monitor, off and attested (strict plus floor); presets carry no weight, threshold or signal. resolve() picks the longest segment-anchored prefix on a lexically cleaned path so /./admin, //admin and /x/../admin hit the protected route, and global monitor clears enforce. parse_routes() reads '<prefix> <preset>' lines with # comments and refuses malformed lines, unknown presets and attested on the catch-all; validate_attested_routes() makes attested without a shared HMN_TOKEN_KEY fatal and without a possession verifier a warning. config_version() is an HMAC-SHA256 'cfg-' plus 12 hex digest over monitor, kill switch, routes and rate limits (defaults 10 s window, soft 60, hard 120).",
+      "pages": [
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/routes/tests.rs",
+      "sha256": "2565b53ecbda871a85eae3d7bd52b020b555cfbcd97b7c5a03000c1c5f388195",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Ten ports of cmd/gate routes_test.go, internal/gate resolve_test.go and configsign_test.go: valid routes files with comments and blank lines, unknown preset and malformed lines refused with line numbers, attested accepted on specific routes but refused on /, attested preconditions (missing shared key fatal, missing verifier one warning), missing file reported as a read error, path-confusion variants resolving to strict while /healthstatus-secret does not match /health, longest-prefix selection with global monitor clearing enforce but keeping the attestation floor, lexical path cleaning, and a known-answer config version cfg-694cb55271dd that changes with the kill switch and the key.",
+      "pages": [
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/cli-config-policy.md"
       ]
     },
     {
