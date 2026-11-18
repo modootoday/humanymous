@@ -39,7 +39,9 @@ exactly one source:
 }
 ```
 
-The runtime refuses to start, before it opens audit custody, when the `tls`
+Once ready, the runtime's readiness line names the selected source in
+`tls_mode` (`operator_certificate`, `acme` or `dev_self_signed`). It refuses to
+start, before it opens audit custody, when the `tls`
 object names no source, more than one source, half a key pair, unreadable PEM
 files, invalid domains or a source the build lacks. It never falls back to a
 self-signed certificate. A provisioned pair is read once at startup; restart

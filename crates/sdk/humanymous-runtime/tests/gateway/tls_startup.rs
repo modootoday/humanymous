@@ -268,6 +268,9 @@ fn runtime_binary_serves_tls_from_a_provisioned_pair() {
     assert_eq!(ready["profile"]["profile"], "experimental-loopback-tls-h1");
     assert_eq!(ready["profile"]["raw_tls"], true);
     assert_eq!(ready["profile"]["product_qualified"], false);
+    // The selected source name, as Go logged tls_mode; no path or key material.
+    assert_eq!(ready["tls_mode"], "operator_certificate");
+    assert!(!line.contains("chain.pem") && !line.contains("key.pem"));
     let address: std::net::SocketAddr = ready["listen"].as_str().unwrap().parse().unwrap();
     assert!(address.ip().is_loopback());
 

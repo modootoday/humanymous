@@ -365,7 +365,9 @@
    ],
    "go_test_map": {},
    "gaps": [
-    "Application::serve_tls_until and the gateway Configuration accept only a loopback listener and loopback peers, so the runtime cannot bind a public :443 itself; a TLS-ALPN-01 validator reaches it only through a same-host transport pass-through forwarder. Not widened: the gateway's admission, readiness (experimental-loopback-tls-h1, product_qualified false) and peer model are loopback-only, so a public bind needs its own reviewed change"
+    "Application::serve_tls_until and the gateway Configuration accept only a loopback listener and loopback peers, so the runtime cannot bind a public :443 itself; a TLS-ALPN-01 validator reaches it only through a same-host transport pass-through forwarder. Not widened: the gateway's admission, readiness (experimental-loopback-tls-h1, product_qualified false) and peer model are loopback-only, so a public bind needs its own reviewed change",
+    "divergence: Go defaulted -acme-cache to the working-directory path acme-cache; the runtime requires an explicit owner-only tls.acme.cache and refuses a configuration without it",
+    "divergence: Go autocert issued on demand inside the first matching handshake (GetCertificate); the runtime pre-issues through AcmeIssuer::maintain after the listener binds and re-checks on an interval, so handshakes before the first issuance find no certificate and fail"
    ],
    "retire_basis": null,
    "confidence": "high",
@@ -633,7 +635,9 @@
    ],
    "go_test_map": {},
    "gaps": [
-    "Application::serve_tls_until and the gateway Configuration accept only a loopback listener and loopback peers, so the runtime cannot bind a public :443 itself; a TLS-ALPN-01 validator reaches it only through a same-host transport pass-through forwarder. Not widened: the gateway's admission, readiness (experimental-loopback-tls-h1, product_qualified false) and peer model are loopback-only, so a public bind needs its own reviewed change"
+    "Application::serve_tls_until and the gateway Configuration accept only a loopback listener and loopback peers, so the runtime cannot bind a public :443 itself; a TLS-ALPN-01 validator reaches it only through a same-host transport pass-through forwarder. Not widened: the gateway's admission, readiness (experimental-loopback-tls-h1, product_qualified false) and peer model are loopback-only, so a public bind needs its own reviewed change",
+    "divergence: Go defaulted -acme-cache to the working-directory path acme-cache; the runtime requires an explicit owner-only tls.acme.cache and refuses a configuration without it",
+    "divergence: Go autocert issued on demand inside the first matching handshake (GetCertificate); the runtime pre-issues through AcmeIssuer::maintain after the listener binds and re-checks on an interval, so handshakes before the first issuance find no certificate and fail"
    ],
    "retire_basis": null,
    "confidence": "high",

@@ -343,18 +343,23 @@ async fn acme_selection_starts_maintenance_once() {
         prepared.start_maintenance().is_none(),
         "started at most once"
     );
-    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(10);
-    while issuer.renewal_facts().attempts == 0 {
+    // `attempts` rises before the order is awaited and `last_failure` only
+    // after it fails, so wait for the recorded failure (bounded) before the
+    // task is aborted; aborting earlier could cancel the attempt mid-order.
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(20);
+    while issuer.renewal_facts().last_failure.is_none() {
         assert!(
             std::time::Instant::now() < deadline,
-            "maintenance never ran"
+            "maintenance never recorded its first check: {:?}",
+            issuer.renewal_facts()
         );
         tokio::time::sleep(std::time::Duration::from_millis(20)).await;
     }
     maintenance.abort();
     let facts = issuer.renewal_facts();
     assert_eq!(facts.generation, 0);
-    assert!(facts.last_failure.is_some());
+    assert!(facts.attempts >= 1);
+    assert!(facts.consecutive_failures >= 1);
     std::fs::remove_dir_all(cache).unwrap();
 }
 

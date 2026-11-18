@@ -72,7 +72,18 @@ fn run() -> Result<(), &'static str> {
             .and_then(listener::PreparedTls::start_maintenance);
         {
             let mut stdout = io::stdout().lock();
-            serde_json::to_writer(&mut stdout, host.readiness()).map_err(|_| "readiness pipe")?;
+            // Go logged tls_mode; the TLS readiness line carries the selected
+            // source name (never a path or key). Plaintext readiness is unchanged.
+            match &tls {
+                Some(tls) => {
+                    let mut ready =
+                        serde_json::to_value(host.readiness()).map_err(|_| "readiness pipe")?;
+                    ready["tls_mode"] = serde_json::Value::from(tls.mode());
+                    serde_json::to_writer(&mut stdout, &ready)
+                }
+                None => serde_json::to_writer(&mut stdout, host.readiness()),
+            }
+            .map_err(|_| "readiness pipe")?;
             stdout
                 .write_all(b"\n")
                 .and_then(|_| stdout.flush())
