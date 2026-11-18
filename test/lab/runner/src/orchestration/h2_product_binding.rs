@@ -1192,7 +1192,7 @@ mod tests {
 
     #[test]
     fn live_workspace_cap_topology_present_after_unlock_b() {
-        let root = snapshot::root().expect("root");
+        let root = snapshot::test_root();
         let missing = missing_cap_topology(&root);
         assert!(
             missing.is_empty(),
@@ -1210,7 +1210,7 @@ mod tests {
 
     #[test]
     fn hosted_venue_cap_refuses_without_actual_hosted_linux() {
-        let root = snapshot::root().expect("root");
+        let root = snapshot::test_root();
         assert!(HOSTED_VENUE_PILOT_COMMAND.contains(HOSTED_VENUE_CAP_SELECTOR));
         assert_eq!(REQUIRED_HOSTED_VENUE_TOPOLOGY.len(), 2);
         // Desktop Cap refuse-closed; Specfold/github-hosted admits when topology present.
@@ -1416,7 +1416,7 @@ mod tests {
 
     #[test]
     fn owner_join_auth_handoff_refuses_without_root_token() {
-        let root = snapshot::root().expect("root");
+        let root = snapshot::test_root();
         assert!(find_n06_owner_join_auth_handoff(&root).is_none());
         let err = require_n06_owner_join_auth_handoff(&root).expect_err("no invent");
         assert!(err.to_string().contains("Root auth handoff absent"));

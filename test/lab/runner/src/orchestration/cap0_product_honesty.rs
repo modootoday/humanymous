@@ -1071,7 +1071,7 @@ mod tests {
 
     #[test]
     fn interactive_at_handoff_refuses_without_root_token() {
-        let root = snapshot::root().expect("workspace root");
+        let root = snapshot::test_root();
         assert!(find_interactive_at_handoff(&root).is_none());
         let err = require_interactive_at_handoff(&root).expect_err("no invent");
         assert!(err.to_string().contains("Root interactive AT"));
@@ -1105,7 +1105,7 @@ mod tests {
 
     #[test]
     fn n06_owner_auth_handoff_refuses_without_root_token() {
-        let root = snapshot::root().expect("workspace root");
+        let root = snapshot::test_root();
         assert!(find_n06_owner_join_auth_handoff(&root).is_none());
         let err = require_n06_owner_join_auth_handoff(&root).expect_err("no invent");
         assert!(err.to_string().contains("auth handoff") || err.to_string().contains("Root"));
