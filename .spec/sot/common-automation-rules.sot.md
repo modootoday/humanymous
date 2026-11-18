@@ -3,7 +3,7 @@ id: sot:root/common-automation-rules
 title: Common automation rules (humanymous copy and project profile)
 status: active
 created: 2026-11-16T07:44:00Z
-updated: 2026-11-16T14:40:00Z
+updated: 2026-11-17T21:00:00Z
 verify: ["spec check --no-local", "cargo test --locked --manifest-path scripts/ci/delivery/Cargo.toml", "cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- policy"]
 rel:
   depends_on: [sot:root/delivery, sot:root/milestones]
@@ -62,7 +62,7 @@ They apply to new commits. History is not rewritten.
 
 ## 3. Required checks
 
-- C3.1 Required checks are the project's own gate jobs plus two shared checks named exactly `Public surface` and `Secret scan`. The name is the job's `name:`.
+- C3.1 Required checks are the project's own gate jobs plus two shared checks named exactly `Public surface` and `Secret scan`. The name is the job's `name:`. Exception for `main` until the parity-gated main merge (owner direction 2026-11-16): `main` does not run `Public surface`, `Secret scan` or `merge-ready`, so `main-protected` requires the checks `main`'s own CI runs on every pull request and push, `build + unit tests` (`ci.yml`) and `analyze (go)` (`codeql.yml`). At the main merge, `main-protected` moves to the C3.1 set in the same pull request.
 - C3.2 A required check must not be skippable on pull requests.
 - C3.3 No `paths` filter on a workflow that owns a required check.
 - C3.4 CI on GitHub is the completion authority. A local or cloud-session run is a pre-check. A scaffold or stub job that passes without exercising the product is never a gate.
@@ -142,7 +142,7 @@ Each repository has `SECURITY.md`, a pull request template with an `Agent-Provid
 | Lock unit (C1.5) | lane (`.agents/sessions/lanes.json`); `detection-core` and `gate-edge` mutually exclusive |
 | Ruleset files | `.github/rulesets/main-protected.json` (`main`), `.github/rulesets/codex-rust-protected.json` (`codex/rust`), `.github/rulesets/v-tags.json` |
 | Settings files | `.github/labels.json`, `.github/settings/repository.json` |
-| Project gate checks | `validate / merge-ready` (the merge aggregate of the reusable Rust validation, called by job `validate`; owner decision on issue #16, option 1). It needs policy, native, msrv, quality, nginx, images, packages, node, advisories and documentation to succeed, and the Docker and browser pilots to show no regression: zero failed assertions and no error other than the honest component-only block. `validate / ready` stays the release gate and is not a merge check |
+| Project gate checks | On `codex/rust` the ruleset requires the per-check jobs `validate / policy`, `validate / quality` and `validate / msrv` (owner change to ruleset 27382552 on 2026-11-17, recorded on issue #75); `validate / merge-ready` still runs and is reported but is no longer required there. `validate / merge-ready` is the merge aggregate of the reusable Rust validation, called by job `validate`; owner decision on issue #16, option 1). It needs policy, native, msrv, quality, nginx, images, packages, node, advisories and documentation to succeed, and the Docker and browser pilots to show no regression: zero failed assertions and no error other than the honest component-only block. `validate / ready` stays the release gate and is not a merge check |
 | Shared checks | `Public surface`, `Secret scan` in `.github/workflows/surface.yml` |
 | Deny secret | `HUMANYMOUS_DENY_TERMS` (Actions and Dependabot) |
 | Public surface implementation | Rust: `delivery public-surface <base> <head>` in `scripts/ci/delivery` |
@@ -163,5 +163,5 @@ Each repository has `SECURITY.md`, a pull request template with an `Agent-Provid
 - Enable secret scanning and push protection.
 - Apply `allow_auto_merge: true` from `.github/settings/repository.json`; auto-merge cannot be turned on before that.
 - Confirm the exact `validate / merge-ready` context on the first pull request; rename in one pull request with the ruleset if it differs (C3.5).
-- Apply `main-protected` only once `main` carries the `merge-ready` job (the parity-gated main merge). Until then `main`'s own CI has no such check, and requiring it would block Dependabot and security fixes there.
+- Apply `main-protected` with `main`'s own checks (`build + unit tests`, `analyze (go)`; C3.1 exception). Change it to `merge-ready`, `Public surface` and `Secret scan` at the parity-gated main merge, when `main` carries those jobs.
 - Bring `.github/dependabot.yml` to `main` (Dependabot reads the default branch only).
