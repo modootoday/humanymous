@@ -1,5 +1,6 @@
 //! Loopback application/session owner; component support is not product qualification.
 pub mod admin_approval;
+pub mod admin_plane;
 pub mod application;
 pub mod attest_floor;
 pub mod attestation;
