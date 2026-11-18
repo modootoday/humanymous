@@ -3,7 +3,7 @@ id: sot:root/client-collector
 title: Rust browser signal collection and generated WASM boundary
 status: active
 created: 2026-11-07T01:30:00Z
-updated: 2026-11-17T23:30:00Z
+updated: 2026-11-17T23:59:00Z
 verify:
   - cargo test -p humanymous-collector --locked
 rel:
@@ -492,15 +492,35 @@ Rust runtime does not consume it. An amended existing WASM test compares it with
 the unchanged oracle in the same browser without changing the66-test inventory.
 
 Guard hooks stay an explicit enable_guard_hooks opt-in; report_json never enables
-them and reports `reported` as measured. The selected runtime pilot now posts
-the report_json report without hooks. This closes the lab gaps
-`environment_not_probed` and `fingerprint_id_absent` only. `guard_not_reported`
-and `issuing_session_not_admitted_on_required_collector_route` remain one coupled
-owner decision: the runtime admits `required.collector` only on a receipt with
-guard `reported=true`, so enabling hooks in the pilot would also change the
-pilot's fail-closed 422 contract, the fixture's refused `required_collector_ack`
-expectation, the audit denominator and the `missing-signals-closed` evaluation,
-which uses the same captured report as its stripped-report evidence. The two
-lab cases cannot both pass on one captured report; a pilot that keeps a separate
-stripped epoch needs an owner-approved contract change. Native and isolated
-headless Firefox component results are not Docker product evidence.
+them and reports `reported` as measured. The runtime admits `required.collector`
+only on a receipt with guard `reported=true`, so one captured report cannot
+serve both lab cases. The selected runtime pilot therefore runs two session
+epochs in one browser, in this order:
+
+- **stripped**: the unchanged contract. Two pre-report effects are CHALLENGEd,
+  the report_json report without hooks is collected, and the required route
+  refuses it with a pre-consumption 422 without ACK, which closes the epoch.
+- **complete**: a new BrowserSession whose lab page explicitly calls
+  enable_guard_hooks before report_json. The collector default is unchanged.
+  The report is collected, and the required route consumes a decision with an
+  ACK. The fixture's `complete_required_collector_*` fields fix that decision at
+  403 DENY. It must stay a local non-ALLOW decision, so the run keeps zero
+  origin effects. An isolated headless Firefox 153 ESR run under
+  wasm-bindgen-test-runner 0.2.130 measured this as HR-13: the runner replaces
+  native console.log (`console_disabled`), and headless Firefox reports
+  `outer_eq_inner`. It is a harness artefact, not a scoring change or a human
+  claim.
+
+Both lab proxies open an epoch at each bootstrap request. They count every
+later API request into that epoch. The Gate frontend also assigns each collect
+entity to its epoch and attributes each authenticated audit record by its
+`request_id` (SHA-256 of the consumed session and counter). The runner feeds
+`missing-signals-closed` the stripped epoch's evidence, including the
+post-browser controls that replay that epoch's collect. It feeds
+`collector-parity` the complete epoch's evidence. Neither evaluator's checks
+change. If the epochs are not exactly bound (two epochs, one distinct session
+each, every audit record attributed exactly once), both views are empty and
+both cases fail. Whole-run route, response, audit (5 records) and zero-origin
+checks still apply across both epochs. Product-e2e drivers keep replaying the
+stripped epoch's report. Native and isolated headless Firefox component results
+are not Docker product evidence.

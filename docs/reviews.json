@@ -2627,9 +2627,9 @@
     },
     {
       "source": "crates/collector/pilot/fixture.json",
-      "sha256": "4fc199ce5d589303991273b10f775caaebaa954dc18efdb4f8c92486b0fea578",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Browser runtime pilot fixture (schema humanymous.browser-runtime-pilot/1): fixes the scope tuple, loopback listen addresses, the single selected transport test name, session/collect/effect routes and expected values (403 CHALLENGE before report, 200 collect, 422 required-collector with no ACK, zero origin effects). The expectations are configuration, not execution receipts; full product needs independent isolation and witness receipts.",
+      "sha256": "5a3168a23f5305c5955301435401b71bdb38290776f4dd5f675bb6996ade2bbc",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Browser runtime pilot fixture (schema humanymous.browser-runtime-pilot/1): fixes the scope tuple, loopback listen addresses, the single selected transport test name, session/collect/effect routes and expected values (403 CHALLENGE before report, 200 collect, 422 required-collector with no ACK for the stripped epoch, and for the second complete epoch a 403 DENY with an ACK, zero origin effects overall). The expectations are configuration, not execution receipts; full product needs independent isolation and witness receipts.",
       "pages": [
         "docs/reference/browser-collector.md"
       ]
@@ -2982,9 +2982,9 @@
     },
     {
       "source": "crates/collector/src/browser/transport/runtime_pilot.rs",
-      "sha256": "1e80091a0b1020a2ce782f9e4b916e3a5599dec48fdb48c43d7b111363f53852",
+      "sha256": "bb1a4cffcb82b1ed5862bb46dac17a6f37cbe4c8052bad9e2aa369bf63c01531",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Feature-gated (runtime-pilot) wasm test that runs actual Fetch against the separately owned runtime lab from pilot/fixture.json: expects the effect route to return 403 CHALLENGE with a valid ACK and no exposed x-humanymous headers, a 65537-byte body to fail locally without poisoning the epoch, the maximum body to traverse and validate, and a missing required capability to fail before counter use and poison the ambiguous epoch; it keeps a sensitive same-origin document URL and restores it. The submitted report is now the full loader report (actual observations plus environment, advanced and fingerprintId planes, guard hooks off) rather than snapshot_json, never fabricated. The lab coordinator must separately prove proxy hits, isolation, no egress and audit/witness outcomes; the file itself is not proof it ran.",
+      "notes": "Feature-gated (runtime-pilot) wasm test that runs actual Fetch against the separately owned runtime lab from pilot/fixture.json, now in two epochs. Stripped epoch: effect route returns 403 CHALLENGE with a valid ACK and no exposed x-humanymous headers, a 65537-byte body fails locally without poisoning, the maximum body traverses, the loader report (guard hooks off) is ingested, and a missing required capability fails before counter use and poisons the ambiguous epoch. Complete epoch: a new session whose page explicitly calls enable_guard_hooks before collecting; its report must be COLLECTED with 200, and the required-collector route must answer with the fixture's status and verdict (403 DENY) through a fetch that only succeeds on an acknowledged consumed decision; the session stays open and is closed. The sensitive document URL is restored. The lab must separately prove proxy hits, isolation, no egress and audit outcomes; the file is not proof it ran.",
       "pages": [
         "docs/reference/browser-collector.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
@@ -3135,9 +3135,9 @@
     },
     {
       "source": "crates/collector/tests/runtime_pilot_contract.rs",
-      "sha256": "1a5e618ddd79b7d3a8516ef45220234ce9988e1519eb95c5f5d5eaddb272eaa6",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Native (non-wasm) test asserting pilot/fixture.json and pilot/webdriver.json stay consistent: distinct non-zero loopback runner and proxy addresses, scope authority and browser origin bound to the runner, a manual Firefox proxy with empty noProxy and only the allow_hijacking_localhost pref, four unique plain route paths including session and collect, expected 422/no-ACK required collector status, zero origin effects, two effect requests and an exact single selected test name (66 filtered). The source states this is fixture consistency, not actual browser or network evidence.",
+      "sha256": "1dd5ab88ab2d195a1e70726b420d6d72a02dc469529b74e3a45832bc06544e33",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Native (non-wasm) test asserting pilot/fixture.json and pilot/webdriver.json stay consistent: distinct non-zero loopback runner and proxy addresses, scope authority and browser origin bound to the runner, a manual Firefox proxy with empty noProxy and only the allow_hijacking_localhost pref, four unique plain route paths including session and collect, expected 422/no-ACK stripped required collector, a complete-epoch ACK with a status different from 422 and a DENY or CHALLENGE verdict (so the pilot keeps zero origin effects), two effect requests and an exact single selected test name. Fixture consistency only, not actual browser or network evidence.",
       "pages": [
         "docs/reference/browser-collector.md"
       ]

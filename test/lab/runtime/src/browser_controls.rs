@@ -3,7 +3,7 @@
 //! to the runtime loopback listener, so neither browser-proxy count changes.
 //!
 //! Inputs are the exact collect request the real browser sent through the Gate
-//! frontend. The only synthesized requests are an unsigned browser bootstrap
+//! frontend in its stripped (no guard hooks) session epoch. The only synthesized requests are an unsigned browser bootstrap
 //! for a fresh session and an unsigned required-collector probe; neither can
 //! carry a signature, so any admission would be a product failure. Rows hold
 //! observations only (status, error code, ACK presence, finite failure label);
@@ -187,9 +187,16 @@ fn row(id: &str, reply: Result<&Reply, &'static str>) -> Value {
     }
 }
 
+/// The epoch whose captured collect the controls replay: the stripped one.
+const EPOCH: &str = "stripped";
+
 /// Execute the ledger once; never fails, unobserved rows carry a failure label.
 pub async fn run(runtime: SocketAddr, receipts: &Receipts) -> Value {
-    let captured = receipts.collect_requests();
+    let captured = crate::browser_expectations::EPOCHS
+        .iter()
+        .position(|id| *id == EPOCH)
+        .map(|index| receipts.collect_requests(index))
+        .unwrap_or_default();
     let mut rows = Vec::new();
     let issuing = match captured.as_slice() {
         [one] => header(one, "x-humanymous-session").filter(|id| id.len() == 43),
@@ -202,8 +209,8 @@ pub async fn run(runtime: SocketAddr, receipts: &Receipts) -> Value {
                 Err("exactly one captured browser collect required"),
             ));
         }
-        return json!({"schema":SCHEMA,"captured_collect_requests":captured.len(),"rows":rows,
-            "fresh_session_distinct":null});
+        return json!({"schema":SCHEMA,"epoch":EPOCH,"captured_collect_requests":captured.len(),
+            "rows":rows,"fresh_session_distinct":null});
     };
     let bootstrap = send(runtime, &bootstrap_request()).await;
     rows.push(row(CONTROLS[0], bootstrap.as_ref().map_err(|e| *e)));
@@ -219,7 +226,7 @@ pub async fn run(runtime: SocketAddr, receipts: &Receipts) -> Value {
         for id in &CONTROLS[1..] {
             rows.push(row(id, Err("fresh session unavailable")));
         }
-        return json!({"schema":SCHEMA,"captured_collect_requests":1,"rows":rows,
+        return json!({"schema":SCHEMA,"epoch":EPOCH,"captured_collect_requests":1,"rows":rows,
             "fresh_session_distinct":distinct});
     };
     let reply = send(runtime, &required_request(&fresh)).await;
@@ -244,7 +251,7 @@ pub async fn run(runtime: SocketAddr, receipts: &Receipts) -> Value {
     rows.push(row(CONTROLS[3], reply.as_ref().map_err(|e| *e)));
     let reply = send(runtime, &required_request(&fresh)).await;
     rows.push(row(CONTROLS[4], reply.as_ref().map_err(|e| *e)));
-    json!({"schema":SCHEMA,"captured_collect_requests":1,"rows":rows,
+    json!({"schema":SCHEMA,"epoch":EPOCH,"captured_collect_requests":1,"rows":rows,
         "fresh_session_distinct":distinct})
 }
 
@@ -462,10 +469,19 @@ mod tests {
                 events,
                 [("runtime.collect".to_owned(), "COLLECTED".to_owned())]
             );
+            // The actual runtime's audit request_id attributes that record to
+            // the one epoch the Gate-side proxy opened at the bootstrap.
+            let (epochs, unattributed) = crate::browser_product::audit_epochs(&receipts, &records);
+            assert_eq!(unattributed, 0);
+            assert_eq!(epochs.len(), 1);
+            assert_eq!(epochs[0]["audit_seqs"], json!([records[0].seq]));
+            assert_eq!(epochs[0]["sessions"], 1);
+            assert_eq!(epochs[0]["collector_reports"], json!([0]));
             (value, installation.origin.effects())
         });
         assert_eq!(effects, 0);
         assert_eq!(value["captured_collect_requests"], 1);
+        assert_eq!(value["epoch"], "stripped");
         assert_eq!(value["fresh_session_distinct"], true);
         let observed: Vec<_> = value["rows"]
             .as_array()
