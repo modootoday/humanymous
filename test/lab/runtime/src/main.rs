@@ -38,6 +38,8 @@ mod scenario;
 mod wargame;
 #[cfg(unix)]
 mod witness;
+#[cfg(unix)]
+mod witness_transport;
 
 #[cfg(unix)]
 fn main() {
@@ -83,6 +85,12 @@ fn main() {
         }
         Some("--witness-writer") => witness::writer().expect("private writer broker"),
         Some("--witness-key-denied") => witness::key_denied().expect("key access negative"),
+        Some("--witness-transport-supervisor") => {
+            witness_transport::supervisor().expect("witness transport lab supervisor")
+        }
+        Some("--witness-transport-origin") => {
+            witness_transport::origin().expect("witness transport owned origin")
+        }
         _ => scenario::run(),
     }
 }
