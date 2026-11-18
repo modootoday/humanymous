@@ -869,7 +869,29 @@ test paths or unpublished required dependencies.
 
 Publishable manifests require complete metadata, registry-compatible dependency
 versions beside development paths, licenses/readmes and explicit package content.
-Current publish=false declarations intentionally prevent premature publication.
+Only the first crates.io wave (below) declares `publish = ["crates-io"]`; every
+other manifest keeps publish=false to prevent premature publication.
+
+#### First crates.io wave (owner directive 2026-11-16)
+
+The first registry wave is crates.io only. Requested public crates are
+humanymous-core, humanymous-runtime, the humanymous facade and humanymous-cli.
+Cargo cannot package them without their registry dependency closure, so the
+same wave also opens humanymous-platform and humanymous-collector (versioned dev
+dependencies the packaged tests need) and humanymous-adapter-go (the facade's
+optional `adapter-go` dependency). The derived graph has six waves: platform;
+core; collector; runtime; adapter-go and cli; facade. That is within the eight
+reviewed release waves. The packages job's `package` command lists and verifies
+all seven archives in that order. A crate without its own README reuses its
+INTEGRATION.md, and the facade reuses the repository README.
+
+Opening the manifests performs no upload and grants no readiness. Registry trust
+records stay `pending`. A crates.io Trusted Publisher can be registered only
+after the owner's initial non-OIDC upload, and that external bootstrap is tracked
+as a needs-owner Issue. npm, RubyGems and PyPI form the second wave. Their
+packages wrap native host tuples that still lack GitHub-hosted qualification
+receipts (Node tuple matrix, Ruby/Python native ABI). Their pending publishers
+need separate owner registration, so they stay out until those receipts exist.
 
 Authenticate through the official crates.io OIDC action immediately before
 publication, pinned to a verified commit. The reviewed v1.0.6 action commit is
@@ -1011,7 +1033,8 @@ must explicitly permit direct `npm publish` (the current default grants staged
 publication only), bind release.yml/release, and establish package ownership.
 
 Current registry prerequisites are explicitly unverified in
-scripts/ci/registry-prerequisites.json. All library manifests remain publish=false;
+scripts/ci/registry-prerequisites.json. Library manifests outside the first
+crates.io wave remain publish=false;
 Rust runtime binaries, WASM/browser integration, isolated full Rust lab, native
 startup pilots are not delivered by workflow files. The Pages owner has authored
 the initial source/capability review manifest; concurrent Rust source changes
