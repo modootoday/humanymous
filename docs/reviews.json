@@ -8080,9 +8080,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/ban.rs",
-      "sha256": "19c3e67c71acf94ee73ebef5ebdc5ad60ec08b3f18b5ca8c2825f2c688335232",
+      "sha256": "d3238b761d9ae9574d25b460a162850e6d4540d3519ab31de3ea0a439ae1886a",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Pure bounded ban store ported from legacy ban.go. Keys are canonical ip:, fp: or cidr:. Auto-bans escalate 1h, 6h and 24h on hard rate breaches, with strikes decaying after 7 days; a fourth strike keeps 24h and reports dual_control_required instead of a permanent ban. Single operators may add only temporary narrow bans; permanent or cidr bans require a consumed RetainedActionPermit for Action::PermanentBan bound to the key commitment. Lifting a permanent ban is refused, and a full store refuses rather than evicting. Re-reviewed 2026-11-18: Store is now generic over its rate counter (Store<L = Limiter>) through the seams RateLimiter trait, with Store::new keeping the local Limiter, with_limiter() accepting e.g. the B23 fleet-shared counter, and limiter() exposing it for configuration; escalation logic is unchanged. It is referenced only by gateway seams and the coordinator ledger, with no wired runtime ban gate.",
+      "notes": "Pure bounded ban store ported from legacy ban.go. Keys are canonical ip:, fp: or cidr:. Auto-bans escalate 1h, 6h and 24h on hard rate breaches, with strikes decaying after 7 days; a fourth strike keeps 24h and reports dual_control_required instead of a permanent ban. Single operators may add only temporary narrow bans; permanent or cidr bans require a consumed RetainedActionPermit for Action::PermanentBan bound to the key commitment. Lifting a permanent ban is refused, and a full store refuses rather than evicting. Re-reviewed 2026-11-18: Store is now generic over its rate counter (Store<L = Limiter>) through the seams RateLimiter trait, with Store::new keeping the local Limiter, with_limiter() accepting e.g. the B23 fleet-shared counter, and limiter() exposing it for configuration; escalation logic is unchanged. It is referenced only by gateway seams and the coordinator ledger, with no wired runtime ban gate. Re-reviewed 2026-11-18 for claude/gate-residual-ws: adds Store::bulk_temporary (legacy adminBulkBan) with MAX_BULK_TERM 400 days; the term must be positive and below the cap, unparsable or broad keys are skipped and counted, valid keys go through add_temporary, and an invalid reason is refused up front (a deliberate difference from Go).",
       "pages": [
         "docs/runbooks/kill-switch-and-bans.md",
         "docs/reference/rbac-separation-of-duties.md"
@@ -8090,9 +8090,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs",
-      "sha256": "12a2f49afa7565703c01a942e30e676b23fa58f6bbbfc80b381f9a2f34406bf9",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Tests for the ban store, ported from legacy ban_test.go and wargame rounds. They assert auto-ban escalation with the dual-control flag at strike 4, 7-day strike decay, existing-ban reporting, temporary expiry, active-only listing, refusal of single-operator permanent or broad bans, capacity refusal without eviction, the key rejection matrix, canonical keys, flood/fingerprint/manual lifecycle kernels and GC. Unix-only dual_control tests use a real control authority with two administrators to show a permanent ban persists and resists single-operator lift, and that a broad ban needs a matching grant. The HTTP edge, admin API and audit halves are noted as unported.",
+      "sha256": "55a4f95c94c78ed9c29c446069851566c4d5776f8f11ecef566821c49153f0df",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tests for the ban store, ported from legacy ban_test.go and wargame rounds. They assert auto-ban escalation with the dual-control flag at strike 4, 7-day strike decay, existing-ban reporting, temporary expiry, active-only listing, refusal of single-operator permanent or broad bans, capacity refusal without eviction, the key rejection matrix, canonical keys, flood/fingerprint/manual lifecycle kernels and GC. Unix-only dual_control tests use a real control authority with two administrators to show a permanent ban persists and resists single-operator lift, and that a broad ban needs a matching grant. The HTTP edge, admin API and audit halves are noted as unported. Re-reviewed 2026-11-18: adds bulk_ban (port of ws9 TestBulkBan: 3 applied, cidr skipped, ban in force, zero and over-cap terms refused) and bulk_ban_skips_invalid_keys_and_expires.",
       "pages": [
         "docs/runbooks/kill-switch-and-bans.md"
       ]
@@ -10372,6 +10372,90 @@
       "notes": "21 unit tests: Go TestApprovalStoreRules and wargame rounds R071-R078, R178-R180, R188 and R189 ported against the store, a ticket byte-layout vector computed independently with HMAC-SHA256 over the Go message, bearer parsing and deny-by-default, registration refusals, the role capability table, the erasure DPO rule, TTL boundary and clock regression, and the full-store refusal after expiry collection. Reader page coverage is indirect.",
       "pages": [
         "docs/reference/rbac-separation-of-duties.md",
+        "docs/runbooks/kill-switch-and-bans.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/attest_floor.rs",
+      "sha256": "4b36be609d0fc7c37f7f656c88878243bda94a83cd62ccfb74af97e0305e5327",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Attested-route floor decision ported from legacy attestFloor handling in verdictTokenGate and applyVerdict (wargame R346-R348). decide() takes whether the route has the floor, whether it is enforcing, and whether the request carries a valid verdict token, a sticky allow and a valid step-up proof. In Enforce mode an unlocked floor declines the verdict-token fast path and turns a scoring allow into a step-up challenge (legacy challenge_pow 401); Monitor and Shadow forward and report 'would require step-up'; Off forwards silently. Credentials checks verdict and step-up tokens through gateway::token with the session, binding and accepted epochs. No scoring weight, threshold or verdict band is touched, and the decision is not yet wired into the serving path.",
+      "pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests.rs",
+      "sha256": "d369fb390f6aa0857830ee920b077f8cca8459e746ab9320501cb669d46bf31d",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unit tests for the attested-route floor with real HMAC verdict and step-up tokens: R346 a valid allow token is priced to a step-up challenge on an attested route; R347 a valid step-up proof for the same session and binding unlocks it; R348 a sticky allow cannot skip the floor; verdict tokens replayed as step-up, another session's or binding's proof and expired proofs do not unlock; Monitor/Shadow forward with the matching note while Off is silent; non-allow and non-enforcing routes go to the pipeline. Unit-level only.",
+      "pages": [
+        "docs/reference/red-team-catalog.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/operations.rs",
+      "sha256": "26b3a5becdaa3aa644cd8f77a1929db04654821c0428601f8dd2be607075e24f",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Module root for operator kernels ported from the legacy admin and ops handlers: audit_search, counters and erasure_hold. The doc comment states these are pure kernels and that HTTP routes and operator roles are not mounted.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search.rs",
+      "sha256": "d96ba5dfbcb1af24e6447e1448d5a55b3c620ce1827d21257209348dfda5f673",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Audit search kernel ported from legacy adminAudit: limit defaults to 50 and only 1..=500 is accepted; filters are verdict exact, host case-insensitive substring, route exact, rule exact membership, subject matching the session or actor pseudonym, minimum risk and a before cursor. Records are scanned newest first and each hit carries an incident handle; next_before is the seq of the last returned record. Unparsable numbers fall back as in Go. No HTTP route is mounted.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/reference/rbac-separation-of-duties.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search/tests.rs",
+      "sha256": "6ff4c46d2f36a90ed42d490b5fafee7997110e849b62c499f9051a966e07152e",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unit tests porting TestAuditSearchAndPagination (deny/allow seed, filtered query returns only matching denies, limit 3 pages with an older second page) plus newest-first order, cursor and incident handles, limit and numeric fallbacks, case-insensitive host and exact route, rule and subject matching.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/operations/counters.rs",
+      "sha256": "4f07a08c0e89b49e2b99b46a8bb63a1712ad24138efb08f32a354569abb2e536",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Operator counters rollup ported from legacy handleCounters: version, uptimeSec, an ml block (enabled; with a humanymous-core correction Controller also canaryState, canaryReason when set, fireThreshold and activeBundle; always oracleTraces) and fleet.redisFallbackTotal. Nil-safe without a controller. The Go-runtime fields goroutines, heapAllocBytes and numGC are deliberately not emitted. No /api/counters route is mounted.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/operations/counters/tests.rs",
+      "sha256": "bb89f3f3479eed2e634ca9c7905df88e8fb4b1d2da07fb58a438d3766083b7eb",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unit tests porting TestHandleCounters_ShowsTrippedCanary (a real Controller with gamma 0 and an armed canary trips after 400 confirmed-human outcomes, and the rollup shows canaryState tripped with a reason) and TestHandleCounters_NilSafeWithoutModel, plus an armed canary with bundle, oracle trace and fleet fallback counts.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/operations/erasure_hold.rs",
+      "sha256": "07bff81f0b2a5a0d50092388d154a5ba5cdc3d1f8d1249b0a76965fed6b7c170",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Cancellable erasure hold queue ported from legacy ShredQueue/RunDueShreds and adminErasure reverse resolve. Approved erasures are scheduled after a hold window (default 5 minutes, zero refused), can be cancelled until due, and are bounded at 1024 pending with refusal instead of eviction. run_due calls the supplied shred with the stored approval capability; a failure keeps the entry pending, otherwise it emits erasure.completed or erasure.no_subject with the legacy erasure-cert text (root prefix, tree size, legal basis, requester->approver). The queue is generic over the permit and never mints one; composing it with the ledger-issued ErasurePermit and Vault::shred is not done here.",
+      "pages": [
+        "docs/runbooks/kill-switch-and-bans.md",
+        "docs/reference/rbac-separation-of-duties.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/operations/erasure_hold/tests.rs",
+      "sha256": "ff386c2879c6f24d821c6a5bc9d23e095bc5c543c21fa8ef69dd2b04ad242a72",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unit tests porting TestErasureHoldWindowAndReverseResolve and TestErasureCancel against the real reference Vault for pseudonyms and link/resolve: nothing executes inside the window, the shred runs once after it with the exact certificate text, and a cancelled erasure never executes. Shred is a test closure with a stand-in permit, so the tests do not show the pseudonym changing after a real shred. Also covers failed shreds staying pending, no-subject completion, missing fields, zero hold and capacity.",
+      "pages": [
         "docs/runbooks/kill-switch-and-bans.md"
       ]
     }

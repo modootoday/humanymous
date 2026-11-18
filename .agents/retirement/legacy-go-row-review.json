@@ -15,9 +15,9 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 202,
-  "partial": 80,
-  "missing": 21,
+  "ported_unit": 205,
+  "partial": 81,
+  "missing": 17,
   "not_applicable": 2,
   "oracle_only": 9
  },
@@ -40,9 +40,9 @@
    "ported_unit": 1
   },
   "cmd/server": {
-   "missing": 4,
+   "missing": 3,
    "partial": 22,
-   "ported_unit": 13,
+   "ported_unit": 14,
    "oracle_only": 3
   },
   "cmd/tlsparrot": {
@@ -79,10 +79,10 @@
    "ported_unit": 5
   },
   "internal/gate": {
-   "partial": 43,
-   "missing": 13,
+   "partial": 44,
+   "missing": 10,
    "not_applicable": 1,
-   "ported_unit": 27,
+   "ported_unit": 29,
    "oracle_only": 1
   },
   "internal/httpx": {
@@ -653,21 +653,28 @@
   },
   {
    "baseline_path": "cmd/server/counters_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestHandleCounters_ShowsTrippedCanary": null,
-    "TestHandleCounters_NilSafeWithoutModel": null
-   },
-   "gaps": [
-    "/counters operator view",
-    "canary trip reporting"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/operations/counters.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/operations/counters/tests.rs::handle_counters_shows_tripped_canary",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/counters/tests.rs::handle_counters_nil_safe_without_model",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/counters/tests.rs::armed_canary_bundle_and_fleet_fallbacks_are_reported"
+   ],
+   "go_test_map": {
+    "TestHandleCounters_ShowsTrippedCanary": "crates/sdk/humanymous-runtime/src/gateway/operations/counters/tests.rs::handle_counters_shows_tripped_canary",
+    "TestHandleCounters_NilSafeWithoutModel": "crates/sdk/humanymous-runtime/src/gateway/operations/counters/tests.rs::handle_counters_nil_safe_without_model"
+   },
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "high",
-   "notes": "No counters endpoint or ML canary in Rust (SoT model-training-correction: canary/controller interfaces only).",
-   "test_verification": {}
+   "confidence": "medium",
+   "notes": "gateway::operations::counters::rollup builds the legacy /api/counters document (version, uptimeSec, ml{enabled, canaryState, canaryReason, fireThreshold, activeBundle, oracleTraces}, fleet{redisFallbackTotal}) over the real humanymous-core correction Controller; the tripped-canary case drives the same 400 confirmed-human outcomes with gamma 0. Go-runtime fields goroutines/heapAllocBytes/numGC are deliberately not emitted. The HTTP route mount is a runtime-owner wiring step; unit-level only.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/operations/counters/tests.rs::handle_counters_shows_tripped_canary": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/counters/tests.rs::handle_counters_nil_safe_without_model": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/counters/tests.rs::armed_canary_bundle_and_fleet_fallbacks_are_reported": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/demo_test.go",
@@ -4394,19 +4401,35 @@
   },
   {
    "baseline_path": "internal/gate/wargame_t4_promotion_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests.rs::wargame_r346_t4_allow_token_priced_on_attested_route",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests.rs::wargame_r347_t4_step_up_unlocks_attested_after_proof",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests.rs::wargame_r348_t4_sticky_allow_cannot_skip_floor",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests.rs::foreign_or_verdict_proofs_do_not_unlock_the_floor",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests.rs::monitor_and_shadow_forward_and_report_off_forwards_silently",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests.rs::non_allow_and_non_enforcing_routes_are_left_to_the_pipeline"
+   ],
    "go_test_map": {
-    "TestWargameR346_T4AllowTokenPricedOnAttestedRoute": null,
-    "TestWargameR347_T4StepUpUnlocksAttestedAfterProof": null,
-    "TestWargameR348_T4StickyAllowCannotSkipFloor": null
+    "TestWargameR346_T4AllowTokenPricedOnAttestedRoute": "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests.rs::wargame_r346_t4_allow_token_priced_on_attested_route",
+    "TestWargameR347_T4StepUpUnlocksAttestedAfterProof": "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests.rs::wargame_r347_t4_step_up_unlocks_attested_after_proof",
+    "TestWargameR348_T4StickyAllowCannotSkipFloor": "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests.rs::wargame_r348_t4_sticky_allow_cannot_skip_floor"
    },
    "gaps": [],
    "retire_basis": null,
-   "confidence": "high",
-   "notes": "No attested-route allow token pricing or step-up unlock in Rust.",
-   "test_verification": {}
+   "confidence": "medium",
+   "notes": "gateway::attest_floor::decide ports the legacy attestFloor pricing (verdictTokenGate fast-path decline and applyVerdict pass->challenge_pow demotion in Enforce; audit-only notes in Monitor/Shadow) with real verdict and step-up tokens from gateway::token. No scoring weight, threshold or band changes. Route-preset wiring into the serving path is a runtime-owner step; unit-level only.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests.rs::wargame_r346_t4_allow_token_priced_on_attested_route": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests.rs::wargame_r347_t4_step_up_unlocks_attested_after_proof": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests.rs::wargame_r348_t4_sticky_allow_cannot_skip_floor": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests.rs::foreign_or_verdict_proofs_do_not_unlock_the_floor": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests.rs::monitor_and_shadow_forward_and_report_off_forwards_silently": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests.rs::non_allow_and_non_enforcing_routes_are_left_to_the_pipeline": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/webauthn_test.go",
@@ -4623,18 +4646,33 @@
   },
   {
    "baseline_path": "internal/gate/ws3_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/operations/erasure_hold.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/operations/erasure_hold/tests.rs::erasure_hold_window_and_reverse_resolve",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/erasure_hold/tests.rs::erasure_cancel",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/erasure_hold/tests.rs::failed_shred_stays_pending_and_missing_subject_is_reported",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/erasure_hold/tests.rs::schedule_refusals_and_unique_ids"
+   ],
    "go_test_map": {
-    "TestErasureHoldWindowAndReverseResolve": null,
-    "TestErasureCancel": null
+    "TestErasureHoldWindowAndReverseResolve": "crates/sdk/humanymous-runtime/src/gateway/operations/erasure_hold/tests.rs::erasure_hold_window_and_reverse_resolve",
+    "TestErasureCancel": "crates/sdk/humanymous-runtime/src/gateway/operations/erasure_hold/tests.rs::erasure_cancel"
    },
-   "gaps": [],
+   "gaps": [
+    "no test composes a ledger-issued audit::keys::vault::ErasurePermit with HoldQueue and Vault::shred: permits are mintable only inside crate::audit (human-gated path), so the ported tests drive the queue with a test capability and do not observe the pseudonym changing after the shred",
+    "admin erasure HTTP routes (schedule, list, cancel) are not mounted"
+   ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "No hold window, reverse resolve or cancel; audit control erasure permits exist without a schedule.",
-   "test_verification": {}
+   "notes": "gateway::operations::erasure_hold ports the ShredQueue hold window (default 5 min, cancellable), RunDueShreds completion evidence (erasure.completed / erasure.no_subject with the legacy erasure-cert text) and adminErasure reverse resolve (vault.resolve with raw fallback, exercised against the real reference Vault link/resolve). A failed shred stays pending.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/operations/erasure_hold/tests.rs::erasure_hold_window_and_reverse_resolve": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/erasure_hold/tests.rs::erasure_cancel": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/erasure_hold/tests.rs::failed_shred_stays_pending_and_missing_subject_is_reported": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/erasure_hold/tests.rs::schedule_refusals_and_unique_ids": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/ws4_test.go",
@@ -4712,18 +4750,35 @@
   },
   {
    "baseline_path": "internal/gate/ws9_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/ban.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search/tests.rs::audit_search_and_pagination",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::bulk_ban",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search/tests.rs::newest_first_cursor_and_incident_handles",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search/tests.rs::limit_and_numeric_fallbacks_match_legacy",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search/tests.rs::host_is_case_insensitive_and_route_rule_subject_are_exact",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::bulk_ban_skips_invalid_keys_and_expires"
+   ],
    "go_test_map": {
-    "TestAuditSearchAndPagination": null,
-    "TestBulkBan": null
+    "TestAuditSearchAndPagination": "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search/tests.rs::audit_search_and_pagination",
+    "TestBulkBan": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::bulk_ban"
    },
    "gaps": [],
    "retire_basis": null,
-   "confidence": "high",
-   "notes": "No audit search/pagination API or bulk ban in Rust.",
-   "test_verification": {}
+   "confidence": "medium",
+   "notes": "gateway::operations::audit_search ports adminAudit filters (verdict, host substring, route, rule, subject, minRisk), limit 1..=500 default 50, newest-first before cursor and incident handles over audit::record::Record. ban::Store::bulk_temporary ports adminBulkBan: term must be >0 and <400 days, invalid or broad keys are skipped, applied/skipped counts returned. Deliberate difference: an empty or invalid reason is refused up front (the Rust ban store validates reasons). The admin HTTP routes and operator roles are not mounted; unit-level only.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search/tests.rs::audit_search_and_pagination": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::bulk_ban": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search/tests.rs::newest_first_cursor_and_incident_handles": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search/tests.rs::limit_and_numeric_fallbacks_match_legacy": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search/tests.rs::host_is_case_insensitive_and_route_rule_subject_are_exact": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::bulk_ban_skips_invalid_keys_and_expires": "passed"
+   }
   },
   {
    "baseline_path": "internal/audit/audit_test.go",
