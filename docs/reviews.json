@@ -9731,9 +9731,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/tests/gateway/deployment_manifests.rs",
-      "sha256": "6884d6a858988eb9c17d5a324e0665d6445b5cf733ad506ab0a5fea26672f721",
+      "sha256": "22936566172b300c5e7603f8de5542fb1ea318112ba205f586fe840793d728c0",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Byte checks of shipped deployment files plus the runtime's own configuration parser: deployments/humanymous-runtime.example.json must parse and validate with loopback listen 8444 and origin 8080, UID 65532 owner, state under /var/lib/humanymous, a REPLACE-ME passphrase placeholder and RIT-only routes; the Kubernetes Secret must embed the same document; k8s, compose, .env and systemd files must not configure Go gate flags or variables, must run ghcr.io/modootoday/humanymous-runtime via stdin configuration without args, and must keep non-root, read-only, dropped-capability and systemd sandboxing settings; the runtime-candidate Dockerfile and release workflow must name that image. Header states no cluster, systemd or container runs, so this is not deployment qualification.",
+      "notes": "Byte checks of shipped deployment files plus the runtime's own configuration parser: deployments/humanymous-runtime.example.json must parse and validate with loopback listen 8444 and origin 8080, UID 65532 owner, state under /var/lib/humanymous, a REPLACE-ME passphrase placeholder and RIT-only routes; the Kubernetes Secret must embed the same document; k8s, compose, .env and systemd files must not configure Go gate flags or variables, must run ghcr.io/modootoday/humanymous-runtime via stdin configuration without args, and must keep non-root, read-only, dropped-capability and systemd sandboxing settings; the runtime-candidate Dockerfile and release workflow must name that image. Re-reviewed 2026-11-18: manifests_keep_the_go_hardening now also requires the runtime image to create /empty/state/humanymous, chmod it 0700 and COPY it --chown=65532:65532 into /var/lib/, so a fresh named volume starts owner-only (owner decision C8). Header states no cluster, systemd or container runs, so this is not deployment qualification.",
       "pages": [
         "docs/how-to/verify-the-image.md",
         "docs/reference/production-vs-reference.md"
