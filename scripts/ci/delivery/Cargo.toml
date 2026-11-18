@@ -14,6 +14,7 @@ toml = "=1.2.1"
 ureq = "=3.5.1"
 tar = "=0.4.46"
 flate2 = "=1.1.11"
+getrandom.workspace = true
 time = { version = "=0.3.55", features = ["formatting"] }
 humanymous-platform = { workspace = true, features = ["testing"] }
 humanymous-runtime = { workspace = true, features = ["native-security"] }

@@ -126,6 +126,14 @@ pub(super) fn run(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
             report["test_counts"][&target]["validated"] = json!(true);
         } else {
             failed = true;
+            let text =
+                std::fs::read_to_string(dir.join(format!("{label}.log"))).unwrap_or_default();
+            println!(
+                "{label}: discovery {:?}; outcome {:?}\n{}",
+                observed.as_ref().err(),
+                outcome,
+                runtime::diagnose(&label, &text)
+            );
         }
     }
     require(

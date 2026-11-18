@@ -271,6 +271,18 @@ pub fn summary(input: &Path, output: &Path) -> io::Result<()> {
     summary["fatal_stop"] = json!(report["coverage"]["fatal_stop"].as_bool());
     summary["recovered_after_missing_final_report"] =
         json!(report["coverage"]["recovered_after_missing_final_report"].as_bool());
+    if let Some(stage) = report["error_stage"].as_str()
+        && matches!(
+            stage,
+            "prepare" | "packages" | "execute" | "accounting" | "snapshot"
+        )
+    {
+        summary["error_stage"] = stage.into();
+        summary["error_kind"] = report["error_kind"]
+            .as_str()
+            .filter(|kind| kind.len() <= 40 && kind.bytes().all(|b| b.is_ascii_alphabetic()))
+            .into();
+    }
     if report["initialization_failure"]["reported"] == true {
         summary["initialization_failure"] = json!({"reported":true,"os_error_code":report["initialization_failure"]["os_error_code"].as_i64()});
     }
@@ -370,5 +382,23 @@ mod tests {
         let published: Value = serde_json::from_slice(&fs::read(&public).unwrap()).unwrap();
         assert_eq!(published["schema"], "humanymous.workspace-probe-summary/1");
         assert_eq!(published["full_runtime_qualified"], false);
+    }
+    #[test]
+    fn failure_stage_and_kind_publish_only_closed_values() {
+        let directory = crate::fixture::Directory::new().unwrap();
+        let raw = directory.path().join("raw.json");
+        let public = directory.path().join("public.json");
+        let report = |stage: &str, kind: &str| json!({"schema":1,"kind":"native","status":"failed","full_runtime_qualified":false,"source_sha":"a".repeat(40),"source":{"dirty":false},"errors":1,"skips":0,"error":"private-error-text","error_stage":stage,"error_kind":kind,"coverage":{"harnesses":[]}});
+        write(&raw, &report("execute", "NotFound")).unwrap();
+        summary(&raw, &public).unwrap();
+        let text = fs::read_to_string(&public).unwrap();
+        let published: Value = serde_json::from_str(&text).unwrap();
+        assert_eq!(published["error_stage"], "execute");
+        assert_eq!(published["error_kind"], "NotFound");
+        assert!(!text.contains("private-error-text"));
+        write(&raw, &report("private-stage", "private kind")).unwrap();
+        summary(&raw, &public).unwrap();
+        let text = fs::read_to_string(&public).unwrap();
+        assert!(!text.contains("private-stage") && !text.contains("private kind"));
     }
 }
