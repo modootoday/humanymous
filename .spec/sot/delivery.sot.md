@@ -1169,6 +1169,26 @@ and `package` test targets on macOS. On Linux and Windows nothing is declared,
 so those ignored host pilots remain coverage-accounting failures until the D1
 executor exists.
 
+### Workspace ignored aggregate (2026-11-18)
+
+After every harness row is validated, the workspace probe's accounting stage
+splits each row's ignored count into counted subprocess helpers
+(`ignored_subprocess_helpers`, the custody and captured-helper rows) and the
+names its declaration admitted (`required_not_run`,
+`declared_subprocess_helpers` and `unsupported_not_run`). Declared names count
+only on a row that names its pilot or unsupported ids, has a closed
+`required_execution_scope` and `pilot_receipt_verified: true`. Each row's
+ignored count must equal its helpers plus declared names, and the report and
+public summary carry both totals (`ignored_subprocess_helpers`,
+`declared_pilot_ignored`) beside `raw_ignored_tests`. Publication recomputes
+both totals from the rows and refuses any difference. Before this split the
+aggregate compared all ignored tests with helpers alone. Every declared pilot
+row then failed with `error_stage: accounting` once execution first completed
+on Linux, at 28 ignored tests against 6 helpers. An accounting refusal is an
+aggregate check, not an indexed harness failure, so `failures` stays empty;
+the summary publishes a closed `error_reason` code instead of the private
+error text.
+
 The native job timeout is 90 minutes. The Windows debug workspace build alone
 takes about 24 minutes, and the old 40-minute limit cancelled the later steps
 before they reported. Declarations are not waivers and qualify no full

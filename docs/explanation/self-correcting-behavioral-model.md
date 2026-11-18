@@ -24,4 +24,4 @@ Similarity to confirmed abuse patterns is implemented only as a shadow kernel.
 It compares a session with clusters built from confirmed abuse, never with a
 "typical human" profile, and its operator policy cannot block on behavior
 similarity alone. It records what it would have done next to the served
-verdict and changes no verdict. See `sot:root/abuse-similarity`.
+verdict and changes no verdict.
