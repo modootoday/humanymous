@@ -15,9 +15,9 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 210,
-  "partial": 76,
-  "missing": 17,
+  "ported_unit": 216,
+  "partial": 72,
+  "missing": 15,
   "not_applicable": 2,
   "oracle_only": 9
  },
@@ -72,17 +72,16 @@
    "ported_unit": 3
   },
   "internal/correlation": {
-   "partial": 2,
-   "ported_unit": 2
+   "ported_unit": 4
   },
   "internal/detect": {
    "ported_unit": 5
   },
   "internal/gate": {
-   "partial": 39,
-   "missing": 10,
+   "partial": 37,
+   "missing": 8,
    "not_applicable": 1,
-   "ported_unit": 34,
+   "ported_unit": 38,
    "oracle_only": 1
   },
   "internal/httpx": {
@@ -2887,33 +2886,68 @@
   },
   {
    "baseline_path": "internal/gate/inject_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/inject.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::inject_after_head",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::inject_fallback_before_body",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::idempotent_no_double_inject",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::no_html_pass_through",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::oversize_headless_body_gives_up"
+   ],
    "go_test_map": {
-    "TestInjectAfterHead": null,
-    "TestInjectFallbackBeforeBody": null,
-    "TestIdempotentNoDoubleInject": null,
-    "TestNoHTMLPassThrough": null,
-    "TestOversizeHeadlessBodyGivesUp": null
+    "TestInjectAfterHead": "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::inject_after_head",
+    "TestInjectFallbackBeforeBody": "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::inject_fallback_before_body",
+    "TestIdempotentNoDoubleInject": "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::idempotent_no_double_inject",
+    "TestNoHTMLPassThrough": "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::no_html_pass_through",
+    "TestOversizeHeadlessBodyGivesUp": "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::oversize_headless_body_gives_up"
    },
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No HTML loader injection in Rust Runtime (B15 M).",
-   "test_verification": {}
+   "notes": "Same chunk sizes as Go (1, 3, 7, 4096 for the head case). The oversize case also asserts the injected length, and adds a body whose boundary lies beyond the look-ahead budget, which passes through unchanged.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::inject_after_head": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::inject_fallback_before_body": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::idempotent_no_double_inject": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::no_html_pass_through": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::oversize_headless_body_gives_up": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/inject.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/inject.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::inject_after_head",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::inject_fallback_before_body",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::idempotent_no_double_inject",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::no_html_pass_through",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::oversize_headless_body_gives_up",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::insertion_point_precedence_and_waiting",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::marker_split_across_reads_after_the_point_is_detected",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::upstream_error_surfaces_after_the_buffered_bytes"
+   ],
    "go_test_map": {},
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No HTML loader injection in Rust Runtime (B15 M).",
-   "test_verification": {}
+   "notes": "gateway::inject::InjectingReader is the streaming add-only injector: marker <!--hmn-injected--> makes it idempotent, insertion right after the first <head...>, else before </head>, else before <body...>, a 64 KiB look-ahead bound before passing through un-injected, a wait for the bytes after the point so a marker there is seen, and an upstream error surfaced after the buffered bytes; Outcome carries the legacy already_present / point_not_found reasons. Deliberate difference: the tag search is ASCII case-insensitive on the original bytes (Go searched a bytes.ToLower copy whose offsets can drift on non-ASCII text). Composition into a served response path (content type, identity encoding, CSP, audit event) belongs to internal/gate/gate.go (B15).",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::inject_after_head": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::inject_fallback_before_body": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::idempotent_no_double_inject": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::no_html_pass_through": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::oversize_headless_body_gives_up": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::insertion_point_precedence_and_waiting": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::marker_split_across_reads_after_the_point_is_detected": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::upstream_error_surfaces_after_the_buffered_bytes": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/integration_test.go",
@@ -3140,24 +3174,27 @@
   },
   {
    "baseline_path": "internal/gate/recon.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/recon.rs",
     "crates/sdk/humanymous-runtime/src/network/history/sweep/mod.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::many_sessions_from_one_binding_trip_the_detector",
-    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed"
+    "crates/sdk/humanymous-runtime/src/gateway/recon.rs::tests::constant_floor_waits_out_the_floor_and_never_extends_it",
+    "crates/sdk/humanymous-runtime/src/gateway/recon.rs::tests::remaining_is_the_unelapsed_part_of_the_floor",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::many_sessions_from_one_binding_trip_the_detector"
    ],
    "go_test_map": {},
-   "gaps": [
-    "constant response-time floor in the Gate response path"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Bounded sliding-window sweep detector is ported in network/history/sweep; the constant floor belongs to the unported Gate composition.",
+   "notes": "Bounded sliding-window sweep detector is ported in network/history/sweep. constantFloor is gateway::recon::constant_floor (async wait until the floor has elapsed since the decision start; never extends a slower decision) with the Go 2 ms DECISION_FLOOR default. Applying it on the block and challenge paths belongs to the unported gate decision path (internal/gate/gates.go).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::many_sessions_from_one_binding_trip_the_detector": "passed",
-    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed": "passed"
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/recon.rs::tests::constant_floor_waits_out_the_floor_and_never_extends_it": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/recon.rs::tests::remaining_is_the_unelapsed_part_of_the_floor": "passed"
    }
   },
   {
@@ -3872,9 +3909,10 @@
   },
   {
    "baseline_path": "internal/gate/wargame_axis_shadow_rate_r251_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/ban.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger.rs",
     "crates/sdk/humanymous-runtime/src/network/history/anomaly/mod.rs",
     "crates/sdk/humanymous-runtime/src/network/history/cohort/mod.rs",
     "crates/sdk/humanymous-runtime/src/network/history/interarrival/mod.rs",
@@ -3882,6 +3920,8 @@
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::auto_ban_escalates_and_permanent_tier_needs_dual_control",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::wargame_r276_shared_limiter_level_delegates",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::wargame_r277_shared_limiter_gc_sweeps_the_local_fallback",
     "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::oracle_mad_floor_prevents_constant_stream_overflag",
     "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::oracle_outlier_flags_against_prior_history",
     "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::oracle_warmup_suppresses_early_flags",
@@ -3934,18 +3974,16 @@
     "TestWargameR273_RateConcurrentHits": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_r273_shared_owner_loses_no_concurrent_hits",
     "TestWargameR274_RateGCBoundedScan": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::bounded_gc_cursor_progresses_and_ttl_equality_survives",
     "TestWargameR275_RateResetClears": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::expansion_gap_and_reset_do_not_fabricate_retrospective_hits",
-    "TestWargameR276_RedisRateLimiterLevelDelegates": null,
-    "TestWargameR277_RedisRateLimiterGCLocalFallback": null,
+    "TestWargameR276_RedisRateLimiterLevelDelegates": "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::wargame_r276_shared_limiter_level_delegates",
+    "TestWargameR277_RedisRateLimiterGCLocalFallback": "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::wargame_r277_shared_limiter_gc_sweeps_the_local_fallback",
     "TestWargameR278_BanStoreUsesHardRate": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::auto_ban_escalates_and_permanent_tier_needs_dual_control",
     "TestWargameR279_ShadowDoesNotAutoBan": "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r260_r279_r280_shadow_outcome_is_measurement_only",
     "TestWargameR280_AxisDClose": "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r260_r279_r280_shadow_outcome_is_measurement_only"
    },
-   "gaps": [
-    "Redis rate limiter (R276,R277) depends on the unported Redis store"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Cohort, inter-arrival, rate and ban rows map to Rust tests; only the Redis limiter rows remain.",
+   "notes": "Cohort, inter-arrival, rate and ban rows map to Rust tests. R276/R277 run against gateway::coordinator::ledger::SharedRateLimiter: Level classifies with the local cutpoints without a coordinator round trip, and GC sweeps the local outage fallback (asserted through the key budget and the ordered clock, where Go only asserted no panic).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::oracle_mad_floor_prevents_constant_stream_overflag": "passed",
     "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::oracle_outlier_flags_against_prior_history": "passed",
@@ -3972,7 +4010,9 @@
     "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r265_empty_fingerprint_is_ignored": "passed",
     "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r266_gc_drops_last_seen_strictly_after_idle": "passed",
     "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_r272_rotating_ip_keys_split_while_stable_fingerprint_aggregates": "passed",
-    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_r273_shared_owner_loses_no_concurrent_hits": "passed"
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_r273_shared_owner_loses_no_concurrent_hits": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::wargame_r276_shared_limiter_level_delegates": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/ledger_tests.rs::wargame_r277_shared_limiter_gc_sweeps_the_local_fallback": "passed"
    }
   },
   {
@@ -4347,17 +4387,37 @@
    "baseline_path": "internal/gate/wargame_escalation_r81_test.go",
    "disposition": "partial",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/inject.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs",
-    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs"
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs"
    ],
    "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r111_unauth_admin_whoami_404",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r112_auditor_whoami_ok",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r114_checkpoints_auth_required",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r115_metrics_auth_required",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r116_operator_cannot_list_as_unscoped",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r104_temp_ban_not_permanent",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r105_zero_duration_is_not_a_single_operator_permanent_ban",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r106_lift_removes_ban",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r107_r193_escalation_terms",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r118_ban_key_ipv4_loopback_allowed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r119_ban_key_rejects_tab_char",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r120_fp_with_spaces_rejected",
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r108_inject_idempotent_double",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r109_no_html_no_inject",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r110_oversize_head_gives_up",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r096_smuggle_te_identity",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r097_smuggle_te_gzip_chunked_list",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r098_smuggle_obs_fold_lf_only",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r086_verdict_not_valid_as_step_up",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r087_step_up_not_valid_as_verdict",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r088_receipt_not_valid_as_step_up_cookie",
@@ -4368,24 +4428,9 @@
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r093_r151_headerless_client_has_no_bind_key",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r094_token_bind_includes_subnet",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r095_token_bind_includes_ua",
-    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r096_smuggle_te_identity",
-    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r097_smuggle_te_gzip_chunked_list",
-    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r098_smuggle_obs_fold_lf_only",
     "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::wargame_r101_sweep_does_not_flag_single_session",
     "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::wargame_r102_sweep_flags_burst",
-    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::wargame_r103_sweep_window_resets",
-    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r104_temp_ban_not_permanent",
-    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r105_zero_duration_is_not_a_single_operator_permanent_ban",
-    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r106_lift_removes_ban",
-    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r107_r193_escalation_terms",
-    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r118_ban_key_ipv4_loopback_allowed",
-    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r119_ban_key_rejects_tab_char",
-    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r120_fp_with_spaces_rejected",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r111_unauth_admin_whoami_404",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r112_auditor_whoami_ok",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r114_checkpoints_auth_required",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r115_metrics_auth_required",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r116_operator_cannot_list_as_unscoped"
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::wargame_r103_sweep_window_resets"
    ],
    "go_test_map": {
     "TestWargameR081_PathDotDotAdminStaysStrict": "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization",
@@ -4415,9 +4460,9 @@
     "TestWargameR105_PermanentBanHasZeroUntil": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r105_zero_duration_is_not_a_single_operator_permanent_ban",
     "TestWargameR106_LiftRemovesBan": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r106_lift_removes_ban",
     "TestWargameR107_AutoBanEscalatesStrike": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r107_r193_escalation_terms",
-    "TestWargameR108_InjectIdempotentDouble": null,
-    "TestWargameR109_NoHTMLNoInject": null,
-    "TestWargameR110_OversizeHeadGivesUp": null,
+    "TestWargameR108_InjectIdempotentDouble": "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r108_inject_idempotent_double",
+    "TestWargameR109_NoHTMLNoInject": "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r109_no_html_no_inject",
+    "TestWargameR110_OversizeHeadGivesUp": "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r110_oversize_head_gives_up",
     "TestWargameR111_UnauthAdminWhoami404": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r111_unauth_admin_whoami_404",
     "TestWargameR112_AuditorWhoamiOK": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r112_auditor_whoami_ok",
     "TestWargameR113_KeysOmitHMACSecret": null,
@@ -4431,12 +4476,11 @@
    },
    "gaps": [
     "route preset/default resolution R083-R085 (plan 20261107205817 B12: C, open contract)",
-    "HTML inject R108-R110 (B15: M)",
     "admin keys route R113 (sth_public_key projection; route not served by gateway::admin_plane)"
    ],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Token/step-up/receipt separation, bind key, smuggle classifier, sweep and ban-store rounds are ported against the pure kernels in gateway/token, gateway/smuggle, network/history/sweep and gateway/ban. Deliberate differences pinned: R105 (no single-operator permanent ban) and R107 (fourth strike stays 24h and needs dual control). Admin auth rounds R111, R112 and R114-R116 are ported against gateway::admin_plane over a real loopback TCP listener (deny-by-default 404, auditor whoami).",
+   "notes": "Token/step-up/receipt separation, bind key, smuggle classifier, sweep and ban-store rounds are ported against the pure kernels in gateway/token, gateway/smuggle, network/history/sweep and gateway/ban. Deliberate differences pinned: R105 (no single-operator permanent ban) and R107 (fourth strike stays 24h and needs dual control). Admin auth rounds R111, R112 and R114-R116 are ported against gateway::admin_plane over a real loopback TCP listener (deny-by-default 404, auditor whoami). HTML inject rounds R108-R110 are ported against gateway::inject.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r086_verdict_not_valid_as_step_up": "passed",
@@ -4466,7 +4510,11 @@
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r112_auditor_whoami_ok": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r114_checkpoints_auth_required": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r115_metrics_auth_required": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r116_operator_cannot_list_as_unscoped": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r116_operator_cannot_list_as_unscoped": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r108_inject_idempotent_double": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r109_no_html_no_inject": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r110_oversize_head_gives_up": "passed"
    }
   },
   {
@@ -7209,38 +7257,48 @@
   },
   {
    "baseline_path": "internal/correlation/correlation_shared_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs",
-    "crates/sdk/humanymous-runtime/src/network/correlation/shared.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation_tests.rs",
+    "crates/sdk/humanymous-runtime/src/network/correlation/shared.rs",
+    "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_reported_fleet_velocity_affects_only_weight_zero_residual",
-    "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_coordinator_outage_keeps_local_burst_observation",
-    "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_fallback_counters_distinguish_absent_reported_and_malformed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation_tests.rs::non_integer_replies_and_raw_keys_are_unavailable",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation_tests.rs::shared_coordinator_outage_falls_back_to_local",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation_tests.rs::shared_eval_command_contract",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation_tests.rs::shared_fleet_count_drives_velocity",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation_tests.rs::shared_fleet_fallback_counter",
     "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_concurrent_fallbacks_are_serialized_by_the_owning_runtime",
-    "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_digest_is_stable_keyed_and_known_answer_compatible"
+    "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_coordinator_outage_keeps_local_burst_observation",
+    "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_digest_is_stable_keyed_and_known_answer_compatible",
+    "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_fallback_counters_distinguish_absent_reported_and_malformed",
+    "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_reported_fleet_velocity_affects_only_weight_zero_residual"
    ],
    "go_test_map": {
-    "TestShared_EvalCommandContract": null,
-    "TestShared_FleetCountDrivesVelocity": "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_reported_fleet_velocity_affects_only_weight_zero_residual",
-    "TestShared_RedisOutageFallsBackToLocal": "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_coordinator_outage_keeps_local_burst_observation",
-    "TestShared_FleetFallbackCounter": "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_fallback_counters_distinguish_absent_reported_and_malformed",
+    "TestShared_EvalCommandContract": "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation_tests.rs::shared_eval_command_contract",
+    "TestShared_FleetCountDrivesVelocity": "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation_tests.rs::shared_fleet_count_drives_velocity",
+    "TestShared_RedisOutageFallsBackToLocal": "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation_tests.rs::shared_coordinator_outage_falls_back_to_local",
+    "TestShared_FleetFallbackCounter": "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation_tests.rs::shared_fleet_fallback_counter",
     "TestShared_FleetFallbackCounter_Concurrent": "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_concurrent_fallbacks_are_serialized_by_the_owning_runtime",
     "TestKeyDigest_StableAndKeyed": "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_digest_is_stable_keyed_and_known_answer_compatible"
    },
-   "gaps": [
-    "Redis EVAL command/Lua key contract (hmn:corr:sub/vel) has no Rust backend; shared.rs is a semantic AtomicCoordinator trait only"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Fleet semantics are modelled through FleetInput/AtomicCoordinator; actual Redis coordinator is plan B23 \"M\".",
+   "notes": "The fakeDoer cases run end to end against an in-process RESP coordinator with scripted replies: the EVAL key and ARGV contract, a fleet velocity of 50 over a baseline of 1 firing ip_velocity, an unreachable coordinator falling back to local counting, and healthy / down / malformed fallback counts. The concurrent counter and key digest cases stay on the registry and digest kernels (the runtime serializes registry access).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_concurrent_fallbacks_are_serialized_by_the_owning_runtime": "passed",
     "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_coordinator_outage_keeps_local_burst_observation": "passed",
     "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_digest_is_stable_keyed_and_known_answer_compatible": "passed",
     "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_fallback_counters_distinguish_absent_reported_and_malformed": "passed",
-    "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_reported_fleet_velocity_affects_only_weight_zero_residual": "passed"
+    "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_reported_fleet_velocity_affects_only_weight_zero_residual": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation_tests.rs::non_integer_replies_and_raw_keys_are_unavailable": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation_tests.rs::shared_coordinator_outage_falls_back_to_local": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation_tests.rs::shared_eval_command_contract": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation_tests.rs::shared_fleet_count_drives_velocity": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation_tests.rs::shared_fleet_fallback_counter": "passed"
    }
   },
   {
@@ -7279,32 +7337,37 @@
   },
   {
    "baseline_path": "internal/correlation/correlation.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation.rs",
+    "crates/sdk/humanymous-runtime/src/network/correlation/config.rs",
     "crates/sdk/humanymous-runtime/src/network/correlation/mod.rs",
     "crates/sdk/humanymous-runtime/src/network/correlation/registry.rs",
     "crates/sdk/humanymous-runtime/src/network/correlation/shared.rs",
-    "crates/sdk/humanymous-runtime/src/network/correlation/velocity.rs",
-    "crates/sdk/humanymous-runtime/src/network/correlation/config.rs"
+    "crates/sdk/humanymous-runtime/src/network/correlation/velocity.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_proxy_rotation_at_three_not_two_subnets",
-    "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_fanout_needs_three_fingerprints_and_three_subnets",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation_tests.rs::non_integer_replies_and_raw_keys_are_unavailable",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation_tests.rs::shared_eval_command_contract",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation_tests.rs::shared_fleet_count_drives_velocity",
     "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_coordinator_outage_keeps_local_burst_observation",
+    "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_fanout_needs_three_fingerprints_and_three_subnets",
+    "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_proxy_rotation_at_three_not_two_subnets",
     "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::ttl_equality_stats_gc_reset_and_fallback_retention"
    ],
    "go_test_map": {},
-   "gaps": [
-    "Redis fleetCorrLua EVAL path (SADD/ZADD/ZREMRANGEBYSCORE/ZCARD) not implemented; only coordinator trait seam"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Local registry, JA4 fanout, velocity, GC/Stats/Reset and fallback counters ported; actual fleet coordinator missing (plan B23).",
+   "notes": "Local registry, JA4 fanout, velocity, GC/Stats/Reset and fallback counters ported. The fleet step (fleetCorrLua EVAL: SADD/PEXPIRE, ZADD when new, ZREMRANGEBYSCORE/PEXPIRE/ZCARD on hmn:corr:sub:<digest> and hmn:corr:vel:<digest>, ARGV now ns, window ns, TTL ms, subnet) is gateway::coordinator::correlation::SharedCorrelation implementing the AtomicCoordinator seam over the B23 RESP client; any failure becomes FleetInput::Unavailable and a short reply degrades in FleetInput::counts, both counted as fallbacks. Deliberate tightenings: a request digest that is not 64 lowercase hex is refused before I/O, and a non-integer reply element is unavailable instead of Go's zero value. Only the weight-zero ip_velocity residual consumes the fleet count; scoring and signal ids are unchanged. Composition of the coordinator into a served collect path is not done (gateway composition rows).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_coordinator_outage_keeps_local_burst_observation": "passed",
     "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_fanout_needs_three_fingerprints_and_three_subnets": "passed",
     "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_proxy_rotation_at_three_not_two_subnets": "passed",
-    "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::ttl_equality_stats_gc_reset_and_fallback_retention": "passed"
+    "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::ttl_equality_stats_gc_reset_and_fallback_retention": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation_tests.rs::non_integer_replies_and_raw_keys_are_unavailable": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation_tests.rs::shared_eval_command_contract": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/coordinator/correlation_tests.rs::shared_fleet_count_drives_velocity": "passed"
    }
   },
   {

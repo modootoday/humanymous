@@ -15,6 +15,7 @@ pub mod credential;
 pub mod external_input;
 pub mod guard;
 pub mod http;
+pub mod inject;
 #[cfg(feature = "hosted-pilot")]
 pub mod lab_h2_measure;
 pub mod logging;
@@ -24,6 +25,7 @@ pub mod observatory;
 pub mod operations;
 pub mod pass_proof;
 pub mod pass_store;
+pub mod recon;
 pub mod request;
 pub mod seams;
 pub mod service;
