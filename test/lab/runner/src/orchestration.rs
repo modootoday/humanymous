@@ -53,6 +53,7 @@ pub(crate) mod cap0_product_honesty;
 pub(crate) mod clean_room_product;
 pub(crate) mod clean_room_product_matrix;
 mod collector_parity;
+mod deployment;
 pub(crate) mod g2_collector_product_binding;
 pub(crate) mod g4_cef_at;
 pub(crate) mod g5_witness_transport;
@@ -719,6 +720,8 @@ impl Lab {
             gate_tls::run(self)?;
             self.stage = "witness_component";
             witness::run(self)?;
+            self.stage = "deployment";
+            deployment::run(self)?;
         } else {
             self.components["runtime"] =
                 json!({"status":"not_run","reason":"explicit topology-only phase"});

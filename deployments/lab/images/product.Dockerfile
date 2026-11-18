@@ -32,3 +32,19 @@ COPY --from=runtime-compiler /source/target/release/humanymous-runtime-pilot /us
 COPY --from=runtime-compiler /source/target/release/audit-witness /usr/local/bin/
 # Read-only legacy Pass page for the pass-pilot attest_floor recovery case.
 COPY --from=compiler /source/web/pass.html /usr/local/share/humanymous/web/
+
+# Roadmap 4 items 2h/2i: the image shape compose.release.yaml names
+# (build/rust/runtime-candidate.Dockerfile): scratch, the runtime binary as
+# entrypoint, UID 65532, no argv. Same binary bytes as the runtime stage.
+# deployment-state is the empty-volume layout for the manifest's hmn-data
+# volume: Docker copies its owner and mode into the volume on first mount, and
+# the runner creates the runtime container before any lab actor mounts it.
+FROM compiler AS deployment-state
+RUN ["mkdir","-p","/empty/state/humanymous"]
+RUN ["chmod","0700","/empty/state/humanymous"]
+
+FROM scratch AS deployment-runtime
+COPY --from=runtime-compiler /source/target/release/humanymous-runtime /usr/local/bin/humanymous-runtime
+COPY --from=deployment-state --chown=65532:65532 /empty/state/ /var/lib/
+USER 65532:65532
+ENTRYPOINT ["/usr/local/bin/humanymous-runtime"]
