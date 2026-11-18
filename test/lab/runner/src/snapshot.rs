@@ -20,6 +20,19 @@ pub fn root() -> Result<PathBuf> {
     }
     Ok(PathBuf::from(String::from_utf8(output.stdout)?.trim()).canonicalize()?)
 }
+/// Checkout root for unit tests, from this package's compile-time manifest
+/// directory. Test harnesses may run without `git` on PATH (the Windows
+/// standard-user workspace actor gets System32 only), so live-workspace tests
+/// must not depend on [`root`]'s Git query to find the checkout.
+#[cfg(test)]
+pub(crate) fn test_root() -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .ancestors()
+        .nth(3)
+        .expect("test/lab/runner sits three levels below the checkout root")
+        .canonicalize()
+        .expect("checkout root")
+}
 #[path = "source_pin.rs"]
 pub(crate) mod source_pin;
 pub struct Snapshot(pub PathBuf, Option<source_pin::SelectedSource>);

@@ -1,11 +1,13 @@
 [package]
 name = "humanymous-runtime"
+description = "Humanymous gateway, authority, audit and capture runtime"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-publish = false
+readme = "README.md"
+publish = ["crates-io"]
 autobins = false
 autotests = false
 
@@ -69,6 +71,7 @@ workspace = true
 
 [[bin]]
 name = "humanymous-runtime"
+description = "Humanymous gateway, authority, audit and capture runtime"
 path = "src/gateway/main.rs"
 required-features = ["gateway"]
 
@@ -95,6 +98,11 @@ required-features = ["audit"]
 [[test]]
 name = "gateway-native-process"
 path = "tests/gateway/native_process.rs"
+required-features = ["gateway"]
+
+[[test]]
+name = "gateway-deployment-manifests"
+path = "tests/gateway/deployment_manifests.rs"
 required-features = ["gateway"]
 
 [[test]]
