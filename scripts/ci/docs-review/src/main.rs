@@ -35,7 +35,7 @@ const SURFACES: &[(&str, &str)] = &[
     ("browser-wasm", "browser/collector-parity"),
     ("accessible-recovery", "browser/challenge-assistive"),
     ("node-adapter", "node/native-host-process"),
-    ("nginx-adapter", "docker/deployment"),
+    ("nginx-adapter", "docker/nginx"),
     ("capability-boundaries", "docker/raw-tls-h2"),
 ];
 #[derive(Deserialize)]
@@ -363,6 +363,18 @@ mod tests {
             verify(&f.0)
                 .unwrap_err()
                 .contains("capability review missing")
+        );
+    }
+    #[test]
+    fn nginx_surface_binds_its_own_component_check() {
+        // docker/deployment is the Go-parity runtime manifest lab case; it never
+        // exercises the nginx module (stale binding fixed under #75 C8).
+        let nginx = SURFACES.iter().find(|(id, _)| *id == "nginx-adapter");
+        assert_eq!(nginx, Some(&("nginx-adapter", "docker/nginx")));
+        assert!(
+            SURFACES
+                .iter()
+                .all(|(_, check)| *check != "docker/deployment")
         );
     }
     #[test]
