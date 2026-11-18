@@ -88,4 +88,9 @@ impl Config {
             sample_bytes,
         })
     }
+
+    /// Rolling window length.
+    pub fn window(&self) -> Duration {
+        self.window
+    }
 }
