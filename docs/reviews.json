@@ -6621,9 +6621,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "c48ca4059dd3bbe1107c902e965610fff4ba40ca4e3d66dbc27c30e39ee1c922",
+      "sha256": "ced19e48d47fcbac9b0da93749829f67d31cba886bff23848b89dd5905ffd837",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 412 / macos 412 / windows 404 (404 common names, largest groups credential 50, token 42, ban 33, tests 29, observatory 26, pass_flow 25, logging 24, service 19, plus 8 Unix-only names listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 433 / macos 433 / windows 425 (425 common names, largest groups credential 50, token 43, ban 33, tests 29, observatory 26, pass_flow 25, logging 24, service 19, plus 8 Unix-only names listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/how-this-was-built.md"
@@ -8199,6 +8199,26 @@
       ]
     },
     {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/gc.rs",
+      "sha256": "a2be59a3c61c5504435c5daef39dd6bfe9a84b45393e45b22ba3e5d28fbc475f",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Composite garbage collection over the gateway's in-memory detection kernels (port of internal/gate gate.go Server.GC): sweep() visits, in Go order, whichever of the sticky verdict ledger, ban store, decision-probing sweep detector, anomaly observer (10-minute idle TTL) and credential correlation registry the caller supplies, skipping absent kernels. Unlike Go, each kernel's refusal (for example a regressed clock) is reported per kernel without stopping the others, and Report::complete() is true only when every present kernel succeeded. Settings-overlay expiry is out of scope (no overlay model under the detection freeze) and the periodic ticker belongs to the serving composition.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/gc/tests.rs",
+      "sha256": "d6e7278801c2d993d0e6ba828ffcaac51181779d040f903b85dc8d0851e7015e",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Four tests: the TestServerGCRunsWithoutPanic port (all kernels off is a complete no-op; default verdict and ban ledgers sweep cleanly), a full sweep after strike decay that empties the expired sticky verdict and auto-ban and evicts one sweep binding, one idle anomaly series and the credential entry, isolation where a sweep detector with a future observation reports TimeRegression and marks the report incomplete while the verdict and anomaly kernels still sweep (a series idle exactly 300 s survives), and the 600 s anomaly TTL constant.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
       "source": "crates/sdk/humanymous-runtime/src/gateway/guard.rs",
       "sha256": "36b6ede2aa8d18c90b670ed7b1dcdecdab920ea54a1dd4e9dac473dd60ced4f3",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
@@ -8387,9 +8407,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/mod.rs",
-      "sha256": "dd05818a58c1c9147ad1a8a67666784681856141162ba0f0956e3c6311c781bd",
+      "sha256": "2ae959c02ac3968917902f785bac84d70b945dd99115603dc2b5fe39beaed191",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway module root of the runtime crate: declares the application, ban, browser, configuration, connection cap, console, control, credential, demo, external input, guard, http, inject, legacy, logging, management, observatory, pass flow, pass proof, pass store, request, routes, seams, service, session, settings, shipping, smuggle, startup, tls, token, verdict store and virtual usb modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Doc line states loopback component support is not product qualification.",
+      "notes": "Gateway module root of the runtime crate: declares the application, ban, browser, configuration, connection cap, console, control, credential, demo, external input, gc, guard, http, inject, legacy, logging, management, observatory, pass flow, pass proof, pass store, recon, request, rit, routes, seams, service, session, settings, shipping, smuggle, startup, tls, token, verdict store and virtual usb modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Doc line states loopback component support is not product qualification.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
@@ -8496,6 +8516,26 @@
       ]
     },
     {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/recon.rs",
+      "sha256": "e3f4b460828164f5f5654e369758a9d026198177a29a1b0387b0a47a4aa2c46d",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Constant decision-latency floor (port of internal/gate recon.go constantFloor, SoT-21 section 8, HR-30): floor_remaining() returns floor minus elapsed, adds the gap when the clock reads earlier than start like Go, saturates instead of overflowing and returns None when nothing remains; constant_floor() sleeps the calling thread until the floor has elapsed on the monotonic clock. Its doc states this is coarse jitter defence, not a constant-time guarantee; the sweep detector lives in network::history::sweep and applying the floor on responses belongs to the serving composition. Reader page coverage is indirect.",
+      "pages": [
+        "docs/reference/hard-rules-verdicts.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/recon/tests.rs",
+      "sha256": "fa0cc98a2cc75077b37be2637266f88a459fd220742972acba29bff0b2544bc3",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Four unit tests pinning constantFloor arithmetic (the Go baseline had no direct test): remaining equals floor minus elapsed, nothing remains once the floor has elapsed or for a zero floor, a clock behind start extends the wait and saturates at Duration::MAX, and constant_floor blocks at least 20 ms but does not block for an already elapsed floor. Reader page coverage is indirect.",
+      "pages": [
+        "docs/reference/hard-rules-verdicts.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
       "source": "crates/sdk/humanymous-runtime/src/gateway/request.rs",
       "sha256": "7dc72a3091ff20231098288bb222bbbf4c242135873bfae3f05a84320ed2bd73",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
@@ -8513,6 +8553,26 @@
       "pages": [
         "docs/concepts/how-gate-sees-a-request.md",
         "docs/reference/data-processing-inventory.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/rit.rs",
+      "sha256": "2ac33a84cbfb23cf64a2ec4f5ae26ce27cdfd5df47674f4c8c9d8ad80e2d7b42",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Pure kernels for the legacy live rotating integrity token (port of cmd/server rit.go, SoT-07): canonical string sid\\nn\\ntb\\nsha256hex(body), token b64url(HMAC-SHA256(seed, canonical)) with seeds from humanymous_core::integrity::request, 10-second buckets with tolerance 1, Go ParseUint-like counter parsing (errors read as 0), issue_seed(), and verify() returning Bootstrap (one-shot grace claimed via callback on a never-signed session), Absent, StaleCounter, StaleBucket, Tampered (constant-time compare) or Valid in Go's check order. The caller owns the counter, the grace and the mapping to frozen l5.rit.* signals. Fail-closed difference: an empty master key or session id is refused, where Go derived keys anyway.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/rit/tests.rs",
+      "sha256": "b3501f2f28f1d68f4eb9650d192b1ab343f7273f2277661fcfcf0bde61a21c8e",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Twelve unit tests with goldens produced by Go 1.25 from the baseline's ritCanonical, SessionKey/Seed and verifyRIT HMAC: canonical, issued seed and token goldens, missing-input refusals, symmetric bucket tolerance, ParseUint-style counter parsing, a valid request, the one-shot bootstrap grace, tokenless requests after signing reported Absent, out-of-sequence counters and out-of-tolerance buckets reported stale, and tampering of any field or body failing the single HMAC check.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/reference/gate-origin-contract.md"
       ]
     },
     {
@@ -8967,9 +9027,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/token.rs",
-      "sha256": "a7798738fc1500f9b5e7ffc12418185aa716ab0be4761bdd8ebbf9f09e49565a",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Verdict-token kernel ported from legacy token.go/epoch.go/incident.go: payload.mac tokens using base64url and HMAC-SHA256 for verdict tokens, su step-up proofs and sur receipts (120 s skew), 15-minute epochs accepting current and previous with a per-node bump, opaque INC- incident handles, header bind keys, IPv4 /24 or IPv6 /48 client subnets, token bindings and a bounded single-use nonce cache. Fail-closed differences: key under 32 bytes, empty session, empty or |-containing fields and non-canonical expiry are refused. Issuing a token enables no trust upgrade by itself. Reader page coverage is indirect.",
+      "sha256": "b4c1c608e014e344aaefcc3266dbe2b01234358a8f8cfe79bcaa84589be83ff5",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Verdict-token kernel ported from legacy token.go/epoch.go/incident.go: payload.mac tokens using base64url and HMAC-SHA256 for verdict tokens, su step-up proofs and sur receipts (120 s skew), 15-minute epochs accepting current and previous with a per-node bump, opaque INC- incident handles and resolve_incident(), which recomputes handles per (seq, record) with a constant-time compare and returns the first match so a foreign-key handle resolves to nothing, header bind keys, IPv4 /24 or IPv6 /48 client subnets, token bindings and a bounded single-use nonce cache. Fail-closed differences: key under 32 bytes, empty session, empty or |-containing fields and non-canonical expiry are refused. Issuing a token enables no trust upgrade by itself. Reader page coverage is indirect.",
       "pages": [
         "docs/reference/gate-origin-contract.md",
         "docs/reference/production-vs-reference.md"
@@ -8977,9 +9037,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs",
-      "sha256": "a440776c75cb351b64f591f854ce66a7d1b9aeae9b319ff7d28fbcb7570a875b",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Sixteen ported legacy gate token/epoch tests (baseline 981d25c) for the token kernel: verdict token round trip, binding to UA/language/client-hint fingerprint plus /24 or /48 subnet and session, forged and expired tokens, single-use nonce cache that saturates closed, one-grace-bucket epoch rotation, domain separation between verdict, step-up and receipt tokens, receipt skew, malformed tokens and an empty expected session refusing (Go skipped that check), legacy bind/subnet shapes and keyed INC- incident handles. Reader page coverage is indirect.",
+      "sha256": "48fb3ebc8db5e8bfb69bce377d02346d9c873ef3161770b53135d631afe93015",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Seventeen ported legacy gate token/epoch tests (baseline 981d25c) for the token kernel: verdict token round trip, binding to UA/language/client-hint fingerprint plus /24 or /48 subnet and session, forged and expired tokens, single-use nonce cache that saturates closed, one-grace-bucket epoch rotation, domain separation between verdict, step-up and receipt tokens, receipt skew, malformed tokens and an empty expected session refusing (Go skipped that check), legacy bind/subnet shapes and keyed INC- incident handles, plus Go-golden incident resolution (INC-ADC2D7949B for 7, INC-3B5E9E3617 for 42) where unknown, empty, lower-case, foreign-key and out-of-range handles resolve to nothing. Reader page coverage is indirect.",
       "pages": [
         "docs/reference/hard-rules-verdicts.md",
         "docs/reference/gate-origin-contract.md"
