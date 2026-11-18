@@ -27,6 +27,22 @@ fn alpn_supported(protocol: &[u8]) -> bool {
     protocol == b"http/1.1" || protocol == b"h2"
 }
 
+/// Ingress ALPN is HTTP/1.1 and/or H2. `acme-tls/1` is accepted only in the
+/// exact shape [`certificate::issuer_config`] builds (h2, http/1.1, acme-tls/1)
+/// and only when its resolver belongs to an ACME issuer; anything else fails
+/// closed.
+fn alpn_acceptable(tls: &ServerConfig) -> bool {
+    let protocols = &tls.alpn_protocols;
+    if protocols
+        .iter()
+        .any(|protocol| protocol == certificate::CHALLENGE_ALPN)
+    {
+        return *protocols == [b"h2".as_slice(), b"http/1.1", certificate::CHALLENGE_ALPN]
+            && certificate::answers_acme_challenge(tls);
+    }
+    protocols.iter().all(|protocol| alpn_supported(protocol))
+}
+
 pub(in crate::gateway) fn validate_configuration(
     config: &crate::gateway::configuration::Configuration,
     tls: &ServerConfig,
@@ -35,10 +51,7 @@ pub(in crate::gateway) fn validate_configuration(
         || config.routes.iter().any(|route| {
             route.response_profile != crate::gateway::configuration::ResponseProfile::Buffered
         })
-        || tls
-            .alpn_protocols
-            .iter()
-            .any(|protocol| !alpn_supported(protocol))
+        || !alpn_acceptable(tls)
     {
         return Err(io::Error::other(
             "TLS requires native buffered routes and HTTP/1.1 or H2 ALPN",
@@ -108,6 +121,11 @@ async fn receive_dual(
                     connection,
                 }))
             }
+            // TLS-ALPN-01 validation: the handshake alone answered the
+            // challenge; no request is ever read on this connection.
+            Some(certificate::CHALLENGE_ALPN) => Err(io::Error::other(
+                "TLS-ALPN-01 validation handshake carries no request",
+            )),
             _ => Err(io::Error::other("TLS application protocol unsupported")),
         }
     })
@@ -276,6 +294,15 @@ mod tests {
         assert!(validate_configuration(&config, &tls).is_err());
         config.browser = None;
         tls.alpn_protocols = vec![b"http/1.0".to_vec()];
+        assert!(validate_configuration(&config, &tls).is_err());
+        // acme-tls/1 is refused unless an ACME issuer built the configuration.
+        tls.alpn_protocols = vec![
+            b"h2".to_vec(),
+            b"http/1.1".to_vec(),
+            certificate::CHALLENGE_ALPN.to_vec(),
+        ];
+        assert!(validate_configuration(&config, &tls).is_err());
+        tls.alpn_protocols = vec![certificate::CHALLENGE_ALPN.to_vec()];
         assert!(validate_configuration(&config, &tls).is_err());
     }
 }

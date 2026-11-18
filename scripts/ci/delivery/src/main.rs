@@ -133,6 +133,7 @@ fn run() -> Result<()> {
         "mount-probe" => mount_probe::run(&root),
         "native-artifacts" => package::native_artifacts(&root),
         "node" => package::node(&root).map(|_| ()),
+        "node-qualification" => package::node_qualification(&root),
         "readiness" => registry::readiness(&root),
         "release" => registry::release(&root),
         "crate-waves" => registry::wave_output(&root),

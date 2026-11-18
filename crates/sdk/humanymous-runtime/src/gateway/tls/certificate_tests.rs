@@ -24,15 +24,33 @@ fn pair(name: &str) -> (String, String) {
     )
 }
 
-// The update fills the feature-gated development field when it exists.
-#[cfg_attr(not(feature = "dev-self-signed"), allow(clippy::needless_update))]
 fn settings(chain: bool, key: bool, domains: &[&str]) -> CertificateSettings {
     CertificateSettings {
         chain: chain.then(|| PathBuf::from("chain.pem")),
         key: key.then(|| PathBuf::from("key.pem")),
         issuer_domains: domains.iter().map(|domain| (*domain).to_owned()).collect(),
-        ..CertificateSettings::default()
+        dev_self_signed: false,
     }
+}
+
+/// The setting exists in every build: a build without the feature refuses it
+/// at selection, a build with it selects it, and either way it is exclusive.
+#[test]
+fn dev_self_signed_setting_is_feature_checked_at_selection() {
+    let mut dev = settings(false, false, &[]);
+    dev.dev_self_signed = true;
+    let expected = if cfg!(feature = "dev-self-signed") {
+        Ok(CertificateSource::DevSelfSigned)
+    } else {
+        Err(CertificateError::DevSelfSignedUnavailable)
+    };
+    assert_eq!(select(&dev), expected);
+    let mut mixed = settings(true, true, &[]);
+    mixed.dev_self_signed = true;
+    assert_eq!(select(&mixed), Err(CertificateError::AmbiguousSource));
+    let mut mixed = settings(false, false, &["example.com"]);
+    mixed.dev_self_signed = true;
+    assert_eq!(select(&mixed), Err(CertificateError::AmbiguousSource));
 }
 
 #[test]
@@ -185,6 +203,25 @@ fn issuer_must_cover_exactly_the_selected_domains() {
         issuer_config(&domains, &Issuer(vec!["other.example.com".into()])).unwrap_err(),
         CertificateError::AmbiguousSource
     );
+    assert!(answers_acme_challenge(&config));
+    assert_eq!(
+        issuer_config(&domains, &OtherChallenge(domains.clone())).unwrap_err(),
+        CertificateError::UnsupportedChallenge
+    );
+}
+
+struct OtherChallenge(Vec<String>);
+
+impl CertificateIssuer for OtherChallenge {
+    fn domains(&self) -> &[String] {
+        &self.0
+    }
+    fn resolver(&self) -> Arc<dyn ResolvesServerCert> {
+        Arc::new(NoCertificate)
+    }
+    fn challenge_alpn(&self) -> Vec<Vec<u8>> {
+        vec![b"http/1.0".to_vec()]
+    }
 }
 
 #[cfg(feature = "dev-self-signed")]

@@ -26,6 +26,35 @@ use std::{
 const PEBBLE: &str = "ghcr.io/letsencrypt/pebble@sha256:0c81f05db371f436c97fb894bd6d2ab8fc9c8e2ce40f8bef8a8e15941bcd75ef";
 const CHALLTESTSRV: &str = "ghcr.io/letsencrypt/pebble-challtestsrv@sha256:0152c8cb506e2ecba2900ed47d23932e27e3e6575a7d2c8ef93c7719ee3dea4c";
 const DOMAIN: &str = "gate.humanymous.test";
+/// The pinned image's own `/test/config/pebble-config.json` with only its
+/// `default` profile (90 days). Pebble picks a random profile for an order
+/// that names none, and its `shortlived` profile (6 days) falls inside the
+/// 30-day renewal window, which made the not-due assertions flaky.
+const PEBBLE_CONFIG: &str = r#"{
+  "pebble": {
+    "listenAddress": "0.0.0.0:14000",
+    "managementListenAddress": "0.0.0.0:15000",
+    "certificate": "test/certs/localhost/cert.pem",
+    "privateKey": "test/certs/localhost/key.pem",
+    "httpPort": 5002,
+    "tlsPort": 5001,
+    "ocspResponderURL": "",
+    "externalAccountBindingRequired": false,
+    "domainBlocklist": ["blocked-domain.example"],
+    "retryAfter": {
+        "authz": 3,
+        "order": 5
+    },
+    "keyAlgorithm": "ecdsa",
+    "profiles": {
+      "default": {
+        "description": "The profile you know and love",
+        "validityPeriod": 7776000
+      }
+    }
+  }
+}
+"#;
 
 /// Removes the named containers when the test ends, pass or fail.
 struct Containers(Vec<String>);
@@ -128,9 +157,11 @@ fn pebble_issues_over_tls_alpn_01_and_the_cache_survives_restart() {
     // PEBBLE_VA_NOSLEEP removes artificial validation delay only; validation
     // itself still dials this host. PEBBLE_WFE_NONCEREJECT=0 turns off random
     // bad-nonce fault injection so the run is deterministic.
+    let dir = scratch();
+    let config_file = dir.join("pebble-config.json");
+    std::fs::write(&config_file, PEBBLE_CONFIG).unwrap();
     docker(&[
-        "run",
-        "--detach",
+        "create",
         "--name",
         &pebble,
         "--network",
@@ -145,7 +176,12 @@ fn pebble_issues_over_tls_alpn_01_and_the_cache_survives_restart() {
         "-dnsserver",
         "127.0.0.1:8053",
     ]);
-    let dir = scratch();
+    docker(&[
+        "cp",
+        config_file.to_str().unwrap(),
+        &format!("{pebble}:/test/config/pebble-config.json"),
+    ]);
+    docker(&["start", &pebble]);
     let root = dir.join("pebble.minica.pem");
     docker(&[
         "cp",
