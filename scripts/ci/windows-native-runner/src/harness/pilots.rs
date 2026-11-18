@@ -340,7 +340,11 @@ mod tests {
         // Only that exact ignored name is accepted for the delivery binary.
         let mut lib = delivery.clone();
         lib["kind"] = json!(["lib"]);
-        assert!(declared(&lib, &packages, "linux", "x86_64").unwrap().is_empty());
+        assert!(
+            declared(&lib, &packages, "linux", "x86_64")
+                .unwrap()
+                .is_empty()
+        );
     }
     #[test]
     fn authority_helper_is_declared_but_never_receipted() {
