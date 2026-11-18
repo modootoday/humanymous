@@ -237,20 +237,20 @@ impl Application {
                     .map_err(|_| Rejection::new(503, "serialization"))?;
                 return Ok(bytes);
             }
-            Decision::Origin { deadline } => {
+            Decision::Origin { deadline, upstream } => {
                 self.check_deadline(deadline, crate::authority::now_ms())?;
                 let remaining = deadline
                     .checked_sub(crate::authority::now_ms()?)
                     .filter(|value| *value > 0)
                     .ok_or(Rejection::new(503, "deadline"))?;
                 let until = until.min(Instant::now() + Duration::from_millis(remaining));
-                timeout_at(until, async {
+                let outcome = timeout_at(until, async {
                     if shutdown.borrow().is_some() {
-                        return Err(Rejection::new(503, "service_stopping"));
+                        return Err(Rejection::new(503, "service_stopping").into());
                     }
-                    let mut upstream = TcpStream::connect(self.config.origin)
+                    let mut origin_stream = TcpStream::connect(self.config.origin)
                         .await
-                        .map_err(|_| Rejection::new(503, "origin_connect"))?;
+                        .map_err(|error| OriginError::io("origin_connect", &error))?;
                     if h1_idle {
                         connection
                             .check_h1_idle()
@@ -262,22 +262,24 @@ impl Application {
                     }
                     self.check_deadline(deadline, crate::authority::now_ms())?;
                     if shutdown.borrow().is_some() || Instant::now() >= until {
-                        return Err(Rejection::new(503, "service_stopping"));
+                        return Err(Rejection::new(503, "service_stopping").into());
                     }
-                    upstream
+                    origin_stream
                         .write_all(&http::origin_request(request, &self.config.scope.authority))
                         .await
-                        .map_err(|_| Rejection::new(503, "origin_write"))?;
+                        .map_err(|error| OriginError::io("origin_write", &error))?;
                     let mut bytes = Vec::new();
-                    upstream
+                    origin_stream
                         .take((http::MAX_ORIGIN_FRAME + 1) as u64)
                         .read_to_end(&mut bytes)
                         .await
-                        .map_err(|_| Rejection::new(503, "origin_read"))?;
-                    http::Response::parse(&bytes, request.method == "HEAD")
+                        .map_err(|error| OriginError::io("origin_read", &error))?;
+                    Ok::<_, OriginError>(http::Response::parse(&bytes, request.method == "HEAD")?)
                 })
                 .await
-                .map_err(|_| Rejection::new(503, "origin_timeout"))??
+                .unwrap_or_else(|_| Err(Rejection::new(503, "origin_timeout").into()));
+                // No TLS response byte precedes this encoded frame.
+                outcome.map_err(|error| self.upstream_failure(&upstream, error, false))?
             }
         };
         let headers = ack

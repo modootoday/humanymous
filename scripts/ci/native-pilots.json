@@ -1,0 +1,141 @@
+{
+  "schema": "humanymous.native-pilots/1",
+  "canon": "sot:delivery (Native probe ignored-pilot accounting)",
+  "receipt": "target/native-pilots/receipt.json",
+  "pilots": [
+    {
+      "id": "runtime-audit-native-source",
+      "package": "humanymous-runtime",
+      "target": "humanymous_runtime",
+      "kind": "lib",
+      "os": ["linux"],
+      "arch": "x86_64",
+      "executor": "native-pilots",
+      "cargo": ["--lib"],
+      "privilege": "user",
+      "private_parent_env": "HUMANYMOUS_AUDIT_NATIVE_SOURCE_PARENT",
+      "tests": [
+        "audit::verification::scan::source::native::tests::controlled_native_inspection_cursor_lifetime_and_replacement",
+        "audit::verification::scan::source::native::tests::prerequisite::native_filesystem_prerequisite",
+        "audit::verification::scan::source::native::tests::capacity::large_raw_links_refuse_without_a_partial_diagnostic",
+        "audit::verification::scan::source::native::tests::capacity::large_unicode_and_maximum_schema_arrays",
+        "audit::verification::scan::source::native::tests::capacity::retained_4096_segment_inventory_and_shared_reader_descriptors",
+        "audit::verification::scan::source::native::tests::capacity::sparse_history_exceeds_working_set_target_without_history_collection"
+      ],
+      "helpers": []
+    },
+    {
+      "id": "attacker-legacy-report-publication",
+      "package": "humanymous-attacker",
+      "target": "humanymous_attacker",
+      "kind": "lib",
+      "os": ["linux", "macos", "windows"],
+      "executor": "native-pilots",
+      "cargo": ["--lib"],
+      "privilege": "user",
+      "tests": [
+        "report::legacy::tests::native_publication_replaces_old_report_and_preserves_foreign_collision"
+      ],
+      "helpers": []
+    },
+    {
+      "id": "attacker-windows-denied-replacement",
+      "package": "humanymous-attacker",
+      "target": "humanymous_attacker",
+      "kind": "lib",
+      "os": ["windows"],
+      "executor": "native-pilots",
+      "cargo": ["--lib"],
+      "privilege": "user",
+      "tests": [
+        "report::legacy::tests::native_windows_denied_replacement_retains_old_report"
+      ],
+      "helpers": []
+    },
+    {
+      "id": "authority-unix-socket-acl",
+      "package": "humanymous-runtime",
+      "target": "authority-native-process",
+      "kind": "test",
+      "os": ["linux"],
+      "executor": "native-pilots",
+      "cargo": ["--test", "authority-native-process"],
+      "privilege": "root",
+      "tests": [
+        "unix_other_user_is_denied_by_actual_socket_acl"
+      ],
+      "helpers": [
+        "unix_unprivileged_connect_probe"
+      ]
+    },
+    {
+      "id": "lab-runner-collector-source-pin",
+      "package": "humanymous-lab-runner",
+      "target": "humanymous-lab-runner",
+      "kind": "bin",
+      "os": ["linux", "macos", "windows"],
+      "executor": "native-pilots",
+      "cargo": ["--bin", "humanymous-lab-runner"],
+      "privilege": "user",
+      "source_root_env": "HUMANYMOUS_LAB_SOURCE_ROOT",
+      "tests": [
+        "snapshot::source_pin::tests::actual_collector_source_matches_reviewed_pin"
+      ],
+      "helpers": []
+    },
+    {
+      "id": "platform-controlled-capture",
+      "package": "humanymous-platform",
+      "target": "humanymous_platform",
+      "kind": "lib",
+      "os": ["linux", "macos", "windows"],
+      "executor": "native-pilots",
+      "cargo": ["--lib", "--features", "testing"],
+      "privilege": "user",
+      "outer_grant": true,
+      "tests": [
+        "testing::process::capture_attempt::actual_tests::retained_normal_stdout_stderr_and_actual_joins",
+        "testing::process::capture_attempt::actual_tests::retained_synthetic_pending_stdin_expires_original_run",
+        "testing::process::capture_attempt::actual_tests::retained_stdout_cap_is_sticky",
+        "testing::process::capture_attempt::actual_tests::retained_stderr_cap_is_sticky",
+        "testing::process::capture_attempt::actual_tests::retained_stop_request_preserves_observed_exit_zero"
+      ],
+      "helpers": []
+    },
+    {
+      "id": "platform-controlled-barrier-windows",
+      "package": "humanymous-platform",
+      "target": "humanymous_platform",
+      "kind": "lib",
+      "os": ["windows"],
+      "executor": "native-pilots",
+      "cargo": ["--lib", "--features", "testing"],
+      "privilege": "user",
+      "outer_grant": true,
+      "tests": [
+        "testing::process::controlled_barrier::actual_tests::missing_grant_refuses_before_workload",
+        "testing::process::controlled_barrier::actual_tests::parent_remains_running_until_original_outer_deadline"
+      ],
+      "helpers": []
+    },
+    {
+      "id": "node-host-process",
+      "package": "humanymous-node-adapter",
+      "target": "host_process",
+      "kind": "test",
+      "os": ["linux", "macos", "windows"],
+      "executor": "job",
+      "job": {
+        "workflow": ".github/workflows/rust-validation.yml",
+        "name": "node",
+        "run": "cargo run --locked -p humanymous-delivery -- component node-host"
+      },
+      "tests": [
+        "actual_authority_decisions_are_enforced_before_origin",
+        "actual_framework_allow_preserves_binary_body_and_headers",
+        "actual_framework_failure_paths_never_reach_origin"
+      ],
+      "helpers": []
+    }
+  ]
+}
