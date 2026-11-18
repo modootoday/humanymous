@@ -164,8 +164,10 @@ docker compose -f compose.release.yaml up -d edge
 docker compose -f compose.release.yaml run --rm -T runtime < runtime.json
 ```
 
-Sealed audit custody must exist before the first start, and no shipped Rust command
-provisions it yet. The full Go flag mapping and every gap are in
+The image ships an empty `/var/lib/humanymous` owned by uid/gid 65532 with mode 0700,
+so Docker gives a new `hmn-data` volume that owner and mode on first mount. Sealed
+audit custody (`keys/`) must exist before the first start, and no shipped Rust
+command provisions it yet (roadmap item 2k). The full Go flag mapping and every gap are in
 [`k8s/README.md`](k8s/README.md#go-flag-mapping).
 
 Beyond Compose, two more ways to run the same runtime ship here: **[`k8s/`](k8s/)**:
