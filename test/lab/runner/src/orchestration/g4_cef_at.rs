@@ -74,9 +74,8 @@ pub fn require_cap_module(root: &Path) -> Result<()> {
 }
 
 /// Fail-closed CEF bundle gate — cite exact env / durable Cap-day bind; no CEF burn.
-pub fn require_cef_bundle() -> Result<()> {
-    let root = snapshot::root()?;
-    if crate::cef_bundle::cap_day_present(&root)? {
+pub fn require_cef_bundle(root: &Path) -> Result<()> {
+    if crate::cef_bundle::cap_day_present(root)? {
         return Ok(());
     }
     Err(format!(
@@ -133,7 +132,7 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         )?;
         return Err(error);
     }
-    if let Err(error) = require_cef_bundle() {
+    if let Err(error) = require_cef_bundle(&root) {
         lab.components["g4_cef_at"] = json!({
             "status": "refused",
             "kind": "g4-cef-at-component",
@@ -200,9 +199,9 @@ mod tests {
         // Do not mutate process env (forbid unsafe-code). When Cap-day presence
         // is absent Cap refuses with exact env + path-release surfaces; when
         // present via env or durable bind, require_cef_bundle succeeds.
-        match require_cef_bundle() {
+        let root = snapshot::test_root();
+        match require_cef_bundle(&root) {
             Ok(()) => {
-                let root = snapshot::root().expect("root");
                 assert!(
                     crate::cef_bundle::cap_day_present(&root).expect("cap_day"),
                     "require_cef_bundle Ok requires Cap-day presence"
@@ -219,7 +218,7 @@ mod tests {
 
     #[test]
     fn live_workspace_cap_module_present() {
-        let root = snapshot::root().expect("root");
+        let root = snapshot::test_root();
         let missing = missing_cap_module(&root);
         assert!(
             missing.is_empty(),

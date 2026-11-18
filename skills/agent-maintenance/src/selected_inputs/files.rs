@@ -255,9 +255,21 @@ mod boundary_tests {
         );
     }
 
+    /// macOS `temp_dir` goes through the `/var` link, which the reader refuses as a
+    /// linked ancestor, so it is resolved first. Windows has no such link, and its
+    /// canonical form gains a `\\?\` verbatim prefix, so it is used as given there.
+    fn fixture_temp_dir() -> std::path::PathBuf {
+        let temp = std::env::temp_dir();
+        if cfg!(windows) {
+            temp
+        } else {
+            std::fs::canonicalize(temp).expect("temp_dir resolves")
+        }
+    }
+
     #[test]
     fn changed_open_file_is_not_observed_stable() {
-        let directory = std::env::temp_dir().join(format!(
+        let directory = fixture_temp_dir().join(format!(
             "hmn-prep-change-{}-{}",
             std::process::id(),
             SystemTime::now()
