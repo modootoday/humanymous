@@ -318,20 +318,6 @@ fn checkpoints_signed_by_another_witness_are_not_co_signed() {
 }
 
 #[test]
-fn capability_is_resolved_only_by_a_passed_case() {
-    assert!(!case_passed(&[]));
-    assert!(!case_passed(&[
-        json!({"id":"actual-runtime-process","status":"passed"})
-    ]));
-    assert!(case_passed(&[json!({"id":CASE,"status":"passed"})]));
-    assert!(!case_passed(&[json!({"id":CASE,"status":"failed"})]));
-    assert!(!case_passed(&[
-        json!({"id":CASE,"status":"passed"}),
-        json!({"id":CASE,"status":"failed"}),
-    ]));
-}
-
-#[test]
 fn failures_project_only_static_check_ids_and_stage_markers() {
     let keys = keys();
     let checks = evaluate(&complete(), &keys);

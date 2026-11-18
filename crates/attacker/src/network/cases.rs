@@ -103,7 +103,7 @@ pub(super) fn catalog() -> Vec<Spec> {
         (
             "signed-remote-installation",
             "runtime",
-            "No pinned-key fresh-nonce remote installation attestation endpoint exists",
+            "Not an HTTP1 row: product-lab target-attestation cases evaluate the pinned-key fresh-nonce answer separately",
         ),
         (
             "coherent-T4-browser",

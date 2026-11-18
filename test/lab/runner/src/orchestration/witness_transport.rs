@@ -34,7 +34,8 @@ use std::{
 
 /// Required product case ID (delivery pilot and roadmap capability 2b).
 pub(super) const CASE: &str = "runtime-binary-witness-transport";
-/// The `required_unavailable` label this case resolves when it passes.
+/// The `qualification::CAPABILITIES` label this case resolves when it passes.
+#[cfg(test)]
 pub(super) const CAPABILITY: &str = "runtime binary authenticated witness transport";
 const SUPERVISOR: &str = "wtx-supervisor";
 const ORIGIN: &str = "wtx-origin";
@@ -309,18 +310,6 @@ pub(super) fn passed(checks: &[(&'static str, bool)], evidence: &Evidence) -> bo
         && CHECKS
             .iter()
             .all(|id| checks.iter().any(|(name, ok)| name == id && *ok))
-}
-
-/// True only when this run evaluated the case and every instance passed.
-pub(super) fn case_passed(cases: &[Value]) -> bool {
-    let mut seen = false;
-    for case in cases.iter().filter(|case| case["id"] == CASE) {
-        if case["status"] != "passed" {
-            return false;
-        }
-        seen = true;
-    }
-    seen
 }
 
 type Lines = mpsc::Receiver<std::io::Result<Vec<u8>>>;

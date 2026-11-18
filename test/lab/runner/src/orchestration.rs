@@ -44,28 +44,6 @@ fn safe_diagnostics(cases: &[Value]) -> Value {
         .collect();
     json!({"schema":"humanymous.lab-safe-diagnostics/1","failures":failures,"failure_count":failed.len(),"partial":failed.len()>512})
 }
-/// Product capabilities not yet evaluated in Docker. An entry leaves the list
-/// only when this run evaluated its required case and every instance passed.
-const REQUIRED_PRODUCT: &[&str] = &[
-    "full Gate TLS/H2/capture",
-    "session-bound real browser collector",
-    "Pass recovery",
-    "human/keyboard/assistive controls",
-    witness_transport::CAPABILITY,
-    "cross-namespace origin/audit effect product binding",
-    "signed remote target attestation",
-    "native OS qualification",
-    "provider deployment",
-];
-fn required_unavailable(cases: &[Value]) -> Vec<&'static str> {
-    REQUIRED_PRODUCT
-        .iter()
-        .copied()
-        .filter(|capability| {
-            *capability != witness_transport::CAPABILITY || !witness_transport::case_passed(cases)
-        })
-        .collect()
-}
 mod authority;
 mod browser;
 mod browser_actor;
@@ -83,9 +61,11 @@ mod go_public;
 pub(crate) mod h2_product_binding;
 mod mount_probe;
 mod public_receipts;
+mod qualification;
 pub(crate) mod red_blue_product;
 mod requirement;
 mod startup_failure;
+mod target_attestation;
 mod witness;
 mod witness_transport;
 struct Lab {
@@ -713,6 +693,8 @@ impl Lab {
             )?;
             self.components["wargame"] = report.clone();
             self.case("actual-owned-wargame",result.success && report["scoped_passed"]==true,json!("19 actual programs plus 7 unsupported; audit verdicts and origin deltas retained"))?;
+            self.stage = "attestation_process";
+            target_attestation::run(self)?;
             self.stage = "witness_component";
             witness::run(self)?;
             self.stage = "witness_transport";
@@ -1508,7 +1490,14 @@ pub fn run(args: &[String]) -> Result<i32> {
         &json!({"schema":"humanymous.lab-engine-evidence/1","observation":lab.docker.engine_identity,"actual_sdk_connection_observed":false}),
     )?;
     let failed = lab.cases.iter().any(|c| c["status"] == "failed");
-    let assessment = requirement.assess(failed, lab.go_component_verified, cleanup_verified);
+    // Derived, never hard-coded: absent or failed required cases stay unavailable.
+    let qualification = qualification::assess(&lab.cases, cleanup_verified);
+    let assessment = requirement.assess(
+        failed,
+        lab.go_component_verified,
+        cleanup_verified,
+        qualification.full_product_qualified,
+    );
     let mut evidence_types = if browser_product
         || go_product
         || mount_probe
@@ -1573,6 +1562,10 @@ pub fn run(args: &[String]) -> Result<i32> {
         ),
         ("g4_cef_at", "g4-cef-at-component"),
         (
+            "target_attestation",
+            "pinned-key-fresh-nonce-target-attestation",
+        ),
+        (
             "runtime_binary_witness_transport",
             "runtime-binary-witness-transport",
         ),
@@ -1586,7 +1579,21 @@ pub fn run(args: &[String]) -> Result<i32> {
     if let Some(outcome) = lab.components.get("browser_actor_diagnostic") {
         diagnostics["browser_actor"] = crate::browser_outcome::public_outcome(outcome)?;
     }
-    let report = json!({"schema":"humanymous.product-lab/2","requirement":requirement.report(&assessment),"safe_diagnostics":diagnostics,"public_receipts":lab.public_receipts,"project":lab.project,"evidence_types":evidence_types,"cases":lab.cases,"components":lab.components,"required_unavailable":required_unavailable(&lab.cases),"full_product_qualified":false,"release_ready":false,"ttl":{"expires_unix":expires,"external_janitor_scheduled":false}});
+    let source_sha = std::fs::read(lab.evidence.join("source-manifest.json"))
+        .ok()
+        .and_then(|bytes| serde_json::from_slice::<Value>(&bytes).ok())
+        .and_then(|manifest| manifest["head"].as_str().map(str::to_owned));
+    let documentation_review_sha256 = std::fs::read(root.join("docs/reviews.json"))
+        .ok()
+        .map(|bytes| snapshot::digest(&bytes));
+    let mut report = json!({"schema":"humanymous.product-lab/2","requirement":requirement.report(&assessment),"safe_diagnostics":diagnostics,"public_receipts":lab.public_receipts,"project":lab.project,"evidence_types":evidence_types,"cases":lab.cases,"components":lab.components,"source_sha":source_sha,"documentation_review_sha256":documentation_review_sha256,"release_ready":false,"ttl":{"expires_unix":expires,"external_janitor_scheduled":false}});
+    for (key, value) in qualification
+        .report_fields()
+        .as_object()
+        .ok_or("qualification fields")?
+    {
+        report[key] = value.clone();
+    }
     snapshot::write(&lab.evidence, "lab-report.json", &report)?;
     snapshot::write(
         &lab.evidence,
@@ -1777,18 +1784,26 @@ pub fn cleanup_expired() -> Result<()> {
 mod tests {
     #[test]
     fn witness_transport_leaves_required_unavailable_only_when_its_case_passed() {
-        use super::{REQUIRED_PRODUCT, required_unavailable, witness_transport};
+        use super::{qualification, witness_transport};
         use serde_json::json;
-        assert_eq!(required_unavailable(&[]), REQUIRED_PRODUCT.to_vec());
+        // The case this module records is the one the derived claim requires.
+        assert!(qualification::CAPABILITIES.contains(&(
+            witness_transport::CAPABILITY,
+            &[witness_transport::CASE][..]
+        )));
+        let all = qualification::CAPABILITIES.len();
+        let unavailable =
+            |cases: &[serde_json::Value]| qualification::assess(cases, true).required_unavailable;
+        assert_eq!(unavailable(&[]).len(), all);
         let failed = [json!({"id":witness_transport::CASE,"status":"failed"})];
-        assert_eq!(required_unavailable(&failed), REQUIRED_PRODUCT.to_vec());
+        assert!(unavailable(&failed).contains(&witness_transport::CAPABILITY));
         let passed = [json!({"id":witness_transport::CASE,"status":"passed"})];
-        let remaining = required_unavailable(&passed);
-        assert_eq!(remaining.len(), REQUIRED_PRODUCT.len() - 1);
+        let remaining = unavailable(&passed);
+        assert_eq!(remaining.len(), all - 1);
         assert!(!remaining.contains(&witness_transport::CAPABILITY));
         // Unrelated passing cases never resolve another capability.
         let other = [json!({"id":"actual-runtime-process","status":"passed"})];
-        assert_eq!(required_unavailable(&other), REQUIRED_PRODUCT.to_vec());
+        assert_eq!(unavailable(&other).len(), all);
     }
     #[test]
     fn collector_failures_are_named_by_enumerated_public_codes() {

@@ -2,7 +2,9 @@
 //!
 //! An ignored test is accepted only when its exact name is declared for this
 //! harness and OS, and either the same-job pilot receipt shows it passed on the
-//! same source or a named step of another required job executes it. Anything
+//! same source or a named step of another required job executes it. An
+//! owner-declared unsupported tuple names the exact ignored tests that do not
+//! run on that OS; they are reported as unsupported, never as passed. Anything
 //! else stays a coverage-accounting failure; nothing here is a waiver.
 use super::packages::Packages;
 use serde_json::{Value, json};
@@ -20,6 +22,9 @@ pub(super) struct Declared {
     pub(super) helpers: Vec<String>,
     pub(super) receipt_tests: Vec<(String, String)>,
     pub(super) jobs: Vec<Value>,
+    /// Owner-declared unsupported tuple ids and their exact not-run tests.
+    pub(super) unsupported_ids: Vec<String>,
+    pub(super) unsupported_tests: Vec<String>,
 }
 impl Declared {
     pub(super) fn is_empty(&self) -> bool {
@@ -29,9 +34,16 @@ impl Declared {
         let tests: Vec<_> = self
             .ignored
             .iter()
-            .filter(|name| !self.helpers.contains(name))
+            .filter(|name| !self.helpers.contains(name) && !self.unsupported_tests.contains(name))
             .collect();
-        json!({"required_not_run":tests,"declared_subprocess_helpers":self.helpers,"pilot_ids":self.ids,"required_execution_scope":if self.jobs.is_empty(){"native-pilots"}else{"job"},"pilot_job_executors":self.jobs,"pilot_receipt_verified":verified})
+        let scope = if !self.unsupported_ids.is_empty() {
+            "unsupported"
+        } else if self.jobs.is_empty() {
+            "native-pilots"
+        } else {
+            "job"
+        };
+        json!({"required_not_run":tests,"declared_subprocess_helpers":self.helpers,"pilot_ids":self.ids,"required_execution_scope":scope,"pilot_job_executors":self.jobs,"pilot_receipt_verified":verified,"unsupported_ids":self.unsupported_ids,"unsupported_not_run":self.unsupported_tests})
     }
 }
 
@@ -51,6 +63,27 @@ pub(super) fn known_ids() -> BTreeSet<String> {
         .into_iter()
         .flatten()
         .filter_map(|pilot| pilot["id"].as_str().map(str::to_owned))
+        .collect()
+}
+/// Declared unsupported tuple ids, for the closed public vocabulary.
+pub(super) fn known_unsupported_ids() -> BTreeSet<String> {
+    known_unsupported("id")
+}
+/// Declared unsupported test names, for the closed public vocabulary.
+pub(super) fn known_unsupported_tests() -> BTreeSet<String> {
+    known_unsupported("tests")
+}
+fn known_unsupported(key: &str) -> BTreeSet<String> {
+    declarations()
+        .ok()
+        .and_then(|value| value["unsupported"].as_array().cloned())
+        .into_iter()
+        .flatten()
+        .flat_map(|entry| match &entry[key] {
+            Value::Array(list) => list.clone(),
+            other => vec![other.clone()],
+        })
+        .filter_map(|name| name.as_str().map(str::to_owned))
         .collect()
 }
 /// Declared helper names, for the closed public vocabulary.
@@ -88,16 +121,18 @@ pub(super) fn declared(
     let Some(name) = packages.name(entry) else {
         return Ok(found);
     };
-    for pilot in declarations()?["pilots"].as_array().into_iter().flatten() {
-        let applies = pilot["os"]
+    let declarations = declarations()?;
+    let selects = |declared: &Value| {
+        declared["os"]
             .as_array()
             .is_some_and(|list| list.iter().any(|v| v == os))
-            && pilot["arch"].as_str().is_none_or(|a| a == arch);
-        if !applies
-            || pilot["package"] != name
-            || entry["target"] != pilot["target"]
-            || entry["kind"] != json!([pilot["kind"]])
-        {
+            && declared["arch"].as_str().is_none_or(|a| a == arch)
+            && declared["package"] == name
+            && entry["target"] == declared["target"]
+            && entry["kind"] == json!([declared["kind"]])
+    };
+    for pilot in declarations["pilots"].as_array().into_iter().flatten() {
+        if !selects(pilot) {
             continue;
         }
         let id = pilot["id"]
@@ -118,6 +153,27 @@ pub(super) fn declared(
         found.ignored.extend(tests);
         found.ignored.extend(helpers.iter().cloned());
         found.helpers.extend(helpers);
+    }
+    let unsupported = declarations["unsupported"]
+        .as_array()
+        .ok_or_else(|| io::Error::other("unsupported declarations absent"))?;
+    for declared in unsupported {
+        if !selects(declared) {
+            continue;
+        }
+        let id = declared["id"]
+            .as_str()
+            .ok_or_else(|| io::Error::other("unsupported id absent"))?;
+        let tests = names(&declared["tests"])?;
+        found.unsupported_ids.push(id.to_owned());
+        found.ignored.extend(tests.iter().cloned());
+        found.unsupported_tests.extend(tests);
+    }
+    // Fail closed: one harness tuple is either executed or unsupported.
+    if !found.unsupported_ids.is_empty() && !found.ids.is_empty() {
+        return Err(io::Error::other(
+            "harness tuple declared both as pilot and unsupported",
+        ));
     }
     Ok(found)
 }
@@ -203,6 +259,55 @@ mod tests {
                 .unwrap()
                 .is_empty()
         );
+    }
+    #[test]
+    fn dotnet_harnesses_are_unsupported_only_on_macos() {
+        let packages = Packages::fixture();
+        let hosted = json!({"package_id":"opaque-humanymous-dotnet-adapter","kind":["test"],"target":"hosted"});
+        let found = declared(&hosted, &packages, "macos", "aarch64").unwrap();
+        assert!(found.ids.is_empty() && found.receipt_tests.is_empty() && found.jobs.is_empty());
+        assert_eq!(found.unsupported_ids, ["dotnet-hosted-macos-unsupported"]);
+        assert_eq!(
+            found.ignored,
+            [
+                "actual_kestrel_engine_audit_body_gc_and_shutdown",
+                "generic::actual_generic_abi_only_process"
+            ]
+        );
+        let row = found.row(true);
+        assert_eq!(row["required_execution_scope"], "unsupported");
+        assert_eq!(row["required_not_run"], json!([]));
+        assert_eq!(row["unsupported_not_run"], json!(found.ignored));
+        // No receipt is needed or consulted: nothing is claimed to have run.
+        assert!(verify_receipt(&found, None, None, "macos", "aarch64").is_ok());
+        let mut package = hosted.clone();
+        package["target"] = json!("package");
+        let found = declared(&package, &packages, "macos", "x86_64").unwrap();
+        assert_eq!(found.unsupported_ids, ["dotnet-package-macos-unsupported"]);
+        assert_eq!(found.ignored, ["sdk_package_and_real_host_matrix"]);
+        // Linux and Windows keep strict accounting: nothing is declared there,
+        // so the ignored host pilots stay a coverage-accounting failure.
+        for os in ["linux", "windows"] {
+            assert!(
+                declared(&hosted, &packages, os, "x86_64")
+                    .unwrap()
+                    .is_empty()
+            );
+            assert!(
+                declared(&package, &packages, os, "x86_64")
+                    .unwrap()
+                    .is_empty()
+            );
+        }
+        let mut other = hosted.clone();
+        other["target"] = json!("managed_scope");
+        assert!(
+            declared(&other, &packages, "macos", "aarch64")
+                .unwrap()
+                .is_empty()
+        );
+        assert!(known_unsupported_ids().contains("dotnet-package-macos-unsupported"));
+        assert!(known_unsupported_tests().contains("sdk_package_and_real_host_matrix"));
     }
     #[test]
     fn authority_helper_is_declared_but_never_receipted() {

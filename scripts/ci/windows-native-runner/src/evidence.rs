@@ -267,6 +267,8 @@ pub fn summary(input: &Path, output: &Path) -> io::Result<()> {
     summary["executed_harnesses"] = report["coverage"]["executed_harnesses"].clone();
     summary["coverage_complete"] = report["coverage"]["complete"].clone();
     summary["failures"] = coverage::failures(&report["coverage"]["failures"]);
+    summary["unsupported_declared"] =
+        coverage::unsupported(&report["coverage"]["unsupported_declared"]);
     summary["execution_complete"] = json!(report["coverage"]["execution_complete"].as_bool());
     summary["fatal_stop"] = json!(report["coverage"]["fatal_stop"].as_bool());
     summary["recovered_after_missing_final_report"] =
