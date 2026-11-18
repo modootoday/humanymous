@@ -10256,9 +10256,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs",
-      "sha256": "39281c13906bdb3b169b7da0fc9a90d69bcc3895a2eb40434f007719cee12e3f",
+      "sha256": "4684a7d69a6922bd903b41999e23110e0819cc0240c1d1e9f926077e54419046",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Eleven unit tests porting Go internal/collector collector_test.go plus implicit session.go/merge.go behaviour: lifecycle, GC expiry by idle TTL, first-network pinning, request-scoped hop residuals appended after the pin and the exact residual-id set, client merge and label, forged server-provenance client signals (server source, l5/l6/l7/x ids) dropped with None vs empty-vector parity, store_scored replacing the report while keeping the pin, one-shot RIT bootstrap with bare zero-timestamp sessions, PoW issue first-write-wins/solve reset/permanent too-fast, and list bounding including one report for a zero limit.",
+      "notes": "Eleven unit tests porting Go internal/collector collector_test.go plus implicit session.go/merge.go behaviour: lifecycle, GC expiry by idle TTL, first-network pinning, request-scoped hop residuals appended after the pin and the exact residual-id set (negative cases use registered non-request-scoped ids), client merge and label, forged server-provenance client signals (server source, l5/l6/l7/x ids) dropped with None vs empty-vector parity, store_scored replacing the report while keeping the pin, one-shot RIT bootstrap with bare zero-timestamp sessions, PoW issue first-write-wins/solve reset/permanent too-fast, and list bounding including one report for a zero limit.",
       "pages": [
         "docs/reference/browser-collector.md",
         "docs/reference/gate-origin-contract.md"

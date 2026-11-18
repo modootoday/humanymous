@@ -138,7 +138,12 @@ fn request_scoped_residual_set_is_exact() {
     for id in scoped {
         assert!(request_scoped_network(id), "{id}");
     }
-    for id in ["l5.tls.ja3", "l5.h2.settings", "l5.rit.absent", "l5.header"] {
+    for id in [
+        "l5.tls.ja3",
+        "l5.h2dos.rapid_reset",
+        "l5.rit.absent",
+        "l5.header",
+    ] {
         assert!(!request_scoped_network(id), "{id}");
     }
     let mut store = CollectorStore::new(HOUR);
