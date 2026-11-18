@@ -1461,9 +1461,9 @@
     },
     {
       "source": "build/rust/runtime-candidate.Dockerfile",
-      "sha256": "9c53cd36945d10920570ee9b672b00cc31d68322674d81b10857a72431e79231",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Two-stage runtime candidate image recipe: pinned rust:1.99.1-alpine digest builds humanymous-runtime (gateway feature, no default features) with a separately pinned cargo-auditable 0.7.7 installed --locked, then a scratch stage copies only the binary, project LICENSE and the Go audit LICENSE (now from crates/sdk/humanymous-runtime), sets source/revision/manifest labels, UID 65532 and the runtime entrypoint with private config pipes and no default listener. Labelled candidate-component, not a qualified replacement image; embedded audit data is not authenticated provenance.",
+      "sha256": "0c8c2cf2ecd8223973cd92af29a3bbf91621604a551969545379276b93243d69",
+      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Two-stage runtime candidate image recipe: pinned rust:1.99.1-alpine digest builds humanymous-runtime (gateway feature, no default features) with a separately pinned cargo-auditable 0.7.7 installed --locked, then a scratch stage copies only the binary, project LICENSE and the Go audit LICENSE (now from crates/sdk/humanymous-runtime), an empty /var/lib/humanymous owned by 65532:65532 with mode 0700 (owner decision C8 in #75: a new hmn-data named volume copies that owner and mode on first mount; no audit/ or keys/ custody is shipped), sets source/revision/manifest labels, UID 65532 and the runtime entrypoint with private config pipes and no default listener. Labelled candidate-component, not a qualified replacement image; embedded audit data is not authenticated provenance.",
       "pages": [
         "docs/how-to/verify-the-image.md"
       ]
@@ -10155,10 +10155,10 @@
       "pages": [
         "docs/reference/nginx-adapter.md"
       ],
-      "reviewer": "codex/rust-pages",
-      "notes": "The experimental Linux nginx module exists; topology reference separates SDK/native ABI, trusted operator configuration, synthetic historical ALLOW pilots and unvalidated JSON/timer follow-through. Required Docker deployment check remains an execution obligation, not a passing current-source claim. Full native source/ABI review and platform/witness/backpressure/human qualification remain pending.",
+      "reviewer": "claude agent check rebinding 2026-11-18 (Claude Code session; prior codex/rust-pages review; owner sample pending)",
+      "notes": "The experimental Linux nginx module exists; topology reference separates SDK/native ABI, trusted operator configuration, synthetic historical ALLOW pilots and unvalidated JSON/timer follow-through. Required Docker nginx component pilot check (delivery nginx: pinned Dockerfile.native image and compose scenario groups) remains an execution obligation, not a passing current-source claim; the docker/deployment lab case covers the Go-parity runtime manifests, not nginx. Full native source/ABI review and platform/witness/backpressure/human qualification remain pending.",
       "checks": [
-        "docker/deployment"
+        "docker/nginx"
       ]
     },
     {
