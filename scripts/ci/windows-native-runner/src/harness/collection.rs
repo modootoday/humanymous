@@ -6,6 +6,8 @@ pub(super) struct Ledger {
     completed: usize,
     fatal: bool,
     failures: Vec<Value>,
+    /// Owner-declared unsupported tuples whose exact ignored tests did not run.
+    unsupported: Vec<Value>,
 }
 impl Ledger {
     pub fn new(required: usize) -> Self {
@@ -14,7 +16,14 @@ impl Ledger {
             completed: 0,
             fatal: false,
             failures: Vec::new(),
+            unsupported: Vec::new(),
         }
+    }
+    /// Record a validated harness whose declared tests are unsupported on this
+    /// tuple. It is neither a pass nor a failure and stays visible.
+    pub fn unsupported(&mut self, index: usize, target: &Value, ids: &[String], tests: &[String]) {
+        self.unsupported
+            .push(json!({"index":index,"target":target,"unsupported_ids":ids,"not_run":tests}));
     }
     pub fn completed(&mut self, index: usize, target: &Value, failure: Option<&str>) -> bool {
         if self.fatal {
@@ -41,6 +50,7 @@ impl Ledger {
         progress["execution_complete"] = json!(execution_complete);
         progress["fatal_stop"] = json!(self.fatal);
         progress["failures"] = json!(self.failures);
+        progress["unsupported_declared"] = json!(self.unsupported);
         progress["complete"] = json!(execution_complete && self.failures.is_empty());
     }
     pub fn finish(&self, progress: &mut Value) -> io::Result<()> {
@@ -67,6 +77,25 @@ mod tests {
         assert_eq!(progress["execution_complete"], true);
         assert_eq!(progress["complete"], false);
         assert_eq!(progress["failures"].as_array().unwrap().len(), 1);
+    }
+    #[test]
+    fn declared_unsupported_harness_is_reported_not_passed_or_failed() {
+        let mut ledger = Ledger::new(1);
+        assert!(ledger.completed(0, &json!("package"), None));
+        ledger.unsupported(
+            0,
+            &json!("package"),
+            &["dotnet-package-macos-unsupported".to_owned()],
+            &["sdk_package_and_real_host_matrix".to_owned()],
+        );
+        let mut progress = json!({});
+        assert!(ledger.finish(&mut progress).is_ok());
+        assert_eq!(progress["failures"], json!([]));
+        assert_eq!(progress["unsupported_declared"][0]["index"], 0);
+        assert_eq!(
+            progress["unsupported_declared"][0]["not_run"],
+            json!(["sdk_package_and_real_host_matrix"])
+        );
     }
     #[test]
     fn fatal_security_or_transport_stop_refuses_later_collection() {

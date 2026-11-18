@@ -3,7 +3,7 @@ id: sot:root/dotnet-adapter
 title: ASP.NET Core Rust adapter lifecycle
 status: active
 created: 2026-11-07T07:30:00Z
-updated: 2026-11-07T07:30:00Z
+updated: 2026-11-18T00:00:00Z
 verify: manual
 rel:
   governs: [crates/dotnet-adapter/**, adapters/dotnet/**]
@@ -11,6 +11,19 @@ rel:
 ---
 
 # ASP.NET Core Rust adapter lifecycle
+
+## Proposed protected host launch design (2026-11-18)
+
+Owner decision D1(a) (issue #75) approved the SoT design path for protected
+`Host::start()` admission. The design is drafted in
+sot:root/dotnet-protected-host-launch, status draft. It covers:
+- creator-channel producer identity;
+- `standard-user-dotnet-prebuilt` custody on Windows and Linux;
+- the fail-closed refusal table;
+- the evidence that would turn the hosted and package accounting rows green.
+
+Its native operations remain UNAPPROVED until reviewed. `Host::start()` still
+refuses with `Unsupported`, and nothing here changes current qualification.
 
 ## RUNTIME-SLICE-02 consumer source handoff
 
@@ -87,6 +100,19 @@ ABI result does not qualify this adapter's Kestrel, GC-await, NativeAOT or packa
 matrix. Those remain NOT_RUN; no host tuple is qualified. Earlier pending notes
 below describe their historical checkpoints. Later status metadata changes are
 not retroactively covered by the source07967eae compilation.
+
+## macOS is an unsupported launch tuple (2026-11-18)
+
+Owner decision D2 (issue 75, 2026-11-18): macOS arm64 is explicitly
+unsupported for the .NET launch path. GitHub macos-15 runners are arm64, and
+this adapter qualifies only the Windows and Linux x86_64 SDK/native tuples, so
+`sdk_package_and_real_host_matrix` refuses other tuples with "unqualified
+SDK/native tuple". Coverage accounting for the `hosted` and `package` test
+targets is limited to `os: [linux, windows]`. The `unsupported` entries in
+scripts/ci/native-pilots.json record the macOS tuple, with the exact ignored
+names, as unsupported rather than skipped (see sot:root/delivery, "Declared
+unsupported tuples"). No macOS host, package or Kestrel result is claimed.
+Linux and Windows remain required and NOT_RUN until the D1 launch work lands.
 
 ## Approved generic ABI-only startup flag (2026-11-07)
 

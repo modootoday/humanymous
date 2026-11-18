@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 mod audit;
 mod operational;
-pub use audit::{Audit, SealedKeys};
+pub use audit::{Audit, MAX_WITNESS_PROOF, SealedKeys, WitnessInput, WitnessInputDurability};
 pub use operational::OperationalSettings;
 
 /// Private inherited startup document; intentionally not Debug or Serialize.
@@ -131,6 +131,7 @@ impl Configuration {
             || self.operational().validate().is_err()
             || self.routes.is_empty()
             || self.routes.len() > 4096
+            || !self.audit.witness_input_valid()
         {
             return Err(bad);
         }

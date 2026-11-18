@@ -136,44 +136,48 @@ node scripts/assert-operational-logs.mjs
 
 The `compose.yaml` above is the **local-build lab**: it builds images from source
 (`build/*.Dockerfile`) and wires the Core engine, Gate, a demo origin, and the bots
-together for Red/Blue work. To run Gate in front of your *own* app you do not need to
-build — two images are published to GitHub Container Registry (Apache-2.0, multi-arch
-`linux/amd64` + `linux/arm64`, cosign-signed):
+together for Red/Blue work. The release workflow publishes one image to GitHub
+Container Registry (Apache-2.0, multi-arch `linux/amd64` + `linux/arm64`,
+cosign-signed):
 
 | Image | What it is |
 |---|---|
-| `ghcr.io/modootoday/humanymous-gate:latest` | The reverse-proxy enforcement layer — the product. Put it in front of your origin. |
-| `ghcr.io/modootoday/humanymous-core:latest` | The standalone detection engine, for self-testing and the demo. |
+| `ghcr.io/modootoday/humanymous-runtime:latest` | The Rust runtime gateway, built from `build/rust/runtime-candidate.Dockerfile`. A candidate component: full product qualification is false. |
 
-`:latest` tracks the newest release.
+`:latest` tracks the newest release. The legacy Go `humanymous-gate` and
+`humanymous-core` images are no longer published from this branch.
 
 `compose.release.yaml` is the **pull-only** counterpart to the lab file: it references
-`ghcr.io/modootoday/humanymous-gate:${HMN_VERSION:-latest}` with **no `build:` and no
-dev tokens**, and runs Gate hardened (distroless, non-root, read-only rootfs, dropped
-capabilities) with ACME TLS on `:443`, a sealed keystore, and a durable, replay-verified
-durable write-ahead audit log. Adopt it in three steps:
+`ghcr.io/modootoday/humanymous-runtime:${HMN_VERSION:-latest}` with **no `build:` and no
+secrets**, and runs the runtime hardened (scratch image, non-root, read-only rootfs,
+dropped capabilities) with a durable audit WAL and sealed custody on a named volume.
+The Rust runtime is **not** a drop-in replacement for the Go Gate edge: it takes no
+arguments and reads one private JSON configuration document on standard input, it
+listens and reaches the origin on loopback only, and it has no TLS, ACME, admin plane,
+health endpoint or SIGTERM drain. You supply the TLS front proxy (`edge`), and the
+runtime shares its network namespace:
 
 ```bash
-cp .env.example .env            # HMN_UPSTREAM, HMN_DOMAIN, HMN_UNSEAL, HMN_ADMIN_TOKENS
-cp routes.conf.example routes.conf
-docker compose -f compose.release.yaml up -d
+cp .env.example .env                                   # HMN_EDGE_IMAGE, HMN_ORIGIN_NET
+cp humanymous-runtime.example.json runtime.json && chmod 0600 runtime.json
+docker compose -f compose.release.yaml up -d edge
+docker compose -f compose.release.yaml run --rm -T runtime < runtime.json
 ```
 
-Gate joins your existing origin network and proxies to your app. The admin listener stays
-host-loopback (`127.0.0.1:8445`) — keep it there or front it with mutually
-authenticated TLS or single sign-on. Liveness and
-readiness are HTTP probes on the edge (`GET /__hmn/healthz`, `/__hmn/readyz`); the
-distroless image has no shell, so there is **no Docker `HEALTHCHECK`** — point your
-orchestrator's `httpGet` probes at those paths. For a quick local demo of the published
-Gate image without the full production config, see
-[Run from the published image](../docs/reference/install-requirements.md#run-from-the-published-image-no-build).
+The image ships an empty `/var/lib/humanymous` owned by uid/gid 65532 with mode 0700,
+so Docker gives a new `hmn-data` volume that owner and mode on first mount. Sealed
+audit custody (`keys/`) must exist before the first start, and no shipped Rust
+command provisions it yet (roadmap item 2k). The full Go flag mapping and every gap are in
+[`k8s/README.md`](k8s/README.md#go-flag-mapping).
 
-Beyond Compose, two more ways to run the same published Gate image/binary ship
-here: **[`k8s/`](k8s/)** — `kubectl apply`-able Deployment/Service/PVC/Secret/
-ConfigMap manifests (hardened, httpGet probes, graceful drain, admin plane kept
-cluster-internal) — and **[`systemd/`](systemd/)** — a `humanymous-gate.service`
-unit for running the `gate` binary directly on a host. Both mirror the flags and
-hardening of `compose.release.yaml`.
+Beyond Compose, two more ways to run the same runtime ship here: **[`k8s/`](k8s/)**:
+Deployment/Service/PVC/Secret manifests (hardened, edge placeholder sidecar, configuration
+fed with `kubectl attach -i`), and **[`systemd/`](systemd/)**: a
+`humanymous-runtime.service` unit that feeds the configuration with
+`StandardInput=file:`. A Rust test
+(`crates/sdk/humanymous-runtime/tests/gateway/deployment_manifests.rs`) validates the
+shared example configuration with the runtime's own `Configuration` type and checks
+that these manifests name the Rust runtime, not the Go Gate.
 
 ## Verified result
 

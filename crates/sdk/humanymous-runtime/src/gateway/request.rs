@@ -88,6 +88,20 @@ pub fn upstream_error_class(error: &io::Error) -> &'static str {
     }
 }
 
+/// Stable audit class for an origin refusal code when no transport error was
+/// observed: the overall deadline is `timeout`, a short origin frame is `eof`,
+/// and any other malformed or over-budget frame is `unreachable`, Go's
+/// fallback bucket for a non-dial error.
+pub fn origin_error_class(code: &str) -> &'static str {
+    if code == "origin_timeout" {
+        "timeout"
+    } else if code.contains("truncated") {
+        "eof"
+    } else {
+        "unreachable"
+    }
+}
+
 /// Unix day used as the low-resolution watermark issue time (legacy
 /// cmd/server/helpers.go `dayBucket`). Times before the epoch clamp to day 0.
 pub fn day_bucket(now_unix: i64) -> u64 {

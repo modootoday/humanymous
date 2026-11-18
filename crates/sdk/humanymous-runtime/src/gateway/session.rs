@@ -15,6 +15,7 @@ use std::sync::{
 };
 use zeroize::Zeroizing;
 mod admission;
+pub mod store;
 use admission::Window;
 
 /// Consumed request authorization and the actual shared verifier observation.

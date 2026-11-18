@@ -3,7 +3,7 @@ id: sot:root/delivery
 title: Rust delivery and Pages contracts
 status: active
 created: 2026-11-06T20:27:03Z
-updated: 2026-11-08T16:40:00Z
+updated: 2026-11-18T00:00:00Z
 verify:
   - cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- policy
   - cargo test --locked --manifest-path scripts/ci/delivery/Cargo.toml
@@ -1137,6 +1137,25 @@ no Cargo of its own.
 
 Undeclared ignored tests (the dotnet hosted and package pilots, whose host
 start is Unsupported) still fail accounting until an executor exists.
+
+### Declared unsupported tuples (2026-11-18)
+
+Owner decision D2 (issue 75, 2026-11-18): macOS is not a qualified .NET launch
+tuple, and dotnet hosted/package accounting is limited to `os: [linux, windows]`.
+The same declaration file carries a closed `unsupported` list. Each entry names
+a package, target, kind, OS (optional architecture), the owner decision and the
+exact ignored test names. It has no executor and produces no receipt row. Delivery
+validation refuses open fields, an empty decision or test list, duplicate ids or
+names, and any entry whose harness tuple is also a pilot on the same OS. On a
+matching tuple the probe still runs the harness and requires every non-ignored
+test to pass and the observed ignored names to equal the declared names exactly.
+The row then reports `required_execution_scope: unsupported`, the declared ids
+and `unsupported_not_run`; the coverage report and public summary list it under
+`unsupported_declared`. It is neither a pass nor a failure of those tests, and
+it qualifies no macOS .NET host. Today the only entries are the dotnet `hosted`
+and `package` test targets on macOS. On Linux and Windows nothing is declared,
+so those ignored host pilots remain coverage-accounting failures until the D1
+executor exists.
 
 The native job timeout is 90 minutes. The Windows debug workspace build alone
 takes about 24 minutes, and the old 40-minute limit cancelled the later steps

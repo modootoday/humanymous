@@ -52,6 +52,9 @@ services:
   wargame-pilot:
     extends: {service: runtime-pilot}
     command: [--wargame]
+  attestation-pilot:
+    extends: {service: runtime-pilot}
+    command: [--attestation]
 networks:
   ingress: &internal
     internal: true

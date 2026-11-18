@@ -137,5 +137,30 @@
       ],
       "helpers": []
     }
+  ],
+  "unsupported": [
+    {
+      "id": "dotnet-hosted-macos-unsupported",
+      "package": "humanymous-dotnet-adapter",
+      "target": "hosted",
+      "kind": "test",
+      "os": ["macos"],
+      "decision": "owner D2 2026-11-18 (issue 75): macOS is not a qualified .NET launch tuple; dotnet accounting is limited to linux and windows",
+      "tests": [
+        "actual_kestrel_engine_audit_body_gc_and_shutdown",
+        "generic::actual_generic_abi_only_process"
+      ]
+    },
+    {
+      "id": "dotnet-package-macos-unsupported",
+      "package": "humanymous-dotnet-adapter",
+      "target": "package",
+      "kind": "test",
+      "os": ["macos"],
+      "decision": "owner D2 2026-11-18 (issue 75): macOS is not a qualified .NET launch tuple; dotnet accounting is limited to linux and windows",
+      "tests": [
+        "sdk_package_and_real_host_matrix"
+      ]
+    }
   ]
 }

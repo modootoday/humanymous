@@ -82,6 +82,10 @@ pub(crate) struct TrainingSummary {
 #[derive(Debug)]
 pub(crate) struct TrainingResult {
     pub(crate) candidate: MlpBundle,
+    #[cfg_attr(
+        not(test),
+        expect(dead_code, reason = "Training receipts are asserted by tests only")
+    )]
     pub(crate) summary: TrainingSummary,
 }
 
