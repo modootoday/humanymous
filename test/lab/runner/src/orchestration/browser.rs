@@ -493,5 +493,28 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
     let result = json!({"schema":"humanymous.browser-runtime-product/1","status":"passed","browser":actor,"runtime":report,"witness_public":broker.public,"pinned_checkpoint":broker.head,"witness_transactions":broker.transactions,"full_product_qualified":false,"not_qualified":["human/AT","browser sandbox completeness","original TLS/H2","qualified collector provenance","physical power loss","organizational witness independence","browser-profile witness outage and recovery"]});
     snapshot::write(&lab.evidence, "browser-product-report.json", &result)?;
     lab.components["browser_product"] = result;
-    Ok(())
+    // Roadmap 2d required cases, last so every receipt above is retained even
+    // when a gap fails the run. Evaluated only from observed evidence; the
+    // public stage stays the existing browser_receipts code.
+    lab.stage = "browser_receipts";
+    let missing = super::collector_parity::missing_signals(&report, &actor, &expected, &fixture);
+    let parity = super::collector_parity::parity(&report, &actor, &expected, &fixture);
+    snapshot::write(
+        &lab.evidence,
+        "collector-parity-report.json",
+        &json!({"schema":"humanymous.collector-parity-lab/1","collector_parity":parity,
+            "missing_signals_closed":missing,"full_product_qualified":false}),
+    )?;
+    lab.components["collector_parity"] = json!({"collector_parity_gaps":parity["gaps"],"missing_signals_gaps":missing["gaps"],
+            "go_oracle":super::collector_parity::GO_ORACLE});
+    lab.case(
+        "missing-signals-closed",
+        missing["passed"] == true,
+        json!({"gaps":missing["gaps"],"evidence":"absent report challenged; real stripped report refused 422 without ACK; real collect replayed and moved into a fresh session refused; fresh session never admitted; zero origin effect and unchanged authenticated audit"}),
+    )?;
+    lab.case(
+        "collector-parity",
+        parity["passed"] == true,
+        json!({"gaps":parity["gaps"],"evidence":"real browser Rust WASM report vs Go 981d25c report/signal sets and loader planes; collect bound to the issuing session; required-collector admission for that session only"}),
+    )
 }

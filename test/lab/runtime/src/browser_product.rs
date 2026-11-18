@@ -102,6 +102,9 @@ pub fn gate() -> Result<()> {
             if tokio::time::Instant::now()>=deadline {return Err("browser supervisor shutdown deadline".into());}
             tokio::time::sleep(Duration::from_millis(50)).await;
         }
+        // Roadmap 2d: replay/foreign-session/absent-report controls against the
+        // still-serving runtime, after the browser ended and before drain.
+        let controls=crate::browser_controls::run(listen,&receipts).await;
         stop.send(true).map_err(|_|io::Error::other("proxy controller closed"))?;
         shutdown.send(Some(ShutdownRequest::new(5000)?)).map_err(|_|io::Error::other("runtime controller closed"))?;
         proxy.await??;
@@ -114,7 +117,7 @@ pub fn gate() -> Result<()> {
         if plan.needs_checkpoint_append(){return Err("normal browser shutdown unexpectedly requires checkpoint repair".into());}
         let history=plan.history();
         let records:Vec<_>=history.records().iter().map(|record|json!({"seq":record.seq,"event_type":record.event_type,"verdict":record.verdict})).collect();
-        service::write_frame(&mut io::stdout(),&json!({"role":"browser_gate_result","expected":expected,"stopped":exit.stopped,"origin_effects":installation.origin.effects(),"proxy_hits":receipts.snapshot(),"collector_reports":collector_reports(&receipts.collect_entities()),"audit_sequence":history.sequence(),"audit_records":records,"audit_checkpoints":history.checkpoints(),"offline_log_authenticated":true,"witness_coverage":plan.coverage(),"checkpoint_repair_performed":false,"full_product_qualified":false}))?;
+        service::write_frame(&mut io::stdout(),&json!({"role":"browser_gate_result","expected":expected,"stopped":exit.stopped,"origin_effects":installation.origin.effects(),"proxy_hits":receipts.snapshot(),"collector_reports":collector_reports(&receipts.collect_entities()),"missing_signal_controls":controls,"audit_sequence":history.sequence(),"audit_records":records,"audit_checkpoints":history.checkpoints(),"offline_log_authenticated":true,"witness_coverage":plan.coverage(),"checkpoint_repair_performed":false,"full_product_qualified":false}))?;
         Ok::<(),Box<dyn std::error::Error>>(())
     })
 }
