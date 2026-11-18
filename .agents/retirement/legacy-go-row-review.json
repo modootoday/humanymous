@@ -15,17 +15,16 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 214,
-  "partial": 72,
-  "missing": 17,
+  "ported_unit": 227,
+  "partial": 65,
+  "missing": 11,
   "not_applicable": 2,
   "oracle_only": 9
  },
  "by_package": {
   "cmd/gate": {
-   "missing": 1,
-   "partial": 4,
-   "ported_unit": 2
+   "partial": 3,
+   "ported_unit": 4
   },
   "cmd/ml-train": {
    "partial": 1
@@ -78,10 +77,10 @@
    "ported_unit": 5
   },
   "internal/gate": {
-   "partial": 37,
-   "missing": 10,
+   "partial": 31,
+   "missing": 5,
    "not_applicable": 1,
-   "ported_unit": 36,
+   "ported_unit": 47,
    "oracle_only": 1
   },
   "internal/httpx": {
@@ -250,50 +249,61 @@
   },
   {
    "baseline_path": "cmd/gate/routes_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestLoadRoutesValid": null,
-    "TestLoadRoutesUnknownPreset": null,
-    "TestLoadRoutesAttestedValidAndCatchAllRefused": null,
-    "TestValidateAttestedRoutes": null,
-    "TestLoadRoutesMalformed": null,
-    "TestLoadRoutesMissingFile": null
-   },
-   "gaps": [
-    "prefix->preset text file parsing",
-    "preset vocabulary strict|balanced|attested|monitor|off",
-    "attested refusal on catch-all prefix",
-    "attested requires shared token key / verifier warning"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/routes_file.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::load_routes_attested_valid_and_catch_all_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::load_routes_malformed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::load_routes_missing_file",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::load_routes_unknown_preset",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::load_routes_valid",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::validate_attested_routes_preconditions"
+   ],
+   "go_test_map": {
+    "TestLoadRoutesValid": "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::load_routes_valid",
+    "TestLoadRoutesUnknownPreset": "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::load_routes_unknown_preset",
+    "TestLoadRoutesAttestedValidAndCatchAllRefused": "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::load_routes_attested_valid_and_catch_all_refused",
+    "TestValidateAttestedRoutes": "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::validate_attested_routes_preconditions",
+    "TestLoadRoutesMalformed": "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::load_routes_malformed",
+    "TestLoadRoutesMissingFile": "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::load_routes_missing_file"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Rust has an exact method/path JSON route inventory validated in Configuration::validate, but no preset routes file; plan B12 marks preset expansion as an open contract choice.",
-   "test_verification": {}
+   "notes": "Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning. Differential golden: crates/sdk/humanymous-runtime/tests/fixtures/gateway/route-policy-go-golden.json (Go 1.26.3 Docker capture, provenance inside). Pure library; not wired into the hosted gateway, which keeps its exact route inventory. All 6 Go tests ported one-to-one.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::load_routes_valid": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::load_routes_unknown_preset": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::load_routes_attested_valid_and_catch_all_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::validate_attested_routes_preconditions": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::load_routes_malformed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::load_routes_missing_file": "passed"
+   }
   },
   {
    "baseline_path": "cmd/gate/routes.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/authority/configuration.rs",
     "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
-    "crates/sdk/humanymous-runtime/src/authority/configuration.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/routes_file.rs"
    ],
    "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests/parity.rs::attested_route_preconditions_match_go",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests/parity.rs::route_files_load_like_go",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::configuration_and_readiness_are_honest"
    ],
    "go_test_map": {},
-   "gaps": [
-    "longest-prefix route matching",
-    "preset expansion (strict/balanced/attested/monitor/off)",
-    "attested catch-all refusal",
-    "attested shared-key precondition and verifier warning"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "medium",
-   "notes": "Rust Route is exact method+path with required planes (fail-closed validation). Plan B12: \"P exact Runtime route inventory only; C canonical route matching/preset expansion\".",
+   "confidence": "high",
+   "notes": "Rust Route is exact method+path with required planes (fail-closed validation). Plan B12: \"P exact Runtime route inventory only; C canonical route matching/preset expansion\". Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning. Differential golden: crates/sdk/humanymous-runtime/tests/fixtures/gateway/route-policy-go-golden.json (Go 1.26.3 Docker capture, provenance inside). Pure library; not wired into the hosted gateway, which keeps its exact route inventory. load_routes/parse_routes and validate_attested_routes reproduce Go error text, bufio.Scanner line handling and the 64 KiB line limit. Reported differences: Go accepts invalid UTF-8 prefixes and Rust refuses the file; OS error text differs; Go accepts the `//` prefix for attested although segment matching treats it as catch-all (kept as in Go). The gateway binary does not load this file.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::configuration_and_readiness_are_honest": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::configuration_and_readiness_are_honest": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests/parity.rs::route_files_load_like_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests/parity.rs::attested_route_preconditions_match_go": "passed"
    }
   },
   {
@@ -1914,7 +1924,8 @@
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::operational_candidate_freezes_exact_parent_scope_and_serialized_bytes",
     "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs::native_operator_commit_is_witnessed_cas_and_invalidates_sessions",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::configure_engine_from_effective_net_policy"
    ],
    "go_test_map": {
     "TestSettingsProposeClassAApplies": "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs::native_operator_commit_is_witnessed_cas_and_invalidates_sessions",
@@ -1926,7 +1937,7 @@
     "TestSettingsRollbackDemotionIsImmediate": null,
     "TestSettingsProposeNetPolicyAndRoutes": null,
     "TestSettingsProposeRateLoosenIsB": null,
-    "TestConfigureEngineFromEffectiveNetPolicy": null
+    "TestConfigureEngineFromEffectiveNetPolicy": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::configure_engine_from_effective_net_policy"
    },
    "gaps": [
     "A/B/C/D mutation classes and pending approval for B",
@@ -1934,16 +1945,16 @@
     "dry-run with low-N usability",
     "rollback of overlays and immediate demotion",
     "net-policy and route overlays",
-    "rate-loosen as class B",
-    "ConfigureEngineFromEffective net policy mapping"
+    "rate-loosen as class B"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust has resource-only CAS commits via native operator; scoring/route/net overlays and class workflow are absent.",
+   "notes": "Rust has resource-only CAS commits via native operator; scoring/route/net overlays and class workflow are absent. B1: TestConfigureEngineFromEffectiveNetPolicy ported in the settings overlay context; the admin HTTP surface remains unported.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs::native_operator_commit_is_witnessed_cas_and_invalidates_sessions": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::operational_candidate_freezes_exact_parent_scope_and_serialized_bytes": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::configure_engine_from_effective_net_policy": "passed"
    }
   },
   {
@@ -2445,24 +2456,29 @@
    "disposition": "partial",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::configuration_and_readiness_are_honest",
-    "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets"
+    "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::resolve_path_confusion_selects_strict",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests/parity.rs::presets_normalization_and_segment_matching_match_go",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests/parity.rs::route_resolution_matches_go",
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::configuration_and_readiness_are_honest"
    ],
    "go_test_map": {},
    "gaps": [
-    "longest-prefix route resolution with segment matching",
-    "strict/balanced/attested/monitor/off presets",
-    "global monitor, rate window/soft/hard and erasure hold config"
+    "erasure hold default (5 minutes) and the remaining Config fields outside route policy"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust has an exact route inventory and bounded resource budgets only (B12 P). Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (rate no-defaults; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "notes": "Rust has an exact route inventory and bounded resource budgets only (B12 P). Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (rate no-defaults; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged. Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning. Differential golden: crates/sdk/humanymous-runtime/tests/fixtures/gateway/route-policy-go-golden.json (Go 1.26.3 Docker capture, provenance inside). Pure library; not wired into the hosted gateway, which keeps its exact route inventory. Presets, the balanced default for unknown names, normalizeMatchPath (Go path.Clean), segment matching, longest-prefix resolve and GlobalMonitor are ported in gateway/route_policy.rs. Equal-length ties follow Go map order; Rust picks byte order, one of Go's outcomes.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::configuration_and_readiness_are_honest": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::configuration_and_readiness_are_honest": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::resolve_path_confusion_selects_strict": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests/parity.rs::presets_normalization_and_segment_matching_match_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests/parity.rs::route_resolution_matches_go": "passed"
    }
   },
   {
@@ -2585,12 +2601,17 @@
   },
   {
    "baseline_path": "internal/gate/enforce.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/application.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy.rs",
     "crates/sdk/humanymous-runtime/src/gateway/verdict_store.rs"
    ],
    "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::fail_closed_action_mapping",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests/parity.rs::edge_actions_match_go_except_the_accepted_fail_closed_cells",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests/parity.rs::engine_verdict_and_method_classification_match_go",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests/parity.rs::presets_normalization_and_segment_matching_match_go",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::audit_is_minimized_and_failure_poison_is_permanent",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::missing_client_is_challenge_and_missing_planes_are_not_ready",
     "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::clock_regression_does_not_expire_entries",
@@ -2600,14 +2621,10 @@
     "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::saturation_stops_tracking_new_sessions_but_updates_existing"
    ],
    "go_test_map": {},
-   "gaps": [
-    "Verdict-to-action mapping is not ported: legacy action() let an Unknown verdict pass on safe public routes, which conflicts with fail-closed enforcement (intended difference, owner decision)",
-    "unsafe-method challenge mapping per route policy",
-    "monitor vs enforce action naming"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "low",
-   "notes": "Rust maps ALLOW/DENY/CHALLENGE and records fail_closed, but without sticky verdicts or route-policy action mapping. Sticky VerdictStore (bounded, TTL, GC, saturation degrades to not-tracking) and mapVerdict are ported in gateway/verdict_store.rs. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "confidence": "high",
+   "notes": "Rust maps ALLOW/DENY/CHALLENGE and records fail_closed, but without sticky verdicts or route-policy action mapping. Sticky VerdictStore (bounded, TTL, GC, saturation degrades to not-tracking) and mapVerdict are ported in gateway/verdict_store.rs. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged. Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning. Differential golden: crates/sdk/humanymous-runtime/tests/fixtures/gateway/route-policy-go-golden.json (Go 1.26.3 Docker capture, provenance inside). Pure library; not wired into the hosted gateway, which keeps its exact route inventory. edge_action ports Verdict.action with the applyVerdict enf.failclosed.mutating relabel, is_unsafe_method and mode_name. Reported difference, not patched: Go Verdict.action passed an Unknown verdict on a safe method of a balanced, monitor or off route; Rust edge_action challenges every Unknown (owner decisions 2026-11-16 DIFF and 2026-11-18 C1 keep the Rust fail-closed mapping). The parity test asserts these are the only 3 of 40 differing cells.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::audit_is_minimized_and_failure_poison_is_permanent": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::missing_client_is_challenge_and_missing_planes_are_not_ready": "passed",
@@ -2615,7 +2632,11 @@
     "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::engine_verdicts_map_like_go": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::gc_sweeps_expired_sticky_verdicts": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::get_honours_ttl_inclusively_and_absent_is_unknown": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::saturation_stops_tracking_new_sessions_but_updates_existing": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::saturation_stops_tracking_new_sessions_but_updates_existing": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::fail_closed_action_mapping": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests/parity.rs::edge_actions_match_go_except_the_accepted_fail_closed_cells": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests/parity.rs::engine_verdict_and_method_classification_match_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests/parity.rs::presets_normalization_and_segment_matching_match_go": "passed"
    }
   },
   {
@@ -3289,25 +3310,26 @@
   },
   {
    "baseline_path": "internal/gate/resolve_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization"
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::resolve_path_confusion_selects_strict"
    ],
    "go_test_map": {
-    "TestResolve_PathConfusionSelectsStrict": "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization"
+    "TestResolve_PathConfusionSelectsStrict": "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::resolve_path_confusion_selects_strict"
    },
-   "gaps": [
-    "segment-anchored prefix matching to strict policy"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "low",
-   "notes": "Rust refuses dot-segment, percent and // targets and matches exact routes, instead of resolving to strict.",
+   "confidence": "high",
+   "notes": "Rust refuses dot-segment, percent and // targets and matches exact routes, instead of resolving to strict. Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning. Differential golden: crates/sdk/humanymous-runtime/tests/fixtures/gateway/route-policy-go-golden.json (Go 1.26.3 Docker capture, provenance inside). Pure library; not wired into the hosted gateway, which keeps its exact route inventory. TestResolve_PathConfusionSelectsStrict ported one-to-one against RouteTable::resolve.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::resolve_path_confusion_selects_strict": "passed"
    }
   },
   {
@@ -3371,15 +3393,27 @@
   },
   {
    "baseline_path": "internal/gate/settings_engine.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/resolve.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::configure_engine_from_effective_net_policy",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::empty_overlay_keeps_frozen_engine_defaults",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests/parity.rs::engine_scores_under_resolved_overlays_match_go",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests/parity.rs::overlay_decode_validate_encode_resolve_classify_and_engine_match_go"
+   ],
    "go_test_map": {},
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Rust operational settings deliberately exclude scoring inputs; no engine configuration from settings.",
-   "test_verification": {}
+   "notes": "Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning. Differential golden: crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-overlay-go-golden.json (Go 1.26.3 Docker capture, provenance inside). Pure library; not wired into the hosted gateway, whose operational CAS settings stay resource-only. configure_engine reuses the frozen humanymous-core scoring Engine (no parallel engine): policy, +overlay version, rule modes, weights and nil-vs-set net policy equal Go; 4 frozen reports x 8 overlays score with identical results and traces.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::configure_engine_from_effective_net_policy": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::empty_overlay_keeps_frozen_engine_defaults": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests/parity.rs::engine_scores_under_resolved_overlays_match_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests/parity.rs::overlay_decode_validate_encode_resolve_classify_and_engine_match_go": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/settings_runtime_test.go",
@@ -3442,144 +3476,225 @@
   },
   {
    "baseline_path": "internal/gate/settings/classify_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/classify.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_hr12_monitor_is_b",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_hr18_monitor_is_c",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_challenge_at_big_raise_is_c",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_lower_challenge_is_a",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_net_correlation_monitor_is_c",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_route_attested_to_monitor_is_d",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_rate_hard_raise_is_b",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_rate_window_shorter_is_b"
+   ],
    "go_test_map": {
-    "TestClassifyHR12MonitorIsB": null,
-    "TestClassifyHR18MonitorIsC": null,
-    "TestClassifyChallengeAtBigRaiseIsC": null,
-    "TestClassifyLowerChallengeIsA": null,
-    "TestClassifyNetCorrelationMonitorIsC": null,
-    "TestClassifyRouteAttestedToMonitorIsD": null,
-    "TestClassifyRateHardRaiseIsB": null,
-    "TestClassifyRateWindowShorterIsB": null
+    "TestClassifyHR12MonitorIsB": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_hr12_monitor_is_b",
+    "TestClassifyHR18MonitorIsC": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_hr18_monitor_is_c",
+    "TestClassifyChallengeAtBigRaiseIsC": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_challenge_at_big_raise_is_c",
+    "TestClassifyLowerChallengeIsA": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_lower_challenge_is_a",
+    "TestClassifyNetCorrelationMonitorIsC": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_net_correlation_monitor_is_c",
+    "TestClassifyRouteAttestedToMonitorIsD": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_route_attested_to_monitor_is_d",
+    "TestClassifyRateHardRaiseIsB": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_rate_hard_raise_is_b",
+    "TestClassifyRateWindowShorterIsB": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_rate_window_shorter_is_b"
    },
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No mutation-class classifier in Rust.",
-   "test_verification": {}
+   "notes": "Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning. Differential golden: crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-overlay-go-golden.json (Go 1.26.3 Docker capture, provenance inside). Pure library; not wired into the hosted gateway, whose operational CAS settings stay resource-only. All 8 Go tests ported one-to-one.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_hr12_monitor_is_b": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_hr18_monitor_is_c": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_challenge_at_big_raise_is_c": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_lower_challenge_is_a": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_net_correlation_monitor_is_c": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_route_attested_to_monitor_is_d": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_rate_hard_raise_is_b": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_rate_window_shorter_is_b": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/settings/classify.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/classify.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_hr12_monitor_is_b",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_hr18_monitor_is_c",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_challenge_at_big_raise_is_c",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_lower_challenge_is_a",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_net_correlation_monitor_is_c",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_route_attested_to_monitor_is_d",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_rate_hard_raise_is_b",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_rate_window_shorter_is_b",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests/parity.rs::overlay_decode_validate_encode_resolve_classify_and_engine_match_go"
+   ],
    "go_test_map": {},
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No mutation-class classifier in Rust.",
-   "test_verification": {}
+   "notes": "Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning. Differential golden: crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-overlay-go-golden.json (Go 1.26.3 Docker capture, provenance inside). Pure library; not wired into the hosted gateway, whose operational CAS settings stay resource-only. Mutation class C>B>D>A over scoring, weights, hard rules, gates, global monitor, net policy, routes and rate; 157 decoded overlays x 4 boots x 3 current postures compared.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_hr12_monitor_is_b": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_hr18_monitor_is_c": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_challenge_at_big_raise_is_c": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_lower_challenge_is_a": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_net_correlation_monitor_is_c": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_route_attested_to_monitor_is_d": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_rate_hard_raise_is_b": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::classify_rate_window_shorter_is_b": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests/parity.rs::overlay_decode_validate_encode_resolve_classify_and_engine_match_go": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/settings/overlay.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/wire.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/timestamp.rs",
+    "crates/sdk/humanymous-core/src/signals/wire/mod.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::resolve_empty_overlay_identity",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::resolve_overlay_scoring_and_kill",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::file_store_round_trip",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests/parity.rs::overlay_decode_validate_encode_resolve_classify_and_engine_match_go",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests/parity.rs::go_float_text_matches_oracle_captures",
+    "crates/sdk/humanymous-core/src/signals/wire/mod.rs::tests::float_formatting_matches_go_fmt_and_encoding_json"
+   ],
    "go_test_map": {},
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No scoring/route/net overlay model; Rust settings are resource-only.",
-   "test_verification": {}
+   "notes": "Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning. Differential golden: crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-overlay-go-golden.json (Go 1.26.3 Docker capture, provenance inside). Pure library; not wired into the hosted gateway, whose operational CAS settings stay resource-only. Overlay/Mode/MutationClass model, catalogs, ScoringDefaults, CanonicalJSON, OverlayDigest and HashConfigVersion byte-equal to Go; Go encoding/json decode semantics (case-folded keys, merged duplicates, null handling, invalid UTF-8 and lone surrogates) and time.Time RFC 3339 parse/format. Decode error message text differs from Go; only refusal is compared.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::resolve_empty_overlay_identity": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::resolve_overlay_scoring_and_kill": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::file_store_round_trip": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests/parity.rs::overlay_decode_validate_encode_resolve_classify_and_engine_match_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests/parity.rs::go_float_text_matches_oracle_captures": "passed",
+    "crates/sdk/humanymous-core/src/signals/wire/mod.rs::tests::float_formatting_matches_go_fmt_and_encoding_json": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/settings/resolve.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/resolve.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::resolve_empty_overlay_identity",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::resolve_overlay_scoring_and_kill",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests/parity.rs::overlay_decode_validate_encode_resolve_classify_and_engine_match_go"
+   ],
    "go_test_map": {},
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No overlay resolution to Effective; Rust settings are resource-only.",
-   "test_verification": {}
+   "notes": "Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning. Differential golden: crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-overlay-go-golden.json (Go 1.26.3 Docker capture, provenance inside). Pure library; not wired into the hosted gateway, whose operational CAS settings stay resource-only. Effective JSON bytes, HRMode/GateMode and configuration version equal Go for every decoded overlay and boot.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::resolve_empty_overlay_identity": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::resolve_overlay_scoring_and_kill": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests/parity.rs::overlay_decode_validate_encode_resolve_classify_and_engine_match_go": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/settings/settings_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/settings.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs",
-    "crates/sdk/humanymous-runtime/src/network/history/rate/config.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/validate.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/resolve.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/store.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision",
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs::crash_selection_applies_only_the_journal_committed_candidate",
-    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::validate_refuses_non_positive_rate_hard"
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_refuses_integrity_off",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_refuses_hr_off",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_refuses_net_tcp_enforce",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_scoring_bounds",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_refuses_non_positive_rate_hard",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::resolve_empty_overlay_identity",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::resolve_overlay_scoring_and_kill",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::file_store_round_trip"
    ],
    "go_test_map": {
-    "TestValidateRefusesIntegrityOff": "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets",
-    "TestValidateRefusesHROff": "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets",
-    "TestValidateRefusesNetTCPEnforce": "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets",
-    "TestValidateScoringBounds": "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision",
-    "TestValidateRefusesNonPositiveRateHard": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::validate_refuses_non_positive_rate_hard",
-    "TestResolveEmptyOverlayIdentity": null,
-    "TestResolveOverlayScoringAndKill": null,
-    "TestFileStoreRoundTrip": "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs::crash_selection_applies_only_the_journal_committed_candidate"
+    "TestValidateRefusesIntegrityOff": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_refuses_integrity_off",
+    "TestValidateRefusesHROff": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_refuses_hr_off",
+    "TestValidateRefusesNetTCPEnforce": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_refuses_net_tcp_enforce",
+    "TestValidateScoringBounds": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_scoring_bounds",
+    "TestValidateRefusesNonPositiveRateHard": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_refuses_non_positive_rate_hard",
+    "TestResolveEmptyOverlayIdentity": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::resolve_empty_overlay_identity",
+    "TestResolveOverlayScoringAndKill": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::resolve_overlay_scoring_and_kill",
+    "TestFileStoreRoundTrip": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::file_store_round_trip"
    },
-   "gaps": [
-    "overlay resolution identity (no scoring/route/net overlay model: Rust settings are resource-only by design, plan 20261107205817 B20 M)",
-    "scoring/kill overlay resolution (detection freeze; kill effects are dual-controlled, plan 20261116060213 unit 19)"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "medium",
-   "notes": "Rust refuses detection fields structurally instead of validating them; store round trip is journal-based.",
+   "confidence": "high",
+   "notes": "Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning. Differential golden: crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-overlay-go-golden.json (Go 1.26.3 Docker capture, provenance inside). Pure library; not wired into the hosted gateway, whose operational CAS settings stay resource-only. All 8 Go tests ported one-to-one; earlier approximate mappings to the operational settings tests replaced.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs::crash_selection_applies_only_the_journal_committed_candidate": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision": "passed",
-    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::validate_refuses_non_positive_rate_hard": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_refuses_integrity_off": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_refuses_hr_off": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_refuses_net_tcp_enforce": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_scoring_bounds": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_refuses_non_positive_rate_hard": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::resolve_empty_overlay_identity": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::resolve_overlay_scoring_and_kill": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::file_store_round_trip": "passed"
    }
   },
   {
    "baseline_path": "internal/gate/settings/store_file.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store/journal.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/store.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs::crash_selection_applies_only_the_journal_committed_candidate",
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs::unwitnessed_tail_forged_scope_and_skipped_revision_are_refused"
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::file_store_round_trip",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::store_refuses_empty_directory_and_invalid_overlay_without_writing",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests/parity.rs::file_store_scenarios_match_go",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests/parity.rs::schema_bytes_match_go_with_sorted_hard_rule_set"
    ],
    "go_test_map": {},
-   "gaps": [
-    "file layout of active/history overlays"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "medium",
-   "notes": "Rust store is a witnessed journal-backed snapshot store with a different layout.",
+   "confidence": "high",
+   "notes": "Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning. Differential golden: crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-overlay-go-golden.json (Go 1.26.3 Docker capture, provenance inside). Pure library; not wired into the hosted gateway, whose operational CAS settings stay resource-only. settings.overlay.v1.json / settings.overlay.lkg.json bytes, LKG recovery and load-error texts equal Go across 19 scenarios; Schema bytes equal with Go's map-ordered hard-rule list compared as a sorted set. OS read error text differs (only the kind is compared).",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs::crash_selection_applies_only_the_journal_committed_candidate": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs::unwitnessed_tail_forged_scope_and_skipped_revision_are_refused": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::file_store_round_trip": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::store_refuses_empty_directory_and_invalid_overlay_without_writing": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests/parity.rs::file_store_scenarios_match_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests/parity.rs::schema_bytes_match_go_with_sorted_hard_rule_set": "passed"
    }
   },
   {
    "baseline_path": "internal/gate/settings/validate.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/settings.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/validate.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision"
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_refuses_integrity_off",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_refuses_hr_off",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_refuses_net_tcp_enforce",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_scoring_bounds",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_refuses_non_positive_rate_hard",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests/parity.rs::overlay_decode_validate_encode_resolve_classify_and_engine_match_go"
    ],
    "go_test_map": {},
-   "gaps": [
-    "validation of scoring/hard-rule/net/route overlay values"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "medium",
-   "notes": "Rust validates resource bounds and rejects scoring fields outright.",
+   "confidence": "high",
+   "notes": "Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning. Differential golden: crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-overlay-go-golden.json (Go 1.26.3 Docker capture, provenance inside). Pure library; not wired into the hosted gateway, whose operational CAS settings stay resource-only. Error messages byte-equal (Go %q, %v, %.1f). With several invalid map entries Go reports a map-order-dependent one; Rust checks sorted order, one of Go's possible outcomes.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_refuses_integrity_off": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_refuses_hr_off": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_refuses_net_tcp_enforce": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_scoring_bounds": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::validate_refuses_non_positive_rate_hard": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests/parity.rs::overlay_decode_validate_encode_resolve_classify_and_engine_match_go": "passed"
    }
   },
   {
@@ -4128,6 +4243,7 @@
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs",
     "crates/sdk/humanymous-runtime/src/gateway/ban.rs",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy.rs",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs"
    ],
@@ -4166,7 +4282,10 @@
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r177_receipt_bad_sig",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r194_token_round_trip_epoch_current",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r195_accept_language_affects_bind_key",
-    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r196_sec_ch_ua_affects_bind_key"
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r196_sec_ch_ua_affects_bind_key",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r171_strict_path_login",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r172_nested_strict_under_admin",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r173_off_route_exact_only"
    ],
    "go_test_map": {
     "TestWargameR161_PendingBanNotEnforcedUntilCommit": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r161_pending_ban_not_enforced_until_commit",
@@ -4179,9 +4298,9 @@
     "TestWargameR168_SmuggleAndBanIndependent": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r168_smuggle_and_ban_independent",
     "TestWargameR169_TEChunkedAloneOK": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r169_te_chunked_alone_ok",
     "TestWargameR170_CLAloneOK": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r170_cl_alone_ok",
-    "TestWargameR171_StrictPathLogin": null,
-    "TestWargameR172_NestedStrictUnderAdmin": null,
-    "TestWargameR173_OffRouteExactOnly": null,
+    "TestWargameR171_StrictPathLogin": "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r171_strict_path_login",
+    "TestWargameR172_NestedStrictUnderAdmin": "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r172_nested_strict_under_admin",
+    "TestWargameR173_OffRouteExactOnly": "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r173_off_route_exact_only",
     "TestWargameR174_StepUpExpired": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r174_step_up_expired",
     "TestWargameR175_StepUpBindMismatch": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r175_step_up_bind_mismatch",
     "TestWargameR176_StepUpSidMismatch": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r176_step_up_sid_mismatch",
@@ -4211,14 +4330,13 @@
     "TestWargameR200_SeriesClosePackageGreen": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::scan_classifies_in_legacy_precedence"
    },
    "gaps": [
-    "route preset resolution R171-R173 (B12: C)",
     "R162 edge 403: the commit is asserted in the shared ban store; no runtime ban gate consults it on the public listener (serving composition not decided, owner decisions 2026-11-16)",
     "R166 integrity soft check: GET integrity is not served by gateway::admin_plane; only the admin.access meta-audit record is asserted",
     "R169 lone chunked TE: the classifier agrees with Go but the Rust HTTP parser refuses it (owner issue)"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Ban-key validation (R181-R185, R199), store lift/list (R191, R192), escalation (R193, deliberate 24h fourth tier), smuggle classifier (R168-R170, R197, R198) and step-up/receipt/bind rounds (R174-R177, R194-R196) are ported against the pure kernels. R200 re-asserts duplicate chunked TE refusal and ip: key validity, covered by the smuggle precedence and ban-key matrix tests. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#20; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged. Approval ticket, DPO superset and pending-store rounds (R178-R180, R188, R189) are ported against gateway::admin_approval. Admin HTTP rounds R161-R167, R186, R187 and R190 are ported against gateway::admin_plane over a real loopback TCP listener. R162 and R163 commit with a retained signed PermanentBan permit from a real control ledger (unix only); R163 pins the owner-accepted refusal to lift a permanent ban (decision 2). R167 asserts the pending kill switch and that an approved one commits nothing (409).",
+   "notes": "Ban-key validation (R181-R185, R199), store lift/list (R191, R192), escalation (R193, deliberate 24h fourth tier), smuggle classifier (R168-R170, R197, R198) and step-up/receipt/bind rounds (R174-R177, R194-R196) are ported against the pure kernels. R200 re-asserts duplicate chunked TE refusal and ip: key validity, covered by the smuggle precedence and ban-key matrix tests. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#20; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged. B1: R171-R173 ported one-to-one against the route_policy resolver. Approval ticket, DPO superset and pending-store rounds (R178-R180, R188, R189) are ported against gateway::admin_approval. Admin HTTP rounds R161-R167, R186, R187 and R190 are ported against gateway::admin_plane over a real loopback TCP listener. R162 and R163 commit with a retained signed PermanentBan permit from a real control ledger (unix only); R163 pins the owner-accepted refusal to lift a permanent ban (decision 2). R167 asserts the pending kill switch and that an approved one commits nothing (409).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r168_smuggle_and_ban_independent": "passed",
@@ -4254,7 +4372,10 @@
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r167_killswitch_pending_before_commit": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r186_http_reject_unknown_scheme": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r187_http_reject_bare_ip": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r190_operator_lift_other_key_noop": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r190_operator_lift_other_key_noop": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r171_strict_path_login": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r172_nested_strict_under_admin": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r173_off_route_exact_only": "passed"
    }
   },
   {
@@ -4356,6 +4477,7 @@
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs",
     "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
     "crates/sdk/humanymous-runtime/src/gateway/http.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy.rs",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs",
     "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs"
@@ -4375,6 +4497,11 @@
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r119_ban_key_rejects_tab_char",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r120_fp_with_spaces_rejected",
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r081_path_dot_dot_admin_stays_strict",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r082_path_encoded_traversal_normalized",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r083_path_prefix_not_confused_with_off_route",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r084_path_case_sensitive_strict",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r085_default_balanced_for_unknown",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r096_smuggle_te_identity",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r097_smuggle_te_gzip_chunked_list",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r098_smuggle_obs_fold_lf_only",
@@ -4393,11 +4520,11 @@
     "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::wargame_r103_sweep_window_resets"
    ],
    "go_test_map": {
-    "TestWargameR081_PathDotDotAdminStaysStrict": "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization",
-    "TestWargameR082_PathEncodedTraversalNormalized": "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization",
-    "TestWargameR083_PathPrefixNotConfusedWithOffRoute": null,
-    "TestWargameR084_PathCaseSensitiveStrict": null,
-    "TestWargameR085_DefaultBalancedForUnknown": null,
+    "TestWargameR081_PathDotDotAdminStaysStrict": "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r081_path_dot_dot_admin_stays_strict",
+    "TestWargameR082_PathEncodedTraversalNormalized": "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r082_path_encoded_traversal_normalized",
+    "TestWargameR083_PathPrefixNotConfusedWithOffRoute": "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r083_path_prefix_not_confused_with_off_route",
+    "TestWargameR084_PathCaseSensitiveStrict": "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r084_path_case_sensitive_strict",
+    "TestWargameR085_DefaultBalancedForUnknown": "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r085_default_balanced_for_unknown",
     "TestWargameR086_VerdictNotValidAsStepUp": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r086_verdict_not_valid_as_step_up",
     "TestWargameR087_StepUpNotValidAsVerdict": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r087_step_up_not_valid_as_verdict",
     "TestWargameR088_ReceiptNotValidAsStepUpCookie": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r088_receipt_not_valid_as_step_up_cookie",
@@ -4435,13 +4562,12 @@
     "TestWargameR120_FPWithSpacesRejected": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r120_fp_with_spaces_rejected"
    },
    "gaps": [
-    "route preset/default resolution R083-R085 (plan 20261107205817 B12: C, open contract)",
     "HTML inject R108-R110 (B15: M)",
     "admin keys route R113 (sth_public_key projection; route not served by gateway::admin_plane)"
    ],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Token/step-up/receipt separation, bind key, smuggle classifier, sweep and ban-store rounds are ported against the pure kernels in gateway/token, gateway/smuggle, network/history/sweep and gateway/ban. Deliberate differences pinned: R105 (no single-operator permanent ban) and R107 (fourth strike stays 24h and needs dual control). Admin auth rounds R111, R112 and R114-R116 are ported against gateway::admin_plane over a real loopback TCP listener (deny-by-default 404, auditor whoami).",
+   "notes": "Token/step-up/receipt separation, bind key, smuggle classifier, sweep and ban-store rounds are ported against the pure kernels in gateway/token, gateway/smuggle, network/history/sweep and gateway/ban. Deliberate differences pinned: R105 (no single-operator permanent ban) and R107 (fourth strike stays 24h and needs dual control). B1: R081-R085 ported one-to-one against the route_policy resolver (R081/R082 previously cited the HTTP framing test). Admin auth rounds R111, R112 and R114-R116 are ported against gateway::admin_plane over a real loopback TCP listener (deny-by-default 404, auditor whoami).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r086_verdict_not_valid_as_step_up": "passed",
@@ -4472,7 +4598,12 @@
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r114_checkpoints_auth_required": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r115_metrics_auth_required": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r116_operator_cannot_list_as_unscoped": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r081_path_dot_dot_admin_stays_strict": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r082_path_encoded_traversal_normalized": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r083_path_prefix_not_confused_with_off_route": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r084_path_case_sensitive_strict": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r085_default_balanced_for_unknown": "passed"
    }
   },
   {
@@ -4799,27 +4930,27 @@
   },
   {
    "baseline_path": "internal/gate/ws5_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/application.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy.rs",
     "crates/sdk/humanymous-runtime/src/gateway/session.rs"
    ],
    "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::fail_closed_action_mapping",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::missing_client_is_challenge_and_missing_planes_are_not_ready"
    ],
    "go_test_map": {
     "TestUnsafeMethodFailsClosed": "crates/sdk/humanymous-runtime/src/gateway/tests.rs::missing_client_is_challenge_and_missing_planes_are_not_ready",
-    "TestFailClosedActionMapping": null
+    "TestFailClosedActionMapping": "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::fail_closed_action_mapping"
    },
-   "gaps": [
-    "route-policy fail-open GET vs fail-closed POST",
-    "verdict-to-action mapping table"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "low",
-   "notes": "Rust challenges missing client evidence on all routes, without balanced-route fail-open. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "confidence": "high",
+   "notes": "Rust challenges missing client evidence on all routes, without balanced-route fail-open. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged. Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning. Differential golden: crates/sdk/humanymous-runtime/tests/fixtures/gateway/route-policy-go-golden.json (Go 1.26.3 Docker capture, provenance inside). Pure library; not wired into the hosted gateway, which keeps its exact route inventory. TestFailClosedActionMapping ported one-to-one; its case 0 (Unknown, balanced, safe method) is the reported fail-closed difference.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::missing_client_is_challenge_and_missing_planes_are_not_ready": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::missing_client_is_challenge_and_missing_planes_are_not_ready": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::fail_closed_action_mapping": "passed"
    }
   },
   {

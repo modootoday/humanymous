@@ -9,7 +9,17 @@ fn contract() -> Result<Value> {
     ))
     .map_err(|e| e.to_string())
 }
-fn counts(text: &str) -> Result<Value> {
+/// Actual JSON rows the owning host test printed for each runtime/framework/profile.
+pub(crate) fn rows(text: &str) -> Vec<Value> {
+    text.lines()
+        .filter_map(|line| {
+            line.find('{')
+                .and_then(|start| serde_json::from_str(&line[start..]).ok())
+        })
+        .filter(|row: &Value| row.get("authority").is_some())
+        .collect()
+}
+pub(crate) fn counts(text: &str) -> Result<Value> {
     let contract = contract()?;
     require(
         contract["schema"] == "humanymous.node-host-pilot-contract/1"
@@ -35,14 +45,7 @@ fn counts(text: &str) -> Result<Value> {
             }),
         "required five Node host groups incomplete",
     )?;
-    let rows: Vec<Value> = text
-        .lines()
-        .filter_map(|line| {
-            line.find('{')
-                .and_then(|start| serde_json::from_str(&line[start..]).ok())
-        })
-        .filter(|row: &Value| row.get("authority").is_some())
-        .collect();
+    let rows = rows(text);
     require(
         rows.len() as u64
             == contract["requiredDistinctRows"]
@@ -109,7 +112,11 @@ fn counts(text: &str) -> Result<Value> {
                     .ok_or("Node negative count invalid")?;
             }
             "production-application-http" => {
-                require(row["status"] == "passed", "Node production row failed")?;
+                require(
+                    row["status"] == "passed"
+                        && (row["verdict"] == "CHALLENGE" || row["verdict"] == "DENY"),
+                    "Node production row failed or lacks its observed non-ALLOW verdict",
+                )?;
                 totals[0] += expected["cases"]
                     .as_u64()
                     .ok_or("Node production count invalid")?;
@@ -135,7 +142,53 @@ fn counts(text: &str) -> Result<Value> {
         json!({"required_groups":5,"passed_groups":5,"failed":0,"ignored":0,"filtered":0,"case_assertions":actual,"distinct_runtime_rows":seen.len(),"production_browser_evidence":false}),
     )
 }
-fn image(value: &Value, sha: &str, manifest: &str) -> Result<String> {
+const AUTHORITY_BIN: &str = "/source/target/debug/humanymous-authority";
+/// The only host-glue addon the fixture image provisions; other tuples need their own image.
+const LINUX_X64_GNU_ADDON: &str =
+    "/source/target/node-native/host-glue/humanymous-node.linux-x64-gnu.node";
+fn environment<'a>(value: &'a Value, key: &str) -> Option<&'a str> {
+    value[0]["Config"]["Env"]
+        .as_array()?
+        .iter()
+        .filter_map(Value::as_str)
+        .find_map(|entry| entry.strip_prefix(key)?.strip_prefix('='))
+}
+pub(crate) fn authority_path(value: &Value) -> Result<&'static str> {
+    require(
+        environment(value, "HUMANYMOUS_AUTHORITY_BIN") == Some(AUTHORITY_BIN),
+        "Node image authority executable identity mismatch",
+    )?;
+    Ok(AUTHORITY_BIN)
+}
+/// Whether the host-glue addon the fixture image builds enables `host-pilot`.
+/// Fail-closed: unless exactly one napi build writes the host-glue directory
+/// and that line names no `host-pilot` feature, the addon counts as host-pilot.
+pub(crate) fn host_glue_host_pilot(dockerfile: &str) -> bool {
+    let builds: Vec<&str> = dockerfile
+        .lines()
+        .filter(|line| {
+            line.contains("napi build")
+                && line.contains("--output-dir target/node-native/host-glue")
+        })
+        .collect();
+    builds.len() != 1 || builds[0].contains("host-pilot")
+}
+/// Path of the host-glue addon the host tests loaded, from the inspected image only.
+pub(crate) fn addon_path(value: &Value) -> Result<&'static str> {
+    addon_tuple(value)?;
+    Ok(LINUX_X64_GNU_ADDON)
+}
+/// Native tuple of the addon the host tests loaded, from the inspected image only.
+pub(crate) fn addon_tuple(value: &Value) -> Result<&'static str> {
+    require(
+        environment(value, "HUMANYMOUS_NODE_ADDON") == Some(LINUX_X64_GNU_ADDON)
+            && value[0]["Os"] == "linux"
+            && value[0]["Architecture"] == "amd64",
+        "Node image addon tuple is not the observed linux-x64-gnu fixture",
+    )?;
+    Ok("linux-x64-gnu")
+}
+pub(crate) fn image(value: &Value, sha: &str, manifest: &str) -> Result<String> {
     let id = value[0]["Id"]
         .as_str()
         .ok_or("Node host image identity absent")?;
@@ -330,7 +383,56 @@ pub(super) fn run(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
                 && container[0]["State"]["Running"] == false
                 && container[0]["State"]["ExitCode"] == 0,
             "Node container did not stop with exact tested image",
+        )?;
+        // Hash the authority executable the stopped test container actually ran.
+        let path = authority_path(&inspected)?;
+        let copy = dir.join("authority-artifact.bin");
+        let source = format!("{name}:{path}");
+        let copied = invoke(
+            root,
+            dir,
+            report,
+            "node-authority-copy",
+            "docker",
+            &[
+                "cp",
+                &source,
+                copy.to_str().ok_or("Node authority copy path invalid")?,
+            ],
+            "120s",
         )
+        .and_then(|()| crate::source::file(&copy));
+        // The private bundle keeps the digest, not a second copy of the executable.
+        let _ = std::fs::remove_file(&copy);
+        report["authority_artifact"] = json!({"path":path,"sha256":copied?});
+        // Hash the addon the stopped test container actually loaded, so release
+        // qualification can compare it with the provenance-bound package binary.
+        let addon = addon_path(&inspected)?;
+        let copy = dir.join("tested-addon.bin");
+        let source = format!("{name}:{addon}");
+        let copied = invoke(
+            root,
+            dir,
+            report,
+            "node-addon-copy",
+            "docker",
+            &[
+                "cp",
+                &source,
+                copy.to_str().ok_or("Node addon copy path invalid")?,
+            ],
+            "120s",
+        )
+        .and_then(|()| crate::source::file(&copy));
+        let _ = std::fs::remove_file(&copy);
+        report["tested_addon"] = json!({
+            "path": addon,
+            "sha256": copied?,
+            "host_pilot_enabled": host_glue_host_pilot(&dockerfile),
+        });
+        report["image_platform"] =
+            json!({"os":inspected[0]["Os"],"architecture":inspected[0]["Architecture"]});
+        Ok(())
     })();
     if execution.is_err() {
         report["failure_stage"] = report["stage"].clone();
@@ -422,6 +524,9 @@ mod tests {
                 row["runtime"] = tuple["runtime"].clone();
                 row["framework"] = tuple["framework"].clone();
                 row["fullProduct"] = json!(false);
+                if row["authority"] == "production-application-http" {
+                    row["verdict"] = json!("DENY");
+                }
                 if row["authority"] == "real-engine-synthetic-evidence" {
                     row["negativeCases"] = expected["negativeCasesByFramework"]
                         [tuple["framework"].as_str().unwrap()]
@@ -450,6 +555,40 @@ mod tests {
         assert!(
             counts(&log.replace("production-application-http", "unavailable-negative")).is_err()
         );
+        // Production rows must carry their observed non-ALLOW verdict.
+        assert!(counts(&log.replace("\"verdict\":\"DENY\"", "\"observed\":\"DENY\"")).is_err());
+        assert!(counts(&log.replace("\"verdict\":\"DENY\"", "\"verdict\":\"ALLOW\"")).is_err());
+        assert_eq!(super::rows(&log).len(), 12);
+    }
+    #[test]
+    fn image_environment_binds_authority_and_addon_tuple() {
+        let value = json!([{"Os":"linux","Architecture":"amd64","Config":{"Env":[
+            format!("HUMANYMOUS_AUTHORITY_BIN={AUTHORITY_BIN}"),
+            format!("HUMANYMOUS_NODE_ADDON={LINUX_X64_GNU_ADDON}")
+        ]}}]);
+        assert_eq!(authority_path(&value).unwrap(), AUTHORITY_BIN);
+        assert_eq!(addon_tuple(&value).unwrap(), "linux-x64-gnu");
+        let mut arm = value.clone();
+        arm[0]["Architecture"] = json!("arm64");
+        assert!(addon_tuple(&arm).is_err());
+        let mut moved = value;
+        moved[0]["Config"]["Env"] = json!(["HUMANYMOUS_AUTHORITY_BIN=/tmp/other"]);
+        assert!(authority_path(&moved).is_err());
+        assert!(addon_tuple(&moved).is_err());
+    }
+    #[test]
+    fn host_glue_host_pilot_is_fail_closed() {
+        let actual = include_str!("../../../../../adapters/node/Dockerfile.pilot");
+        assert!(host_glue_host_pilot(actual));
+        let line = "RUN napi build --output-dir target/node-native/host-glue --features host-pilot";
+        assert!(host_glue_host_pilot(line));
+        assert!(!host_glue_host_pilot(
+            &line.replace(" --features host-pilot", "")
+        ));
+        // Absent or ambiguous host-glue builds never prove host-pilot is off.
+        assert!(host_glue_host_pilot(""));
+        let release = line.replace(" --features host-pilot", "");
+        assert!(host_glue_host_pilot(&format!("{release}\n{release}")));
     }
     #[test]
     fn image_identity_cannot_substitute_other_actor_or_source() {

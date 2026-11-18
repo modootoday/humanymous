@@ -67,6 +67,7 @@ mod requirement;
 mod startup_failure;
 mod target_attestation;
 mod witness;
+mod witness_transport;
 struct Lab {
     docker: Docker,
     project: String,
@@ -288,6 +289,10 @@ impl Lab {
                 self.config_file("deployments/lab/compose.rust.witness.yaml")?,
                 "--profile".into(),
                 "witness".into(),
+                "-f".into(),
+                self.config_file("deployments/lab/compose.rust.witness-transport.yaml")?,
+                "--profile".into(),
+                "witness-transport".into(),
             ]);
         }
         if self.collector {
@@ -692,6 +697,8 @@ impl Lab {
             target_attestation::run(self)?;
             self.stage = "witness_component";
             witness::run(self)?;
+            self.stage = "witness_transport";
+            witness_transport::run(self)?;
         } else {
             self.components["runtime"] =
                 json!({"status":"not_run","reason":"explicit topology-only phase"});
@@ -1558,6 +1565,10 @@ pub fn run(args: &[String]) -> Result<i32> {
             "target_attestation",
             "pinned-key-fresh-nonce-target-attestation",
         ),
+        (
+            "runtime_binary_witness_transport",
+            "runtime-binary-witness-transport",
+        ),
     ] {
         if lab.components[component].is_object() && lab.components[component]["status"] != "not_run"
         {
@@ -1771,6 +1782,29 @@ pub fn cleanup_expired() -> Result<()> {
 }
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn witness_transport_leaves_required_unavailable_only_when_its_case_passed() {
+        use super::{qualification, witness_transport};
+        use serde_json::json;
+        // The case this module records is the one the derived claim requires.
+        assert!(qualification::CAPABILITIES.contains(&(
+            witness_transport::CAPABILITY,
+            &[witness_transport::CASE][..]
+        )));
+        let all = qualification::CAPABILITIES.len();
+        let unavailable =
+            |cases: &[serde_json::Value]| qualification::assess(cases, true).required_unavailable;
+        assert_eq!(unavailable(&[]).len(), all);
+        let failed = [json!({"id":witness_transport::CASE,"status":"failed"})];
+        assert!(unavailable(&failed).contains(&witness_transport::CAPABILITY));
+        let passed = [json!({"id":witness_transport::CASE,"status":"passed"})];
+        let remaining = unavailable(&passed);
+        assert_eq!(remaining.len(), all - 1);
+        assert!(!remaining.contains(&witness_transport::CAPABILITY));
+        // Unrelated passing cases never resolve another capability.
+        let other = [json!({"id":"actual-runtime-process","status":"passed"})];
+        assert_eq!(unavailable(&other).len(), all);
+    }
     #[test]
     fn collector_failures_are_named_by_enumerated_public_codes() {
         use super::collector_outcome as outcome;
