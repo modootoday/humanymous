@@ -4,7 +4,7 @@ use serde_json::{Value, json};
 use std::path::Path;
 mod maintenance;
 mod native_archive;
-mod node_host;
+pub(crate) mod node_host;
 pub mod pilots;
 mod runtime;
 
