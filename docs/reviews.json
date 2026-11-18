@@ -4294,9 +4294,9 @@
     },
     {
       "source": "crates/node-adapter/tests/host_process.rs",
-      "sha256": "cc4ada9af4970ba86378bf0f7991f8e5b29d65c1a8838381fd768bf06fa4d00d",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Three ignored-by-default real-process tests across node/bun x express/hono: a production authority binary from HUMANYMOUS_AUTHORITY_BIN must yield 403 or 409 with no origin effect and a non-empty audit directory; synthetic evidence in the real Rust engine must ALLOW seven cases preserving binary bodies, headers, SSE and async iterators with seven origin effects and seven audit records while aborted/stalled bodies and (express) Upgrade/CONNECT never reach origin; and a missing authority endpoint must return 503 on /api, admin and unknown paths. Needs a built addon and installed upstream modules; Host Drop kill/wait is cleanup, not containment proof, and no fullProduct claim is made.",
+      "sha256": "06a68bb2633fcf7334eb61dd65deb7b7bcfd446c3a9f020d5f70ccf1296919b9",
+      "reviewer": "independent review pending; this hash is recorded by the change author (claude/node-qualification), which is not an independent review",
+      "notes": "Author record, not an independent review. Three ignored-by-default real-process tests across node/bun x express/hono run the HUMANYMOUS_NODE_ADDON host-pilot cdylib with HUMANYMOUS_NODE_HOST_PILOT=1, not the release addon: a production authority binary from HUMANYMOUS_AUTHORITY_BIN must yield 409 (printed as CHALLENGE) or 403 (printed as DENY), any other status fails, with no origin effect and a non-empty audit directory; synthetic evidence in the real Rust engine must ALLOW seven cases preserving binary bodies, headers, SSE and async iterators with seven origin effects and seven audit records while aborted/stalled bodies and (express) Upgrade/CONNECT never reach origin; and a missing authority endpoint must return 503 on /api, admin and unknown paths. Needs a built addon and installed upstream modules; Host Drop kill/wait is cleanup, not containment proof, and no fullProduct claim is made.",
       "pages": [
         "docs/reference/node-adapter.md"
       ]
