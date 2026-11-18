@@ -28,9 +28,11 @@
         "strict_required_status_checks_policy": false,
         "do_not_enforce_on_create": false,
         "required_status_checks": [
-          {"context": "validate / merge-ready"},
           {"context": "Public surface"},
-          {"context": "Secret scan"}
+          {"context": "Secret scan"},
+          {"context": "validate / policy"},
+          {"context": "validate / quality"},
+          {"context": "validate / msrv"}
         ]
       }
     }
