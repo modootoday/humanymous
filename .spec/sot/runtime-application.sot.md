@@ -1378,3 +1378,88 @@ facts even if the Frame survived unwinding. Two regressions cover those exact
 paths. Original404 was not executed or qualified. A first corrected-source fmt
 attempt failed Windows mapped-file1224; its receipt is retained, a normal retry
 passed, and no foreign reader/process was terminated.
+
+### Shipped-binary inherited witness input (C3, 2026-11-18)
+
+Owner decision C3 option A (issue #75 comment 6968092014, options in comment
+6962606199): the shipped `humanymous-runtime` binary accepts an external
+witness through descriptors its trusted supervisor lets it inherit, using the
+existing audit `WitnessServiceClient` frame codec, with the witness public key
+pinned in private configuration. This delta precedes the implementation.
+
+Source of the input. The only source is the private stdin configuration
+document, as object `audit.witness_input`, with these fields and no defaults
+except `consistency_proof`:
+
+- `read_fd`: inherited descriptor number that carries witness-to-runtime
+  frames (the read end of the witness's stdout pipe).
+- `write_fd`: inherited descriptor number that carries runtime-to-witness
+  frames (the write end of the witness's stdin pipe).
+- `witness_public`: the pinned witness ed25519 public key, 32 bytes.
+- `writer_public`: the pinned expected writer public key, 32 bytes.
+- `durability`: `file_and_directory` or `file_synced_namespace_unconfirmed`,
+  mapped to the existing `WitnessDurability`.
+- `consistency_proof`: optional proof from `audit.trusted_head` to the
+  witness's current head (default empty, at most 64 hashes).
+
+There is no environment variable, argument, file path or fixed default number
+for the descriptors or keys, and no fallback when the object is absent.
+Descriptor numbers must be at least 3 (0, 1 and 2 stay the configuration,
+readiness and diagnostic streams) and distinct. Both keys must differ.
+`witness_input` requires `audit.require_external_witness=true`; a configured
+input without that flag is invalid configuration.
+
+Handshake. The supervisor sends the private `WitnessServiceConfig` first frame
+(with the witness passphrase) to the witness itself. The runtime never sees
+that frame or the witness passphrase. The runtime consumes the witness's
+`ready` reply with `WitnessServiceClient::from_ready`, pinning
+`witness_public`, `writer_public`, `audit.node_id` and the bootstrap:
+`audit.trusted_head` absent selects `CreateNew` (the witness must report an
+empty head); present selects `Pinned{minimum: trusted_head,
+consistency_proof}`. The client is then wrapped by the existing
+`startup::ExternalWitness::new` (that is, `PinnedWitness`) and passed to
+`ServiceHost::bind_with_witness`. No frame, signature or proof logic is copied
+into the runtime, and `crates/sdk/humanymous-runtime/src/audit/` is unchanged.
+
+Descriptor adoption. `unsafe_code` is forbidden, so the runtime cannot adopt a
+raw descriptor number. On Linux it opens `/proc/self/fd/<n>`; on other Unix it
+opens `/dev/fd/<n>`. Each open uses the expected direction (read-only or
+write-only) with `O_NONBLOCK`, which is then cleared, so the open itself never
+waits for a peer. A readerless or silent peer is not detected at open: it
+surfaces as end of stream, a write error or the supervisor's startup deadline
+during the handshake. The opened object
+must be a FIFO (anonymous pipe); sockets, regular files and terminals are
+refused. On Linux the original descriptor's access mode, read from
+`/proc/self/fdinfo/<n>`, must match the expected direction, so swapped numbers
+are refused before any read. The inherited descriptor itself stays open for
+the process lifetime; the runtime spawns no child. Windows has no inherited
+handle input in this delta: a configured `witness_input` refuses startup there
+as unsupported.
+
+Fail-closed startup. All of this runs in the binary entrypoint before the
+async runtime, before custody or the WAL is opened, and before the unlock
+credential is consumed. A missing, closed, non-FIFO or wrong-direction
+descriptor, a malformed or refused `ready` reply, a witness key different from
+the pin, a writer or node mismatch on a pinned head, a failed consistency
+proof, or a non-empty witness under `CreateNew` each refuse startup: the
+process exits nonzero with a static diagnostic and writes no readiness line.
+`require_external_witness=true` without `witness_input` keeps the existing
+refusal ("required external witness unavailable"). The handshake read has no
+in-process deadline; the supervisor's startup deadline bounds it, as for all
+blocking witness I/O in this SoT.
+
+Witness loss. After readiness, any witness I/O error, end of stream, refusal or
+invalid receipt poisons the client permanently (existing client semantics).
+The next audit append fails, so the existing application path poisons the
+serving epoch and answers 503 `durable_audit` without an origin effect. The
+epoch never recovers in that process. There is no reconnect, no writer-only
+fallback and no retry of a prior effect. Recovery is a supervised restart with
+a fresh witness handshake against an independently pinned head.
+
+Claims. This adds a transport input to the shipped binary. It is not
+independence evidence: same-host, same-UID or same-container placement stays
+possible, readiness keeps reporting witness independence as unqualified, and
+`product_qualified` stays false. Native Unix tests (real inherited descriptors
+across exec, and in-process pipes) are component evidence only. The Docker
+`runtime-binary-witness-transport` case is the completion authority; it can
+now be authored against this input but is not part of this delta.
