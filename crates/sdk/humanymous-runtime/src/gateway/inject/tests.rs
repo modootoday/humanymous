@@ -1,4 +1,5 @@
-//! Ports of legacy internal/gate/inject_test.go at baseline 981d25c.
+//! Ports of legacy internal/gate/inject_test.go and the inject rounds
+//! R108-R110 of wargame_escalation_r81_test.go at baseline 981d25c.
 use super::*;
 
 const SNIPPET: &str = "<!--hmn-injected--><script src=\"/__hmn/loader.js\"></script>";
@@ -88,6 +89,60 @@ fn insertion_point_order_and_case() {
     assert_eq!(insertion_point(b"<html></HEAD><body>"), Some(6));
     assert_eq!(insertion_point(b"<html><BODY class=a>"), Some(6));
     assert_eq!(insertion_point(b"plain"), None);
+}
+
+#[test]
+fn insertion_point_precedence_keeps_byte_offsets() {
+    // Without an opening <head, </head> wins over a later <body.
+    assert_eq!(insertion_point(b"<title></Head><BODY>"), Some(7));
+    // Non-ASCII text before the tag keeps byte offsets exact: the search is
+    // ASCII case-insensitive, so no Unicode lowering can shift them.
+    let text = "\u{130}\u{130}<head>".as_bytes();
+    assert_eq!(insertion_point(text), Some(text.len()));
+}
+
+/// A marker split across reads right after the point is still detected: the
+/// injector waits for the bytes after the point before deciding.
+#[test]
+fn marker_split_across_reads_after_the_point_is_detected() {
+    let html = format!("<html><head>{MARKER}<title>x</title></head>");
+    for size in 1..=MARKER.len() + 8 {
+        let (out, outcome) = run(&html, size);
+        assert_eq!(
+            outcome,
+            Outcome::Skipped(Skipped::AlreadyPresent),
+            "size {size}"
+        );
+        assert_eq!(out, html);
+    }
+}
+
+/// Go TestWargameR108_InjectIdempotentDouble: a second pass over injected
+/// HTML adds no second loader.
+#[test]
+fn wargame_r108_inject_idempotent_double() {
+    let (once, _) = run("<html><head></head><body>x</body></html>", 64);
+    let (twice, outcome) = run(&once, 64);
+    assert_eq!(outcome, Outcome::Skipped(Skipped::AlreadyPresent));
+    assert_eq!(twice.matches("loader.js").count(), 1);
+}
+
+/// Go TestWargameR109_NoHTMLNoInject: a JSON body receives no loader.
+#[test]
+fn wargame_r109_no_html_no_inject() {
+    let (out, outcome) = run(r#"{"json":true}"#, 64);
+    assert!(!out.contains("loader.js"));
+    assert_eq!(outcome, Outcome::Skipped(Skipped::PointNotFound));
+}
+
+/// Go TestWargameR110_OversizeHeadGivesUp only required no panic on a 1 MiB
+/// tagless body; this also pins that it passes through unchanged.
+#[test]
+fn wargame_r110_oversize_head_gives_up() {
+    let big = "a".repeat(1 << 20);
+    let (out, outcome) = run(&big, 4096);
+    assert_eq!(outcome, Outcome::Skipped(Skipped::PointNotFound));
+    assert_eq!(out, big);
 }
 
 #[test]

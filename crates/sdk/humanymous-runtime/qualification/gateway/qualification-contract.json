@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 369,
-      "macos": 369,
-      "windows": 361
+      "linux": 374,
+      "macos": 374,
+      "windows": 366
     },
     "common_test_names": [
       "gateway::application::temporal::tests::categories::configure_only_preserves_unknown_gap_until_provider_observation",
@@ -147,10 +147,15 @@
       "gateway::inject::tests::falls_back_to_before_body",
       "gateway::inject::tests::injects_right_after_head_across_every_split",
       "gateway::inject::tests::insertion_point_order_and_case",
+      "gateway::inject::tests::insertion_point_precedence_keeps_byte_offsets",
       "gateway::inject::tests::marker_prevents_a_second_injection",
+      "gateway::inject::tests::marker_split_across_reads_after_the_point_is_detected",
       "gateway::inject::tests::non_html_passes_through_unchanged",
       "gateway::inject::tests::oversize_headless_body_is_bounded_and_loses_no_bytes",
       "gateway::inject::tests::upstream_error_surfaces_after_the_buffered_bytes",
+      "gateway::inject::tests::wargame_r108_inject_idempotent_double",
+      "gateway::inject::tests::wargame_r109_no_html_no_inject",
+      "gateway::inject::tests::wargame_r110_oversize_head_gives_up",
       "gateway::logging::tests::canonical_external_input_label_bounds",
       "gateway::logging::tests::core_accumulates_plain_and_jsonl_files",
       "gateway::logging::tests::core_logging_off_by_default",

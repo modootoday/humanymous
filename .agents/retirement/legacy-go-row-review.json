@@ -2785,7 +2785,9 @@
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::falls_back_to_before_body",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::injects_right_after_head_across_every_split",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::insertion_point_order_and_case",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::insertion_point_precedence_keeps_byte_offsets",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::marker_prevents_a_second_injection",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::marker_split_across_reads_after_the_point_is_detected",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::non_html_passes_through_unchanged",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::oversize_headless_body_is_bounded_and_loses_no_bytes",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::upstream_error_surfaces_after_the_buffered_bytes"
@@ -2800,12 +2802,14 @@
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "All five inject tests ported; the oversize case now asserts the exact pass-through and the bounded-injection byte count.",
+   "notes": "All five inject tests ported; the oversize case now asserts the exact pass-through and the bounded-injection byte count. Two further tests pin byte-exact insertion offsets after non-ASCII text and marker detection when the marker is split across reads right after the point.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::falls_back_to_before_body": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::injects_right_after_head_across_every_split": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::insertion_point_order_and_case": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::insertion_point_precedence_keeps_byte_offsets": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::marker_prevents_a_second_injection": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::marker_split_across_reads_after_the_point_is_detected": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::non_html_passes_through_unchanged": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::oversize_headless_body_is_bounded_and_loses_no_bytes": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::upstream_error_surfaces_after_the_buffered_bytes": "passed"
@@ -2821,7 +2825,9 @@
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::falls_back_to_before_body",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::injects_right_after_head_across_every_split",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::insertion_point_order_and_case",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::insertion_point_precedence_keeps_byte_offsets",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::marker_prevents_a_second_injection",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::marker_split_across_reads_after_the_point_is_detected",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::non_html_passes_through_unchanged",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::oversize_headless_body_is_bounded_and_loses_no_bytes",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::upstream_error_surfaces_after_the_buffered_bytes"
@@ -2835,7 +2841,9 @@
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::falls_back_to_before_body": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::injects_right_after_head_across_every_split": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::insertion_point_order_and_case": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::insertion_point_precedence_keeps_byte_offsets": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::marker_prevents_a_second_injection": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::marker_split_across_reads_after_the_point_is_detected": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::non_html_passes_through_unchanged": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::oversize_headless_body_is_bounded_and_loses_no_bytes": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::upstream_error_surfaces_after_the_buffered_bytes": "passed"
@@ -4129,7 +4137,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs",
-    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs"
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
@@ -4156,7 +4165,10 @@
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r107_r193_escalation_terms",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r118_ban_key_ipv4_loopback_allowed",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r119_ban_key_rejects_tab_char",
-    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r120_fp_with_spaces_rejected"
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r120_fp_with_spaces_rejected",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r108_inject_idempotent_double",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r109_no_html_no_inject",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r110_oversize_head_gives_up"
    ],
    "go_test_map": {
     "TestWargameR081_PathDotDotAdminStaysStrict": "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization",
@@ -4186,9 +4198,9 @@
     "TestWargameR105_PermanentBanHasZeroUntil": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r105_zero_duration_is_not_a_single_operator_permanent_ban",
     "TestWargameR106_LiftRemovesBan": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r106_lift_removes_ban",
     "TestWargameR107_AutoBanEscalatesStrike": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r107_r193_escalation_terms",
-    "TestWargameR108_InjectIdempotentDouble": null,
-    "TestWargameR109_NoHTMLNoInject": null,
-    "TestWargameR110_OversizeHeadGivesUp": null,
+    "TestWargameR108_InjectIdempotentDouble": "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r108_inject_idempotent_double",
+    "TestWargameR109_NoHTMLNoInject": "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r109_no_html_no_inject",
+    "TestWargameR110_OversizeHeadGivesUp": "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r110_oversize_head_gives_up",
     "TestWargameR111_UnauthAdminWhoami404": null,
     "TestWargameR112_AuditorWhoamiOK": null,
     "TestWargameR113_KeysOmitHMACSecret": null,
@@ -4202,12 +4214,11 @@
    },
    "gaps": [
     "route preset/default resolution R083-R085 (plan 20261107205817 B12: C, open contract)",
-    "HTML inject R108-R110 (B15: M)",
     "admin whoami/keys/checkpoints/metrics/auth R111-R116 (B19: M)"
    ],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Token/step-up/receipt separation, bind key, smuggle classifier, sweep and ban-store rounds are ported against the pure kernels in gateway/token, gateway/smuggle, network/history/sweep and gateway/ban. Deliberate differences pinned: R105 (no single-operator permanent ban) and R107 (fourth strike stays 24h and needs dual control).",
+   "notes": "Token/step-up/receipt separation, bind key, smuggle classifier, sweep and ban-store rounds are ported against the pure kernels in gateway/token, gateway/smuggle, network/history/sweep and gateway/ban. Deliberate differences pinned: R105 (no single-operator permanent ban) and R107 (fourth strike stays 24h and needs dual control). HTML inject rounds R108-R110 are ported against gateway::inject (R110 also pins the unchanged pass-through, beyond the Go no-panic check).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r086_verdict_not_valid_as_step_up": "passed",
@@ -4232,7 +4243,10 @@
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r107_r193_escalation_terms": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r118_ban_key_ipv4_loopback_allowed": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r119_ban_key_rejects_tab_char": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r120_fp_with_spaces_rejected": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r120_fp_with_spaces_rejected": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r108_inject_idempotent_double": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r109_no_html_no_inject": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r110_oversize_head_gives_up": "passed"
    }
   },
   {

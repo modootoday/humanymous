@@ -6676,9 +6676,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "05d0edf6492156b1e8f65defae36e10c5fdcc5c1c6a37e0e1fc2a68e68e1df3d",
+      "sha256": "c04da0b9ea2caae86fe624bf01f0075c6449cea150b916c681a7b3c9217d1a4b",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 369 / macos 369 / windows 361 (361 common names, largest groups credential 50, token 42, ban 33, tests 29, observatory 26, logging 24, service 19, shipping 19, plus 8 Unix-only names listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 369 / macos 369 / windows 361 (361 common names, largest groups credential 50, token 42, ban 33, tests 29, observatory 26, logging 24, service 19, shipping 19, plus 8 Unix-only names listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect. Re-reviewed 2026-11-18: the common list gains 5 gateway::inject::tests names (insertion_point_precedence_keeps_byte_offsets, marker_split_across_reads_after_the_point_is_detected and the wargame R108-R110 rounds, carried over from the withdrawn PR #128 inject port), so the expected counts are linux 374 / macos 374 / windows 366 (366 common plus the same 8 Unix-only names); on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 374 gateway:: names, equal to the contract. macOS and Windows inventories were not re-run.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/how-this-was-built.md"
@@ -8313,9 +8313,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs",
-      "sha256": "e0dbc55e0e75ff9bf87af6e478465ab656e51fe7f0ddeeccc599fb4d35faf01e",
+      "sha256": "2fe4f0519e450ae3f8d35f41d2ff0c176a29787e312081a6e670176adc082058",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Seven ports of internal/gate/inject_test.go: injection right after <head> for chunk sizes 1, 3, 7 and 4096; fallback before <body>; marker prevents a second injection; non-HTML passes through as point_not_found; an unclosed <head beyond the 64 KiB look-ahead passes through byte-for-byte while an open head with a huge body injects once without loss; insertion-point order and case; and an upstream error surfaces after the buffered bytes. Reader page coverage is indirect.",
+      "notes": "Seven ports of internal/gate/inject_test.go: injection right after <head> for chunk sizes 1, 3, 7 and 4096; fallback before <body>; marker prevents a second injection; non-HTML passes through as point_not_found; an unclosed <head beyond the 64 KiB look-ahead passes through byte-for-byte while an open head with a huge body injects once without loss; insertion-point order and case; and an upstream error surfaces after the buffered bytes. Reader page coverage is indirect. Re-reviewed 2026-11-18: five tests carried over from the withdrawn PR #128 inject port: insertion_point_precedence_keeps_byte_offsets (</head> before a later <body, and an exact byte offset after non-ASCII text, since the search is ASCII case-insensitive), marker_split_across_reads_after_the_point_is_detected (every read size from 1 to the marker length plus 8), and the Go wargame rounds R108 (a second pass adds no second loader, already_present), R109 (a JSON body gets no loader, point_not_found) and R110 (a 1 MiB tagless body passes through unchanged; Go only checked it did not panic). The module doc now names the R108-R110 source.",
       "pages": [
         "docs/reference/gate-origin-contract.md",
         "docs/reference/supported-topologies.md"
