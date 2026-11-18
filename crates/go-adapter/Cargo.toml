@@ -1,11 +1,13 @@
 [package]
 name = "humanymous-adapter-go"
+description = "Humanymous Gate deployment contracts for external Go HTTP origins"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-publish = false
+readme = "INTEGRATION.md"
+publish = ["crates-io"]
 
 [dependencies]
 humanymous-runtime = { workspace = true, features = ["gateway"] }
