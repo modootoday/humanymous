@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 341,
-      "macos": 341,
-      "windows": 333
+      "linux": 347,
+      "macos": 347,
+      "windows": 339
     },
     "common_test_names": [
       "gateway::application::temporal::tests::categories::configure_only_preserves_unknown_gap_until_provider_observation",
@@ -288,6 +288,12 @@
       "gateway::tests::tls::dispatch::chrome_claim_over_actual_rustls_is_audited_and_never_reaches_origin",
       "gateway::tests::tls::dispatch::truthful_native_tls_profile_preserves_policy_and_origin_agreement",
       "gateway::tests::tls::observation::actual_client_hello_and_negotiated_alpn_share_the_request_owner",
+      "gateway::tls::certificate::tests::issuer_domains_are_normalised_and_plain_hosts_only",
+      "gateway::tls::certificate::tests::issuer_must_cover_exactly_the_selected_domains",
+      "gateway::tls::certificate::tests::load_provisioned_reads_bounded_files",
+      "gateway::tls::certificate::tests::provisioned_pair_builds_h2_then_http11_ingress",
+      "gateway::tls::certificate::tests::provisioned_pair_refuses_empty_missing_and_mismatched_material",
+      "gateway::tls::certificate::tests::selection_refuses_absent_incomplete_and_ambiguous_sources",
       "gateway::tls::h2::tests::body_owner_retains_stream_one_data_only",
       "gateway::tls::h2::tests::h2_response_frames_end_stream_on_empty_body",
       "gateway::tls::h2::tests::settings_and_ack_frames_are_well_formed",
