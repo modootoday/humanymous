@@ -30,9 +30,13 @@ use std::{
     },
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
-/// Renew when fewer than this many seconds remain before `NotAfter` (Go
-/// `autocert` default: 30 days).
+/// Longest renewal window: renew when fewer than this many seconds remain
+/// before `NotAfter` (Go `autocert` default: 30 days). Shorter-lived leaves
+/// use a third of their lifetime instead; see [`renewal_window`].
 pub const RENEW_BEFORE_SECONDS: i64 = 30 * 24 * 60 * 60;
+/// Longest wait between renewal attempts after consecutive failures, unless
+/// the check interval itself is longer.
+pub const MAX_RETRY_BACKOFF: Duration = Duration::from_secs(6 * 60 * 60);
 /// Let's Encrypt production directory, the Go `autocert` default.
 pub const LETS_ENCRYPT_PRODUCTION: &str = "https://acme-v02.api.letsencrypt.org/directory";
 /// Let's Encrypt staging directory for rehearsals.
@@ -140,6 +144,17 @@ pub struct RenewalFacts {
     pub last_issued_at: Option<i64>,
     /// The most recent failed attempt; kept after a later success.
     pub last_failure: Option<RenewalFailure>,
+    /// Failed attempts since the last success; drives the retry backoff.
+    pub consecutive_failures: u32,
+}
+
+/// Validity of the served leaf, as Unix seconds.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Validity {
+    /// Leaf `NotBefore`.
+    pub not_before: i64,
+    /// Leaf `NotAfter`.
+    pub not_after: i64,
 }
 
 impl From<instant_acme::Error> for AcmeError {
@@ -152,7 +167,7 @@ impl From<instant_acme::Error> for AcmeError {
 #[derive(Debug, Default)]
 struct Keys {
     current: Option<Arc<CertifiedKey>>,
-    not_after: Option<i64>,
+    validity: Option<Validity>,
     challenges: HashMap<String, Arc<CertifiedKey>>,
 }
 
@@ -222,8 +237,8 @@ impl AcmeIssuer {
             // A cached pair for other domains, or one that is expired or not
             // yet valid (Go `autocert` validCert), is ignored and replaced on
             // issue.
-            if let Ok((certified, not_after)) = certified(&chain, &key, &issuer.resolver.domains) {
-                issuer.install(certified, not_after)?;
+            if let Ok((certified, validity)) = certified(&chain, &key, &issuer.resolver.domains) {
+                issuer.install(certified, validity)?;
             }
         }
         Ok(issuer)
@@ -238,12 +253,17 @@ impl AcmeIssuer {
 
     /// `NotAfter` of the certificate currently served, as Unix seconds.
     pub fn not_after(&self) -> Option<i64> {
-        self.resolver.keys.read().ok()?.not_after
+        self.validity().map(|validity| validity.not_after)
+    }
+
+    /// Validity of the certificate currently served.
+    pub fn validity(&self) -> Option<Validity> {
+        self.resolver.keys.read().ok()?.validity
     }
 
     /// Whether issuance or renewal is due at `now` (Unix seconds).
     pub fn due(&self, now: i64) -> bool {
-        renewal_due(self.not_after(), now)
+        renewal_due(self.validity(), now)
     }
 
     /// Obtain a certificate when none is served or renewal is due. Concurrent
@@ -257,14 +277,16 @@ impl AcmeIssuer {
         Ok(())
     }
 
-    /// Keep the certificate current: check every `interval`, retrying failed
-    /// renewals at the next check, like the Go `autocert` renewal loop. Each
-    /// failure is recorded in [`Self::renewal_facts`].
+    /// Keep the certificate current: check every `interval`, like the Go
+    /// `autocert` renewal loop. After failed attempts the next check waits
+    /// [`retry_delay`] (exponential backoff); each failure is recorded in
+    /// [`Self::renewal_facts`].
     pub async fn maintain(self: Arc<Self>, interval: Duration) {
         loop {
             // The failure is already recorded in the renewal facts by `issue`.
             let _recorded = self.ensure().await;
-            tokio::time::sleep(interval).await;
+            let failures = self.renewal_facts().consecutive_failures;
+            tokio::time::sleep(retry_delay(interval, failures)).await;
         }
     }
 
@@ -283,8 +305,10 @@ impl AcmeIssuer {
             Ok(()) => {
                 facts.generation = facts.generation.saturating_add(1);
                 facts.last_issued_at = Some(now);
+                facts.consecutive_failures = 0;
             }
             Err(error) => {
+                facts.consecutive_failures = facts.consecutive_failures.saturating_add(1);
                 facts.last_failure = Some(RenewalFailure {
                     kind: error.kind(),
                     at: now,
@@ -315,10 +339,10 @@ impl AcmeIssuer {
             keys.challenges.clear();
         }
         let (chain, key) = result?;
-        let (certified, not_after) = certified(chain.as_bytes(), &key, &self.resolver.domains)?;
+        let (certified, validity) = certified(chain.as_bytes(), &key, &self.resolver.domains)?;
         self.write_cache(CHAIN_FILE, chain.as_bytes())?;
         self.write_cache(KEY_FILE, &key)?;
-        self.install(certified, not_after)
+        self.install(certified, validity)
     }
 
     async fn authorize_and_finalize(
@@ -429,14 +453,14 @@ impl AcmeIssuer {
         write_private(&self.settings.cache, &self.cache_path(name), bytes)
     }
 
-    fn install(&self, certified: CertifiedKey, not_after: i64) -> Result<(), AcmeError> {
+    fn install(&self, certified: CertifiedKey, validity: Validity) -> Result<(), AcmeError> {
         let mut keys = self
             .resolver
             .keys
             .write()
             .map_err(|_| AcmeError::Cache("resolver poisoned"))?;
         keys.current = Some(Arc::new(certified));
-        keys.not_after = Some(not_after);
+        keys.validity = Some(validity);
         Ok(())
     }
 }
@@ -478,9 +502,38 @@ fn validate(settings: &AcmeSettings) -> Result<(), AcmeError> {
     Ok(())
 }
 
-/// Whether a certificate expiring at `not_after` must be (re)issued at `now`.
-pub fn renewal_due(not_after: Option<i64>, now: i64) -> bool {
-    not_after.is_none_or(|not_after| now >= not_after.saturating_sub(RENEW_BEFORE_SECONDS))
+/// Seconds before `NotAfter` at which renewal starts: the Go `autocert` 30
+/// days, or a third of the leaf lifetime when that is shorter, so a
+/// short-lived leaf (for example a 24-hour step-ca certificate) is not due
+/// right after issuance. A 90-day leaf keeps the 30-day window.
+pub fn renewal_window(validity: Validity) -> i64 {
+    RENEW_BEFORE_SECONDS.min(
+        validity
+            .not_after
+            .saturating_sub(validity.not_before)
+            .max(0)
+            / 3,
+    )
+}
+
+/// Whether the served certificate must be (re)issued at `now`: always when
+/// none is served, otherwise once inside [`renewal_window`].
+pub fn renewal_due(validity: Option<Validity>, now: i64) -> bool {
+    validity
+        .is_none_or(|validity| now >= validity.not_after.saturating_sub(renewal_window(validity)))
+}
+
+/// Wait before the next renewal check after `failures` consecutive failed
+/// attempts: `interval` with no failure, then `interval` doubled per failure,
+/// capped at [`MAX_RETRY_BACKOFF`] (or at `interval` when that is longer).
+pub fn retry_delay(interval: Duration, failures: u32) -> Duration {
+    if failures == 0 {
+        return interval;
+    }
+    let cap = interval.max(MAX_RETRY_BACKOFF);
+    interval
+        .checked_mul(2_u32.saturating_pow(failures.min(31)))
+        .map_or(cap, |delay| delay.min(cap))
 }
 
 /// Self-signed TLS-ALPN-01 response certificate for `domain` carrying the
@@ -503,12 +556,12 @@ pub fn challenge_certificate(domain: &str, digest: &[u8]) -> Result<CertifiedKey
 
 /// Parse an issued chain and key, requiring the leaf to name every domain and
 /// to be valid now (Go `autocert` validCert refuses expired and not-yet-valid
-/// leaves). Returns the served key and the leaf `NotAfter` (Unix seconds).
+/// leaves). Returns the served key and the leaf validity (Unix seconds).
 pub fn certified(
     chain: &[u8],
     key: &[u8],
     domains: &[String],
-) -> Result<(CertifiedKey, i64), AcmeError> {
+) -> Result<(CertifiedKey, Validity), AcmeError> {
     let certificates = CertificateDer::pem_slice_iter(chain)
         .collect::<Result<Vec<_>, _>>()
         .map_err(|_| AcmeError::Certificate("chain unreadable"))?;
@@ -539,7 +592,8 @@ pub fn certified(
         return Err(AcmeError::Certificate("leaf does not cover every domain"));
     }
     let now = unix_now();
-    if parsed.validity().not_before.timestamp() > now {
+    let not_before = parsed.validity().not_before.timestamp();
+    if not_before > now {
         return Err(AcmeError::Certificate("leaf not yet valid"));
     }
     let not_after = parsed.validity().not_after.timestamp();
@@ -554,7 +608,13 @@ pub fn certified(
     certified
         .keys_match()
         .map_err(|_| AcmeError::Certificate("key does not match leaf"))?;
-    Ok((certified, not_after))
+    Ok((
+        certified,
+        Validity {
+            not_before,
+            not_after,
+        },
+    ))
 }
 
 fn directory_key(directory: &str) -> String {

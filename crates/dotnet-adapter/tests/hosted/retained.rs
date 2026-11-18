@@ -1,17 +1,27 @@
-//! L4 consumer of the sole shared interactive owner. No spawn or admission API.
+//! L4 consumer of the sole shared interactive owner. Launch requires the
+//! creator-channel admission (SoT dotnet-protected-host-launch 3.2).
 use super::protocol::{Control, Frame, Ingress};
 use humanymous_platform::testing::process::{
-    EnqueueResult, InteractiveAttempt, InteractiveProgress, SettledInteractiveChild, Stream,
+    CaptureDeadlines, EnqueueResult, InteractiveAttempt, InteractiveLimits, InteractiveProgress,
+    InteractiveStartFailure, SettledInteractiveChild, Stream,
 };
 use serde_json::Value;
 use std::{
-    io,
+    io::{self, ErrorKind},
+    path::Path,
+    process::Command,
     sync::mpsc::Receiver,
     thread::JoinHandle,
     time::{Duration, Instant},
 };
 
-/// Harness transport custody only; it does not establish native admission.
+/// Path variables that are never admission. Present values must equal the
+/// admitted path, or start refuses.
+const PATH_VARIABLES: [&str; 2] = ["HUMANYMOUS_DOTNET_PILOT", "HUMANYMOUS_DOTNET_AUDIT_DIR"];
+/// INTEGRATION.md stream contract: 256 KiB per stream.
+const STREAM_LIMIT: usize = 262_144;
+
+/// Harness transport custody only; outer Job/scope cleanup stays with the provider.
 pub struct Host {
     owner: InteractiveAttempt,
     ingress: Ingress,
@@ -33,21 +43,59 @@ impl std::fmt::Debug for Host {
 }
 
 impl Host {
-    /// No provider currently supplies qualified protected-host launch custody.
-    /// Refuse BEFORE constructing Command; no current-user or env-path fallback.
+    /// Borrow the one process-wide admission and refuse BEFORE `Command` on any
+    /// missing gate. No current-user, ambient TEMP or environment-path fallback.
     pub fn start() -> io::Result<Self> {
-        Err(io::Error::new(
-            io::ErrorKind::Unsupported,
-            "protected host admission and retained launch integration unavailable",
-        ))
+        let admission = super::launch::admission()?;
+        let (run_until, cleanup_until) = admission.deadlines()?;
+        for (name, admitted) in PATH_VARIABLES
+            .into_iter()
+            .zip([admission.apphost(), admission.audit_root()])
+        {
+            if std::env::var_os(name).is_some_and(|value| Path::new(&value) != admitted) {
+                return Err(io::Error::new(
+                    ErrorKind::PermissionDenied,
+                    "path variable differs from admission",
+                ));
+            }
+        }
+        // Lexical containment was admitted; also refuse a link that escapes it.
+        let apphost = admission.apphost().canonicalize()?;
+        let root = admission.apphost_root().canonicalize()?;
+        if apphost == root || !apphost.starts_with(&root) {
+            return Err(io::Error::new(
+                ErrorKind::PermissionDenied,
+                "apphost resolves outside its admitted root",
+            ));
+        }
+        if Instant::now() >= run_until {
+            return Err(io::Error::new(
+                ErrorKind::TimedOut,
+                "original run budget exhausted",
+            ));
+        }
+        let mut command = Command::new(admission.apphost());
+        command
+            .env_clear()
+            .envs(admission.fixed_environment())
+            .current_dir(admission.private_work());
+        let deadlines = CaptureDeadlines::from_original(run_until, cleanup_until)?;
+        let limits = InteractiveLimits::new(STREAM_LIMIT, STREAM_LIMIT)?;
+        match InteractiveAttempt::start(&mut command, deadlines, limits) {
+            Ok(owner) => Ok(Self::from_retained(owner)),
+            Err(InteractiveStartFailure::NotStarted(error)) => Err(error),
+            // Partial start keeps its owner: the same Host is returned already
+            // failed, so the caller's cancel/finish path retains custody.
+            Err(InteractiveStartFailure::Retained(retained)) => {
+                let mut host = Self::from_retained(retained.into_owner());
+                host.failed = true;
+                Ok(host)
+            }
+        }
     }
 
     /// Consume an already owned native transport and borrow its exact thresholds.
     /// The caller must separately retain actual admission/Job/cleanup custody.
-    #[expect(
-        dead_code,
-        reason = "admitted launch provider is intentionally unavailable"
-    )]
     pub fn from_retained(owner: InteractiveAttempt) -> Self {
         let (run_until, cleanup_until) = owner.original_deadlines();
         let (ingress, frames) = Ingress::new(owner.pid());
@@ -64,6 +112,11 @@ impl Host {
             stop_requested: false,
             pending_http: None,
         }
+    }
+
+    /// Admitted private audit root; never an environment locator.
+    pub fn audit_root(&self) -> io::Result<&'static Path> {
+        Ok(super::launch::admission()?.audit_root())
     }
 
     pub fn pid(&self) -> u32 {
@@ -224,6 +277,25 @@ impl Host {
             .map_err(|_| self.fail("HTTP worker start failed"))?;
         self.pending_http = Some(worker);
         Ok(())
+    }
+
+    /// Whether the HTTP worker finished by `until` (capped by the original run
+    /// deadline). Never joins; a still-running worker stays in custody.
+    pub fn http_finished_by(&mut self, until: Instant) -> io::Result<bool> {
+        let until = until.min(self.run_until);
+        loop {
+            let Some(worker) = self.pending_http.as_ref() else {
+                return Err(self.fail("HTTP worker missing"));
+            };
+            if worker.is_finished() {
+                return Ok(true);
+            }
+            if Instant::now() >= until {
+                return Ok(false);
+            }
+            self.poll()?;
+            std::thread::sleep(Duration::from_millis(1));
+        }
     }
 
     pub fn join_http(&mut self) -> io::Result<Vec<u8>> {

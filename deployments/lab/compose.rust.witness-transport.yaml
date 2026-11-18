@@ -1,0 +1,18 @@
+# Roadmap 2b: Docker case runtime-binary-witness-transport.
+# wtx-supervisor is the trusted lab supervisor (network none). It starts the
+# separate audit-witness process and the shipped humanymous-runtime binary,
+# which inherits the witness pipe ends through audit.witness_input.
+# wtx-origin is the owned origin in its own container; it joins only the
+# supervisor's loopback namespace and logs every contact to its own stdout,
+# which the runner reads. No published ports, no bridge network, no volumes.
+services:
+  wtx-supervisor:
+    extends: {file: compose.rust.yaml, service: runtime-pilot}
+    stdin_open: true
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --witness-transport-supervisor]
+    profiles: [witness-transport]
+  wtx-origin:
+    extends: {file: compose.rust.yaml, service: runtime-pilot}
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --witness-transport-origin]
+    network_mode: "service:wtx-supervisor"
+    profiles: [witness-transport]

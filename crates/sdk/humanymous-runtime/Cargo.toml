@@ -23,6 +23,8 @@ hosted-pilot = ["capture", "dep:rcgen"]
 credential-pilot = ["native-security"]
 acme = ["gateway", "dep:instant-acme", "dep:rcgen", "dep:x509-parser"]
 dev-self-signed = ["gateway", "dep:rcgen", "dep:time"]
+# Owner decision D4 (2026-11-18): test-only short decision expiry. Debug builds only.
+test-authority = ["authority"]
 
 [dependencies]
 humanymous-core = { workspace = true, optional = true }
