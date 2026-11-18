@@ -482,7 +482,9 @@
    "disposition": "oracle_only",
    "rust_paths": [
     "crates/attacker/src/wire/attacks.rs",
+    "crates/attacker/src/wire/attacks/plans.rs",
     "crates/attacker/src/wire/clienthello.rs",
+    "crates/attacker/src/wire/h2.rs",
     "crates/attacker/src/wire/rit.rs",
     "crates/attacker/src/wire/client.rs",
     "crates/attacker/src/network/cases.rs"
@@ -490,13 +492,23 @@
    "rust_tests": [
     "crates/attacker/src/wire/attacks.rs::tests::catalog_covers_every_go_attack_name_with_unique_entries",
     "crates/attacker/src/wire/attacks.rs::tests::selector_rejects_unknown_and_arbitrary_targets",
-    "crates/attacker/src/wire/attacks.rs::tests::volume_attacks_are_always_bounded",
-    "crates/attacker/src/wire/attacks.rs::tests::every_tls_and_h2_plan_emits_a_wire_fingerprint",
-    "crates/attacker/src/wire/attacks.rs::tests::mutation_plans_report_the_targeted_tls_residual",
+    "crates/attacker/src/wire/attacks.rs::tests::bounded_caps_equal_the_collect_requests_each_plan_sends",
+    "crates/attacker/src/wire/attacks.rs::tests::every_step_carries_content_and_an_observed_wire_fingerprint",
+    "crates/attacker/src/wire/attacks.rs::tests::rotation_attacks_present_a_distinct_ja3_and_ja4_on_every_collect",
+    "crates/attacker/src/wire/attacks.rs::tests::tls_static_repeats_one_unpermuted_chrome_100_hello",
+    "crates/attacker/src/wire/attacks.rs::tests::mutation_and_pq_plans_report_the_targeted_tls_residual",
+    "crates/attacker/src/wire/attacks.rs::tests::proxy_volume_and_header_families_carry_the_oracle_request_content",
+    "crates/attacker/src/wire/attacks.rs::tests::rit_families_sign_replay_and_tamper_as_the_oracle_did",
+    "crates/attacker/src/wire/attacks.rs::tests::h2_plans_use_the_oracle_frame_layouts",
     "crates/attacker/src/wire/clienthello.rs::tests::chrome_parrot_is_accepted_by_the_runtime_capture_and_reads_as_chrome",
     "crates/attacker/src/wire/clienthello.rs::tests::chrome_extension_and_group_order_is_preserved_on_the_wire",
     "crates/attacker/src/wire/clienthello.rs::tests::each_mutation_drops_exactly_its_target_and_nothing_else",
+    "crates/attacker/src/wire/clienthello.rs::tests::chrome100_is_the_static_pre_pq_pre_ech_preset_with_boring_padding",
+    "crates/attacker/src/wire/clienthello.rs::tests::firefox_models_the_utls_firefox_120_preset",
     "crates/attacker/src/wire/clienthello.rs::tests::stock_stack_reads_as_a_non_browser_go_fingerprint",
+    "crates/attacker/src/wire/clienthello.rs::tests::chrome_permutation_changes_ja3_order_but_not_ja4_and_keeps_grease_fixed",
+    "crates/attacker/src/wire/clienthello.rs::tests::each_profile_has_a_distinct_ja3_and_ja4",
+    "crates/attacker/src/wire/clienthello.rs::tests::static_presets_match_the_shape_captured_from_the_oracle_toolchain",
     "crates/attacker/src/wire/clienthello.rs::tests::ja3_is_stable_and_excludes_grease",
     "crates/attacker/src/wire/rit.rs::tests::window_bucketing_matches_go_ritw",
     "crates/attacker/src/wire/rit.rs::tests::token_is_deterministic_url_safe_and_fixed_width",
@@ -507,23 +519,35 @@
    ],
    "go_test_map": {},
    "gaps": [
-    "live-detector verdict parity for the TLS/proxy/VPN/Tor/CDN/flood/distributed/pow families: ported as a catalog of request plans + wire fingerprints, but not executed end-to-end against the real scorer (the Rust runtime front-end exposes /_humanymous/* not /api/*, and has no live uTLS/h2 ingress here)",
-    "live uTLS/parrot handshake completion against the running detector: the only in-tree TLS stack is rustls 0.23.46, which builds its own ClientHello and cannot present a byte-exact third-party parrot or complete a handshake with one, so no new dependency can be added to do it",
-    "pow-fast-solve/pow-launder: no native SHA-256 PoW solve loop or /api/pow issuance round-trip ported (no live active-defense endpoint in the owned lab runtime)"
+    "live execution: no plan is sent and no live TLS/h2 transport exists; rustls 0.23.46 builds its own ClientHello and cannot present the modelled preset, and no new dependency is added. The only network client (wire/client.rs) is cleartext HTTP/1.1 and refuses every non-loopback address, so the Docker lab needs an explicit own-lab address allowlist that is not added. The Rust runtime front-end exposes /_humanymous/* rather than the oracle's /api/* paths, so verdict parity with the live scorer is not shown for any of the 41 attacks",
+    "pow-fast-solve/pow-launder: the native SHA-256 solve loop (internal/pow.Solve), X-HM-PoW challenge parsing and the /api/pow round trip are not ported; plans carry {pow-bucket}/{pow-nonce} placeholders and the launder delay as a step note",
+    "header order: the oracle composed most header sets as Go maps, so its wire order was random per request; plans list composition order (header-order-split keeps its exact order and the raw h2 framer its Chrome order)",
+    "server-supplied values in plans (session cookie, RIT seed, token and counter base, time bucket) are placeholders; only the token function itself is ported (wire/rit.rs)",
+    "ClientHello parity is structural, not byte-for-byte: key shares, ECH enc/payload, random and session id are constant filler, GREASE values are fixed, the ECH payload uses the first utls candidate and the Chrome_Auto per-connection shuffle is a deterministic seeded permutation"
    ],
    "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "medium",
-   "notes": "Rust attacker catalog covers RIT replay/body/target/header-order mutation, forged pass signal, missing report/session and forwarded admin forgery against the owned runtime; TLS/proxy/PoW attack families are absent. Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; previously partial): Go attacker catalog (uTLS/proxy/PoW/flood families) against the legacy stack; the Rust defense-only attacker catalog in crates/attacker is the owned-deployment replacement and the listed families are not ported. The Go source stays in the tree until the step 5 needs-human Go-removal PR; the gaps above are not ported and are not claimed as Rust behavior. Merged with PR #80 (claude/attacker-clients-port): that branch additionally ports part of this responsibility to the defense-only, loopback-only attacker (Go -attack TLS/proxy/PoW/volume families ported to crates/attacker/src/wire as a defense-only, loopback-only catalog (41 names), byte-exact ClientHello builder (Chrome + alps/ech/cert-comp/pq mutations) and RIT token, each verified through the runtime's own ClientHello capture/JA3 and the frozen RIT canonical form; volume attacks carry explicit request caps. Pre-existing network/cases.rs RIT/header/body mutation coverage against the owned runtime is retained.). The oracle-only disposition from the owner decision stands; the gaps above remain unported and are not claimed as Rust behavior.",
+   "notes": "Disposition oracle_only by owner decision 2026-11-18 (issue #75 comment 6968092014, F1; previously partial); the Go source stays the frozen oracle (981d25c) until the step 5 needs-human Go-removal PR. PR #80 (claude/attacker-clients-port) additionally ports all 41 Go -attack functions to crates/attacker/src/wire/attacks.rs (plans in attacks/plans.rs) as defense-only request plans: per attack, the ordered steps the Go function sent with the ClientHello preset of each connection (utls Chrome_Auto, Chrome_100 or Firefox_Auto, Go stock crypto/tls, or Chrome_Auto with the ALPS/ECH/cert-compression strip), HTTP/1.1 or h2 frame profile, method and path, the header set and body the Go code composed (browser, proxy/VPN/Tor/CDN, XFF rotation, flood, distributed, privacy, forgery and PoW content), RIT intent and request caps. Each step's ClientHello and h2 frames are observed through the runtime's own capture, JA3/JA4 and HTTP/2 fingerprinting; rotation attacks present a distinct JA3 and JA4 on every collect, and tls-static and pq-absent use the Chrome_100 preset as in Go. The pre-existing network/cases.rs RIT/header/body mutation coverage against the owned runtime is retained. Nothing listed under gaps is claimed as Rust behavior.",
    "test_verification": {
     "crates/attacker/src/wire/attacks.rs::tests::catalog_covers_every_go_attack_name_with_unique_entries": "passed",
     "crates/attacker/src/wire/attacks.rs::tests::selector_rejects_unknown_and_arbitrary_targets": "passed",
-    "crates/attacker/src/wire/attacks.rs::tests::volume_attacks_are_always_bounded": "passed",
-    "crates/attacker/src/wire/attacks.rs::tests::every_tls_and_h2_plan_emits_a_wire_fingerprint": "passed",
-    "crates/attacker/src/wire/attacks.rs::tests::mutation_plans_report_the_targeted_tls_residual": "passed",
+    "crates/attacker/src/wire/attacks.rs::tests::bounded_caps_equal_the_collect_requests_each_plan_sends": "passed",
+    "crates/attacker/src/wire/attacks.rs::tests::every_step_carries_content_and_an_observed_wire_fingerprint": "passed",
+    "crates/attacker/src/wire/attacks.rs::tests::rotation_attacks_present_a_distinct_ja3_and_ja4_on_every_collect": "passed",
+    "crates/attacker/src/wire/attacks.rs::tests::tls_static_repeats_one_unpermuted_chrome_100_hello": "passed",
+    "crates/attacker/src/wire/attacks.rs::tests::mutation_and_pq_plans_report_the_targeted_tls_residual": "passed",
+    "crates/attacker/src/wire/attacks.rs::tests::proxy_volume_and_header_families_carry_the_oracle_request_content": "passed",
+    "crates/attacker/src/wire/attacks.rs::tests::rit_families_sign_replay_and_tamper_as_the_oracle_did": "passed",
+    "crates/attacker/src/wire/attacks.rs::tests::h2_plans_use_the_oracle_frame_layouts": "passed",
     "crates/attacker/src/wire/clienthello.rs::tests::chrome_parrot_is_accepted_by_the_runtime_capture_and_reads_as_chrome": "passed",
     "crates/attacker/src/wire/clienthello.rs::tests::chrome_extension_and_group_order_is_preserved_on_the_wire": "passed",
     "crates/attacker/src/wire/clienthello.rs::tests::each_mutation_drops_exactly_its_target_and_nothing_else": "passed",
+    "crates/attacker/src/wire/clienthello.rs::tests::chrome100_is_the_static_pre_pq_pre_ech_preset_with_boring_padding": "passed",
+    "crates/attacker/src/wire/clienthello.rs::tests::firefox_models_the_utls_firefox_120_preset": "passed",
     "crates/attacker/src/wire/clienthello.rs::tests::stock_stack_reads_as_a_non_browser_go_fingerprint": "passed",
+    "crates/attacker/src/wire/clienthello.rs::tests::chrome_permutation_changes_ja3_order_but_not_ja4_and_keeps_grease_fixed": "passed",
+    "crates/attacker/src/wire/clienthello.rs::tests::each_profile_has_a_distinct_ja3_and_ja4": "passed",
+    "crates/attacker/src/wire/clienthello.rs::tests::static_presets_match_the_shape_captured_from_the_oracle_toolchain": "passed",
     "crates/attacker/src/wire/clienthello.rs::tests::ja3_is_stable_and_excludes_grease": "passed",
     "crates/attacker/src/wire/rit.rs::tests::window_bucketing_matches_go_ritw": "passed",
     "crates/attacker/src/wire/rit.rs::tests::token_is_deterministic_url_safe_and_fixed_width": "passed",
@@ -537,31 +561,44 @@
    "baseline_path": "cmd/redteam/h2raw.go",
    "disposition": "oracle_only",
    "rust_paths": [
-    "crates/attacker/src/wire/h2.rs"
+    "crates/attacker/src/wire/h2.rs",
+    "crates/attacker/src/wire/attacks.rs",
+    "crates/attacker/src/wire/attacks/plans.rs"
    ],
    "rust_tests": [
     "crates/attacker/src/wire/h2.rs::tests::chrome_profile_reproduces_the_full_browser_h2_fingerprint",
     "crates/attacker/src/wire/h2.rs::tests::settings_split_drops_header_table_size_and_sends_no_window",
     "crates/attacker/src/wire/h2.rs::tests::flow_control_split_opens_a_gigabyte_window_with_coherent_settings",
     "crates/attacker/src/wire/h2.rs::tests::priority_absent_keeps_the_real_window_but_omits_headers_priority",
+    "crates/attacker/src/wire/h2.rs::tests::go_transport_writes_amps_pseudo_order_and_its_own_settings_and_window",
     "crates/attacker/src/wire/h2.rs::tests::rit_signing_appends_the_token_headers_in_wire_order",
-    "crates/attacker/src/wire/h2.rs::tests::hpack_integer_handles_lengths_above_the_prefix_max"
+    "crates/attacker/src/wire/h2.rs::tests::hpack_integer_handles_lengths_above_the_prefix_max",
+    "crates/attacker/src/wire/h2.rs::tests::authority_is_restricted_to_loopback_and_reserved_test_names",
+    "crates/attacker/src/wire/h2.rs::tests::large_bodies_split_into_max_frame_size_data_frames",
+    "crates/attacker/src/wire/h2.rs::tests::oversized_header_blocks_continue_in_continuation_frames",
+    "crates/attacker/src/wire/attacks.rs::tests::h2_plans_use_the_oracle_frame_layouts"
    ],
    "go_test_map": {},
    "gaps": [
-    "live HTTP/2 transport over TLS to the running detector: live uTLS/parrot handshake completion against the running detector: the only in-tree TLS stack is rustls 0.23.46, which builds its own ClientHello and cannot present a byte-exact third-party parrot or complete a handshake with one, so no new dependency can be added to do it; the raw framer is verified against the runtime's own passive H2 capture (fingerprint parity) rather than a live h2 handshake",
-    "verdict parity for the settings/flow-control/priority split profiles is not exercised end-to-end against the live scorer (no live h2 ingress in the owned lab runtime here)"
+    "live execution: no plan is sent and no live TLS/h2 transport exists; rustls 0.23.46 builds its own ClientHello and cannot present the modelled preset, and no new dependency is added. The only network client (wire/client.rs) is cleartext HTTP/1.1 and refuses every non-loopback address, so the Docker lab needs an explicit own-lab address allowlist that is not added. The Rust runtime front-end exposes /_humanymous/* rather than the oracle's /api/* paths, so verdict parity with the live scorer is not shown for the settings-split, flow-control, priority-absent and coherent-ceiling profiles",
+    "response side of rawH2Conn.request (server SETTINGS/PING ACK, response HEADERS/DATA reading, Set-Cookie and X-HM-Seed extraction) is not ported; the framer encodes the client request only",
+    "headers outside chromeH2HeaderOrder followed Go map order in the oracle; plans list them in composition order"
    ],
    "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "high",
-   "notes": "No raw H2 attack client in crates/attacker or test/lab; runtime only has H2 capture (server side). Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; previously missing): Go raw HTTP/2 attacker client; not ported to crates/attacker. The Go source stays in the tree until the step 5 needs-human Go-removal PR; the gaps above are not ported and are not claimed as Rust behavior. Merged with PR #80 (claude/attacker-clients-port): that branch additionally ports part of this responsibility to the defense-only, loopback-only attacker (Raw HTTP/2 client framer ported: hand-encoded preface/SETTINGS/WINDOW_UPDATE/HEADERS(HPACK)/DATA with controlled pseudo-header order (m,a,s,p) and HEADERS priority. Chrome / settings-split / flow-control-split / priority-absent / coherent-ceiling profiles each round-trip through the runtime's own http2 Capture and reproduce the intended Akamai fingerprint (settings order, window, priority, engine).). The oracle-only disposition from the owner decision stands; the gaps above remain unported and are not claimed as Rust behavior.",
+   "notes": "Disposition oracle_only by owner decision 2026-11-18 (issue #75 comment 6968092014, F1; previously missing); the Go source stays the frozen oracle (981d25c) until the step 5 needs-human Go-removal PR. PR #80 ports the request side of the raw HTTP/2 client to crates/attacker/src/wire/h2.rs: hand-encoded preface, SETTINGS in profile order, connection WINDOW_UPDATE, HPACK-literal HEADERS with controlled pseudo-header order and optional Chrome priority, CONTINUATION and DATA frames split at SETTINGS_MAX_FRAME_SIZE (16384), and the h2RawEvasion profiles (Chrome, settings-split, flow-control-split, priority-absent); a GoTransport profile models the golang.org/x/net/http2 v0.57.0 Transport layout used by doH2/doH2Spec. :authority is restricted to loopback or reserved .test names. Each profile's fingerprint is checked against the runtime's own passive HTTP/2 capture, and the h2 attack plans (wire/attacks.rs) use these profiles with the oracle's chromeH2HeaderOrder. Nothing listed under gaps is claimed as Rust behavior.",
    "test_verification": {
     "crates/attacker/src/wire/h2.rs::tests::chrome_profile_reproduces_the_full_browser_h2_fingerprint": "passed",
     "crates/attacker/src/wire/h2.rs::tests::settings_split_drops_header_table_size_and_sends_no_window": "passed",
     "crates/attacker/src/wire/h2.rs::tests::flow_control_split_opens_a_gigabyte_window_with_coherent_settings": "passed",
     "crates/attacker/src/wire/h2.rs::tests::priority_absent_keeps_the_real_window_but_omits_headers_priority": "passed",
+    "crates/attacker/src/wire/h2.rs::tests::go_transport_writes_amps_pseudo_order_and_its_own_settings_and_window": "passed",
     "crates/attacker/src/wire/h2.rs::tests::rit_signing_appends_the_token_headers_in_wire_order": "passed",
-    "crates/attacker/src/wire/h2.rs::tests::hpack_integer_handles_lengths_above_the_prefix_max": "passed"
+    "crates/attacker/src/wire/h2.rs::tests::hpack_integer_handles_lengths_above_the_prefix_max": "passed",
+    "crates/attacker/src/wire/h2.rs::tests::authority_is_restricted_to_loopback_and_reserved_test_names": "passed",
+    "crates/attacker/src/wire/h2.rs::tests::large_bodies_split_into_max_frame_size_data_frames": "passed",
+    "crates/attacker/src/wire/h2.rs::tests::oversized_header_blocks_continue_in_continuation_frames": "passed",
+    "crates/attacker/src/wire/attacks.rs::tests::h2_plans_use_the_oracle_frame_layouts": "passed"
    }
   },
   {
@@ -570,29 +607,40 @@
    "rust_paths": [
     "crates/attacker/src/main.rs",
     "crates/attacker/src/wire/attacks.rs",
+    "crates/attacker/src/wire/attacks/plans.rs",
     "crates/attacker/src/wire/client.rs",
-    "crates/attacker/src/wire/rit.rs"
+    "crates/attacker/src/wire/rit.rs",
+    "crates/attacker/src/wire/clienthello.rs"
    ],
    "rust_tests": [
     "crates/attacker/src/main.rs::tests::rejects_network_targets_runtime_and_ambiguous_inputs",
     "crates/attacker/src/main.rs::tests::command_parser_handles_attack_list_and_rejects_unknown_shapes",
     "crates/attacker/src/wire/client.rs::tests::non_loopback_targets_are_refused",
     "crates/attacker/src/wire/client.rs::tests::response_parser_extracts_status_cookie_seed_and_verdict",
+    "crates/attacker/src/wire/rit.rs::tests::window_bucketing_matches_go_ritw",
+    "crates/attacker/src/wire/rit.rs::tests::token_is_deterministic_url_safe_and_fixed_width",
+    "crates/attacker/src/wire/rit.rs::tests::golden_vector_pins_the_canonical_form",
+    "crates/attacker/src/wire/rit.rs::tests::tamper_replay_and_counter_each_change_the_token",
     "crates/attacker/tests/loopback_rit.rs::session_bootstrap_and_rit_families_behave_against_the_owned_contract"
    ],
    "go_test_map": {},
    "gaps": [
-    "live uTLS/H1/H2 transports: live uTLS/parrot handshake completion against the running detector: the only in-tree TLS stack is rustls 0.23.46, which builds its own ClientHello and cannot present a byte-exact third-party parrot or complete a handshake with one, so no new dependency can be added to do it",
-    "cookie session bootstrap + RIT-signed collect is exercised against an in-process Rust loopback server that re-implements the Go /api/session + /api/collect RIT contract, not the real detector front-end (the Rust runtime uses /_humanymous/* endpoints), so verdict parity with the live scorer is pending"
+    "live uTLS/H1/H2 transports (do, doH2, doH2Spec, doOrderedH1, doStock) are not ported: live execution: no plan is sent and no live TLS/h2 transport exists; rustls 0.23.46 builds its own ClientHello and cannot present the modelled preset, and no new dependency is added. The only network client (wire/client.rs) is cleartext HTTP/1.1 and refuses every non-loopback address, so the Docker lab needs an explicit own-lab address allowlist that is not added. The Rust runtime front-end exposes /_humanymous/* rather than the oracle's /api/* paths, so verdict parity with the live scorer is not shown",
+    "cookie bootstrap and RIT-signed collect are exercised only against an in-process loopback server that re-implements the /api/session and /api/collect RIT contract and reuses the client's rit_token (circular by itself; the rit.rs golden vector, equal to the Go ritToken output, pins the canonical form), not the real detector front-end",
+    "the -host flag is intentionally not ported: no caller-supplied target exists"
    ],
    "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "medium",
-   "notes": "Rust attacker runs a seeded catalog against an OwnedLab runtime; Go -attack CLI and uTLS transport are not ported. Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; previously partial): Go redteam CLI and uTLS transport; the Rust attacker runs its seeded catalog against an owned lab runtime instead. The Go source stays in the tree until the step 5 needs-human Go-removal PR; the gaps above are not ported and are not claimed as Rust behavior. Merged with PR #80 (claude/attacker-clients-port): that branch additionally ports part of this responsibility to the defense-only, loopback-only attacker (-attack selector CLI ported (41 Go attack names, --attack/--list-attacks emit the defense-only wire plan + fingerprint; arbitrary targets rejected). Cookie-session bootstrap and RIT signing ported as a loopback-only HTTP/1.1 client (refuses non-loopback targets) and verified end-to-end against an in-process server implementing the RIT contract, including rit-replay and rit-tamper DENY.). The oracle-only disposition from the owner decision stands; the gaps above remain unported and are not claimed as Rust behavior.",
+   "notes": "Disposition oracle_only by owner decision 2026-11-18 (issue #75 comment 6968092014, F1; previously partial); the Go source stays the frozen oracle (981d25c) until the step 5 needs-human Go-removal PR. PR #80 ports the -attack selector as --attack <name> and --list-attacks (41 names; prints the defense-only plan and never contacts a target; arbitrary target flags rejected), the request helpers' header composition (browserHeaders, withBrowserHeaders, collectSeed, httpRoundTrip and doOrderedH1 framing, forceHTTP11 ALPN) into the plans, ritToken in crates/attacker/src/wire/rit.rs (golden vector equal to the Go output), and a loopback-only cleartext HTTP/1.1 client with cookie-session bootstrap, verified against an in-process server including rit-replay and rit-tamper DENY. Nothing listed under gaps is claimed as Rust behavior.",
    "test_verification": {
     "crates/attacker/src/main.rs::tests::rejects_network_targets_runtime_and_ambiguous_inputs": "passed",
     "crates/attacker/src/main.rs::tests::command_parser_handles_attack_list_and_rejects_unknown_shapes": "passed",
     "crates/attacker/src/wire/client.rs::tests::non_loopback_targets_are_refused": "passed",
     "crates/attacker/src/wire/client.rs::tests::response_parser_extracts_status_cookie_seed_and_verdict": "passed",
+    "crates/attacker/src/wire/rit.rs::tests::window_bucketing_matches_go_ritw": "passed",
+    "crates/attacker/src/wire/rit.rs::tests::token_is_deterministic_url_safe_and_fixed_width": "passed",
+    "crates/attacker/src/wire/rit.rs::tests::golden_vector_pins_the_canonical_form": "passed",
+    "crates/attacker/src/wire/rit.rs::tests::tamper_replay_and_counter_each_change_the_token": "passed",
     "crates/attacker/tests/loopback_rit.rs::session_bootstrap_and_rit_families_behave_against_the_owned_contract": "passed"
    }
   },
@@ -1887,22 +1935,33 @@
     "crates/attacker/src/wire/clienthello.rs::tests::chrome_parrot_is_accepted_by_the_runtime_capture_and_reads_as_chrome",
     "crates/attacker/src/wire/clienthello.rs::tests::chrome_extension_and_group_order_is_preserved_on_the_wire",
     "crates/attacker/src/wire/clienthello.rs::tests::each_mutation_drops_exactly_its_target_and_nothing_else",
+    "crates/attacker/src/wire/clienthello.rs::tests::chrome100_is_the_static_pre_pq_pre_ech_preset_with_boring_padding",
+    "crates/attacker/src/wire/clienthello.rs::tests::firefox_models_the_utls_firefox_120_preset",
     "crates/attacker/src/wire/clienthello.rs::tests::stock_stack_reads_as_a_non_browser_go_fingerprint",
+    "crates/attacker/src/wire/clienthello.rs::tests::chrome_permutation_changes_ja3_order_but_not_ja4_and_keeps_grease_fixed",
+    "crates/attacker/src/wire/clienthello.rs::tests::each_profile_has_a_distinct_ja3_and_ja4",
+    "crates/attacker/src/wire/clienthello.rs::tests::static_presets_match_the_shape_captured_from_the_oracle_toolchain",
     "crates/attacker/src/wire/clienthello.rs::tests::ja3_is_stable_and_excludes_grease"
    ],
    "go_test_map": {},
    "gaps": [
-    "live Chrome ClientHello parrot handshake + POST /api/collect: live uTLS/parrot handshake completion against the running detector: the only in-tree TLS stack is rustls 0.23.46, which builds its own ClientHello and cannot present a byte-exact third-party parrot or complete a handshake with one, so no new dependency can be added to do it",
-    "the HR-10 no-client-report verdict for a parrot with no JS is covered by the existing owned-runtime catalog (network/cases.rs missing-client case), not by a live parrot handshake here"
+    "live Chrome ClientHello parrot handshake and POST /api/collect: live execution: no plan is sent and no live TLS/h2 transport exists; rustls 0.23.46 builds its own ClientHello and cannot present the modelled preset, and no new dependency is added. The only network client (wire/client.rs) is cleartext HTTP/1.1 and refuses every non-loopback address, so the Docker lab needs an explicit own-lab address allowlist that is not added. The Rust runtime front-end exposes /_humanymous/* rather than the oracle's /api/* paths, so verdict parity with the live scorer is not shown",
+    "ClientHello parity is structural, not byte-for-byte: key shares, ECH enc/payload, random and session id are constant filler, GREASE values are fixed, the ECH payload uses the first utls candidate and the Chrome_Auto per-connection shuffle is a deterministic seeded permutation",
+    "the HR-10 no-client-report verdict for a parrot with no JS is covered by the owned-runtime catalog (network/cases.rs missing-client case), not by a live parrot handshake"
    ],
    "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "high",
-   "notes": "No uTLS/parrot client in crates/attacker or test/lab. Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; previously missing): Go uTLS ClientHello parrot client; not ported to crates/attacker. The Go source stays in the tree until the step 5 needs-human Go-removal PR; the gaps above are not ported and are not claimed as Rust behavior. Merged with PR #80 (claude/attacker-clients-port): that branch additionally ports part of this responsibility to the defense-only, loopback-only attacker (Chrome ClientHello parrot ported as a byte-exact builder: the record is accepted by the runtime's own strict ClientHello capture, reads as engine=chrome with GREASE/ALPN/PQ group and the expected extension/cipher wire order, and produces a stable JA3. Live handshake + collect POST is the recorded gap.). The oracle-only disposition from the owner decision stands; the gaps above remain unported and are not claimed as Rust behavior.",
+   "notes": "Disposition oracle_only by owner decision 2026-11-18 (issue #75 comment 6968092014, F1; previously missing); the Go source stays the frozen oracle (981d25c) until the step 5 needs-human Go-removal PR. PR #80 ports the tlsparrot ClientHello as crates/attacker/src/wire/clienthello.rs Profile::Chrome with force_http11 (utls HelloChrome_Auto = HelloChrome_133 with ALPN rewritten to http/1.1, as tlsparrot's forceHTTP11 did), alongside Chrome_100, Firefox_Auto and Go 1.25.3 stock profiles. Each profile is structurally modelled on its preset (cipher suites, extension list and order, groups, signature algorithms, key-share lengths, ALPN, ALPS codepoint, ECH GREASE, padding), is accepted by the runtime's strict ClientHello capture, and matches the extension sequence and handshake length captured from utls/Go for the same SNI; the Chrome profiles read as engine chrome. Nothing listed under gaps is claimed as Rust behavior.",
    "test_verification": {
     "crates/attacker/src/wire/clienthello.rs::tests::chrome_parrot_is_accepted_by_the_runtime_capture_and_reads_as_chrome": "passed",
     "crates/attacker/src/wire/clienthello.rs::tests::chrome_extension_and_group_order_is_preserved_on_the_wire": "passed",
     "crates/attacker/src/wire/clienthello.rs::tests::each_mutation_drops_exactly_its_target_and_nothing_else": "passed",
+    "crates/attacker/src/wire/clienthello.rs::tests::chrome100_is_the_static_pre_pq_pre_ech_preset_with_boring_padding": "passed",
+    "crates/attacker/src/wire/clienthello.rs::tests::firefox_models_the_utls_firefox_120_preset": "passed",
     "crates/attacker/src/wire/clienthello.rs::tests::stock_stack_reads_as_a_non_browser_go_fingerprint": "passed",
+    "crates/attacker/src/wire/clienthello.rs::tests::chrome_permutation_changes_ja3_order_but_not_ja4_and_keeps_grease_fixed": "passed",
+    "crates/attacker/src/wire/clienthello.rs::tests::each_profile_has_a_distinct_ja3_and_ja4": "passed",
+    "crates/attacker/src/wire/clienthello.rs::tests::static_presets_match_the_shape_captured_from_the_oracle_toolchain": "passed",
     "crates/attacker/src/wire/clienthello.rs::tests::ja3_is_stable_and_excludes_grease": "passed"
    }
   },
