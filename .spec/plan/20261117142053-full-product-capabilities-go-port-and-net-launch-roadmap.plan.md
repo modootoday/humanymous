@@ -3,7 +3,7 @@ id: plan:root/20261117142053
 title: "Full-product capabilities, Go port and .NET launch roadmap"
 status: draft
 created: 2026-11-17T14:20:53Z
-updated: 2026-11-18T03:57:40Z
+updated: 2026-11-18T13:48:57Z
 rel:
   depends_on: [plan:root/20261116060213]
 ---
@@ -126,9 +126,22 @@ rows. Port them by plan slice:
 | remaining `partial` rows | internal/gate, cmd/server, others | close the recorded gaps |
 
 **Detection freeze:** the settings overlay, classify and resolve rows,
-`settings_engine` and `pass_scoring` feed or emit scoring inputs. They are ported
-only after the owner explicitly unfreezes or approves an exact-parity port. No
-signal ID, weight or threshold changes otherwise.
+`settings_engine` and `pass_scoring` feed or emit scoring inputs. Owner decision
+B1 (#75 comment 6979694428) permits exact-parity ports of these rows: weights,
+thresholds, hard-rule predicates, verdict bands and signal IDs equal the Go
+oracle at 981d25c, nothing is tuned, the frozen `humanymous-core` scoring engine
+is reused, and goldens are captured from the pinned oracle and never regenerated.
+A parity mismatch is reported, not patched over. No other signal ID, weight or
+threshold change is allowed.
+
+The settings slice (overlay, classify, resolve, validate, store_file,
+settings_engine) is ported under B1 in
+`crates/sdk/humanymous-runtime/src/gateway/settings/overlay`. Its differential
+golden `crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-overlay-go-golden.json`
+was captured offline in `mirror.gcr.io/library/golang:1.26.3-alpine@sha256:91eda9776261207ea25fd06b5b7fed8d397dd2c0a283e77f2ab6e91bfa71079d`
+(`--network none`, `GOPROXY=off`, `GOFLAGS=-mod=readonly`, `GOTOOLCHAIN=local`);
+the fixture's `provenance` records the command and input and output hashes.
+`enforce` and `pass_scoring` remain frozen-unported.
 
 When every row is `ported_unit` or explicitly oracle-only, remove the Go sources,
 `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at
@@ -153,3 +166,7 @@ pilot, and `delivery ready` on every axis. Summarise in #65 and update #22.
   ships a 65532-owned `/var/lib/humanymous` (mode 0700), and the stale
   `nginx-adapter → docker/deployment` documentation-review binding moved to
   `docker/nginx`. No k8s cluster or systemd PID 1 in the lab.
+- 2026-11-18: owner decision B1 (#75 comment 6979694428) permits exact-parity
+  ports of frozen scoring rows. The settings slice moved eight ledger rows to
+  `ported_unit` with a Go-captured differential golden. The overlay is a pure
+  library and is not wired into the hosted gateway.
