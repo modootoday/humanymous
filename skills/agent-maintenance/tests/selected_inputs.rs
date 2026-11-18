@@ -4,12 +4,16 @@ use humanymous_agent_maintenance::selected_inputs::{
 };
 use std::{fs, path::PathBuf};
 
+/// macOS SystemTime has microsecond resolution, so parallel fixtures in one
+/// process also need a counter to get distinct directories.
+static NEXT: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
 struct Fixture(PathBuf);
 impl Fixture {
     fn new() -> Self {
-        let path = std::env::temp_dir().join(format!(
-            "humanymous-selected-{}-{}",
+        let path = fixture_temp_dir().join(format!(
+            "humanymous-selected-{}-{}-{}",
             std::process::id(),
+            NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .unwrap()
@@ -181,4 +185,16 @@ fn selected_file_link_is_refused_without_reading_its_target() {
     assert_eq!(receipt.actual_read_bytes, 0);
     assert_eq!(receipt.files[0].content.status, ReadStatus::ProviderRefused);
     assert!(!receipt.content_read_complete && !receipt.qualified_complete);
+}
+
+/// macOS `temp_dir` goes through the `/var` link, which the reader refuses as a
+/// linked ancestor, so it is resolved first. Windows has no such link, and its
+/// canonical form gains a `\\?\` verbatim prefix, so it is used as given there.
+fn fixture_temp_dir() -> std::path::PathBuf {
+    let temp = std::env::temp_dir();
+    if cfg!(windows) {
+        temp
+    } else {
+        std::fs::canonicalize(temp).expect("temp_dir resolves")
+    }
 }
