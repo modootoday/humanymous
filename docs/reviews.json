@@ -6596,9 +6596,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "7cd73fe20bab5dbbbdc5ee6415203116399d24f0616267ca806d79a13be71d73",
+      "sha256": "6536e3e452fdc6a302d3bcb1af01951a61f1fecf25d26517d6492a522c6d3575",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 330 / macos 330 / windows 322 (322 common names plus 8 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18: the 330 names equal a local Linux `cargo test --locked -p humanymous-runtime --all-features --lib -- --list gateway::` at this source; macOS and Windows counts were not re-run. The gateway-deployment-manifests integration target is not part of this inventory. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 336 / macos 336 / windows 328 (328 common names plus 8 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 on the B02 certificate-source branch: the six gateway::tls::certificate::tests names are added and the counts rise by six; the listed names and counts are internally consistent (328 unique common + 8 Unix-only), but this review did not re-run cargo test --list on any OS. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/how-this-was-built.md"
@@ -8781,12 +8781,32 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/tls.rs",
-      "sha256": "7008fd3e94173c1fbd9e2d23d72635f10f15a7f623fb34625c10b67148390365",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Joined blocking TLS ingress: validate_configuration requires native buffered routes, no browser policy and only http/1.1 or h2 ALPN; CapturedTls::receive dispatches H1, H2 or dual-ALPN (handshake once then branch on the negotiated protocol) on an owned worker thread that is cancelled and joined on drop. CapturedRequest parses one complete request with the shared strict parser, retains the live connection and writes one bounded response. One unit test covers configuration refusals. The owner alone does not qualify a route.",
+      "sha256": "70382f6454391bc6783275498025eec8b58a530f1d40e49ec64f05d6a6a07ba9",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Joined blocking TLS ingress: validate_configuration requires native buffered routes, no browser policy and only http/1.1 or h2 ALPN; CapturedTls::receive dispatches H1, H2 or dual-ALPN (handshake once then branch on the negotiated protocol) on an owned worker thread that is cancelled and joined on drop. CapturedRequest parses one complete request with the shared strict parser, retains the live connection and writes one bounded response. One unit test covers configuration refusals. Re-reviewed 2026-11-18: the only change declares the public certificate submodule (B02 certificate source selection); ingress behaviour is unchanged. The owner alone does not qualify a route.",
       "pages": [
         "docs/reference/supported-topologies.md",
         "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/tls/certificate.rs",
+      "sha256": "6e8b7e901718b66cc4449cd93bc23872bcc0e30a5c3b4d76a0f7c1ad3d2e5094",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "B02 certificate source owner. select() chooses exactly one source from operator settings: a provisioned PEM chain+key pair, or issuer domains; it refuses no source (self-signed is explicitly not a production fallback), a chain without a key or vice versa, and both at once. issuer_domains() lower-cases, trims, sorts and deduplicates plain DNS host names (at least two labels, no wildcard, trailing dot, IP literal or all-digit TLD, max 100). provisioned_config()/load_provisioned() read each PEM file within 1 MiB and build a rustls ServerConfig with no client auth and ALPN h2 then http/1.1, mapping empty chain, missing key and rustls-rejected (mismatched) pairs to distinct errors. The CertificateIssuer trait is the contract for an automated issuer (domains, handshake resolver, extra challenge ALPN); issuer_config() refuses an issuer whose domains differ from the selected ones. No issuer implementation or runtime wiring lives here.",
+      "pages": [
+        "docs/how-to/https-tls-certificates.md",
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs",
+      "sha256": "4eaa0a0cd1c6d91cbe7431d1e138621c3a4ff6713cd5afe5e9892ce9929240af",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unit tests for the B02 certificate source using rcgen-generated self-signed lab pairs: selection refuses absent, incomplete and ambiguous sources; issuer domains are normalised and deduplicated, and wildcard, trailing-dot, single-label, IP, leading/trailing-hyphen, underscore and empty names are refused, as is one domain over the 100 limit; a provisioned pair yields ALPN [h2, http/1.1] with zero early data; empty chain, empty key and a key from another pair map to EmptyChain, MissingKey and Rejected; load_provisioned reads temp files and refuses a missing file and one over the 1 MiB bound; a stub issuer contributes acme-tls/1 after the ingress ALPN and an issuer for other domains is refused. Synthetic material only, no network issuance.",
+      "pages": [
+        "docs/how-to/https-tls-certificates.md",
+        "docs/reference/supported-topologies.md"
       ]
     },
     {
