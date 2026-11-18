@@ -59,7 +59,19 @@ missing_docs = "warn"
 [workspace.lints.clippy]
 all = "warn"
 
-# Opt-in local edit loop. CI/default/release profiles retain their own settings.
+# Debug info size (rust-migration SoT, Build-cache section): workspace crates
+# keep line tables so panic locations and backtraces still name file:line;
+# dependencies carry no debug info. Release is unchanged.
+[profile.dev]
+debug = "line-tables-only"
+
+[profile.dev.package."*"]
+debug = false
+
+[profile.test]
+debug = "line-tables-only"
+
+# Opt-in local edit loop on top of dev. Release keeps its own settings.
 # CARGO_INCREMENTAL=0 overrides this profile; unset it or explicitly choose 1.
 [profile.local-edit]
 inherits = "dev"

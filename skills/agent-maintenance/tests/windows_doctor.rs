@@ -1,11 +1,15 @@
 //! Actual CLI boundary; discovery must not execute candidate files.
 use std::{fs, path::PathBuf, process::Command};
+/// macOS SystemTime has microsecond resolution, so parallel fixtures in one
+/// process also need a counter to get distinct directories.
+static NEXT: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
 struct Fixture(PathBuf);
 impl Fixture {
     fn new() -> Self {
         let path = std::env::temp_dir().join(format!(
-            "hmn-doctor-cli-{}-{}",
+            "hmn-doctor-cli-{}-{}-{}",
             std::process::id(),
+            NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .unwrap()

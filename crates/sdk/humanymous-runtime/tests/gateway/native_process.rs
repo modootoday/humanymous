@@ -48,27 +48,81 @@ fn directory() -> (PrivateDirectory, Value) {
             .unwrap();
         assert!(output.status.success());
         let text = String::from_utf8(output.stdout).unwrap();
-        let sid = text
+        let user = text
             .trim()
             .trim_matches('"')
             .rsplit(",\"")
             .next()
             .unwrap()
             .to_owned();
-        assert!(sid.starts_with("S-1-5-"));
+        assert!(user.starts_with("S-1-5-"));
+        // An elevated token stamps new objects with its default owner, which
+        // is BUILTIN\Administrators on hosted runners, not its user SID.
+        // Custody checks the actual owner of every object this process and
+        // its child create, so the fixture names that owner.
+        let sid = created_owner_sid(&path);
         assert!(
-            Command::new("icacls.exe")
-                .arg(&path)
-                .args(["/inheritance:r", "/grant:r"])
-                .arg(format!("*{sid}:(OI)(CI)F"))
-                .stdout(Stdio::null())
-                .status()
-                .unwrap()
-                .success()
+            sid == user || sid == "S-1-5-32-544",
+            "new objects owned by neither the user nor Administrators"
         );
+        // A protected DACL holding only the owner ACE. `icacls /inheritance:r`
+        // left SYSTEM and Administrators behind as explicit ACEs on hosted
+        // runners, which custody correctly refuses.
+        {
+            use windows_permissions::{
+                LocalBox, SecurityDescriptor,
+                constants::{SeObjectType, SecurityInformation},
+                wrappers,
+            };
+            let descriptor: LocalBox<SecurityDescriptor> =
+                format!("D:P(A;OICI;FA;;;{sid})").parse().unwrap();
+            wrappers::SetNamedSecurityInfo(
+                path.as_os_str(),
+                SeObjectType::SE_FILE_OBJECT,
+                SecurityInformation::Dacl | SecurityInformation::ProtectedDacl,
+                None,
+                None,
+                descriptor.dacl(),
+                None,
+            )
+            .unwrap();
+        }
         json!({"kind":"windows","sid":sid,"pid":std::process::id()})
     };
     (PrivateDirectory(path.canonicalize().unwrap()), owner)
+}
+#[cfg(windows)]
+fn created_owner_sid(path: &std::path::Path) -> String {
+    use windows_permissions::{
+        constants::{SeObjectType, SecurityInformation},
+        wrappers,
+    };
+    let descriptor = wrappers::GetNamedSecurityInfo(
+        path.as_os_str(),
+        SeObjectType::SE_FILE_OBJECT,
+        SecurityInformation::Owner,
+    )
+    .unwrap();
+    descriptor.owner().unwrap().to_string()
+}
+#[cfg(windows)]
+fn security_sddl(path: &std::path::Path) -> String {
+    use windows_permissions::{
+        constants::{SeObjectType, SecurityInformation},
+        wrappers,
+    };
+    let information = SecurityInformation::Owner | SecurityInformation::Dacl;
+    match wrappers::GetNamedSecurityInfo(
+        path.as_os_str(),
+        SeObjectType::SE_FILE_OBJECT,
+        information,
+    )
+    .and_then(|descriptor| {
+        wrappers::ConvertSecurityDescriptorToStringSecurityDescriptor(&descriptor, information)
+    }) {
+        Ok(sddl) => sddl.to_string_lossy().into_owned(),
+        Err(error) => format!("unreadable ({:?})", error.kind()),
+    }
 }
 fn now() -> u64 {
     SystemTime::now()
@@ -193,7 +247,18 @@ fn native_binary_session_collection_origin_restart_and_wal_authentication() {
     );
     let mut custody =
         humanymous_runtime::audit::keys::custody::Custody::acquire(&key_directory.0, key_owner)
-            .unwrap();
+            .unwrap_or_else(|error| {
+                // Custody refuses without naming the object or the descriptor,
+                // so a failure prints what it checked: SIDs and ACE flags only.
+                #[cfg(windows)]
+                panic!(
+                    "{error:?}; key directory {}; lock {}",
+                    security_sddl(&key_directory.0),
+                    security_sddl(&key_directory.0.join("keys.lock"))
+                );
+                #[cfg(not(windows))]
+                panic!("{error:?}");
+            });
     custody
         .load_or_create(b"native-fixture", || {
             humanymous_runtime::audit::keys::KeyMaterial::new(

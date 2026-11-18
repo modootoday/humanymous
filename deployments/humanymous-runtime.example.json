@@ -1,0 +1,77 @@
+{
+  "listen": "127.0.0.1:8444",
+  "origin": "127.0.0.1:8080",
+  "scope": {
+    "installation": "example-installation",
+    "tenant": "example-tenant",
+    "origin": "example-origin",
+    "revision": "r1",
+    "authority": "example.com"
+  },
+  "routes": [
+    {
+      "method": "POST",
+      "path": "/login",
+      "required": {
+        "raw_tls": false,
+        "original_h2": false,
+        "raw_header_order": true,
+        "collector": false,
+        "rit": true
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/checkout",
+      "required": {
+        "raw_tls": false,
+        "original_h2": false,
+        "raw_header_order": true,
+        "collector": false,
+        "rit": true
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/account",
+      "required": {
+        "raw_tls": false,
+        "original_h2": false,
+        "raw_header_order": true,
+        "collector": false,
+        "rit": true
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api",
+      "required": {
+        "raw_tls": false,
+        "original_h2": false,
+        "raw_header_order": true,
+        "collector": false,
+        "rit": true
+      }
+    }
+  ],
+  "audit": {
+    "directory": "/var/lib/humanymous/audit",
+    "node_id": "humanymous-runtime-1",
+    "keys": {
+      "directory": "/var/lib/humanymous/keys",
+      "passphrase": "REPLACE-ME-with-the-custody-unseal-passphrase"
+    },
+    "allow_new": true,
+    "trusted_head": null,
+    "require_external_witness": false
+  },
+  "owner": {
+    "kind": "unix",
+    "uid": 65532
+  },
+  "session_capacity": 1024,
+  "session_ttl_ms": 600000,
+  "timeout_ms": 25000,
+  "rate_per_second": 1000,
+  "session_rate_per_second": 100
+}
