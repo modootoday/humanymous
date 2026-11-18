@@ -275,9 +275,24 @@ impl Docker {
         std::process::ChildStdin,
         std::process::ChildStdout,
     )> {
+        self.duplex_with(args, &[])
+    }
+    /// Private duplex for a Compose command that interpolates the runner's
+    /// owned project environment (tag, expiry, source context).
+    pub fn duplex_with(
+        &mut self,
+        args: &[String],
+        environment: &[(String, String)],
+    ) -> Result<(
+        ManagedChild,
+        std::process::ChildStdin,
+        std::process::ChildStdout,
+    )> {
         self.transcript
             .push(json!({"argv":args,"transport":"private-duplex","input_recorded":false}));
-        Ok(ManagedChild::spawn_duplex(&mut self.command(args, &[])?)?)
+        Ok(ManagedChild::spawn_duplex(
+            &mut self.command(args, environment)?,
+        )?)
     }
     pub fn call(&mut self, args: &[&str]) -> Result<String> {
         Ok(self

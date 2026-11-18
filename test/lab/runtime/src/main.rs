@@ -19,6 +19,8 @@ mod browser_result;
 #[cfg(unix)]
 mod client;
 #[cfg(unix)]
+mod deployment;
+#[cfg(unix)]
 #[path = "../../dns_wire.rs"]
 mod dns_wire;
 #[cfg(unix)]
@@ -106,6 +108,10 @@ fn main() {
         Some("--attack-client") => attack_catalog::client::run(),
         Some("--gate-tls") => attack_catalog::gate::run_tls().expect("TLS Gate supervisor"),
         Some("--gate-tls-client") => gate_tls::client::run(),
+        Some("--deployment-edge") => deployment::edge::run().expect("deployment edge relays"),
+        Some("--deployment-custody") => deployment::custody::run(),
+        Some("--deployment-client") => deployment::client::run(),
+        Some("--deployment-challenger") => deployment::challenger::run(),
         Some("--witness-transaction") => {
             witness::transaction().expect("private witness transaction")
         }

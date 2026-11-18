@@ -268,6 +268,16 @@ fn allowed(path: &str) -> bool {
         // Read-only legacy pages served by the pass-pilot Gate and mounted by
         // the runtime pilot's unit tests (deployments/lab/images/product.Dockerfile).
         || matches!(path, "web/pass.html" | "web/demo.html")
+        // Adopter manifest, documented example configuration and the reviewed
+        // documentation digest, read by the host runner for the deployment and
+        // documentation-examples cases; never copied into an image.
+        || matches!(
+            path,
+            "deployments/compose.release.yaml"
+                | "deployments/humanymous-runtime.example.json"
+                | "deployments/k8s/secret.example.yaml"
+                | "docs/reviews.json"
+        )
 }
 pub fn write(directory: &Path, name: &str, value: &Value) -> Result<()> {
     fs::write(directory.join(name), serde_json::to_vec_pretty(value)?)?;
@@ -375,12 +385,20 @@ mod tests {
             "crates/sdk/humanymous-core/src/watermark/codec/fixtures/minimal_module.wasm",
             "web/pass.html",
             "web/demo.html",
+            "deployments/compose.release.yaml",
+            "deployments/humanymous-runtime.example.json",
+            "deployments/k8s/secret.example.yaml",
+            "deployments/lab/compose.deployment.yaml",
+            "docs/reviews.json",
             "crates/sdk/humanymous-runtime/assets/console/console.html",
             "crates/sdk/humanymous-runtime/assets/console/styles/00-layers.css",
         ] {
             assert!(allowed(path));
         }
         assert!(!allowed("web/playground.html"));
+        assert!(!allowed("deployments/compose.yaml"));
+        assert!(!allowed("deployments/k8s/deployment.yaml"));
+        assert!(!allowed("docs/how-to/index.md"));
         assert!(!allowed(
             "crates/sdk/humanymous-core/src/watermark/codec/fixtures/other.wasm"
         ));

@@ -299,7 +299,45 @@ original-H2 refused over TLS H1, a Chrome claim over a rustls hello never
 forwarded, no plaintext fallback and every session ready in TLS mode. Under the
 frozen scoring no forwarded origin effect is reachable over TLS for a synthetic
 client, Go's gate admin/ban/RBAC e2e checks are not ported and browser
-ClientHellos have no Rust client. Never relabel exit 2 as
+ClientHellos have no Rust client.
+The deployment stage (roadmap 4 items 2h/2i, components.deployment,
+deployment-ledger.json) executes the shipped adopter manifest
+`deployments/compose.release.yaml` in the same owned project with only
+`deployments/lab/compose.deployment.yaml` on top, through the manifest's own
+commands: `docker network create` for its external origin network (internal,
+owner-labelled), `up -d edge` and `run --rm -T runtime < runtime.json`. The
+layer may change only the runtime's image (product.Dockerfile
+`deployment-runtime`: scratch, the runtime-stage binary as entrypoint, UID
+65532, an empty 0700 /var/lib/humanymous), build, pull_policy and labels;
+`compose config` with and without the layer must differ in exactly those keys.
+The edge is the manifest's adopter placeholder run as a plain L4 relay (no TLS,
+ports replaced by the internal `dep-ingress`); dep-origin answers on the
+external origin network; dep-custody (network none, the manifest volume)
+performs the documented custody step that has no shipped command; dep-client
+is ingress only; dep-challenger is network none. `documentation-examples`
+needs the reviewed docs/reviews.json digest, the Kubernetes Secret stub's
+embedded document equal to `deployments/humanymous-runtime.example.json`, that
+example as shipped refused (placeholder passphrase, no readiness), and with
+only the documented passphrase edit readiness on 127.0.0.1:8444 and every
+documented route refused unsigned (401) and forwarded signed in a fresh session
+(200, origin body) with replay refused (403), in a first and a restarted
+`run --rm`. `deployment` additionally needs the runtime container as Docker ran
+it (manifest user, read-only root, cap drop ALL, no-new-privileges, pids 512,
+/tmp tmpfs, the edge's network namespace, only hmn-data mounted, no ports, no
+argv, the built image), the volume layout copied from that image, origin
+contacts equal to forwarded routes and all from the edge, a verified contiguous
+audit history on the volume whose ALLOW decisions equal the forwarded routes
+and which the restart extends, and lab-scoped signed target attestation: the
+deployed image generates the installation key inside the volume (and a second,
+foreign installation), a re-enrollment is refused (`already_provisioned`) and
+the challenger pins the enrollment, issues every nonce and verifies against its
+own copy of the runtime binary digest and the edited example's digest (fresh
+answers accepted; stale, tampered, foreign-key and changed-configuration
+answers refused). Not executed: a live cloud provider, the Kubernetes and
+systemd manifests (no cluster or systemd PID 1; the runtime's gateway test
+parses them), the published ghcr image (the lab builds the same shape from
+source), an adopter TLS edge, hardware/loader/listener-bound attestation.
+Never relabel exit 2 as
 product success. Collector is optional Firefox component evidence, never a real
 human/AT or Meari+CEF product browser. No sandbox-disabling option is supplied.
 

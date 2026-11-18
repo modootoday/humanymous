@@ -1,0 +1,75 @@
+# Roadmap 4 items 2h/2i: the only layer the lab puts over the shipped adopter
+# manifest. The runner executes the manifest's documented commands with
+#   docker compose -p PROJECT -f deployments/compose.release.yaml \
+#     -f deployments/lab/compose.deployment.yaml <command>
+#
+# runtime: only `image` (built from this source instead of pulling the
+#   published ghcr image), its `build`, `pull_policy` and owner labels change.
+#   User, hardening, network namespace, volume, stdin and stop settings are the
+#   manifest's own; the runner compares `compose config` with and without this
+#   file and refuses any other difference.
+# edge: the manifest's adopter placeholder. HMN_EDGE_IMAGE (the manifest's own
+#   variable) names the lab image; this file supplies its relay command and lab
+#   hardening and replaces the host port with an internal ingress network.
+# origin-net: still the manifest's external network. The runner creates it as
+#   documented (`docker network create`), internal and owner-labelled.
+# dep-*: lab actors for what the manifest leaves to the adopter (origin,
+#   custody provisioning) and for observation (client, challenger).
+x-hardening: &hardening
+  pull_policy: never
+  user: "65532:65532"
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  pids_limit: 64
+  mem_limit: 128m
+  cpus: 0.5
+  tmpfs: ["/tmp:rw,noexec,nosuid,size=8m,mode=1777"]
+  labels: &labels
+    org.humanymous.owner: rust-product-lab
+    org.humanymous.expires: "${HM_LAB_EXPIRES:?Rust runner must supply expiry}"
+x-actor: &actor
+  <<: *hardening
+  image: humanymous/product-lab:${HM_LAB_IMAGE_TAG:?Rust runner must supply owned tag}
+services:
+  runtime:
+    image: humanymous/deployment-runtime:${HM_LAB_IMAGE_TAG:?Rust runner must supply owned tag}
+    build:
+      context: ${HM_LAB_BUILD_CONTEXT:?Rust runner must supply immutable source}
+      dockerfile: deployments/lab/images/product.Dockerfile
+      target: deployment-runtime
+    pull_policy: never
+    labels: *labels
+  edge:
+    <<: *hardening
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --deployment-edge]
+    ports: !reset []
+    networks: [dep-ingress]
+  dep-origin:
+    <<: *actor
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --origin-audit-origin]
+    networks: [origin-net]
+  dep-client:
+    <<: *actor
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --deployment-client]
+    stdin_open: true
+    networks: [dep-ingress]
+  dep-custody:
+    <<: *actor
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --deployment-custody]
+    stdin_open: true
+    network_mode: none
+    volumes: [hmn-data:/var/lib/humanymous]
+  dep-challenger:
+    <<: *actor
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --deployment-challenger]
+    stdin_open: true
+    network_mode: none
+networks:
+  dep-ingress:
+    internal: true
+    enable_ipv6: false
+    labels: *labels
+volumes:
+  hmn-data:
+    labels: *labels
