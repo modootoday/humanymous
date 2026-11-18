@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 574,
-      "macos": 574,
-      "windows": 556
+      "linux": 583,
+      "macos": 583,
+      "windows": 565
     },
     "common_test_names": [
       "gateway::admin_approval::tests::approval_store_rules",
@@ -143,6 +143,11 @@
       "gateway::control_flood::tests::defaults_match_go_and_breach_is_sampled_at_hard_plus_one",
       "gateway::control_flood::tests::invalid_thresholds_refused_and_idle_sources_evicted",
       "gateway::control_flood::tests::source_reopens_after_the_window_and_resamples",
+      "gateway::coordinator::correlation::tests::non_integer_replies_and_raw_keys_are_unavailable",
+      "gateway::coordinator::correlation::tests::shared_coordinator_outage_falls_back_to_local",
+      "gateway::coordinator::correlation::tests::shared_eval_command_contract",
+      "gateway::coordinator::correlation::tests::shared_fleet_count_drives_velocity",
+      "gateway::coordinator::correlation::tests::shared_fleet_fallback_counter",
       "gateway::coordinator::ledger::tests::a_ban_outage_serves_the_local_view",
       "gateway::coordinator::ledger::tests::a_coordinator_outage_serves_the_local_verdict",
       "gateway::coordinator::ledger::tests::a_flood_split_across_nodes_bans_on_aggregate",
@@ -159,6 +164,8 @@
       "gateway::coordinator::ledger::tests::relocated_forged_and_stale_verdicts_fall_back_to_the_local_view",
       "gateway::coordinator::ledger::tests::seal_binds_the_value_to_its_key_and_refuses_tampering",
       "gateway::coordinator::ledger::tests::wargame_r241_r250_seal_axis",
+      "gateway::coordinator::ledger::tests::wargame_r276_shared_limiter_level_delegates",
+      "gateway::coordinator::ledger::tests::wargame_r277_shared_limiter_gc_sweeps_the_local_fallback",
       "gateway::coordinator::ledger::tests::widening_the_shared_window_reports_the_coverage_gap",
       "gateway::coordinator::redis::tests::a_dropped_connection_is_redialled_after_the_cooldown",
       "gateway::coordinator::redis::tests::auth_is_sent_on_connect_then_commands_reuse_the_connection",
@@ -353,6 +360,8 @@
       "gateway::pass_store::tests::trace_registry_saturation_fails_closed_then_drains",
       "gateway::pass_store::tests::wargame_r333_trace_replay_blocked",
       "gateway::pass_store::tests::wargame_r338_replay_lock",
+      "gateway::recon::tests::constant_floor_waits_out_the_floor_and_never_extends_it",
+      "gateway::recon::tests::remaining_is_the_unelapsed_part_of_the_floor",
       "gateway::request::tests::correlation_ids_are_sixteen_hex_and_fresh",
       "gateway::request::tests::day_bucket_matches_go_and_clamps_pre_epoch",
       "gateway::request::tests::latency_saturates_and_never_goes_negative",
