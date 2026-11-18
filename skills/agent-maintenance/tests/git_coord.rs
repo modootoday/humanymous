@@ -1,13 +1,22 @@
 //! Actual legacy coordinator regression; all Git mutations stay in an owned fixture.
-use std::{fs, path::PathBuf, process::Command};
+use std::{
+    fs,
+    path::PathBuf,
+    process::Command,
+    sync::atomic::{AtomicUsize, Ordering},
+};
 
+/// Parallel tests share one process and a coarse clock; the sequence keeps
+/// every fixture directory distinct.
+static NEXT_FIXTURE: AtomicUsize = AtomicUsize::new(0);
 struct Repository(PathBuf);
 
 impl Repository {
     fn new() -> Self {
         let path = std::env::temp_dir().join(format!(
-            "humanymous-git-coord-{}-{}",
+            "humanymous-git-coord-{}-{}-{}",
             std::process::id(),
+            NEXT_FIXTURE.fetch_add(1, Ordering::Relaxed),
             std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .unwrap()
