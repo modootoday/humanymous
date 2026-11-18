@@ -2,14 +2,22 @@
 use humanymous_agent_maintenance::selected_inputs::{
     FrozenSelection, Input, Limits, ReadStatus, Root, SelectionError, observe,
 };
-use std::{fs, path::PathBuf};
+use std::{
+    fs,
+    path::PathBuf,
+    sync::atomic::{AtomicUsize, Ordering},
+};
 
+/// Parallel tests share one process and a coarse clock; the sequence keeps
+/// every fixture directory distinct.
+static NEXT_FIXTURE: AtomicUsize = AtomicUsize::new(0);
 struct Fixture(PathBuf);
 impl Fixture {
     fn new() -> Self {
         let path = std::env::temp_dir().join(format!(
-            "humanymous-selected-{}-{}",
+            "humanymous-selected-{}-{}-{}",
             std::process::id(),
+            NEXT_FIXTURE.fetch_add(1, Ordering::Relaxed),
             std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .unwrap()
