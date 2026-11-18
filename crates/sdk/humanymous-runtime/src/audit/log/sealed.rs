@@ -312,6 +312,13 @@ impl SealedLog {
     pub fn append(&mut self, record: Record) -> io::Result<Record> {
         self.log.append(record)
     }
+    /// Add a best-effort projection fed after each successful append.
+    pub fn attach_projection(
+        &mut self,
+        projection: std::sync::Arc<dyn crate::audit::projection::RecordSink>,
+    ) {
+        self.log.attach_projection(projection);
+    }
     /// Final checkpoint and WAL flush; failure is never shutdown success.
     pub fn flush(&mut self) -> io::Result<()> {
         self.log.flush()

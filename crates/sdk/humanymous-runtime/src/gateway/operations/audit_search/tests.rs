@@ -1,5 +1,6 @@
 //! Port of legacy internal/gate/ws9_test.go TestAuditSearchAndPagination
-//! (baseline 981d25c) at the search kernel, plus filter and cursor edges.
+//! and internal/gate/prodhardening_test.go TestAuditSubjectFilter (baseline
+//! 981d25c) at the search kernel, plus filter and cursor edges.
 use super::*;
 use crate::audit::record::Actor;
 
@@ -117,4 +118,42 @@ fn host_is_case_insensitive_and_route_rule_subject_are_exact() {
     assert_eq!(seqs(&[("subject", "psn-s")]), [1]);
     assert_eq!(seqs(&[("subject", "psn-a")]), [2]);
     assert_eq!(seqs(&[("minRisk", "91")]), Vec::<u64>::new());
+}
+
+/// Go TestAuditSubjectFilter (prodhardening_test.go): a GDPR Art. 15 access
+/// query scoped to one pseudonymous subject returns its session-pseudonym and
+/// actor-pseudonym records and excludes every other subject.
+#[test]
+fn audit_subject_filter() {
+    let decision = |seq: u64, verdict: &str| Record {
+        seq,
+        event_type: "gate.decision".into(),
+        verdict: verdict.into(),
+        ..Record::default()
+    };
+    let mut by_session = decision(1, "allow");
+    by_session.session_pseudonym = "subjA".into();
+    let mut other = decision(2, "deny");
+    other.session_pseudonym = "subjB".into();
+    let mut by_actor = decision(3, "challenge");
+    by_actor.actor = Actor {
+        kind: "operator".into(),
+        id_pseudonym: "subjA".into(),
+    };
+    let records = [by_session, other, by_actor];
+    let page = search(&records, &Query::from_pairs([("subject", "subjA")]), handle);
+    let body = serde_json::to_string(
+        &page
+            .records
+            .iter()
+            .map(|hit| &hit.record)
+            .collect::<Vec<_>>(),
+    )
+    .unwrap();
+    assert!(body.contains("subjA"), "{body}");
+    assert!(!body.contains("subjB"), "{body}");
+    assert!(body.matches("subjA").count() >= 2, "{body}");
+    assert_eq!(page.count, 2);
+    let seqs: Vec<u64> = page.records.iter().map(|hit| hit.record.seq).collect();
+    assert_eq!(seqs, [3, 1]);
 }
