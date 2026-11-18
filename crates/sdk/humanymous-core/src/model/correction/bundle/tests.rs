@@ -80,6 +80,66 @@ fn signed_policy_fails_closed_without_ed25519_support() {
     }
 }
 
+/// Test verifier: a "signature" is the SHA-256 of the exact bytes.
+struct DigestVerifier;
+impl BundleVerifier for DigestVerifier {
+    fn verify(&self, bundle_bytes: &[u8], signature: &[u8]) -> bool {
+        signature == Sha256::digest(bundle_bytes).as_slice()
+    }
+}
+
+#[test]
+fn signed_policy_requires_a_verified_signature_in_legacy_order() {
+    let manager = BundleManager::with_verifier(Box::new(DigestVerifier));
+    assert!(manager.signed());
+    let bytes = bundle_bytes("signed", None);
+    let good = Sha256::digest(&bytes).to_vec();
+    // stage without a signature uses the signed policy and is refused.
+    for signature in [None, Some(&b""[..]), Some(&b"not-a-sig"[..])] {
+        assert_eq!(
+            manager.stage_signed(&bytes, None, signature).unwrap_err(),
+            CorrectionError::Signature
+        );
+    }
+    assert_eq!(
+        manager.stage(&bytes, None).unwrap_err(),
+        CorrectionError::Signature
+    );
+    assert_eq!(manager.staged(), None);
+    // The digest pin is checked before the signature, the schema after it.
+    assert_eq!(
+        manager
+            .stage_signed(&bytes, Some("0000"), Some(&good))
+            .unwrap_err(),
+        CorrectionError::Digest
+    );
+    let stale = bundle_bytes("stale", Some("deadbeefcafe"));
+    assert_eq!(
+        manager.stage_signed(&stale, None, None).unwrap_err(),
+        CorrectionError::Signature
+    );
+    assert_eq!(
+        manager
+            .stage_signed(&stale, None, Some(&Sha256::digest(&stale)))
+            .unwrap_err(),
+        CorrectionError::StaleSchema
+    );
+    let identity = manager.stage_signed(&bytes, None, Some(&good)).unwrap();
+    assert_eq!(identity.version, "signed");
+    assert_eq!(manager.staged(), Some(identity));
+}
+
+#[test]
+fn unsigned_policy_ignores_a_supplied_signature() {
+    let manager = BundleManager::unsigned_lab();
+    assert!(!manager.signed());
+    let bytes = bundle_bytes("v1", None);
+    manager
+        .stage_signed(&bytes, None, Some(b"not-a-sig"))
+        .unwrap();
+    assert_eq!(manager.staged().unwrap().version, "v1");
+}
+
 #[test]
 fn promote_and_rollback_move_lab_identities_only() {
     let manager = BundleManager::unsigned_lab();

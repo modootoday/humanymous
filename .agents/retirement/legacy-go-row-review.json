@@ -11,13 +11,15 @@
   "partial": "some behaviors ported; gaps listed",
   "missing": "no Rust counterpart",
   "retire_candidate": "intentionally dropped, quoted SoT basis",
-  "not_applicable": "Go-only helper without product responsibility"
+  "not_applicable": "Go-only helper without product responsibility",
+  "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 181,
-  "partial": 97,
-  "missing": 34,
-  "not_applicable": 2
+  "ported_unit": 193,
+  "partial": 83,
+  "missing": 27,
+  "not_applicable": 2,
+  "oracle_only": 9
  },
  "by_package": {
   "cmd/gate": {
@@ -29,22 +31,22 @@
    "partial": 1
   },
   "cmd/mlcorrect-train": {
-   "missing": 3
+   "ported_unit": 3
   },
   "cmd/redteam": {
-   "partial": 2,
-   "missing": 1
+   "oracle_only": 3
   },
   "cmd/report": {
    "ported_unit": 1
   },
   "cmd/server": {
-   "missing": 5,
-   "partial": 25,
-   "ported_unit": 12
+   "missing": 4,
+   "partial": 22,
+   "ported_unit": 13,
+   "oracle_only": 3
   },
   "cmd/tlsparrot": {
-   "missing": 1
+   "oracle_only": 1
   },
   "cmd/wasm": {
    "ported_unit": 1
@@ -67,7 +69,7 @@
    "ported_unit": 2
   },
   "internal/collector": {
-   "partial": 3
+   "ported_unit": 3
   },
   "internal/correlation": {
    "partial": 2,
@@ -78,9 +80,10 @@
   },
   "internal/gate": {
    "partial": 46,
-   "missing": 18,
+   "missing": 17,
    "not_applicable": 1,
-   "ported_unit": 20
+   "ported_unit": 20,
+   "oracle_only": 1
   },
   "internal/httpx": {
    "not_applicable": 1
@@ -92,12 +95,11 @@
    "ported_unit": 2
   },
   "internal/logger": {
-   "ported_unit": 2,
-   "partial": 4
+   "ported_unit": 6
   },
   "internal/mlcorrect": {
-   "ported_unit": 14,
-   "partial": 2
+   "ported_unit": 15,
+   "partial": 1
   },
   "internal/mlserve": {
    "ported_unit": 4
@@ -107,7 +109,7 @@
   },
   "internal/network": {
    "ported_unit": 19,
-   "partial": 1
+   "oracle_only": 1
   },
   "internal/pass": {
    "ported_unit": 3
@@ -375,63 +377,109 @@
   },
   {
    "baseline_path": "cmd/mlcorrect-train/gate_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestRunGate_CleanDataEmitsCandidate": null,
-    "TestRunGate_PoisonedCohortBlocksCandidate_FailClosed": null,
-    "TestRunGate_TooFewSamplesIsAPreconditionError": null
-   },
-   "gaps": [
-    "promotion gate run",
-    "per-cohort human FPR blocking",
-    ">=100 sample precondition"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::clean_data_emits_candidate",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::poisoned_cohort_blocks_candidate_fail_closed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::too_few_samples_is_a_precondition_error",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::window_without_humans_or_bots_fails_closed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::undersampled_and_missing_required_cohorts_block_the_candidate",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::catalog_regression_below_the_bot_floor_blocks_the_candidate",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::invalid_configuration_and_inputs_are_typed_preconditions",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::warm_start_requires_a_matching_base_and_keeps_shape",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::gate_is_deterministic_for_a_seed"
+   ],
+   "go_test_map": {
+    "TestRunGate_CleanDataEmitsCandidate": "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::clean_data_emits_candidate",
+    "TestRunGate_PoisonedCohortBlocksCandidate_FailClosed": "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::poisoned_cohort_blocks_candidate_fail_closed",
+    "TestRunGate_TooFewSamplesIsAPreconditionError": "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::too_few_samples_is_a_precondition_error"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust runGate/promotion gate; evaluate.rs only provides aggregate confusion counts (human_fpr/bot_tpr).",
-   "test_verification": {}
+   "notes": "Same fixture (1200 time-interleaved samples, 3 bots : 2 typical : 1 edge), same config (hidden 8, epochs 40, lr 0.1, seed 2, test-frac 0.25, 0.005/0.80/20) and same assertions; extra tests cover the fail-closed deltas, bot-floor message, warm start and determinism.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::clean_data_emits_candidate": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::poisoned_cohort_blocks_candidate_fail_closed": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::too_few_samples_is_a_precondition_error": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::window_without_humans_or_bots_fails_closed": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::undersampled_and_missing_required_cohorts_block_the_candidate": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::catalog_regression_below_the_bot_floor_blocks_the_candidate": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::invalid_configuration_and_inputs_are_typed_preconditions": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::warm_start_requires_a_matching_base_and_keeps_shape": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::gate_is_deterministic_for_a_seed": "passed"
+   }
   },
   {
    "baseline_path": "cmd/mlcorrect-train/gate.go",
-   "disposition": "missing",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-core/src/model/training/evaluate.rs"
+    "crates/sdk/humanymous-core/src/model/training/gate.rs",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal.rs",
+    "crates/sdk/humanymous-core/src/model/training/sgd.rs"
    ],
-   "rust_tests": [],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::clean_data_emits_candidate",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::poisoned_cohort_blocks_candidate_fail_closed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::too_few_samples_is_a_precondition_error",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::window_without_humans_or_bots_fails_closed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::undersampled_and_missing_required_cohorts_block_the_candidate",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::catalog_regression_below_the_bot_floor_blocks_the_candidate",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::invalid_configuration_and_inputs_are_typed_preconditions",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::warm_start_requires_a_matching_base_and_keeps_shape",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::gate_is_deterministic_for_a_seed"
+   ],
    "go_test_map": {},
-   "gaps": [
-    "TESSERACT time-ordered split",
-    "per-cohort FPR with min-cohort-humans fail-closed",
-    "bot TPR floor",
-    "AUT metric",
-    "candidate emission only on pass"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Only aggregate Counts::human_fpr/bot_tpr exist; SoT model-training-correction requires cohort gate and time split still unimplemented.",
-   "test_verification": {}
+   "notes": "runGate ported as training::gate::run_gate: >=100-sample precondition, time_split (TESSERACT), standardize, warm-startable SGD, evaluation through the existing Mlp, AUT over 5 buckets, per-cohort human-FP gate in sorted order with min-cohort-humans fail-closed, bot-TPR floor, candidate emitted only when failures is empty; legacy failure strings preserved. Gate criteria are caller-supplied offline promotion parameters, not scoring changes. Deliberate fail-closed deltas: windows without human or bot support fail (Go could pass vacuously), optional required cohorts, NaN/out-of-range gate parameters are a typed config error, split/standardize/train/evaluate refusals are typed errors. No staging, signing or activation.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::clean_data_emits_candidate": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::poisoned_cohort_blocks_candidate_fail_closed": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::too_few_samples_is_a_precondition_error": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::window_without_humans_or_bots_fails_closed": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::undersampled_and_missing_required_cohorts_block_the_candidate": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::catalog_regression_below_the_bot_floor_blocks_the_candidate": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::invalid_configuration_and_inputs_are_typed_preconditions": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::warm_start_requires_a_matching_base_and_keeps_shape": "passed",
+    "crates/sdk/humanymous-core/src/model/training/gate/tests.rs::gate_is_deterministic_for_a_seed": "passed"
+   }
   },
   {
    "baseline_path": "cmd/mlcorrect-train/main.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "anchor/oracle/base JSONL inputs and warm start CLI",
-    "exit3 no-write on gate failure",
-    "sha256 candidate digest output"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train.rs",
+    "crates/sdk/humanymous-core/src/bin/mlcorrect_train.rs",
+    "crates/sdk/humanymous-core/Cargo.toml"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs::passing_gates_write_candidate_and_print_only_its_digest",
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs::failed_gate_exits_3_and_leaves_existing_output_untouched",
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs::input_and_precondition_errors_exit_1_without_output",
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs::flag_syntax_and_usage_errors_follow_go_flag",
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs::version_stamp_matches_the_legacy_layout"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "SoT model-training-correction: \"both training commands | no equivalents found in model\".",
-   "test_verification": {}
+   "notes": "mlcorrect-train [[bin]] in humanymous-core over training::mlcorrect_train::run: Go flag syntax and defaults (hidden 16, epochs 60, lr 0.05, seed 1, test-frac 0.25, max-human-fpr 0.005, min-bot-tpr 0.80, min-cohort-humans 20, out candidate.json), required -anchor, optional -oracle/-base, warm start, metrics on stderr, exit 3 with no write (existing output untouched), lowercase SHA-256 digest alone on stdout, mlp-corrected-YYYYMMDD-HHMMSS version. Deltas: base read once from a bounded 1 MiB buffer (no Go double read), quarantined oracle records (weak/unknown provenance, e.g. challenge) excluded and counted, shared bounded JSONL reader, positional args are a usage error, decimal-only numbers, -require-cohort addition, serde_json float text so digests identify Rust-written bytes. Actual binary process pilot (clean pass exit 0 + digest match, poisoned cohort exit 3 sentinel kept, warm start exit 0, missing anchor exit 1, unknown flag exit 2) run on owned temp files; not product/Docker qualification.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs::passing_gates_write_candidate_and_print_only_its_digest": "passed",
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs::failed_gate_exits_3_and_leaves_existing_output_untouched": "passed",
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs::input_and_precondition_errors_exit_1_without_output": "passed",
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs::flag_syntax_and_usage_errors_follow_go_flag": "passed",
+    "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs::version_stamp_matches_the_legacy_layout": "passed"
+   }
   },
   {
    "baseline_path": "cmd/redteam/attacks.go",
-   "disposition": "partial",
+   "disposition": "oracle_only",
    "rust_paths": [
     "crates/attacker/src/network/cases.rs",
     "crates/attacker/src/network/mod.rs"
@@ -446,14 +494,14 @@
     "pow-fast-solve, pow-launder",
     "h2/header-order protocol-split"
    ],
-   "retire_basis": null,
+   "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "medium",
-   "notes": "Rust attacker catalog covers RIT replay/body/target/header-order mutation, forged pass signal, missing report/session and forwarded admin forgery against the owned runtime; TLS/proxy/PoW attack families are absent.",
+   "notes": "Rust attacker catalog covers RIT replay/body/target/header-order mutation, forged pass signal, missing report/session and forwarded admin forgery against the owned runtime; TLS/proxy/PoW attack families are absent. Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; previously partial): Go attacker catalog (uTLS/proxy/PoW/flood families) against the legacy stack; the Rust defense-only attacker catalog in crates/attacker is the owned-deployment replacement and the listed families are not ported. The Go source stays in the tree until the step 5 needs-human Go-removal PR; the gaps above are not ported and are not claimed as Rust behavior.",
    "test_verification": {}
   },
   {
    "baseline_path": "cmd/redteam/h2raw.go",
-   "disposition": "missing",
+   "disposition": "oracle_only",
    "rust_paths": [],
    "rust_tests": [],
    "go_test_map": {},
@@ -462,14 +510,14 @@
     "h2 settings/flow-control/priority split attacks",
     "coherent browser H2 control"
    ],
-   "retire_basis": null,
+   "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "high",
-   "notes": "No raw H2 attack client in crates/attacker or test/lab; runtime only has H2 capture (server side).",
+   "notes": "No raw H2 attack client in crates/attacker or test/lab; runtime only has H2 capture (server side). Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; previously missing): Go raw HTTP/2 attacker client; not ported to crates/attacker. The Go source stays in the tree until the step 5 needs-human Go-removal PR; the gaps above are not ported and are not claimed as Rust behavior.",
    "test_verification": {}
   },
   {
    "baseline_path": "cmd/redteam/main.go",
-   "disposition": "partial",
+   "disposition": "oracle_only",
    "rust_paths": [
     "crates/attacker/src/main.rs",
     "crates/attacker/src/network/mod.rs",
@@ -482,9 +530,9 @@
     "-attack selector CLI over the Go attack list",
     "cookie session bootstrap against /api/collect"
    ],
-   "retire_basis": null,
+   "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "medium",
-   "notes": "Rust attacker runs a seeded catalog against an OwnedLab runtime; Go -attack CLI and uTLS transport are not ported.",
+   "notes": "Rust attacker runs a seeded catalog against an OwnedLab runtime; Go -attack CLI and uTLS transport are not ported. Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; previously partial): Go redteam CLI and uTLS transport; the Rust attacker runs its seeded catalog against an owned lab runtime instead. The Go source stays in the tree until the step 5 needs-human Go-removal PR; the gaps above are not ported and are not claimed as Rust behavior.",
    "test_verification": {}
   },
   {
@@ -909,7 +957,7 @@
   },
   {
    "baseline_path": "cmd/server/launch.go",
-   "disposition": "partial",
+   "disposition": "oracle_only",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/observatory.rs"
    ],
@@ -935,9 +983,9 @@
    "gaps": [
     "The profile runner is injected (ProfileRunner); the binary must supply the Docker-lab driver that spawns the catalog profile, which is wired with the gateway entry point."
    ],
-   "retire_basis": null,
+   "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "high",
-   "notes": "Ported: single-use nonce store, loopback Origin check, body limit, target-override refusal, catalog allowlist, Docker-only 409, runs clamp, serialized launches (429), detection-state reset, abort, lifecycle events, missing-dependency classification.",
+   "notes": "Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; the candidate list was drawn while this row was missing): the Go playground attack launcher stays in the tree until the step 5 needs-human Go-removal PR. Merge train claude/merge-train-1 (2026-11-18): the B11 detection observatory component port (gateway::observatory, PR #73) reached codex/rust after that list was drawn, so its Rust paths, tests and remaining gaps are kept as unit-level evidence: Ported: single-use nonce store, loopback Origin check, body limit, target-override refusal, catalog allowlist, Docker-only 409, runs clamp, serialized launches (429), detection-state reset, abort, lifecycle events, missing-dependency classification. Whether this row should stay oracle_only or return to partial needs owner confirmation.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::abort_cancels_remaining_runs": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::accepted_launch_resets_state_targets_loopback_and_publishes_lifecycle": "passed",
@@ -1090,21 +1138,30 @@
   },
   {
    "baseline_path": "cmd/server/ml_setup_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestSetupBehavioralML_AdmitsUnsignedWhenNoPubkey": null,
-    "TestSetupBehavioralML_RefusesSignatureRequiredButMissing": null,
-    "TestSetupBehavioralML_AdmitsProperlySignedBundle": null
-   },
-   "gaps": [
-    "bundle signature policy"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::admits_unsigned_bundle_when_no_public_key",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::refuses_bundle_when_signature_required_but_missing",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::admits_properly_signed_bundle"
+   ],
+   "go_test_map": {
+    "TestSetupBehavioralML_AdmitsUnsignedWhenNoPubkey": "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::admits_unsigned_bundle_when_no_public_key",
+    "TestSetupBehavioralML_RefusesSignatureRequiredButMissing": "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::refuses_bundle_when_signature_required_but_missing",
+    "TestSetupBehavioralML_AdmitsProperlySignedBundle": "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::admits_properly_signed_bundle"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Ed25519 bundle verification in Rust model (SoT: \"Mlp loader/runtime setters only\").",
-   "test_verification": {}
+   "notes": "All three legacy tests ported against gateway::model_admission::admit with real files, a PKIX PEM Ed25519 key and a detached ed25519-dalek signature. The legacy mlserve.Score(zero vector) serving/abstaining assertion is mirrored by installing the admitted Mlp into a test-local core inference Runtime (refusal leaves it abstaining); no process-global model seam is set. Go oracle at 981d25c: go test ./cmd/server -run TestSetupBehavioralML PASS (go1.25.3).",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::admits_unsigned_bundle_when_no_public_key": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::refuses_bundle_when_signature_required_but_missing": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::admits_properly_signed_bundle": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/ml_setup.go",
@@ -1112,26 +1169,42 @@
    "rust_paths": [
     "crates/sdk/humanymous-core/src/model/inference/bundle.rs",
     "crates/sdk/humanymous-core/src/model/inference/mlp.rs",
-    "crates/sdk/humanymous-core/src/model/inference/runtime.rs"
+    "crates/sdk/humanymous-core/src/model/inference/runtime.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/model/inference/runtime.rs::candidate_is_observed_but_never_served_and_stale_candidates_are_skipped",
     "crates/sdk/humanymous-core/src/model/inference/mlp.rs::artifact_decode_preserves_identity_and_rejects_malformed_json",
-    "crates/sdk/humanymous-core/tests/model/inference_parity.rs::existing_models_and_forward_values_match_go"
+    "crates/sdk/humanymous-core/tests/model/inference_parity.rs::existing_models_and_forward_values_match_go",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::admits_unsigned_bundle_when_no_public_key",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::refuses_bundle_when_signature_required_but_missing",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::admits_properly_signed_bundle",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::digest_pin_and_flag_default_follow_legacy",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::disabled_without_bundle_and_shadow_is_ignored",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::unreadable_inputs_and_stale_schema_are_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::empty_public_key_file_is_refused_not_unsigned"
    ],
    "go_test_map": {},
    "gaps": [
-    "sha256 + optional Ed25519 signature verification",
-    "signature-required refusal",
-    "shadow/canary wiring and trace sink"
+    "installing the admitted model into the serving inference seam and the self-calibration Controller as threshold provider/feature observer (model-training-correction SoT keeps L4 annotation-only; production activation needs a separately accepted design)",
+    "canary auto-rollback and shadow-bundle scoring wiring",
+    "-ml-* flag parsing in a serving binary (no Core server binary yet)"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Bundle decode and runtime candidate/abstain exist; signed bundle setup is missing.",
+   "notes": "Admission half of setupBehavioralML ported as gateway::model_admission::admit: bounded reads of bundle, PKIX PEM key and detached signature, stage (digest pin, Ed25519 signature when a key is configured, shape, schema pin) and promote through the core BundleManager; any failure is a typed non-fatal Refused and the model stays disabled; schema_pin_only reports the legacy production WARNING case; a shadow bundle without -ml-bundle is reported ignored. Deliberate fail-closed difference: an empty configured key file is refused (legacy admitted unsigned and logged signed=true).",
    "test_verification": {
-    "crates/sdk/humanymous-core/src/model/inference/mlp.rs::artifact_decode_preserves_identity_and_rejects_malformed_json": "passed",
     "crates/sdk/humanymous-core/src/model/inference/runtime.rs::candidate_is_observed_but_never_served_and_stale_candidates_are_skipped": "passed",
-    "crates/sdk/humanymous-core/tests/model/inference_parity.rs::existing_models_and_forward_values_match_go": "passed"
+    "crates/sdk/humanymous-core/src/model/inference/mlp.rs::artifact_decode_preserves_identity_and_rejects_malformed_json": "passed",
+    "crates/sdk/humanymous-core/tests/model/inference_parity.rs::existing_models_and_forward_values_match_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::admits_unsigned_bundle_when_no_public_key": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::refuses_bundle_when_signature_required_but_missing": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::admits_properly_signed_bundle": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::digest_pin_and_flag_default_follow_legacy": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::disabled_without_bundle_and_shadow_is_ignored": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::unreadable_inputs_and_stale_schema_are_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::empty_public_key_file_is_refused_not_unsigned": "passed"
    }
   },
   {
@@ -1506,7 +1579,7 @@
   },
   {
    "baseline_path": "cmd/server/playground.go",
-   "disposition": "partial",
+   "disposition": "oracle_only",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/observatory.rs"
    ],
@@ -1529,9 +1602,9 @@
    "gaps": [
     "Tap A publish_scored is not yet called from the collect handler, and the observatory routes are not yet mounted in the runtime HTTP listener; both wire up with the gateway entry point (B21/B15)."
    ],
-   "retire_basis": null,
+   "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "high",
-   "notes": "Ported as gateway::observatory: HMN_PLAYGROUND gate, loopback-only listen refusal, loopback Host guard, anti-embed headers, meta, SSE (retry, Last-Event-ID/lastId backlog, heartbeat), explain via score_with_trace on a copy.",
+   "notes": "Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; the candidate list was drawn while this row was missing): the Go playground (HMN_PLAYGROUND, SSE live feed, explain view) stays in the tree until the step 5 needs-human Go-removal PR. Merge train claude/merge-train-1 (2026-11-18): the B11 detection observatory component port (gateway::observatory, PR #73) reached codex/rust after that list was drawn, so its Rust paths, tests and remaining gaps are kept as unit-level evidence: Ported as gateway::observatory: HMN_PLAYGROUND gate, loopback-only listen refusal, loopback Host guard, anti-embed headers, meta, SSE (retry, Last-Event-ID/lastId backlog, heartbeat), explain via score_with_trace on a copy. Whether this row should stay oracle_only or return to partial needs owner confirmation.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::accepted_launch_resets_state_targets_loopback_and_publishes_lifecycle": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/observatory/tests.rs::explain_returns_the_trace_for_a_stored_session": "passed",
@@ -1689,7 +1762,7 @@
   },
   {
    "baseline_path": "cmd/server/sot31_test.go",
-   "disposition": "partial",
+   "disposition": "oracle_only",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/pass_store.rs",
     "crates/sdk/humanymous-runtime/src/gateway/request.rs",
@@ -1706,9 +1779,9 @@
    "gaps": [
     "No address-keyed connection registry exists to clear: Rust binds H2 fingerprints and abuse state to the connection owner, so the leak class is structurally absent but has no counterpart test"
    ],
-   "retire_basis": null,
+   "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "medium",
-   "notes": "Random identifiers are fresh lowercase hex and fail closed on entropy failure (503 or a typed refusal) instead of Go panicking into a 500. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "notes": "Random identifiers are fresh lowercase hex and fail closed on entropy failure (503 or a typed refusal) instead of Go panicking into a 500. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged. Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; previously partial): TestConnRegistryRemoveClearsAllMaps tests an address-keyed connection registry that Rust does not have (owner decision 2026-11-16 DIFF); TestRandHex stays mapped. The Go source stays in the tree until the step 5 needs-human Go-removal PR; the gaps above are not ported and are not claimed as Rust behavior.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::nonce_is_36_hex_and_fresh": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::correlation_ids_are_sixteen_hex_and_fresh": "passed"
@@ -1745,16 +1818,16 @@
   },
   {
    "baseline_path": "cmd/tlsparrot/main.go",
-   "disposition": "missing",
+   "disposition": "oracle_only",
    "rust_paths": [],
    "rust_tests": [],
    "go_test_map": {},
    "gaps": [
     "uTLS Chrome ClientHello parrot client POSTing /api/collect"
    ],
-   "retire_basis": null,
+   "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "high",
-   "notes": "No uTLS/parrot client in crates/attacker or test/lab.",
+   "notes": "No uTLS/parrot client in crates/attacker or test/lab. Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; previously missing): Go uTLS ClientHello parrot client; not ported to crates/attacker. The Go source stays in the tree until the step 5 needs-human Go-removal PR; the gaps above are not ported and are not claimed as Rust behavior.",
    "test_verification": {}
   },
   {
@@ -2369,7 +2442,7 @@
   },
   {
    "baseline_path": "internal/gate/console_test.go",
-   "disposition": "missing",
+   "disposition": "oracle_only",
    "rust_paths": [],
    "rust_tests": [],
    "go_test_map": {
@@ -2378,9 +2451,9 @@
     "TestConsoleJavaScriptSyntax": null
    },
    "gaps": [],
-   "retire_basis": null,
+   "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "high",
-   "notes": "No Rust admin console assets.",
+   "notes": "No Rust admin console assets. Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; previously missing): Go admin console CSS/JavaScript asset tests; no Rust admin console assets are ported. The Go source stays in the tree until the step 5 needs-human Go-removal PR; the gaps above are not ported and are not claimed as Rust behavior.",
    "test_verification": {}
   },
   {
@@ -5242,77 +5315,100 @@
   },
   {
    "baseline_path": "internal/collector/collector_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/session.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/session.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::sessions_capacity_expiry_restart_and_rollback",
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_lifecycle",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_gc_expiry",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_pins_first_network",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_network_request_scoped_hop_residuals",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_client_and_label"
    ],
    "go_test_map": {
-    "TestStoreLifecycle": null,
-    "TestStoreGCExpiry": "crates/sdk/humanymous-runtime/src/gateway/tests.rs::sessions_capacity_expiry_restart_and_rollback",
-    "TestMergePinsFirstNetwork": null,
-    "TestMergeNetwork_RequestScopedHopResiduals": null,
-    "TestMergeClientAndLabel": null
+    "TestStoreLifecycle": "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_lifecycle",
+    "TestStoreGCExpiry": "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_gc_expiry",
+    "TestMergePinsFirstNetwork": "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_pins_first_network",
+    "TestMergeNetwork_RequestScopedHopResiduals": "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_network_request_scoped_hop_residuals",
+    "TestMergeClientAndLabel": "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_client_and_label"
    },
-   "gaps": [
-    "no per-session RIT counter / PoW solved-issued-too-fast state in the store",
-    "no first-network pinning or request-scoped hop residual merge",
-    "no session label (SetLabel) or StoreScored/List"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "The Rust gateway Sessions keeps only bounded, TTL-expired client reports and an integrity counter.",
+   "notes": "Ported as gateway::session::store::CollectorStore, a component store separate from the capability-issuing gateway Sessions epoch; the gateway request path does not consult it (unit-level only, runtime wiring and runtime proof pending). Callers serialize access instead of the Go internal RWMutex; time is the core Timestamp. The prior gateway Sessions test remains as additional TTL evidence.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::sessions_capacity_expiry_restart_and_rollback": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::sessions_capacity_expiry_restart_and_rollback": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_lifecycle": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_gc_expiry": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_pins_first_network": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_network_request_scoped_hop_residuals": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_client_and_label": "passed"
    }
   },
   {
    "baseline_path": "internal/collector/merge.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/session.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/session.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_pins_first_network",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_network_request_scoped_hop_residuals",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::request_scoped_residual_set_is_exact",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_client_and_label",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_client_drops_server_provenance_claims",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_scored_replaces_report"
    ],
    "go_test_map": {},
-   "gaps": [
-    "MergeNetwork first-observation pinning and request-scoped residual refresh",
-    "AppendNetworkSignals",
-    "SetLabel/StoreScored"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "MergeClient's reserved-server-ID sanitization has a stricter Rust counterpart in store_report: it rejects non-client layers and sources.",
+   "notes": "Ported as gateway::session::store::CollectorStore, a component store separate from the capability-issuing gateway Sessions epoch; the gateway request path does not consult it (unit-level only, runtime wiring and runtime proof pending). Callers serialize access instead of the Go internal RWMutex; time is the core Timestamp. MergeClient keeps the Go reserved-ID/server-source drop; gateway store_report remains the stricter request-path seam.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_pins_first_network": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_network_request_scoped_hop_residuals": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::request_scoped_residual_set_is_exact": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_client_and_label": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::merge_client_drops_server_provenance_claims": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_scored_replaces_report": "passed"
    }
   },
   {
    "baseline_path": "internal/collector/session.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/session.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/session/admission.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/session/admission.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::sessions_capacity_expiry_restart_and_rollback"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::sessions_capacity_expiry_restart_and_rollback",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_lifecycle",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_gc_expiry",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::rit_bootstrap_is_one_shot",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::pow_issue_solve_and_too_fast",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::list_is_bounded"
    ],
    "go_test_map": {},
-   "gaps": [
-    "RIT bootstrap claim/advance API",
-    "PoW issued/solved/too-fast/difficulty tracking",
-    "List(limit) for admin console"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "TTL expiry, capacity and rollback refusal are present in gateway Sessions.",
+   "notes": "Ported as gateway::session::store::CollectorStore, a component store separate from the capability-issuing gateway Sessions epoch; the gateway request path does not consult it (unit-level only, runtime wiring and runtime proof pending). Callers serialize access instead of the Go internal RWMutex; time is the core Timestamp. ClaimRITBootstrap is a store primitive only; the Runtime application SoT keeps no bootstrap token grace on the request path. List(limit) keeps the Go quirk of returning one report for limit 0.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::sessions_capacity_expiry_restart_and_rollback": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::sessions_capacity_expiry_restart_and_rollback": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_lifecycle": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::store_gc_expiry": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::rit_bootstrap_is_one_shot": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::pow_issue_solve_and_too_fast": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs::list_is_bounded": "passed"
    }
   },
   {
@@ -5511,7 +5607,7 @@
   },
   {
    "baseline_path": "internal/network/fuzz_test.go",
-   "disposition": "partial",
+   "disposition": "oracle_only",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/network/tls/hello.rs",
     "crates/sdk/humanymous-runtime/src/capture/tls/hello/tests.rs"
@@ -5529,9 +5625,9 @@
    "gaps": [
     "no coverage-guided fuzz target (no cargo-fuzz/proptest). Only deterministic corpus and truncated-prefix tests"
    ],
-   "retire_basis": null,
+   "retire_basis": "owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c. plan:root/20261117142053 step 3: \"When every row is `ported_unit` or explicitly oracle-only, remove the Go sources, `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at 981d25c.\"",
    "confidence": "medium",
-   "notes": "The Go fuzz seeds assert no panic. Rust uses the frozen Go corpus and exhaustive prefix refusal instead.",
+   "notes": "The Go fuzz seeds assert no panic. Rust uses the frozen Go corpus and exhaustive prefix refusal instead. Oracle-only (owner decision 2026-11-18, issue #75 comment 6968092014 (F1): approve retiring the 9 oracle-only candidates, oracle pinned at 981d25c; previously partial): Go fuzz seeds asserting no panic; Rust keeps the frozen Go corpus and exhaustive prefix-refusal tests, without a coverage-guided fuzz target. The Go source stays in the tree until the step 5 needs-human Go-removal PR; the gaps above are not ported and are not claimed as Rust behavior.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/capture/tls/hello/tests.rs::every_truncated_wire_prefix_refuses_instead_of_using_tolerant_parser": "passed",
     "crates/sdk/humanymous-runtime/src/capture/tls/hello/tests.rs::malformed_and_over_budget_inputs_are_terminal": "passed",
@@ -7172,90 +7268,108 @@
   },
   {
    "baseline_path": "internal/logger/handler.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/logging.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::invalid_event_and_field_cap_mark_truncation"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::invalid_event_and_field_cap_mark_truncation",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::attrs_and_groups_nest_like_go_handler"
    ],
    "go_test_map": {},
-   "gaps": [
-    "slog.Handler attrs/groups nesting has no counterpart: Rust callers pass a flat attribute slice to OperationalLogger::emit"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Attribute flattening into the canonical record is covered; slog grouping is a Go API adapter. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24, DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "notes": "Attribute flattening into the canonical record is covered. slog WithAttrs/WithGroup and Group values are ported as LogHandle::with_attrs/with_group and Attr::group, pinned by a golden measured from Go internal/logger at 981d25c (top-level-only component/event override, sanitized group names, empty group key dropped with truncation). Gateway path: the gateway constructs only the synchronous OperationalLogger (owner decision 2026-11-16, .agents/retirement/owner-decisions-2026-11-16.md); the Go queue semantics live in the opt-in gateway::logging::QueuedLogger/LogHandle, which no gateway composition constructs.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::invalid_event_and_field_cap_mark_truncation": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::invalid_event_and_field_cap_mark_truncation": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::attrs_and_groups_nest_like_go_handler": "passed"
    }
   },
   {
    "baseline_path": "internal/logger/logger_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/logging.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::sanitizes_hostile_text_and_caps_physical_lines",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::concurrent_producers_produce_intact_json_lines",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queue_saturation_does_not_block_producer",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::flush_and_close_are_bounded_and_idempotent"
    ],
    "go_test_map": {
     "TestPlainAndJSONLShareCanonicalRecord": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record",
     "TestLevelValidationAndFiltering": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters",
     "TestSanitizesHostileTextAndCapsPhysicalLines": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::sanitizes_hostile_text_and_caps_physical_lines",
-    "TestConcurrentProducersProduceIntactJSONLines": null,
-    "TestQueueSaturationDoesNotBlockProducer": null,
+    "TestConcurrentProducersProduceIntactJSONLines": "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::concurrent_producers_produce_intact_json_lines",
+    "TestQueueSaturationDoesNotBlockProducer": "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queue_saturation_does_not_block_producer",
     "TestOneFailedSinkDoesNotSuppressAnother": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another",
-    "TestFlushAndCloseAreBoundedAndIdempotent": null
+    "TestFlushAndCloseAreBoundedAndIdempotent": "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::flush_and_close_are_bounded_and_idempotent"
    },
-   "gaps": [
-    "Concurrency, queue saturation and bounded close tests have no counterpart because emission is synchronous behind &mut (deliberate difference)"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Four of seven Go tests map one-to-one. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "notes": "All seven Go tests map. The saturation port keeps the sink blocked for the whole burst and asserts the exact drop count (1000) instead of Go's 250 ms elapsed-time bound. Gateway path: the gateway constructs only the synchronous OperationalLogger (owner decision 2026-11-16, .agents/retirement/owner-decisions-2026-11-16.md); the Go queue semantics live in the opt-in gateway::logging::QueuedLogger/LogHandle, which no gateway composition constructs.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::sanitizes_hostile_text_and_caps_physical_lines": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::concurrent_producers_produce_intact_json_lines": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queue_saturation_does_not_block_producer": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::flush_and_close_are_bounded_and_idempotent": "passed"
    }
   },
   {
    "baseline_path": "internal/logger/logger.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/logging.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/logging.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::empty_level_is_refused_for_both_roles",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_accumulates_plain_and_jsonl_files"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_accumulates_plain_and_jsonl_files",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queue_size_zero_selects_default_and_oversize_is_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::concurrent_producers_produce_intact_json_lines",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queue_saturation_does_not_block_producer",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::flush_and_close_are_bounded_and_idempotent",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::flush_and_close_honor_deadline_when_sink_is_blocked",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queued_failed_sink_does_not_suppress_another"
    ],
    "go_test_map": {},
-   "gaps": [
-    "Bounded asynchronous queue and bounded flush/close are not ported: Rust emits synchronously and counts write errors (deliberate difference documented in gateway/logging.rs)"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Open/level validation/filtering, multi-sink isolation and per-sink stats are ported in OperationalLogger. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24, DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "notes": "Open/level validation/filtering, multi-sink isolation and per-sink stats are ported in OperationalLogger. The bounded queue (zero selects 1024, above 65536 refused), single sink worker with queue-order sequence numbers, per-level queue_full/closed drop counters, queue depth, and deadline-bounded idempotent flush/close are ported in QueuedLogger; the Go context deadline is a caller-supplied Instant. Pre-existing accepted differences stay: empty level refused, Role-bound service name, no Discard helper (an off threshold is the equivalent), Healthy is write_errors == 0. Gateway path: the gateway constructs only the synchronous OperationalLogger (owner decision 2026-11-16, .agents/retirement/owner-decisions-2026-11-16.md); the Go queue semantics live in the opt-in gateway::logging::QueuedLogger/LogHandle, which no gateway composition constructs.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::empty_level_is_refused_for_both_roles": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_accumulates_plain_and_jsonl_files": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_accumulates_plain_and_jsonl_files": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queue_size_zero_selects_default_and_oversize_is_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::concurrent_producers_produce_intact_json_lines": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queue_saturation_does_not_block_producer": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::flush_and_close_are_bounded_and_idempotent": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::flush_and_close_honor_deadline_when_sink_is_blocked": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queued_failed_sink_does_not_suppress_another": "passed"
    }
   },
   {
@@ -7286,31 +7400,34 @@
   },
   {
    "baseline_path": "internal/logger/sink_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/logging/sink.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/sink.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_appends_on_reopen",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_same_path_and_non_regular_targets",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::flush_and_close_honor_deadline_when_sink_is_blocked",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queued_file_sink_appends_on_reopen_after_close"
    ],
    "go_test_map": {
     "TestFileSinkAppendsOnReopen": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_appends_on_reopen",
     "TestFileSinkRejectsSamePathAndNonRegularTargets": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_same_path_and_non_regular_targets",
     "TestFileSinkRejectsSymlink": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink",
-    "TestFlushHonorsContextWhenSinkIsBlocked": null
+    "TestFlushHonorsContextWhenSinkIsBlocked": "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::flush_and_close_honor_deadline_when_sink_is_blocked"
    },
-   "gaps": [
-    "Context-bounded flush has no counterpart: Rust emission is synchronous (deliberate difference documented in gateway/logging.rs)"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Three of four Go tests map one-to-one. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "notes": "All four Go tests map; the deadline port also bounds close and checks the queued record drains after release. Gateway path: the gateway constructs only the synchronous OperationalLogger (owner decision 2026-11-16, .agents/retirement/owner-decisions-2026-11-16.md); the Go queue semantics live in the opt-in gateway::logging::QueuedLogger/LogHandle, which no gateway composition constructs.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_appends_on_reopen": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_same_path_and_non_regular_targets": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::flush_and_close_honor_deadline_when_sink_is_blocked": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs::queued_file_sink_appends_on_reopen_after_close": "passed"
    }
   },
   {
@@ -7341,9 +7458,10 @@
   },
   {
    "baseline_path": "internal/mlcorrect/bundle_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs"
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_accepts_a_valid_bundle",
@@ -7351,36 +7469,41 @@
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_enforces_the_pinned_digest",
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::promote_and_rollback_move_lab_identities_only",
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::promote_requires_a_staged_candidate",
-    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::signed_policy_fails_closed_without_ed25519_support"
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::signed_policy_fails_closed_without_ed25519_support",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::signed_policy_requires_a_verified_signature_in_legacy_order",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::unsigned_policy_ignores_a_supplied_signature",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::stage_requires_signature_when_key_configured"
    ],
    "go_test_map": {
     "TestStage_AcceptsValidBundle": "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_accepts_a_valid_bundle",
     "TestStage_RejectsStaleSchema": "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_rejects_a_stale_schema",
     "TestStage_DigestMismatch": "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_enforces_the_pinned_digest",
-    "TestStage_SignatureRequiredWhenKeyConfigured": null,
+    "TestStage_SignatureRequiredWhenKeyConfigured": "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::stage_requires_signature_when_key_configured",
     "TestPromoteAndRollback": "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::promote_and_rollback_move_lab_identities_only",
     "TestPromote_RequiresStaged": "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::promote_requires_a_staged_candidate"
    },
-   "gaps": [
-    "TestStage_SignatureRequiredWhenKeyConfigured needs Ed25519 in humanymous-core (dependency change)"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Bundles are in-memory MlpBundle JSON bytes; promote/rollback assert lab identities.",
+   "notes": "All six legacy tests map to Rust tests. TestStage_SignatureRequiredWhenKeyConfigured runs with a real PKIX PEM Ed25519 key and ed25519-dalek signatures through the core signed policy (BundleManager::with_verifier + Runtime Ed25519Verifier): no signature, a malformed signature, another key's signature and a signature over other bytes are refused; the correct signature stages. Go oracle at 981d25c: go test ./internal/mlcorrect -run TestStage_ PASS (go1.25.3). Bundles are in-memory MlpBundle JSON bytes; promote/rollback assert lab identities.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_accepts_a_valid_bundle": "passed",
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_rejects_a_stale_schema": "passed",
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_enforces_the_pinned_digest": "passed",
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::promote_and_rollback_move_lab_identities_only": "passed",
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::promote_requires_a_staged_candidate": "passed",
-    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::signed_policy_fails_closed_without_ed25519_support": "passed"
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::signed_policy_fails_closed_without_ed25519_support": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::signed_policy_requires_a_verified_signature_in_legacy_order": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::unsigned_policy_ignores_a_supplied_signature": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::stage_requires_signature_when_key_configured": "passed"
    }
   },
   {
    "baseline_path": "internal/mlcorrect/bundle.go",
    "disposition": "partial",
    "rust_paths": [
-    "crates/sdk/humanymous-core/src/model/correction/bundle.rs"
+    "crates/sdk/humanymous-core/src/model/correction/bundle.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_accepts_a_valid_bundle",
@@ -7390,16 +7513,20 @@
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::promote_and_rollback_move_lab_identities_only",
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::promote_requires_a_staged_candidate",
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_rejects_empty_oversized_and_malformed_buffers",
-    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::concurrent_lifecycle_transitions_keep_identities_consistent"
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::concurrent_lifecycle_transitions_keep_identities_consistent",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::signed_policy_requires_a_verified_signature_in_legacy_order",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::unsigned_policy_ignores_a_supplied_signature",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::stage_requires_signature_when_key_configured",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::public_key_parsing_matches_pem_and_pkix_rules",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::small_order_public_key_never_verifies"
    ],
    "go_test_map": {},
    "gaps": [
-    "Ed25519 signature verification (ed25519-dalek is not a humanymous-core dependency; a configured key fails closed)",
-    "promote/rollback never activate a model (lab identities only, per SoT)"
+    "promote/rollback never activate a model (lab identities only, per model-training-correction SoT: 'Training output never activates a model'; production activation needs a separately accepted design)"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Exact-byte SHA-256 identity, schema pin, explicit unsigned lab policy and staged/active/previous transitions with Go's rollback semantics.",
+   "notes": "Exact-byte SHA-256 identity, schema pin, explicit unsigned lab policy and staged/active/previous transitions with Go's rollback semantics. Ed25519 signed policy ported without a core dependency change: core BundleVerifier seam (BundleManager::with_verifier, stage_signed) checks in legacy order size, digest, signature, decode, schema; the Runtime supplies Ed25519Verifier::from_pkix_pem (legacy NewBundleManager PEM/PKIX/ed25519 checks) over the existing ed25519-dalek dependency. BundleManager::with_public_key in core still fails closed. Deliberate fail-closed differences: verify_strict (small-order keys refused; honest ed25519.Sign signatures verify identically) and PEM blocks with RFC 1421 headers refused.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_accepts_a_valid_bundle": "passed",
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_rejects_a_stale_schema": "passed",
@@ -7408,7 +7535,12 @@
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::promote_and_rollback_move_lab_identities_only": "passed",
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::promote_requires_a_staged_candidate": "passed",
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_rejects_empty_oversized_and_malformed_buffers": "passed",
-    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::concurrent_lifecycle_transitions_keep_identities_consistent": "passed"
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::concurrent_lifecycle_transitions_keep_identities_consistent": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::signed_policy_requires_a_verified_signature_in_legacy_order": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::unsigned_policy_ignores_a_supplied_signature": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::stage_requires_signature_when_key_configured": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::public_key_parsing_matches_pem_and_pkix_rules": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs::small_order_public_key_never_verifies": "passed"
    }
   },
   {

@@ -4618,9 +4618,9 @@
     },
     {
       "source": "crates/sdk/humanymous-core/Cargo.toml",
-      "sha256": "ef0fbd146fe68eacd0fb5e5dde804c9e2e04f743dffd544e5d30979450834b70",
+      "sha256": "6a9b331d04c39166731572c167b70c5844c70760bb67a1a908940476c5cd51b7",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Manifest for the humanymous-core library (security contracts and pure automation-resistance engines; readme README.md and publish = [\"crates-io\"] in the first crates.io wave, which performs no upload): workspace serde, serde_json, time, sha2, hex, hmac, base64, subtle, zeroize, png and wasmparser dependencies, dev-dependency on humanymous-platform testing, workspace lints, and an opt-in qualification feature that grants no runtime authority and only enables the integrity_canonical_performance example.",
+      "notes": "Manifest for the humanymous-core library (security contracts and pure automation-resistance engines; readme README.md and publish = [\"crates-io\"] in the first crates.io wave, which performs no upload): workspace serde, serde_json, time, sha2, hex, hmac, base64, subtle, zeroize, png and wasmparser dependencies, dev-dependency on humanymous-platform testing, workspace lints, and an opt-in qualification feature that grants no runtime authority and only enables the integrity_canonical_performance example. Re-reviewed 2026-11-18 on the mlcorrect-train branch: it now also declares the mlcorrect-train binary (src/bin/mlcorrect_train.rs), an offline retrain/promotion-gate shell with no deploy authority.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/detection-engine-internals.md"
@@ -4711,6 +4711,16 @@
       "notes": "Pure feature/inference implementation and fixtures are migration-only, not an operational training/update loop. Reader page makes no automatic learning or deployment claim and preserves sparse-input/accessibility counterexamples. Carried unchanged from crates/behavior/src/lib.rs: identical SHA-256 after the crate consolidation, so the reviewed bytes are the same.",
       "pages": [
         "docs/reference/production-vs-reference.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/bin/mlcorrect_train.rs",
+      "sha256": "e7baf905343edf34f4adfc7a8d604b333b0a4bfe2f235232f37ba9e305c7ba7c",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "mlcorrect-train binary entry point (legacy cmd/mlcorrect-train): passes the command-line arguments, a UTC version stamp (mlp-corrected-YYYYMMDD-HHMMSS) and locked stdout/stderr to model::training::mlcorrect_train::run and exits with its code. The doc states it never deploys, stages or activates a model; all behaviour lives in the library module.",
+      "pages": [
+        "docs/how-to/operate-behavioral-model.md",
         "docs/explanation/self-correcting-behavioral-model.md"
       ]
     },
@@ -5061,9 +5071,9 @@
     },
     {
       "source": "crates/sdk/humanymous-core/src/model/correction/bundle.rs",
-      "sha256": "88bb243cfd993f8328ae3f7b5c8ee547106c5324c52ecab40702ed80c4df0977",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Lab bundle identity lifecycle: stage() bounds one immutable buffer (non-empty, <=1 MiB), checks an optional exact lowercase SHA-256 pin, decodes a shape-valid MLP and requires the running feature schema hash; promote/rollback move only staged/active/previous identities and never touch an inference Runtime. Signed policy (with_public_key) always fails closed with SignatureUnsupported because Ed25519 is not a dependency; digest pinning is integrity only, not an authenticated supply chain.",
+      "sha256": "7fc7b37eee811983e50b1fd52e9ffd94737043e5453063697bf3836d69faf3d2",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Lab bundle identity lifecycle: stage() bounds one immutable buffer (non-empty, <=1 MiB), checks an optional exact lowercase SHA-256 pin, decodes a shape-valid MLP and requires the running feature schema hash; promote/rollback move only staged/active/previous identities and never touch an inference Runtime. Re-reviewed 2026-11-18: a BundleVerifier trait (pure detached-signature check over the exact bytes) and BundleManager::with_verifier() add a signed policy supplied by the caller (the Runtime provides Ed25519), with signed() reporting it; stage_signed() checks size, digest pin, signature, shape decode and schema pin in the legacy order, failing with Signature when a required signature is missing or invalid and ignoring a supplied signature under the unsigned lab policy. with_public_key() still fails closed with SignatureUnsupported because this package has no Ed25519 implementation. Digest pinning remains integrity only, not an authenticated supply chain.",
       "pages": [
         "docs/explanation/self-correcting-behavioral-model.md",
         "docs/how-to/operate-behavioral-model.md"
@@ -5071,9 +5081,9 @@
     },
     {
       "source": "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs",
-      "sha256": "1b46b9d11b43e2aed10c874dc51acfcae8d22bc3fc9ff0c6a6372c2dc803d5cf",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Tests for BundleManager: valid stage records version and 64-hex digest, stale schema rejected, digest pin enforced (wrong, empty and uppercase pins fail), signed policy fails closed, promote/rollback sequences including rollback to none and NoPrevious, promote without staged candidate, empty/oversized/malformed/wrong-shape buffers rejected, and concurrent stage/promote/rollback threads leave consistent identities.",
+      "sha256": "6b911486c1bab0d4c711fe27f40fdb55366eef31b08ee506316dd56a2ad4fb4c",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tests for BundleManager: valid stage records version and 64-hex digest, stale schema rejected, digest pin enforced (wrong, empty and uppercase pins fail), with_public_key fails closed, promote/rollback sequences including rollback to none and NoPrevious, promote without staged candidate, empty/oversized/malformed/wrong-shape buffers rejected, and concurrent stage/promote/rollback threads leave consistent identities. Re-reviewed 2026-11-18: with a test verifier whose signature is the SHA-256 of the bytes, the signed policy refuses missing, empty and wrong signatures (also via plain stage()), checks the digest pin before the signature and the schema after it, and stages a correctly signed bundle; the unsigned lab policy ignores a supplied signature.",
       "pages": [
         "docs/explanation/self-correcting-behavioral-model.md",
         "docs/how-to/operate-behavioral-model.md"
@@ -5181,9 +5191,9 @@
     },
     {
       "source": "crates/sdk/humanymous-core/src/model/correction/mod.rs",
-      "sha256": "d9959f52194b23c686ebf68f4f10c69ff72de8b87d0a887b82f054a4192c5bc9",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Module root for the lab-only self-correction kernels ported from the legacy correction package: re-exports bundle, calibration, canary, controller, drift, features, oracle, pass_feed and shadow, and defines CorrectionError. Documents that monitors only sense and propose, never mutate a verdict, install a production ThresholdProvider or activate a model; production weights/thresholds/bands stay frozen and invalid inputs fail closed before state changes.",
+      "sha256": "f0e54ffad9f09e22c3e98873a781cc1ed67840609705551db53508e0893d8c42",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Module root for the lab-only self-correction kernels ported from the legacy correction package: re-exports bundle, calibration, canary, controller, drift, features, oracle, pass_feed and shadow, and defines CorrectionError. Documents that monitors only sense and propose, never mutate a verdict, install a production ThresholdProvider or activate a model; production weights/thresholds/bands stay frozen and invalid inputs fail closed before state changes. Re-reviewed 2026-11-18: it also re-exports BundleVerifier and adds the CorrectionError::Signature variant for a missing or invalid signature under the signed policy.",
       "pages": [
         "docs/explanation/self-correcting-behavioral-model.md",
         "docs/how-to/operate-behavioral-model.md",
@@ -5342,10 +5352,50 @@
       ]
     },
     {
+      "source": "crates/sdk/humanymous-core/src/model/training/gate.rs",
+      "sha256": "7b7952b18aac12f59315a66ea6e5b109956a0cf94dbd5bc92181b6646eca87d6",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Offline promotion gate ported from legacy cmd/mlcorrect-train gate.go runGate (baseline 981d25c). run_gate() requires at least 100 samples, time-splits them into a newest-fraction TESSERACT holdout, standardizes the training window, trains via the crate-private SGD (optionally warm-starting from a base bundle), evaluates the candidate through the existing Mlp inference boundary, and reports accuracy, aggregate human FPR (reported, not gated), bot TPR, AUT over 5 buckets and per-cohort human FPR. The candidate is returned only if every gate passes: per-cohort human FPR at most max_human_fpr with at least min_cohort_humans humans, bot TPR at least min_bot_tpr, and any required cohorts present. Fail-closed deltas from Go are documented: a window with no humans or no bots fails, nonfinite or out-of-range parameters are a Config error, and split/standardize/training/evaluation refusals are typed errors. Gate criteria come from the caller; emitting a candidate is not promotion and no production model, threshold or verdict band is touched.",
+      "pages": [
+        "docs/how-to/operate-behavioral-model.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/training/gate/tests.rs",
+      "sha256": "539b788393082f42490eed95ed900a9cc5ac8c4641eec450cb1b7ddc30d940c2",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Ports of legacy gate_test.go plus the documented fail-closed deltas, on deterministic 3 bot : 2 typical human : 1 edge human fixtures: clean data emits a candidate; a poisoned accessibility (edge) cohort blocks the candidate; fewer than 100 samples is a precondition error; all-bot and all-human windows fail closed (Go passed them); undersampled and missing required cohorts block the candidate; a bot TPR below the floor blocks it as catalog regression; invalid configuration and inputs are typed preconditions; warm start needs a matching base and keeps its shape; and the gate is deterministic for a seed.",
+      "pages": [
+        "docs/how-to/operate-behavioral-model.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/training/mlcorrect_train.rs",
+      "sha256": "e7440f097ebd63707bbbc083b2945ee20343678f6e3dc49a5517c43a7ce23966",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Library process shell of the offline retrain step (legacy cmd/mlcorrect-train main.go, baseline 981d25c). run() parses Go flag syntax (-anchor required, -oracle, -base, -out default candidate.json, -hidden 16, -epochs 60, -lr 0.05, -seed 1, -test-frac 0.25, -max-human-fpr 0.005, -min-bot-tpr 0.8, -min-cohort-humans 20, repeatable -require-cohort), reads the gold anchor and optional oracle JSONL through the shared bounded reader, admits only oracle records with ReviewRequired admission and reports how many weak-provenance records were quarantined (Go admitted them), reads the base bundle once within MAX_BUNDLE_BYTES and validates that buffer, then runs the promotion gate. Exit codes: 0 written or help, 1 input/precondition/output error, 2 usage (unknown flag, bad number, missing value, positional argument), 3 gate failed with nothing written and an existing output untouched. A passing candidate is written as one-space-indented serde_json and only its SHA-256 digest is printed on stdout for the separate signing/staging step; it never deploys.",
+      "pages": [
+        "docs/how-to/operate-behavioral-model.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-core/src/model/training/mlcorrect_train/tests.rs",
+      "sha256": "267d2cb963f25a8d7163a63c36c409194b97a15e9084be40947c98258da7c409",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Process-shell tests over owned temp files: passing gates write the candidate, print only its digest on stdout, report the excluded weak-provenance (challenge) oracle record and the TESSERACT split, and the written bundle loads with the expected version and schema hash; warm-starting from that candidate works while a base with a different hidden width fails with exit 1 and no output; a failed gate exits 3 and leaves an existing output untouched; missing -anchor, too few samples, bad JSONL, an invalid or oversized base and a missing anchor file exit 1 without output; -h/--help exit 0, unknown flags, bad numbers, a missing value and positional arguments exit 2 with usage on stderr and nothing on stdout; defaults and inline/repeatable flags parse as in Go; and version_stamp yields mlp-corrected-20270115-080000.",
+      "pages": [
+        "docs/how-to/operate-behavioral-model.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
       "source": "crates/sdk/humanymous-core/src/model/training/mod.rs",
-      "sha256": "2c4b21ef747e098f2add19b8b8b2624e2df3a592539dddd1356dca2f1b81c96a",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Module root for offline training inputs (evaluate, record, rng, sink, standardize, crate-private sgd) with no serving or model-activation authority; sgd is marked expected dead code outside tests until its bootstrap caller exists.",
+      "sha256": "ac7f2aac7259743cb126d68abb59bd362982572e2ef2155a5bf31cf3b27c9b62",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Module root for offline training inputs and the offline retrain path: public evaluate, gate, mlcorrect_train, record, rng, sink and standardize, plus the crate-private sgd trainer, which is now reached through the promotion gate so its dead-code expectation was removed. Re-reviewed 2026-11-18. No serving or model-activation authority.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/self-correcting-behavioral-model.md",
@@ -5459,9 +5509,9 @@
     },
     {
       "source": "crates/sdk/humanymous-core/src/model/training/sgd.rs",
-      "sha256": "df8eed499eae69be7c838f0994138c48b3be13bb0d22634d5fa58f95bd856e3b",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Crate-private bounded offline online-SGD trainer following legacy train.go operation order: validates tightenable limits (samples, hidden, epochs, updates, work units, RNG draws), schema, finite learning rate, labels, statistics and warm base; initializes weights on a seeded GoRng, shuffles each epoch, applies per-row ReLU-MLP updates with every intermediate checked finite and no FMA, and returns an owned candidate MlpBundle (calibration reset to 1/0) plus a summary. No serving, publication or activation; Go bit parity is unproven.",
+      "sha256": "22fced3665e9bc0a35c296b5b0332c69c796997c6a6cd4580550565e1d676902",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Crate-private bounded offline online-SGD trainer following legacy train.go operation order: validates tightenable limits (samples, hidden, epochs, updates, work units, RNG draws), schema, finite learning rate, labels, statistics and warm base; initializes weights on a seeded GoRng, shuffles each epoch, applies per-row ReLU-MLP updates with every intermediate checked finite and no FMA, and returns an owned candidate MlpBundle (calibration reset to 1/0) plus a summary. No serving, publication or activation; Go bit parity is unproven. Re-reviewed 2026-11-18: the only change marks TrainingResult.summary as expected dead code outside tests, since the promotion gate consumes only the candidate; training behaviour is unchanged.",
       "pages": [
         "docs/how-to/operate-behavioral-model.md",
         "docs/explanation/self-correcting-behavioral-model.md"
@@ -6617,9 +6667,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/Cargo.toml",
-      "sha256": "68676717b0db118e93d3fb0cf3a0c7d0de3a311a653f5c2186f54a7c6b4582e2",
+      "sha256": "0b1157d8c55ada2751c7c9ba2bbb272700bb93c6eb057760d368da2f469674de",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Manifest for the consolidated humanymous-runtime crate (description, readme README.md, publish = [\"crates-io\"] in the first crates.io wave, which performs no upload; autobins/autotests off, default feature gateway): feature-gated contexts gateway, authority, audit, capture, network and native-security plus hosted-pilot and credential-pilot, with pinned optional dependencies such as rustls 0.23.46 (ring, tls12), httlib-hpack 0.1.3, rcgen 0.14.10, interprocess 2.4.7, winsafe/keyring stores on Windows and rustix on Unix; the collector dev-dependency carries a registry version beside its path. It declares five binaries (humanymous-runtime, humanymous-h2-product-binding-measure, humanymous-authority, audit-witness, audit-control-retainer) and named gateway (now including gateway-deployment-manifests), authority, audit, capture and network parity integration tests, each with required features. The first [[bin]] table also repeats the package description line, which is not a Cargo target field. The manifest itself is not evidence that those binaries or tests ran.",
+      "notes": "Manifest for the consolidated humanymous-runtime crate (description, readme README.md, publish = [\"crates-io\"] in the first crates.io wave, which performs no upload; autobins/autotests off, default feature gateway): feature-gated contexts gateway, authority, audit, capture, network and native-security plus hosted-pilot and credential-pilot, with pinned optional dependencies such as rustls 0.23.46 (ring, tls12), httlib-hpack 0.1.3, rcgen 0.14.10, interprocess 2.4.7, winsafe/keyring stores on Windows and rustix on Unix; the collector dev-dependency carries a registry version beside its path. It declares five binaries (humanymous-runtime, humanymous-h2-product-binding-measure, humanymous-authority, audit-witness, audit-control-retainer) and named gateway (now also gateway-witness-input, path tests/gateway/witness_input.rs, required feature gateway, beside gateway-deployment-manifests), authority, audit, capture and network parity integration tests. No dependency changed in this revision. The first [[bin]] table also repeats the package description line, which is not a Cargo target field. The manifest itself is not evidence that those binaries or tests ran.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/reference/supported-topologies.md",
@@ -6667,9 +6717,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "ddf70bb50bd1c16ceb23ab932430e7abf97ca4bd3bba922178f9b938394d7589",
+      "sha256": "b479e7a91bd0f1e5d76082deb2efeb014ff8e1dd4c4db7da624d668a9a475d48",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 362 / macos 362 / windows 354 (354 common names plus 8 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 when merging codex/rust into claude/b11-observatory: the name lists are the union of both parents' already-reviewed additions, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 362 listed common plus Unix-only names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 396 / macos 396 / windows 386 (386 common names plus 10 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for merge train claude/merge-train-1 (codex/rust plus PR heads #87, #88, #77, #103, #106 and #113): the name lists are the union of all parents' already-reviewed additions, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 396 listed common plus Unix-only names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/how-this-was-built.md"
@@ -8068,9 +8118,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
-      "sha256": "c9309a56baa44854d5571284cbb175d70db16e71bbafc94c35aa0077630d6c38",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Private inherited gateway configuration (deny_unknown_fields, no Debug). validate() fails closed with 503 unless listen and origin are distinct loopback addresses with a nonzero origin port, operational settings are valid, there are 1-4096 routes, scope identities and authority are well formed, the browser origin equals http://<authority>, and every route has an allowed method, a strict target, no reserved path, rit required and no duplicates. BrowserAuthOnly routes need a browser policy and cannot use NativeStream. readiness() reports profile experimental-loopback-http1 with raw_tls, original_h2, browser collector, administration and product_qualified all false.",
+      "sha256": "5d5adb1fe30511db1a2330cdde10eaa1cbd2f23f3221f3bec7f99c31acccc9d9",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Private inherited gateway configuration (deny_unknown_fields, no Debug). It re-exports Audit, SealedKeys, WitnessInput, WitnessInputDurability and MAX_WITNESS_PROOF. validate() fails closed with 503 unless listen and origin are distinct loopback addresses with a nonzero origin port, operational settings are valid, there are 1-4096 routes, the audit witness input (when present) is structurally valid, scope identities and authority are well formed, the browser origin equals http://<authority>, and every route has an allowed method, a strict target, no reserved path, rit required and no duplicates. BrowserAuthOnly routes need a browser policy and cannot use NativeStream. readiness() reports profile experimental-loopback-http1 with raw_tls, original_h2, browser collector, administration and product_qualified all false.",
       "pages": [
         "docs/reference/cli-config-policy.md",
         "docs/reference/gate-origin-contract.md"
@@ -8078,9 +8128,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/configuration/audit.rs",
-      "sha256": "869a33d7a0abb139c103067af1883f569937aa4c1da96668b741f4767289e457",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Audit section of the gateway configuration: WAL directory, node id, a preprovisioned sealed key source (directory plus zeroized inherited passphrase, never initialized at startup), an allow_new history flag, an optional trusted head checkpoint and require_external_witness (default false). The test asserts that inline key fields such as hmac_key_hex and unknown key-source fields are rejected.",
+      "sha256": "136f8b16a4303164a9414adb3ab57af4cd3f135ab277b13e9f213dc297a3ce25",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Audit section of the gateway configuration: WAL directory, node id, a preprovisioned sealed key source (directory plus zeroized inherited passphrase, never initialized at startup), an allow_new history flag, an optional trusted head checkpoint, require_external_witness (default false) and an optional witness_input (deny_unknown_fields: read_fd, write_fd, pinned witness and writer public keys, durability file_and_directory or file_synced_namespace_unconfirmed, consistency proof default empty; private stdin is the only source, no environment fallback). witness_input_valid() accepts absence, otherwise requires require_external_witness, both descriptors at least 3, distinct and i32-representable, distinct keys and at most MAX_WITNESS_PROOF (64) proof hashes. Tests reject inline key fields and unknown sources, and each witness input violation including an unknown path field.",
       "pages": [
         "docs/how-to/key-management.md",
         "docs/how-to/verify-audit-log.md"
@@ -8284,19 +8334,37 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/logging.rs",
-      "sha256": "1cc8b3cfa7234bb4c8143aa46f204e8c5c0f03abe56b561a8ce64e8cd654ca48",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Operational logging kernel for the Gate and Core roles, ported from legacy logging.go. Diagnostics only: it never changes decisions and holds no global state or environment reads. resolve_setting applies flag, then environment, then fallback precedence. Settings validate level, format, stream and absolute non-duplicate file sinks, and an empty level is refused. OperationalLogger emits synchronously to console, plain and JSONL sinks, counting write errors per sink. Fatal records carry only a static class, observability records an allowlisted method with no path or panic material, and canonical_external_input_label is defined here. No runtime consumer of OperationalLogger was found outside the module. Reader page coverage is indirect.",
+      "sha256": "08b9cac2e48ca4d165c3fd9df94e2b190b8f7495a47a55ca4e4c2281a05944b2",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Operational logging kernel for the Gate and Core roles, ported from legacy logging.go. Diagnostics only: it never changes decisions and holds no global state or environment reads. resolve_setting applies flag, then environment, then fallback precedence. Settings validate level, format, stream and absolute non-duplicate file sinks, and an empty level is refused. OperationalLogger emits synchronously to console, plain and JSONL sinks, counting write errors per sink; per the 2026-11-16 owner decision this synchronous path is the one the gateway uses. Fatal records carry only a static class, observability records an allowlisted method with no path or panic material, and canonical_external_input_label is defined here. No runtime consumer of OperationalLogger was found outside the module. Re-reviewed 2026-11-18: it now declares the queue submodule, re-exports QueuedLogger, LogHandle, their stats and refusal types and the owned Attr/AttrValue, and factors record writing into write_record so the queue worker stamps sequence numbers in queue order; nothing in the gateway constructs the queued logger. Reader page coverage is indirect.",
       "pages": [
         "docs/how-to/observability-siem.md",
         "docs/reference/data-processing-inventory.md"
       ]
     },
     {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/logging/queue.rs",
+      "sha256": "f50a7f99ffa6ebd79ca3557713702d66155e757cfea193d95baed36ffa88368b",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Opt-in bounded asynchronous operational logger ported from legacy internal/logger logger.go and handler.go. QueuedLogger moves an OperationalLogger onto one worker thread behind a queue of 1024 items by default (zero selects the default; more than 65536 is refused with a static code). Producers never wait: a full queue or a closed logger drops the record and counts it per level under queue_full or closed. The worker assigns sequence numbers in queue order; flush waits until earlier records reached every sink and file sinks synced, close stops intake and drains, and both stop at a caller-supplied Instant deadline without discarding queued records. LogHandle with_attrs/with_group nest attributes like Go slog.Handler. A worker panic still marks the logger closed and done. Nothing in the gateway constructs it; the gateway keeps the synchronous logger. Reader page coverage is indirect.",
+      "pages": [
+        "docs/how-to/observability-siem.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/logging/queue/tests.rs",
+      "sha256": "c2e5338f6450044770a08c471c80b9575a3834e16ee0b901b1386f91365f3a51",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Queued-logger tests ported from legacy logger_test.go and sink_test.go plus a Go-measured attrs/groups golden. They assert queued plain/JSONL bytes match the synchronous golden, filtered records are neither written nor counted as drops, queue size zero selects the default and oversize is refused, concurrent producers yield intact JSON lines, saturation against a blocked writer does not block producers and counts drops exactly, one failed sink does not suppress another, flush and close are idempotent and honor their deadline while a sink is blocked (the queued record still drains after release), WithAttrs/WithGroup nesting matches Go output, and a file sink appends after close and reopen. Waits use generous deadlines; no assertion depends on a sleep.",
+      "pages": [
+        "docs/how-to/observability-siem.md"
+      ]
+    },
+    {
       "source": "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs",
-      "sha256": "8c71ce4c1665dcc503c07307a81cecb2f925be1a9fbe596a8dd444ac2e746f49",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Canonical operational log record shared by the plain and JSONL encodings (schema 1.0.0). Lines are capped at 4096 bytes and records at 64 fields, with message and field bounds; fields are dropped, then the message shortened, to fit. It strips ANSI, control and bidirectional characters, has no error or bytes value variant, writes non_finite for non-finite floats and uses RFC 3339 nanosecond timestamps. The documented approximations versus Go are plain quoting of a fixed escape set and serde float text.",
+      "sha256": "0dc41f6411cd5bb70703e412cabceb6b8958edea9b476092548dacd936d2ee76",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Canonical operational log record shared by the plain and JSONL encodings (schema 1.0.0). Lines are capped at 4096 bytes and records at 64 fields, with message and field bounds; fields are dropped, then the message shortened, to fit. It strips ANSI, control and bidirectional characters, has no error or bytes value variant, writes non_finite for non-finite floats and uses RFC 3339 nanosecond timestamps. The documented approximations versus Go are plain quoting of a fixed escape set and serde float text. Re-reviewed 2026-11-18: adds owned Attr/AttrValue values with a Group variant for the queued logger; group children are recorded under the dot-joined sanitized key, only top-level component and event keys set the envelope, and at top level a key that sanitizes to empty is dropped and marks the record truncated. The borrowed-attribute path used by the synchronous logger is unchanged in behavior.",
       "pages": [
         "docs/how-to/observability-siem.md"
       ]
@@ -8321,9 +8389,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/main.rs",
-      "sha256": "ca73f79c7238448033b064acdbdaf7dc704af1cbfab8d5e32a0a84c8366b329b",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Legacy humanymous-runtime binary entry point (feature gateway). It requires no arguments and non-terminal stdin and stdout, reads the private configuration from the inherited stdin pipe, binds a ServiceHost on a 2-worker Tokio runtime, writes one readiness JSON line to stdout, and runs until stopped. It holds no platform shutdown adapter: the watch sender is dropped locally, and the CLI/system-service adapter owns real shutdown. Errors print a static message and exit 1.",
+      "sha256": "cd2e0897ac55bdaa2ab0b7c0326d20389d88a0b0af90a0775f34f5824ffc3111",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Legacy humanymous-runtime binary entry point (feature gateway). It requires no arguments and non-terminal stdin and stdout, reads the private configuration from the inherited stdin pipe, then pins any configured inherited witness pipes with inherited_witness before custody is opened (refusing with \"witness input\"), binds a ServiceHost on a 2-worker Tokio runtime via bind_with_witness when a witness is present or bind otherwise, writes one readiness JSON line to stdout, and runs until stopped. It holds no platform shutdown adapter: the watch sender is dropped locally, and the CLI/system-service adapter owns real shutdown. Errors print a static message and exit 1.",
       "pages": [
         "docs/reference/cli-config-policy.md",
         "docs/reference/install-requirements.md",
@@ -8372,9 +8440,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/mod.rs",
-      "sha256": "348446adf8ac839d5d9d36e2bb1e4368244f80b68c7e6e8343c0b56f27130b58",
-      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway module root of the runtime crate: declares the application, ban, browser, configuration, connection cap, control, credential, external input, guard, http, logging, management, observatory, pass proof/store, request, seams, service, session, settings, shipping, smuggle, startup, TLS, token, verdict store and virtual USB modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Doc line states loopback component support is not product qualification.",
+      "sha256": "d2fd8bf58415007f7bc2a4623eaaca4aed575c8e35eac0e7b16b2c4f494e49f7",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Gateway module root of the runtime crate: declares the application, ban, browser, configuration, connection cap, control, credential, external input, guard, http, logging, management, model admission, observatory, pass proof/store, request, seams, service, session, settings, shipping, smuggle, startup, TLS, token, verdict store and virtual USB modules (lab_h2_measure only with hosted-pilot), re-exports authority::Rejection and wires the test module. Re-reviewed 2026-11-18 for merge train claude/merge-train-1: the only change unions both parents' module declarations, the lab-only observatory module and the public model_admission module (behavioral bundle startup admission). Doc line states loopback component support is not product qualification.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
@@ -8575,9 +8643,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/session.rs",
-      "sha256": "b349505271aba9efb239c9d7269dec814a6d67bf8ddc8aa5d7d9304d6a880577",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Volatile bounded session and rotating integrity-token owner: issues random 32-byte session ids and keys with capacity and TTL, provisions browser auth-only sessions only with a browser policy, and authorize() consumes exactly the next token after checking profile, deadline, counter and the RIT canonical binding of scope, method, target, deadline and all headers/body (browser profile requires strict counter+1 and returns an ACK signer). Clock rollback or audit failure poisons the epoch permanently via EpochHealth. collect() stores a session-bound client report with registry-rescored client-plane signals only and records fresh collector provenance, required for collector routes only with a rust-wasm engine and guard reported.",
+      "sha256": "72b04b5acd141ffaab6c0c4bdf13c55ccb38a7d96f6b0460d1cd4fca1455f8ef",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Volatile bounded session and rotating integrity-token owner: issues random 32-byte session ids and keys with capacity and TTL, provisions browser auth-only sessions only with a browser policy, and authorize() consumes exactly the next token after checking profile, deadline, counter and the RIT canonical binding of scope, method, target, deadline and all headers/body (browser profile requires strict counter+1 and returns an ACK signer). Clock rollback or audit failure poisons the epoch permanently via EpochHealth. collect() stores a session-bound client report with registry-rescored client-plane signals only and records fresh collector provenance, required for collector routes only with a rust-wasm engine and guard reported. Re-reviewed 2026-11-18: the only change declares the public store submodule (the Go-parity CollectorStore component port); session behaviour is unchanged.",
       "pages": [
         "docs/reference/gate-origin-contract.md",
         "docs/how-to/configure-attested-routes.md",
@@ -8736,9 +8804,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/startup.rs",
-      "sha256": "e534e8b9bdccb55ec9989a4237489c3548eb7e5f6759d97976bfcebd62c90a61",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Audit custody startup: ExternalWitness pins a broker client by public key and durability; open_audit, open_audit_with_witness and recover_audit_with_witness require private audit and key directories, refuse a missing required witness, and allow recovery only with a witness, trusted head and no new history. SealedAudit holds the log and custody lifetime, exposes witnessed_through, sequence, records, flush and recovery coverage, and native_owner maps Unix or Windows SID owners.",
+      "sha256": "7164a9a8b7915fb2c523ed17184b3f143507e4b704d5011ada90c8c505874068",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Audit custody startup: ExternalWitness pins a broker client by public key and durability; open_audit, open_audit_with_witness and recover_audit_with_witness require private audit and key directories, refuse a missing required witness, and allow recovery only with a witness, trusted head and no new history. The private inherited submodule supplies inherited_witness for the shipped binary's inherited pipe input. SealedAudit holds the log and custody lifetime, exposes witnessed_through, sequence, records, flush and recovery coverage, and native_owner maps Unix or Windows SID owners. Pinning a key does not establish process or organizational independence.",
       "pages": [
         "docs/reference/security-audit.md",
         "docs/reference/on-call-quick-reference.md"
@@ -8784,9 +8852,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/tests/service.rs",
-      "sha256": "d33c02e3e9c378304fbe52f8862767065f5b6d794fedcc962d3ff01f612399fa",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Unix-only ServiceHost tests over actual IPC, listener and custody (execution requires allocation): a witnessed settings commit invalidates sessions and is restored after restart at revision 1, management drains before custody release with credential, settings view and cleanup checks, and a closed shutdown controller reports a Drain failure rather than Stopped while audit is flushed. Uses synthetic keys and a same-process witness, not deployment independence.",
+      "sha256": "98f5a80ca9f5dfbf50365ba37b11929f25dc404525be40f29f1afed64f779083",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unix-only ServiceHost tests over actual IPC, listener and custody (execution requires allocation), now with settings_operator and witness_input submodules: a witnessed settings commit invalidates sessions and is restored after restart at revision 1, management drains before custody release with credential, settings view and cleanup checks, and a closed shutdown controller reports a Drain failure rather than Stopped while audit is flushed. Uses synthetic keys and a same-process witness, not deployment independence.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
         "docs/reference/security-audit.md"
@@ -10122,6 +10190,78 @@
         "docs/reference/production-vs-reference.md",
         "docs/help/challenge-accessibility.md",
         "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/startup/inherited.rs",
+      "sha256": "b3ac3752ad19090cbdfa6d09d6b7374ca861f8290afd0710d2460fc6bdefc7b3",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Shipped-binary inherited witness input: inherited_witness(config) returns None when audit.witness_input is absent and refuses when witness_input_valid() is false. On Unix it reopens the configured read and write descriptors through /proc/self/fd/N (or /dev/fd/N) with O_NONBLOCK, requires both to be FIFOs, then restores blocking mode; on Linux it first checks each descriptor's access mode in /proc/self/fdinfo. It bootstraps WitnessServiceClient::from_ready either pinned to the configured trusted head and consistency proof or as new history, checks the pinned witness and writer keys, and maps the configured durability (file_and_directory, or file_synced_namespace_unconfirmed to FileSynced) into ExternalWitness. Every failure refuses startup; non-Unix targets return Unsupported. Pinning a key over inherited pipes does not establish process or organizational independence of the witness.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/tests/service/witness_input.rs",
+      "sha256": "ba343b5369485b6282578a3fc3441adc250e8c88a57aad4efac2626773e9a0f3",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unix-only component tests (the service module is cfg(unix)) over real OS pipes with the audit witness service running in a thread: inherited_pipe_witness_pins_identity_and_cosigns_durable_audit pins identity, co-signs durable audit at file_and_directory durability, the witness persists the head and closing the write ends gives a clean EOF; inherited_witness_refusals_happen_before_custody_or_unlock checks that a wrong witness key, a regular file, a closed descriptor number, a witness that exits before ready, the wrong direction (Linux only) and a missing required witness all refuse with audit left empty and the passphrase unconsumed. Synthetic keys and a same-process witness; component evidence, not deployment independence.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/reference/on-call-quick-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/gateway/witness_input.rs",
+      "sha256": "4bbeb5db0f03c6d993a02549ccfceff1d5f1c17855d09d1fe4c76cbbacbe9e1a",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Unix-only integration test (gateway-witness-input target) shipped_binary_inherited_witness_pins_cosigns_and_poisons_on_loss: spawns the shipped humanymous-runtime binary with exec-inherited pipes to a separate audit-witness process. Uninherited descriptor numbers and a wrong witness key refuse readiness; the ready profile reports audit_external_witness true and product_qualified false; one valid request is admitted (200) and another denied (403), the witness persists the co-signed head, and after witness loss the next decision is 503 with the epoch staying poisoned and no origin connection. It states it is not the Docker transport case and does not qualify the product.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/model_admission.rs",
+      "sha256": "590f611bbc4efb9eb29ae53b1c098c53fead7103e9548929817bd75212cb2292",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Startup admission of the behavioral model bundle (legacy cmd/server ml_setup.go setupBehavioralML admission half and the Ed25519 half of internal/mlcorrect bundle.go, baseline 981d25c). admit() returns Disabled without a bundle (reporting an ignored shadow bundle), otherwise reads the optional PKIX Ed25519 public key and detached signature within 16 KiB and the bundle within MAX_BUNDLE_BYTES, then stages through the core BundleManager (unsigned lab policy without a key, signed policy with an Ed25519Verifier otherwise) so the digest pin, signature and schema pin are enforced on the exact decoded bytes, and promotes the lab identity. Every failure is a typed Refusal and the model seam keeps abstaining; Admitted reports signed and schema_pin_only and leaves installing the model into a serving seam to the caller. Documented fail-closed deltas: an empty key file is refused (legacy admitted unsigned while logging signed=true), verify_strict rejects small-order keys, only an exact Ed25519 SPKI is accepted (other algorithms are NotEd25519, malformed DER is Der) and PEM headers are refused. Calibration, canary rollback and shadow scoring are not ported; nothing in the runtime calls admit() yet.",
+      "pages": [
+        "docs/how-to/operate-behavioral-model.md",
+        "docs/explanation/self-correcting-behavioral-model.md",
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs",
+      "sha256": "f57614c83b373edf3703d2afa8d0c7429c31ea9e862967ba978d0596e7a4a0ac",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Ten tests porting legacy ml_setup_test.go and bundle_test.go TestStage_SignatureRequiredWhenKeyConfigured with real PKIX PEM Ed25519 keys: an unsigned bundle is admitted when no key is configured; a bundle is refused when a key is configured and the signature is missing; a properly signed bundle is admitted and serves predictions; stage requires a signature under the key; the digest pin is enforced and an empty digest flag means unset; no bundle means Disabled and a shadow bundle is reported as ignored; unreadable key, signature or bundle files and a stale schema are refused and leave the seam abstaining; an empty key file is refused rather than treated as unsigned; PEM/PKIX parsing skips leading text, refuses headers, bad base64, truncated or non-Ed25519 SPKI; and a small-order public key never verifies under verify_strict.",
+      "pages": [
+        "docs/how-to/operate-behavioral-model.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/session/store.rs",
+      "sha256": "4a4db775ba46fea13048661c056fda434464b61c46184269323c2203d9e642a4",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "CollectorStore: component port of the Go internal/collector session.go/merge.go TTL store (baseline 981d25c). It keeps one merged SessionReport per caller-supplied session id with RIT counter, one-shot tokenless RIT bootstrap grace, PoW issue time/difficulty (first write wins, reset on solve), a permanent pow_too_fast flag and a label. merge_client drops any client signal claiming server provenance (Source::Server or an l5./l6./l7./x. id); merge_network pins the first network observation and afterwards appends only the nine request-scoped hop/proxy/IP residual ids; gc() removes entries idle past the TTL, and list() is bounded but, like Go, returns one report for limit 0. The header states ids are not authenticated here, callers serialize access, and the gateway request path does not consult this store; no scoring weights or thresholds are defined.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs",
+      "sha256": "4684a7d69a6922bd903b41999e23110e0819cc0240c1d1e9f926077e54419046",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Eleven unit tests porting Go internal/collector collector_test.go plus implicit session.go/merge.go behaviour: lifecycle, GC expiry by idle TTL, first-network pinning, request-scoped hop residuals appended after the pin and the exact residual-id set (negative cases use registered non-request-scoped ids), client merge and label, forged server-provenance client signals (server source, l5/l6/l7/x ids) dropped with None vs empty-vector parity, store_scored replacing the report while keeping the pin, one-shot RIT bootstrap with bare zero-timestamp sessions, PoW issue first-write-wins/solve reset/permanent too-fast, and list bounding including one report for a zero limit.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/reference/gate-origin-contract.md"
       ]
     },
     {

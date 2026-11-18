@@ -1,5 +1,8 @@
 //! Private inherited configuration, durable audit startup and native listener.
-use humanymous_runtime::gateway::service::{ServiceHost, read_configuration};
+use humanymous_runtime::gateway::{
+    service::{ServiceHost, read_configuration},
+    startup::inherited_witness,
+};
 use std::io::{self, IsTerminal, Write};
 
 fn run() -> Result<(), &'static str> {
@@ -7,15 +10,19 @@ fn run() -> Result<(), &'static str> {
         return Err("private inherited configuration/readiness pipes required");
     }
     let config = read_configuration(io::stdin().lock()).map_err(|_| "configuration pipe")?;
+    // Configured inherited witness pipes are pinned before custody is opened.
+    let witness = inherited_witness(&config).map_err(|_| "witness input")?;
     let runtime = tokio::runtime::Builder::new_multi_thread()
         .worker_threads(2)
         .enable_all()
         .build()
         .map_err(|_| "runtime")?;
     runtime.block_on(async move {
-        let host = ServiceHost::bind(config)
-            .await
-            .map_err(|_| "service startup")?;
+        let host = match witness {
+            Some(witness) => ServiceHost::bind_with_witness(config, witness).await,
+            None => ServiceHost::bind(config).await,
+        }
+        .map_err(|_| "service startup")?;
         {
             let mut stdout = io::stdout().lock();
             serde_json::to_writer(&mut stdout, host.readiness()).map_err(|_| "readiness pipe")?;

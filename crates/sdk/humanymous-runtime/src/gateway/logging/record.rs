@@ -65,6 +65,59 @@ pub enum Value<'a> {
     Str(&'a str),
 }
 
+/// Owned attribute for the queued logger, where a record is built on the
+/// producer thread and attributes bound with `with_attrs` outlive the call.
+/// A group nests its children under its key as Go `slog.Group` did.
+#[derive(Debug, Clone, PartialEq)]
+pub struct Attr {
+    /// Raw key; sanitized when the record is built.
+    pub key: String,
+    /// Scalar value or nested group.
+    pub value: AttrValue,
+}
+
+/// Value of an owned [`Attr`].
+#[derive(Debug, Clone, PartialEq)]
+pub enum AttrValue {
+    /// Boolean.
+    Bool(bool),
+    /// Signed integer.
+    I64(i64),
+    /// Unsigned integer.
+    U64(u64),
+    /// Float; non-finite values become the text `non_finite`.
+    F64(f64),
+    /// Text; sanitized and bounded before encoding.
+    Str(String),
+    /// Children recorded as `key.child`; a group never sets the envelope.
+    Group(Vec<Attr>),
+}
+
+impl Attr {
+    /// Scalar attribute.
+    pub fn new(key: &str, value: Value<'_>) -> Self {
+        let value = match value {
+            Value::Bool(v) => AttrValue::Bool(v),
+            Value::I64(v) => AttrValue::I64(v),
+            Value::U64(v) => AttrValue::U64(v),
+            Value::F64(v) => AttrValue::F64(v),
+            Value::Str(v) => AttrValue::Str(v.to_owned()),
+        };
+        Self {
+            key: key.to_owned(),
+            value,
+        }
+    }
+
+    /// Group attribute; an empty key drops the group and marks truncation.
+    pub fn group(key: &str, children: Vec<Attr>) -> Self {
+        Self {
+            key: key.to_owned(),
+            value: AttrValue::Group(children),
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize)]
 #[serde(untagged)]
 enum Stored {
@@ -100,11 +153,20 @@ impl Record {
         message: &str,
         attrs: &[(&str, Value<'_>)],
     ) -> Self {
+        let mut record = Self::envelope(at, level, identity, message);
+        for (key, value) in attrs {
+            record.add_scalar("", key, *value);
+        }
+        record
+    }
+
+    /// Envelope without fields; attributes follow with [`Self::add_attr`].
+    pub(super) fn envelope(at: Duration, level: Level, identity: [&str; 3], message: &str) -> Self {
         let [service, version, node] = identity;
         let (message, message_changed) = sanitize(message, MAX_MESSAGE_BYTES);
         let (component, component_changed) =
             sanitize(&format!("{service}.runtime"), MAX_IDENTITY_BYTES);
-        let mut record = Self {
+        Self {
             schema_version: SCHEMA_VERSION,
             ts: rfc3339_nano(at),
             level: level.as_str(),
@@ -117,23 +179,48 @@ impl Record {
             sequence: 0,
             fields: BTreeMap::new(),
             truncated: message_changed || component_changed,
-        };
-        for (key, value) in attrs {
-            record.add(key, *value);
         }
-        record
     }
 
-    fn add(&mut self, raw_key: &str, value: Value<'_>) {
+    /// Go `record.addAttr`: the sanitized key joins a non-empty group
+    /// `prefix` with a dot; only top-level `component` and `event` set the
+    /// envelope; a group recurses with its joined key as the new prefix.
+    pub(super) fn add_attr(&mut self, prefix: &str, attr: &Attr) {
+        let value = match &attr.value {
+            AttrValue::Group(children) => {
+                if let Some(key) = self.field_key(prefix, &attr.key) {
+                    for child in children {
+                        self.add_attr(&key, child);
+                    }
+                }
+                return;
+            }
+            AttrValue::Bool(v) => Value::Bool(*v),
+            AttrValue::I64(v) => Value::I64(*v),
+            AttrValue::U64(v) => Value::U64(*v),
+            AttrValue::F64(v) => Value::F64(*v),
+            AttrValue::Str(v) => Value::Str(v),
+        };
+        self.add_scalar(prefix, &attr.key, value);
+    }
+
+    fn field_key(&mut self, prefix: &str, raw_key: &str) -> Option<String> {
         let (key, changed) = sanitize(raw_key, MAX_FIELD_KEY_BYTES);
-        let key = sanitize_key(&key);
+        let mut key = sanitize_key(&key);
+        if !prefix.is_empty() {
+            key = format!("{prefix}.{key}");
+        }
         if changed || key.is_empty() {
             self.truncated = true;
         }
-        if key.is_empty() {
+        (!key.is_empty()).then_some(key)
+    }
+
+    fn add_scalar(&mut self, prefix: &str, raw_key: &str, value: Value<'_>) {
+        let Some(key) = self.field_key(prefix, raw_key) else {
             return;
-        }
-        if key == "component" || key == "event" {
+        };
+        if prefix.is_empty() && (key == "component" || key == "event") {
             let (text, mut changed) = sanitize(&value_text(value), MAX_IDENTITY_BYTES);
             if key == "component" {
                 if !text.is_empty() {
@@ -326,7 +413,7 @@ fn is_direction_or_separator(c: char) -> bool {
         | '\u{2066}'..='\u{2069}' | '\u{2028}' | '\u{2029}' | '\u{feff}')
 }
 
-fn sanitize_key(value: &str) -> String {
+pub(super) fn sanitize_key(value: &str) -> String {
     let mapped: String = value
         .to_lowercase()
         .chars()

@@ -30,6 +30,11 @@ wasmparser.workspace = true
 [dev-dependencies]
 humanymous-platform = { workspace = true, features = ["testing"] }
 
+# Offline retrain/promotion-gate shell (legacy cmd/mlcorrect-train); no deploy authority.
+[[bin]]
+name = "mlcorrect-train"
+path = "src/bin/mlcorrect_train.rs"
+
 [[example]]
 name = "integrity_canonical_performance"
 path = "examples/integrity_canonical_performance.rs"
