@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 475,
-      "macos": 475,
-      "windows": 463
+      "linux": 476,
+      "macos": 476,
+      "windows": 464
     },
     "common_test_names": [
       "gateway::application::temporal::tests::categories::configure_only_preserves_unknown_gap_until_provider_observation",
@@ -338,6 +338,7 @@
       "gateway::settings::overlay::tests::decoder_rejects_malformed_documents_and_depth_beyond_go_limit",
       "gateway::settings::overlay::tests::empty_overlay_keeps_frozen_engine_defaults",
       "gateway::settings::overlay::tests::file_store_round_trip",
+      "gateway::settings::overlay::tests::nan_scoring_overlay_validates_like_go_but_scoring_fails_closed",
       "gateway::settings::overlay::tests::parity::engine_scores_under_resolved_overlays_match_go",
       "gateway::settings::overlay::tests::parity::file_store_scenarios_match_go",
       "gateway::settings::overlay::tests::parity::go_float_text_matches_oracle_captures",

@@ -41,8 +41,20 @@ pub enum Mode {
     Shadow,
     /// `off`.
     Off,
-    /// Any other spelling, including the empty string.
-    Other(String),
+    /// Any other spelling, including the empty string. Only [`Mode::parse`]
+    /// and [`Mode::default`] build it, so it never holds a known spelling.
+    Other(UnknownMode),
+}
+
+/// A mode spelling outside the known set, kept verbatim for refusal messages.
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct UnknownMode(String);
+
+impl UnknownMode {
+    /// Exact wire spelling.
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
 }
 
 impl Mode {
@@ -53,7 +65,7 @@ impl Mode {
             "monitor" => Self::Monitor,
             "shadow" => Self::Shadow,
             "off" => Self::Off,
-            other => Self::Other(other.into()),
+            other => Self::Other(UnknownMode(other.into())),
         }
     }
     /// Exact wire spelling.
@@ -63,7 +75,7 @@ impl Mode {
             Self::Monitor => "monitor",
             Self::Shadow => "shadow",
             Self::Off => "off",
-            Self::Other(value) => value,
+            Self::Other(value) => value.as_str(),
         }
     }
 }
@@ -71,7 +83,7 @@ impl Mode {
 impl Default for Mode {
     /// The oracle's zero value is the empty string, which is not a valid mode.
     fn default() -> Self {
-        Self::Other(String::new())
+        Self::Other(UnknownMode(String::new()))
     }
 }
 

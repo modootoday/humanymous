@@ -294,6 +294,36 @@ fn empty_overlay_keeps_frozen_engine_defaults() {
     assert!(engine.net_policy.is_none());
 }
 
+/// Go's range checks are false for NaN, so the oracle validator accepts a NaN
+/// challengeAt or weight multiplier; the port keeps that, and the frozen
+/// engine then refuses to score (fail-closed) instead of deciding on NaN.
+#[test]
+fn nan_scoring_overlay_validates_like_go_but_scoring_fails_closed() {
+    use humanymous_core::scoring::engine::ScoringError;
+    use humanymous_core::signals::report::SessionReport;
+    let challenge = Overlay {
+        scoring: Some(ScoringPatch {
+            challenge_at: Some(f64::NAN),
+            ..ScoringPatch::default()
+        }),
+        ..Overlay::default()
+    };
+    let weight = Overlay {
+        weight_multipliers: BTreeMap::from([("sig".to_owned(), f64::NAN)]),
+        ..Overlay::default()
+    };
+    for overlay in [challenge, weight] {
+        assert_eq!(validate(Some(&overlay)), Ok(()), "{overlay:?}");
+        let mut engine = Engine::default();
+        configure_engine(&mut engine, &resolve(&boot(b"k"), Some(&overlay)));
+        assert_eq!(
+            engine.score(&mut SessionReport::default()),
+            Err(ScoringError::NonFinitePolicy),
+            "{overlay:?}"
+        );
+    }
+}
+
 #[test]
 fn store_refuses_empty_directory_and_invalid_overlay_without_writing() {
     assert_eq!(
