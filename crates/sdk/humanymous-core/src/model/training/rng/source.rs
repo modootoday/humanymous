@@ -98,6 +98,34 @@ impl GoRng {
         *self = candidate;
         Ok(value)
     }
+
+    /// Go `Rand.Intn(n)` for `0 < n <= i32::MAX`: the PUBLIC `Int31n` (power-of-two
+    /// mask, otherwise rejection above the largest multiple), not the internal
+    /// Lemire `int31n` used by Shuffle. `n` outside that range is refused rather
+    /// than panicking. A budget failure restores the state from before the call.
+    pub fn intn(&mut self, n: u32) -> Result<u32, RngError> {
+        if n == 0 || n > i32::MAX as u32 {
+            return Err(RngError::SampleLimit);
+        }
+        let mut candidate = self.clone();
+        let value = if n & (n - 1) == 0 {
+            int31(&mut candidate)? & (n - 1)
+        } else {
+            let max = i32::MAX as u32 - (1_u32 << 31) % n;
+            let mut value = int31(&mut candidate)?;
+            while value > max {
+                value = int31(&mut candidate)?;
+            }
+            value % n
+        };
+        *self = candidate;
+        Ok(value)
+    }
+}
+
+/// Go `Int31`: the top 31 bits of `Int63`.
+fn int31(rng: &mut GoRng) -> Result<u32, RngError> {
+    Ok((rng.int63()? >> 32) as u32)
 }
 
 impl DrawSource for GoRng {

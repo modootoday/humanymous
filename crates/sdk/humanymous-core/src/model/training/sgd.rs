@@ -23,7 +23,15 @@ pub(crate) struct TrainConfig<'a> {
     pub(crate) version: &'a str,
 }
 
-/// All configurable capacities may tighten, never widen, these defaults.
+/// Absolute offline work ceiling (`updates * hidden * FEATURE_DIM`). The
+/// legacy `ml-train` defaults (20000 generated samples, 16000 training rows x
+/// 60 epochs x 16 hidden x 27 features = 414,720,000 units) fit under it; no
+/// profile may exceed it.
+pub(crate) const MAX_WORK_UNITS: u64 = 500_000_000;
+
+/// All configurable capacities may tighten, never widen, these defaults, except
+/// `work_units`, which may rise to [`MAX_WORK_UNITS`] through the explicit
+/// [`TrainLimits::legacy_bootstrap`] profile.
 #[derive(Debug, Clone, Copy)]
 pub(crate) struct TrainLimits {
     pub(crate) samples: usize,
@@ -43,6 +51,18 @@ impl Default for TrainLimits {
             updates: 1_000_000,
             work_units: 100_000_000,
             rng_draws: 1_000_000,
+        }
+    }
+}
+
+impl TrainLimits {
+    /// Bootstrap profile for the legacy `ml-train` command: the defaults with
+    /// the work ceiling raised to [`MAX_WORK_UNITS`] so its legacy default run
+    /// is admitted. Samples, epochs, updates and RNG draws stay at the defaults.
+    pub(crate) fn legacy_bootstrap() -> Self {
+        Self {
+            work_units: MAX_WORK_UNITS,
+            ..Self::default()
         }
     }
 }
@@ -114,7 +134,7 @@ fn validate(
         || limits.updates == 0
         || limits.updates > cap.updates
         || limits.work_units == 0
-        || limits.work_units > cap.work_units
+        || limits.work_units > MAX_WORK_UNITS
         || limits.rng_draws == 0
         || limits.rng_draws > cap.rng_draws
     {

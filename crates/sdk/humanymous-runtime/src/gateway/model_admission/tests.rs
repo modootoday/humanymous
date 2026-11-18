@@ -5,7 +5,7 @@ use super::*;
 use ed25519_dalek::{Signer, SigningKey};
 use humanymous_core::behavior::features::{FEATURE_DIM, schema_hash};
 use humanymous_core::model::correction::digest;
-use humanymous_core::model::inference::{MlpBundle, Runtime};
+use humanymous_core::model::inference::{MlpBundle, Predictor, Runtime};
 use std::path::Path;
 use std::sync::Arc;
 
@@ -357,4 +357,108 @@ fn small_order_public_key_never_verifies() {
     let mut signature = [0_u8; 64];
     signature[0] = 1;
     assert!(!verifier.verify(b"bundle", &signature));
+}
+
+fn admitted_v1(dir: &TempDir) -> Box<Admitted> {
+    let bundle = dir.write("v1.json", &valid_bundle("v1"));
+    match admit(&flags(&bundle)) {
+        Admission::Admitted(admitted) => admitted,
+        other => panic!("precondition: v1 must be admitted, got {other:?}"),
+    }
+}
+
+#[test]
+fn lab_control_uses_legacy_controller_parameters_without_a_canary() {
+    let dir = TempDir::new("lab-defaults");
+    let admitted = admitted_v1(&dir);
+    let control = lab_control(&admitted, &ControlFlags::default(), None).unwrap();
+    let snapshot = control.controller.snapshot();
+    // NewController(float32(-ml-fp-budget default 0.005), 0.5, 0.01)
+    assert_eq!(snapshot.calibration.budget, 0.005);
+    assert_eq!(control.controller.proposed_fire_threshold(), 0.5);
+    assert!(!control.canary_armed);
+    assert_eq!(snapshot.canary.state.as_str(), "off");
+    assert!(matches!(control.shadow, ShadowCandidate::NotConfigured));
+    assert_eq!(
+        ControlFlags::default(),
+        ControlFlags {
+            fp_budget: 0.005,
+            canary: false,
+            canary_max_fp: 0.02,
+            canary_probation: 200,
+        }
+    );
+}
+
+#[test]
+fn canary_breach_rolls_the_admitted_lab_identity_back() {
+    let dir = TempDir::new("lab-canary");
+    let admitted = admitted_v1(&dir);
+    let control = lab_control(
+        &admitted,
+        &ControlFlags {
+            canary: true,
+            canary_max_fp: 0.10,
+            canary_probation: 100_000,
+            ..ControlFlags::default()
+        },
+        None,
+    )
+    .unwrap();
+    assert!(control.canary_armed);
+    assert_eq!(control.controller.snapshot().canary.state.as_str(), "armed");
+    assert_eq!(admitted.bundles.active().unwrap().version, "v1");
+    for _ in 0..400 {
+        control
+            .controller
+            .observe_outcome(
+                humanymous_core::model::correction::Outcome::PassSolved,
+                0.9,
+                false,
+            )
+            .unwrap();
+    }
+    assert_eq!(
+        control.controller.snapshot().canary.state.as_str(),
+        "tripped"
+    );
+    // legacy bm.Rollback(): no previous bundle -> back to the abstaining default
+    assert_eq!(admitted.bundles.active(), None);
+}
+
+#[test]
+fn shadow_candidate_is_loaded_or_refused_but_never_served() {
+    let dir = TempDir::new("lab-shadow");
+    let admitted = admitted_v1(&dir);
+    let shadow = dir.write("cand.json", &valid_bundle("cand"));
+    let control = lab_control(&admitted, &ControlFlags::default(), Some(&shadow)).unwrap();
+    let ShadowCandidate::Loaded(model) = control.shadow else {
+        panic!("a valid shadow bundle must load");
+    };
+    assert_eq!(model.bundle_version(), "cand");
+    assert_eq!(admitted.bundles.active().unwrap().version, "v1");
+    for bad in [
+        dir.write("bad.json", b"{not json"),
+        dir.0.join("absent.json"),
+    ] {
+        let control = lab_control(&admitted, &ControlFlags::default(), Some(&bad)).unwrap();
+        assert!(matches!(control.shadow, ShadowCandidate::Refused));
+    }
+}
+
+#[test]
+fn nonfinite_control_parameters_are_refused() {
+    let dir = TempDir::new("lab-nonfinite");
+    let admitted = admitted_v1(&dir);
+    let nan_budget = ControlFlags {
+        fp_budget: f64::NAN,
+        ..ControlFlags::default()
+    };
+    assert!(lab_control(&admitted, &nan_budget, None).is_err());
+    let nan_canary = ControlFlags {
+        canary: true,
+        canary_max_fp: f64::INFINITY,
+        ..ControlFlags::default()
+    };
+    assert!(lab_control(&admitted, &nan_canary, None).is_err());
 }
