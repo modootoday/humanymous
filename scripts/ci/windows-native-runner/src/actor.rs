@@ -616,6 +616,9 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
         },
         &source,
     )?;
+    // The actor's PATH is System32 only, so the parent resolves workspace
+    // package roles with its own Cargo and hands the bytes over.
+    let package_metadata = harness::packages::Packages::capture_metadata(&options.report)?;
     evidence::verify_snapshot(&source)?;
     let mut nonce = [0u8; 16];
     getrandom::fill(&mut nonce).map_err(io::Error::other)?;
@@ -663,8 +666,10 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
         let manifest_path = scratch.join("manifest.json");
         let source_path = scratch.join("source.json");
         let report = scratch.join("report.json");
+        let package_metadata_path = scratch.join("package-metadata.json");
         evidence::write(&manifest_path, &manifest)?;
         evidence::write(&source_path, &source)?;
+        fs::write(&package_metadata_path, &package_metadata)?;
         let workspace = std::env::current_dir()?.canonicalize()?;
         for (flag, rights) in [
             ("/grant", "(OI)(CI)(RX)"),
@@ -687,10 +692,27 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
         let mut environment = vec![
             ("SystemRoot".into(), system.clone()),
             ("WINDIR".into(), system.clone()),
-            ("PATH".into(), format!("{system}\\System32;{system}")),
+            ("PATH".into(), actor_path(&system)),
             ("TEMP".into(), temp.to_string_lossy().into_owned()),
             ("TMP".into(), temp.to_string_lossy().into_owned()),
         ];
+        // Workspace tests read the checkout with `git`. The checkout belongs
+        // to the provisioning administrator, so the actor trusts exactly this
+        // one directory at command scope instead of any global configuration.
+        environment.extend(git_safe_directory(&workspace));
+        // Machine-wide, non-secret defaults every interactive Windows process
+        // has; PowerShell resolves `git` through PATHEXT. Nothing user-scoped.
+        for name in [
+            "PATHEXT",
+            "SystemDrive",
+            "ProgramFiles",
+            "ProgramData",
+            "ComSpec",
+        ] {
+            if let Ok(value) = std::env::var(name) {
+                environment.push((name.into(), value));
+            }
+        }
         if service {
             environment.extend([
                 ("GITHUB_ACTIONS".into(), "true".into()),
@@ -711,6 +733,8 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
             manifest_path.into_os_string(),
             "--source".into(),
             source_path.into_os_string(),
+            "--package-metadata".into(),
+            package_metadata_path.into_os_string(),
             "--expected-sid".into(),
             sid.clone().into(),
         ];
@@ -887,4 +911,35 @@ mod owner_tests {
             assert!(phase.cleanup_target() == CleanupTarget::OwnedJob);
         }
     }
+}
+
+/// System32 plus the directories that hold `git.exe` and `pwsh.exe` on the
+/// provisioning parent's PATH; workspace tests and coordination fixtures run
+/// those tools. Nothing else from the parent environment is carried over.
+fn actor_path(system: &str) -> String {
+    let mut path = format!("{system}\\System32;{system}");
+    let parent = std::env::var_os("PATH").unwrap_or_default();
+    for tool in ["git.exe", "pwsh.exe"] {
+        if let Some(text) = std::env::split_paths(&parent)
+            .find(|dir| dir.join(tool).is_file())
+            .and_then(|dir| dir.to_str().map(str::to_owned))
+            .filter(|text| !text.contains(';'))
+        {
+            path.push(';');
+            path.push_str(&text);
+        }
+    }
+    path
+}
+fn git_safe_directory(workspace: &Path) -> Vec<(String, String)> {
+    let text = workspace.to_string_lossy();
+    let text = text
+        .strip_prefix(r"\\?\")
+        .unwrap_or(&text)
+        .replace('\\', "/");
+    vec![
+        ("GIT_CONFIG_COUNT".into(), "1".into()),
+        ("GIT_CONFIG_KEY_0".into(), "safe.directory".into()),
+        ("GIT_CONFIG_VALUE_0".into(), text),
+    ]
 }

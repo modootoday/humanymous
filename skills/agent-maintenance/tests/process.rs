@@ -1,12 +1,16 @@
 //! Actual executable boundary tests using temporary owned fixtures.
 use std::{fs, path::PathBuf, process::Command};
 
+/// SystemTime resolution (100 ns on Windows, 1 us on macOS) cannot separate
+/// parallel fixtures in one process; the counter keeps their roots distinct.
+static NEXT: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
 struct Fixture(PathBuf);
 impl Fixture {
     fn new() -> Self {
         let root = std::env::temp_dir().join(format!(
-            "humanymous-agent-test-{}-{}",
+            "humanymous-agent-test-{}-{}-{}",
             std::process::id(),
+            NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .unwrap()
