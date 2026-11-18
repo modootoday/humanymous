@@ -712,6 +712,11 @@ impl Lab {
                 collector["HostConfig"]["NetworkMode"] == "none",
                 json!("no external browser traffic"),
             )?;
+            self.case(
+                "collector-tmpfs",
+                collector_writable_tmp(&collector["HostConfig"]),
+                json!("read-only root with a writable /tmp tmpfs for the test runner"),
+            )?;
             self.stage = "collector_process";
             let result = self.docker.invoke(
                 &[
@@ -1321,7 +1326,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         // Refuse before CEF when freeze/module/bundle prerequisites fail (Cap conservation).
         g4_cef_at::require_freeze_preimages(&root)?;
         g4_cef_at::require_cap_module(&root)?;
-        g4_cef_at::require_cef_bundle()?;
+        g4_cef_at::require_cef_bundle(&root)?;
         if collector
             || topology_only
             || browser_product
@@ -1580,14 +1585,67 @@ fn collector_outcome(success: bool, exit: Option<i64>, stdout: &str, stderr: &st
         "collector_runner_panic"
     } else if any("No such file or directory") {
         "collector_missing_file"
-    } else if any("Read-only file system") || any("Permission denied") {
-        "collector_filesystem_denied"
+    } else if denied(stdout) || denied(stderr) {
+        collector_denial(stdout, stderr)
     } else if stdout.trim().is_empty() && stderr.trim().is_empty() {
         "collector_silent_exit"
     } else if success {
         "collector_no_summary_exit_zero"
     } else {
         "collector_no_summary_exit_nonzero"
+    }
+}
+/// The collector needs a read-only root and a tmpfs on /tmp; otherwise the
+/// runner cannot create its temp dir.
+fn collector_writable_tmp(host: &Value) -> bool {
+    host["ReadonlyRootfs"] == true
+        && host["Tmpfs"]
+            .as_object()
+            .is_some_and(|mounts| mounts.contains_key("/tmp"))
+}
+fn denied(text: &str) -> bool {
+    let text = text.to_ascii_lowercase();
+    text.contains("read-only file system") || text.contains("permission denied")
+}
+/// Names a denied write by origin, runner stage and kind, from public markers only.
+fn collector_denial(stdout: &str, stderr: &str) -> &'static str {
+    let both = [stdout, stderr];
+    let any = |needle: &str| both.iter().any(|text| text.contains(needle));
+    let read_only = both
+        .iter()
+        .any(|text| text.to_ascii_lowercase().contains("read-only file system"));
+    if any("Error response from daemon") || any("OCI runtime") {
+        return if read_only {
+            "collector_daemon_read_only"
+        } else {
+            "collector_daemon_permission"
+        };
+    }
+    let started_tests = both.iter().any(|text| {
+        text.lines().any(|line| {
+            line.strip_prefix("running ")
+                .and_then(|rest| rest.split_once(" test"))
+                .is_some_and(|(count, _)| count.parse::<u64>().is_ok())
+        })
+    });
+    let stage = if started_tests {
+        2
+    } else if any("Running headless tests") {
+        1
+    } else {
+        0
+    };
+    // The runner prints its timeout line only after creating its temp dir.
+    let tempdir_made = any("Set WASM_BINDGEN_TEST_TIMEOUT");
+    match (stage, read_only) {
+        (0, true) if !tempdir_made => "collector_tempdir_read_only",
+        (0, false) if !tempdir_made => "collector_tempdir_permission",
+        (0, true) => "collector_driver_start_read_only",
+        (0, false) => "collector_driver_start_permission",
+        (1, true) => "collector_browser_start_read_only",
+        (1, false) => "collector_browser_start_permission",
+        (_, true) => "collector_tests_read_only",
+        (_, false) => "collector_tests_permission",
     }
 }
 fn successful_test_count(output: &str) -> Option<u64> {
@@ -1719,7 +1777,7 @@ mod tests {
                 false,
                 "",
                 "mkdir: Read-only file system",
-                "collector_filesystem_denied",
+                "collector_tempdir_read_only",
             ),
             (
                 true,
@@ -1734,7 +1792,75 @@ mod tests {
                 "collector_no_summary_exit_nonzero",
             ),
         ];
+        let denial = [
+            (
+                "",
+                "Error response from daemon: read-only file system",
+                "collector_daemon_read_only",
+            ),
+            (
+                "",
+                "Error response from daemon: permission denied",
+                "collector_daemon_permission",
+            ),
+            (
+                "",
+                "Permission denied (os error 13)",
+                "collector_tempdir_permission",
+            ),
+            (
+                "",
+                "Error: Read-only file system (os error 30)",
+                "collector_tempdir_read_only",
+            ),
+            (
+                "Set WASM_BINDGEN_TEST_TIMEOUT to 90 seconds...",
+                "Read-only file system",
+                "collector_driver_start_read_only",
+            ),
+            (
+                "Set WASM_BINDGEN_TEST_TIMEOUT to 90 seconds...",
+                "Permission denied",
+                "collector_driver_start_permission",
+            ),
+            (
+                "Running headless tests in Firefox",
+                "Read-only file system",
+                "collector_browser_start_read_only",
+            ),
+            (
+                "Running headless tests in Firefox",
+                "Permission denied",
+                "collector_browser_start_permission",
+            ),
+            (
+                "Running headless tests\n\nrunning 66 tests\n",
+                "Read-only file system",
+                "collector_tests_read_only",
+            ),
+            (
+                "Running headless tests\n\nrunning 1 test\n",
+                "Permission denied",
+                "collector_tests_permission",
+            ),
+        ];
+        for (stdout, stderr, code) in denial {
+            assert_eq!(
+                outcome(false, Some(1), stdout, stderr),
+                code,
+                "{stdout:?} {stderr:?}"
+            );
+        }
         assert_eq!(outcome(false, Some(137), "running", ""), "collector_killed");
+        let tmp = serde_json::json!({"ReadonlyRootfs":true,"Tmpfs":{"/tmp":"rw,size=512m"}});
+        assert!(super::collector_writable_tmp(&tmp));
+        let shm_only = serde_json::json!({"ReadonlyRootfs":true,"Tmpfs":{"/dev/shm":"rw"}});
+        assert!(!super::collector_writable_tmp(&shm_only));
+        assert!(!super::collector_writable_tmp(
+            &serde_json::json!({"ReadonlyRootfs":true})
+        ));
+        let writable_root = serde_json::json!({"ReadonlyRootfs":false,"Tmpfs":{"/tmp":"rw"}});
+        assert!(!super::collector_writable_tmp(&writable_root));
         assert_eq!(outcome(false, Some(126), "", ""), "collector_exec_error");
         assert_eq!(
             outcome(
