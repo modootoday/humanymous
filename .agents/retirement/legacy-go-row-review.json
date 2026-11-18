@@ -5356,7 +5356,8 @@
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::redis_transport_failures_are_counted_and_redial",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::redis_records_queued_at_close_are_counted",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_only_2xx_is_success",
-    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_trickled_response_misses_the_insert_deadline"
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_trickled_response_misses_the_insert_deadline",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_close_flushes_the_partial_batch"
    ],
    "go_test_map": {
     "TestRespCommandEncoding": "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::resp_command_encoding",
@@ -5382,7 +5383,8 @@
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::redis_transport_failures_are_counted_and_redial": "passed",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::redis_records_queued_at_close_are_counted": "passed",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_only_2xx_is_success": "passed",
-    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_trickled_response_misses_the_insert_deadline": "passed"
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_trickled_response_misses_the_insert_deadline": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_close_flushes_the_partial_batch": "passed"
    }
   },
   {
@@ -5401,7 +5403,8 @@
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_endpoint_is_refused_unless_plain_http",
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::projections_receive_only_fully_sealed_records",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_only_2xx_is_success",
-    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_trickled_response_misses_the_insert_deadline"
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_trickled_response_misses_the_insert_deadline",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_close_flushes_the_partial_batch"
    ],
    "go_test_map": {},
    "gaps": [
@@ -5418,7 +5421,8 @@
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_endpoint_is_refused_unless_plain_http": "passed",
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::projections_receive_only_fully_sealed_records": "passed",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_only_2xx_is_success": "passed",
-    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_trickled_response_misses_the_insert_deadline": "passed"
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_trickled_response_misses_the_insert_deadline": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_close_flushes_the_partial_batch": "passed"
    }
   },
   {
