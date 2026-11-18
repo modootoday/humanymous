@@ -14,15 +14,15 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "ported_unit": 172,
-  "partial": 93,
-  "missing": 47,
+  "ported_unit": 179,
+  "partial": 94,
+  "missing": 39,
   "not_applicable": 2
  },
  "by_package": {
   "cmd/gate": {
-   "missing": 3,
-   "partial": 2,
+   "missing": 1,
+   "partial": 4,
    "ported_unit": 2
   },
   "cmd/ml-train": {
@@ -39,8 +39,8 @@
    "ported_unit": 1
   },
   "cmd/server": {
-   "missing": 10,
-   "partial": 21,
+   "missing": 8,
+   "partial": 23,
    "ported_unit": 11
   },
   "cmd/tlsparrot": {
@@ -134,9 +134,7 @@
    "ported_unit": 4
   },
   "internal/watermark": {
-   "ported_unit": 7,
-   "missing": 4,
-   "partial": 3
+   "ported_unit": 14
   },
   "pkg/origincloak": {
    "ported_unit": 2
@@ -299,44 +297,47 @@
   },
   {
    "baseline_path": "cmd/gate/tls_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs"
+   ],
    "go_test_map": {
     "TestBuildEdgeTLSSelfSigned": null,
-    "TestBuildEdgeTLSACME": null,
+    "TestBuildEdgeTLSACME": "gateway::tls::certificate::tests::issuer_must_cover_exactly_the_selected_domains",
     "TestBuildEdgeTLSACMEStagingDirectory": null,
-    "TestBuildEdgeTLSBadCert": null,
-    "TestSplitDomains": null
+    "TestBuildEdgeTLSBadCert": "gateway::tls::certificate::tests::provisioned_pair_refuses_empty_missing_and_mismatched_material",
+    "TestSplitDomains": "gateway::tls::certificate::tests::issuer_domains_are_normalised_and_plain_hosts_only"
    },
    "gaps": [
-    "certificate source selection",
-    "ACME/autocert with staging directory",
-    "BYO keypair load error",
-    "domain csv split"
+    "ACME staging directory",
+    "self-signed dev mode"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Rust TLS ingress takes a caller-supplied rustls ServerConfig; no certificate loader, ACME or self-signed builder outside tests (rcgen only in gateway/tests/tls.rs).",
+   "notes": "Mapped to B02 certificate source tests.",
    "test_verification": {}
   },
   {
    "baseline_path": "cmd/gate/tls.go",
-   "disposition": "missing",
+   "disposition": "partial",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/tls.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/tls.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate.rs"
    ],
-   "rust_tests": [],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs"
+   ],
    "go_test_map": {},
    "gaps": [
-    "ACME TLS-ALPN-01 issuance/cache/email/directory",
-    "BYO cert+key loading",
-    "dev self-signed fallback",
-    "splitDomains"
+    "concrete ACME TLS-ALPN-01 issuer with staging directory",
+    "dev self-signed fallback"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "gateway/tls.rs terminates TLS with an injected ServerConfig only. Plan B02 keeps provisioned certificate + automated issuer as required, not implemented.",
+   "notes": "B02 slice 1 provides source selection, bounded BYO loading and the issuer contract; concrete issuer pending.",
    "test_verification": {}
   },
   {
@@ -513,43 +514,47 @@
   },
   {
    "baseline_path": "cmd/server/acme_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs"
+   ],
    "go_test_map": {
-    "TestSplitDomains": null,
+    "TestSplitDomains": "gateway::tls::certificate::tests::issuer_domains_are_normalised_and_plain_hosts_only",
     "TestBuildTLSConfigSelfSigned": null,
-    "TestBuildTLSConfigACME": null,
-    "TestBuildTLSConfigProvidedKeyPair": null,
-    "TestBuildTLSConfigRejectsAmbiguousSources": null
+    "TestBuildTLSConfigACME": "gateway::tls::certificate::tests::issuer_must_cover_exactly_the_selected_domains",
+    "TestBuildTLSConfigProvidedKeyPair": "gateway::tls::certificate::tests::provisioned_pair_builds_h2_then_http11_ingress",
+    "TestBuildTLSConfigRejectsAmbiguousSources": "gateway::tls::certificate::tests::selection_refuses_absent_incomplete_and_ambiguous_sources"
    },
    "gaps": [
-    "domain split",
-    "self-signed/ACME/BYO selection",
-    "ambiguous source refusal"
+    "self-signed dev mode",
+    "live ACME issuance"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust certificate-source builder; plan B02 open.",
+   "notes": "Mapped to B02 certificate source tests; self-signed is refused, not ported.",
    "test_verification": {}
   },
   {
    "baseline_path": "cmd/server/acme.go",
-   "disposition": "missing",
+   "disposition": "partial",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/tls.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/tls.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate.rs"
    ],
-   "rust_tests": [],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs"
+   ],
    "go_test_map": {},
    "gaps": [
-    "ACME autocert",
-    "provided keypair load",
-    "self-signed dev fallback",
-    "ambiguous source refusal"
+    "concrete ACME TLS-ALPN-01 issuer implementing CertificateIssuer (cache, email, directory, renewal)",
+    "self-signed dev mode (production fallback refused by B02)"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Rust accepts an injected rustls ServerConfig only; plan B02 requires a certificate provider contract.",
+   "notes": "B02 slice 1: select() refuses absent/incomplete/ambiguous sources; provisioned pair loads bounded PEM with rustls key-match check; issuer contract (CertificateIssuer, issuer_config) adds challenge ALPN for exactly the selected domains. No production self-signed fallback per plan B02.",
    "test_verification": {}
   },
   {
@@ -8521,39 +8526,61 @@
   },
   {
    "baseline_path": "internal/watermark/codec_lsb.go",
-   "disposition": "missing",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-core/src/watermark/codec/png/pixels.rs"
+    "crates/sdk/humanymous-core/src/watermark/codec/png/pixels.rs",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/pixels/tests.rs",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/fixtures.rs"
    ],
-   "rust_tests": [],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/watermark/codec/png/pixels/tests.rs::direct_round_trip_recovers_issued_carrier",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/pixels/tests.rs::layout_is_length_prefixed_row_major_msb_first_rgb_low_bits",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/pixels/tests.rs::alpha_is_unchanged_and_premultiplied_model_matches_legacy",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/pixels/tests.rs::legacy_unpremultiply_golden_vectors_including_overflow_truncation",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/pixels/tests.rs::sixteen_bit_gray_and_palette_inputs_follow_legacy_conversion",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/pixels/tests.rs::capacity_is_checked_and_too_small_images_fail_with_capacity",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/pixels/tests.rs::malformed_unmarked_oversized_and_animated_inputs_fail_closed"
+   ],
    "go_test_map": {},
-   "gaps": [
-    "RGB LSB row-major MSB-first encode/decode with alpha unchanged"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "pixels.rs is a fail-closed stub (lsb_channel_stays_fail_closed); SoT resource-watermark still requires the behavior.",
-   "test_verification": {}
+   "notes": "RGB LSB ported: u32be(frame_len)||frame in row-major R,G,B low bits, MSB first, alpha untouched; legacy Go image.RGBA premultiplied conversion and encoder un-premultiply (incl. uint8 truncation) reproduced with golden vectors; opaque output RGB8, else RGBA8. Legacy limitation reproduced, not fixed: transparent/partial-alpha pixels lose low bits through premultiply round trip (asserted). Deliberate SoT W05 corrections: capacity checked before pixel decode (CarrierCapacity), animated PNG rejected for issuance, 8192/axis and 4194304-pixel caps. Real-resource V3 pilot remains separate.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/watermark/codec/png/pixels/tests.rs::direct_round_trip_recovers_issued_carrier": "passed",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/pixels/tests.rs::layout_is_length_prefixed_row_major_msb_first_rgb_low_bits": "passed",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/pixels/tests.rs::alpha_is_unchanged_and_premultiplied_model_matches_legacy": "passed",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/pixels/tests.rs::legacy_unpremultiply_golden_vectors_including_overflow_truncation": "passed",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/pixels/tests.rs::sixteen_bit_gray_and_palette_inputs_follow_legacy_conversion": "passed",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/pixels/tests.rs::capacity_is_checked_and_too_small_images_fail_with_capacity": "passed",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/pixels/tests.rs::malformed_unmarked_oversized_and_animated_inputs_fail_closed": "passed"
+   }
   },
   {
    "baseline_path": "internal/watermark/codec_png_multi.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-core/src/watermark/codec/png.rs",
-    "crates/sdk/humanymous-core/src/watermark/codec/png/metadata.rs"
+    "crates/sdk/humanymous-core/src/watermark/codec/png/metadata.rs",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/pixels.rs",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/tests.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-core/src/watermark/codec/png/metadata.rs::metadata_round_trip_preserves_admitted_png"
+    "crates/sdk/humanymous-core/src/watermark/codec/png/metadata.rs::metadata_round_trip_preserves_admitted_png",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/tests.rs::composite_writes_pixels_then_metadata_and_both_recover_independently",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/tests.rs::small_image_degrades_visibly_or_fails_in_strict_mode",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/tests.rs::distinct_channel_carriers_are_ambiguous_and_malformed_inputs_fail_closed"
    ],
    "go_test_map": {},
-   "gaps": [
-    "Combined metadata+LSB encode and independent LSB recovery"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Only the tEXt metadata channel exists.",
+   "notes": "Composite encode/recover ported with typed channel set. Deliberate SoT W05 corrections: pixels written first and tEXt inserted after the final encode (legacy metadata-first re-encode discarded tEXt while reporting png-multi); too-small images degrade to metadata only with visible degraded=CarrierCapacity (RequireBoth policy fails instead); undecodable PNG is not marked via metadata alone; both channels recovered independently and distinct carriers are Ambiguous.",
    "test_verification": {
-    "crates/sdk/humanymous-core/src/watermark/codec/png/metadata.rs::metadata_round_trip_preserves_admitted_png": "passed"
+    "crates/sdk/humanymous-core/src/watermark/codec/png/metadata.rs::metadata_round_trip_preserves_admitted_png": "passed",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/tests.rs::composite_writes_pixels_then_metadata_and_both_recover_independently": "passed",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/tests.rs::small_image_degrades_visibly_or_fails_in_strict_mode": "passed",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/tests.rs::distinct_channel_carriers_are_ambiguous_and_malformed_inputs_fail_closed": "passed"
    }
   },
   {
@@ -8662,75 +8689,106 @@
   },
   {
    "baseline_path": "internal/watermark/extract.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "Recover: preferred MIME codec then deterministic alternate codecs"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/watermark/recovery.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/watermark/recovery.rs::preferred_codec_uses_strict_family_then_legacy_hint",
+    "crates/sdk/humanymous-core/src/watermark/recovery.rs::wrong_or_unknown_declarations_fall_through_to_alternate_codecs",
+    "crates/sdk/humanymous-core/src/watermark/recovery.rs::agreeing_channels_merge_and_distinct_carriers_are_ambiguous",
+    "crates/sdk/humanymous-core/src/watermark/tests.rs::apply_recover_round_trips_all_eight_legacy_families"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Per-codec recover functions exist but no recovery dispatcher found.",
-   "test_verification": {}
+   "notes": "recovery::recover ported: preferred codec from strict MIME family, else legacy familyKey hint (hint only), then fixed alternate order PNG, WASM, text, binary trailer. Deliberate SoT W03/W04 corrections: deterministic order replaces Go map iteration; all codecs consulted and distinct carriers fail as Ambiguous; ResourceLimit fails closed; result reports agreeing channels and whether the preferred codec matched.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/watermark/recovery.rs::preferred_codec_uses_strict_family_then_legacy_hint": "passed",
+    "crates/sdk/humanymous-core/src/watermark/recovery.rs::wrong_or_unknown_declarations_fall_through_to_alternate_codecs": "passed",
+    "crates/sdk/humanymous-core/src/watermark/recovery.rs::agreeing_channels_merge_and_distinct_carriers_are_ambiguous": "passed",
+    "crates/sdk/humanymous-core/src/watermark/tests.rs::apply_recover_round_trips_all_eight_legacy_families": "passed"
+   }
   },
   {
    "baseline_path": "internal/watermark/inject.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "Apply: typed apply result with explicit binary fallback"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/watermark/issuance.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/watermark/issuance.rs::result_reports_channels_check_and_digests",
+    "crates/sdk/humanymous-core/src/watermark/issuance.rs::unsupported_and_invalid_sources_fail_unless_trailer_is_opted_in",
+    "crates/sdk/humanymous-core/src/watermark/issuance.rs::malformed_png_wasm_mime_payload_and_limits_never_fall_back",
+    "crates/sdk/humanymous-core/src/watermark/issuance.rs::small_png_is_marked_through_metadata_with_visible_degradation",
+    "crates/sdk/humanymous-core/src/watermark/tests.rs::apply_recover_round_trips_all_eight_legacy_families"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No issuance composition found; SoT maps it to an issuance module.",
-   "test_verification": {}
+   "notes": "issuance::apply ported: typed Applied {bytes, channels, check, fallback, degraded, source/output SHA-256}. Deliberate SoT W06/W07 correction: binary trailer fallback is opt-in (Fallback::OpaqueTrailer), reported in Applied.fallback, limited to text-like/unsupported declarations failing with InvalidText/UnsupportedFormat; never for malformed PNG/WASM, InvalidMime or ResourceLimit. JSON is parsed before and after marking; markup/JS/CSS grammar is not parsed (SourceCheck::Utf8Only, same as legacy). Runtime reserve/encode/commit/response ordering and HTTP wiring belong to the runtime owner.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/watermark/issuance.rs::result_reports_channels_check_and_digests": "passed",
+    "crates/sdk/humanymous-core/src/watermark/issuance.rs::unsupported_and_invalid_sources_fail_unless_trailer_is_opted_in": "passed",
+    "crates/sdk/humanymous-core/src/watermark/issuance.rs::malformed_png_wasm_mime_payload_and_limits_never_fall_back": "passed",
+    "crates/sdk/humanymous-core/src/watermark/issuance.rs::small_png_is_marked_through_metadata_with_visible_degradation": "passed",
+    "crates/sdk/humanymous-core/src/watermark/tests.rs::apply_recover_round_trips_all_eight_legacy_families": "passed"
+   }
   },
   {
    "baseline_path": "internal/watermark/ledger.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-core/src/watermark/ledger.rs",
     "crates/sdk/humanymous-core/src/watermark/ledger/state.rs",
     "crates/sdk/humanymous-core/src/watermark/ledger/reservation.rs",
-    "crates/sdk/humanymous-core/src/watermark/ledger/tests.rs"
+    "crates/sdk/humanymous-core/src/watermark/ledger/trace.rs",
+    "crates/sdk/humanymous-core/src/watermark/ledger/tests.rs",
+    "crates/sdk/humanymous-core/src/watermark/tests.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/watermark/ledger/tests.rs::commit_retains_actual_metadata_until_exact_record_ttl_boundary",
     "crates/sdk/humanymous-core/src/watermark/ledger/tests.rs::gc_expires_pending_and_committed_entries_without_evicting_live_records",
-    "crates/sdk/humanymous-core/src/watermark/ledger/tests.rs::final_u32_id_is_usable_once_and_never_wraps_to_zero"
+    "crates/sdk/humanymous-core/src/watermark/ledger/tests.rs::final_u32_id_is_usable_once_and_never_wraps_to_zero",
+    "crates/sdk/humanymous-core/src/watermark/tests.rs::trace_identifies_session_and_detects_forgery"
    ],
    "go_test_map": {},
-   "gaps": [
-    "Ledger.Trace: recover + verify leaked bytes to a session"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Allocate/Put/Get/GC ported as reservation ledger; authenticated trace absent (ledger.rs: lookup never constitutes a trace).",
+   "notes": "Allocate/Put/Get/GC ported as reservation ledger; Ledger::trace ported (recover, legacy SplitCarrier with ignored_suffix marked, lookup, constant-time HMAC verify). SoT W09 distinct outcomes: Verified, Forged (diagnostic only), Unknown, Expired; NoFrame/Ambiguous/InvalidCarrier/ResourceLimit as errors (legacy returned ErrNoFrame for unknown IDs). Monotonic issued_at instead of wall-clock time; operator auth/audit remain runtime duties.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/watermark/ledger/tests.rs::commit_retains_actual_metadata_until_exact_record_ttl_boundary": "passed",
+    "crates/sdk/humanymous-core/src/watermark/ledger/tests.rs::gc_expires_pending_and_committed_entries_without_evicting_live_records": "passed",
     "crates/sdk/humanymous-core/src/watermark/ledger/tests.rs::final_u32_id_is_usable_once_and_never_wraps_to_zero": "passed",
-    "crates/sdk/humanymous-core/src/watermark/ledger/tests.rs::gc_expires_pending_and_committed_entries_without_evicting_live_records": "passed"
+    "crates/sdk/humanymous-core/src/watermark/tests.rs::trace_identifies_session_and_detects_forgery": "passed"
    }
   },
   {
    "baseline_path": "internal/watermark/lsb_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestLSB_SurvivesMetadataStrip": null,
-    "TestLSB_DirectRoundTrip": null
-   },
-   "gaps": [
-    "LSB round trip and metadata-strip survival"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/watermark/codec/png/pixels/tests.rs",
+    "crates/sdk/humanymous-core/src/watermark/tests.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/watermark/tests.rs::pixel_carrier_survives_metadata_strip_by_independent_reencode",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/pixels/tests.rs::direct_round_trip_recovers_issued_carrier"
+   ],
+   "go_test_map": {
+    "TestLSB_SurvivesMetadataStrip": "crates/sdk/humanymous-core/src/watermark/tests.rs::pixel_carrier_survives_metadata_strip_by_independent_reencode",
+    "TestLSB_DirectRoundTrip": "crates/sdk/humanymous-core/src/watermark/codec/png/pixels/tests.rs::direct_round_trip_recovers_issued_carrier"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "LSB codec is a fail-closed stub.",
-   "test_verification": {}
+   "notes": "Both legacy tests ported on the legacy 64x64 gradient fixture; the strip is an independent png-crate decode and pixel-only re-encode that drops tEXt.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/watermark/tests.rs::pixel_carrier_survives_metadata_strip_by_independent_reencode": "passed",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/pixels/tests.rs::direct_round_trip_recovers_issued_carrier": "passed"
+   }
   },
   {
    "baseline_path": "internal/watermark/payload.go",
@@ -8755,40 +8813,40 @@
   },
   {
    "baseline_path": "internal/watermark/watermark_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-core/src/watermark/codec/text/tests.rs",
-    "crates/sdk/humanymous-core/src/watermark/codec/png/metadata.rs",
-    "crates/sdk/humanymous-core/src/watermark/codec/wasm.rs",
-    "crates/sdk/humanymous-core/src/watermark/codec/binary.rs",
-    "crates/sdk/humanymous-core/src/watermark/frame/tests.rs"
+    "crates/sdk/humanymous-core/src/watermark/tests.rs",
+    "crates/sdk/humanymous-core/src/watermark/frame/tests.rs",
+    "crates/sdk/humanymous-core/src/watermark/codec/png/fixtures.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-core/src/watermark/codec/text/tests.rs::all_text_channels_preserve_source_prefix_and_recover",
-    "crates/sdk/humanymous-core/src/watermark/codec/png/metadata.rs::metadata_round_trip_preserves_admitted_png",
-    "crates/sdk/humanymous-core/src/watermark/codec/wasm.rs::minimal_fixture_validates_and_round_trips_custom_section",
+    "crates/sdk/humanymous-core/src/watermark/tests.rs::apply_recover_round_trips_all_eight_legacy_families",
+    "crates/sdk/humanymous-core/src/watermark/tests.rs::watermarked_json_still_parses_to_the_same_value",
+    "crates/sdk/humanymous-core/src/watermark/tests.rs::watermarked_png_keeps_signature_critical_chunks_and_decodes",
+    "crates/sdk/humanymous-core/src/watermark/tests.rs::minimal_legacy_png_is_rejected_not_trailer_marked",
+    "crates/sdk/humanymous-core/src/watermark/tests.rs::watermarked_wasm_keeps_magic_and_validates",
+    "crates/sdk/humanymous-core/src/watermark/tests.rs::trace_identifies_session_and_detects_forgery",
     "crates/sdk/humanymous-core/src/watermark/frame/tests.rs::noise_damage_duplicates_and_distinct_carriers"
    ],
    "go_test_map": {
-    "TestRoundTrip_AllFamilies": "crates/sdk/humanymous-core/src/watermark/codec/text/tests.rs::all_text_channels_preserve_source_prefix_and_recover",
-    "TestSemantic_JSONStaysValid": "crates/sdk/humanymous-core/src/watermark/codec/text/tests.rs::all_text_channels_preserve_source_prefix_and_recover",
-    "TestSemantic_PNGChunksIntact": "crates/sdk/humanymous-core/src/watermark/codec/png/metadata.rs::metadata_round_trip_preserves_admitted_png",
-    "TestSemantic_WASMStillHasMagic": "crates/sdk/humanymous-core/src/watermark/codec/wasm.rs::minimal_fixture_validates_and_round_trips_custom_section",
-    "TestTrace_IdentifiesSessionAndDetectsForgery": null,
+    "TestRoundTrip_AllFamilies": "crates/sdk/humanymous-core/src/watermark/tests.rs::apply_recover_round_trips_all_eight_legacy_families",
+    "TestSemantic_JSONStaysValid": "crates/sdk/humanymous-core/src/watermark/tests.rs::watermarked_json_still_parses_to_the_same_value",
+    "TestSemantic_PNGChunksIntact": "crates/sdk/humanymous-core/src/watermark/tests.rs::watermarked_png_keeps_signature_critical_chunks_and_decodes",
+    "TestSemantic_WASMStillHasMagic": "crates/sdk/humanymous-core/src/watermark/tests.rs::watermarked_wasm_keeps_magic_and_validates",
+    "TestTrace_IdentifiesSessionAndDetectsForgery": "crates/sdk/humanymous-core/src/watermark/tests.rs::trace_identifies_session_and_detects_forgery",
     "TestFrameUnframe": "crates/sdk/humanymous-core/src/watermark/frame/tests.rs::noise_damage_duplicates_and_distinct_carriers"
    },
-   "gaps": [
-    "Apply/Recover round trip across all MIME families",
-    "JSON parse-validity after mark",
-    "Trace session identification and forgery detection"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Per-codec units exist; end-to-end Apply/Recover/Trace not ported.",
+   "notes": "All six legacy tests ported through public apply/recover/trace. Per SoT V2 the legacy zero-dimension minimalPNG is malformed evidence: PNG round trip uses a valid image and minimalPNG rejection is asserted separately (minimal_legacy_png_is_rejected_not_trailer_marked). WASM check adds wasmparser validation.",
    "test_verification": {
-    "crates/sdk/humanymous-core/src/watermark/codec/png/metadata.rs::metadata_round_trip_preserves_admitted_png": "passed",
-    "crates/sdk/humanymous-core/src/watermark/codec/text/tests.rs::all_text_channels_preserve_source_prefix_and_recover": "passed",
-    "crates/sdk/humanymous-core/src/watermark/codec/wasm.rs::minimal_fixture_validates_and_round_trips_custom_section": "passed",
+    "crates/sdk/humanymous-core/src/watermark/tests.rs::apply_recover_round_trips_all_eight_legacy_families": "passed",
+    "crates/sdk/humanymous-core/src/watermark/tests.rs::watermarked_json_still_parses_to_the_same_value": "passed",
+    "crates/sdk/humanymous-core/src/watermark/tests.rs::watermarked_png_keeps_signature_critical_chunks_and_decodes": "passed",
+    "crates/sdk/humanymous-core/src/watermark/tests.rs::minimal_legacy_png_is_rejected_not_trailer_marked": "passed",
+    "crates/sdk/humanymous-core/src/watermark/tests.rs::watermarked_wasm_keeps_magic_and_validates": "passed",
+    "crates/sdk/humanymous-core/src/watermark/tests.rs::trace_identifies_session_and_detects_forgery": "passed",
     "crates/sdk/humanymous-core/src/watermark/frame/tests.rs::noise_damage_duplicates_and_distinct_carriers": "passed"
    }
   },

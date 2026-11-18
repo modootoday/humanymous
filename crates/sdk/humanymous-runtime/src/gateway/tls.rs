@@ -1,4 +1,5 @@
 //! Joined blocking TLS ingress. This owner alone does not qualify a route.
+pub mod certificate;
 mod h2;
 
 pub use h2::CapturedH2Request;

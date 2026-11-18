@@ -160,6 +160,20 @@ fn manifests_run_the_rust_runtime_not_the_go_gate() {
 #[test]
 fn manifests_keep_the_go_hardening() {
     assert!(has(RUNTIME_IMAGE, &format!("USER {UID}:{UID}")));
+    // The image ships an empty owner-only state directory, so a new named
+    // volume mounted at it starts as 65532/0700 (owner decision C8, #75).
+    assert!(has(
+        RUNTIME_IMAGE,
+        "RUN [\"mkdir\",\"-p\",\"/empty/state/humanymous\"]"
+    ));
+    assert!(has(
+        RUNTIME_IMAGE,
+        "RUN [\"chmod\",\"0700\",\"/empty/state/humanymous\"]"
+    ));
+    assert!(has(
+        RUNTIME_IMAGE,
+        &format!("COPY --from=compiler --chown={UID}:{UID} /empty/state/ /var/lib/")
+    ));
     for setting in [
         &format!("runAsUser: {UID}") as &str,
         "runAsNonRoot: true",

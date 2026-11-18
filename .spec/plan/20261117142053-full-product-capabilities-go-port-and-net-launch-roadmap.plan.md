@@ -3,7 +3,7 @@ id: plan:root/20261117142053
 title: "Full-product capabilities, Go port and .NET launch roadmap"
 status: draft
 created: 2026-11-17T14:20:53Z
-updated: 2026-11-17T14:20:53Z
+updated: 2026-11-18T03:57:40Z
 rel:
   depends_on: [plan:root/20261116060213]
 ---
@@ -70,6 +70,19 @@ Order follows dependency. Each capability turns one `required_unavailable` entry
 | 2h | signed remote target attestation | deployment | beyond Go parity; lab key generated inside the Docker topology |
 | 2i | provider deployment | deployment, documentation-examples | Go parity is compose/k8s/systemd manifests; a live provider is beyond Go |
 
+### 2i follow-ups (owner decision C8, #75)
+
+The owner added two items to the roadmap on 2026-11-18. Both close the two known
+gaps recorded in #94: the shipped manifests cannot start a runtime unattended.
+Neither changes detection, and neither adds a k8s cluster or systemd PID 1 to the
+lab. "Provider deployment" stays the Go-parity manifests; k8s and systemd keep
+their static tests.
+
+| # | Item | Scope | Acceptance |
+| --- | --- | --- | --- |
+| 2j | stdin config injection | A shipped, unattended way for compose and k8s to deliver the one private JSON configuration document on the runtime's standard input (systemd already uses `StandardInput=file:`). The runtime keeps refusing argv, and it never reads the configuration or the passphrase from the environment or a public mount. A SoT delta for `runtime-application` comes first and names the mechanism and its fail-closed cases. | `deployments/compose.release.yaml` and `deployments/k8s/` start the runtime with no interactive `run -T … <` or `kubectl attach -i` step. The Docker `deployment` and `documentation-examples` cases run that path. Missing, empty, truncated or oversized input fails closed before bind. `deployment_manifests.rs` keeps the no-argv and no-secret-env checks. |
+| 2k | custody creation command | A shipped Rust CLI operation, not an HTTP endpoint, per the `runtime-application` and `audit-key-custody` SoTs. It creates `keys.sealed` once in an already provisioned owner-only directory, using the frozen envelope and the existing vault API, and refuses existing, pending, symlinked or permission-widened custody. The passphrase arrives on a private pipe, never in argv, the environment or logs. It replaces the generation code that today exists only in the lab supervisor. | Unit tests cover create-once, refuse-existing, refuse-pending, wrong owner or mode, and passphrase-policy refusal. The Docker `deployment` case provisions custody with the shipped command instead of the lab actor, and the runtime then starts from it. The `deployments/` READMEs document the command and drop the "no shipped command" gap. |
+
 Red-blue product (RB) and clean-room product matrix (PM) runs need owner-authored
 grants, per `transfer_applicator.rs`. Agents never author grants. A grant is a
 governance step for a run, not a missing capability: the implementation work above
@@ -135,3 +148,8 @@ pilot, and `delivery ready` on every axis. Summarise in #65 and update #22.
 - 2026-11-17: a cross-check against the measured Go implementation found no paid or
   owner-held resource in Go's TLS path. The owner G6 grant, owner signing key and
   owner provider account were removed as capability prerequisites.
+- 2026-11-18: owner decision C8 (#75 comment 6968092014) added 2j (stdin config
+  injection) and 2k (custody creation command). The public runtime image now
+  ships a 65532-owned `/var/lib/humanymous` (mode 0700), and the stale
+  `nginx-adapter → docker/deployment` documentation-review binding moved to
+  `docker/nginx`. No k8s cluster or systemd PID 1 in the lab.
