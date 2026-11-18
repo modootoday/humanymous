@@ -440,7 +440,7 @@
     },
     {
       "go_package": "cmd/ml-train",
-      "reason": "no Go-recorded golden vectors; FM11 rows: partial 1",
+      "reason": "no Go-recorded golden vectors; FM11 rows: ported_unit 1",
       "acceptance": {
         "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
         "by": "owner",
@@ -480,7 +480,7 @@
     },
     {
       "go_package": "cmd/server",
-      "reason": "no Go-recorded golden vectors; FM11 rows: missing 11, partial 21, ported_unit 10",
+      "reason": "no Go-recorded golden vectors; FM11 rows: missing 3, oracle_only 3, partial 20, ported_unit 16",
       "acceptance": {
         "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
         "by": "owner",
