@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 362,
-      "macos": 362,
-      "windows": 354
+      "linux": 373,
+      "macos": 373,
+      "windows": 365
     },
     "common_test_names": [
       "gateway::application::temporal::tests::categories::configure_only_preserves_unknown_gap_until_provider_observation",
@@ -242,6 +242,17 @@
       "gateway::service::shutdown::tests::manager_budget_has_strict_slack_and_rejects_overflow",
       "gateway::session::admission::tests::quota_is_bounded_and_reopens_only_at_monotonic_window_boundary",
       "gateway::session::admission::tests::rollback_cannot_restore_an_exhausted_or_poisoned_window",
+      "gateway::session::store::tests::list_is_bounded",
+      "gateway::session::store::tests::merge_client_and_label",
+      "gateway::session::store::tests::merge_client_drops_server_provenance_claims",
+      "gateway::session::store::tests::merge_network_request_scoped_hop_residuals",
+      "gateway::session::store::tests::merge_pins_first_network",
+      "gateway::session::store::tests::pow_issue_solve_and_too_fast",
+      "gateway::session::store::tests::request_scoped_residual_set_is_exact",
+      "gateway::session::store::tests::rit_bootstrap_is_one_shot",
+      "gateway::session::store::tests::store_gc_expiry",
+      "gateway::session::store::tests::store_lifecycle",
+      "gateway::session::store::tests::store_scored_replaces_report",
       "gateway::settings::store::tests::crash_selection_applies_only_the_journal_committed_candidate",
       "gateway::settings::store::tests::unwitnessed_tail_forged_scope_and_skipped_revision_are_refused",
       "gateway::shipping::tests::bounds::authority_is_exact_bounded_ascii_data_without_address_normalization",

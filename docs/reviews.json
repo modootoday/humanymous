@@ -6667,9 +6667,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "ddf70bb50bd1c16ceb23ab932430e7abf97ca4bd3bba922178f9b938394d7589",
+      "sha256": "0fd072094d6fd2c2ee708b0b3f759583aca50b50263e223f3ee098044b51741e",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 362 / macos 362 / windows 354 (354 common names plus 8 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 when merging codex/rust into claude/b11-observatory: the name lists are the union of both parents' already-reviewed additions, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 362 listed common plus Unix-only names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 373 / macos 373 / windows 365 (365 common names plus 8 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for merge train claude/merge-train-1 (codex/rust plus PR heads #87, #88, #77, #103, #106 and #113): the name lists are the union of all parents' already-reviewed additions, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 373 listed common plus Unix-only names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/explanation/how-this-was-built.md"
@@ -8575,9 +8575,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/session.rs",
-      "sha256": "b349505271aba9efb239c9d7269dec814a6d67bf8ddc8aa5d7d9304d6a880577",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Volatile bounded session and rotating integrity-token owner: issues random 32-byte session ids and keys with capacity and TTL, provisions browser auth-only sessions only with a browser policy, and authorize() consumes exactly the next token after checking profile, deadline, counter and the RIT canonical binding of scope, method, target, deadline and all headers/body (browser profile requires strict counter+1 and returns an ACK signer). Clock rollback or audit failure poisons the epoch permanently via EpochHealth. collect() stores a session-bound client report with registry-rescored client-plane signals only and records fresh collector provenance, required for collector routes only with a rust-wasm engine and guard reported.",
+      "sha256": "72b04b5acd141ffaab6c0c4bdf13c55ccb38a7d96f6b0460d1cd4fca1455f8ef",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Volatile bounded session and rotating integrity-token owner: issues random 32-byte session ids and keys with capacity and TTL, provisions browser auth-only sessions only with a browser policy, and authorize() consumes exactly the next token after checking profile, deadline, counter and the RIT canonical binding of scope, method, target, deadline and all headers/body (browser profile requires strict counter+1 and returns an ACK signer). Clock rollback or audit failure poisons the epoch permanently via EpochHealth. collect() stores a session-bound client report with registry-rescored client-plane signals only and records fresh collector provenance, required for collector routes only with a rust-wasm engine and guard reported. Re-reviewed 2026-11-18: the only change declares the public store submodule (the Go-parity CollectorStore component port); session behaviour is unchanged.",
       "pages": [
         "docs/reference/gate-origin-contract.md",
         "docs/how-to/configure-attested-routes.md",
@@ -10122,6 +10122,26 @@
         "docs/reference/production-vs-reference.md",
         "docs/help/challenge-accessibility.md",
         "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/session/store.rs",
+      "sha256": "4a4db775ba46fea13048661c056fda434464b61c46184269323c2203d9e642a4",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "CollectorStore: component port of the Go internal/collector session.go/merge.go TTL store (baseline 981d25c). It keeps one merged SessionReport per caller-supplied session id with RIT counter, one-shot tokenless RIT bootstrap grace, PoW issue time/difficulty (first write wins, reset on solve), a permanent pow_too_fast flag and a label. merge_client drops any client signal claiming server provenance (Source::Server or an l5./l6./l7./x. id); merge_network pins the first network observation and afterwards appends only the nine request-scoped hop/proxy/IP residual ids; gc() removes entries idle past the TTL, and list() is bounded but, like Go, returns one report for limit 0. The header states ids are not authenticated here, callers serialize access, and the gateway request path does not consult this store; no scoring weights or thresholds are defined.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/session/store/tests.rs",
+      "sha256": "39281c13906bdb3b169b7da0fc9a90d69bcc3895a2eb40434f007719cee12e3f",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Eleven unit tests porting Go internal/collector collector_test.go plus implicit session.go/merge.go behaviour: lifecycle, GC expiry by idle TTL, first-network pinning, request-scoped hop residuals appended after the pin and the exact residual-id set, client merge and label, forged server-provenance client signals (server source, l5/l6/l7/x ids) dropped with None vs empty-vector parity, store_scored replacing the report while keeping the pin, one-shot RIT bootstrap with bare zero-timestamp sessions, PoW issue first-write-wins/solve reset/permanent too-fast, and list bounding including one report for a zero limit.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/reference/gate-origin-contract.md"
       ]
     },
     {
