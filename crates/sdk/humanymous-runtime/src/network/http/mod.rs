@@ -8,10 +8,12 @@ pub use client::{
     parse_ip,
 };
 pub use headers::HeaderInfo;
+#[cfg(feature = "gateway")]
+pub(crate) use peek::peek_owned;
 pub use peek::{
     PEEK_DEADLINE, PEEK_LIMIT, Peek, PeekError, WireOrder, peek_header_order, peek_tcp,
 };
-pub use projection::{canonical_name, first_value, project_request};
+pub use projection::{canonical_name, cookie_value, first_value, project_request};
 
 #[cfg(test)]
 mod tests;

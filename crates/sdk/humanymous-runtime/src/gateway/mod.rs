@@ -13,6 +13,7 @@ pub mod control;
 pub mod control_flood;
 pub mod control_plane;
 pub mod coordinator;
+pub mod core_server;
 pub mod credential;
 pub mod demo;
 pub mod external_input;
