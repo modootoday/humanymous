@@ -31,7 +31,7 @@ repository = "https://github.com/modootoday/humanymous"
 humanymous-platform = { path = "crates/integrations/humanymous-platform", version = "0.1.0", default-features = false }
 humanymous-core = { path = "crates/sdk/humanymous-core", version = "0.1.0" }
 humanymous-runtime = { path = "crates/sdk/humanymous-runtime", version = "0.1.0", default-features = false }
-hmac = "0.12.1"
+hmac = "0.13.0"
 sha2 = "0.10.9"
 md-5 = "0.11.0"
 hex = "0.4.3"
