@@ -28,6 +28,13 @@ pub(super) fn tls_listener(
     } else {
         "experimental-loopback-tls-h1"
     });
+    if config.public_listen {
+        // Concurrent receive bounds of the public listener (PR #156 review).
+        profile["public_receive"] = json!({
+            "max_receiving": config.public_receive.max_receiving,
+            "receive_ms": config.public_receive.receive_ms.min(config.timeout_ms),
+        });
+    }
     profile["raw_tls"] = json!(true);
     profile["original_h2"] = json!(h2);
     profile["alpn"] = json!(

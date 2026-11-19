@@ -14,7 +14,45 @@
 //! - An admin listener is always loopback only; no key widens it (Go
 //!   defaulted `-admin-addr` to loopback and only warned on a wider bind).
 use crate::gateway::tls::listener::ListenerTls;
-use std::net::SocketAddr;
+use serde::Deserialize;
+use std::{net::SocketAddr, time::Duration};
+
+/// Concurrent receive bounds of a public TLS listener. A public peer's TLS
+/// handshake and complete request read run concurrently, at most
+/// `max_receiving` at once, each within `receive_ms` (and the connection
+/// lifetime `timeout_ms`), so one silent or slow peer cannot hold the
+/// listener. A connection beyond the bound is closed at once, never queued.
+/// Application decisions stay serialized. A loopback listener keeps its
+/// serial receive.
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, Eq)]
+#[serde(deny_unknown_fields, default)]
+pub struct PublicReceive {
+    /// Connections in TLS handshake or request read at once (1..=1024).
+    pub max_receiving: usize,
+    /// Handshake plus request-read deadline in milliseconds (100..=60000).
+    pub receive_ms: u64,
+}
+
+impl Default for PublicReceive {
+    fn default() -> Self {
+        Self {
+            max_receiving: 64,
+            receive_ms: 5_000,
+        }
+    }
+}
+
+impl PublicReceive {
+    /// Whether both bounds are in range.
+    pub fn valid(&self) -> bool {
+        (1..=1024).contains(&self.max_receiving) && (100..=60_000).contains(&self.receive_ms)
+    }
+
+    /// The receive deadline, never longer than the connection lifetime.
+    pub fn deadline(&self, timeout_ms: u64) -> Duration {
+        Duration::from_millis(self.receive_ms.min(timeout_ms))
+    }
+}
 
 /// Whether `address` may be bound for a serving listener with this exposure.
 pub fn listen_permitted(address: SocketAddr, public: bool, tls: Option<&ListenerTls>) -> bool {

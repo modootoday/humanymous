@@ -99,6 +99,7 @@ async fn unix_public_tls_edge_and_loopback_admin_listener() {
     assert_eq!(ready["profile"]["admin_plane"], true);
     assert_eq!(ready["profile"]["original_h2"], true);
     assert_eq!(ready["profile"]["product_qualified"], false);
+    assert_eq!(ready["profile"]["public_receive"]["max_receiving"], 64);
     assert_eq!(ready["profile"]["admin_listener"]["operators"], 1);
     assert_eq!(ready["profile"]["admin_listener"]["settings"], true);
     let edge = host.readiness().listen;
