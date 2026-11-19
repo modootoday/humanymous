@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 764,
-      "macos": 764,
-      "windows": 733
+      "linux": 774,
+      "macos": 774,
+      "windows": 743
     },
     "common_test_names": [
       "gateway::admin_approval::tests::approval_store_rules",
@@ -433,6 +433,15 @@
       "gateway::operations::mlcorrect::tests::handle_ml_correct_gate_and_shape",
       "gateway::operations::mlcorrect::tests::operator_gate_follows_legacy_predicate",
       "gateway::operations::mlcorrect::tests::tripped_canary_with_bundle_manager_matches_go_bytes",
+      "gateway::pass_flow::tests::attest_issuance_budget_is_per_fingerprint_and_self_clearing",
+      "gateway::pass_flow::tests::expired_instance_reports_expiry_not_failure",
+      "gateway::pass_flow::tests::fingerprint_matches_go_golden",
+      "gateway::pass_flow::tests::handler_scenarios_match_go_golden",
+      "gateway::pass_flow::tests::motor_evidence_is_off_by_default_and_never_gates_pass",
+      "gateway::pass_flow::tests::page_serves_accessible_pass_html_with_session",
+      "gateway::pass_flow::tests::refusals_and_decoding_differences_are_pinned",
+      "gateway::pass_flow::tests::unusable_trace_is_rejected_after_alignment",
+      "gateway::pass_flow::tests::velocity_fusion_matches_go_golden",
       "gateway::pass_proof::tests::behavior_timing_statistics_separate_human_and_machine",
       "gateway::pass_proof::tests::digest_ignores_instance_fields_and_collides_on_sub_quantum_replay",
       "gateway::pass_proof::tests::digest_matches_go_golden",
@@ -450,6 +459,7 @@
       "gateway::pass_scoring::tests::velocity_escalation_folds_each_level_once",
       "gateway::pass_store::tests::clock_rollback_never_expires_a_trace",
       "gateway::pass_store::tests::distinct_digests_are_independent",
+      "gateway::pass_store::tests::kpi_aggregates_bypass_human_floor_and_difficulty",
       "gateway::pass_store::tests::nonce_is_36_hex_and_fresh",
       "gateway::pass_store::tests::record_bounds_labels_and_key_space",
       "gateway::pass_store::tests::record_counts_label_outcome_difficulty",

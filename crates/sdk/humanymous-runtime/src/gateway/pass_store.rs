@@ -1,6 +1,7 @@
 //! Transient Pass challenge state, the trace anti-replay registry, the
-//! per-instance challenge nonce and the wargame KPI counters (shipping row
-//! B08; legacy cmd/server/pass_store.go at baseline 981d25c).
+//! per-instance challenge nonce, the wargame KPI counters and their
+//! aggregation (shipping row B08; legacy cmd/server/pass_store.go and the
+//! `handlePassKPI` aggregation of pass_handler.go at baseline 981d25c).
 //!
 //! The store only stores. It performs no scoring, no timing or motor analysis
 //! and never gates on motor richness or speed: the trace registry receives an
@@ -307,6 +308,103 @@ impl PassStore {
     /// Consistent snapshot of the KPI counters, ordered by key.
     pub fn metrics(&self) -> BTreeMap<MetricKey, u64> {
         self.lock().metrics.clone()
+    }
+
+    /// Wargame scoreboard aggregated from one snapshot (legacy
+    /// `handlePassKPI`): per-label and per-difficulty pass rates, the bot
+    /// bypass rate over every label but `human` and `unknown`, and the raw
+    /// counters keyed `label|outcome|dN`.
+    pub fn kpi(&self) -> Kpi {
+        Kpi::from_metrics(&self.metrics())
+    }
+}
+
+/// Pass wargame KPIs with the legacy JSON field names.
+#[derive(Debug, Clone, Default, PartialEq, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Kpi {
+    /// Share of bot-labelled attempts that passed; drive it down.
+    pub bypass_rate: f64,
+    /// Bot-labelled attempts.
+    pub bot_attempts: u64,
+    /// Pass rate per bot label (red-team strategy or `bot`).
+    pub per_strategy: BTreeMap<String, f64>,
+    /// Human pass-rate floor.
+    pub human_pass_rate: f64,
+    /// Human-labelled attempts.
+    pub human_attempts: u64,
+    /// Pass rate of the ambiguous band.
+    pub unknown_pass_rate: f64,
+    /// Pass rate per `dN` difficulty.
+    pub per_difficulty: BTreeMap<String, f64>,
+    /// Raw counters.
+    pub raw: BTreeMap<String, u64>,
+}
+
+#[derive(Default, Clone, Copy)]
+struct Tally {
+    passed: u64,
+    attempts: u64,
+}
+
+impl Tally {
+    fn add(&mut self, count: u64, passed: bool) {
+        self.attempts = self.attempts.saturating_add(count);
+        if passed {
+            self.passed = self.passed.saturating_add(count);
+        }
+    }
+    fn rate(self) -> f64 {
+        if self.attempts == 0 {
+            0.0
+        } else {
+            self.passed as f64 / self.attempts as f64
+        }
+    }
+}
+
+impl Kpi {
+    /// Aggregate a counter snapshot exactly as Go did.
+    pub fn from_metrics(metrics: &BTreeMap<MetricKey, u64>) -> Self {
+        let mut by_label: BTreeMap<&str, Tally> = BTreeMap::new();
+        let mut by_difficulty: BTreeMap<String, Tally> = BTreeMap::new();
+        let mut raw = BTreeMap::new();
+        for (key, count) in metrics {
+            let passed = key.outcome == Outcome::Pass;
+            by_label
+                .entry(key.label.as_str())
+                .or_default()
+                .add(*count, passed);
+            by_difficulty
+                .entry(format!("d{}", key.difficulty))
+                .or_default()
+                .add(*count, passed);
+            raw.insert(key.to_string(), *count);
+        }
+        let mut bots = Tally::default();
+        let mut per_strategy = BTreeMap::new();
+        for (label, tally) in &by_label {
+            if !crate::gateway::pass_scoring::is_bot_label(label) {
+                continue;
+            }
+            bots.attempts = bots.attempts.saturating_add(tally.attempts);
+            bots.passed = bots.passed.saturating_add(tally.passed);
+            per_strategy.insert((*label).to_owned(), tally.rate());
+        }
+        let human = by_label.get("human").copied().unwrap_or_default();
+        Self {
+            bypass_rate: bots.rate(),
+            bot_attempts: bots.attempts,
+            per_strategy,
+            human_pass_rate: human.rate(),
+            human_attempts: human.attempts,
+            unknown_pass_rate: by_label.get("unknown").copied().unwrap_or_default().rate(),
+            per_difficulty: by_difficulty
+                .into_iter()
+                .map(|(difficulty, tally)| (difficulty, tally.rate()))
+                .collect(),
+            raw,
+        }
     }
 }
 

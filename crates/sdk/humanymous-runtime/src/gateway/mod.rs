@@ -27,6 +27,7 @@ pub mod management;
 pub mod model_admission;
 pub mod observatory;
 pub mod operations;
+pub mod pass_flow;
 pub mod pass_proof;
 pub mod pass_scoring;
 pub mod pass_store;

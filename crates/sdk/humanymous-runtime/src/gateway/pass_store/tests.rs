@@ -200,3 +200,48 @@ fn record_bounds_labels_and_key_space() {
     assert_eq!(store.record("bot", 0, false), Ok(()));
     assert_eq!(Refusal::MetricsFull.code(), "pass_kpi_full");
 }
+
+/// Legacy `handlePassKPI` aggregation: bot labels are everything but
+/// `human` and `unknown`; rates are 0 without attempts.
+#[test]
+fn kpi_aggregates_bypass_human_floor_and_difficulty() {
+    let store = PassStore::new();
+    assert_eq!(store.kpi(), Kpi::default());
+    for (label, difficulty, passed) in [
+        ("human", 0, true),
+        ("human", 0, false),
+        ("replay-bot", 3, false),
+        ("replay-bot", 3, false),
+        ("replay-bot", 3, true),
+        ("bot", 1, false),
+        ("unknown", 1, true),
+    ] {
+        store.record(label, difficulty, passed).unwrap();
+    }
+    let kpi = store.kpi();
+    assert_eq!(kpi.bot_attempts, 4);
+    assert_eq!(kpi.bypass_rate, 0.25);
+    assert_eq!(kpi.per_strategy["replay-bot"], 1.0 / 3.0);
+    assert_eq!(kpi.per_strategy["bot"], 0.0);
+    assert!(!kpi.per_strategy.contains_key("human"));
+    assert_eq!(kpi.human_attempts, 2);
+    assert_eq!(kpi.human_pass_rate, 0.5);
+    assert_eq!(kpi.unknown_pass_rate, 1.0);
+    assert_eq!(kpi.per_difficulty["d0"], 0.5);
+    assert_eq!(kpi.per_difficulty["d1"], 0.5);
+    assert_eq!(kpi.per_difficulty["d3"], 1.0 / 3.0);
+    assert_eq!(kpi.raw["replay-bot|fail|d3"], 2);
+    let json = serde_json::to_value(&kpi).unwrap();
+    for field in [
+        "bypassRate",
+        "botAttempts",
+        "perStrategy",
+        "humanPassRate",
+        "humanAttempts",
+        "unknownPassRate",
+        "perDifficulty",
+        "raw",
+    ] {
+        assert!(json.get(field).is_some(), "{field}");
+    }
+}
