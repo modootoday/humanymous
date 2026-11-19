@@ -69,6 +69,35 @@ async fn reload_intel(store: Arc<IntelStore>) {
     }
 }
 
+/// Install the loaded gate capabilities (owner decision #2). The ban store
+/// and WebAuthn need a trusted client address; without one startup is
+/// refused rather than serving a gate that never sees a client.
+fn install_provisioned(
+    application: &mut Application,
+    provisioned: crate::gateway::configuration::gates::Provisioned,
+) -> io::Result<()> {
+    if let Some(store) = provisioned.bans {
+        application
+            .install_bans(Arc::new(Mutex::new(store)), std::time::Instant::now())
+            .map_err(|_| io::Error::other("ban store needs a client address source"))?;
+    }
+    if let Some(directory) = provisioned.agent_keys {
+        application.install_agent_keys(directory);
+    }
+    if let Some(verifier) = provisioned.pat_issuers {
+        application.install_pat_issuers(verifier);
+    }
+    if let Some((registry, fanout)) = provisioned.webauthn {
+        application
+            .install_webauthn(registry, fanout)
+            .map_err(|_| io::Error::other("webauthn needs a client address source"))?;
+    }
+    if let Some((detector, mode)) = provisioned.sweep {
+        application.install_sweep(detector, mode);
+    }
+    Ok(())
+}
+
 pub(in crate::gateway) struct SharedAudit(pub(in crate::gateway) Arc<Mutex<SealedAudit>>);
 impl DurableAudit for SharedAudit {
     fn append(&mut self, record: crate::audit::record::Record) -> io::Result<()> {
@@ -254,6 +283,13 @@ impl ServiceHost {
                 "TLS listener requested without a certificate configuration",
             ));
         }
+        // Owner decision #2: configured gate sources load before audit
+        // custody opens; one that does not load refuses startup (Go
+        // `gateFatalf`), and an absent section installs nothing.
+        let provisioned = configuration
+            .gates
+            .load(configuration.admin.is_some())
+            .map_err(|_| io::Error::other("gate provisioning invalid"))?;
         if operator.is_some()
             && (management_policy.is_none() || settings_policy.is_none() || witness.is_none())
         {
@@ -333,6 +369,15 @@ impl ServiceHost {
         if let Some(admin) = &admin {
             profile["admin_listener"] = admin.readiness()?;
         }
+        // Present only when a gate is provisioned, so the profile shape is
+        // unchanged without it.
+        let gates_readiness = provisioned.readiness();
+        if gates_readiness
+            .as_object()
+            .is_some_and(|gates| gates.values().any(|on| on == true))
+        {
+            profile["gates"] = gates_readiness;
+        }
         profile["administration_writable"] = serde_json::json!(operator.is_some());
         let profile_shared = Arc::new(std::sync::RwLock::new(profile.clone()));
         let (operator, commands) = if let Some(operator) = operator {
@@ -378,6 +423,7 @@ impl ServiceHost {
                 application.install_gate_modes(active);
             }
         }
+        install_provisioned(&mut application, provisioned)?;
         if let Some(tls) = &tls {
             application.validate_tls_h1(tls)?;
         }

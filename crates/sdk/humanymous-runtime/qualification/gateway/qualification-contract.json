@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 933,
-      "macos": 933,
-      "windows": 898
+      "linux": 937,
+      "macos": 937,
+      "windows": 901
     },
     "common_test_names": [
       "gateway::accept::tests::accept_serves_a_real_connection",
@@ -797,6 +797,9 @@
       "gateway::tests::modes::recon_sweep_overlay_monitor_audits_without_blocking",
       "gateway::tests::modes::spoof_gate_reads_the_overlay_per_request",
       "gateway::tests::modes::startup_edge_modes_are_boot_modes_under_the_overlay",
+      "gateway::tests::provisioning::absent_gates_section_installs_nothing",
+      "gateway::tests::provisioning::configured_but_invalid_sources_fail_closed",
+      "gateway::tests::provisioning::configured_sources_load_go_formats_and_serve",
       "gateway::tests::real_tcp_audit_before_origin_and_negative_counter_zero",
       "gateway::tests::recovery_without_independent_head_never_opens_state_or_calls_witness",
       "gateway::tests::replay_and_collect_cross_session_cannot_gain_origin_ticket",
@@ -937,6 +940,7 @@
       "gateway::tests::edge::dual_control::ledger::r162_commit_then_edge_denies",
       "gateway::tests::service::exposure::unix_admin_bans_need_an_enforceable_gate",
       "gateway::tests::service::exposure::unix_edge_gate_modes_follow_the_admin_settings_overlay",
+      "gateway::tests::service::exposure::unix_gate_provisioning_loads_or_refuses_startup",
       "gateway::tests::service::exposure::unix_public_tls_edge_and_loopback_admin_listener",
       "gateway::tests::service::hosted_only_witnessed_settings_commit_invalidates_sessions_and_restores",
       "gateway::tests::service::settings_operator::native_operator_commit_is_witnessed_cas_and_invalidates_sessions",

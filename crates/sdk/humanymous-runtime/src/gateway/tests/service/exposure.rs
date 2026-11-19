@@ -316,3 +316,70 @@ async fn unix_edge_gate_modes_follow_the_admin_settings_overlay() {
         .unwrap();
     assert!(report.stopped && report.drained && report.audit_flushed);
 }
+
+/// Owner decision #2 composed in the service: a configured gate source that
+/// does not load refuses startup before audit custody opens (Go
+/// `gateFatalf`); one that loads is installed and reported in readiness; a
+/// ban store without a trusted client address is refused.
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn unix_gate_provisioning_loads_or_refuses_startup() {
+    let fixture = PrivateFixture::new();
+    let missing = fixture.0.join("agent-keys-missing");
+    let mut config = fixture.configuration();
+    config.gates =
+        serde_json::from_value(json!({"agent_keys": missing.to_str().unwrap()})).unwrap();
+    let refused = ServiceHost::bind(config).await.err().unwrap();
+    assert_eq!(refused.to_string(), "gate provisioning invalid");
+    assert_eq!(
+        std::fs::read_dir(fixture.0.join("audit")).unwrap().count(),
+        0,
+        "custody opened before provisioning"
+    );
+
+    let mut config = fixture.configuration();
+    config.gates = serde_json::from_value(json!({"bans": {"capacity":64,"max_keys":64,
+        "max_hits_per_key":256,"max_key_bytes":128,"max_payload_bytes":1048576,
+        "gc_scan_budget":64}}))
+    .unwrap();
+    let refused = ServiceHost::bind(config).await.err().unwrap();
+    assert_eq!(
+        refused.to_string(),
+        "ban store needs a client address source"
+    );
+
+    let key = crate::gateway::credential::web_bot_auth::tests::signer(7);
+    let keys = fixture.0.join("agent-keys");
+    std::fs::write(
+        &keys,
+        format!(
+            "{} {}\n",
+            crate::gateway::credential::web_bot_auth::tests::KID,
+            base64::Engine::encode(
+                &base64::engine::general_purpose::URL_SAFE_NO_PAD,
+                key.verifying_key().to_bytes()
+            )
+        ),
+    )
+    .unwrap();
+    let mut config = fixture.configuration();
+    config.gates = serde_json::from_value(json!({"agent_keys": keys.to_str().unwrap(),
+        "sweep": {"mode": "monitor", "max_bindings": 1024}}))
+    .unwrap();
+    let host = ServiceHost::bind(config).await.unwrap();
+    let ready = serde_json::to_value(host.readiness()).unwrap();
+    assert_eq!(
+        ready["profile"]["gates"],
+        json!({"bans":false,"agent_keys":true,"pat_issuers":false,"webauthn":false,"sweep":true})
+    );
+    let (sender, receiver) = tokio::sync::watch::channel(None);
+    let running = tokio::spawn(host.run(receiver));
+    sender
+        .send(Some(StopBudget::new(1000, 1000, 5000).unwrap().request()))
+        .unwrap();
+    let report = tokio::time::timeout(BUDGET, running)
+        .await
+        .unwrap()
+        .unwrap()
+        .unwrap();
+    assert!(report.stopped && report.drained && report.audit_flushed);
+}

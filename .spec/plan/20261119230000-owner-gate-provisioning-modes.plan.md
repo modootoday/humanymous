@@ -5,7 +5,7 @@ status: active
 created: 2026-11-19T23:00:00Z
 updated: 2026-11-19T23:00:00Z
 rel:
-  governs: [crates/sdk/humanymous-runtime/src/gateway/application/modes.rs, crates/sdk/humanymous-runtime/src/gateway/tests/modes.rs, crates/sdk/humanymous-runtime/tests/fixtures/gateway/gate-modes-go-golden.json]
+  governs: [crates/sdk/humanymous-runtime/src/gateway/application/modes.rs, crates/sdk/humanymous-runtime/src/gateway/tests/modes.rs, crates/sdk/humanymous-runtime/tests/fixtures/gateway/gate-modes-go-golden.json, crates/sdk/humanymous-runtime/src/gateway/configuration/gates.rs, crates/sdk/humanymous-runtime/src/gateway/tests/provisioning.rs]
   depends_on: [sot:root/rust-migration, sot:root/runtime-application, plan:root/20261119160000]
 ---
 
@@ -38,7 +38,9 @@ is untouched. Human-gated paths are not edited.
 - [x] #3 modes: `application::modes` reads the admin settings plane's active
   overlay slot per request; ban, spoof-header and sweep gates consume it;
   Go capture `gate-modes-go-golden.json`; service composition test.
-- [ ] #2 provisioning.
+- [x] #2 provisioning: optional startup `gates` section loaded before
+  custody (`configuration::gates`), installed by `gateway::service`; Go
+  source formats; fail closed on any configured source that does not load.
 - [ ] #4 verdict-token issuer and route presets with the attestation floor.
 - [ ] #7 HTML injection.
 
@@ -63,3 +65,7 @@ Engine (rule 96 cloud container venue; engine id checked before use):
   `gateway::tests::service::exposure::unix_edge_gate_modes_follow_the_admin_settings_overlay`
   passed over real loopback sockets and real custody. Fixture controls, no
   browser, human or Docker product e2e.
+- #2 Rust: `gateway::tests::provisioning` 3 passed;
+  `gateway::tests::service::exposure::unix_gate_provisioning_loads_or_refuses_startup`
+  passed (refusal before custody, ban store without a client address
+  refused, installed capabilities in readiness). Fixture controls only.

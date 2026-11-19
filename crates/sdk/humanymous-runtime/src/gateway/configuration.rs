@@ -7,11 +7,13 @@ pub mod admin;
 mod audit;
 mod edge;
 pub mod exposure;
+pub mod gates;
 mod ip_reputation;
 mod operational;
 pub use admin::AdminListener;
 pub use audit::{Audit, MAX_WITNESS_PROOF, SealedKeys, WitnessInput, WitnessInputDurability};
 pub use edge::Edge;
+pub use gates::Gates;
 pub use ip_reputation::{ClientAddressSource, IpReputation};
 pub use operational::OperationalSettings;
 
@@ -77,6 +79,12 @@ pub struct Configuration {
     /// (owner decision B01 #1); absent serves no admin plane.
     #[serde(default)]
     pub admin: Option<AdminListener>,
+    /// Config-driven gate provisioning (owner decision #2): ban store, Web
+    /// Bot Auth keys, PAT issuers, WebAuthn credentials and the sweep
+    /// detector. Absent installs nothing; a configured source that does not
+    /// load refuses startup.
+    #[serde(default)]
+    pub gates: Gates,
 }
 
 /// Distinct integrity contracts. A browser subset never claims full wire binding.

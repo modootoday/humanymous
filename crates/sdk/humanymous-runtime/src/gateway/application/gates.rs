@@ -9,8 +9,10 @@
 //! Every capability is opt-in, as in Go where each was nil by default: Web
 //! Bot Auth needs an installed key directory, PAT installed issuers, WebAuthn
 //! an installed registry and fan-out tracker, and the sweep gate an installed
-//! detector with its `gate.recon_sweep` mode. The service binary installs
-//! none of them; provisioning and default modes are owner questions.
+//! detector with its boot `gate.recon_sweep` mode. The service binary
+//! installs those the startup `gates` section configures
+//! (`configuration::gates`, owner decision #2) and none otherwise; the sweep
+//! mode is read per request under the settings overlay (`application::modes`).
 //!
 //! Kept from Go: the gate order (agent auth, PAT, WebAuthn, upgrade, sweep,
 //! then the verdict), the records, the 403 deny with the incident pointer

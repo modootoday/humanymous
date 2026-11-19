@@ -7,6 +7,7 @@ mod integration;
 mod ip_reputation;
 mod maintenance;
 mod modes;
+mod provisioning;
 #[cfg(unix)]
 mod service;
 mod settings;

@@ -637,6 +637,19 @@ changes. Plan: `.spec/plan/20261119230000-owner-gate-provisioning-modes.plan.md`
   overrides; Go had no startup mode, so a non-default startup mode survives
   an overlay that does not name the gate (named difference). A committed,
   rolled back or expired overlay takes effect on the next request.
+- Provisioning (#2): the optional startup `gates` section
+  (`gateway::configuration::gates`) names a standalone ban store, the Web
+  Bot Auth key allowlist file, the Privacy Pass issuer PEM file, the WebAuthn
+  credential file with its origin, RP ID, fan-out cap and explicit tracker
+  bounds, and the sweep detector (Go 30 s and 8 sessions by default, explicit
+  binding bound, boot mode). Source formats are Go `cmd/gate` `-agent-keys`,
+  `-pat-issuers` and `-webauthn-creds`. Absent installs nothing. A configured
+  source that is unreadable, larger than 4 MiB, empty, malformed or has a
+  refused bound fails startup before audit custody opens; a ban store or
+  WebAuthn without a trusted client address, or a standalone ban store beside
+  the admin listener (which owns its store), is refused. Named differences:
+  Go built the sweep detector and ban store unconditionally, took the
+  WebAuthn binding from the environment and bounded no fan-out map.
 
 ### Review reflected
 
