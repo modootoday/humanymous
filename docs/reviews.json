@@ -9617,9 +9617,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/native_security/storage/actor_context.rs",
-      "sha256": "e9aa1055999d6fbed95f89ed8d45858fc9aba5bf3cfa45a3089aadd60a1d96d1",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Windows CI actor metadata carrier: publish_actor_context requires an elevated, admin-enabled publisher, a 32-hex nonce whose hmrun account resolves to the given actor SID, and writes create-new context.json (64 KiB) and binding.json (16 KiB) under ProgramData hmctx-nonce with protected DACLs (Administrators and SYSTEM full, actor read or read/execute) and pins; finish deletes only those files and the empty directory. inspect_actor_context lets the ordinary actor verify owner, exact three-ACE DACL and bounded bytes. Both require_exact_producer_identity calls always return Unsupported; the test checks nonce and descriptor rules. Reader page coverage is indirect.",
+      "sha256": "4101b123bd2b1c6d822062e6d930d44891195840b08feb33fd2c556b5111bb0c",
+      "reviewer": "claude agent first-pass review 2026-11-19 (Claude Code author session; independent agent review pending)",
+      "notes": "Windows CI actor metadata carrier: publish_actor_context requires an elevated, admin-enabled publisher, a 32-hex nonce whose hmrun account resolves to the given actor SID, and an Administrators or SYSTEM owner, and writes create-new context.json (64 KiB) and binding.json (16 KiB) under ProgramData hmctx-nonce with protected DACLs (Administrators and SYSTEM full, actor read or read/execute) and pins; finish deletes only those files and the empty directory. inspect_actor_context lets the ordinary actor verify owner, exact three-ACE DACL and bounded bytes. bind_creator_channel (SoT N3, D5(a)) binds once: a non-pipe stdin or a frame not followed by EOF is Unsupported, and a nonce or context/binding byte mismatch against the carrier is PermissionDenied; require_exact_producer_identity returns Ok only after that binding. The unit test is cfg(windows) and runs on windows-2025 through the delivery dotnet-stdio component. Reader page coverage is indirect.",
       "pages": [
         "docs/reference/install-requirements.md",
         "docs/reference/cli-config-policy.md"
@@ -9627,9 +9627,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/native_security/storage/mod.rs",
-      "sha256": "9ee30f1a1dfb291b1d88b5ce20f3d306c2f9e2039a309e0a525f0bd308f97701",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Storage module root for native file-handle privacy policies shared by audit, authority and installer: on Windows it exposes actor-context publish/inspect, WindowsPrivacy/InstallationObject verification, private directory creators and SCM service-role grant/verify/revoke/resolve; the user_root_journal_model is compiled only under test.",
+      "sha256": "850e8e4e807cd23382b8ffb04f2bc0964909d77d2d71446a404436111c0c823e",
+      "reviewer": "claude agent first-pass review 2026-11-19 (Claude Code author session; independent agent review pending)",
+      "notes": "Storage module root for native file-handle privacy policies shared by audit, authority and installer: on Windows it exposes actor-context publish/inspect and the N3 CreatorChannelFrame, WindowsPrivacy/InstallationObject verification, private directory creators and SCM service-role grant/verify/revoke/resolve; the user_root_journal_model is compiled only under test.",
       "pages": [
         "docs/reference/install-requirements.md",
         "docs/reference/security-audit.md"

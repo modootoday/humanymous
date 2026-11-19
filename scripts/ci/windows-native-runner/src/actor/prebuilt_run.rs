@@ -614,7 +614,8 @@ pub(crate) fn run(input_path: &Path, report: &Path) -> io::Result<i32> {
     if profile_after && order.profile_absent_after().is_err() {
         facts["cleanup_order"] = json!("profile absence observed out of order");
     }
-    let deletion = if order.delete_account().is_ok() {
+    let deletion = if order.delete_account().is_ok() || !order.started() {
+        // Before launch no ordering fact applies; the run already failed.
         owner.delete_legacy_account()
     } else {
         // Out of order: the account is still deleted, but the run cannot pass.

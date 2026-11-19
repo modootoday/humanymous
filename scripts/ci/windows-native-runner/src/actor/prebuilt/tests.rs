@@ -231,7 +231,9 @@ fn single_test_footer_is_exact() {
 fn recovery_cannot_precede_job_empty_or_delete_identity_before_cleanup() {
     let mut state = CleanupOrder::default();
     assert!(state.start(false).is_err());
+    assert!(!state.started());
     state.start(true).unwrap();
+    assert!(state.started());
     assert!(state.start_recovery().is_err());
     assert!(state.delete_account().is_err());
     state.main_empty().unwrap();

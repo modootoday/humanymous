@@ -417,6 +417,10 @@ pub(crate) struct CleanupOrder {
     pub outcome_bound: bool,
 }
 impl CleanupOrder {
+    /// Whether the actor launch sequence began; before it, no ordering fact applies.
+    pub(crate) fn started(&self) -> bool {
+        self.started
+    }
     pub(crate) fn start(&mut self, profile_absent: bool) -> io::Result<()> {
         if self.started || !profile_absent {
             return Err(invalid());
