@@ -9562,18 +9562,18 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/native_security/process/mod.rs",
-      "sha256": "b657be7b5d55a6a21644306a9419cae59925fddbb8eaffbd411c955b99591fc6",
-      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Process identity helpers: re-exports Windows WindowsIdentity/current_identity, validates owned service names as humanymous-lab- plus 1..48 lowercase alphanumerics or hyphens, returns the Unix effective UID via rustix, and defines installer_token_allowed (neither elevated nor enabled Administrators) and enabled_admin_group (S-1-5-32-544 with the enabled bit). Tests check deny-only admin groups do not count and installation requires both conditions. 2026-11-18: current_uids returns real and effective uid (Unix) for the admission actor check.",
+      "sha256": "367525a91ccbbd81dda1341b290752d9d90a7d437928723788abe85579d38ef9",
+      "reviewer": "claude agent first-pass review 2026-11-19 (Claude Code author session; independent agent review pending)",
+      "notes": "Process identity helpers: re-exports Windows WindowsIdentity/current_identity, validates owned service names as humanymous-lab- plus 1..48 lowercase alphanumerics or hyphens, returns the Unix effective UID via rustix, and defines installer_token_allowed (neither elevated nor enabled Administrators) and enabled_admin_group (S-1-5-32-544 with the enabled bit). Tests check deny-only admin groups do not count and installation requires both conditions. 2026-11-18: current_uids returns real and effective uid (Unix) for the admission actor check. Also re-exports OwnerPrivileges and current_owner_privileges on Windows.",
       "pages": [
         "docs/reference/install-requirements.md"
       ]
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/native_security/process/windows.rs",
-      "sha256": "28caa04853dd4fe6d24ad28a5dc75ee6ef3003d5c2e3557063f85d0c2606cc3b",
-      "reviewer": "Codex native-abi chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
-      "notes": "WindowsIdentity fields cannot be caller-constructed; reads actual process TokenUser, elevation and enabled group attributes. Rejects any thread impersonation or unexpected token response. Queries do not change a token, prove a binary signature, authenticate a request or establish hosted provenance. Pages reviewed the delegated peer source report, not a native/API execution or external certification. Carried unchanged from crates/native-security/src/process/windows.rs: identical SHA-256 after the crate consolidation, so the reviewed bytes are the same.",
+      "sha256": "23a5061728151e93dc97166fd33846e6afedaffb3473b715c906a1bec1258bf4",
+      "reviewer": "claude agent first-pass review 2026-11-19 (Claude Code author session; independent agent review pending)",
+      "notes": "WindowsIdentity fields cannot be caller-constructed; reads actual process TokenUser, elevation and enabled group attributes. Rejects any thread impersonation or unexpected token response. Queries do not change a token, prove a binary signature, authenticate a request or establish hosted provenance. Pages reviewed the delegated peer source report, not a native/API execution or external certification. Carried unchanged from crates/native-security/src/process/windows.rs: identical SHA-256 after the crate consolidation, so the reviewed bytes are the same. current_owner_privileges reads TokenPrivileges of the current process token through winsafe and reports whether SeRestorePrivilege and SeTakeOwnershipPrivilege are ENABLED (present-but-disabled is false); it never adjusts a privilege. Used by the D5-N4 carrier-owner fixture.",
       "pages": [
         "docs/reference/install-requirements.md"
       ]
@@ -11069,9 +11069,9 @@
     },
     {
       "source": "crates/integrations/humanymous-platform/src/windows_object/create_file/native_tests.rs",
-      "sha256": "7f472620ad3b067c5884f208c12882b985af63d50a0dbea384b553157989c85e",
+      "sha256": "546d1accf5bfe9dcc9be58ba6910c8141ae0c398a195037a3947cd4f664960fb",
       "reviewer": "claude agent first-pass review 2026-11-19 (Claude Code author session; independent agent review pending)",
-      "notes": "Ignored native fixtures for B1. The four Root-listed ordinary-actor fixtures keep their HUMANYMOUS_B1_FIXTURE_PARENT gate and stay unrun. The D5-N4 option (a) fixture (issue #75 comment 6999924070) runs alone with --exact --ignored from delivery component dotnet-host under the elevated windows-2025 parent: directory and file created with owner Administrators at creation and a protected two-ACE DACL, CREATE_NEW refusing the existing file, and an Everyone owner refused for both with nothing created; it removes only what it created. Each step carries a step label (and the last OS error for a refused creation) so a CI failure names the step.",
+      "notes": "Ignored native fixtures for B1. The four Root-listed ordinary-actor fixtures keep their HUMANYMOUS_B1_FIXTURE_PARENT gate and stay unrun. The D5-N4 option (a) fixture actual_elevated_administrators_owner_at_creation (issue #75 comment 6999924070) runs alone with --exact --ignored from delivery component dotnet-host under the elevated windows-2025 parent: directory and file created with owner Administrators at creation and a protected two-ACE DACL, CREATE_NEW refusing the existing file; it removes only what it created. Each step carries a step label (and the last OS error for a refused creation) so a CI failure names the step. The foreign-owner case moved to the runner carrier-owner-fixture, which measures token privileges first (decision (ii) strengthened).",
       "pages": [
         "docs/reference/production-vs-reference.md"
       ]

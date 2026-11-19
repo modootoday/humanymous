@@ -49,8 +49,9 @@ pub fn n1_report_ok(report: &Value) -> bool {
 pub const N3_UNIT: &str = "native_security::storage::actor_context::tests::creator_channel_binding_requires_one_piped_frame_and_exact_bytes";
 
 /// D5-N4 option (a) (issue #75 comment 6999924070): the elevated parent sets
-/// owner Administrators at creation and a foreign owner is refused.
-pub const OWNER_AT_CREATION_UNIT: &str = "windows_object::create_file::native_tests::actual_elevated_administrators_owner_at_creation_and_foreign_owner_refused";
+/// owner Administrators at creation.
+pub const OWNER_AT_CREATION_UNIT: &str =
+    "windows_object::create_file::native_tests::actual_elevated_administrators_owner_at_creation";
 
 /// Run one Windows unit test alone and require its exact single-test footer.
 fn unit(
@@ -106,6 +107,86 @@ fn failure_excerpt(text: &str) -> Vec<String> {
         }
     }
     lines
+}
+
+/// Whether a carrier-owner fixture report holds every asserted case of the
+/// branch its measured token privileges select; neither branch is a skip.
+fn carrier_owner_ok(report: &Value) -> bool {
+    let facts = &report["facts"];
+    let privileges = &facts["token_privileges"];
+    let (Some(restore), Some(take)) = (
+        privileges["SeRestorePrivilege_enabled"].as_bool(),
+        privileges["SeTakeOwnershipPrivilege_enabled"].as_bool(),
+    ) else {
+        return false;
+    };
+    let privileged = restore || take;
+    let refused = |case: &Value| {
+        case["outcome"] == "refused-after-creation"
+            && case["error"] == "protected CI actor carrier required"
+            && case["publisher_cleanup_ok"] == true
+            && case["carrier_absent"] == true
+    };
+    let raw = &facts["foreign_owner_create"];
+    let branch = if privileged {
+        raw["accepted"] == true
+            && raw["owner"] == "S-1-1-0"
+            && refused(&facts["created_with_foreign_directory"])
+            && refused(&facts["created_with_foreign_context_file"])
+            && facts["plain_squatted_everyone_directory"]["case"]["outcome"]
+                == "refused-before-creation"
+            && facts["plain_squatted_everyone_directory"]["squat_untouched"] == true
+    } else {
+        raw["accepted"] == false
+            && raw["exists_after"] == false
+            && [
+                "created_with_foreign_directory",
+                "created_with_foreign_context_file",
+            ]
+            .iter()
+            .all(|key| {
+                facts[*key]["outcome"]
+                    .as_str()
+                    .is_some_and(|o| o != "published")
+                    && facts[*key]["carrier_absent"] == true
+            })
+    };
+    report["schema"] == "humanymous.carrier-owner-fixture/1"
+        && report["status"] == "passed"
+        && report["failures"].as_array().is_some_and(Vec::is_empty)
+        && facts["plain_default_owner"]["carrier_absent"] == true
+        && branch
+}
+
+/// D5-N4 foreign-owner case, (ii) strengthened: measured token privileges
+/// select the branch; both branches assert.
+fn carrier_owner_fixture(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
+    report["stage"] = json!("carrier-owner-fixture");
+    let raw = dir.join("dotnet-carrier-owner.json");
+    let log = dir.join("dotnet-carrier-owner.log");
+    let code = command::log(
+        root,
+        "cargo",
+        &[
+            "run",
+            "--locked",
+            "--manifest-path",
+            RUNNER_MANIFEST,
+            "--",
+            "carrier-owner-fixture",
+            "--report",
+            raw.to_str().ok_or("non-UTF-8 fixture report path")?,
+        ],
+        &log,
+    )?;
+    let value = read_json(&raw).unwrap_or(Value::Null);
+    report["commands"]["carrier-owner-fixture"] =
+        json!({"exit_code":code,"log_sha256":source::file(&log)?});
+    report["carrier_owner"] = value.clone();
+    require(
+        code == 0 && carrier_owner_ok(&value),
+        "carrier-owner fixture did not hold every case of its branch",
+    )
 }
 
 /// Run the N3 unit test alone and require its exact single-test footer.
@@ -397,6 +478,7 @@ pub fn hosted(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
         ),
         true,
     )?;
+    carrier_owner_fixture(root, dir, report)?;
     sdk_pilot(root, dir, report)?;
     let work = provider_dir("hm-dotnet-work")?;
     let sdk_private = match provider_dir("hm-dotnet-sdk") {
@@ -544,6 +626,46 @@ mod tests {
         );
         assert_eq!(lines.len(), 4);
         assert!(failure_excerpt(&"FAILED\n".repeat(100)).len() <= 24);
+    }
+    fn privileged_report() -> Value {
+        let refused = json!({"outcome":"refused-after-creation","error":"protected CI actor carrier required","publisher_cleanup_ok":true,"carrier_absent":true});
+        json!({"schema":"humanymous.carrier-owner-fixture/1","status":"passed","failures":[],"facts":{
+            "token_privileges":{"SeRestorePrivilege_enabled":true,"SeTakeOwnershipPrivilege_enabled":false},
+            "foreign_owner_create":{"accepted":true,"owner":"S-1-1-0","exists_after":true},
+            "created_with_foreign_directory":refused.clone(),
+            "created_with_foreign_context_file":refused.clone(),
+            "plain_squatted_everyone_directory":{"squatted":true,"case":{"outcome":"refused-before-creation"},"squat_untouched":true},
+            "plain_default_owner":refused}})
+    }
+    #[test]
+    fn carrier_owner_report_requires_every_case_of_the_measured_branch() {
+        let good = privileged_report();
+        assert!(carrier_owner_ok(&good));
+        for pointer in [
+            "/facts/foreign_owner_create/accepted",
+            "/facts/created_with_foreign_directory/carrier_absent",
+            "/facts/created_with_foreign_context_file/publisher_cleanup_ok",
+            "/facts/plain_squatted_everyone_directory/squat_untouched",
+            "/facts/plain_default_owner/carrier_absent",
+        ] {
+            let mut bad = good.clone();
+            *bad.pointer_mut(pointer).unwrap() = json!(false);
+            assert!(!carrier_owner_ok(&bad), "{pointer}");
+        }
+        let mut wrong = good.clone();
+        wrong["facts"]["created_with_foreign_directory"]["error"] = json!("other");
+        assert!(!carrier_owner_ok(&wrong));
+        // Unprivileged branch: the raw O:WD creation must have been refused.
+        let mut plain = good.clone();
+        plain["facts"]["token_privileges"]["SeRestorePrivilege_enabled"] = json!(false);
+        assert!(!carrier_owner_ok(&plain));
+        plain["facts"]["foreign_owner_create"] =
+            json!({"accepted":false,"owner":null,"exists_after":false});
+        assert!(carrier_owner_ok(&plain));
+        // A missing privilege measurement never passes.
+        let mut unmeasured = good;
+        unmeasured["facts"]["token_privileges"] = json!({});
+        assert!(!carrier_owner_ok(&unmeasured));
     }
     #[test]
     fn windows_units_name_existing_tests() {

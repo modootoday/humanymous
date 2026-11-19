@@ -217,11 +217,12 @@ fn owner_and_dacl(file: &File) -> (Option<String>, u32, bool) {
 
 /// D5-N4 option (a) (issue #75 comment 6999924070): an elevated, admin-enabled
 /// creator sets owner BUILTIN\Administrators in the creating call itself, for
-/// the carrier directory and a carrier file, and a foreign owner is refused
-/// with nothing created. No owner of an existing object is ever changed.
+/// the carrier directory and a carrier file, and CREATE_NEW refuses an existing
+/// file. No owner of an existing object is ever changed. The foreign-owner case
+/// measures token privileges, so it runs in the runner `carrier-owner-fixture`.
 #[test]
 #[ignore = "requires an elevated admin token; run alone by delivery component dotnet-host on windows-2025"]
-fn actual_elevated_administrators_owner_at_creation_and_foreign_owner_refused() {
+fn actual_elevated_administrators_owner_at_creation() {
     use std::os::windows::fs::OpenOptionsExt;
     let time = SystemTime::now()
         .duration_since(UNIX_EPOCH)
@@ -274,24 +275,6 @@ fn actual_elevated_administrators_owner_at_creation_and_foreign_owner_refused() 
         7,
         "step file-length"
     );
-
-    // Everyone is a token group without the owner attribute: refused, nothing created.
-    let foreign: LocalBox<SecurityDescriptor> = "O:WDD:P(A;;FA;;;BA)".parse().unwrap();
-    let refused_file = root.join("foreign.json");
-    assert!(
-        matches!(
-            create_new_file_with_descriptor(&refused_file, &foreign),
-            Err(BridgeError::OsFailure)
-        ),
-        "step foreign-file-refused"
-    );
-    assert!(!refused_file.exists(), "step foreign-file-absent");
-    let refused_dir = root.join("foreign");
-    assert!(
-        super::super::create_directory_with_descriptor(&refused_dir, &foreign).is_err(),
-        "step foreign-dir-refused"
-    );
-    assert!(!refused_dir.exists(), "step foreign-dir-absent");
 
     fs::remove_file(&path).expect("step cleanup-file");
     fs::remove_dir(&root).expect("step cleanup-dir");

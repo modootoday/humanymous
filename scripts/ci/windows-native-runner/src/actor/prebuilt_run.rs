@@ -67,7 +67,7 @@ fn other(reason: &'static str) -> io::Error {
 /// files get the publisher's exact descriptor, owner Administrators included,
 /// in the creating call. No existing object is opened and no owner is changed;
 /// a refused creation is returned as is and the publisher cleans up.
-struct OwnerAtCreation;
+pub(super) struct OwnerAtCreation;
 struct HeldCarrierFile(CreatedFile);
 impl CreatedCarrierFile for HeldCarrierFile {
     fn file(&self) -> &fs::File {
@@ -101,12 +101,12 @@ fn hex(bytes: &[u8]) -> String {
     format!("{:x}", Sha256::digest(bytes))
 }
 /// Forward-slash path text, as the `/2` wire and harness checks expect.
-fn wire(path: &Path) -> io::Result<String> {
+pub(super) fn wire(path: &Path) -> io::Result<String> {
     let text = path.to_str().ok_or_else(|| other("non-UTF-8 path"))?;
     let text = text.strip_prefix(r"\\?\").unwrap_or(text);
     Ok(text.replace('\\', "/"))
 }
-fn native(path: &str) -> PathBuf {
+pub(super) fn native(path: &str) -> PathBuf {
     PathBuf::from(path.replace('/', "\\"))
 }
 fn bounded_reader<R: Read + Send + 'static>(

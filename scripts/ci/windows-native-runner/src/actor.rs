@@ -28,6 +28,7 @@ use windows_sys::Win32::{
     UI::WindowsAndMessaging::SW_HIDE,
 };
 use zeroize::Zeroizing;
+pub(crate) mod carrier_owner;
 pub(crate) mod prebuilt_run;
 mod scm;
 pub(crate) mod stdio_fixture;

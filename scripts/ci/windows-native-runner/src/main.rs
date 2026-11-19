@@ -83,6 +83,17 @@ fn run() -> io::Result<i32> {
         return actor::prebuilt_run::child(&mut args);
     }
     #[cfg(windows)]
+    if mode == actor::carrier_owner::MODE {
+        return match (args.next().as_deref(), args.next(), args.next()) {
+            (Some("--report"), Some(report), None) => {
+                actor::carrier_owner::run(std::path::Path::new(&report))
+            }
+            _ => Err(io::Error::other(
+                "carrier-owner-fixture --report <abs> required",
+            )),
+        };
+    }
+    #[cfg(windows)]
     if mode == "dotnet-prebuilt" {
         return match (
             args.next().as_deref(),
