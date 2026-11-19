@@ -22,6 +22,21 @@ fn scratch(name: &str) -> PathBuf {
     dir
 }
 
+/// An ACME directory URL whose server closes every connection on accept, so
+/// each exchange fails at once on every platform. A port with no listener is
+/// not equivalent: Windows retries a refused connect for about two seconds,
+/// which defeats the timing these tests assert.
+async fn closing_directory() -> String {
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let address = listener.local_addr().unwrap();
+    tokio::spawn(async move {
+        while let Ok((stream, _)) = listener.accept().await {
+            drop(stream);
+        }
+    });
+    format!("https://{address}/directory")
+}
+
 fn domains(names: &[&str]) -> Vec<String> {
     names.iter().map(|name| (*name).to_owned()).collect()
 }
@@ -602,8 +617,9 @@ fn issuer_domains_are_normalised_and_wildcards_refused() {
 async fn renewal_failures_are_recorded_with_kind_and_time() {
     let cache = scratch("facts");
     let mut settings = AcmeSettings::lets_encrypt(cache.clone());
-    // Nothing listens on port 1: every order fails in the ACME exchange.
-    settings.directory = "https://127.0.0.1:1/directory".into();
+    // The directory server drops every connection: each order fails in the
+    // ACME exchange.
+    settings.directory = closing_directory().await;
     let issuer = Arc::new(AcmeIssuer::new(settings, domains(&["example.com"])).unwrap());
     let before = unix_now();
     let error = issuer.issue().await.unwrap_err();
@@ -644,8 +660,8 @@ async fn zero_check_interval_is_raised_to_the_floor_and_never_spins() {
     assert!(MIN_CHECK_INTERVAL >= Duration::from_secs(1));
     let cache = scratch("zero-interval");
     let mut settings = AcmeSettings::lets_encrypt(cache.clone());
-    // Nothing listens on port 1: every attempt fails fast.
-    settings.directory = "https://127.0.0.1:1/directory".into();
+    // The directory server drops every connection: every attempt fails fast.
+    settings.directory = closing_directory().await;
     let issuer = Arc::new(AcmeIssuer::new(settings, domains(&["example.com"])).unwrap());
     assert!(
         tokio::time::timeout(
