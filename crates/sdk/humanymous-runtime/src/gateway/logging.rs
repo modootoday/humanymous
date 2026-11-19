@@ -27,10 +27,12 @@
 //!   dynamic error text cannot reach it by type.
 //! - Observability records allowlist the HTTP method (anything else is
 //!   `other`); Go logged the parsed method token verbatim.
+mod inherited;
 mod queue;
 mod record;
 mod sink;
 
+pub use inherited::InheritedLogging;
 pub use queue::{
     DEFAULT_QUEUE_SIZE, DeadlineExceeded, DropStats, LevelCounts, LogHandle, MAX_QUEUE_SIZE,
     QueueRefusal, QueueStats, QueuedLogger,
@@ -153,6 +155,9 @@ pub enum Refusal {
     SinkTarget,
     /// File sink could not be opened (for example a missing parent).
     SinkOpen,
+    /// The console stream is reserved by the host process (the runtime
+    /// binary's standard output is its readiness pipe).
+    ConsoleStreamReserved,
 }
 
 impl Refusal {
@@ -166,6 +171,7 @@ impl Refusal {
             Self::DuplicateSink => "log_sink_duplicate",
             Self::SinkTarget => "log_sink_target",
             Self::SinkOpen => "log_sink_open",
+            Self::ConsoleStreamReserved => "log_console_stream_reserved",
         }
     }
 }

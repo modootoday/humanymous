@@ -5,7 +5,7 @@ status: active
 created: 2026-11-19T11:28:43Z
 updated: 2026-11-19T11:28:43Z
 rel:
-  governs: [crates/sdk/humanymous-runtime/src/gateway/application/maintenance.rs, crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs, crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs]
+  governs: [crates/sdk/humanymous-runtime/src/gateway/application/maintenance.rs, crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs, crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs, crates/sdk/humanymous-runtime/src/gateway/logging/inherited.rs]
   depends_on: [sot:root/rust-migration, sot:root/runtime-application]
 ---
 
@@ -43,6 +43,10 @@ loosened.
   typed code as the documented difference from Go's empty 502, so row
   `internal/gate/upstream_error_test.go` moves to `ported_unit` with the
   event-id stamping test added.
+- [x] Gate operational logging in the runtime binary: the five `-log-*` flags
+  as the inherited configuration's `logging` object, opened before custody,
+  with Go's configured and `runtime.fatal` records. Row `cmd/gate/logging.go`
+  has no open gap left; `cmd/gate/main.go` narrows its flag gap.
 
 ## Open owner questions (not decided here)
 

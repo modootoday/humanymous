@@ -54,6 +54,10 @@ pub struct Configuration {
     /// absent keeps the Go defaults: both gates enforce, no HSTS, no cloak.
     #[serde(default)]
     pub edge: Edge,
+    /// Gate operational logging (legacy `-log-*` flags); absent writes no
+    /// operational records. Validated and opened before custody.
+    #[serde(default)]
+    pub logging: Option<crate::gateway::logging::InheritedLogging>,
 }
 
 /// Distinct integrity contracts. A browser subset never claims full wire binding.

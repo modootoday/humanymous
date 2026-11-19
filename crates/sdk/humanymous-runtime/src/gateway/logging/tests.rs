@@ -557,3 +557,95 @@ fn identity_defaults_unknown_and_sanitizes() {
     assert_eq!(identity.node, "node");
     assert_eq!(Refusal::SinkOpen.code(), "log_sink_open");
 }
+
+// --- runtime binary `logging` object (cmd/gate main.go `-log-*` flags) ---
+
+/// An empty `logging` object takes the Go Gate flag defaults; unknown fields
+/// fail the document.
+#[test]
+fn inherited_logging_defaults_follow_the_go_gate_flags() {
+    let parsed: InheritedLogging = serde_json::from_str("{}").unwrap();
+    assert_eq!(parsed, InheritedLogging::default());
+    assert_eq!(
+        (
+            parsed.level.as_str(),
+            parsed.console_format.as_str(),
+            parsed.console_stream.as_str(),
+            parsed.plain_file.as_str(),
+            parsed.jsonl_file.as_str(),
+        ),
+        ("info", "plain", "stderr", "", "")
+    );
+    assert!(serde_json::from_str::<InheritedLogging>(r#"{"log_level":"info"}"#).is_err());
+}
+
+/// Invalid selectors and a standard-output console (the readiness pipe) are
+/// refused before any sink opens; with the console off, stdout writes nothing.
+#[test]
+fn inherited_logging_refuses_the_readiness_pipe_and_invalid_selectors() {
+    let open = |config: InheritedLogging| {
+        config
+            .open("v-test", "node-test", Box::new(Shared::default()))
+            .err()
+    };
+    let stdout = InheritedLogging {
+        console_stream: "stdout".into(),
+        ..InheritedLogging::default()
+    };
+    assert_eq!(open(stdout.clone()), Some(Refusal::ConsoleStreamReserved));
+    assert_eq!(
+        Refusal::ConsoleStreamReserved.code(),
+        "log_console_stream_reserved"
+    );
+    assert_eq!(
+        open(InheritedLogging {
+            console_format: "off".into(),
+            ..stdout
+        }),
+        None
+    );
+    assert_eq!(
+        open(InheritedLogging {
+            level: String::new(),
+            ..InheritedLogging::default()
+        }),
+        Some(Refusal::Level)
+    );
+    assert_eq!(
+        open(InheritedLogging {
+            jsonl_file: "relative.jsonl".into(),
+            ..InheritedLogging::default()
+        }),
+        Some(Refusal::SinkPath)
+    );
+}
+
+/// Go's "Operational logging initialized." record: the console and the file
+/// sink carry the same record, which reports file sinks as flags, not paths.
+#[test]
+fn inherited_logging_writes_the_go_configured_record_without_paths() {
+    let dir = TempDir::new("inherited");
+    let file = dir.file("gate.jsonl");
+    let config = InheritedLogging {
+        console_format: "jsonl".into(),
+        jsonl_file: path_str(&file).into(),
+        ..InheritedLogging::default()
+    };
+    let stderr = Shared::default();
+    let mut logger = config
+        .open("v-test", "node-test", Box::new(stderr.clone()))
+        .unwrap();
+    config.emit_configured(&mut logger, FIXED);
+    let record: serde_json::Value = serde_json::from_str(stderr.text().trim()).unwrap();
+    assert_eq!(record["service"], "gate");
+    assert_eq!(record["level"], "info");
+    assert_eq!(record["component"], "gate.runtime");
+    assert_eq!(record["event"], "runtime.logging_configured");
+    let fields = &record["fields"];
+    assert_eq!(fields["console_format"], "jsonl");
+    assert_eq!(fields["console_stream"], "stderr");
+    assert_eq!(fields["plain_file_enabled"], false);
+    assert_eq!(fields["jsonl_file_enabled"], true);
+    assert!(!stderr.text().contains(path_str(&file)));
+    assert_eq!(read(&file).trim(), stderr.text().trim());
+}

@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 778,
-      "macos": 778,
-      "windows": 746
+      "linux": 781,
+      "macos": 781,
+      "windows": 749
     },
     "common_test_names": [
       "gateway::admin_approval::tests::approval_store_rules",
@@ -368,6 +368,9 @@
       "gateway::logging::tests::gate_rejects_invalid_config_before_use",
       "gateway::logging::tests::gate_writes_console_plain_and_jsonl_file",
       "gateway::logging::tests::identity_defaults_unknown_and_sanitizes",
+      "gateway::logging::tests::inherited_logging_defaults_follow_the_go_gate_flags",
+      "gateway::logging::tests::inherited_logging_refuses_the_readiness_pipe_and_invalid_selectors",
+      "gateway::logging::tests::inherited_logging_writes_the_go_configured_record_without_paths",
       "gateway::logging::tests::invalid_event_and_field_cap_mark_truncation",
       "gateway::logging::tests::level_threshold_filters",
       "gateway::logging::tests::observability_omits_path_and_panic_material",

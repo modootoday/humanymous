@@ -1,6 +1,7 @@
 //! Private inherited configuration, durable audit startup and native listener,
 //! plaintext loopback or TLS with one explicitly configured certificate source.
 use humanymous_runtime::gateway::{
+    logging::{OperationalLogger, emit_gate_fatal, fatal_class},
     service::{ServiceHost, read_configuration},
     startup::inherited_witness,
     tls::listener,
@@ -27,7 +28,14 @@ fn attestation(mode: &str) -> Result<(), &'static str> {
         .map_err(|_| "attestation output pipe")
 }
 
-fn run() -> Result<(), &'static str> {
+/// Wall-clock record time for operational logs; an unavailable clock stamps 0.
+fn since_epoch() -> std::time::Duration {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap_or_default()
+}
+
+fn run(log: &mut Option<OperationalLogger>) -> Result<(), &'static str> {
     let arguments: Vec<_> = std::env::args_os().skip(1).collect();
     if io::stdin().is_terminal() || io::stdout().is_terminal() {
         return Err("private inherited configuration/readiness pipes required");
@@ -40,6 +48,19 @@ fn run() -> Result<(), &'static str> {
         _ => return Err("private inherited configuration/readiness pipes required"),
     }
     let config = read_configuration(io::stdin().lock()).map_err(|_| "configuration pipe")?;
+    // Legacy -log-* flags: the optional logging object is validated and its
+    // sinks opened before custody; a refusal exits with its static code.
+    if let Some(logging) = &config.logging {
+        let mut logger = logging
+            .open(
+                env!("CARGO_PKG_VERSION"),
+                &config.audit.node_id,
+                Box::new(io::stderr()),
+            )
+            .map_err(|refusal| refusal.code())?;
+        logging.emit_configured(&mut logger, since_epoch());
+        *log = Some(logger);
+    }
     // B02: a `tls` request selects exactly one certificate source (Go -tls-cert/
     // -tls-key, -acme-*, or the explicit dev certificate) before custody opens.
     // No source, an ambiguous one or an unavailable one fails closed here.
@@ -100,7 +121,12 @@ fn run() -> Result<(), &'static str> {
     })
 }
 fn main() {
-    if let Err(error) = run() {
+    let mut log = None;
+    if let Err(error) = run(&mut log) {
+        // Legacy gateFatalf: only a fixed class of the static error is logged.
+        if let Some(logger) = log.as_mut() {
+            emit_gate_fatal(logger, since_epoch(), fatal_class(error));
+        }
         eprintln!("humanymous-runtime: {error}");
         std::process::exit(1);
     }

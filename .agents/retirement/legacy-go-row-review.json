@@ -177,7 +177,9 @@
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/logging.rs",
     "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/sink.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/sink.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/inherited.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/main.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::environment_value_or_fallback",
@@ -187,16 +189,17 @@
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::fatal_class_does_not_reflect_dynamic_error_text",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_fatal_record_carries_only_the_static_class",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_normalizes_selectors_core_does_not",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::empty_level_is_refused_for_both_roles"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::empty_level_is_refused_for_both_roles",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::inherited_logging_defaults_follow_the_go_gate_flags",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::inherited_logging_refuses_the_readiness_pipe_and_invalid_selectors",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::inherited_logging_writes_the_go_configured_record_without_paths",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_opens_gate_logging_before_custody"
    ],
    "go_test_map": {},
-   "gaps": [
-    "Not wired into the Gate or Core process composition",
-    "Synchronous emit: no bounded async queue or per-level drop counters"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Gate operational logging kernel with explicit settings, sinks and a static fatal class. Deliberate differences: empty level refused, file paths must be absolute without .., no global logger or environment reads. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "notes": "Gate operational logging kernel with explicit settings, sinks and a static fatal class. Deliberate differences: empty level refused, file paths must be absolute without .., no global logger or environment reads. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged. FM11 lane B: wired into the Gate process composition. The runtime binary (gateway/main.rs) reads the five -log-* selectors from an optional logging object of its private inherited configuration (Go Gate defaults for omitted fields), validates and opens every sink before the TLS source and custody, writes Go's runtime.logging_configured record and, on a later startup or serving failure, emit_gate_fatal with the static fatal_class (gateFatalf). Deliberate differences: without the object nothing is logged (Go always logged at its defaults); console_stream stdout is refused (log_console_stream_reserved) because standard output is the readiness pipe; a refusal exits with its static log_* code. The synchronous emit path is the owner-accepted difference of decision 2 (bounded async queue ported as the opt-in QueuedLogger). Core (cmd/server) wiring is that row's concern.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::environment_value_or_fallback": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_writes_console_plain_and_jsonl_file": "passed",
@@ -205,7 +208,11 @@
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::fatal_class_does_not_reflect_dynamic_error_text": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_fatal_record_carries_only_the_static_class": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_normalizes_selectors_core_does_not": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::empty_level_is_refused_for_both_roles": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::empty_level_is_refused_for_both_roles": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::inherited_logging_defaults_follow_the_go_gate_flags": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::inherited_logging_refuses_the_readiness_pipe_and_invalid_selectors": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::inherited_logging_writes_the_go_configured_record_without_paths": "passed",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_opens_gate_logging_before_custody": "passed"
    }
   },
   {
@@ -218,7 +225,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/management/mod.rs",
     "crates/sdk/humanymous-runtime/src/gateway/service.rs",
     "crates/sdk/humanymous-runtime/src/gateway/shipping.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/tls/listener.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/tls/listener.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/inherited.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope",
@@ -227,12 +235,13 @@
     "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_acme_it_cannot_run",
     "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_the_dev_flag_without_the_build_feature",
     "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_tls_requests_without_exactly_one_usable_source",
-    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_serves_tls_from_a_provisioned_pair"
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_serves_tls_from_a_provisioned_pair",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_opens_gate_logging_before_custody"
    ],
    "go_test_map": {},
    "gaps": [
     "public edge listener and separate admin TCP listener (B01)",
-    "flag/env configuration surface (56 of 62 flags; the six edge TLS flags -tls-cert/-tls-key/-acme-domain/-acme-cache/-acme-email/-acme-directory now map to the inherited configuration's tls object)",
+    "flag/env configuration surface: the remaining cmd/gate flags and HMN_* environment values (cmd/gate/main.go at 981d25c defines 35 flags and reads 17 HMN_* variables). Mapped so far: the six edge TLS flags -tls-cert/-tls-key/-acme-domain/-acme-cache/-acme-email/-acme-directory to the inherited configuration's tls object, and the five operational logging flags -log-level/-log-console-format/-log-console-stream/-log-plain-file/-log-jsonl-file (with their HMN_LOG_* fallbacks) to its logging object",
     "origin reverse proxy to non-loopback upstream, origin-auth (B14)",
     "ordered gate composition: bans/token/upgrade/sweep (B13,B17,B18)",
     "admin RBAC/console (B19-B21)",
@@ -242,7 +251,7 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust runtime is a private-config loopback-only gateway (stdin config, loopback listen/origin); shipping plan B01-B27 lists the Gate edge composition as partial/missing. B02 binary wiring (2026-11-18): the runtime binary reads an optional tls object from its private inherited configuration (certificate/key, acme {domains, cache, email, directory, directory_root, check_interval_seconds}, dev_self_signed), selects exactly one source through tls::listener::prepare before custody opens, binds ServiceHost::bind_tls and starts AcmeIssuer::maintain beside the listener when ACME is selected. A tls request with no, ambiguous or unavailable source exits non-zero before custody (Go fell back to self-signed); ServiceHost refuses a tls request without a server configuration. tests/gateway/tls_startup.rs runs the real binary: refusals before custody, and a provisioned pair served over TLS/H1 on loopback (Unix).",
+   "notes": "Rust runtime is a private-config loopback-only gateway (stdin config, loopback listen/origin); shipping plan B01-B27 lists the Gate edge composition as partial/missing. B02 binary wiring (2026-11-18): the runtime binary reads an optional tls object from its private inherited configuration (certificate/key, acme {domains, cache, email, directory, directory_root, check_interval_seconds}, dev_self_signed), selects exactly one source through tls::listener::prepare before custody opens, binds ServiceHost::bind_tls and starts AcmeIssuer::maintain beside the listener when ACME is selected. A tls request with no, ambiguous or unavailable source exits non-zero before custody (Go fell back to self-signed); ServiceHost refuses a tls request without a server configuration. tests/gateway/tls_startup.rs runs the real binary: refusals before custody, and a provisioned pair served over TLS/H1 on loopback (Unix). FM11 lane B: the five -log-* flags are the inherited configuration's logging object; the binary opens the Gate operational logger before custody and logs runtime.logging_configured and runtime.fatal (tests/gateway/tls_startup.rs runtime_binary_opens_gate_logging_before_custody). Public listeners stay owner-gated (B01).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::configuration_and_readiness_are_honest": "passed",
@@ -250,7 +259,8 @@
     "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_tls_requests_without_exactly_one_usable_source": "passed",
     "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_the_dev_flag_without_the_build_feature": "passed",
     "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_acme_it_cannot_run": "passed",
-    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_serves_tls_from_a_provisioned_pair": "passed"
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_serves_tls_from_a_provisioned_pair": "passed",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_opens_gate_logging_before_custody": "passed"
    }
   },
   {
