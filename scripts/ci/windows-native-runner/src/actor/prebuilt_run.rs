@@ -327,6 +327,38 @@ fn context_and_binding(
     Ok((context_bytes, binding_bytes))
 }
 
+/// Diagnostic only: who owns a directory this elevated parent creates. The
+/// carrier publisher requires Administrators or SYSTEM and never repairs it.
+fn default_owner_class(scratch: &Path) -> &'static str {
+    use windows_permissions::{
+        LocalBox, Sid,
+        constants::{SeObjectType, SecurityInformation},
+        wrappers,
+    };
+    let probe = scratch.join("owner-probe");
+    if fs::create_dir(&probe).is_err() {
+        return "probe-failed";
+    }
+    let class = (|| -> io::Result<&'static str> {
+        let sd = wrappers::GetNamedSecurityInfo(
+            probe.as_os_str(),
+            SeObjectType::SE_FILE_OBJECT,
+            SecurityInformation::Owner,
+        )?;
+        let admin: LocalBox<Sid> = "S-1-5-32-544".parse()?;
+        let system: LocalBox<Sid> = "S-1-5-18".parse()?;
+        Ok(match sd.owner() {
+            Some(owner) if owner == &*admin => "administrators",
+            Some(owner) if owner == &*system => "system",
+            Some(_) => "other",
+            None => "absent",
+        })
+    })()
+    .unwrap_or("unreadable");
+    let _ = fs::remove_dir(&probe);
+    class
+}
+
 fn remove_tree(path: &Path, base: &Path, name: &str) -> io::Result<()> {
     if path.parent() != Some(base) || path.file_name() != Some(OsStr::new(name)) {
         return Err(other("unsafe generated cleanup path"));
@@ -417,17 +449,24 @@ pub(crate) fn run(input_path: &Path, report: &Path) -> io::Result<i32> {
             binding: binding.clone(),
         })
         .map_err(|_| other("envelope encoding"))?;
-        let carrier = publish_actor_context(&nonce, &sid, &context, &binding).map_err(|error| {
-            match error {
-                humanymous_runtime::native_security::storage::ContextPublishError::BeforeCreation(
-                    error,
-                ) => error,
-                humanymous_runtime::native_security::storage::ContextPublishError::Retained {
-                    error,
-                    ..
-                } => error,
+        facts["admin_default_owner"] = json!(default_owner_class(&scratch));
+        use humanymous_runtime::native_security::storage::ContextPublishError;
+        let carrier = match publish_actor_context(&nonce, &sid, &context, &binding) {
+            Ok(carrier) => {
+                facts["carrier_publish"] = json!("published");
+                carrier
             }
-        })?;
+            Err(ContextPublishError::BeforeCreation(error)) => {
+                facts["carrier_publish"] = json!("refused-before-creation");
+                return Err(error);
+            }
+            Err(ContextPublishError::Retained { owner, error }) => {
+                // The partial carrier is cleaned through its own owner.
+                facts["carrier_publish"] = json!("refused-after-creation");
+                facts["partial_carrier_removed"] = json!(owner.finish().is_ok());
+                return Err(error);
+            }
+        };
         let context_path = carrier.context_path();
         published = Some(carrier);
         let environment = vec![
