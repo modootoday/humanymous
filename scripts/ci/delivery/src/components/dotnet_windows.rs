@@ -43,10 +43,47 @@ pub fn n1_report_ok(report: &Value) -> bool {
         })
 }
 
+/// The N3 creator-channel rule (SoT 3.1.6) lives in a Windows-only module, so
+/// this Windows step is where its unit test actually executes.
+pub const N3_UNIT: &str = "native_security::storage::actor_context::tests::creator_channel_binding_requires_one_piped_frame_and_exact_bytes";
+
+/// Run the N3 unit test alone and require its exact single-test footer.
+fn n3_unit(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
+    report["stage"] = json!("n3-unit");
+    let log = dir.join("dotnet-n3-unit.log");
+    let code = command::log(
+        root,
+        "cargo",
+        &[
+            "test",
+            "--locked",
+            "-p",
+            "humanymous-runtime",
+            "--features",
+            "native-security",
+            "--lib",
+            "--",
+            "--exact",
+            N3_UNIT,
+            "--test-threads=1",
+        ],
+        &log,
+    )?;
+    let text = std::fs::read_to_string(&log).map_err(|error| error.to_string())?;
+    let passed = code == 0 && super::pilots::passed(&text, N3_UNIT);
+    report["commands"]["n3-unit"] = json!({"exit_code":code,"log_sha256":source::file(&log)?});
+    report["n3_unit_passed"] = json!(passed);
+    require(
+        passed,
+        "N3 creator-channel unit did not pass alone on Windows",
+    )
+}
+
 /// SoT 4.1 N1 fixture: the secondary-logon service delivers the std handles
 /// of the NoProfile actor launch. A failure stops the Windows provider; the
 /// `DuplicateHandle` fallback is not approved.
 pub fn stdio_fixture(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
+    n3_unit(root, dir, report)?;
     report["stage"] = json!("n1-fixture");
     let raw = dir.join("dotnet-n1-fixture.json");
     let log = dir.join("dotnet-n1-fixture.log");

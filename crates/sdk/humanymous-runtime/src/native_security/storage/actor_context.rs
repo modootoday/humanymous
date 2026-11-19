@@ -1,5 +1,10 @@
 //! Opt-in CI actor metadata carrier, not product authority or host attestation.
-//! Exact cross-process producer-handle/provider association remains Unsupported.
+//! The publisher never associates a producer. The inspector associates one only
+//! after [`InspectedActorContext::bind_creator_channel`] (SoT
+//! dotnet-protected-host-launch N3, owner decision D5(a)): the exact envelope
+//! this process read from the creator pipe it inherited must equal the
+//! inspected file bytes and nonce. Path reopening or hash equality alone never
+//! does.
 use std::{
     fs::{self, File, OpenOptions},
     io::{self, Read, Write},
@@ -325,6 +330,40 @@ pub struct InspectedActorContext {
     binding: Vec<u8>,
     actor: String,
     nonce: String,
+    bound: bool,
+}
+/// One creator-channel frame as this process received it (SoT 3.1.4). The
+/// caller reads it from its own inherited stdin, after its native
+/// `GetFileType` query (N2), and passes the observed fact unchanged.
+pub struct CreatorChannelFrame<'a> {
+    /// The N2 observation: standard input is an anonymous pipe object.
+    pub stdin_pipe: bool,
+    /// Exactly one envelope followed by EOF was read inside the run budget.
+    pub single_frame_eof: bool,
+    /// Envelope run nonce.
+    pub run_nonce: &'a str,
+    /// Exact envelope context bytes.
+    pub context: &'a [u8],
+    /// Exact envelope binding bytes.
+    pub binding: &'a [u8],
+}
+/// Pure N3 rule: every byte and the nonce must equal the inspected carrier.
+fn creator_channel_matches(
+    nonce: &str,
+    context: &[u8],
+    binding: &[u8],
+    frame: &CreatorChannelFrame<'_>,
+) -> io::Result<()> {
+    if !frame.stdin_pipe || !frame.single_frame_eof {
+        return Err(io::Error::new(
+            io::ErrorKind::Unsupported,
+            "creator channel is not one piped frame",
+        ));
+    }
+    if frame.run_nonce != nonce || frame.context != context || frame.binding != binding {
+        return Err(denied());
+    }
+    Ok(())
 }
 impl InspectedActorContext {
     /// Claimed codec bytes from the actual pinned regular file; still unverified.
@@ -343,12 +382,27 @@ impl InspectedActorContext {
     pub fn run_nonce(&self) -> &str {
         &self.nonce
     }
-    /// Mandatory unresolved gate before any trusted-profile/HostIO upgrade.
+    /// Bind this inspection to the creator-channel envelope (N3). Allowed
+    /// once; a mismatch leaves the carrier unbound and fails closed.
+    pub fn bind_creator_channel(&mut self, frame: &CreatorChannelFrame<'_>) -> io::Result<()> {
+        if self.bound {
+            return Err(denied());
+        }
+        creator_channel_matches(&self.nonce, &self.context, &self.binding, frame)?;
+        self.bound = true;
+        Ok(())
+    }
+    /// Producer association gate: Ok only after a successful
+    /// [`Self::bind_creator_channel`] on this exact inspected carrier.
     pub fn require_exact_producer_identity(&self) -> io::Result<()> {
-        Err(io::Error::new(
-            io::ErrorKind::Unsupported,
-            "producer handle association unqualified",
-        ))
+        if self.bound {
+            Ok(())
+        } else {
+            Err(io::Error::new(
+                io::ErrorKind::Unsupported,
+                "producer handle association unqualified",
+            ))
+        }
     }
 }
 fn bounded_read(file: &mut File, limit: usize) -> io::Result<Vec<u8>> {
@@ -399,6 +453,7 @@ pub fn inspect_actor_context(path: &Path) -> io::Result<InspectedActorContext> {
         binding: binding_bytes,
         actor: identity.sid().into(),
         nonce: run_nonce.into(),
+        bound: false,
     })
 }
 
@@ -406,6 +461,60 @@ pub fn inspect_actor_context(path: &Path) -> io::Result<InspectedActorContext> {
 mod tests {
     use super::*;
     const ACTOR: &str = "S-1-5-21-1-2-3-1001";
+    #[test]
+    fn creator_channel_binding_requires_one_piped_frame_and_exact_bytes() {
+        let nonce = "a".repeat(32);
+        let frame = |pipe: bool, eof: bool, n: &'static str, c: &'static [u8], b: &'static [u8]| {
+            (pipe, eof, n, c, b)
+        };
+        let check = |(pipe, eof, n, c, b): (bool, bool, &str, &[u8], &[u8])| {
+            creator_channel_matches(
+                &nonce,
+                b"context",
+                b"binding",
+                &CreatorChannelFrame {
+                    stdin_pipe: pipe,
+                    single_frame_eof: eof,
+                    run_nonce: n,
+                    context: c,
+                    binding: b,
+                },
+            )
+            .map_err(|error| error.kind())
+        };
+        let same: &'static str = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        assert!(check(frame(true, true, same, b"context", b"binding")).is_ok());
+        for (input, kind) in [
+            (
+                frame(false, true, same, b"context", b"binding"),
+                io::ErrorKind::Unsupported,
+            ),
+            (
+                frame(true, false, same, b"context", b"binding"),
+                io::ErrorKind::Unsupported,
+            ),
+            (
+                frame(
+                    true,
+                    true,
+                    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                    b"context",
+                    b"binding",
+                ),
+                io::ErrorKind::PermissionDenied,
+            ),
+            (
+                frame(true, true, same, b"context ", b"binding"),
+                io::ErrorKind::PermissionDenied,
+            ),
+            (
+                frame(true, true, same, b"context", b"binding\n"),
+                io::ErrorKind::PermissionDenied,
+            ),
+        ] {
+            assert_eq!(check(input), Err(kind));
+        }
+    }
     #[test]
     fn nonce_and_exact_role_descriptors_reject_owner_or_write_fallbacks() {
         assert!(nonce(&"a".repeat(32)).is_ok());
