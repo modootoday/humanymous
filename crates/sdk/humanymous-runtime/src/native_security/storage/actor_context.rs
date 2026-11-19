@@ -111,7 +111,7 @@ fn inspect(file: &File, actor: &str, directory: bool) -> io::Result<()> {
     let actor: LocalBox<Sid> = actor.parse()?;
     descriptor(&sd, &actor, directory)
 }
-fn set_new_acl(file: &mut File, actor: &str, directory: bool) -> io::Result<()> {
+fn owner_supported(file: &File) -> io::Result<()> {
     // Never repair/change an owner. An unsupported default token owner fails.
     let sd = wrappers::GetSecurityInfo(
         file,
@@ -123,12 +123,18 @@ fn set_new_acl(file: &mut File, actor: &str, directory: bool) -> io::Result<()> 
     if sd.owner() != Some(&*admin) && sd.owner() != Some(&*system) {
         return Err(denied());
     }
-    let sddl = if directory {
+    Ok(())
+}
+fn dacl_sddl(actor: &str, directory: bool) -> String {
+    if directory {
         format!("D:P(A;OICI;FA;;;BA)(A;OICI;FA;;;SY)(A;;0x1200a9;;;{actor})")
     } else {
         format!("D:P(A;;FA;;;BA)(A;;FA;;;SY)(A;;0x120089;;;{actor})")
-    };
-    let sd: LocalBox<SecurityDescriptor> = sddl.parse()?;
+    }
+}
+fn set_new_acl(file: &mut File, actor: &str, directory: bool) -> io::Result<()> {
+    owner_supported(file)?;
+    let sd: LocalBox<SecurityDescriptor> = dacl_sddl(actor, directory).parse()?;
     wrappers::SetSecurityInfo(
         file,
         SeObjectType::SE_FILE_OBJECT,
@@ -149,6 +155,25 @@ fn opened(path: &Path, directory: bool, access: u32) -> io::Result<File> {
         .open(path)
 }
 
+/// Descriptor-at-create carrier step (SoT dotnet-protected-host-launch N4,
+/// D5-N4 option (a), issue #75 comment 6999924070). The publisher passes the
+/// exact SDDL, owner `O:BA` included. An implementation applies it in the
+/// creating call (`CreateDirectoryW`/`CreateFileW` `SECURITY_ATTRIBUTES`),
+/// refuses an existing object, and never changes the owner of any object. The
+/// publisher re-verifies owner and DACL with its unchanged checks afterwards.
+pub trait CarrierCreator {
+    /// Create a NEW directory at exactly `path` with `sddl` applied at creation.
+    fn create_directory(&self, path: &Path, sddl: &str) -> io::Result<()>;
+    /// Create a NEW file at exactly `path` (`CREATE_NEW`, share 0, no
+    /// reparse-point follow) with `sddl` applied at creation; return its owner.
+    fn create_file(&self, path: &Path, sddl: &str) -> io::Result<Box<dyn CreatedCarrierFile>>;
+}
+/// Retained creation owner. Dropping closes the handle; it never deletes.
+pub trait CreatedCarrierFile {
+    /// Borrow the created open file, read/write with `READ_CONTROL`.
+    fn file(&self) -> &File;
+}
+
 /// Real owned files/pins. This is metadata publication, not trusted launch proof.
 /// No Debug/Serialize, inner File getter, implicit cleanup or authority upgrade.
 pub struct PublishedActorContext {
@@ -160,6 +185,7 @@ pub struct PublishedActorContext {
     created_context: bool,
     created_binding: bool,
     file_pins: Vec<File>,
+    created_files: Vec<Box<dyn CreatedCarrierFile>>,
     root_pin: Option<File>,
 }
 /// A publication/cleanup failure retains actual owned files and handles.
@@ -190,6 +216,39 @@ impl PublishedActorContext {
             io::ErrorKind::Unsupported,
             "producer handle association unqualified",
         ))
+    }
+    fn write_new_created(
+        &mut self,
+        creator: &dyn CarrierCreator,
+        name: &str,
+        bytes: &[u8],
+    ) -> io::Result<()> {
+        if name != CONTEXT && name != BINDING {
+            return Err(denied());
+        }
+        let path = self.root.join(name);
+        let sddl = format!("O:BA{}", dacl_sddl(&self.actor, false));
+        let created = creator.create_file(&path, &sddl)?;
+        match name {
+            CONTEXT => self.created_context = true,
+            _ => self.created_binding = true,
+        }
+        // Retain the creation owner through validation; cleanup closes it first.
+        self.created_files.push(created);
+        let file = self.created_files.last().ok_or_else(denied)?.file();
+        owner_supported(file)?;
+        inspect(file, &self.actor, false)?;
+        let mut writer = file;
+        writer.write_all(bytes)?;
+        file.sync_all()?;
+        drop(self.created_files.pop());
+        let pin = opened(&path, false, READ)?;
+        inspect(&pin, &self.actor, false)?;
+        if pin.metadata()?.len() != bytes.len() as u64 {
+            return Err(denied());
+        }
+        self.file_pins.push(pin);
+        Ok(())
     }
     fn write_new(&mut self, name: &str, bytes: &[u8]) -> io::Result<()> {
         let path = self.root.join(name);
@@ -226,6 +285,7 @@ impl PublishedActorContext {
             return Err(denied());
         }
         self.file_pins.clear();
+        self.created_files.clear();
         if self.created_context {
             fs::remove_file(self.root.join(CONTEXT))?;
             self.created_context = false;
@@ -265,6 +325,29 @@ pub fn publish_actor_context(
     context: &[u8],
     binding: &[u8],
 ) -> Result<PublishedActorContext, ContextPublishError> {
+    publish(None, run_nonce, actor_sid, context, binding)
+}
+
+/// [`publish_actor_context`] with the carrier directory and files created by
+/// `creator` with owner Administrators set at creation (D5-N4 option (a)).
+/// Every publisher check is unchanged and runs again after creation.
+pub fn publish_actor_context_created_with(
+    creator: &dyn CarrierCreator,
+    run_nonce: &str,
+    actor_sid: &str,
+    context: &[u8],
+    binding: &[u8],
+) -> Result<PublishedActorContext, ContextPublishError> {
+    publish(Some(creator), run_nonce, actor_sid, context, binding)
+}
+
+fn publish(
+    creator: Option<&dyn CarrierCreator>,
+    run_nonce: &str,
+    actor_sid: &str,
+    context: &[u8],
+    binding: &[u8],
+) -> Result<PublishedActorContext, ContextPublishError> {
     let prepare = || -> io::Result<PublishedActorContext> {
         nonce(run_nonce)?;
         if context.is_empty()
@@ -294,18 +377,33 @@ pub fn publish_actor_context(
             created_context: false,
             created_binding: false,
             file_pins: Vec::new(),
+            created_files: Vec::new(),
             root_pin: None,
         })
     };
     let mut owner = prepare().map_err(ContextPublishError::BeforeCreation)?;
-    fs::create_dir(&owner.root).map_err(ContextPublishError::BeforeCreation)?;
+    match creator {
+        Some(creator) => {
+            creator.create_directory(&owner.root, &format!("O:BA{}", dacl_sddl(actor_sid, true)))
+        }
+        None => fs::create_dir(&owner.root),
+    }
+    .map_err(ContextPublishError::BeforeCreation)?;
     owner.created_root = true;
     let result = (|| -> io::Result<()> {
         let mut root = opened(&owner.root, true, 0x60000)?;
         set_new_acl(&mut root, actor_sid, true)?;
         owner.root_pin = Some(root);
-        owner.write_new(CONTEXT, context)?;
-        owner.write_new(BINDING, binding)?;
+        match creator {
+            Some(creator) => {
+                owner.write_new_created(creator, CONTEXT, context)?;
+                owner.write_new_created(creator, BINDING, binding)?;
+            }
+            None => {
+                owner.write_new(CONTEXT, context)?;
+                owner.write_new(BINDING, binding)?;
+            }
+        }
         drop(owner.root_pin.take());
         let root = opened(&owner.root, true, READ)?;
         inspect(&root, actor_sid, true)?;

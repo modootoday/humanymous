@@ -13,6 +13,9 @@ publish = ["crates-io"]
 default = []
 testing = ["dep:serde", "dep:serde_json"]
 windows-object = ["dep:windows-sys", "dep:windows-permissions"]
+# Root-accepted B1 descriptor-at-create FILE primitive (structural-development SoT);
+# the only function-local unsafe scope it adds is create_file::create_native.
+windows-file-create = ["windows-object"]
 
 [dependencies]
 serde = { workspace = true, optional = true }
@@ -27,7 +30,8 @@ name = "linux_tree_inventory"
 path = "examples/linux_tree_inventory.rs"
 required-features = ["testing"]
 
-# Preserve the existing six function-local Windows bridge exceptions.
+# Function-local Windows bridge exceptions: the original six, N2 stdin_is_pipe (D3)
+# and, behind windows-file-create, B1 create_file::create_native.
 [lints.rust]
 unsafe_code = "deny"
 missing_docs = "warn"

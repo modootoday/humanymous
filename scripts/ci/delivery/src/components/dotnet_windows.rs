@@ -48,35 +48,52 @@ pub fn n1_report_ok(report: &Value) -> bool {
 /// this Windows step is where its unit test actually executes.
 pub const N3_UNIT: &str = "native_security::storage::actor_context::tests::creator_channel_binding_requires_one_piped_frame_and_exact_bytes";
 
+/// D5-N4 option (a) (issue #75 comment 6999924070): the elevated parent sets
+/// owner Administrators at creation and a foreign owner is refused.
+pub const OWNER_AT_CREATION_UNIT: &str = "windows_object::create_file::native_tests::actual_elevated_administrators_owner_at_creation_and_foreign_owner_refused";
+
+/// Run one Windows unit test alone and require its exact single-test footer.
+fn unit(
+    root: &Path,
+    dir: &Path,
+    report: &mut Value,
+    (stage, package, features, name): (&str, &str, &str, &str),
+    ignored: bool,
+) -> Result<()> {
+    report["stage"] = json!(stage);
+    let log = dir.join(format!("dotnet-{stage}.log"));
+    let mut args = vec![
+        "test",
+        "--locked",
+        "-p",
+        package,
+        "--features",
+        features,
+        "--lib",
+        "--",
+        "--exact",
+        name,
+    ];
+    if ignored {
+        args.push("--ignored");
+    }
+    args.push("--test-threads=1");
+    let code = command::log(root, "cargo", &args, &log)?;
+    let text = std::fs::read_to_string(&log).map_err(|error| error.to_string())?;
+    let passed = code == 0 && super::pilots::passed(&text, name);
+    report["commands"][stage] = json!({"exit_code":code,"log_sha256":source::file(&log)?});
+    report[format!("{}_passed", stage.replace('-', "_"))] = json!(passed);
+    require(passed, "Windows unit did not pass alone")
+}
+
 /// Run the N3 unit test alone and require its exact single-test footer.
 fn n3_unit(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
-    report["stage"] = json!("n3-unit");
-    let log = dir.join("dotnet-n3-unit.log");
-    let code = command::log(
+    unit(
         root,
-        "cargo",
-        &[
-            "test",
-            "--locked",
-            "-p",
-            "humanymous-runtime",
-            "--features",
-            "native-security",
-            "--lib",
-            "--",
-            "--exact",
-            N3_UNIT,
-            "--test-threads=1",
-        ],
-        &log,
-    )?;
-    let text = std::fs::read_to_string(&log).map_err(|error| error.to_string())?;
-    let passed = code == 0 && super::pilots::passed(&text, N3_UNIT);
-    report["commands"]["n3-unit"] = json!({"exit_code":code,"log_sha256":source::file(&log)?});
-    report["n3_unit_passed"] = json!(passed);
-    require(
-        passed,
-        "N3 creator-channel unit did not pass alone on Windows",
+        dir,
+        report,
+        ("n3-unit", "humanymous-runtime", "native-security", N3_UNIT),
+        false,
     )
 }
 
@@ -346,6 +363,18 @@ fn prepare(
 /// stages the closures, provisions the NoProfile standard-user actor and
 /// runs the Kestrel and generic cases through the actor runner child.
 pub fn hosted(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
+    unit(
+        root,
+        dir,
+        report,
+        (
+            "owner-at-creation-unit",
+            "humanymous-platform",
+            "windows-file-create",
+            OWNER_AT_CREATION_UNIT,
+        ),
+        true,
+    )?;
     sdk_pilot(root, dir, report)?;
     let work = provider_dir("hm-dotnet-work")?;
     let sdk_private = match provider_dir("hm-dotnet-sdk") {
@@ -482,6 +511,19 @@ mod tests {
                 "{name}"
             );
         }
+    }
+    #[test]
+    fn windows_units_name_existing_tests() {
+        let owner = include_str!(
+            "../../../../../crates/integrations/humanymous-platform/src/windows_object/create_file/native_tests.rs"
+        );
+        let name = OWNER_AT_CREATION_UNIT.rsplit("::").next().unwrap();
+        assert!(owner.contains(&format!("fn {name}()")));
+        let n3 = include_str!(
+            "../../../../../crates/sdk/humanymous-runtime/src/native_security/storage/actor_context.rs"
+        );
+        let name = N3_UNIT.rsplit("::").next().unwrap();
+        assert!(n3.contains(&format!("fn {name}()")));
     }
     #[test]
     fn n1_report_requires_every_fact() {

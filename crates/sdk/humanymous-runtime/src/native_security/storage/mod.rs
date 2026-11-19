@@ -5,8 +5,9 @@ mod actor_context;
 mod user_root_journal_model;
 #[cfg(windows)]
 pub use actor_context::{
-    ContextPublishError, CreatorChannelFrame, InspectedActorContext, PublishedActorContext,
-    inspect_actor_context, publish_actor_context,
+    CarrierCreator, ContextPublishError, CreatedCarrierFile, CreatorChannelFrame,
+    InspectedActorContext, PublishedActorContext, inspect_actor_context, publish_actor_context,
+    publish_actor_context_created_with,
 };
 #[cfg(windows)]
 mod windows;

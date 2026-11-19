@@ -27,9 +27,13 @@ use humanymous_platform::testing::parent_context::{
         encode_host_binding,
     },
 };
+use humanymous_platform::windows_object::{
+    create_directory_with_descriptor, create_file::CreatedFile,
+    create_file::create_new_file_with_descriptor,
+};
 use humanymous_runtime::native_security::storage::{
-    CreatorChannelFrame, create_user_private_directory, inspect_actor_context,
-    publish_actor_context,
+    CarrierCreator, CreatedCarrierFile, CreatorChannelFrame, create_user_private_directory,
+    inspect_actor_context, publish_actor_context_created_with,
 };
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
@@ -42,6 +46,7 @@ use std::{
     sync::mpsc,
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
+use windows_permissions::{LocalBox, SecurityDescriptor};
 
 pub(crate) const CHILD_MODE: &str = "dotnet-prebuilt-actor";
 const REPORT_SCHEMA: &str = "humanymous.dotnet-prebuilt-run/1";
@@ -56,6 +61,33 @@ const ACTOR_RX: &str = "0x1200a9";
 
 fn other(reason: &'static str) -> io::Error {
     io::Error::other(reason)
+}
+
+/// D5-N4 option (a), issue #75 comment 6999924070: the carrier directory and
+/// files get the publisher's exact descriptor, owner Administrators included,
+/// in the creating call. No existing object is opened and no owner is changed;
+/// a refused creation is returned as is and the publisher cleans up.
+struct OwnerAtCreation;
+struct HeldCarrierFile(CreatedFile);
+impl CreatedCarrierFile for HeldCarrierFile {
+    fn file(&self) -> &fs::File {
+        self.0.file()
+    }
+}
+impl CarrierCreator for OwnerAtCreation {
+    fn create_directory(&self, path: &Path, sddl: &str) -> io::Result<()> {
+        let descriptor: LocalBox<SecurityDescriptor> = sddl.parse()?;
+        // The publisher records and owns the empty-directory cleanup.
+        let _created = create_directory_with_descriptor(path, &descriptor)
+            .map_err(|_| other("carrier directory owner-at-creation refused"))?;
+        Ok(())
+    }
+    fn create_file(&self, path: &Path, sddl: &str) -> io::Result<Box<dyn CreatedCarrierFile>> {
+        let descriptor: LocalBox<SecurityDescriptor> = sddl.parse()?;
+        let created = create_new_file_with_descriptor(path, &descriptor)
+            .map_err(|_| other("carrier file owner-at-creation refused"))?;
+        Ok(Box::new(HeldCarrierFile(created)))
+    }
 }
 fn now_ms() -> io::Result<u64> {
     SystemTime::now()
@@ -451,18 +483,26 @@ pub(crate) fn run(input_path: &Path, report: &Path) -> io::Result<i32> {
         .map_err(|_| other("envelope encoding"))?;
         facts["admin_default_owner"] = json!(default_owner_class(&scratch));
         use humanymous_runtime::native_security::storage::ContextPublishError;
-        let carrier = match publish_actor_context(&nonce, &sid, &context, &binding) {
+        let carrier = match publish_actor_context_created_with(
+            &OwnerAtCreation,
+            &nonce,
+            &sid,
+            &context,
+            &binding,
+        ) {
             Ok(carrier) => {
                 facts["carrier_publish"] = json!("published");
                 carrier
             }
             Err(ContextPublishError::BeforeCreation(error)) => {
                 facts["carrier_publish"] = json!("refused-before-creation");
+                facts["carrier_error"] = json!(error.to_string());
                 return Err(error);
             }
             Err(ContextPublishError::Retained { owner, error }) => {
                 // The partial carrier is cleaned through its own owner.
                 facts["carrier_publish"] = json!("refused-after-creation");
+                facts["carrier_error"] = json!(error.to_string());
                 facts["partial_carrier_removed"] = json!(owner.finish().is_ok());
                 return Err(error);
             }
