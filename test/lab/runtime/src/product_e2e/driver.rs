@@ -25,11 +25,11 @@ fn exchange(address: &str, bytes: &[u8]) -> Result<Vec<u8>> {
     Ok(result)
 }
 
-fn status(response: &[u8]) -> Option<u16> {
+pub(super) fn status(response: &[u8]) -> Option<u16> {
     std::str::from_utf8(response.get(9..12)?).ok()?.parse().ok()
 }
 
-fn body(response: &[u8]) -> Option<Value> {
+pub(super) fn body(response: &[u8]) -> Option<Value> {
     let end = response.windows(4).position(|w| w == b"\r\n\r\n")? + 4;
     serde_json::from_slice(&response[end..]).ok()
 }
@@ -54,7 +54,7 @@ fn spoof_expectation(mode: Mode) -> (u16, Option<Vec<u8>>) {
     }
 }
 
-fn records() -> Result<Vec<Value>> {
+pub(super) fn records() -> Result<Vec<Value>> {
     let response = exchange(
         super::OBSERVE,
         b"GET /records HTTP/1.1\r\nHost: observe\r\n\r\n",
@@ -64,7 +64,7 @@ fn records() -> Result<Vec<Value>> {
         .ok_or("origin observation unavailable")?)
 }
 
-fn wait_for(address: &str) -> Result<()> {
+pub(super) fn wait_for(address: &str) -> Result<()> {
     let until = Instant::now() + Duration::from_secs(90);
     while TcpStream::connect_timeout(&super::address(address), Duration::from_secs(1)).is_err() {
         if Instant::now() > until {
@@ -76,7 +76,7 @@ fn wait_for(address: &str) -> Result<()> {
 }
 
 /// Header names an origin must never receive from a client through the Gate.
-fn forbidden(name: &str) -> bool {
+pub(super) fn forbidden(name: &str) -> bool {
     let lower = name.to_ascii_lowercase();
     lower == "authorization"
         || lower == "proxy-authorization"
@@ -84,7 +84,7 @@ fn forbidden(name: &str) -> bool {
         || guard::is_internal(name)
 }
 
-fn header_names(record: &Value) -> Vec<String> {
+pub(super) fn header_names(record: &Value) -> Vec<String> {
     record["headers"]
         .as_array()
         .map(|headers| {

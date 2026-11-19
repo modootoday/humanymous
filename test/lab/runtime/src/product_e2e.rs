@@ -12,12 +12,21 @@
 //! whose collect reports are the bytes the real Rust WASM collector posted
 //! from Firefox in the browser topology (supplied by the runner on stdin),
 //! never a hand-written report.
+//!
+//! TLS profile: the shipped gateway binary with a `tls` section whose
+//! certificate is issued by a per-run lab CA minted inside its container
+//! (`lab_ca`), driven over real TLS (HTTP/1.1 and H2 via ALPN), raw owned
+//! ClientHello parrots and malformed H2 frames (`tls_driver`). The client still
+//! shares the Gate's loopback namespace, so this is not original-client
+//! cross-namespace evidence.
 mod dns_canary;
 mod driver;
 mod gate;
 mod health;
+mod lab_ca;
 mod origin;
 mod report;
+mod tls_driver;
 mod witness;
 
 pub use dns_canary::probe as dns_probe;
@@ -26,9 +35,11 @@ pub use driver::origin_lost as driver_origin_lost;
 pub use driver::run as driver;
 pub use driver::witnessed as driver_witnessed;
 pub use gate::run as gate;
+pub use gate::tls as gate_tls;
 pub use gate::witnessed as gate_witnessed;
 pub use health::run as health;
 pub use origin::run as origin;
+pub use tls_driver::run as driver_tls;
 pub use witness::run as witness;
 
 use serde_json::{Value, json};
@@ -60,4 +71,28 @@ pub fn configuration(audit: &str, keys: &str, passphrase: &str) -> Value {
                 {"method":"POST","path":"/collector","required":required(false,true)}],
       "audit":{"directory":audit,"node_id":"product-e2e-gate","keys":{"directory":keys,"passphrase":passphrase},"allow_new":true,"trusted_head":null},
       "owner":{"kind":"unix","uid":65532},"session_capacity":64,"session_ttl_ms":60000,"timeout_ms":5000,"rate_per_second":1000})
+}
+
+/// Route that requires the R14 same-owner original H2 observation; only the
+/// TLS Gate configures it.
+pub const H2_ROUTE: &str = "/h2";
+
+/// The TLS Gate's private configuration: the shared document plus a `tls`
+/// section naming the provisioned lab chain and key, and one route requiring
+/// the original H2 observation. The driver derives its signing scope from the
+/// same function with placeholder paths.
+pub fn tls_configuration(
+    audit: &str,
+    keys: &str,
+    passphrase: &str,
+    chain: &str,
+    key: &str,
+) -> Value {
+    let mut config = configuration(audit, keys, passphrase);
+    config["tls"] = json!({"certificate":chain,"key":key});
+    if let Some(routes) = config["routes"].as_array_mut() {
+        routes.push(json!({"method":"POST","path":H2_ROUTE,"required":
+            {"raw_tls":false,"original_h2":true,"raw_header_order":true,"collector":false,"rit":true}}));
+    }
+    config
 }

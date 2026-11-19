@@ -183,6 +183,51 @@ services:
     init: true
     networks: [dnscanary]
     profiles: [browser]
+  # Profile "tls": the shipped gateway binary with its TLS listener
+  # (ServiceHost::bind_tls, ALPN h2 then http/1.1). tgate mints a per-run lab
+  # CA in its own container, writes the leaf pair to its private tmpfs and
+  # names it in the gateway's `tls` configuration; only the public root leaves,
+  # in the readiness line, and the runner relays it to tdriver's stdin. The
+  # gateway still accepts loopback peers only, so torigin and tdriver share
+  # tgate's namespace: TLS/H2 evidence here is shared-loopback-namespace
+  # scoped, never original-client cross-namespace evidence.
+  tgate:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--product-gate-tls"]
+    init: true
+    networks: [tls]
+    pids_limit: 64
+    mem_limit: 256m
+    cpus: 1
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=32m,mode=1777"]
+    healthcheck:
+      <<: *health
+      test: ["CMD", "/usr/local/bin/humanymous-runtime-pilot", "--product-health", "gate"]
+    profiles: [tls]
+  torigin:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--product-origin"]
+    init: true
+    network_mode: "service:tgate"
+    depends_on:
+      tgate: {condition: service_healthy}
+    healthcheck:
+      <<: *health
+      test: ["CMD", "/usr/local/bin/humanymous-runtime-pilot", "--product-health", "origin"]
+    profiles: [tls]
+  tdriver:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--product-driver-tls"]
+    init: true
+    network_mode: "service:tgate"
+    stdin_open: true
+    depends_on:
+      tgate: {condition: service_healthy}
+      torigin: {condition: service_healthy}
+    profiles: [tls]
   wargame:
     extends: {file: topology/sandbox.yaml, service: sandbox}
     image: humanymous/product-e2e:local
@@ -198,6 +243,8 @@ networks:
   product:
     internal: true
   witnessed:
+    internal: true
+  tls:
     internal: true
   browser:
     internal: true

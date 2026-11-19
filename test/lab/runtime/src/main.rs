@@ -71,6 +71,12 @@ fn main() {
         Some("--product-driver-witnessed") => {
             product_e2e::driver_witnessed().expect("witnessed product e2e driver")
         }
+        Some("--product-gate-tls") => {
+            product_e2e::gate_tls().expect("shipped-binary TLS Gate supervisor")
+        }
+        Some("--product-driver-tls") => {
+            product_e2e::driver_tls().expect("product e2e TLS/H2 driver")
+        }
         Some("--product-driver-origin-lost") => {
             product_e2e::driver_origin_lost().expect("origin-loss product e2e driver")
         }
