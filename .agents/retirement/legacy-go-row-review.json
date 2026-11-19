@@ -15,8 +15,8 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 255,
-  "partial": 45,
+  "ported_unit": 259,
+  "partial": 41,
   "missing": 3,
   "not_applicable": 2,
   "oracle_only": 9
@@ -75,10 +75,10 @@
    "ported_unit": 5
   },
   "internal/gate": {
-   "partial": 27,
+   "partial": 23,
    "missing": 1,
    "not_applicable": 1,
-   "ported_unit": 55,
+   "ported_unit": 59,
    "oracle_only": 1
   },
   "internal/httpx": {
@@ -2164,48 +2164,53 @@
   },
   {
    "baseline_path": "internal/gate/admin_integrity_empty_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs"
+    "crates/sdk/humanymous-runtime/src/audit/log/live.rs",
+    "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved"
+    "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_admin_integrity_empty_chain_matches_capture"
    ],
    "go_test_map": {
-    "TestAdminIntegrityEmptyChain": "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved"
+    "TestAdminIntegrityEmptyChain": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_admin_integrity_empty_chain_matches_capture"
    },
-   "gaps": [
-    "authenticated admin integrity HTTP endpoint and its meta-audit",
-    "integrity_ok response field projection"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust audit verifier reports EmptyChain as failure; no admin integrity endpoint exists.",
+   "notes": "gateway::admin_plane::chain serves GET integrity from a shared audit Log attached with AdminPlane::with_chain (the plane audits into the same log). An empty chain answers the Go body byte for byte (ok false, class empty-chain); after a sealed decision and on the authenticated route (meta-audit first) it self-verifies, matching the Go capture. Composition into gateway::service is not done here (see internal/gate/admin.go).",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved": "passed"
+    "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_admin_integrity_empty_chain_matches_capture": "passed"
    }
   },
   {
    "baseline_path": "internal/gate/admin_offline_verify_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs"
+    "crates/sdk/humanymous-runtime/src/audit/log/live.rs",
+    "crates/sdk/humanymous-runtime/src/audit/log/proofs.rs",
+    "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs::every_verifier_result_and_priority_matches_go"
+    "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs::every_verifier_result_and_priority_matches_go",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_admin_keys_enable_offline_verify",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_keys_proof_and_checkpoint_refusals_match_capture"
    ],
    "go_test_map": {
-    "TestAdminKeysEnableOfflineVerify": "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs::every_verifier_result_and_priority_matches_go"
+    "TestAdminKeysEnableOfflineVerify": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_admin_keys_enable_offline_verify"
    },
-   "gaps": [
-    "admin keys endpoint publishing verification keys to auditors",
-    "auditor fetch-then-verify flow over HTTP"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Offline verification primitive is Go-parity tested; key publication over an admin API is absent.",
+   "notes": "The admin plane publishes keys (hex writer and witness verification keys only), checkpoints and proof?seq=N; the test fetches them, verifies the exported chain with the public key alone (hmac-unchecked), with the published witness key, and the inclusion proof against the exported signed head root, matching the Go capture field sets and texts. Signed-head tree sizes differ from Go only through the existing audit::log witness cadence (the first record is sealed at once: heads 1, 5, 9 instead of 4, 8), asserted explicitly in the test.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs::every_verifier_result_and_priority_matches_go": "passed"
+    "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs::every_verifier_result_and_priority_matches_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_admin_keys_enable_offline_verify": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_keys_proof_and_checkpoint_refusals_match_capture": "passed"
    }
   },
   {
@@ -2289,27 +2294,37 @@
    "baseline_path": "internal/gate/admin_test.go",
    "disposition": "partial",
    "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain.rs",
     "crates/sdk/humanymous-runtime/src/gateway/management/mod.rs",
     "crates/sdk/humanymous-runtime/src/gateway/management/policy.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::settings_view_is_observer_only_and_cannot_be_used_for_mutation",
-    "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope"
+    "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_audit_stream_incidents_and_enumeration_cap_match_capture",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_admin_integrity_empty_chain_matches_capture",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_keys_proof_and_checkpoint_refusals_match_capture",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::route_table_follows_go_dispatch"
    ],
    "go_test_map": {
-    "TestAdminReadAPIs": "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::settings_view_is_observer_only_and_cannot_be_used_for_mutation",
+    "TestAdminReadAPIs": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_audit_stream_incidents_and_enumeration_cap_match_capture",
     "TestAdminConsoleAndFeatures": null
    },
    "gaps": [
-    "bans/integrity/proof/audit/incidents/policy/approvals/erasures/whoami/metrics/keys/checkpoints read APIs",
-    "admin console page and feature flags"
+    "admin console page (internal/gate/console.go is missing) and the policy read route of TestAdminConsoleAndFeatures",
+    "the DPO erasure commit answers 409 by design (needs the vault erasure permit and hold queue); Go committed it"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust management exposes only an observer settings/profile view over private IPC (B19 M).",
+   "notes": "TestAdminReadAPIs is covered across gateway::admin_plane::chain tests: unauthenticated reads are the 404, keys and checkpoints publish verification material, integrity self-verifies, the audit stream is newest first with opaque incident handles, a handle resolves while a raw sequence does not, and reads are meta-audited. TestAdminConsoleAndFeatures stays unmapped: the console and policy routes are not served, and the erasure request and DPO-only approval match Go up to the commit, which answers 409.",
    "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::settings_view_is_observer_only_and_cannot_be_used_for_mutation": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::settings_view_is_observer_only_and_cannot_be_used_for_mutation": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_audit_stream_incidents_and_enumeration_cap_match_capture": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_admin_integrity_empty_chain_matches_capture": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_keys_proof_and_checkpoint_refusals_match_capture": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::route_table_follows_go_dispatch": "passed"
    }
   },
   {
@@ -2559,8 +2574,12 @@
   },
   {
    "baseline_path": "internal/gate/attestfloor_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/exchange.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/fanout.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/routes_file.rs",
     "crates/sdk/humanymous-runtime/src/gateway/token.rs",
     "crates/sdk/humanymous-runtime/src/network/history/cohort/mod.rs"
    ],
@@ -2572,32 +2591,38 @@
     "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r257_flag_releases_session_set",
     "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r258_post_flag_sessions_are_not_retained",
     "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r251_identical_farm_flags_once",
-    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r252_solo_session_does_not_flag"
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r252_solo_session_does_not_flag",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::go_attest_floor_http_cases_match_capture",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::go_step_up_exchange_matches_capture",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::go_receipt_reasons_match_capture",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::go_fanout_cap_withholds_past_cap_on_attested_route",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::go_fanout_cap_leaves_unmarked_routes_untouched",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::go_attested_catch_all_refusal_matches_capture",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::unencodable_proof_is_refused_without_a_cookie",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::unadmitted_observation_withholds_the_upgrade_everywhere",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::non_positive_cap_selects_the_go_default",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests.rs::wargame_r348_t4_sticky_allow_cannot_skip_floor"
    ],
    "go_test_map": {
-    "TestAttestFloorDemotesUnattestedAllow": null,
-    "TestAttestFloorStepUpProofPasses": null,
-    "TestAttestFloorStickyAllowLaunderingClosed": null,
+    "TestAttestFloorDemotesUnattestedAllow": "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::go_attest_floor_http_cases_match_capture",
+    "TestAttestFloorStepUpProofPasses": "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::go_attest_floor_http_cases_match_capture",
+    "TestAttestFloorStickyAllowLaunderingClosed": "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::go_attest_floor_http_cases_match_capture",
     "TestStepUpProofNotLiftable": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::lifted_step_up_proof_fails_binding",
     "TestStepUpDomainSeparation": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::step_up_and_verdict_tokens_are_domain_separated",
-    "TestStepUpEndpointMintsProof": null,
-    "TestStepUpCrossPlaneKeyMismatch": null,
-    "TestStepUpCrossPlaneSidDivergence": null,
-    "TestWebAuthnFanoutCap": null,
-    "TestWebAuthnFanoutCapUnmarkedRoutesUntouched": null,
-    "TestNewServerRefusesAttestedCatchAll": null,
+    "TestStepUpEndpointMintsProof": "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::go_step_up_exchange_matches_capture",
+    "TestStepUpCrossPlaneKeyMismatch": "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::go_step_up_exchange_matches_capture",
+    "TestStepUpCrossPlaneSidDivergence": "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::go_receipt_reasons_match_capture",
+    "TestWebAuthnFanoutCap": "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::go_fanout_cap_withholds_past_cap_on_attested_route",
+    "TestWebAuthnFanoutCapUnmarkedRoutesUntouched": "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::go_fanout_cap_leaves_unmarked_routes_untouched",
+    "TestNewServerRefusesAttestedCatchAll": "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::go_attested_catch_all_refusal_matches_capture",
     "TestCohortShadowBounded": "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r257_flag_releases_session_set",
     "TestCohortShadowFlagsSharedGenerator": "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r251_identical_farm_flags_once",
     "TestStepUpTokenVerify": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::step_up_rejects_wrong_bind_expiry_and_garbage_receipts"
    },
-   "gaps": [
-    "The attested-route floor (demoting an unattested ALLOW, sticky-allow laundering) is unported: it changes route verdict policy and needs the Runtime route owner",
-    "The /__hmn/stepup receipt-to-proof endpoint and its cross-plane key and session checks are unported",
-    "WebAuthn fan-out cap and the attested catch-all configuration refusal are unported"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Token and cohort kernel cases are mapped. The HTTP-level 401 and origin-not-contacted assertions belong to the unported floor.",
+   "notes": "Token and cohort kernel cases are mapped. The floor HTTP scenarios (401 and origin-not-contacted), the /__hmn/stepup receipt-to-proof exchange (gateway::attest_floor::exchange), the WebAuthn credential fan-out cap (gateway::attest_floor::fanout) and the attested catch-all refusal (route_policy::refuse_attested_catch_all) are tested against Go outputs captured from 981d25c (tests/fixtures/gateway/attest-floor-and-admin-chain-go-golden.json, plan:root/20261119025817). Deliberate fail-closed differences, each pinned: a proof Rust cannot encode answers 500 without a cookie; a fan-out observation the bounded registry cannot admit withholds the upgrade on every route. Wiring these kernels into the serving path stays with the runtime route owner, as for decide().",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::lifted_step_up_proof_fails_binding": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::step_up_and_verdict_tokens_are_domain_separated": "passed",
@@ -2606,7 +2631,17 @@
     "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r257_flag_releases_session_set": "passed",
     "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r258_post_flag_sessions_are_not_retained": "passed",
     "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r251_identical_farm_flags_once": "passed",
-    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r252_solo_session_does_not_flag": "passed"
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r252_solo_session_does_not_flag": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::go_attest_floor_http_cases_match_capture": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::go_step_up_exchange_matches_capture": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::go_receipt_reasons_match_capture": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::go_fanout_cap_withholds_past_cap_on_attested_route": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::go_fanout_cap_leaves_unmarked_routes_untouched": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::go_attested_catch_all_refusal_matches_capture": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::unencodable_proof_is_refused_without_a_cookie": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::unadmitted_observation_withholds_the_upgrade_everywhere": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests/parity.rs::non_positive_cap_selects_the_go_default": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/attest_floor/tests.rs::wargame_r348_t4_sticky_allow_cannot_skip_floor": "passed"
    }
   },
   {
@@ -3436,29 +3471,32 @@
    "baseline_path": "internal/gate/killswitch_test.go",
    "disposition": "partial",
    "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/audit/control/policy.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane.rs",
     "crates/sdk/humanymous-runtime/src/gateway/control.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/control/state.rs",
-    "crates/sdk/humanymous-runtime/src/audit/control/policy.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/control/state.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/control.rs::node_kill_binding_is_exact_and_survives_policy_revision_changes",
     "crates/sdk/humanymous-runtime/src/gateway/control/state.rs::spent_intent_without_covered_effect_cannot_become_healthy",
-    "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::two_independent_signatures_bind_every_operation_field"
+    "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::two_independent_signatures_bind_every_operation_field",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r080_killswitch_requires_distinct_approver"
    ],
    "go_test_map": {
     "TestKillSwitchDualControlAndEffect": "crates/sdk/humanymous-runtime/src/gateway/control/state.rs::spent_intent_without_covered_effect_cannot_become_healthy"
    },
    "gaps": [
-    "kill switch effect on enforcement path",
-    "HTTP dual-control engage flow"
+    "kill switch effect on the enforcement path (Go global monitor mode that lets a scored-DENY session pass)",
+    "the approved kill-switch commit answers 409 by design: it needs the signed one-way node kill (gateway::control), which the admin plane does not hold"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Typed KillTarget/KillStatus are assessment only; Runtime does not dispatch kill effects (INTEGRATION.md).",
+   "notes": "The admin plane serves the Go kill-switch request (pending approvalId) and refuses self-approval (r080). Typed KillTarget/KillStatus are assessment only; Runtime does not dispatch kill effects (INTEGRATION.md), and Go's semantics (a reversible global monitor-mode flip) differ from the Rust signed one-way node kill, so the effect half needs an owner decision, not a port.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::two_independent_signatures_bind_every_operation_field": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/control.rs::node_kill_binding_is_exact_and_survives_policy_revision_changes": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/control/state.rs::spent_intent_without_covered_effect_cannot_become_healthy": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/control/state.rs::spent_intent_without_covered_effect_cannot_become_healthy": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::two_independent_signatures_bind_every_operation_field": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r080_killswitch_requires_distinct_approver": "passed"
    }
   },
   {
@@ -5410,25 +5448,29 @@
   },
   {
    "baseline_path": "internal/gate/ws4_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search.rs",
     "crates/sdk/humanymous-runtime/src/gateway/token.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::incident_handles_are_stable_opaque_and_keyed"
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::incident_handles_are_stable_opaque_and_keyed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_audit_stream_incidents_and_enumeration_cap_match_capture",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::unadmitted_incident_lookups_are_capped"
    ],
    "go_test_map": {
-    "TestIncidentEnumerationCap": null,
+    "TestIncidentEnumerationCap": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_audit_stream_incidents_and_enumeration_cap_match_capture",
     "TestIncidentHandleOpaque": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::incident_handles_are_stable_opaque_and_keyed"
    },
-   "gaps": [
-    "The per-operator incident lookup cap (429 near 120/min), admin incident resolution and the recon.decision_probing audit record have no Rust counterpart"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Incident handles are HMAC-keyed INC- tokens that do not reveal the sequence number.",
+   "notes": "Incident handles are HMAC-keyed INC- tokens that do not reveal the sequence number. GET incidents/{handle} accepts only the handle; each operator may look up 120 incidents per minute; the capped lookups answer 429 (too many incident lookups) and each records recon.decision_probing, with the first 429 at the Go lookup index, per-operator keying and the Go record fields from the capture. Deliberate fail-closed difference, pinned: a lookup the bounded limiter cannot admit counts as over the cap.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::incident_handles_are_stable_opaque_and_keyed": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::incident_handles_are_stable_opaque_and_keyed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_audit_stream_incidents_and_enumeration_cap_match_capture": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::unadmitted_incident_lookups_are_capped": "passed"
    }
   },
   {

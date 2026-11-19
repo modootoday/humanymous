@@ -8,9 +8,17 @@
 //! step-up CHALLENGE (HTTP 401 interstitial), never to a DENY. Monitor and
 //! shadow modes forward and report what the floor would have done.
 //!
+//! [`exchange`] ports the `/stepup` receipt-to-proof exchange that mints the
+//! proof, and [`fanout`] the WebAuthn credential fan-out cap (ceiling-guard
+//! #2). The attested catch-all refusal is
+//! `route_policy::refuse_attested_catch_all`.
+//!
 //! This is a request-path decision only. Scores, thresholds, signal IDs and
 //! verdict bands are unchanged; route presets and HTTP serving are wired by the
 //! runtime owner.
+pub mod exchange;
+pub mod fanout;
+
 use super::token::{Epochs, TokenKey};
 use FloorMode as Mode;
 
