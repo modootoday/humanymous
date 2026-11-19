@@ -3,7 +3,7 @@ id: plan:root/20261117142053
 title: "Full-product capabilities, Go port and .NET launch roadmap"
 status: draft
 created: 2026-11-17T14:20:53Z
-updated: 2026-11-18T14:20:00Z
+updated: 2026-11-19T11:16:20Z
 rel:
   depends_on: [plan:root/20261116060213]
 ---
@@ -21,8 +21,10 @@ On 2026-11-17 the owner chose, for the open items in issue #65:
 
 `codex/rust` is complete only when `delivery ready` passes on every axis at HEAD
 and `validate / merge-ready` is green. This plan orders the work. Each step lands
-as its own `claude/<slug>` pull request. Detection freeze, Docker-only product
-e2e, Rust 1.99.1 / edition 2024 and the no-forgery rule apply throughout.
+as its own `claude/<slug>` pull request, except the remaining Step 3 slices,
+which land together through one integration pull request (see "Step 3 delivery
+mode"). Detection freeze, Docker-only product e2e, Rust 1.99.1 / edition 2024
+and the no-forgery rule apply throughout.
 
 ## Step 0: merge deadlock (owner)
 
@@ -150,6 +152,35 @@ always challenges, where Go passed it on safe methods of balanced, monitor and
 off routes (owner decisions 2026-11-16 and C1). `pass_scoring` and the
 HTTP-level attestation floor (`attestfloor`, `t4_promotion`) remain unported.
 
+### Step 3 delivery mode (owner decision 2026-11-19)
+
+The remaining Step 3 slices no longer land as one pull request each. Every
+slice merge rewrote the same shared files (the FM11 ledger totals,
+`docs/reviews.json` and the gateway qualification contract), so each merge
+forced a resync, a new CI run and a new review of every open slice, and each
+CI run waits on the Windows native queue before `validate / quality` and
+`validate / msrv` start. From 2026-11-19 the remaining slices land this way:
+
+1. Disjoint lanes are worked in parallel. Each slice stays one or more commits
+   with its own rows, Go-captured goldens, `go_test_map` entries and recorded
+   deviations.
+2. The lanes are merged into one integration branch, `claude/fm11-bulk`. The
+   shared files (ledger totals and `by_package`, `docs/reviews.json`, the
+   qualification contract) are recomputed once there by the existing
+   recount, review-merge and contract-regeneration tools.
+3. One pull request carries the integration branch to `codex/rust`. Its body
+   has a per-slice table: rows before and after, Go tests mapped, deviations.
+4. Independent review runs per slice commit range, in parallel, so review depth
+   does not change. Merging still needs every required check green, an
+   approving independent review of every slice and no ruleset bypass.
+5. The workspace gates (fmt, Clippy with `-D warnings`, `cargo test --locked`)
+   pass locally on the integration head before it is pushed, to keep CI reruns
+   rare.
+
+Nothing else changes: the detection freeze, the B1 exact-parity terms, the
+no-forgery rule and the owner-reserved items stay as written. Pull requests
+already reviewed under the per-slice mode (#148, #149) merge as they are.
+
 When every row is `ported_unit` or explicitly oracle-only, remove the Go sources,
 `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at
 981d25c.
@@ -181,3 +212,7 @@ pilot, and `delivery ready` on every axis. Summarise in #65 and update #22.
   `ported_unit` (enforce, ws5_test, resolve_test, cmd/gate routes and
   routes_test) and mapped R081-R085 and R171-R173. It is a pure library and
   is not wired into the hosted gateway.
+- 2026-11-19: the owner approved landing the remaining Step 3 slices through
+  one integration pull request with per-slice commits and per-slice
+  independent review ("권고에 따라 정본화후 진행해줘", in reply to that
+  recommendation; recorded in #75). See "Step 3 delivery mode".
