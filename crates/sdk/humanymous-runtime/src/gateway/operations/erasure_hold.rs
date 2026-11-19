@@ -120,47 +120,96 @@ impl<P> HoldQueue<P> {
         self.items.remove(id).map(|(scheduled, _)| scheduled)
     }
 
+    /// Remove a pending erasure and hand its permit back unused, so a caller
+    /// whose audit of the schedule failed can restore the permit.
+    pub fn withdraw(&mut self, id: &str) -> Option<(Scheduled, P)> {
+        self.items.remove(id)
+    }
+
+    /// Whether `id` is pending.
+    pub fn contains(&self, id: &str) -> bool {
+        self.items.contains_key(id)
+    }
+
+    /// Number of pending erasures.
+    pub fn len(&self) -> usize {
+        self.items.len()
+    }
+
+    /// Whether no erasure is pending.
+    pub fn is_empty(&self) -> bool {
+        self.items.is_empty()
+    }
+
+    /// The configured hold window.
+    pub fn hold(&self) -> Duration {
+        self.hold
+    }
+
     /// Pending erasures in id order (for the console).
     pub fn list(&self) -> Vec<Scheduled> {
         self.items.values().map(|(s, _)| s.clone()).collect()
     }
 
+    /// Ids, in id order, of the erasures whose window elapsed at `now`.
+    pub fn due(&self, now: Duration) -> Vec<String> {
+        self.items
+            .iter()
+            .filter(|(_, (s, _))| now >= s.execute_at)
+            .map(|(id, _)| id.clone())
+            .collect()
+    }
+
+    /// Execute one pending erasure. `None` when `id` is not pending. An error
+    /// from `shred` keeps it pending so a failed shred is retried, never
+    /// reported complete. The window is not rechecked; callers take ids from
+    /// [`Self::due`].
+    pub fn run_one<E>(
+        &mut self,
+        id: &str,
+        checkpoint: (&str, u64),
+        shred: impl FnOnce(&str, &P) -> Result<bool, E>,
+    ) -> Result<Option<Completion>, E> {
+        let Some((scheduled, permit)) = self.items.get(id) else {
+            return Ok(None);
+        };
+        let existed = shred(&scheduled.subject, permit)?;
+        let root: String = checkpoint.0.chars().take(12).collect();
+        let certificate = format!(
+            "erasure-cert: sth_root={root} tree_size={} legal_basis={} {}->{}",
+            checkpoint.1, scheduled.legal_basis, scheduled.requester, scheduled.approver
+        );
+        let Some((scheduled, _)) = self.items.remove(id) else {
+            return Ok(None);
+        };
+        Ok(Some(Completion {
+            event_type: if existed {
+                "erasure.completed"
+            } else {
+                "erasure.no_subject"
+            },
+            certificate,
+            scheduled,
+        }))
+    }
+
     /// Execute every erasure whose window elapsed at `now`. `shred` returns
     /// whether a key existed; an error keeps that erasure pending and stops the
-    /// run so a failed shred is retried, never reported complete.
+    /// run so a failed shred is retried, never reported complete. Erasures
+    /// executed earlier in a run that then fails are not returned; a caller
+    /// that must keep their evidence uses [`Self::due`] and [`Self::run_one`].
     pub fn run_due<E>(
         &mut self,
         now: Duration,
         checkpoint: (&str, u64),
         mut shred: impl FnMut(&str, &P) -> Result<bool, E>,
     ) -> Result<Vec<Completion>, E> {
-        let due: Vec<String> = self
-            .items
-            .iter()
-            .filter(|(_, (s, _))| now >= s.execute_at)
-            .map(|(id, _)| id.clone())
-            .collect();
-        let root: String = checkpoint.0.chars().take(12).collect();
+        let due = self.due(now);
         let mut done = Vec::with_capacity(due.len());
         for id in due {
-            let Some((scheduled, permit)) = self.items.get(&id) else {
-                continue;
-            };
-            let existed = shred(&scheduled.subject, permit)?;
-            let certificate = format!(
-                "erasure-cert: sth_root={root} tree_size={} legal_basis={} {}->{}",
-                checkpoint.1, scheduled.legal_basis, scheduled.requester, scheduled.approver
-            );
-            let (scheduled, _) = self.items.remove(&id).expect("present");
-            done.push(Completion {
-                event_type: if existed {
-                    "erasure.completed"
-                } else {
-                    "erasure.no_subject"
-                },
-                certificate,
-                scheduled,
-            });
+            if let Some(completion) = self.run_one(&id, checkpoint, &mut shred)? {
+                done.push(completion);
+            }
         }
         Ok(done)
     }

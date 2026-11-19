@@ -34,10 +34,13 @@
 //!   staged with [`AdminPlane::retain_ban_permit`] for that exact key. Without
 //!   one the commit answers 409 and nothing is banned: two bearer principals
 //!   alone never create a permanent ban.
-//! - Approved erasure and kill-switch actions answer 409: their effects need
-//!   the vault erasure permit with the hold queue, and the signed one-way node
-//!   kill, neither of which this plane holds. Their pending requests and every
-//!   approval refusal match Go.
+//! - An approved kill switch answers 409: its effect needs the signed one-way
+//!   node kill, which this plane does not hold. An approved erasure is
+//!   scheduled into the hold queue only when [`AdminPlane::with_erasure`] is
+//!   attached and a ledger-issued erasure permit for that subject is staged
+//!   with [`AdminPlane::retain_erasure_permit`]; otherwise it answers 409
+//!   (see [`erasure`]). Their pending requests and every approval refusal
+//!   match Go.
 //! - A permanent ban has no lift action (owner decision 2026-11-16, decision
 //!   2): lifting one answers 409 and the ban stays. A temporary ban cannot
 //!   overwrite a permanent one.
@@ -51,9 +54,10 @@
 //!   served only when a shared audit chain is attached with
 //!   [`AdminPlane::with_chain`] (see [`chain`]); otherwise they answer 404
 //!   after authentication.
-//! - The console page and the policy, settings, erasure list/cancel, metrics
-//!   and virtual-USB routes are not served here; they answer 404 after
-//!   authentication.
+//! - The erasure list and cancel routes are served only with an attached
+//!   erasure hold; otherwise they answer 404 after authentication.
+//! - The console page and the policy, settings, metrics and virtual-USB
+//!   routes are not served here; they answer 404 after authentication.
 //! - JSON numbers use Go `encoding/json` text (`1`, not `1.0`).
 //!
 //! The operator ops routes of legacy cmd/server/ops.go (liveness, score
@@ -64,6 +68,7 @@
 //! Composition into `gateway::service` (listener address and the provisioning
 //! of admin bearer tokens and the ops token) is not done here.
 pub mod chain;
+pub mod erasure;
 pub mod ops;
 
 use crate::audit::control::{Action, RetainedActionPermit, Scope};
@@ -215,6 +220,10 @@ pub enum PermitRefusal {
     Scope,
     /// [`MAX_STAGED_PERMITS`] permits are already staged.
     Capacity,
+    /// No erasure hold is attached ([`AdminPlane::with_erasure`]).
+    Unattached,
+    /// The erasure permit does not bind that subject in this plane's scope.
+    Binding,
 }
 
 impl fmt::Display for PermitRefusal {
@@ -223,6 +232,8 @@ impl fmt::Display for PermitRefusal {
             Self::Action => "permit is not a permanent-ban permit",
             Self::Scope => "permit scope does not match the admin plane",
             Self::Capacity => "too many staged permits",
+            Self::Unattached => "no erasure hold is attached to the admin plane",
+            Self::Binding => "erasure permit does not bind this subject in the plane scope",
         })
     }
 }
@@ -240,6 +251,9 @@ enum Capability {
 enum Matcher {
     Exact(&'static str),
     Prefix(&'static str),
+    /// Go `adminWrapped`: prefix and suffix present; the argument is the
+    /// remainder after the prefix with the suffix trimmed when it remains.
+    Wrapped(&'static str, &'static str),
 }
 
 impl Matcher {
@@ -247,6 +261,13 @@ impl Matcher {
         match self {
             Self::Exact(path) => (sub == path).then_some(""),
             Self::Prefix(path) => sub.strip_prefix(path),
+            Self::Wrapped(prefix, suffix) => {
+                if !sub.ends_with(suffix) {
+                    return None;
+                }
+                let rest = sub.strip_prefix(prefix)?;
+                Some(rest.strip_suffix(suffix).unwrap_or(rest))
+            }
         }
     }
 }
@@ -261,17 +282,19 @@ enum Handler {
     Keys,
     Checkpoints,
     ListApprovals,
+    ListErasures,
     Whoami,
     AddBan,
     BulkBan,
     LiftBan,
     Erasure,
     KillSwitch,
+    CancelErasure,
     Approve,
 }
 
 /// Ordered dispatch and capability table (Go `adminRoutes`, served subset).
-const ROUTES: [(&str, Matcher, Capability, Handler); 15] = [
+const ROUTES: [(&str, Matcher, Capability, Handler); 17] = [
     (
         "GET",
         Matcher::Exact("bans"),
@@ -307,6 +330,12 @@ const ROUTES: [(&str, Matcher, Capability, Handler); 15] = [
         Matcher::Exact("approvals"),
         Capability::Read,
         Handler::ListApprovals,
+    ),
+    (
+        "GET",
+        Matcher::Exact("erasures"),
+        Capability::Read,
+        Handler::ListErasures,
     ),
     (
         "GET",
@@ -358,6 +387,12 @@ const ROUTES: [(&str, Matcher, Capability, Handler); 15] = [
     ),
     (
         "POST",
+        Matcher::Wrapped("erasures/", "/cancel"),
+        Capability::Operate,
+        Handler::CancelErasure,
+    ),
+    (
+        "POST",
         Matcher::Prefix("approvals/"),
         Capability::Approve,
         Handler::Approve,
@@ -398,6 +433,7 @@ pub struct AdminPlane {
     audit: Mutex<Box<dyn DurableAudit>>,
     ops: Option<ops::Ops>,
     chain: Option<chain::Chain>,
+    erasure: Option<erasure::Erasure>,
 }
 
 impl AdminPlane {
@@ -423,6 +459,7 @@ impl AdminPlane {
             audit: Mutex::new(audit),
             ops: None,
             chain: None,
+            erasure: None,
         }
     }
 
@@ -515,6 +552,7 @@ impl AdminPlane {
                 Handler::Keys => self.keys(),
                 Handler::Checkpoints => self.checkpoints(),
                 Handler::ListApprovals => self.list_approvals(clock),
+                Handler::ListErasures => self.list_erasures(clock.monotonic),
                 Handler::Whoami => {
                     Response::json(&json!({"id": operator.id, "role": operator.role.as_str()}))
                 }
@@ -523,6 +561,7 @@ impl AdminPlane {
                 Handler::LiftBan => self.lift_ban(&request.target, &operator, clock),
                 Handler::Erasure => self.erasure(&request.body, &operator, clock),
                 Handler::KillSwitch => self.kill_switch(&request.body, &operator, clock),
+                Handler::CancelErasure => self.cancel_erasure(argument, &operator),
                 Handler::Approve => self.approve(argument, &operator, clock),
             };
         }
@@ -723,6 +762,10 @@ impl AdminPlane {
         if basis.is_empty() {
             return Response::text(400, "legal basis required (GDPR Art.17 / PIPA)");
         }
+        let subject = match self.erasure_subject(subject) {
+            Ok(subject) => subject,
+            Err(response) => return response,
+        };
         let params = BTreeMap::from([
             ("subject".to_owned(), subject),
             ("legalBasis".to_owned(), basis.clone()),
@@ -809,9 +852,12 @@ impl AdminPlane {
         }
         match action.kind.as_str() {
             "ban" => self.commit_ban(&action.params, &action.requester, operator, clock),
-            "erasure" => Response::text(
-                409,
-                "erasure commit needs the vault erasure permit and hold queue; not served here",
+            "erasure" => self.commit_erasure(
+                &action.params,
+                &action.requester,
+                operator,
+                clock.unix,
+                clock.monotonic,
             ),
             "killswitch" => Response::text(
                 409,

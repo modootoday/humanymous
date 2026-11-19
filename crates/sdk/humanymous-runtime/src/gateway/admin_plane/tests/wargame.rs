@@ -4,9 +4,8 @@
 //! through the same served loopback stack as the parent module.
 //!
 //! Not ported here: R113 (the keys route is not served), R131 (audit witness
-//! key projection), R132 (an approved erasure answers 409 instead of
-//! scheduling, so there is no hold queue to cancel) and R141 (the policy route
-//! is not served).
+//! key projection) and R141 (the policy route is not served). R132 needs a
+//! ledger-issued erasure permit and is ported in `dual_control::erasure`.
 use super::*;
 
 /// Go `maxBanDurationSec` (400 days).

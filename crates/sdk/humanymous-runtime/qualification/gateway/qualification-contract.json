@@ -7,8 +7,8 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 708,
-      "macos": 708,
+      "linux": 719,
+      "macos": 719,
       "windows": 690
     },
     "common_test_names": [
@@ -705,6 +705,17 @@
     ],
     "unix_extra_test_names": [
       "gateway::admin_plane::tests::dual_control::dual_control_permanent_ban",
+      "gateway::admin_plane::tests::dual_control::erasure::audit_failure_schedules_and_cancels_nothing",
+      "gateway::admin_plane::tests::dual_control::erasure::cancel_cases_match_go_capture",
+      "gateway::admin_plane::tests::dual_control::erasure::commit_without_permit_is_refused",
+      "gateway::admin_plane::tests::dual_control::erasure::erasure_cancel",
+      "gateway::admin_plane::tests::dual_control::erasure::erasure_hold_window_and_reverse_resolve",
+      "gateway::admin_plane::tests::dual_control::erasure::executes_in_sec_truncates_like_go",
+      "gateway::admin_plane::tests::dual_control::erasure::hold_window_flow_matches_go_capture",
+      "gateway::admin_plane::tests::dual_control::erasure::no_subject_matches_go_capture",
+      "gateway::admin_plane::tests::dual_control::erasure::r132_erasure_cancel_hold_window",
+      "gateway::admin_plane::tests::dual_control::erasure::refused_shred_stays_pending",
+      "gateway::admin_plane::tests::dual_control::erasure::staging_binds_subject_and_scope",
       "gateway::admin_plane::tests::dual_control::permit_binds_key_action_and_scope",
       "gateway::admin_plane::tests::dual_control::r01_permanent_ban_ignores_body_approver",
       "gateway::admin_plane::tests::dual_control::r162_commit_then_ban_store_denies",
