@@ -3,7 +3,7 @@ id: sot:root/ip-reputation
 title: Operator IP reputation feed
 status: draft
 created: 2026-11-18T13:30:00Z
-updated: 2026-11-18T16:30:00Z
+updated: 2026-11-19T18:00:00Z
 verify: cargo test --locked -p humanymous-runtime --all-features network::intel && cargo test --locked -p humanymous-runtime --all-features --test network_ip_intel && cargo test --locked -p humanymous-cli --features ip-intel ip_intel
 rel:
   governs: [crates/sdk/humanymous-runtime/src/network/intel/**, crates/sdk/humanymous-runtime/src/gateway/configuration/ip_reputation.rs, crates/sdk/humanymous-runtime/tests/network/ip_intel.rs, crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/**, crates/cli/src/ip_intel/**, third_party/ip-intel/**]
@@ -50,6 +50,13 @@ Promoting `tor_exit` or `blocklist` into scoring needs a separate owner
 decision. That decision must cover false-positive measurement on shadow counts,
 accessibility review, and the blocked-user help path. Until then both stay
 shadow-only.
+
+Owner decision #10 (issue #75 comment 7017558784, 2026-11-19): the proxy-VPN
+and Tor exit feeds stay shadow-only. The Core keeps passing `is_proxy` and
+`is_tor_exit` false. Go set them from operator CIDR lists
+(`SetProxyVPNCIDRs`, `SetTorExitCIDRs`) in `cmd/server/server.go` and
+`collect_pipeline.go`. Not porting that is an accepted deviation, not a gap.
+A later promotion still needs the separate decision above.
 
 ## Sources
 

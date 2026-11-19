@@ -3,7 +3,7 @@ id: sot:root/model-training-correction
 title: Model training and correction migration
 status: draft
 created: 2026-11-07T14:00:00Z
-updated: 2026-11-07T14:00:00Z
+updated: 2026-11-19T18:00:00Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration]
@@ -49,6 +49,37 @@ lab control plane; production activation requires a separately accepted design
 and explicit authorization. Missing model evidence means abstention, never a
 successful strict-route enforcement decision; required-signal enforcement remains
 owned by runtime/scoring. T4 remains an intentional ceiling.
+
+### Production activation (owner decision #12, 2026-11-19)
+
+The owner accepted production activation in issue #75 comment 7017558784.
+This is the separately accepted design that the paragraph above requires:
+
+- Training and startup admission never activate a model. They only verify
+  and stage a candidate (`gateway::admin_plane::models::Models::stage`, in
+  the legacy `Stage` order: digest pin, signature when a key is configured,
+  shape-valid decode, schema pin).
+- Promote and rollback are explicit, audited operator actions on the admin
+  plane (`gateway::admin_plane::models`). Promote names the staged digest
+  and needs a distinct approver. Rollback names the active digest and
+  applies at once, toward the previous model or abstention. Each writes its
+  audit record before the change. A failed write answers 503 and changes
+  nothing.
+- Promote installs the verified model as the active predictor of the shared
+  inference `Runtime`, as Go `mlserve.Set` did. Its only scoring input stays
+  the weight-0 `l4.ml.behavioral` annotation. Activation changes no weight,
+  threshold, hard-rule predicate, verdict band or signal ID. Risk, verdict,
+  hard rule and contributors are unchanged; the explanation may gain an L4
+  layer row of probability 0.
+- The self-calibration controller is still not installed as the threshold
+  provider. Calibration proposals stay out of production (rule above), so
+  the annotation fire threshold stays 0.5. Not porting Go's
+  `SetThresholdProvider(ctrl)` at activation is an accepted deviation. The
+  feature and shadow observers and the canary auto-rollback onto the served
+  model are not composed.
+- Parity evidence: `tests/fixtures/gateway/ml-bundle-go-golden.json`, a Go
+  1.26.3 capture of `BundleManager` and `mlserve.Score` at 981d25c, replayed
+  through the admin routes. Plan: `plan:root/20261119180000`.
 
 ## Responsibility contracts
 
