@@ -1,0 +1,153 @@
+{
+ "provenance": {
+  "oracle_commit": "981d25cf71a5a54855d7e2b4359e832a9d5998e5",
+  "oracle_packages": [
+   "internal/gate (admin.go handleAdmin/adminPolicy/adminConsole/adminKeys/adminIntegrity; console.go styledConsoleHTML; configsign.go configVersion; gate.go settingsEffectiveFor/monitorOn/SetDevConsoleToken; config.go presetByName/rlWindow/rlSoft/rlHard; ban_integration_test.go banStack shape; adminhelpers_test.go seedAdmins/adminDo)",
+   "internal/audit (retention.go DefaultRetention/Days; log.go WitnessPublicKey)"
+  ],
+  "toolchain": "golang.org/toolchain@v0.0.1-go1.25.3.linux-amd64 from a read-only local module cache (go.mod at 981d25c pins go 1.25.3)",
+  "go_version": "go1.25.3 linux/amd64",
+  "command": "git archive 981d25c go.mod go.sum internal pkg | tar -x -C <oracle>; add scratch in-package capture test internal/gate/zz_fm11r19_capture_test.go; cd <oracle>; GOTOOLCHAIN=local GOPROXY=off GOFLAGS=-mod=readonly ZZ_OUT=<out>/capture.json go test -count=1 -run ^TestFM11R19Capture$ ./internal/gate/",
+  "capture_program_sha256": {
+   "internal/gate/zz_fm11r19_capture_test.go": "3cda0d5c2468c74018aee7f69b3d39c35cad24041184553d3e70b06b9edc2321"
+  },
+  "capture_program_committed": false,
+  "output_sha256": "ffdbe1e418f4f0c8365b65427e069d2e7142b58615a34de73c4011f1908067e3",
+  "capture_notes": [
+   "three consecutive runs produced byte-identical output",
+   "policy bodies: Go lists configured routes in map iteration order, which differed between runs; the capture re-joins the routes array with the (default) row first and the other rows sorted by prefix, keeping each row byte for byte",
+   "keys body: the random STH public key hex is replaced by <64 hex chars>",
+   "policy servers use TokenKey fm11-r19-token-key-0123456789abcdef; policy_routes and policy_query use routes /api strict, /login attested, /docs monitor, /static off, /x bogus with RateWindow 1m, RateSoft 998, RateHard 1000; policy_defaults_monitor uses no routes, zero rate config and GlobalMonitor true; policy_routes_kill sets the kill switch before the request",
+   "policy_routes.records are the audit records appended by the two policy requests, reduced to event_type, actor_kind, tenant_id, route_class, action, fail_reason and key_id",
+   "console entries record status, headers, body length, body SHA-256 and whether the body contains Ledger; non-200 bodies are kept; dev_token_injected is whether SetDevConsoleToken put the bearer into the served page"
+  ],
+  "scope": "Frozen oracle outputs for differential parity only; never regenerate to hide drift"
+ },
+ "console": {
+  "auditor_console": {
+   "body_len": 88136,
+   "body_sha256": "ebadfe7cade7e53e9631fba6491755c26247ef155e09934ad98b30b4510bc408",
+   "cache_control": "no-store",
+   "content_type": "text/html; charset=utf-8",
+   "has_ledger": true,
+   "status": 200,
+   "x_frame_options": "DENY"
+  },
+  "dev_token_injected": true,
+  "styled_len": 88136,
+  "styled_sha256": "ebadfe7cade7e53e9631fba6491755c26247ef155e09934ad98b30b4510bc408",
+  "unauth_console": {
+   "body_len": 88136,
+   "body_sha256": "ebadfe7cade7e53e9631fba6491755c26247ef155e09934ad98b30b4510bc408",
+   "cache_control": "no-store",
+   "content_type": "text/html; charset=utf-8",
+   "has_ledger": true,
+   "status": 200,
+   "x_frame_options": "DENY"
+  },
+  "unauth_console_tail": {
+   "body": "404 page not found\n",
+   "body_len": 19,
+   "body_sha256": "b16e15764b8bc06c5c3f9f19bc8b99fa48e7894aa5a6ccdad65da49bbf564793",
+   "cache_control": "",
+   "content_type": "text/plain; charset=utf-8",
+   "has_ledger": false,
+   "status": 404,
+   "x_frame_options": ""
+  },
+  "unauth_post_status": 200,
+  "unauth_root": {
+   "body_len": 88136,
+   "body_sha256": "ebadfe7cade7e53e9631fba6491755c26247ef155e09934ad98b30b4510bc408",
+   "cache_control": "no-store",
+   "content_type": "text/html; charset=utf-8",
+   "has_ledger": true,
+   "status": 200,
+   "x_frame_options": "DENY"
+  }
+ },
+ "integrity_no_witness": {
+  "has_witnessFailAt": false,
+  "has_witnessed": false,
+  "status": 200,
+  "witness_public_key_nil": true
+ },
+ "keys": {
+  "body": "{\"key_id\":\"k1\",\"node_id\":\"test\",\"sth_public_key\":\"<64 hex chars>\",\"witness_public_key\":\"\"}\n",
+  "cache_control": "",
+  "content_type": "application/json",
+  "status": 200,
+  "x_frame_options": ""
+ },
+ "policy_defaults_monitor": {
+  "body": "{\"configVersion\":\"cfg-d79917fa5ae6\",\"effectiveMonitor\":true,\"globalMonitor\":true,\"killSwitch\":false,\"rateLimit\":{\"hard\":120,\"soft\":60,\"windowSec\":10},\"retentionDays\":{\"cold\":2555,\"hot\":90,\"warm\":365},\"routes\":[{\"prefix\":\"(default)\",\"preset\":\"balanced\",\"enforce\":false,\"failClosed\":false,\"syncScore\":false,\"inject\":true}],\"settingsReadPath\":\"GET /settings/effective\",\"settingsWrite\":false}\n",
+  "cache_control": "",
+  "content_type": "application/json",
+  "status": 200,
+  "x_frame_options": ""
+ },
+ "policy_post_operator": {
+  "body": "404 page not found\n",
+  "cache_control": "",
+  "content_type": "text/plain; charset=utf-8",
+  "status": 404,
+  "x_frame_options": ""
+ },
+ "policy_query": {
+  "body": "{\"configVersion\":\"cfg-03dce4a1583f\",\"effectiveMonitor\":false,\"globalMonitor\":false,\"killSwitch\":false,\"rateLimit\":{\"hard\":1000,\"soft\":998,\"windowSec\":60},\"retentionDays\":{\"cold\":2555,\"hot\":90,\"warm\":365},\"routes\":[{\"prefix\":\"(default)\",\"preset\":\"balanced\",\"enforce\":true,\"failClosed\":false,\"syncScore\":false,\"inject\":true},{\"prefix\":\"/api\",\"preset\":\"strict\",\"enforce\":true,\"failClosed\":true,\"syncScore\":true,\"inject\":true},{\"prefix\":\"/docs\",\"preset\":\"monitor\",\"enforce\":false,\"failClosed\":false,\"syncScore\":false,\"inject\":true},{\"prefix\":\"/login\",\"preset\":\"attested\",\"enforce\":true,\"failClosed\":true,\"syncScore\":true,\"inject\":true},{\"prefix\":\"/static\",\"preset\":\"off\",\"enforce\":false,\"failClosed\":false,\"syncScore\":false,\"inject\":false},{\"prefix\":\"/x\",\"preset\":\"balanced\",\"enforce\":true,\"failClosed\":false,\"syncScore\":false,\"inject\":true}],\"settingsReadPath\":\"GET /settings/effective\",\"settingsWrite\":false}\n",
+  "cache_control": "",
+  "content_type": "application/json",
+  "status": 200,
+  "x_frame_options": ""
+ },
+ "policy_routes": {
+  "first": {
+   "body": "{\"configVersion\":\"cfg-03dce4a1583f\",\"effectiveMonitor\":false,\"globalMonitor\":false,\"killSwitch\":false,\"rateLimit\":{\"hard\":1000,\"soft\":998,\"windowSec\":60},\"retentionDays\":{\"cold\":2555,\"hot\":90,\"warm\":365},\"routes\":[{\"prefix\":\"(default)\",\"preset\":\"balanced\",\"enforce\":true,\"failClosed\":false,\"syncScore\":false,\"inject\":true},{\"prefix\":\"/api\",\"preset\":\"strict\",\"enforce\":true,\"failClosed\":true,\"syncScore\":true,\"inject\":true},{\"prefix\":\"/docs\",\"preset\":\"monitor\",\"enforce\":false,\"failClosed\":false,\"syncScore\":false,\"inject\":true},{\"prefix\":\"/login\",\"preset\":\"attested\",\"enforce\":true,\"failClosed\":true,\"syncScore\":true,\"inject\":true},{\"prefix\":\"/static\",\"preset\":\"off\",\"enforce\":false,\"failClosed\":false,\"syncScore\":false,\"inject\":false},{\"prefix\":\"/x\",\"preset\":\"balanced\",\"enforce\":true,\"failClosed\":false,\"syncScore\":false,\"inject\":true}],\"settingsReadPath\":\"GET /settings/effective\",\"settingsWrite\":false}\n",
+   "cache_control": "",
+   "content_type": "application/json",
+   "status": 200,
+   "x_frame_options": ""
+  },
+  "records": [
+   {
+    "action": "GET",
+    "actor_kind": "operator",
+    "event_type": "admin.access",
+    "fail_reason": "policy (role=auditor)",
+    "key_id": "k1",
+    "route_class": "control",
+    "tenant_id": "test"
+   },
+   {
+    "action": "GET",
+    "actor_kind": "operator",
+    "event_type": "admin.access",
+    "fail_reason": "policy (role=auditor)",
+    "key_id": "k1",
+    "route_class": "control",
+    "tenant_id": "test"
+   }
+  ],
+  "second": {
+   "body": "{\"configVersion\":\"cfg-03dce4a1583f\",\"effectiveMonitor\":false,\"globalMonitor\":false,\"killSwitch\":false,\"rateLimit\":{\"hard\":1000,\"soft\":998,\"windowSec\":60},\"retentionDays\":{\"cold\":2555,\"hot\":90,\"warm\":365},\"routes\":[{\"prefix\":\"(default)\",\"preset\":\"balanced\",\"enforce\":true,\"failClosed\":false,\"syncScore\":false,\"inject\":true},{\"prefix\":\"/api\",\"preset\":\"strict\",\"enforce\":true,\"failClosed\":true,\"syncScore\":true,\"inject\":true},{\"prefix\":\"/docs\",\"preset\":\"monitor\",\"enforce\":false,\"failClosed\":false,\"syncScore\":false,\"inject\":true},{\"prefix\":\"/login\",\"preset\":\"attested\",\"enforce\":true,\"failClosed\":true,\"syncScore\":true,\"inject\":true},{\"prefix\":\"/static\",\"preset\":\"off\",\"enforce\":false,\"failClosed\":false,\"syncScore\":false,\"inject\":false},{\"prefix\":\"/x\",\"preset\":\"balanced\",\"enforce\":true,\"failClosed\":false,\"syncScore\":false,\"inject\":true}],\"settingsReadPath\":\"GET /settings/effective\",\"settingsWrite\":false}\n",
+   "cache_control": "",
+   "content_type": "application/json",
+   "status": 200,
+   "x_frame_options": ""
+  }
+ },
+ "policy_routes_kill": {
+  "body": "{\"configVersion\":\"cfg-9c4e3e34d8d0\",\"effectiveMonitor\":true,\"globalMonitor\":false,\"killSwitch\":true,\"rateLimit\":{\"hard\":1000,\"soft\":998,\"windowSec\":60},\"retentionDays\":{\"cold\":2555,\"hot\":90,\"warm\":365},\"routes\":[{\"prefix\":\"(default)\",\"preset\":\"balanced\",\"enforce\":true,\"failClosed\":false,\"syncScore\":false,\"inject\":true},{\"prefix\":\"/api\",\"preset\":\"strict\",\"enforce\":true,\"failClosed\":true,\"syncScore\":true,\"inject\":true},{\"prefix\":\"/docs\",\"preset\":\"monitor\",\"enforce\":false,\"failClosed\":false,\"syncScore\":false,\"inject\":true},{\"prefix\":\"/login\",\"preset\":\"attested\",\"enforce\":true,\"failClosed\":true,\"syncScore\":true,\"inject\":true},{\"prefix\":\"/static\",\"preset\":\"off\",\"enforce\":false,\"failClosed\":false,\"syncScore\":false,\"inject\":false},{\"prefix\":\"/x\",\"preset\":\"balanced\",\"enforce\":true,\"failClosed\":false,\"syncScore\":false,\"inject\":true}],\"settingsReadPath\":\"GET /settings/effective\",\"settingsWrite\":false}\n",
+  "cache_control": "",
+  "content_type": "application/json",
+  "status": 200,
+  "x_frame_options": ""
+ },
+ "policy_unauth": {
+  "body": "404 page not found\n",
+  "cache_control": "",
+  "content_type": "text/plain; charset=utf-8",
+  "status": 404,
+  "x_frame_options": ""
+ }
+}

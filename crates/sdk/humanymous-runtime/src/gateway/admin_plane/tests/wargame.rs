@@ -1,11 +1,11 @@
 //! Ports of the admin HTTP rounds of legacy
 //! internal/gate/wargame_escalation_r81_test.go (R111, R112, R114-R116) and
-//! wargame_escalation_r121_test.go (R133-R140, R142-R146) at baseline 981d25c,
-//! through the same served loopback stack as the parent module.
+//! wargame_escalation_r121_test.go (R133-R146) at baseline 981d25c, through
+//! the same served loopback stack as the parent module.
 //!
-//! Not ported here: R113 (the keys route is not served), R131 (audit witness
-//! key projection) and R141 (the policy route is not served). R132 needs a
-//! ledger-issued erasure permit and is ported in `dual_control::erasure`.
+//! R113 and R131 need an attached audit chain and are ported in
+//! `chain::tests`. R132 needs a ledger-issued erasure permit and is ported in
+//! `dual_control::erasure`.
 use super::*;
 
 /// Go `maxBanDurationSec` (400 days).
@@ -166,6 +166,22 @@ async fn r140_ipv6_ban_http_accepts() {
     assert!(s.banned("ip:2001:db8::9").is_some());
 }
 
+/// The policy view serves and two reads are byte-identical.
+#[tokio::test]
+async fn r141_config_version_stable_across_calls() {
+    let s = stack_with(|plane| plane.with_policy(default_policy())).await;
+    let a = s.admin_do(s.token("auditor"), "GET", "policy", "").await;
+    let b = s.admin_do(s.token("auditor"), "GET", "policy", "").await;
+    assert!(!a.body.is_empty() && b.status == 200, "policy must serve");
+    assert_eq!(a.body, b.body);
+    assert!(
+        a.json()["configVersion"]
+            .as_str()
+            .unwrap()
+            .starts_with("cfg-")
+    );
+}
+
 #[tokio::test]
 async fn r142_policy_has_no_write_verb() {
     let s = stack().await;
@@ -194,11 +210,16 @@ async fn r145_approvals_list_auth_required() {
 }
 
 /// Go accepts 404 or 200 here because its console page is served without
-/// authentication; this plane serves no console, so it is 404.
+/// authentication. This plane serves the console only to an authenticated
+/// role, so the unauthenticated request keeps the 404 and is audited.
 #[tokio::test]
 async fn r146_console_unauth_404() {
     let s = stack().await;
     let w = s.admin_do("", "GET", "console", "").await;
     assert!(matches!(w.status, 404 | 200), "unexpected {}", w.status);
     assert_eq!(w.status, 404);
+    assert!(s.journal.has("admin.auth_fail"));
+    let w = s.admin_do(s.token("auditor"), "GET", "console", "").await;
+    assert_eq!(w.status, 200);
+    assert!(w.head.contains("X-Frame-Options: DENY"), "{}", w.head);
 }

@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 771,
-      "macos": 771,
-      "windows": 739
+      "linux": 780,
+      "macos": 780,
+      "windows": 748
     },
     "common_test_names": [
       "gateway::admin_approval::tests::approval_store_rules",
@@ -38,6 +38,8 @@
       "gateway::admin_plane::chain::tests::go_admin_keys_enable_offline_verify",
       "gateway::admin_plane::chain::tests::go_audit_stream_incidents_and_enumeration_cap_match_capture",
       "gateway::admin_plane::chain::tests::go_keys_proof_and_checkpoint_refusals_match_capture",
+      "gateway::admin_plane::chain::tests::r113_keys_omit_hmac_secret",
+      "gateway::admin_plane::chain::tests::r131_nil_witness_public_omits_witnessed_field",
       "gateway::admin_plane::chain::tests::unadmitted_incident_lookups_are_capped",
       "gateway::admin_plane::ops::tests::can_read_session_matches_go_golden",
       "gateway::admin_plane::ops::tests::configure_ops_matches_go_golden",
@@ -50,11 +52,17 @@
       "gateway::admin_plane::ops::tests::ops_routes_served_on_admin_loopback_listener",
       "gateway::admin_plane::ops::tests::ops_token_and_admin_bearers_are_separate",
       "gateway::admin_plane::ops::tests::public_listener_never_serves_ops_routes",
+      "gateway::admin_plane::policy::tests::go_console_page_matches_capture",
+      "gateway::admin_plane::policy::tests::go_policy_defaults_under_global_monitor_match_capture",
+      "gateway::admin_plane::policy::tests::go_policy_view_matches_capture",
+      "gateway::admin_plane::policy::tests::policy_route_is_not_served_without_a_policy",
+      "gateway::admin_plane::policy::tests::policy_view_keys_the_version_to_the_active_overlay_and_only_reads",
       "gateway::admin_plane::tests::admin_deny_by_default",
       "gateway::admin_plane::tests::admin_off_public_listener",
       "gateway::admin_plane::tests::admin_rbac",
       "gateway::admin_plane::tests::audit_failure_fails_closed",
       "gateway::admin_plane::tests::ban_bodies_decode_like_go",
+      "gateway::admin_plane::tests::go_admin_console_and_features",
       "gateway::admin_plane::tests::go_encoder_escaping_and_query_decoding",
       "gateway::admin_plane::tests::listener_must_be_loopback",
       "gateway::admin_plane::tests::permanent_ban_commit_without_permit_is_refused",
@@ -88,6 +96,7 @@
       "gateway::admin_plane::tests::wargame::r138_bulk_skips_cidr_keys",
       "gateway::admin_plane::tests::wargame::r139_single_cidr_still_dual_control_http",
       "gateway::admin_plane::tests::wargame::r140_ipv6_ban_http_accepts",
+      "gateway::admin_plane::tests::wargame::r141_config_version_stable_across_calls",
       "gateway::admin_plane::tests::wargame::r142_policy_has_no_write_verb",
       "gateway::admin_plane::tests::wargame::r143_proof_endpoint_auth_required",
       "gateway::admin_plane::tests::wargame::r144_incidents_auth_required",
