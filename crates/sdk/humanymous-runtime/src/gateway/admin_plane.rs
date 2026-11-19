@@ -1,6 +1,7 @@
-//! Authenticated admin HTTP plane: the ban, approval, erasure-request and
-//! kill-switch-request routes of legacy `internal/gate/admin.go` (`handleAdmin`,
-//! `AdminHandler` and the route table) at baseline 981d25c.
+//! Authenticated admin HTTP plane: the ban, approval, erasure-request,
+//! kill-switch-request, policy-read and console routes of legacy
+//! `internal/gate/admin.go` (`handleAdmin`, `AdminHandler` and the route table)
+//! at baseline 981d25c.
 //!
 //! The plane serves only its own loopback listener under [`PREFIX`]; the public
 //! application listener keeps refusing every `/_humanymous/` path it does not
@@ -56,8 +57,15 @@
 //!   after authentication.
 //! - The erasure list and cancel routes are served only with an attached
 //!   erasure hold; otherwise they answer 404 after authentication.
-//! - The console page and the policy, settings, metrics and virtual-USB
-//!   routes are not served here; they answer 404 after authentication.
+//! - The read-only `policy` route is served only when a [`policy::Policy`]
+//!   is attached with [`AdminPlane::with_policy`]; otherwise it answers 404
+//!   after authentication. The console page is an authenticated `GET` read
+//!   (Go served it without authentication and could inject a dev bearer
+//!   token into it); see [`policy`].
+//! - Every response carries `Cache-Control: no-store`,
+//!   `X-Content-Type-Options: nosniff` and `X-Frame-Options: DENY`.
+//! - The settings, metrics and virtual-USB routes are not served here; they
+//!   answer 404 after authentication.
 //! - JSON numbers use Go `encoding/json` text (`1`, not `1.0`).
 //!
 //! The operator ops routes of legacy cmd/server/ops.go (liveness, score
@@ -70,6 +78,7 @@
 pub mod chain;
 pub mod erasure;
 pub mod ops;
+pub mod policy;
 
 use crate::audit::control::{Action, RetainedActionPermit, Scope};
 use crate::audit::record::{Actor, Record};
@@ -281,6 +290,8 @@ enum Handler {
     Incident,
     Keys,
     Checkpoints,
+    Policy,
+    Console,
     ListApprovals,
     ListErasures,
     Whoami,
@@ -294,7 +305,7 @@ enum Handler {
 }
 
 /// Ordered dispatch and capability table (Go `adminRoutes`, served subset).
-const ROUTES: [(&str, Matcher, Capability, Handler); 17] = [
+const ROUTES: [(&str, Matcher, Capability, Handler); 20] = [
     (
         "GET",
         Matcher::Exact("bans"),
@@ -324,6 +335,24 @@ const ROUTES: [(&str, Matcher, Capability, Handler); 17] = [
         Matcher::Prefix("incidents/"),
         Capability::Read,
         Handler::Incident,
+    ),
+    (
+        "GET",
+        Matcher::Exact("policy"),
+        Capability::Read,
+        Handler::Policy,
+    ),
+    (
+        "GET",
+        Matcher::Exact(""),
+        Capability::Read,
+        Handler::Console,
+    ),
+    (
+        "GET",
+        Matcher::Exact("console"),
+        Capability::Read,
+        Handler::Console,
     ),
     (
         "GET",
@@ -434,6 +463,7 @@ pub struct AdminPlane {
     ops: Option<ops::Ops>,
     chain: Option<chain::Chain>,
     erasure: Option<erasure::Erasure>,
+    policy: Option<policy::Policy>,
 }
 
 impl AdminPlane {
@@ -460,6 +490,7 @@ impl AdminPlane {
             ops: None,
             chain: None,
             erasure: None,
+            policy: None,
         }
     }
 
@@ -551,6 +582,8 @@ impl AdminPlane {
                 Handler::Incident => self.incident(argument, &operator, clock),
                 Handler::Keys => self.keys(),
                 Handler::Checkpoints => self.checkpoints(),
+                Handler::Policy => self.policy_view(),
+                Handler::Console => Self::console_page(),
                 Handler::ListApprovals => self.list_approvals(clock),
                 Handler::ListErasures => self.list_erasures(clock.monotonic),
                 Handler::Whoami => {
@@ -1198,7 +1231,7 @@ async fn write(stream: &mut TcpStream, response: &Response) -> io::Result<()> {
         _ => "Service Unavailable",
     };
     let head = format!(
-        "HTTP/1.1 {} {reason}\r\nContent-Type: {}\r\nContent-Length: {}\r\nConnection: close\r\nCache-Control: no-store\r\nX-Content-Type-Options: nosniff\r\n\r\n",
+        "HTTP/1.1 {} {reason}\r\nContent-Type: {}\r\nContent-Length: {}\r\nConnection: close\r\nCache-Control: no-store\r\nX-Content-Type-Options: nosniff\r\nX-Frame-Options: DENY\r\n\r\n",
         response.status,
         response.content_type,
         response.body.len()
