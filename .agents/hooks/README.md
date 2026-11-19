@@ -11,7 +11,7 @@ in Grok (`/hooks-trust`) and workspace trust in Claude Code.
 ## Canon scripts
 
 - `scripts/agents/hooks/pre-tool-guard.mjs` — dependency-free Node guard shared by Claude, Grok, and Codex
-- `playpilot guard` (Claude only, second PreToolUse entry for `Bash|PowerShell`) — commit-history H4 push guard with `PLAYPILOT_PROTECTED_BRANCHES=main,codex/rust`, installed at a pinned revision when missing; canon `sot:root/common-automation-rules` section 13
+- `playpilot guard` (Claude only, second PreToolUse entry for `Bash|PowerShell`) — commit-history H4 push guard with `PLAYPILOT_PROTECTED_BRANCHES=main,codex/rust`, rendered by `playpilot render settings --project humanymous` from the fleet config and reinstalled when the pinned revision changes; canon `sot:root/common-automation-rules` section 13
 
 ## Vendor config (generated/synced)
 
