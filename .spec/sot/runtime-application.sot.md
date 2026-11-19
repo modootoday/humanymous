@@ -3,7 +3,7 @@ id: sot:root/runtime-application
 title: Runtime application and session owner
 status: active
 created: 2026-11-07T00:20:25Z
-updated: 2026-11-19T18:00:00Z
+updated: 2026-11-19T18:50:00Z
 verify: [cargo test -p humanymous-runtime --locked, cargo clippy -p humanymous-runtime --all-targets --locked -- -D warnings]
 rel:
   governs: [crates/sdk/humanymous-runtime/**]
@@ -553,8 +553,11 @@ threshold, hard-rule predicate, verdict band or signal ID.
   `Application::install_signed_policy` is called, the `runtime.decision`,
   `runtime.collect` and `upstream.error` records carry
   `SignedPolicy::version`, read at record time. The admin `policy` view
-  already reports the same value. The service binary installs the handle
-  when it composes the admin plane. The adapter authority's
+  already reports the same value. This is a component capability: the
+  service binary does not compose it yet (`gateway::service` builds no
+  `AdminPlane` and nothing outside tests calls `install_signed_policy`), so
+  the shipped runtime still records `scope.revision` until lane G composes
+  it (B01). The adapter authority's
   `adapter.decision` record (no Go counterpart) and the settings journal
   binding keep the provisioned scope revision. The Prometheus label stays
   with the owner-pending metrics.
@@ -571,7 +574,11 @@ threshold, hard-rule predicate, verdict band or signal ID.
   becomes an `ml.model.promote` pending action that a distinct approver
   commits. `POST models/rollback` names the active digest and applies at
   once. Both write `config.changed` before the change. A failed write
-  answers 503 and changes nothing. A digest mismatch answers 409. Staging
+  answers 503 and changes nothing. A digest mismatch answers 409. Every
+  refusal is decided before the record is written; a poisoned or
+  inconsistent lifecycle answers 503 and records nothing. Like #8 this is a
+  component capability: the service binary does not compose the admin plane
+  yet (B01, lane G). Staging
   (`Models::stage`, the legacy `Stage` verification order) and training
   never activate a model. Verification and the served lifecycle are
   replayed against the Go capture

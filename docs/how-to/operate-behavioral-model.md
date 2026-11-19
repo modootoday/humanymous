@@ -35,7 +35,10 @@ are operator actions on the admin listener, and each one is audited:
 
 Each change is recorded in the audit log before it takes effect. If that record
 cannot be written, the request fails with 503 and nothing changes. A digest
-that does not match answers 409.
+that does not match answers 409, and so does a request with nothing to promote
+or roll back; these refusals are decided before anything is recorded. If the
+model lifecycle is unavailable, the request fails with 503 and nothing is
+recorded.
 
 A served model only adds an annotation with weight 0. It does not change any
 score, verdict, threshold or signal. The runtime service binary does not yet

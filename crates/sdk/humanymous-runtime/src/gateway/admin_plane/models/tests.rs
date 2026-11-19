@@ -19,6 +19,7 @@ use crate::gateway::model_admission::Ed25519Verifier;
 use crate::network::history::rate::{Config, Limits};
 use base64::{Engine as _, engine::general_purpose::STANDARD};
 use humanymous_core::model::correction::digest;
+use humanymous_core::scoring::derivation::behavior_signals;
 use humanymous_core::scoring::engine::Engine;
 use humanymous_core::signals::report::SessionReport;
 use std::io;
@@ -179,14 +180,14 @@ fn features() -> Vec<f32> {
         .collect()
 }
 
-fn class(error: CorrectionError) -> &'static str {
+fn class(error: ModelsError) -> &'static str {
     match error {
-        CorrectionError::Digest => "digest",
-        CorrectionError::Signature => "signature",
-        CorrectionError::StaleSchema => "stale_schema",
-        CorrectionError::InvalidBundle => "invalid",
-        CorrectionError::NoStaged => "no_staged",
-        CorrectionError::NoPrevious => "no_previous",
+        ModelsError::Correction(CorrectionError::Digest) => "digest",
+        ModelsError::Correction(CorrectionError::Signature) => "signature",
+        ModelsError::Correction(CorrectionError::StaleSchema) => "stale_schema",
+        ModelsError::Correction(CorrectionError::InvalidBundle) => "invalid",
+        ModelsError::Correction(CorrectionError::NoStaged) => "no_staged",
+        ModelsError::Correction(CorrectionError::NoPrevious) => "no_previous",
         other => panic!("unexpected stage error {other:?}"),
     }
 }
@@ -240,7 +241,7 @@ fn replay(name: &str) {
                 }
             }
             "promote" => {
-                let staged = plane.models.as_ref().unwrap().staged();
+                let staged = plane.models.as_ref().unwrap().staged().unwrap();
                 match staged {
                     // Go `Promote` with nothing staged: the request is refused.
                     None => route_class(&promote(&plane, "0", step_no)),
@@ -248,7 +249,7 @@ fn replay(name: &str) {
                 }
             }
             "rollback" => {
-                let active = plane.models.as_ref().unwrap().active();
+                let active = plane.models.as_ref().unwrap().active().unwrap();
                 let digest = active.map(|active| active.digest).unwrap_or_default();
                 route_class(&rollback(&plane, &digest, step_no))
             }
@@ -333,8 +334,8 @@ fn staged_models(runtime: &Runtime) -> (Models, String) {
 fn staging_never_activates_a_model() {
     let runtime = Runtime::default();
     let (models, _) = staged_models(&runtime);
-    assert!(models.staged().is_some());
-    assert_eq!(models.active(), None);
+    assert!(models.staged().unwrap().is_some());
+    assert_eq!(models.active().unwrap(), None);
     assert_eq!(runtime.current().bundle_version(), "none");
     assert!(runtime.score(&features()).abstain);
 }
@@ -401,8 +402,8 @@ fn failed_audit_answers_503_and_changes_nothing() {
     assert_eq!(refused.body, b"audit unavailable\n");
     assert_eq!(runtime.current().bundle_version(), "none");
     let models = plane.models.as_ref().unwrap();
-    assert_eq!(models.active(), None);
-    assert_eq!(models.staged().unwrap().digest, digest);
+    assert_eq!(models.active().unwrap(), None);
+    assert_eq!(models.staged().unwrap().unwrap().digest, digest);
 
     *sink.fail.lock().unwrap() = false;
     assert_eq!(promote(&plane, &digest, 2).status, 200);
@@ -411,7 +412,7 @@ fn failed_audit_answers_503_and_changes_nothing() {
     let refused = rollback(&plane, &digest, 3);
     assert_eq!(refused.status, 503);
     assert_eq!(runtime.current().bundle_version(), "v1");
-    assert_eq!(models.active().unwrap().digest, digest);
+    assert_eq!(models.active().unwrap().unwrap().digest, digest);
     *sink.fail.lock().unwrap() = false;
     let rolled = rollback(&plane, &digest, 4);
     assert_eq!(rolled.status, 200);
@@ -424,6 +425,67 @@ fn failed_audit_answers_503_and_changes_nothing() {
         changes[1].1,
         format!("ml.model.rolled_back from version=v1 digest={digest} to none (abstain)")
     );
+}
+
+#[test]
+fn poisoned_lifecycle_answers_503_and_records_nothing() {
+    let runtime = Runtime::default();
+    let (models, digest) = staged_models(&runtime);
+    let sink = Sink::default();
+    let plane = plane(Some(models), &sink);
+    let requested = plane.handle(
+        &request(
+            "POST",
+            "models/promote",
+            Role::Operator,
+            &digest_body(&digest),
+        ),
+        clock(1),
+    );
+    assert_eq!(requested.status, 200);
+    let id = body_json(&requested)["approvalId"]
+        .as_str()
+        .unwrap()
+        .to_owned();
+    let models = plane.models.as_ref().unwrap();
+    // A transition that panics while holding the lifecycle lock.
+    std::thread::scope(|scope| {
+        let poisoned = scope.spawn(|| {
+            let _held = models.slots.lock().unwrap();
+            panic!("transition panicked");
+        });
+        assert!(poisoned.join().is_err());
+    });
+    assert!(models.slots.is_poisoned());
+    let refused = [
+        plane.handle(&request("GET", "models", Role::Auditor, ""), clock(2)),
+        plane.handle(
+            &request("POST", &format!("approvals/{id}"), Role::Approver, ""),
+            clock(3),
+        ),
+        plane.handle(
+            &request(
+                "POST",
+                "models/promote",
+                Role::Operator,
+                &digest_body(&digest),
+            ),
+            clock(4),
+        ),
+        rollback(&plane, "", 5),
+    ];
+    for response in &refused {
+        assert_eq!(response.status, 503);
+        assert_eq!(response.body, b"model lifecycle unavailable\n");
+    }
+    assert_eq!(
+        models.stage(&decoded("bundles", "v2"), None, None),
+        Err(ModelsError::Unavailable)
+    );
+    assert_eq!(models.staged(), Err(ModelsError::Unavailable));
+    assert_eq!(models.active(), Err(ModelsError::Unavailable));
+    assert_eq!(runtime.current().bundle_version(), "none");
+    assert!(sink.changes().is_empty());
 }
 
 #[test]
@@ -570,11 +632,33 @@ fn activation_keeps_every_score_and_verdict() {
         trace["perLayer"] = Value::Array(live);
         (serde_json::to_value(result).unwrap(), trace, zero)
     };
+    // How many reports carry the model's `l4.ml.behavioral` observation.
+    let observed = || {
+        reports
+            .iter()
+            .filter(|report| {
+                behavior_signals(&report.client.behavior, &engine.model)
+                    .iter()
+                    .any(|signal| signal.id == "l4.ml.behavioral")
+            })
+            .count()
+    };
+    assert_eq!(observed(), 0, "a model ran before the promote");
     let before: Vec<_> = reports.iter().map(score).collect();
     assert_eq!(promote(&plane, &digest, 1).status, 200);
     assert_eq!(engine.model.current().bundle_version(), "v1");
     assert!(!engine.model.score(&features()).abstain);
+    // The freeze below is not vacuous: the promoted model ran on the scored
+    // reports and its observation reached the explanation as an L4 row.
+    assert!(observed() > 0, "the promoted model never ran");
     let after: Vec<_> = reports.iter().map(score).collect();
+    let l4_rows = |rows: &Vec<Value>| rows.iter().filter(|row| row["layer"] == "L4").count();
+    let l4_before: usize = before.iter().map(|(_, _, zero)| l4_rows(zero)).sum();
+    let l4_after: usize = after.iter().map(|(_, _, zero)| l4_rows(zero)).sum();
+    assert!(
+        l4_after > l4_before,
+        "no L4 row from the promoted model: {after:?}"
+    );
     for ((result, trace, _), (result_after, trace_after, zero_after)) in before.iter().zip(&after) {
         // Risk, verdict, hard rule, contributors and every hard-rule match
         // are unchanged.

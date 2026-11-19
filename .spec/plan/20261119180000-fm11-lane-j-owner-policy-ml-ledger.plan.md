@@ -3,7 +3,7 @@ id: plan:root/20261119180000
 title: FM11 lane J owner policy, ML activation and ledger
 status: active
 created: 2026-11-19T18:00:00Z
-updated: 2026-11-19T18:00:00Z
+updated: 2026-11-19T18:50:00Z
 rel:
   governs: [crates/sdk/humanymous-runtime/src/gateway/admin_plane/models.rs, crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs, crates/sdk/humanymous-runtime/tests/fixtures/gateway/ml-bundle-go-golden.json, crates/sdk/humanymous-runtime/src/gateway/settings/configsign.rs, crates/sdk/humanymous-runtime/src/gateway/tests/signed_policy.rs]
   depends_on: [sot:root/rust-migration, sot:root/runtime-application, sot:root/model-training-correction, sot:root/ip-reputation, sot:root/pass-protocol]
@@ -58,7 +58,16 @@ run after the integrity checks.
 - [x] #6, #9, #10, #11 and the deviations: SoT and ledger records only (no
   code path changes; `pass_flow` doc comments name decision #9).
 - [x] FM11 ledger rows, totals and `by_package` recounted; the gateway
-  qualification contract lists the 11 new tests.
+  qualification contract lists the 12 new tests.
+- [x] PR #155 review: the configsign.go and mlcorrect/bundle.go rows stay
+  `partial` (the signed version and the model routes are not composed by
+  the service binary, B01 / lane G); killswitch_test.go stays `partial`
+  with the decided monitor-mode effect as its gap and maps only its ported
+  dual-control half. `Models::stage` decodes before the core stages, every
+  refusal is decided before the audit record, a poisoned or inconsistent
+  lifecycle answers 503 without a record, and the freeze test asserts the
+  promoted model ran. Ledger: 287 `ported_unit`, 16 `partial`, 0
+  `missing`, 2 `not_applicable`, 9 `oracle_only`.
 
 ## Activation and scoring
 
@@ -98,7 +107,7 @@ Docker Engine (rule 96 cloud container venue):
   `fe17362b4ec313a119f11749be6fa1763df810752d7364269898925f4e42e993`),
   stored with a provenance object as
   `tests/fixtures/gateway/ml-bundle-go-golden.json`.
-- Rust: `gateway::admin_plane::models` 10 passed, and
+- Rust: `gateway::admin_plane::models` 11 passed, and
   `gateway::tests::signed_policy` 1 passed. A deliberate mutation of one
   golden p_bot value made `golden_lifecycle` fail; the fixture was restored
   and its hash re-checked. These are unit and fixture controls only: no

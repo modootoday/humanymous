@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 916,
-      "macos": 916,
-      "windows": 884
+      "linux": 917,
+      "macos": 917,
+      "windows": 885
     },
     "common_test_names": [
       "gateway::admin_approval::tests::approval_store_rules",
@@ -49,6 +49,7 @@
       "gateway::admin_plane::models::tests::golden_lifecycle",
       "gateway::admin_plane::models::tests::golden_signed_verification",
       "gateway::admin_plane::models::tests::golden_unsigned_verification",
+      "gateway::admin_plane::models::tests::poisoned_lifecycle_answers_503_and_records_nothing",
       "gateway::admin_plane::models::tests::promote_needs_a_distinct_approver_and_records_before_serving",
       "gateway::admin_plane::models::tests::roles_and_unattached_plane",
       "gateway::admin_plane::models::tests::staging_never_activates_a_model",

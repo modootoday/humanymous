@@ -15,8 +15,8 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 290,
-  "partial": 13,
+  "ported_unit": 287,
+  "partial": 16,
   "missing": 0,
   "not_applicable": 2,
   "oracle_only": 9
@@ -74,9 +74,9 @@
    "ported_unit": 5
   },
   "internal/gate": {
-   "partial": 8,
+   "partial": 10,
    "not_applicable": 1,
-   "ported_unit": 75,
+   "ported_unit": 73,
    "oracle_only": 1
   },
   "internal/httpx": {
@@ -92,7 +92,8 @@
    "ported_unit": 6
   },
   "internal/mlcorrect": {
-   "ported_unit": 16
+   "ported_unit": 15,
+   "partial": 1
   },
   "internal/mlserve": {
    "ported_unit": 4
@@ -834,7 +835,7 @@
    "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Gateway /_humanymous/collect parses the client report, rejects server-claimed planes and scores with the shared engine; Go pipeline composition and enrichment are not wired. Lane A (2026-11-19): gateway::core_server::collect runs the Go order: 405, ensureSession, 256 KiB body bound, RIT verify-and-rotate with X-HM-Seed/N/W before the parse, bad body 400, label, mergeObservation (handler header projection without Host, wire order, datacenter via IntelReader, forwarded IP), mergeClient, enrichServerSignals (rit, traffic check, H2 abuse, rate limiter on ja4|subnet, correlation on fp|ja4, fp churn, WebRTC leak, PoW solved), score and StoreScored, publishScored with residual audit events, the external-input receipt (failure 500) and X-HM-PoW; the reply is Go's sorted-key JSON. Go capture: tests/fixtures/gateway/core-server-go-golden.json (go1.26.3 in mirror.gcr.io/library/golang, --network none, oracle 981d25c; 50 HTTP cases through a.routes(), RIT/fp-churn/WebRTC kernels, stored sessions, traffic records, 85-request rate run). Owner decision #10 (issue #75 comment 7017558784, 2026-11-19): isProxyVPNIP/isTorExitIP enrichment stays shadow-only, so the Core keeps is_proxy/is_tor_exit false (accepted deviation, sot:root/ip-reputation); that was this row's only gap.",
+   "notes": "Gateway /_humanymous/collect parses the client report, rejects server-claimed planes and scores with the shared engine; Go pipeline composition and enrichment are not wired. Lane A (2026-11-19): gateway::core_server::collect runs the Go order: 405, ensureSession, 256 KiB body bound, RIT verify-and-rotate with X-HM-Seed/N/W before the parse, bad body 400, label, mergeObservation (handler header projection without Host, wire order, datacenter via IntelReader, forwarded IP), mergeClient, enrichServerSignals (rit, traffic check, H2 abuse, rate limiter on ja4|subnet, correlation on fp|ja4, fp churn, WebRTC leak, PoW solved), score and StoreScored, publishScored with residual audit events, the external-input receipt (failure 500) and X-HM-PoW; the reply is Go's sorted-key JSON. Go capture: tests/fixtures/gateway/core-server-go-golden.json (go1.26.3 in mirror.gcr.io/library/golang, --network none, oracle 981d25c; 50 HTTP cases through a.routes(), RIT/fp-churn/WebRTC kernels, stored sessions, traffic records, 85-request rate run). Owner decision #10 (issue #75 comment 7017558784, 2026-11-19): isProxyVPNIP/isTorExitIP enrichment stays shadow-only, so the Core keeps is_proxy/is_tor_exit false (accepted deviation, sot:root/ip-reputation); that was this row's only gap. PR #155 review re-check: decision #10 keeps an existing false and adds no wiring; the collect pipeline is the CoreServer component, whose runtime binary listener is tracked on cmd/server/main.go (B01).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::fresh_collector_provenance_gates_required_collector": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::replay_and_collect_cross_session_cannot_gain_origin_ticket": "passed",
@@ -2239,7 +2240,7 @@
    "gaps": [],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Network signal kernels exist; HTTP app composition (routes, headers, CIDR sets) is missing. Lane A (2026-11-19): gateway::core_server composes the Go app: route mux with Go 1.22 pattern semantics (subtree 307, unclean-path 307 with the HTML body for GET, unescaped segment matching), the three security headers with Set semantics, traffic-log middleware (TLS record from the connection's own ClientHello, HTTP record with cookie), GC sweep each minute, fingerprintChurn (bounded per-session map expiring with the session TTL) and vpnWebRTCLeak wired into collect. Go capture: tests/fixtures/gateway/core-server-go-golden.json (go1.26.3 in mirror.gcr.io/library/golang, --network none, oracle 981d25c; 50 HTTP cases through a.routes(), RIT/fp-churn/WebRTC kernels, stored sessions, traffic records, 85-request rate run). Deliberate differences: explain/counters/mlcorrect/playground are not mounted on the Core (B09), Pass routes are mounted by CoreServer::with_pass_flow through the PassRoutes adapter gateway::core_server::pass::PassMount (lane F; 404 only while nothing is mounted), trusted proxies come from an explicit CIDR allowlist (C1) instead of Go's implicit private peers, bounded histories fail closed (503 history unavailable). PR #150 review (lane A): /static/ refuses a cleaned name containing a backslash, a colon or NUL, a Windows device name on Windows, or any path component other than Normal, with Go's Linux answer 404 on every OS, so neither %5C nor a drive prefix can leave the web root (Go http.Dir refused these only on Windows, through filepath.Localize, as 500); the mux sees Go's URL.EscapedPath and writes each redirect Location as Go's url.URL{Path}.String(), so a literal backslash leaves as %255C, never as a protocol-relative /\\host. Lane F (2026-11-19): gateway::core_server::pass::PassMount implements PassRoutes over gateway::pass_flow (own lock; the Core hands it the Go cookieValue session, the legacy passFP from the connection's own ClientHello and the trust-gated client subnet, the request time read under the Core state lock and a StoreBackend over the Core collector store, frozen engine and live feed) and CoreServer::with_pass_flow mounts it with the Core master key and web root, MotorEvidence::Off only (PassMount::new refuses GoParity) and an optional step-up TokenKey (Go HMN_TOKEN_KEY; the env read belongs to the unbuilt Core binary role). Every recorded Go Pass request in tests/fixtures/gateway/pass-flow-go-golden.json (not regenerated) is replayed as a wire request through read_request, CoreServer::handle and encode: status, content type, Set-Cookie presence, security headers and exact body bytes equal Go except seven steps Go answered from realEventOK or the behavior tells, which are pinned to the accessible answer; final stored signals and frozen-engine scores equal Go outside those motor sessions. Fail closed: limiter refusal, unavailable Core history and a poisoned Pass lock answer 503; a panicking Pass handler is caught before the Core state guard drops, so the Core state is not poisoned. feedPassOutcome has no consumer on the Core plane (B09). Owner decision #10 (issue #75 comment 7017558784, 2026-11-19): the proxy-VPN and Tor exit sets stay shadow-only, so IsProxy/IsTorExit stay false (accepted deviation, sot:root/ip-reputation); that was this row's only gap. Accepted deviation from PR #150 (same comment): the /static/ 404 for a backslash, a colon, NUL or a device name.",
+   "notes": "Network signal kernels exist; HTTP app composition (routes, headers, CIDR sets) is missing. Lane A (2026-11-19): gateway::core_server composes the Go app: route mux with Go 1.22 pattern semantics (subtree 307, unclean-path 307 with the HTML body for GET, unescaped segment matching), the three security headers with Set semantics, traffic-log middleware (TLS record from the connection's own ClientHello, HTTP record with cookie), GC sweep each minute, fingerprintChurn (bounded per-session map expiring with the session TTL) and vpnWebRTCLeak wired into collect. Go capture: tests/fixtures/gateway/core-server-go-golden.json (go1.26.3 in mirror.gcr.io/library/golang, --network none, oracle 981d25c; 50 HTTP cases through a.routes(), RIT/fp-churn/WebRTC kernels, stored sessions, traffic records, 85-request rate run). Deliberate differences: explain/counters/mlcorrect/playground are not mounted on the Core (B09), Pass routes are mounted by CoreServer::with_pass_flow through the PassRoutes adapter gateway::core_server::pass::PassMount (lane F; 404 only while nothing is mounted), trusted proxies come from an explicit CIDR allowlist (C1) instead of Go's implicit private peers, bounded histories fail closed (503 history unavailable). PR #150 review (lane A): /static/ refuses a cleaned name containing a backslash, a colon or NUL, a Windows device name on Windows, or any path component other than Normal, with Go's Linux answer 404 on every OS, so neither %5C nor a drive prefix can leave the web root (Go http.Dir refused these only on Windows, through filepath.Localize, as 500); the mux sees Go's URL.EscapedPath and writes each redirect Location as Go's url.URL{Path}.String(), so a literal backslash leaves as %255C, never as a protocol-relative /\\host. Lane F (2026-11-19): gateway::core_server::pass::PassMount implements PassRoutes over gateway::pass_flow (own lock; the Core hands it the Go cookieValue session, the legacy passFP from the connection's own ClientHello and the trust-gated client subnet, the request time read under the Core state lock and a StoreBackend over the Core collector store, frozen engine and live feed) and CoreServer::with_pass_flow mounts it with the Core master key and web root, MotorEvidence::Off only (PassMount::new refuses GoParity) and an optional step-up TokenKey (Go HMN_TOKEN_KEY; the env read belongs to the unbuilt Core binary role). Every recorded Go Pass request in tests/fixtures/gateway/pass-flow-go-golden.json (not regenerated) is replayed as a wire request through read_request, CoreServer::handle and encode: status, content type, Set-Cookie presence, security headers and exact body bytes equal Go except seven steps Go answered from realEventOK or the behavior tells, which are pinned to the accessible answer; final stored signals and frozen-engine scores equal Go outside those motor sessions. Fail closed: limiter refusal, unavailable Core history and a poisoned Pass lock answer 503; a panicking Pass handler is caught before the Core state guard drops, so the Core state is not poisoned. feedPassOutcome has no consumer on the Core plane (B09). Owner decision #10 (issue #75 comment 7017558784, 2026-11-19): the proxy-VPN and Tor exit sets stay shadow-only, so IsProxy/IsTorExit stay false (accepted deviation, sot:root/ip-reputation); that was this row's only gap. Accepted deviation from PR #150 (same comment): the /static/ 404 for a backslash, a colon, NUL or a device name. PR #155 review re-check: decision #10 keeps an existing false and adds no wiring; the rest of the row is the CoreServer component, whose runtime binary listener is tracked on cmd/server/main.go (B01), as for every other cmd/server ported_unit row.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_proxy_rotation_at_three_not_two_subnets": "passed",
     "crates/sdk/humanymous-runtime/src/network/residual/mod.rs::observations_are_audited_without_becoming_actionable_or_scored": "passed",
@@ -3180,7 +3181,7 @@
   },
   {
    "baseline_path": "internal/gate/configsign.go",
-   "disposition": "ported_unit",
+   "disposition": "partial",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/settings/configsign.rs",
     "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/resolve.rs",
@@ -3196,10 +3197,12 @@
    "go_test_map": {
     "TestConfigVersionSignedAndStable": "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_signed_and_stable"
    },
-   "gaps": [],
+   "gaps": [
+    "signed version not composed by the service binary (B01 / lane G): nothing outside tests calls Application::install_signed_policy, so the shipped runtime still records scope.revision"
+   ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "gateway/settings/configsign.rs ports Server.configVersion (SettingsEffective().ConfigVersion over boot monitor, live kill switch, routes, rlWindow/rlSoft/rlHard defaults, the active overlay and the token HMAC key) on the frozen overlay resolver; Go golden tests/fixtures/gateway/configsign-guard-go-golden.json (Go 1.25.3 at 981d25c, offline) covers 18 server/overlay postures. The unreachable overlay-free fallback (nil server) is not ported. Owner decision #8 (issue #75 comment 7017558784, 2026-11-19): the signed effective-policy version replaces scope.revision, as Go configVersion did. settings::configsign::SignedPolicy is the shared live handle (boot slice, kill-switch flag, active overlay slot); after Application::install_signed_policy the runtime.decision, runtime.collect and upstream.error records carry SignedPolicy::version, read at record time (gateway::tests::signed_policy: cfg- version, changes with the kill switch, decision unchanged). The admin policy view already reports the same value. The service binary installs the handle when it composes the admin plane (lane G). The Prometheus config-version label belongs to the owner-pending metrics (rows internal/gate/admin.go and settings_runtime.go); the adapter authority's adapter.decision (no Go counterpart) and the settings journal binding keep the provisioned scope revision (sot:root/runtime-application, owner decisions delegated 2026-11-19).",
+   "notes": "gateway/settings/configsign.rs ports Server.configVersion (SettingsEffective().ConfigVersion over boot monitor, live kill switch, routes, rlWindow/rlSoft/rlHard defaults, the active overlay and the token HMAC key) on the frozen overlay resolver; Go golden tests/fixtures/gateway/configsign-guard-go-golden.json (Go 1.25.3 at 981d25c, offline) covers 18 server/overlay postures. The unreachable overlay-free fallback (nil server) is not ported. Owner decision #8 (issue #75 comment 7017558784, 2026-11-19): the signed effective-policy version replaces scope.revision, as Go configVersion did. settings::configsign::SignedPolicy is the shared live handle (boot slice, kill-switch flag, active overlay slot); after Application::install_signed_policy the runtime.decision, runtime.collect and upstream.error records carry SignedPolicy::version, read at record time (gateway::tests::signed_policy: cfg- version, changes with the kill switch, decision unchanged). The admin policy view already reports the same value. No production caller installs the handle yet: the service binary does not compose it (B01 / lane G), so the shipped runtime still records scope.revision (gap). The Prometheus config-version label belongs to the owner-pending metrics (rows internal/gate/admin.go and settings_runtime.go); the adapter authority's adapter.decision (no Go counterpart) and the settings journal binding keep the provisioned scope revision (sot:root/runtime-application, owner decisions delegated 2026-11-19). PR #155 review: kept partial until the service binary composes SignedPolicy (owner decision #8).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_matches_go_capture": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_signed_and_stable": "passed",
@@ -3874,7 +3877,7 @@
   },
   {
    "baseline_path": "internal/gate/killswitch_test.go",
-   "disposition": "ported_unit",
+   "disposition": "partial",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/audit/control/policy.rs",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane.rs",
@@ -3882,23 +3885,25 @@
     "crates/sdk/humanymous-runtime/src/gateway/control/state.rs"
    ],
    "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r080_killswitch_requires_distinct_approver",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r167_killswitch_pending_before_commit",
     "crates/sdk/humanymous-runtime/src/gateway/control.rs::node_kill_binding_is_exact_and_survives_policy_revision_changes",
-    "crates/sdk/humanymous-runtime/src/gateway/control/state.rs::spent_intent_without_covered_effect_cannot_become_healthy",
-    "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::two_independent_signatures_bind_every_operation_field",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r080_killswitch_requires_distinct_approver"
+    "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::two_independent_signatures_bind_every_operation_field"
    ],
    "go_test_map": {
-    "TestKillSwitchDualControlAndEffect": "crates/sdk/humanymous-runtime/src/gateway/control/state.rs::spent_intent_without_covered_effect_cannot_become_healthy"
+    "TestKillSwitchDualControlAndEffect": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r080_killswitch_requires_distinct_approver"
    },
-   "gaps": [],
+   "gaps": [
+    "kill-switch commit and its effect (Go: the approved commit engages global monitor mode and a scored-DENY session then passes): not ported, accepted deviation by owner decision #6 (issue #75 comment 7017558784); the approved commit answers 409 (r167) because the Rust kill is the signed one-way node kill (gateway::control)"
+   ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "The admin plane serves the Go kill-switch request (pending approvalId) and refuses self-approval (r080). Typed KillTarget/KillStatus are assessment only; Runtime does not dispatch kill effects (INTEGRATION.md), and Go's semantics (a reversible global monitor-mode flip) differ from the Rust signed one-way node kill, so the effect half needs an owner decision, not a port. Owner decision #6 (issue #75 comment 7017558784, 2026-11-19): the Rust signed one-way node kill (gateway::control) is kept and Go's reversible global monitor mode is not ported (accepted deviation, sot:root/runtime-application, owner decisions delegated 2026-11-19). The request, self-approval refusal and the 409 commit (the effect needs the signed node kill) are the intended Rust behavior, so no gap remains.",
+   "notes": "The admin plane serves the Go kill-switch request (pending approvalId) and refuses self-approval (r080). Typed KillTarget/KillStatus are assessment only; Runtime does not dispatch kill effects (INTEGRATION.md), and Go's semantics (a reversible global monitor-mode flip) differ from the Rust signed one-way node kill, so the effect half needs an owner decision, not a port. Owner decision #6 (issue #75 comment 7017558784, 2026-11-19): the Rust signed one-way node kill (gateway::control) is kept and Go's reversible global monitor mode is not ported (accepted deviation, sot:root/runtime-application, owner decisions delegated 2026-11-19). PR #155 review: go_test_map covers only the ported dual-control half of TestKillSwitchDualControlAndEffect (request pending, self-approval refused: r080; nothing engages before commit: r167). The commit and monitor-mode effect half is the decided gap above. The node-kill and two-signature tests evidence the kept Rust mechanism, not an equivalent of the Go effect.",
    "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r080_killswitch_requires_distinct_approver": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r167_killswitch_pending_before_commit": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/control.rs::node_kill_binding_is_exact_and_survives_policy_revision_changes": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/control/state.rs::spent_intent_without_covered_effect_cannot_become_healthy": "passed",
-    "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::two_independent_signatures_bind_every_operation_field": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r080_killswitch_requires_distinct_approver": "passed"
+    "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::two_independent_signatures_bind_every_operation_field": "passed"
    }
   },
   {
@@ -9089,7 +9094,7 @@
   },
   {
    "baseline_path": "internal/mlcorrect/bundle.go",
-   "disposition": "ported_unit",
+   "disposition": "partial",
    "rust_paths": [
     "crates/sdk/humanymous-core/src/model/correction/bundle.rs",
     "crates/sdk/humanymous-runtime/src/gateway/model_admission.rs",
@@ -9117,13 +9122,17 @@
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::staging_never_activates_a_model",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::promote_needs_a_distinct_approver_and_records_before_serving",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::failed_audit_answers_503_and_changes_nothing",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::activation_keeps_every_score_and_verdict"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::activation_keeps_every_score_and_verdict",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::poisoned_lifecycle_answers_503_and_records_nothing",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::digest_mismatch_is_a_conflict_at_request_and_at_commit"
    ],
    "go_test_map": {},
-   "gaps": [],
+   "gaps": [
+    "the owner decision #12 promote and rollback routes (gateway::admin_plane::models::Models) are not composed into the service binary's admin listener (B01 / lane G); until then no shipped path activates a model"
+   ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Exact-byte SHA-256 identity, schema pin, explicit unsigned lab policy and staged/active/previous transitions with Go's rollback semantics. Ed25519 signed policy ported without a core dependency change: core BundleVerifier seam (BundleManager::with_verifier, stage_signed) checks in legacy order size, digest, signature, decode, schema; the Runtime supplies Ed25519Verifier::from_pkix_pem (legacy NewBundleManager PEM/PKIX/ed25519 checks) over the existing ed25519-dalek dependency. BundleManager::with_public_key in core still fails closed. Deliberate fail-closed differences: verify_strict (small-order keys refused; honest ed25519.Sign signatures verify identically) and PEM blocks with RFC 1421 headers refused. The canary breach callback now drives rollback of the admitted lab identity (gateway::model_admission::lab_control), still without activating a model. Owner decision #12 (issue #75 comment 7017558784, 2026-11-19): production activation is accepted as explicit, audited operator actions on the admin plane. gateway::admin_plane::models::Models pairs the core BundleManager (verification in Go Stage order, unchanged) with the shared inference Runtime: Models::stage only verifies and stages; POST models/promote (staged digest, pending action committed by a distinct approver) installs the verified model as the served predictor like Go mlserve.Set and keeps the prior one; POST models/rollback (active digest) reverts to the prior model or abstention. Each writes config.changed before the change; a failed write answers 503 and changes nothing; a digest mismatch is 409. Go capture tests/fixtures/gateway/ml-bundle-go-golden.json (go1.26.3, oracle 981d25c, --network none; plan:root/20261119180000) is replayed through the admin routes: every stage result, staged/active identity, served version and served p_bot (float32 bits) equals Go. Activation keeps every score, verdict, hard rule and contributor (l4.ml.behavioral stays weight 0, fire threshold 0.5); the explanation may gain an L4 layer row of probability 0, as in Go. Deviations by decision #12: startup never promotes (Go promoted the admitted bundle at boot) and promote needs a distinct approver (Go had no runtime promote).",
+   "notes": "Exact-byte SHA-256 identity, schema pin, explicit unsigned lab policy and staged/active/previous transitions with Go's rollback semantics. Ed25519 signed policy ported without a core dependency change: core BundleVerifier seam (BundleManager::with_verifier, stage_signed) checks in legacy order size, digest, signature, decode, schema; the Runtime supplies Ed25519Verifier::from_pkix_pem (legacy NewBundleManager PEM/PKIX/ed25519 checks) over the existing ed25519-dalek dependency. BundleManager::with_public_key in core still fails closed. Deliberate fail-closed differences: verify_strict (small-order keys refused; honest ed25519.Sign signatures verify identically) and PEM blocks with RFC 1421 headers refused. The canary breach callback now drives rollback of the admitted lab identity (gateway::model_admission::lab_control), still without activating a model. Owner decision #12 (issue #75 comment 7017558784, 2026-11-19): production activation is accepted as explicit, audited operator actions on the admin plane. gateway::admin_plane::models::Models pairs the core BundleManager (verification in Go Stage order, unchanged) with the shared inference Runtime: Models::stage only verifies and stages; POST models/promote (staged digest, pending action committed by a distinct approver) installs the verified model as the served predictor like Go mlserve.Set and keeps the prior one; POST models/rollback (active digest) reverts to the prior model or abstention. Each writes config.changed before the change; a failed write answers 503 and changes nothing; a digest mismatch is 409. Go capture tests/fixtures/gateway/ml-bundle-go-golden.json (go1.26.3, oracle 981d25c, --network none; plan:root/20261119180000) is replayed through the admin routes: every stage result, staged/active identity, served version and served p_bot (float32 bits) equals Go. Activation keeps every score, verdict, hard rule and contributor (l4.ml.behavioral stays weight 0, fire threshold 0.5); the explanation may gain an L4 layer row of probability 0, as in Go. Deviations by decision #12: startup never promotes (Go promoted the admitted bundle at boot) and promote needs a distinct approver (Go had no runtime promote). PR #155 review: every refusal (no candidate, digest mismatch, nothing to roll back to, core and slots apart) is decided before the audit record; a poisoned lifecycle lock answers 503 and records nothing; Models::stage decodes before the core stages. Kept partial until lane G composes Models (owner decision #12).",
    "test_verification": {
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_accepts_a_valid_bundle": "passed",
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_rejects_a_stale_schema": "passed",
@@ -9145,7 +9154,9 @@
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::staging_never_activates_a_model": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::promote_needs_a_distinct_approver_and_records_before_serving": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::failed_audit_answers_503_and_changes_nothing": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::activation_keeps_every_score_and_verdict": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::activation_keeps_every_score_and_verdict": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::poisoned_lifecycle_answers_503_and_records_nothing": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::digest_mismatch_is_a_conflict_at_request_and_at_commit": "passed"
    }
   },
   {

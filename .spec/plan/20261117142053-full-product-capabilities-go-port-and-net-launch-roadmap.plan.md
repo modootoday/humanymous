@@ -3,7 +3,7 @@ id: plan:root/20261117142053
 title: "Full-product capabilities, Go port and .NET launch roadmap"
 status: draft
 created: 2026-11-17T14:20:53Z
-updated: 2026-11-19T18:00:00Z
+updated: 2026-11-19T18:50:00Z
 rel:
   depends_on: [plan:root/20261116060213]
 ---
@@ -201,8 +201,11 @@ FM11 lane J (`plan:root/20261119180000`) records them:
   never activate a model, and activation changes no weight, threshold or
   signal ID.
 
-Ledger after lane J: 290 `ported_unit`, 13 `partial`, 0 `missing`, 2
-`not_applicable`, 9 `oracle_only`.
+Ledger after lane J (PR #155 review): 287 `ported_unit`, 16 `partial`, 0
+`missing`, 2 `not_applicable`, 9 `oracle_only`. The configsign.go and
+mlcorrect/bundle.go rows stay `partial` until the service binary composes
+`SignedPolicy` and `Models` (B01, lane G); killswitch_test.go stays
+`partial` with the decided monitor-mode effect as its recorded gap.
 
 When every row is `ported_unit` or explicitly oracle-only, remove the Go sources,
 `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at

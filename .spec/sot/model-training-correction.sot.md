@@ -3,7 +3,7 @@ id: sot:root/model-training-correction
 title: Model training and correction migration
 status: draft
 created: 2026-11-07T14:00:00Z
-updated: 2026-11-19T18:00:00Z
+updated: 2026-11-19T18:50:00Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration]
@@ -64,7 +64,10 @@ This is the separately accepted design that the paragraph above requires:
   and needs a distinct approver. Rollback names the active digest and
   applies at once, toward the previous model or abstention. Each writes its
   audit record before the change. A failed write answers 503 and changes
-  nothing.
+  nothing. Every refusal is decided before the record is written, and a
+  poisoned or inconsistent lifecycle answers 503 and records nothing. The
+  service binary does not compose these routes yet (B01, lane G), so no
+  shipped path activates a model.
 - Promote installs the verified model as the active predictor of the shared
   inference `Runtime`, as Go `mlserve.Set` did. Its only scoring input stays
   the weight-0 `l4.ml.behavioral` annotation. Activation changes no weight,

@@ -39,6 +39,12 @@
 //! - Every promote and rollback writes a `config.changed` record before the
 //!   change; if it cannot be written nothing changes and the request answers
 //!   503 (the settings write plane pattern). Transitions are serialized.
+//!   Every refusal (no candidate, digest mismatch, nothing to roll back to)
+//!   is decided before the record is written, against both the served slots
+//!   and the core lifecycle under the same lock; if those two disagree the
+//!   request answers 503 without a record. A poisoned lifecycle lock also
+//!   answers 503: a transition that panicked may have left the slots and the
+//!   served runtime apart, so nothing is read or changed through it.
 //! - Activation never changes scoring weights, thresholds, hard-rule
 //!   predicates, verdict bands or signal IDs: the served model only feeds the
 //!   existing weight-0 `l4.ml.behavioral` annotation, and no threshold
@@ -52,7 +58,7 @@ use humanymous_core::model::correction::{
 use humanymous_core::model::inference::{Mlp, Runtime};
 use serde_json::{Value, json};
 use std::collections::BTreeMap;
-use std::sync::{Arc, Mutex, MutexGuard, PoisonError};
+use std::sync::{Arc, Mutex, MutexGuard};
 
 /// Pending action kind of a model promotion.
 pub const KIND_PROMOTE: &str = "ml.model.promote";
@@ -68,6 +74,21 @@ pub const EVENT: &str = "config.changed";
 struct Verified {
     identity: BundleIdentity,
     model: Arc<Mlp>,
+}
+
+/// Why a [`Models`] operation was refused.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ModelsError {
+    /// Legacy verification or lifecycle refusal.
+    Correction(CorrectionError),
+    /// The lifecycle lock is poisoned: an earlier transition panicked.
+    Unavailable,
+}
+
+impl From<CorrectionError> for ModelsError {
+    fn from(error: CorrectionError) -> Self {
+        Self::Correction(error)
+    }
 }
 
 #[derive(Default)]
@@ -120,13 +141,17 @@ impl Models {
         bundle_bytes: &[u8],
         expected_digest: Option<&str>,
         signature: Option<&[u8]>,
-    ) -> Result<BundleIdentity, CorrectionError> {
-        let mut slots = self.lock();
+    ) -> Result<BundleIdentity, ModelsError> {
+        let mut slots = self.lock()?;
+        // Decode before the core stages, so the core never holds a candidate
+        // the slots lack. A failed decode still goes through the core for
+        // the legacy refusal order (size, digest pin, signature, decode); the
+        // core's decode of the same bytes fails too and stages nothing.
+        let decoded = Mlp::from_json(bundle_bytes);
         let identity = self
             .bundles
             .stage_signed(bundle_bytes, expected_digest, signature)?;
-        // The same bytes passed the shape-valid decode inside the stage.
-        let model = Mlp::from_json(bundle_bytes).map_err(|_| CorrectionError::InvalidBundle)?;
+        let model = decoded.map_err(|_| CorrectionError::InvalidBundle)?;
         slots.staged = Some(Verified {
             identity: identity.clone(),
             model: Arc::new(model),
@@ -135,34 +160,42 @@ impl Models {
     }
 
     /// Verified candidate awaiting promotion.
-    pub fn staged(&self) -> Option<BundleIdentity> {
-        self.lock()
-            .staged
-            .as_ref()
-            .map(|slot| slot.identity.clone())
+    pub fn staged(&self) -> Result<Option<BundleIdentity>, ModelsError> {
+        Ok(Self::identity(&self.lock()?.staged))
     }
 
     /// Served identity; `None` is legacy `"none"` (abstaining).
-    pub fn active(&self) -> Option<BundleIdentity> {
-        self.lock()
-            .active
-            .as_ref()
-            .map(|slot| slot.identity.clone())
+    pub fn active(&self) -> Result<Option<BundleIdentity>, ModelsError> {
+        Ok(Self::identity(&self.lock()?.active))
     }
 
     /// Identity retained for rollback.
-    pub fn previous(&self) -> Option<BundleIdentity> {
-        self.lock()
-            .previous
-            .as_ref()
-            .map(|slot| slot.identity.clone())
+    pub fn previous(&self) -> Result<Option<BundleIdentity>, ModelsError> {
+        Ok(Self::identity(&self.lock()?.previous))
     }
 
-    fn lock(&self) -> MutexGuard<'_, Slots> {
-        self.slots.lock().unwrap_or_else(PoisonError::into_inner)
+    fn identity(slot: &Option<Verified>) -> Option<BundleIdentity> {
+        slot.as_ref().map(|slot| slot.identity.clone())
     }
 
-    /// Legacy `Promote` under the held lock.
+    /// The lifecycle lock; refused once poisoned (fail closed, no
+    /// `into_inner`: a transition that panicked mid-way may have left the
+    /// slots, the core and the served runtime apart).
+    fn lock(&self) -> Result<MutexGuard<'_, Slots>, ModelsError> {
+        self.slots.lock().map_err(|_| ModelsError::Unavailable)
+    }
+
+    /// Whether the core lifecycle agrees with the served slots on the staged
+    /// and active identities. Every transition goes through these slots under
+    /// one lock, so a disagreement means the lifecycle cannot be trusted.
+    fn consistent(&self, slots: &Slots) -> bool {
+        self.bundles.staged() == Self::identity(&slots.staged)
+            && self.bundles.active() == Self::identity(&slots.active)
+    }
+
+    /// Legacy `Promote` under the held lock. The caller has checked, before
+    /// writing the audit record, that a candidate is staged and the core
+    /// agrees ([`Self::consistent`]), so the core cannot refuse here.
     fn promote(&self, slots: &mut Slots) -> Result<BundleIdentity, CorrectionError> {
         let staged = slots.staged.take().ok_or(CorrectionError::NoStaged)?;
         if let Err(error) = self.bundles.promote() {
@@ -175,6 +208,8 @@ impl Models {
     }
 
     /// Legacy `Rollback` under the held lock; returns the identity now served.
+    /// The caller has checked, before writing the audit record, that a model
+    /// is active or retained and the core agrees, so the core cannot refuse.
     fn rollback(&self, slots: &mut Slots) -> Result<Option<BundleIdentity>, CorrectionError> {
         if slots.active.is_none() && slots.previous.is_none() {
             return Err(CorrectionError::NoPrevious);
@@ -187,6 +222,18 @@ impl Models {
         }
         Ok(slots.active.as_ref().map(|slot| slot.identity.clone()))
     }
+}
+
+/// A poisoned or inconsistent lifecycle: fail closed, nothing recorded.
+fn lifecycle_unavailable() -> Response {
+    Response::text(503, "model lifecycle unavailable")
+}
+
+/// The core refused after the audit record was written. Unreachable while
+/// the consistency check holds; answered as a server failure, never as a
+/// client conflict, because the record already says the change was asked.
+fn transition_failed() -> Response {
+    Response::text(500, "model transition failed after the audit record")
 }
 
 /// Go `Active()`: `("none", "")` while abstaining.
@@ -220,8 +267,10 @@ impl AdminPlane {
         let Some(models) = &self.models else {
             return Response::not_found();
         };
-        let slots = models.lock();
-        let identity = |slot: &Option<Verified>| slot.as_ref().map(|slot| slot.identity.clone());
+        let Ok(slots) = models.lock() else {
+            return lifecycle_unavailable();
+        };
+        let identity = Models::identity;
         Response::json(&json!({
             "active": active_view(identity(&slots.active).as_ref()),
             "previous": view(identity(&slots.previous).as_ref()),
@@ -246,7 +295,9 @@ impl AdminPlane {
             return Response::text(400, "digest required");
         }
         let staged = {
-            let slots = models.lock();
+            let Ok(slots) = models.lock() else {
+                return lifecycle_unavailable();
+            };
             match &slots.staged {
                 None => return Response::text(409, "no verified candidate staged"),
                 Some(staged) if staged.identity.digest != digest => {
@@ -284,12 +335,18 @@ impl AdminPlane {
             return Response::not_found();
         };
         let digest = params.get("digest").map_or("", String::as_str);
-        let mut slots = models.lock();
-        let Some(staged) = slots.staged.as_ref().map(|slot| slot.identity.clone()) else {
+        let Ok(mut slots) = models.lock() else {
+            return lifecycle_unavailable();
+        };
+        // Every refusal is decided here, before the record is written.
+        let Some(staged) = Models::identity(&slots.staged) else {
             return Response::text(409, "no verified candidate staged");
         };
         if staged.digest != digest {
             return Response::text(409, "CAS: digest does not match the staged candidate");
+        }
+        if !models.consistent(&slots) {
+            return lifecycle_unavailable();
         }
         let reason = format!(
             "ml.model.promoted version={} digest={} (dual-control: {requester}\u{2192}{})",
@@ -307,7 +364,7 @@ impl AdminPlane {
                 "committed": KIND_PROMOTE,
                 "active": active_view(Some(&active)),
             })),
-            Err(_) => Response::text(409, "no verified candidate staged"),
+            Err(_) => transition_failed(),
         }
     }
 
@@ -318,8 +375,11 @@ impl AdminPlane {
         let Some(digest) = digest_field(body) else {
             return Response::text(400, "bad request");
         };
-        let mut slots = models.lock();
-        let active = slots.active.as_ref().map(|slot| slot.identity.clone());
+        let Ok(mut slots) = models.lock() else {
+            return lifecycle_unavailable();
+        };
+        // Every refusal is decided here, before the record is written.
+        let active = Models::identity(&slots.active);
         let current = active
             .as_ref()
             .map_or("", |identity| identity.digest.as_str());
@@ -329,7 +389,10 @@ impl AdminPlane {
         if slots.active.is_none() && slots.previous.is_none() {
             return Response::text(409, "no previous bundle to roll back to");
         }
-        let target = slots.previous.as_ref().map(|slot| slot.identity.clone());
+        if !models.consistent(&slots) {
+            return lifecycle_unavailable();
+        }
+        let target = Models::identity(&slots.previous);
         let reason = format!(
             "ml.model.rolled_back from version={} digest={} to {}",
             active
@@ -353,7 +416,7 @@ impl AdminPlane {
                 "rolledBack": true,
                 "active": active_view(now.as_ref()),
             })),
-            Err(_) => Response::text(409, "no previous bundle to roll back to"),
+            Err(_) => transition_failed(),
         }
     }
 }
