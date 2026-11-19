@@ -7,9 +7,9 @@
 //! fingerprint. Records are returned in emission order; the caller appends
 //! each one durably before it acts, so a block is never served unaudited.
 //!
-//! Nothing here is wired into `Application`: the owner decision of 2026-11-16
-//! leaves serving composition undecided. Deliberate differences, pinned by
-//! tests:
+//! `Application` runs this gate on the served path once a shared store is
+//! installed (`Application::install_bans`), for every request outside the
+//! reserved control routes. Deliberate differences, pinned by tests:
 //! - In enforce mode a ledger refusal (capacity, rate history) is returned as
 //!   an error; the caller must refuse the request. Go's store could not fail.
 //!   Monitor and shadow never block: a refusal there is recorded as
@@ -31,8 +31,10 @@ pub const BLOCK_BODY: &str = "Source temporarily blocked (rate limit / abuse pro
 /// Incident pointer header; the detail lives only in the audit chain.
 pub use crate::gateway::guard::INCIDENT_HEADER;
 
-/// Settings-driven module mode of `gate.ban` (SoT-39).
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+/// Settings-driven module mode of `gate.ban` (SoT-39). The served path reads
+/// it, and the spoof-header gate's mode, from `configuration::Edge`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub enum Mode {
     /// Gate skipped: nothing is checked, counted or recorded.
     Off,

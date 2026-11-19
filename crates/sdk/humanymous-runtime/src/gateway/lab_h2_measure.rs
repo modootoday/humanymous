@@ -301,6 +301,7 @@ fn issue(app: &mut Application, now: u64) -> Result<Value, String> {
         }
         Decision::Local(status, _) => Err(format!("issue status {status}")),
         Decision::Origin { .. } => Err("issue unexpected origin".into()),
+        Decision::Gate(gate) => Err(format!("issue gate status {}", gate.status)),
     }
 }
 

@@ -23,16 +23,20 @@ use tokio::{
     net::{TcpListener, TcpStream},
     time::{Instant, timeout_at},
 };
+mod edge;
 mod settings;
 mod tls;
 // L1 consumer adapter only; no serving observation point is accepted yet.
 #[cfg(test)]
 mod temporal;
+pub use edge::{GateResponse, HEALTHZ, READYZ, ReadySwitch};
 
 /// Internal result: ALLOW is a one-use origin dispatch, never a reusable ticket.
 pub enum Decision {
     /// Bounded local response; CHALLENGE has no recovery in this profile.
     Local(u16, Vec<u8>),
+    /// Edge gate refusal (ban or forged trust header); origin never contacted.
+    Gate(GateResponse),
     /// Audited request allowed for this exact request until its deadline.
     Origin {
         /// UTC deadline in milliseconds.
@@ -86,6 +90,12 @@ pub struct Application {
     /// trusted edge's PROXY v2 header. Connection-scoped: the accept loop is
     /// serialized and resets it for every accepted connection.
     client: Option<IpAddr>,
+    /// Shared ban store the edge ban gate consults, once installed.
+    bans: Option<edge::Bans>,
+    /// Origin-cloak key from the private configuration, when enabled.
+    origin_key: Option<crate::gateway::guard::OriginKey>,
+    /// Readiness gate of the `/_humanymous/readyz` probe.
+    ready: ReadySwitch,
 }
 impl Application {
     /// Compose existing services without changing policy or deriving new tells.
@@ -95,6 +105,7 @@ impl Application {
         audit: Box<dyn DurableAudit>,
     ) -> Result<Self, Rejection> {
         config.validate()?;
+        let origin_key = config.edge.origin_key()?;
         Ok(Self {
             config,
             sessions: Sessions::new(),
@@ -103,6 +114,9 @@ impl Application {
             managed_settings: None,
             intel: None,
             client: None,
+            bans: None,
+            origin_key,
+            ready: ReadySwitch::default(),
         })
     }
 
@@ -179,6 +193,9 @@ impl Application {
         tls: Option<&crate::capture::tls::Connection>,
     ) -> Result<Decision, Rejection> {
         let now = clock()?;
+        if let Some(probe) = self.probe(req) {
+            return probe;
+        }
         self.sessions.observe(now)?;
         if req.header("host") != Some(self.config.scope.authority.as_str()) {
             return Err(Rejection::new(403, "authority"));
@@ -236,6 +253,9 @@ impl Application {
         } else {
             if crate::authority::configuration::reserved(path) {
                 return Err(Rejection::new(403, "reserved_route"));
+            }
+            if let Some(refusal) = self.front_gates(req)? {
+                return Ok(refusal);
             }
             let route = self
                 .config
@@ -645,6 +665,12 @@ impl Application {
                     .await
                     .map_err(|_| Rejection::new(503, "response_write"))
             }
+            Decision::Gate(gate) => {
+                *response_started = true;
+                http::write_text(stream, gate.status, gate.body, &gate.fields)
+                    .await
+                    .map_err(|_| Rejection::new(503, "response_write"))
+            }
             Decision::Origin { deadline, upstream } => {
                 if shutdown.borrow().is_some() {
                     return Err(Rejection::new(503, "service_stopping"));
@@ -663,7 +689,11 @@ impl Application {
                         && route.response_profile
                             == crate::gateway::configuration::ResponseProfile::NativeStream
                 });
-                let bytes = http::origin_request(&request, &self.config.scope.authority);
+                let bytes = http::origin_request(
+                    &request,
+                    &self.config.scope.authority,
+                    self.origin_auth()?.as_deref(),
+                );
                 let outcome = timeout_at(until, async {
                     let mut origin_stream = TcpStream::connect(origin)
                         .await
@@ -709,9 +739,11 @@ impl Application {
                         return Err(self.upstream_failure(&upstream, error, *response_started));
                     }
                 };
-                let Some(response) = response else {
+                let Some(mut response) = response else {
                     return Ok(());
                 };
+                // Plaintext listener: HSTS is never added here (owner decision C10).
+                response.secure(false);
                 let extra = ack
                     .as_ref()
                     .map(|ack| ack.headers(response.status))

@@ -4,9 +4,11 @@ use crate::gateway::Rejection;
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 mod audit;
+mod edge;
 mod ip_reputation;
 mod operational;
 pub use audit::{Audit, MAX_WITNESS_PROOF, SealedKeys, WitnessInput, WitnessInputDurability};
+pub use edge::Edge;
 pub use ip_reputation::{ClientAddressSource, IpReputation};
 pub use operational::OperationalSettings;
 
@@ -48,6 +50,10 @@ pub struct Configuration {
     /// refused before custody, never served with a self-signed fallback.
     #[serde(default)]
     pub tls: Option<crate::gateway::tls::listener::ListenerTls>,
+    /// Front-of-path edge gates (ban, spoof header), HSTS and origin cloak;
+    /// absent keeps the Go defaults: both gates enforce, no HSTS, no cloak.
+    #[serde(default)]
+    pub edge: Edge,
 }
 
 /// Distinct integrity contracts. A browser subset never claims full wire binding.
@@ -146,6 +152,8 @@ impl Configuration {
                 .ip_reputation
                 .as_ref()
                 .is_some_and(|policy| policy.validate().is_err())
+            || self.edge.origin_key().is_err()
+            || self.edge.hsts && self.tls.is_none()
         {
             return Err(bad);
         }
@@ -219,6 +227,7 @@ impl Configuration {
             "browser_session":self.browser.is_some(),"browser_cookie_credentials":false,
             "browser_recovery":false,"administration":false,"product_qualified":false,
             "revision":self.scope.revision,"routes":routes,
-            "ip_reputation":self.ip_reputation.as_ref().map(IpReputation::readiness)})
+            "ip_reputation":self.ip_reputation.as_ref().map(IpReputation::readiness),
+            "edge":self.edge.readiness()})
     }
 }

@@ -166,17 +166,7 @@ pub(in crate::gateway) async fn write_headers(
     body: &[u8],
     extra: &[(String, String)],
 ) -> std::io::Result<()> {
-    let reason = match status {
-        200 => "OK",
-        400 => "Bad Request",
-        401 => "Unauthorized",
-        403 => "Forbidden",
-        409 => "Conflict",
-        413 => "Content Too Large",
-        422 => "Unprocessable Content",
-        429 => "Too Many Requests",
-        _ => "Service Unavailable",
-    };
+    let reason = reason(status);
     let mut header = format!(
         "HTTP/1.1 {status} {reason}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\nCache-Control: no-store\r\n",
         body.len()
@@ -186,6 +176,57 @@ pub(in crate::gateway) async fn write_headers(
     stream.write_all(header.as_bytes()).await?;
     stream.write_all(body).await?;
     stream.shutdown().await
+}
+
+fn reason(status: u16) -> &'static str {
+    match status {
+        200 => "OK",
+        400 => "Bad Request",
+        401 => "Unauthorized",
+        403 => "Forbidden",
+        409 => "Conflict",
+        413 => "Content Too Large",
+        422 => "Unprocessable Content",
+        429 => "Too Many Requests",
+        _ => "Service Unavailable",
+    }
+}
+
+/// Edge gate refusal in Go `http.Error` form: `text/plain; charset=utf-8`,
+/// `X-Content-Type-Options: nosniff` and the static body plus a newline,
+/// followed by the gate's fixed fields (incident pointer, Retry-After).
+pub(in crate::gateway) async fn write_text(
+    stream: &mut (impl AsyncWrite + Unpin),
+    status: u16,
+    body: &str,
+    fields: &[(&'static str, String)],
+) -> std::io::Result<()> {
+    stream.write_all(&text_frame(status, body, fields)?).await?;
+    stream.shutdown().await
+}
+
+/// Encoded [`write_text`] frame; field values are printable ASCII only.
+pub(in crate::gateway) fn text_frame(
+    status: u16,
+    body: &str,
+    fields: &[(&'static str, String)],
+) -> std::io::Result<Vec<u8>> {
+    let mut header = format!(
+        "HTTP/1.1 {status} {}\r\nContent-Type: text/plain; charset=utf-8\r\nX-Content-Type-Options: nosniff\r\nContent-Length: {}\r\nConnection: close\r\nCache-Control: no-store\r\n",
+        reason(status),
+        body.len() + 1
+    );
+    for (name, value) in fields {
+        if !name.bytes().all(token) || value.bytes().any(|b| !(32..127).contains(&b)) {
+            return Err(std::io::Error::other("invalid gate response field"));
+        }
+        header.push_str(&format!("{name}: {value}\r\n"));
+    }
+    header.push_str("\r\n");
+    let mut bytes = header.into_bytes();
+    bytes.extend_from_slice(body.as_bytes());
+    bytes.push(b'\n');
+    Ok(bytes)
 }
 
 fn append_extra(header: &mut String, extra: &[(String, String)]) -> std::io::Result<()> {
@@ -205,7 +246,10 @@ fn append_extra(header: &mut String, extra: &[(String, String)]) -> std::io::Res
 }
 
 /// Rebuild only framing; preserve complete entity and safe end-to-end fields.
-pub fn origin_request(request: &Request, authority: &str) -> Vec<u8> {
+/// Every internal trust header is dropped; `origin_auth`, when cloaking is
+/// enabled, is then attached as the one `X-Hmny-Origin-Auth` field (legacy
+/// gate.go `Rewrite`, SoT-23 §1, HR-24).
+pub fn origin_request(request: &Request, authority: &str, origin_auth: Option<&str>) -> Vec<u8> {
     let mut bytes = format!(
         "{} {} HTTP/1.1\r\nHost: {authority}\r\nContent-Length: {}\r\nConnection: close\r\n",
         request.method,
@@ -234,6 +278,11 @@ pub fn origin_request(request: &Request, authority: &str) -> Vec<u8> {
             continue;
         }
         bytes.extend_from_slice(format!("{name}: {value}\r\n").as_bytes());
+    }
+    if let Some(token) = origin_auth {
+        bytes.extend_from_slice(
+            format!("{}: {token}\r\n", crate::gateway::guard::ORIGIN_HEADER).as_bytes(),
+        );
     }
     bytes.extend_from_slice(b"\r\n");
     bytes.extend_from_slice(&request.body);
@@ -339,11 +388,27 @@ mod tests {
     fn origin_request_drops_forged_trust_headers() {
         let frame = "GET / HTTP/1.1\r\nHost: app\r\nX-Forwarded-For: 1.2.3.4\r\nforwarded: for=5.6.7.8\r\nX-Real-IP: 9.9.9.9\r\nCF-Connecting-IP: 1.1.1.1\r\nX-Hmny-Origin-Auth: forged\r\nX-Hmn-Verdict: ALLOW\r\nAccept: */*\r\nContent-Length: 0";
         let (request, _) = parse_headers(frame.as_bytes()).unwrap();
-        let text = String::from_utf8(origin_request(&request, "origin")).unwrap();
+        let text = String::from_utf8(origin_request(&request, "origin", None)).unwrap();
         assert_eq!(
             text,
             "GET / HTTP/1.1\r\nHost: origin\r\nContent-Length: 0\r\nConnection: close\r\nAccept: */*\r\n\r\n"
         );
+        // Cloaking replaces the forged value with exactly one gateway token.
+        let text = String::from_utf8(origin_request(&request, "origin", Some("t0k"))).unwrap();
+        assert_eq!(
+            text,
+            "GET / HTTP/1.1\r\nHost: origin\r\nContent-Length: 0\r\nConnection: close\r\nAccept: */*\r\nX-Hmny-Origin-Auth: t0k\r\n\r\n"
+        );
+    }
+    #[test]
+    fn gate_text_frame_matches_go_http_error_and_refuses_unsafe_fields() {
+        let bytes = text_frame(403, "blocked", &[("Retry-After", "5".into())]).unwrap();
+        assert_eq!(
+            String::from_utf8(bytes).unwrap(),
+            "HTTP/1.1 403 Forbidden\r\nContent-Type: text/plain; charset=utf-8\r\nX-Content-Type-Options: nosniff\r\nContent-Length: 8\r\nConnection: close\r\nCache-Control: no-store\r\nRetry-After: 5\r\n\r\nblocked\n"
+        );
+        assert!(text_frame(403, "x", &[("Retry-After", "1\r\nX: y".into())]).is_err());
+        assert!(text_frame(403, "x", &[("Bad Name", "1".into())]).is_err());
     }
     #[test]
     fn origin_response_preserves_cookie_bytes_and_rejects_ambiguity() {
