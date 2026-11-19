@@ -11,6 +11,9 @@ use std::{
 };
 
 mod create;
+/// Opt-in descriptor-at-create FILE primitive; no namespace/provider authority.
+#[cfg(feature = "windows-file-create")]
+pub mod create_file;
 mod query;
 mod stdio;
 pub use stdio::stdin_is_pipe;

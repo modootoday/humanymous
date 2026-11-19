@@ -298,15 +298,20 @@ mod tests {
             assert_eq!(linux.jobs[0]["job"], "dotnet");
             assert!(linux.unsupported_ids.is_empty());
         }
-        // Windows hosted and Windows package keep strict accounting: nothing
-        // is declared, so those ignored pilots stay a coverage failure.
-        for entry in [&hosted, &package] {
-            assert!(
-                declared(entry, &packages, "windows", "x86_64")
-                    .unwrap()
-                    .is_empty()
-            );
-        }
+        // Windows hosted ran and passed in the `dotnet` job on windows-2025
+        // (Validate run 44464366183, job 135359916898), so it is accounted
+        // there. Windows package keeps strict accounting: nothing is
+        // declared, so its ignored pilot stays a coverage failure.
+        let windows = declared(&hosted, &packages, "windows", "x86_64").unwrap();
+        assert_eq!(windows.jobs.len(), 1);
+        assert_eq!(windows.jobs[0]["pilot"], "dotnet-hosted-windows");
+        assert_eq!(windows.jobs[0]["job"], "dotnet");
+        assert!(windows.unsupported_ids.is_empty());
+        assert!(
+            declared(&package, &packages, "windows", "x86_64")
+                .unwrap()
+                .is_empty()
+        );
         let mut other = hosted.clone();
         other["target"] = json!("managed_scope");
         assert!(

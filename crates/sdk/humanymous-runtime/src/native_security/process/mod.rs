@@ -2,7 +2,7 @@
 #[cfg(windows)]
 mod windows;
 #[cfg(windows)]
-pub use windows::{WindowsIdentity, current_identity};
+pub use windows::{OwnerPrivileges, WindowsIdentity, current_identity, current_owner_privileges};
 
 pub(in crate::native_security) fn require_owned_service_name(name: &str) -> std::io::Result<()> {
     let valid = name.strip_prefix("humanymous-lab-").is_some_and(|tail| {

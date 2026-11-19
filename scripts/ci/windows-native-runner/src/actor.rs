@@ -28,7 +28,10 @@ use windows_sys::Win32::{
     UI::WindowsAndMessaging::SW_HIDE,
 };
 use zeroize::Zeroizing;
+pub(crate) mod carrier_owner;
+pub(crate) mod prebuilt_run;
 mod scm;
+pub(crate) mod stdio_fixture;
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum Workload {
     Native,
@@ -267,6 +270,31 @@ impl OwnedActor {
         }
         Ok(())
     }
+}
+/// One generated `hmrun<12 hex>` account name and a fresh random password.
+fn generated_actor() -> io::Result<(String, Zeroizing<Vec<u16>>)> {
+    let mut nonce = [0u8; 16];
+    getrandom::fill(&mut nonce).map_err(io::Error::other)?;
+    let suffix = nonce.iter().map(|b| format!("{b:02x}")).collect::<String>();
+    actor_for_nonce(&suffix)
+}
+/// The reserved per-run account `hmrun<first 12 hex of the run nonce>` that
+/// the actor-context inspector requires, with a fresh random password.
+fn actor_for_nonce(nonce: &str) -> io::Result<(String, Zeroizing<Vec<u16>>)> {
+    if nonce.len() != 32 || !nonce.bytes().all(|b| b.is_ascii_hexdigit()) {
+        return Err(io::Error::other("run nonce required"));
+    }
+    let name = format!("hmrun{}", &nonce[..12]);
+    let mut random = Zeroizing::new([0u8; 32]);
+    getrandom::fill(&mut *random).map_err(io::Error::other)?;
+    let mut secret = Zeroizing::new(String::from("aA1!"));
+    {
+        use std::fmt::Write;
+        for byte in random.iter() {
+            write!(&mut *secret, "{byte:02x}").map_err(io::Error::other)?;
+        }
+    }
+    Ok((name, Zeroizing::new(wide(secret.as_str()))))
 }
 fn account(name: &str, password: Zeroizing<Vec<u16>>) -> io::Result<OwnedActor> {
     // Legacy mode intentionally keeps its existing delete-on-Drop behavior.
@@ -563,10 +591,6 @@ fn profile_absent(sid: &str, directory: &Path) -> io::Result<bool> {
     Ok(registry_absent && directory_absent)
 }
 /// A started prebuilt actor and the parent's pipe ends.
-#[expect(
-    dead_code,
-    reason = "SoT N4 runner-mode wiring is not implemented; N1/N5 are unrun on Windows"
-)]
 struct PrebuiltActor {
     owner: OwnedProcessAttempt,
     creator: io::PipeWriter,
@@ -576,10 +600,6 @@ struct PrebuiltActor {
 /// NoProfile actor launch with a piped creator channel (SoT N1 + N5). The
 /// profile must be absent before; the caller observes absence again after
 /// cleanup with `profile_absent`.
-#[expect(
-    dead_code,
-    reason = "SoT N4 runner-mode wiring is not implemented; N1/N5 are unrun on Windows"
-)]
 fn start_prebuilt_actor(
     account: &Account,
     password: &[u16],
@@ -764,20 +784,7 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
     // package roles with its own Cargo and hands the bytes over.
     let package_metadata = harness::packages::Packages::capture_metadata(&options.report)?;
     evidence::verify_snapshot(&source)?;
-    let mut nonce = [0u8; 16];
-    getrandom::fill(&mut nonce).map_err(io::Error::other)?;
-    let suffix = nonce.iter().map(|b| format!("{b:02x}")).collect::<String>();
-    let name = format!("hmrun{}", &suffix[..12]);
-    let mut random = Zeroizing::new([0u8; 32]);
-    getrandom::fill(&mut *random).map_err(io::Error::other)?;
-    let mut secret = Zeroizing::new(String::from("aA1!"));
-    {
-        use std::fmt::Write;
-        for byte in random.iter() {
-            write!(&mut *secret, "{byte:02x}").map_err(io::Error::other)?;
-        }
-    }
-    let password = Zeroizing::new(wide(secret.as_str()));
+    let (name, password) = generated_actor()?;
     let mut account = account(&name, password)?;
     let (sid, _, _) =
         windows_permissions::wrappers::LookupAccountName(Option::<&OsStr>::None, &name)?;
