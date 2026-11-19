@@ -87,6 +87,34 @@ fn rejects_garbage_wrong_version_truncation_and_short_blocks() {
 }
 
 #[test]
+fn reserved_commands_are_refused_not_treated_as_proxy() {
+    // Version 2 with commands 0x2..=0xF, each carrying a well-formed IPv4
+    // address block that a PROXY command would accept.
+    for command in 0x02u8..=0x0F {
+        let mut header = v4_header([1, 2, 3, 4], 1, [5, 6, 7, 8], 2);
+        header[12] = 0x20 | command;
+        assert_eq!(
+            read_header(&mut Cursor::new(header)),
+            Err(Refusal::Command),
+            "{command:#x}"
+        );
+    }
+    // The two defined commands still decode.
+    let mut local = v4_header([1, 2, 3, 4], 1, [5, 6, 7, 8], 2);
+    local[12] = 0x20;
+    assert_eq!(read_header(&mut Cursor::new(local)), Ok(Header::Local));
+    assert!(matches!(
+        read_header(&mut Cursor::new(v4_header(
+            [1, 2, 3, 4],
+            1,
+            [5, 6, 7, 8],
+            2
+        ))),
+        Ok(Header::Source(_))
+    ));
+}
+
+#[test]
 fn trust_gate_over_real_tcp() {
     let listener = TcpListener::bind("127.0.0.1:0").unwrap();
     let address = listener.local_addr().unwrap();
