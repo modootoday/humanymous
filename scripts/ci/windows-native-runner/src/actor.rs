@@ -28,6 +28,7 @@ use windows_sys::Win32::{
     UI::WindowsAndMessaging::SW_HIDE,
 };
 use zeroize::Zeroizing;
+pub(crate) mod prebuilt_run;
 mod scm;
 pub(crate) mod stdio_fixture;
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -274,7 +275,15 @@ fn generated_actor() -> io::Result<(String, Zeroizing<Vec<u16>>)> {
     let mut nonce = [0u8; 16];
     getrandom::fill(&mut nonce).map_err(io::Error::other)?;
     let suffix = nonce.iter().map(|b| format!("{b:02x}")).collect::<String>();
-    let name = format!("hmrun{}", &suffix[..12]);
+    actor_for_nonce(&suffix)
+}
+/// The reserved per-run account `hmrun<first 12 hex of the run nonce>` that
+/// the actor-context inspector requires, with a fresh random password.
+fn actor_for_nonce(nonce: &str) -> io::Result<(String, Zeroizing<Vec<u16>>)> {
+    if nonce.len() != 32 || !nonce.bytes().all(|b| b.is_ascii_hexdigit()) {
+        return Err(io::Error::other("run nonce required"));
+    }
+    let name = format!("hmrun{}", &nonce[..12]);
     let mut random = Zeroizing::new([0u8; 32]);
     getrandom::fill(&mut *random).map_err(io::Error::other)?;
     let mut secret = Zeroizing::new(String::from("aA1!"));

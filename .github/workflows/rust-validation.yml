@@ -413,6 +413,9 @@ jobs:
     - name: Prove secondary-logon std-handle delivery to the NoProfile standard-user actor (SoT N1)
       if: runner.os == 'Windows'
       run: cargo run --locked -p humanymous-delivery -- component dotnet-stdio
+    - name: Fetch the SHA-512-pinned win-x64 .NET SDK and execute the hosted provider through the NoProfile standard-user actor runner child (SoT N3/N4)
+      if: runner.os == 'Windows'
+      run: cargo run --locked -p humanymous-delivery -- component dotnet-host
     strategy:
       fail-fast: false
       matrix:

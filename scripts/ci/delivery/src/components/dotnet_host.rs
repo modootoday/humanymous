@@ -81,7 +81,7 @@ fn now_ms() -> Result<u64> {
         .try_into()
         .map_err(|_| "wall clock out of range".to_owned())
 }
-fn nonce() -> Result<String> {
+pub(super) fn nonce() -> Result<String> {
     let mut bytes = [0_u8; 16];
     getrandom::fill(&mut bytes).map_err(|e| e.to_string())?;
     let text: String = bytes.iter().map(|b| format!("{b:02x}")).collect();
@@ -820,7 +820,7 @@ pub fn package_projection(output: &str) -> Result<Value> {
     Ok(rows[0].clone())
 }
 
-fn harness_executable(log: &str, name: &str) -> Result<PathBuf> {
+pub(super) fn harness_executable(log: &str, name: &str) -> Result<PathBuf> {
     let paths: Vec<_> = log
         .lines()
         .filter_map(|line| serde_json::from_str::<Value>(line).ok())

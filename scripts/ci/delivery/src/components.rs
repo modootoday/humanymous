@@ -334,11 +334,16 @@ pub fn native(root: &Path, kind: &str) -> Result<()> {
 pub fn run(root: &Path, kind: &str) -> Result<()> {
     execute(root, request(EntryPoint::Component, kind)?)
 }
+/// Components with a Windows x86_64 backend (SoT dotnet-protected-host-launch
+/// N1 fixture and the N4 prebuilt provider).
+fn windows_component(kind: &str) -> bool {
+    matches!(kind, "dotnet-stdio" | "dotnet-host")
+}
 fn execute(root: &Path, request: Request<'_>) -> Result<()> {
     let kind = request.kind;
     require(
         (matches!(kind, "maintenance" | "runtime" | "pilots")
-            || (kind == "dotnet-stdio" && cfg!(all(windows, target_arch = "x86_64")))
+            || (windows_component(kind) && cfg!(all(windows, target_arch = "x86_64")))
             || (kind != "dotnet-stdio" && cfg!(all(target_os = "linux", target_arch = "x86_64"))))
             && std::env::var("GITHUB_ACTIONS").as_deref() == Ok("true")
             && std::env::var_os("ACT").is_none()
@@ -359,6 +364,7 @@ fn execute(root: &Path, request: Request<'_>) -> Result<()> {
         "maintenance" => maintenance::run(root, &dir, &mut report),
         "runtime" => runtime::run(root, &dir, &mut report),
         "node-host" => node_host::run(root, &dir, &mut report),
+        "dotnet-host" if cfg!(windows) => dotnet_windows::hosted(root, &dir, &mut report),
         "dotnet-host" => dotnet_host::run(root, &dir, &mut report),
         "dotnet-package" => dotnet_host::run_package(root, &dir, &mut report),
         "dotnet-stdio" => dotnet_windows::stdio_fixture(root, &dir, &mut report),

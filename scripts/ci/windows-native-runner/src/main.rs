@@ -7,7 +7,7 @@ mod evidence;
 mod fixture;
 mod harness;
 mod pilot;
-#[cfg(test)]
+#[cfg(any(windows, test))]
 #[path = "actor/prebuilt.rs"]
 mod prebuilt;
 mod service;
@@ -77,6 +77,30 @@ fn run() -> io::Result<i32> {
     #[cfg(windows)]
     if mode == actor::stdio_fixture::CHILD_MODE {
         return actor::stdio_fixture::child(&mut args);
+    }
+    #[cfg(windows)]
+    if mode == actor::prebuilt_run::CHILD_MODE {
+        return actor::prebuilt_run::child(&mut args);
+    }
+    #[cfg(windows)]
+    if mode == "dotnet-prebuilt" {
+        return match (
+            args.next().as_deref(),
+            args.next(),
+            args.next().as_deref(),
+            args.next(),
+            args.next(),
+        ) {
+            (Some("--input"), Some(input), Some("--report"), Some(report), None) => {
+                actor::prebuilt_run::run(
+                    std::path::Path::new(&input),
+                    std::path::Path::new(&report),
+                )
+            }
+            _ => Err(io::Error::other(
+                "dotnet-prebuilt --input <abs> --report <abs> required",
+            )),
+        };
     }
     #[cfg(windows)]
     if mode == "dotnet-stdio-fixture" {

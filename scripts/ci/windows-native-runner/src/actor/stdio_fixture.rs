@@ -139,7 +139,7 @@ pub(crate) fn child_line_ok(stdout: &[u8], frame: &[u8]) -> bool {
         })
 }
 
-fn icacls(path: &Path, args: &[&str]) -> io::Result<()> {
+pub(super) fn icacls(path: &Path, args: &[&str]) -> io::Result<()> {
     let status = Command::new("icacls.exe")
         .arg(path)
         .args(args)
