@@ -1,0 +1,1035 @@
+{
+ "provenance": {
+  "oracle_commit": "981d25cf71a5a54855d7e2b4359e832a9d5998e5",
+  "oracle_packages": [
+   "internal/gate (configsign.go Server.configVersion via NewServer/SetKillSwitch and a settings.FileStore boot load; guard.go spoofScan, stripInbound, originAuth, originEpoch, originEpochGrace, ValidateOriginAuth, spoofRecord; smuggle.go smuggleRecord)"
+  ],
+  "image": "mirror.gcr.io/library/golang:1.25.3@sha256:6d4e5e74f47db00f7f24da5f53c1b4198ae46862a47395e30477365458347bf2",
+  "go_version": "go1.25.3 linux/amd64 (GOTOOLCHAIN=local)",
+  "command": "docker run --rm --network none -e GOTOOLCHAIN=local -e GOPROXY=off -e GOFLAGS=-mod=readonly -e GOMODCACHE=/modcache -e GOCACHE=/tmp/gocache -v <modcache>:/modcache:ro -v <git archive 981d25c go.mod go.sum internal pkg cmd/server, plus scratch in-package capture tests internal/gate/zz_fm11r16_capture_test.go and cmd/server/zz_fm11r16_tlsconn_capture_test.go>:/src:ro -v <out>:/out -w /src <image> go test -count=1 -run ^TestFM11R16 ./internal/gate/ ./cmd/server/",
+  "capture_program_sha256": "997419d1447804d3a287d6d17a9b7fbf6f59bde80eae3a160360fc0032bd49eb",
+  "capture_program": "internal/gate/zz_fm11r16_capture_test.go",
+  "capture_program_committed": false,
+  "output_sha256": "6efd112f447c1251b3c28b16f88265221cfcc2506b18386d6349bfc09dd0f171",
+  "reproduced": "a second offline run produced the same output_sha256",
+  "capture_notes": [
+   "headers[].remaining lists Go canonical header names sorted bytewise with their values in arrival order",
+   "records[].record is json.Marshal of the audit.Record the builder returned, before any sink stamping",
+   "config_version[].mac_material is the Config.TokenKey text; an empty value leaves TokenKey nil"
+  ],
+  "scope": "Frozen oracle outputs for differential parity only; never regenerate to hide drift"
+ },
+ "outputs": {
+  "cloak": [
+   {
+    "material": "0123456789abcdef0123456789abcdef",
+    "epoch": "e0",
+    "hex": "7918b53e07142634e1de7b62f51f6318cda8ad1c00bc487e47b9afae3981a05a"
+   },
+   {
+    "material": "0123456789abcdef0123456789abcdef",
+    "epoch": "e472222",
+    "hex": "d160a699cbc9745f1aefb43739d9f448b730d6fdf69e60e46f0387281b12830a"
+   },
+   {
+    "material": "0123456789abcdef0123456789abcdef",
+    "epoch": "e472223",
+    "hex": "ec45719408db45c73021b82bb09a171c87671612ef3fc15e9b0bd4e315d1fc84"
+   },
+   {
+    "material": "0123456789abcdef0123456789abcdef",
+    "epoch": "e-1",
+    "hex": "113dd4225f911a67d6ebdeeecfd2c3de5acee84ef4482fe3dc3d7e3027a14e64"
+   },
+   {
+    "material": "0123456789abcdef0123456789abcdef",
+    "epoch": "",
+    "hex": "9cf5a05888dcdd969ae883516b240b40f6e9aef61635ef2e2fb7db80c50f549b"
+   },
+   {
+    "material": "fm11-r16-origin-material-000001-abcdefgh",
+    "epoch": "e0",
+    "hex": "a81310c3594eda9cdbc08d0e38c59a3319843968349d106d7672ef18703ca793"
+   },
+   {
+    "material": "fm11-r16-origin-material-000001-abcdefgh",
+    "epoch": "e472222",
+    "hex": "c32eba3c8734ed0af328421cb0852573380a2385abec397458dee9c85664a5d9"
+   },
+   {
+    "material": "fm11-r16-origin-material-000001-abcdefgh",
+    "epoch": "e472223",
+    "hex": "052cf161dafd7786fd530fe23edcdabb17bf2557996d22ff7b23cb44085eabd2"
+   },
+   {
+    "material": "fm11-r16-origin-material-000001-abcdefgh",
+    "epoch": "e-1",
+    "hex": "a08c857f8b814ee664fb95feaed9257b2eca846f2803e738b666656a4bb71ee5"
+   },
+   {
+    "material": "fm11-r16-origin-material-000001-abcdefgh",
+    "epoch": "",
+    "hex": "9c6ac6d69c7c11df91a556ea28a15033bfdccfd504fdc1e3d55c65cf83cb176b"
+   },
+   {
+    "material": "fm11-r16-origin-material-000002-abcdefgh",
+    "epoch": "e0",
+    "hex": "3cc32b4eb8a6786bb4f170861ec93b25c0d61ae19921a0b848e960ce11408326"
+   },
+   {
+    "material": "fm11-r16-origin-material-000002-abcdefgh",
+    "epoch": "e472222",
+    "hex": "9bbad6bda9e4def9837d6b38f08c95a38c2b74cd0c49339a4876a86db45a5aed"
+   },
+   {
+    "material": "fm11-r16-origin-material-000002-abcdefgh",
+    "epoch": "e472223",
+    "hex": "6b9342ed7b07d365487a8d0cf24150f6a19dbd4fbb2bf0b596d8e32195818a6a"
+   },
+   {
+    "material": "fm11-r16-origin-material-000002-abcdefgh",
+    "epoch": "e-1",
+    "hex": "984a56496a99af01749d84b51965f3fdaa3636404b0c3439ac50638d10f11651"
+   },
+   {
+    "material": "fm11-r16-origin-material-000002-abcdefgh",
+    "epoch": "",
+    "hex": "4ce2cdb4031358668560366aa746f2f8d785fdec84fc1176655336d5695c9c83"
+   },
+   {
+    "material": "short-material",
+    "epoch": "e0",
+    "hex": "20b9390c53906a9b9c4750e34ed67e5d44908d10ba8b8b3bf7719d26f3594a5b"
+   },
+   {
+    "material": "short-material",
+    "epoch": "e472222",
+    "hex": "dd850c9578d094d4f53b813f3bbeeebb733ea2d732b6a3ac65e940a43750d8f8"
+   },
+   {
+    "material": "short-material",
+    "epoch": "e472223",
+    "hex": "6077c781e18fcd1cdb6a4a9e52c29d2409261936fb929a8a78e803684ce8cdef"
+   },
+   {
+    "material": "short-material",
+    "epoch": "e-1",
+    "hex": "6fc54ef9519d5e7c922e8aa5ab0d594c62c94485e5a8905bcf02878696545332"
+   },
+   {
+    "material": "short-material",
+    "epoch": "",
+    "hex": "229116fe9c7daed08bb38aef562cc62ae78c687e17f01d9150f310521736e86d"
+   }
+  ],
+  "config_version": [
+   {
+    "name": "defaults_empty_material",
+    "global_monitor": false,
+    "routes": null,
+    "rate_window_ns": 0,
+    "rate_soft": 0,
+    "rate_hard": 0,
+    "mac_material": "",
+    "kill_switch": false,
+    "overlay": null,
+    "server_error": "",
+    "store_loaded": false,
+    "config_version": "cfg-20356e0daffb",
+    "stable": true
+   },
+   {
+    "name": "defaults",
+    "global_monitor": false,
+    "routes": null,
+    "rate_window_ns": 0,
+    "rate_soft": 0,
+    "rate_hard": 0,
+    "mac_material": "fm11-r16-material-a",
+    "kill_switch": false,
+    "overlay": null,
+    "server_error": "",
+    "store_loaded": false,
+    "config_version": "cfg-e7b212476652",
+    "stable": true
+   },
+   {
+    "name": "monitor",
+    "global_monitor": true,
+    "routes": null,
+    "rate_window_ns": 0,
+    "rate_soft": 0,
+    "rate_hard": 0,
+    "mac_material": "fm11-r16-material-a",
+    "kill_switch": false,
+    "overlay": null,
+    "server_error": "",
+    "store_loaded": false,
+    "config_version": "cfg-af85c2ed4636",
+    "stable": true
+   },
+   {
+    "name": "kill",
+    "global_monitor": false,
+    "routes": null,
+    "rate_window_ns": 0,
+    "rate_soft": 0,
+    "rate_hard": 0,
+    "mac_material": "fm11-r16-material-a",
+    "kill_switch": true,
+    "overlay": null,
+    "server_error": "",
+    "store_loaded": false,
+    "config_version": "cfg-36aec5b20db3",
+    "stable": true
+   },
+   {
+    "name": "monitor_and_kill",
+    "global_monitor": true,
+    "routes": null,
+    "rate_window_ns": 0,
+    "rate_soft": 0,
+    "rate_hard": 0,
+    "mac_material": "fm11-r16-material-a",
+    "kill_switch": true,
+    "overlay": null,
+    "server_error": "",
+    "store_loaded": false,
+    "config_version": "cfg-36aec5b20db3",
+    "stable": true
+   },
+   {
+    "name": "other_material",
+    "global_monitor": false,
+    "routes": null,
+    "rate_window_ns": 0,
+    "rate_soft": 0,
+    "rate_hard": 0,
+    "mac_material": "fm11-r16-material-b",
+    "kill_switch": false,
+    "overlay": null,
+    "server_error": "",
+    "store_loaded": false,
+    "config_version": "cfg-d329305c02b1",
+    "stable": true
+   },
+   {
+    "name": "routes",
+    "global_monitor": false,
+    "routes": {
+     "/": "default",
+     "/api/": "api",
+     "/login": "strict"
+    },
+    "rate_window_ns": 0,
+    "rate_soft": 0,
+    "rate_hard": 0,
+    "mac_material": "fm11-r16-material-a",
+    "kill_switch": false,
+    "overlay": null,
+    "server_error": "",
+    "store_loaded": false,
+    "config_version": "cfg-01ed32a86ba1",
+    "stable": true
+   },
+   {
+    "name": "routes_bytewise_order",
+    "global_monitor": false,
+    "routes": {
+     "/B": "y",
+     "/a": "w",
+     "/a/": "z",
+     "/b": "x",
+     "/é": "v"
+    },
+    "rate_window_ns": 0,
+    "rate_soft": 0,
+    "rate_hard": 0,
+    "mac_material": "fm11-r16-material-a",
+    "kill_switch": false,
+    "overlay": null,
+    "server_error": "",
+    "store_loaded": false,
+    "config_version": "cfg-3b42f422b3d8",
+    "stable": true
+   },
+   {
+    "name": "explicit_rate",
+    "global_monitor": false,
+    "routes": null,
+    "rate_window_ns": 60000000000,
+    "rate_soft": 30,
+    "rate_hard": 90,
+    "mac_material": "fm11-r16-material-a",
+    "kill_switch": false,
+    "overlay": null,
+    "server_error": "",
+    "store_loaded": false,
+    "config_version": "cfg-06c58f2b3281",
+    "stable": true
+   },
+   {
+    "name": "subsecond_window_truncates",
+    "global_monitor": false,
+    "routes": null,
+    "rate_window_ns": 1500000000,
+    "rate_soft": 1,
+    "rate_hard": 2,
+    "mac_material": "fm11-r16-material-a",
+    "kill_switch": false,
+    "overlay": null,
+    "server_error": "",
+    "store_loaded": false,
+    "config_version": "cfg-f8a83e7759be",
+    "stable": true
+   },
+   {
+    "name": "half_second_window_is_zero",
+    "global_monitor": false,
+    "routes": null,
+    "rate_window_ns": 500000000,
+    "rate_soft": 0,
+    "rate_hard": 0,
+    "mac_material": "fm11-r16-material-a",
+    "kill_switch": false,
+    "overlay": null,
+    "server_error": "",
+    "store_loaded": false,
+    "config_version": "cfg-b61abe2629bd",
+    "stable": true
+   },
+   {
+    "name": "negative_rate_defaults",
+    "global_monitor": false,
+    "routes": null,
+    "rate_window_ns": -5,
+    "rate_soft": -1,
+    "rate_hard": -7,
+    "mac_material": "fm11-r16-material-a",
+    "kill_switch": false,
+    "overlay": null,
+    "server_error": "",
+    "store_loaded": false,
+    "config_version": "cfg-e7b212476652",
+    "stable": true
+   },
+   {
+    "name": "attested_catch_all_refused",
+    "global_monitor": false,
+    "routes": {
+     "/": "attested"
+    },
+    "rate_window_ns": 0,
+    "rate_soft": 0,
+    "rate_hard": 0,
+    "mac_material": "fm11-r16-material-a",
+    "kill_switch": false,
+    "overlay": null,
+    "server_error": "gate: the \"attested\" preset (attestation floor) is refused on the catch-all/root prefix — mark specific high-value routes (e.g. /checkout), not the whole site",
+    "store_loaded": false,
+    "config_version": "",
+    "stable": false
+   },
+   {
+    "name": "overlay_active",
+    "global_monitor": false,
+    "routes": {
+     "/": "default",
+     "/api/": "api",
+     "/login": "strict"
+    },
+    "rate_window_ns": 0,
+    "rate_soft": 0,
+    "rate_hard": 0,
+    "mac_material": "fm11-r16-material-a",
+    "kill_switch": false,
+    "overlay": "{\"schemaVersion\":\"1.0.0\",\"overlayId\":\"ovl-r16-1\",\"createdAt\":\"2026-11-19T00:00:00Z\",\"status\":\"active\",\"routes\":{\"/api/\":\"strict\",\"/new\":\"api\"},\"rateLimit\":{\"windowSec\":30,\"soft\":10,\"hard\":20},\"globalMonitor\":true}",
+    "server_error": "",
+    "store_loaded": true,
+    "config_version": "cfg-c043a41c30da",
+    "stable": true
+   },
+   {
+    "name": "overlay_empty_status",
+    "global_monitor": false,
+    "routes": null,
+    "rate_window_ns": 0,
+    "rate_soft": 0,
+    "rate_hard": 0,
+    "mac_material": "fm11-r16-material-a",
+    "kill_switch": false,
+    "overlay": "{\"schemaVersion\":\"1.0.0\",\"overlayId\":\"ovl-r16-2\",\"createdAt\":\"2026-11-19T00:00:00Z\",\"status\":\"\",\"gates\":{\"gate.spoof_header\":\"monitor\"}}",
+    "server_error": "",
+    "store_loaded": true,
+    "config_version": "cfg-ccecb0a76b93",
+    "stable": true
+   },
+   {
+    "name": "overlay_pending_still_digested",
+    "global_monitor": false,
+    "routes": null,
+    "rate_window_ns": 0,
+    "rate_soft": 0,
+    "rate_hard": 0,
+    "mac_material": "fm11-r16-material-a",
+    "kill_switch": false,
+    "overlay": "{\"schemaVersion\":\"1.0.0\",\"overlayId\":\"ovl-r16-3\",\"createdAt\":\"2026-11-19T00:00:00Z\",\"status\":\"pending\",\"routes\":{\"/x\":\"api\"},\"globalMonitor\":true}",
+    "server_error": "",
+    "store_loaded": true,
+    "config_version": "cfg-821c2df778a4",
+    "stable": true
+   },
+   {
+    "name": "overlay_without_id",
+    "global_monitor": false,
+    "routes": null,
+    "rate_window_ns": 0,
+    "rate_soft": 0,
+    "rate_hard": 0,
+    "mac_material": "fm11-r16-material-a",
+    "kill_switch": false,
+    "overlay": "{\"schemaVersion\":\"1.0.0\",\"overlayId\":\"\",\"createdAt\":\"2026-11-19T00:00:00Z\",\"status\":\"active\",\"rateLimit\":{\"hard\":500}}",
+    "server_error": "",
+    "store_loaded": true,
+    "config_version": "cfg-17bfac2966ae",
+    "stable": true
+   },
+   {
+    "name": "overlay_kill_wins",
+    "global_monitor": false,
+    "routes": null,
+    "rate_window_ns": 0,
+    "rate_soft": 0,
+    "rate_hard": 0,
+    "mac_material": "fm11-r16-material-a",
+    "kill_switch": true,
+    "overlay": "{\"schemaVersion\":\"1.0.0\",\"overlayId\":\"ovl-r16-4\",\"createdAt\":\"2026-11-19T00:00:00Z\",\"status\":\"active\",\"globalMonitor\":false}",
+    "server_error": "",
+    "store_loaded": true,
+    "config_version": "cfg-712ed9f42cdd",
+    "stable": true
+   },
+   {
+    "name": "overlay_invalid_discarded",
+    "global_monitor": false,
+    "routes": null,
+    "rate_window_ns": 0,
+    "rate_soft": 0,
+    "rate_hard": 0,
+    "mac_material": "fm11-r16-material-a",
+    "kill_switch": false,
+    "overlay": "{\"schemaVersion\":\"9.9.9\",\"overlayId\":\"ovl-r16-5\",\"createdAt\":\"2026-11-19T00:00:00Z\",\"status\":\"active\"}",
+    "server_error": "",
+    "store_loaded": false,
+    "config_version": "cfg-e7b212476652",
+    "stable": true
+   }
+  ],
+  "epochs": [
+   {
+    "unix": 0,
+    "epoch": "e0",
+    "grace": [
+     "e1",
+     "e0",
+     "e-1"
+    ]
+   },
+   {
+    "unix": 1,
+    "epoch": "e0",
+    "grace": [
+     "e1",
+     "e0",
+     "e0"
+    ]
+   },
+   {
+    "unix": 3599,
+    "epoch": "e0",
+    "grace": [
+     "e1",
+     "e0",
+     "e0"
+    ]
+   },
+   {
+    "unix": 3600,
+    "epoch": "e1",
+    "grace": [
+     "e2",
+     "e1",
+     "e0"
+    ]
+   },
+   {
+    "unix": -1,
+    "epoch": "e0",
+    "grace": [
+     "e0",
+     "e0",
+     "e-1"
+    ]
+   },
+   {
+    "unix": -3600,
+    "epoch": "e-1",
+    "grace": [
+     "e0",
+     "e-1",
+     "e-2"
+    ]
+   },
+   {
+    "unix": -3601,
+    "epoch": "e-1",
+    "grace": [
+     "e0",
+     "e-1",
+     "e-2"
+    ]
+   },
+   {
+    "unix": 1700000000,
+    "epoch": "e472222",
+    "grace": [
+     "e472223",
+     "e472222",
+     "e472221"
+    ]
+   },
+   {
+    "unix": 1700003600,
+    "epoch": "e472223",
+    "grace": [
+     "e472224",
+     "e472223",
+     "e472222"
+    ]
+   },
+   {
+    "unix": 1700007199,
+    "epoch": "e472224",
+    "grace": [
+     "e472225",
+     "e472224",
+     "e472223"
+    ]
+   },
+   {
+    "unix": 4102444800,
+    "epoch": "e1139568",
+    "grace": [
+     "e1139569",
+     "e1139568",
+     "e1139567"
+    ]
+   }
+  ],
+  "headers": [
+   {
+    "name": "clean",
+    "headers": [
+     [
+      "Host",
+      "x"
+     ],
+     [
+      "User-Agent",
+      "Chrome/126"
+     ]
+    ],
+    "found": [],
+    "remaining": [
+     [
+      "Host",
+      [
+       "x"
+      ]
+     ],
+     [
+      "User-Agent",
+      [
+       "Chrome/126"
+      ]
+     ]
+    ]
+   },
+   {
+    "name": "all_forged",
+    "headers": [
+     [
+      "x-forwarded-for",
+      "1.2.3.4"
+     ],
+     [
+      "Accept",
+      "text/html"
+     ],
+     [
+      "X-HMNY-ORIGIN-AUTH",
+      "forged"
+     ],
+     [
+      "cf-connecting-ip",
+      "5.6.7.8"
+     ],
+     [
+      "X-Real-IP",
+      "6.6.6.6"
+     ],
+     [
+      "Forwarded",
+      "for=1.1.1.1"
+     ],
+     [
+      "x-hmn-verdict",
+      "ALLOW"
+     ]
+    ],
+    "found": [
+     "X-Hmny-Origin-Auth",
+     "X-Hmn-Verdict",
+     "X-Forwarded-For",
+     "X-Real-Ip",
+     "Forwarded",
+     "Cf-Connecting-Ip"
+    ],
+    "remaining": [
+     [
+      "Accept",
+      [
+       "text/html"
+      ]
+     ]
+    ]
+   },
+   {
+    "name": "empty_values_not_claims",
+    "headers": [
+     [
+      "X-Real-IP",
+      ""
+     ],
+     [
+      "Forwarded",
+      ""
+     ],
+     [
+      "Accept",
+      "*/*"
+     ]
+    ],
+    "found": [],
+    "remaining": [
+     [
+      "Accept",
+      [
+       "*/*"
+      ]
+     ]
+    ]
+   },
+   {
+    "name": "duplicate_first_nonempty",
+    "headers": [
+     [
+      "X-Forwarded-For",
+      "9.9.9.9"
+     ],
+     [
+      "x-forwarded-for",
+      ""
+     ]
+    ],
+    "found": [
+     "X-Forwarded-For"
+    ],
+    "remaining": []
+   },
+   {
+    "name": "duplicate_first_empty",
+    "headers": [
+     [
+      "X-Forwarded-For",
+      ""
+     ],
+     [
+      "x-forwarded-for",
+      "9.9.9.9"
+     ]
+    ],
+    "found": [],
+    "remaining": []
+   },
+   {
+    "name": "whitespace_value",
+    "headers": [
+     [
+      "Cf-Connecting-Ip",
+      " "
+     ]
+    ],
+    "found": [
+     "Cf-Connecting-Ip"
+    ],
+    "remaining": []
+   },
+   {
+    "name": "near_miss_names",
+    "headers": [
+     [
+      "X-Forwarded-Host",
+      "a"
+     ],
+     [
+      "X-Forwarded-Proto",
+      "https"
+     ],
+     [
+      "X-Real-IP-Extra",
+      "b"
+     ],
+     [
+      "Forwarded-For",
+      "c"
+     ],
+     [
+      "X-Hmn-Verdicts",
+      "d"
+     ]
+    ],
+    "found": [],
+    "remaining": [
+     [
+      "Forwarded-For",
+      [
+       "c"
+      ]
+     ],
+     [
+      "X-Forwarded-Host",
+      [
+       "a"
+      ]
+     ],
+     [
+      "X-Forwarded-Proto",
+      [
+       "https"
+      ]
+     ],
+     [
+      "X-Hmn-Verdicts",
+      [
+       "d"
+      ]
+     ],
+     [
+      "X-Real-Ip-Extra",
+      [
+       "b"
+      ]
+     ]
+    ]
+   },
+   {
+    "name": "single_verdict",
+    "headers": [
+     [
+      "X-Hmn-Verdict",
+      "allow"
+     ],
+     [
+      "Cookie",
+      "a=b"
+     ]
+    ],
+    "found": [
+     "X-Hmn-Verdict"
+    ],
+    "remaining": [
+     [
+      "Cookie",
+      [
+       "a=b"
+      ]
+     ]
+    ]
+   }
+  ],
+  "records": [
+   {
+    "kind": "spoof",
+    "node": "node-1",
+    "psn": "psn-1",
+    "found": [
+     "X-Forwarded-For"
+    ],
+    "record": {
+     "event_id": "",
+     "seq": 0,
+     "node_id": "",
+     "ts": "",
+     "event_type": "hdr.internal_header_ingress",
+     "event_version": "",
+     "actor": {
+      "kind": "subject",
+      "id_pseudonym": "psn-1"
+     },
+     "tenant_id": "node-1",
+     "route_class": "html",
+     "verdict": "deny",
+     "risk_score": 0,
+     "triggered_rules": [
+      "HR-27b"
+     ],
+     "top_signals": null,
+     "enforcement_action": "block",
+     "enforcement_mode": "enforce",
+     "fail_reason": "inbound internal headers: X-Forwarded-For",
+     "latency_us": 0,
+     "key_id": "k1",
+     "prev_hash": "",
+     "record_hash": "",
+     "hmac": ""
+    }
+   },
+   {
+    "kind": "spoof",
+    "node": "node-1",
+    "psn": "psn-1",
+    "found": [
+     "X-Hmn-Verdict",
+     "X-Real-Ip",
+     "Cf-Connecting-Ip"
+    ],
+    "record": {
+     "event_id": "",
+     "seq": 0,
+     "node_id": "",
+     "ts": "",
+     "event_type": "hdr.internal_header_ingress",
+     "event_version": "",
+     "actor": {
+      "kind": "subject",
+      "id_pseudonym": "psn-1"
+     },
+     "tenant_id": "node-1",
+     "route_class": "html",
+     "verdict": "deny",
+     "risk_score": 0,
+     "triggered_rules": [
+      "HR-27b"
+     ],
+     "top_signals": null,
+     "enforcement_action": "block",
+     "enforcement_mode": "enforce",
+     "fail_reason": "inbound internal headers: X-Hmn-Verdict,X-Real-Ip,Cf-Connecting-Ip",
+     "latency_us": 0,
+     "key_id": "k1",
+     "prev_hash": "",
+     "record_hash": "",
+     "hmac": ""
+    }
+   },
+   {
+    "kind": "smuggle",
+    "node": "node-1",
+    "psn": "psn-1",
+    "reason": "te_cl_conflict",
+    "record": {
+     "event_id": "",
+     "seq": 0,
+     "node_id": "",
+     "ts": "",
+     "event_type": "net.smuggle",
+     "event_version": "",
+     "actor": {
+      "kind": "subject",
+      "id_pseudonym": "psn-1"
+     },
+     "tenant_id": "node-1",
+     "verdict": "deny",
+     "risk_score": 0,
+     "triggered_rules": [
+      "HR-23"
+     ],
+     "top_signals": null,
+     "enforcement_action": "block",
+     "enforcement_mode": "enforce",
+     "fail_reason": "request framing ambiguity: te_cl_conflict",
+     "latency_us": 0,
+     "key_id": "k1",
+     "prev_hash": "",
+     "record_hash": "",
+     "hmac": ""
+    }
+   },
+   {
+    "kind": "smuggle",
+    "node": "node-1",
+    "psn": "psn-1",
+    "reason": "ambiguous_len",
+    "record": {
+     "event_id": "",
+     "seq": 0,
+     "node_id": "",
+     "ts": "",
+     "event_type": "net.smuggle",
+     "event_version": "",
+     "actor": {
+      "kind": "subject",
+      "id_pseudonym": "psn-1"
+     },
+     "tenant_id": "node-1",
+     "verdict": "deny",
+     "risk_score": 0,
+     "triggered_rules": [
+      "HR-23"
+     ],
+     "top_signals": null,
+     "enforcement_action": "block",
+     "enforcement_mode": "enforce",
+     "fail_reason": "request framing ambiguity: ambiguous_len",
+     "latency_us": 0,
+     "key_id": "k1",
+     "prev_hash": "",
+     "record_hash": "",
+     "hmac": ""
+    }
+   },
+   {
+    "kind": "smuggle",
+    "node": "node-1",
+    "psn": "psn-1",
+    "reason": "te_not_chunked",
+    "record": {
+     "event_id": "",
+     "seq": 0,
+     "node_id": "",
+     "ts": "",
+     "event_type": "net.smuggle",
+     "event_version": "",
+     "actor": {
+      "kind": "subject",
+      "id_pseudonym": "psn-1"
+     },
+     "tenant_id": "node-1",
+     "verdict": "deny",
+     "risk_score": 0,
+     "triggered_rules": [
+      "HR-23"
+     ],
+     "top_signals": null,
+     "enforcement_action": "block",
+     "enforcement_mode": "enforce",
+     "fail_reason": "request framing ambiguity: te_not_chunked",
+     "latency_us": 0,
+     "key_id": "k1",
+     "prev_hash": "",
+     "record_hash": "",
+     "hmac": ""
+    }
+   },
+   {
+    "kind": "smuggle",
+    "node": "node-1",
+    "psn": "psn-1",
+    "reason": "obs_fold",
+    "record": {
+     "event_id": "",
+     "seq": 0,
+     "node_id": "",
+     "ts": "",
+     "event_type": "net.smuggle",
+     "event_version": "",
+     "actor": {
+      "kind": "subject",
+      "id_pseudonym": "psn-1"
+     },
+     "tenant_id": "node-1",
+     "verdict": "deny",
+     "risk_score": 0,
+     "triggered_rules": [
+      "HR-23"
+     ],
+     "top_signals": null,
+     "enforcement_action": "block",
+     "enforcement_mode": "enforce",
+     "fail_reason": "request framing ambiguity: obs_fold",
+     "latency_us": 0,
+     "key_id": "k1",
+     "prev_hash": "",
+     "record_hash": "",
+     "hmac": ""
+    }
+   }
+  ],
+  "verify": [
+   {
+    "name": "current",
+    "material": "fm11-r16-origin-material-000001-abcdefgh",
+    "header": "052cf161dafd7786fd530fe23edcdabb17bf2557996d22ff7b23cb44085eabd2",
+    "unix": 1700003600,
+    "valid": true
+   },
+   {
+    "name": "origin_one_behind",
+    "material": "fm11-r16-origin-material-000001-abcdefgh",
+    "header": "052cf161dafd7786fd530fe23edcdabb17bf2557996d22ff7b23cb44085eabd2",
+    "unix": 1700007200,
+    "valid": true
+   },
+   {
+    "name": "origin_one_ahead",
+    "material": "fm11-r16-origin-material-000001-abcdefgh",
+    "header": "052cf161dafd7786fd530fe23edcdabb17bf2557996d22ff7b23cb44085eabd2",
+    "unix": 1700000000,
+    "valid": true
+   },
+   {
+    "name": "two_buckets_stale",
+    "material": "fm11-r16-origin-material-000001-abcdefgh",
+    "header": "052cf161dafd7786fd530fe23edcdabb17bf2557996d22ff7b23cb44085eabd2",
+    "unix": 1700010860,
+    "valid": false
+   },
+   {
+    "name": "wrong_material",
+    "material": "fm11-r16-origin-material-000002-abcdefgh",
+    "header": "052cf161dafd7786fd530fe23edcdabb17bf2557996d22ff7b23cb44085eabd2",
+    "unix": 1700003600,
+    "valid": false
+   },
+   {
+    "name": "empty_header",
+    "material": "fm11-r16-origin-material-000001-abcdefgh",
+    "header": "",
+    "unix": 1700003600,
+    "valid": false
+   },
+   {
+    "name": "garbage",
+    "material": "fm11-r16-origin-material-000001-abcdefgh",
+    "header": "deadbeef",
+    "unix": 1700003600,
+    "valid": false
+   },
+   {
+    "name": "uppercase_hex",
+    "material": "fm11-r16-origin-material-000001-abcdefgh",
+    "header": "052CF161DAFD7786FD530FE23EDCDABB17BF2557996D22FF7B23CB44085EABD2",
+    "unix": 1700003600,
+    "valid": false
+   },
+   {
+    "name": "short_material_current",
+    "material": "short-material",
+    "header": "6077c781e18fcd1cdb6a4a9e52c29d2409261936fb929a8a78e803684ce8cdef",
+    "unix": 1700003600,
+    "valid": true
+   }
+  ]
+ }
+}

@@ -1,10 +1,10 @@
 //! Ports of legacy internal/gate/ws3_test.go (baseline 981d25c) at the hold
 //! queue, with the real reference vault for pseudonyms and the reverse index.
 //!
-//! An `ErasurePermit` is mintable only by the audit control ledger, so these
-//! tests drive the queue with a test capability and model `Vault::shred` by
-//! rebuilding the subject's vault without its key; the ledger-to-queue
-//! composition is a separate runtime obligation.
+//! These queue-level tests drive the queue with a test capability. The
+//! ledger-issued `ErasurePermit` composed with this queue and `Vault::shred`
+//! through the admin plane is tested in
+//! `gateway::admin_plane::tests::dual_control::erasure`.
 use super::*;
 use crate::audit::keys::vault::{Mode, Vault};
 use std::convert::Infallible;

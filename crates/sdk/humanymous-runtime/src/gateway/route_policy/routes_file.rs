@@ -208,3 +208,37 @@ pub fn validate_attested_routes(
     }
     Ok(warnings)
 }
+
+/// The attestation floor mapped onto the catch-all prefix of a programmatic
+/// route table (Go `errAttestedCatchAll`, checked by `NewServer`).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct AttestedCatchAll {
+    /// The offending prefix as configured.
+    pub prefix: String,
+}
+
+impl fmt::Display for AttestedCatchAll {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter.write_str("gate: the \"attested\" preset (attestation floor) is refused on the catch-all/root prefix \u{2014} mark specific high-value routes (e.g. /checkout), not the whole site")
+    }
+}
+
+impl std::error::Error for AttestedCatchAll {}
+
+/// Ceiling-guard #1 defense in depth (Go `NewServer`): refuse a route table
+/// that maps a preset carrying the attestation floor onto a prefix that
+/// normalizes to the root, or onto the empty prefix, whoever built the table.
+/// The route file loader refuses `/` itself; this covers every other source.
+pub fn refuse_attested_catch_all(
+    routes: &BTreeMap<String, String>,
+) -> Result<(), AttestedCatchAll> {
+    match routes.iter().find(|(prefix, preset)| {
+        super::preset_by_name(preset).attest_floor
+            && (prefix.is_empty() || super::normalize_match_path(prefix) == "/")
+    }) {
+        Some((prefix, _)) => Err(AttestedCatchAll {
+            prefix: prefix.clone(),
+        }),
+        None => Ok(()),
+    }
+}

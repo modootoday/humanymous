@@ -52,6 +52,21 @@ impl Log {
         self.sequence == 0
     }
 
+    /// Writer Ed25519 verification key for exported signed tree heads (Go
+    /// `PublicKey`). Public material only; the signing seed never leaves.
+    pub fn writer_public_key(&self) -> [u8; 32] {
+        self.signer.verifying_key().to_bytes()
+    }
+
+    /// Co-signer verification key when a witness is configured (Go
+    /// `WitnessPublicKey`), whether in-process or an external client.
+    pub fn witness_public_key(&self) -> Option<[u8; 32]> {
+        self.external_witness
+            .as_ref()
+            .map(|witness| witness.public_key())
+            .or_else(|| self.config.witness.as_ref().map(Witness::public_key))
+    }
+
     /// Replay this log's own durable chain with its HMAC and writer keys (Go
     /// `SelfVerify`, for the admin integrity endpoint). When a witness is
     /// configured every checkpoint must also carry a valid co-signature.
@@ -60,13 +75,8 @@ impl Log {
     /// public keys.
     pub fn self_verify(&self) -> Report {
         let records = self.wal.records().unwrap_or_default();
-        let writer = self.signer.verifying_key().to_bytes();
-        let witness = self
-            .external_witness
-            .as_ref()
-            .map(|witness| witness.public_key())
-            .or_else(|| self.config.witness.as_ref().map(Witness::public_key));
-        match witness {
+        let writer = self.writer_public_key();
+        match self.witness_public_key() {
             Some(witness) => verify_with_witness(
                 &records,
                 &self.checkpoints,

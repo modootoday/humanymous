@@ -459,3 +459,78 @@ fn traffic_view_is_owner_or_operator_only() {
     );
     assert_eq!(not_found().status, 404);
 }
+
+fn asset_golden() -> serde_json::Value {
+    let golden: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../tests/fixtures/gateway/pow-asset-go-golden.json"
+    ))
+    .unwrap();
+    golden["outputs"].clone()
+}
+
+#[test]
+fn asset_file_matches_go_join_golden() {
+    let golden = asset_golden();
+    let cases = golden["asset_file"].as_array().unwrap();
+    assert_eq!(cases.len(), 35);
+    for case in cases {
+        let root = case["root"].as_str().unwrap();
+        let asset = case["asset"].as_str().unwrap();
+        assert_eq!(
+            asset_file(root, asset).as_deref(),
+            case["file"].as_str(),
+            "{root} + {asset}"
+        );
+    }
+    assert_eq!(asset_file("", "/a.png"), None, "empty root fails closed");
+}
+
+#[test]
+fn read_asset_matches_go_read_file_golden() {
+    let golden = asset_golden();
+    let mut nonce = [0u8; 8];
+    getrandom::fill(&mut nonce).unwrap();
+    let dir = std::env::temp_dir().join(format!("hmn-read-asset-{}", hex::encode(nonce)));
+    std::fs::create_dir(&dir).unwrap();
+    std::fs::write(dir.join("a.txt"), b"hello asset\n").unwrap();
+    std::fs::write(dir.join("empty.bin"), b"").unwrap();
+    std::fs::create_dir(dir.join("sub")).unwrap();
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::symlink;
+        symlink("a.txt", dir.join("link.txt")).unwrap();
+        symlink("sub", dir.join("linkdir")).unwrap();
+        symlink("missing", dir.join("dangling")).unwrap();
+    }
+    let cases = golden["read_file"].as_array().unwrap();
+    assert_eq!(cases.len(), 8);
+    for case in cases {
+        let name = case["name"].as_str().unwrap();
+        let needs_unix = ["link.txt", "linkdir", "dangling", "a.txt/child"].contains(&name);
+        if needs_unix && cfg!(not(unix)) {
+            continue;
+        }
+        let result = read_asset(&dir.join(name));
+        assert_eq!(result.is_ok(), case["ok"].as_bool().unwrap(), "{name}: ok");
+        match result {
+            Ok(bytes) => assert_eq!(
+                String::from_utf8(bytes).unwrap(),
+                case["content"].as_str().unwrap(),
+                "{name}: content"
+            ),
+            Err(error) => assert_eq!(
+                error.kind() == io::ErrorKind::NotFound,
+                case["not_exist"].as_bool().unwrap(),
+                "{name}: not exist ({error})"
+            ),
+        }
+    }
+    let root = dir.to_str().unwrap();
+    assert_eq!(load_asset(root, "/a.txt").unwrap(), b"hello asset\n");
+    for missing in ["/sub", "/nope"] {
+        let response = load_asset(root, missing).unwrap_err();
+        assert_eq!(response.status, 404, "{missing}");
+        assert_eq!(response.body, NOT_FOUND_BODY);
+    }
+    std::fs::remove_dir_all(&dir).unwrap();
+}

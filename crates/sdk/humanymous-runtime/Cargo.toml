@@ -23,6 +23,8 @@ network = ["dep:humanymous-core", "dep:serde", "dep:serde_json", "dep:sha2", "de
 native-security = ["dep:zeroize", "dep:rustix", "dep:winsafe", "dep:windows-permissions", "dep:keyring-core", "dep:windows-native-keyring-store"]
 hosted-pilot = ["capture", "dep:rcgen"]
 credential-pilot = ["native-security"]
+acme = ["gateway", "dep:instant-acme", "dep:rcgen", "dep:x509-parser"]
+dev-self-signed = ["gateway", "dep:rcgen", "dep:time"]
 # Owner decision D4 (2026-11-18): test-only short decision expiry. Debug builds only.
 test-authority = ["authority"]
 
@@ -44,12 +46,15 @@ socket2 = { version = "0.6.5", optional = true }
 rustls = { optional = true, version = "=0.23.46", default-features = false, features = ["std", "ring", "tls12"] }
 httlib-hpack = { version = "=0.1.3", optional = true }
 rcgen = { version = "=0.14.10", optional = true, default-features = false, features = ["crypto", "ring"] }
+instant-acme = { version = "=0.8.5", optional = true, default-features = false, features = ["ring", "hyper-rustls"] }
+x509-parser = { version = "=0.18.1", optional = true, default-features = false }
 tokio = { optional = true, version = "1.54.1", features = ["rt-multi-thread", "net", "io-util", "time", "sync", "macros"] }
 
 [dev-dependencies]
 humanymous-collector = { path = "../../collector", version = "0.1.0" }
 humanymous-platform = { workspace = true, features = ["testing"] }
 rcgen = { version = "=0.14.10", default-features = false, features = ["crypto", "ring"] }
+x509-parser = { version = "=0.18.1", default-features = false }
 
 [target.'cfg(any(unix, windows))'.dependencies]
 time = { workspace = true, optional = true }
@@ -102,6 +107,16 @@ required-features = ["audit"]
 [[test]]
 name = "gateway-native-process"
 path = "tests/gateway/native_process.rs"
+required-features = ["gateway"]
+
+[[test]]
+name = "gateway-acme-pebble"
+path = "tests/gateway/acme_pebble.rs"
+required-features = ["acme"]
+
+[[test]]
+name = "gateway-tls-startup"
+path = "tests/gateway/tls_startup.rs"
 required-features = ["gateway"]
 
 [[test]]

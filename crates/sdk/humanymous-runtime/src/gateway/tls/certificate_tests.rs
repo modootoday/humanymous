@@ -29,7 +29,28 @@ fn settings(chain: bool, key: bool, domains: &[&str]) -> CertificateSettings {
         chain: chain.then(|| PathBuf::from("chain.pem")),
         key: key.then(|| PathBuf::from("key.pem")),
         issuer_domains: domains.iter().map(|domain| (*domain).to_owned()).collect(),
+        dev_self_signed: false,
     }
+}
+
+/// The setting exists in every build: a build without the feature refuses it
+/// at selection, a build with it selects it, and either way it is exclusive.
+#[test]
+fn dev_self_signed_setting_is_feature_checked_at_selection() {
+    let mut dev = settings(false, false, &[]);
+    dev.dev_self_signed = true;
+    let expected = if cfg!(feature = "dev-self-signed") {
+        Ok(CertificateSource::DevSelfSigned)
+    } else {
+        Err(CertificateError::DevSelfSignedUnavailable)
+    };
+    assert_eq!(select(&dev), expected);
+    let mut mixed = settings(true, true, &[]);
+    mixed.dev_self_signed = true;
+    assert_eq!(select(&mixed), Err(CertificateError::AmbiguousSource));
+    let mut mixed = settings(false, false, &["example.com"]);
+    mixed.dev_self_signed = true;
+    assert_eq!(select(&mixed), Err(CertificateError::AmbiguousSource));
 }
 
 #[test]
@@ -181,5 +202,87 @@ fn issuer_must_cover_exactly_the_selected_domains() {
     assert_eq!(
         issuer_config(&domains, &Issuer(vec!["other.example.com".into()])).unwrap_err(),
         CertificateError::AmbiguousSource
+    );
+    assert!(answers_acme_challenge(&config));
+    assert_eq!(
+        issuer_config(&domains, &OtherChallenge(domains.clone())).unwrap_err(),
+        CertificateError::UnsupportedChallenge
+    );
+}
+
+struct OtherChallenge(Vec<String>);
+
+impl CertificateIssuer for OtherChallenge {
+    fn domains(&self) -> &[String] {
+        &self.0
+    }
+    fn resolver(&self) -> Arc<dyn ResolvesServerCert> {
+        Arc::new(NoCertificate)
+    }
+    fn challenge_alpn(&self) -> Vec<Vec<u8>> {
+        vec![b"http/1.0".to_vec()]
+    }
+}
+
+#[cfg(feature = "dev-self-signed")]
+#[test]
+fn dev_self_signed_is_explicit_exclusive_and_local_only() {
+    let mut dev = settings(false, false, &[]);
+    dev.dev_self_signed = true;
+    assert_eq!(select(&dev), Ok(CertificateSource::DevSelfSigned));
+    let mut mixed = settings(true, true, &[]);
+    mixed.dev_self_signed = true;
+    assert_eq!(select(&mixed), Err(CertificateError::AmbiguousSource));
+    let mut mixed = settings(false, false, &["example.com"]);
+    mixed.dev_self_signed = true;
+    assert_eq!(select(&mixed), Err(CertificateError::AmbiguousSource));
+    // Without the explicit choice nothing falls back to self-signed.
+    assert_eq!(
+        select(&settings(false, false, &[])),
+        Err(CertificateError::NoSource)
+    );
+
+    let config = dev_self_signed_config().unwrap();
+    assert_eq!(
+        config.alpn_protocols,
+        vec![b"h2".to_vec(), b"http/1.1".to_vec()]
+    );
+    let (certificate, _) = dev_self_signed_pair().unwrap();
+    let (_, parsed) = x509_parser::parse_x509_certificate(&certificate).unwrap();
+    assert_eq!(
+        parsed
+            .subject()
+            .iter_common_name()
+            .next()
+            .and_then(|name| name.as_str().ok()),
+        Some("humanymous.local")
+    );
+    let names: Vec<String> = parsed
+        .subject_alternative_name()
+        .unwrap()
+        .unwrap()
+        .value
+        .general_names
+        .iter()
+        .map(|name| match name {
+            x509_parser::extensions::GeneralName::DNSName(name) => (*name).to_owned(),
+            x509_parser::extensions::GeneralName::IPAddress(bytes) => match bytes.len() {
+                4 => std::net::Ipv4Addr::from(<[u8; 4]>::try_from(*bytes).unwrap()).to_string(),
+                _ => std::net::Ipv6Addr::from(<[u8; 16]>::try_from(*bytes).unwrap()).to_string(),
+            },
+            other => format!("{other:?}"),
+        })
+        .collect();
+    assert_eq!(names, DEV_HOSTS);
+    let validity = parsed.validity();
+    let lifetime = validity.not_after.timestamp() - validity.not_before.timestamp();
+    assert_eq!(lifetime, 365 * 24 * 3600 + 3600);
+    assert!(
+        parsed
+            .extended_key_usage()
+            .unwrap()
+            .unwrap()
+            .value
+            .server_auth
     );
 }

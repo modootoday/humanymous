@@ -127,3 +127,50 @@ fn day_bucket_matches_go_and_clamps_pre_epoch() {
     assert_eq!(day_bucket(86_399), 0);
     assert_eq!(day_bucket(-1), 0);
 }
+
+#[test]
+fn ja4_stable_matches_go_golden() {
+    // Go 1.25.3 capture of legacy ja4Stable (cmd/server/helpers.go, 981d25c).
+    let golden: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../tests/fixtures/gateway/pow-asset-go-golden.json"
+    ))
+    .unwrap();
+    let list = |value: &serde_json::Value| -> Vec<u16> {
+        value
+            .as_array()
+            .into_iter()
+            .flatten()
+            .map(|item| u16::try_from(item.as_u64().unwrap()).unwrap())
+            .collect()
+    };
+    let cases = golden["outputs"]["ja4_stable"].as_array().unwrap();
+    assert_eq!(cases.len(), 4);
+    for case in cases {
+        let go = &case["hello"];
+        let hello = (!go.is_null()).then(|| ClientHello {
+            legacy_version: u16::try_from(go["LegacyVersion"].as_u64().unwrap()).unwrap(),
+            supported_versions: list(&go["SupportedVers"]),
+            cipher_suites: list(&go["CipherSuites"]),
+            extensions: list(&go["Extensions"]),
+            curves: list(&go["Curves"]),
+            point_formats: list(&go["PointFormats"]),
+            signature_algorithms: list(&go["SigAlgs"]),
+            alpn: go["ALPN"]
+                .as_array()
+                .into_iter()
+                .flatten()
+                .map(|name| name.as_str().unwrap().as_bytes().to_vec())
+                .collect(),
+            sni_present: go["SNIPresent"].as_bool().unwrap(),
+        });
+        let name = case["name"].as_str().unwrap();
+        if let Some(hello) = &hello {
+            assert_eq!(ja4(hello).0, case["ja4"].as_str().unwrap(), "{name}: ja4");
+        }
+        assert_eq!(
+            ja4_stable(hello.as_ref()),
+            case["stable"].as_str().unwrap(),
+            "{name}: stable part"
+        );
+    }
+}
