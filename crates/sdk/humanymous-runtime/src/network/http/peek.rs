@@ -168,6 +168,15 @@ fn peek_with(socket: bool, mut read: impl FnMut(&mut [u8]) -> io::Result<usize>)
     }
 }
 
+/// Peek the decrypted plaintext of a crate-owned TLS capture connection
+/// (legacy h1 peek behind the TLS listener). Only crate composition that owns
+/// the accepted connection may call this, so it mints a [`WireOrder`] like
+/// [`peek_tcp`]; the owner's handshake budget bounds the reads.
+#[cfg(feature = "gateway")]
+pub(crate) fn peek_owned(read: impl FnMut(&mut [u8]) -> io::Result<usize>) -> Peek {
+    peek_with(true, read)
+}
+
 /// Peek any reader. Such a peek never mints a [`WireOrder`].
 pub fn peek_header_order(stream: &mut impl Read) -> Peek {
     peek_with(false, |buffer| stream.read(buffer))
