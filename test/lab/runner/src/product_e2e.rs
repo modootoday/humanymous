@@ -6,7 +6,10 @@
 //! witness-loss-after-readiness case. Increment 3 adds a real browser that
 //! runs the Rust WASM collector against a witness-required Gate from its own
 //! network namespace, and turns the witnessed Gate probe into a readiness
-//! probe over the runtime's serving-epoch latch.
+//! probe over the runtime's serving-epoch latch. Increment 5 runs the owned
+//! attack catalog in a network-none wargame container and emits the
+//! required-case ledger through the shared `qualification::assess` derivation,
+//! mapping only the required cases this run actually evaluates.
 //!
 //! Venue: an explicitly named cloud container whose own Linux engine listens on
 //! the local Unix socket. It never claims Windows Docker Desktop affinity or a
@@ -20,6 +23,7 @@ use std::{
 };
 
 mod browser;
+mod ledger;
 mod witnessed;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
@@ -331,19 +335,20 @@ pub fn run(args: &[String]) -> Result<i32> {
     let source = json!({"commit":commit,"branch":branch,"tree_clean":dirty==0,"dirty_entries":dirty,
         "dockerfile":DOCKERFILE,"compose":COMPOSE});
     let engine = lab.engine()?;
-    let mut receipt = json!({"schema":"humanymous.product-e2e-receipt/1","roadmap_unit":35,"increment":4,
+    let mut receipt = json!({"schema":"humanymous.product-e2e-receipt/1","roadmap_unit":35,"increment":5,
         "status":"started","pass_product_clean_room":false,"product_complete":false,
-        "label":"partial topology: gate + origin + attacker, a witness-required gate with an independent witness container, and a real browser running the Rust WASM collector against a witnessed gate with an owned DNS canary; the other topologies replay the real collector report; not product e2e completion",
+        "label":"partial topology: gate + origin + attacker, a witness-required gate with an independent witness container, a real browser running the Rust WASM collector against a witnessed gate with an owned DNS canary, and the owned attack catalog in a network-none wargame; the other topologies replay the real collector report; not product e2e completion",
         "source":source,"venue":engine,
         "components":{
           "gate":{"present":true,"real":true,"binary":"humanymous-runtime (crates/sdk/humanymous-runtime, src/gateway/main.rs)",
-                  "embedded_durable_audit":"runtime-owned sealed WAL with synthetic owned custody on tmpfs; the shipped binary has no witness input"},
+                  "listener":"plaintext loopback HTTP/1.1 (ServiceHost::bind); the configuration has no tls section",
+                  "embedded_durable_audit":"runtime-owned sealed WAL with synthetic owned custody on tmpfs; this topology configures no audit.witness_input, so the shipped binary starts writer-only"},
           "witnessed_gate":{"present":true,"real":"runtime library, lab composition root","composition":"humanymous-runtime-pilot --product-gate-witnessed: the humanymous-runtime library ServiceHost::bind_with_witness with require_external_witness=true",
-                  "why_not_the_shipped_binary":"crates/sdk/humanymous-runtime/src/gateway/main.rs:16 calls ServiceHost::bind(config) only, and crates/cli/src/runtime_host/platform.rs:49 passes no witness on Unix; no shipped executable injects an ExternalWitness"},
+                  "why_not_the_shipped_binary":"the shipped binary accepts a witness: crates/sdk/humanymous-runtime/src/gateway/main.rs pins inherited witness pipes (startup::inherited_witness, configured by audit.witness_input) before custody and selects ServiceHost::bind_tls, bind_with_witness or bind; this topology does not yet hand it inherited witness descriptors, so the witnessed gate is still the library composed by the lab supervisor"},
           "origin":{"present":true,"real":true,"binary":"humanymous-runtime-pilot --product-origin (Rust recording origin)"},
           "attacker":{"present":true,"real":true,"binary":"humanymous-runtime-pilot --product-driver (Rust HTTP/1.1 driver)"},
           "authority":{"present":false,"gate_can_use_remote_authority":false,
-                  "reason":"the gateway decides in-process: crates/sdk/humanymous-runtime/src/gateway/service.rs:287 builds Application::new with its own Engine and crates/sdk/humanymous-runtime/src/gateway/application.rs:474 calls self.decide_request; the gateway has no authority client. humanymous-authority (src/authority/main.rs) serves adapter decisions over a restricted native IPC listener only (src/authority/transport/mod.rs:60, no TCP fallback)"},
+                  "reason":"the gateway decides in-process: crates/sdk/humanymous-runtime/src/gateway/service.rs builds Application::new with its own Engine and crates/sdk/humanymous-runtime/src/gateway/application.rs calls self.decide_request;the gateway has no authority client. humanymous-authority (src/authority/main.rs) serves adapter decisions over a restricted native IPC listener only (src/authority/transport/mod.rs:60, no TCP fallback)"},
           "audit":{"present":true,"scope":"witnessed topology only","binary":"humanymous-runtime-pilot --product-witness: audit::checkpoint::service::serve with its own sealed identity and head state",
                   "independence":"separate container, UID 65533, network none, own tmpfs custody and passphrase; the runner brokers typed frames over private stdio",
                   "not_qualified":"identity is first-contact pinned through the broker, the head pin is not persisted outside the witness, tmpfs gives no power-loss durability"},
@@ -353,14 +358,16 @@ pub fn run(args: &[String]) -> Result<i32> {
                   "gate":"humanymous-runtime-pilot --browser-gate: the runtime library ServiceHost::bind_with_witness with an owned lab frontend proxy on :8080; the gateway itself stays loopback-only",
                   "main_and_witnessed_drivers":"collect reports in the gate, origin-loss and witnessed topologies are the browser topology's captured real collector report, sessionId rebound per session; the drivers' HTTP request headers remain synthetic",
                   "dns_canary":"humanymous-runtime-pilot --product-dns-canary: a real UDP :53 listener on its own internal network, with positive controls from that network before and after the browser"}},
-        "constraint":"Configuration::validate requires loopback listen and origin (crates/sdk/humanymous-runtime/src/gateway/configuration.rs:127-128) and the accept loop drops non-loopback peers (crates/sdk/humanymous-runtime/src/gateway/application.rs:352 and 374), so origin and attacker share the gate container network namespace; origin network isolation is therefore absent",
+        "constraint":"Configuration::validate requires loopback listen and origin (crates/sdk/humanymous-runtime/src/gateway/configuration.rs) and the accept loop drops non-loopback peers (crates/sdk/humanymous-runtime/src/gateway/application.rs), so origin and attacker share the gate container network namespace; origin network isolation is therefore absent",
         "clean_room":false,
         "clean_room_gaps":["engine venue is a cloud container, not Windows desktop-linux or genuine GitHub-hosted Linux",
           "single shared loopback namespace for gate, origin and attacker; origin is not reachable only through a Gate backend network",
           "the authority role is absent; the Gate cannot use a remote authority",
           "the browser reaches the browser Gate through an owned lab proxy pair (browser-local and Gate frontend), not original client TLS/H2; the browser Gate is the runtime library, not the shipped binary",
-          "the witnessed gate is the runtime library composed by a lab supervisor, not the shipped binary",
-          "the shipped-binary gate probe is TCP liveness only: crates/sdk/humanymous-runtime/src/gateway/main.rs:21 writes readiness once and exposes no live serving-epoch latch to its supervisor; only the witnessed gate probe reads ServiceHost::epoch_health",
+          "the witnessed gate is the runtime library composed by a lab supervisor, not the shipped binary, although the shipped binary now accepts inherited witness pipes",
+          "the shipped-binary gate runs its plaintext loopback listener; its TLS listener (ServiceHost::bind_tls, ALPN h2 and http/1.1) is not driven by this topology",
+          "the shipped-binary gate probe is TCP liveness only: crates/sdk/humanymous-runtime/src/gateway/main.rs writes readiness once and exposes no live serving-epoch latch to its supervisor; only the witnessed gate probe reads ServiceHost::epoch_health",
+          "the attack catalog runs against the shipped runtime as a supervisor-owned child in a network-none wargame container, not through the product topology gate",
           "readiness withdrawal is lazy: the serving-epoch latch fails on the first failed audit append after a witness loss, not when the witness stops"]});
     let config = lab.docker(
         &[
@@ -510,6 +517,10 @@ pub fn run(args: &[String]) -> Result<i32> {
     ])?;
     let mut assertions = topology_assertions(&network, &containers, &image);
     assertions.extend(health_assertions(&containers));
+    assertions.push((
+        "driver_spoof_expectation_matches_gate_readiness",
+        spoof_mode_agrees(&receipt["gate_readiness"], driver.as_ref()),
+    ));
     let topology_pass = assertions.iter().all(|(_, pass)| *pass);
     receipt["topology"] = json!({"project":PROJECT,"network":{"name":network["Name"],"internal":network["Internal"],"driver":network["Driver"]},
         "containers":containers,
@@ -529,15 +540,39 @@ pub fn run(args: &[String]) -> Result<i32> {
     };
     let witnessed_pass = witnessed["pass"] == true;
     receipt["witnessed"] = witnessed;
-    receipt["status"] =
-        json!(
-            if driver_pass && topology_pass && origin_lost_pass && witnessed_pass && browser_pass {
-                "partial_topology_measured"
-            } else {
-                "partial_topology_failed"
-            }
-        );
+    let catalog = match ledger::wargame(&mut lab, &compose) {
+        Ok(report) => report,
+        Err(error) => json!({"pass":false,"error":error.to_string()}),
+    };
+    let catalog_pass = catalog["pass"] == true;
+    receipt["attack_catalog"] = catalog;
+    receipt["status"] = json!(if driver_pass
+        && topology_pass
+        && origin_lost_pass
+        && witnessed_pass
+        && browser_pass
+        && catalog_pass
+    {
+        "partial_topology_measured"
+    } else {
+        "partial_topology_failed"
+    });
     finish(&mut lab, receipt, &options, true)
+}
+
+/// The driver's forged-header expectation must follow the Gate's own
+/// reported spoof-header mode, not only the shared configuration document.
+fn spoof_mode_agrees(readiness: &Value, driver: Option<&Value>) -> bool {
+    let reported = &readiness["profile"]["edge"]["spoof_header"];
+    let recorded = driver
+        .and_then(|d| d["cases"].as_array())
+        .and_then(|cases| {
+            cases
+                .iter()
+                .find(|c| c["id"] == "forged_trust_headers_without_session")
+        })
+        .map(|case| &case["spoof_header_mode"]);
+    reported.is_string() && recorded == Some(reported)
 }
 
 /// Stop the origin after readiness, then require the Gate to fail closed.
@@ -636,6 +671,8 @@ fn finish(lab: &mut Lab, mut receipt: Value, options: &Options, started: bool) -
             "witnessed",
             "--profile",
             "browser",
+            "--profile",
+            "wargame",
             "down",
             "--volumes",
             "--remove-orphans",
@@ -653,6 +690,7 @@ fn finish(lab: &mut Lab, mut receipt: Value, options: &Options, started: bool) -
                     browser::BROWSER,
                     browser::DNSPROBE_BEFORE,
                     browser::DNSPROBE_AFTER,
+                    ledger::WARGAME,
                 ],
                 60,
                 false,
@@ -685,6 +723,9 @@ fn finish(lab: &mut Lab, mut receipt: Value, options: &Options, started: bool) -
     if !stable {
         receipt["status"] = json!("engine_identity_changed");
     }
+    let cleanup_verified = stable && cleanup_verified(&cleanup, started, options.keep_image);
+    receipt["qualification"] = ledger::ledger(&receipt, cleanup_verified);
+    receipt["full_product_qualified"] = receipt["qualification"]["full_product_qualified"].clone();
     receipt["cleanup"] = cleanup;
     receipt["transcript"] = json!(lab.transcript);
     let bytes = serde_json::to_vec_pretty(&receipt)?;
@@ -697,9 +738,43 @@ fn finish(lab: &mut Lab, mut receipt: Value, options: &Options, started: bool) -
     })
 }
 
+/// Owned teardown observed complete: the project is down with no container
+/// left, and both images are gone unless the operator kept them.
+fn cleanup_verified(cleanup: &Value, started: bool, keep_image: bool) -> bool {
+    let topology =
+        !started || (cleanup["compose_down"] == true && cleanup["containers_remaining"] == 0);
+    let images = keep_image
+        || (cleanup["image_removed"] == true && cleanup["browser_image_removed"] == true);
+    topology && images
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn spoof_expectation_must_match_the_gate_readiness_mode() {
+        let readiness = json!({"profile":{"edge":{"spoof_header":"enforce"}}});
+        let driver = |mode: &str| json!({"cases":[{"id":"forged_trust_headers_without_session","spoof_header_mode":mode}]});
+        assert!(spoof_mode_agrees(&readiness, Some(&driver("enforce"))));
+        assert!(!spoof_mode_agrees(&readiness, Some(&driver("monitor"))));
+        assert!(!spoof_mode_agrees(&readiness, None));
+        assert!(!spoof_mode_agrees(&json!(null), Some(&driver("enforce"))));
+        assert!(!spoof_mode_agrees(&readiness, Some(&json!({"cases":[]}))));
+    }
+    #[test]
+    fn cleanup_is_verified_only_from_observed_teardown() {
+        let done = json!({"compose_down":true,"containers_remaining":0,"image_removed":true,"browser_image_removed":true});
+        assert!(cleanup_verified(&done, true, false));
+        let mut left = done.clone();
+        left["containers_remaining"] = json!(1);
+        assert!(!cleanup_verified(&left, true, false));
+        let mut kept = done.clone();
+        kept["browser_image_removed"] = json!(false);
+        assert!(!cleanup_verified(&kept, true, false));
+        assert!(cleanup_verified(&kept, true, true));
+        assert!(!cleanup_verified(&json!({}), true, true));
+        assert!(cleanup_verified(&json!({}), false, true));
+    }
     fn container(id: &str, mode: &str) -> Value {
         json!({"id":id,"image":"sha256:i","network_mode":mode,"port_bindings":{},"published_ports":{},
             "read_only_rootfs":true,"user":"65532:65532","init":true})
