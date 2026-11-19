@@ -131,15 +131,18 @@ fn observation(args: &[&str]) -> bool {
     }
 }
 
-/// First positional Compose argument after its global flags.
+/// First positional Compose argument after its global flags. Only the
+/// value-taking flags listed here are understood; any other flag (including
+/// `--flag=value` forms) may consume the next argument, so the subcommand is
+/// unknown and the caller treats the command as a mutation (fail closed).
 fn compose_subcommand<'a>(args: &[&'a str]) -> Option<&'a str> {
     let mut rest = args.iter();
     while let Some(arg) = rest.next() {
         match *arg {
             "--file" | "-f" | "--project-name" | "-p" | "--profile" | "--env-file" => {
-                rest.next();
+                rest.next()?;
             }
-            flag if flag.starts_with('-') => {}
+            flag if flag.starts_with('-') => return None,
             subcommand => return Some(subcommand),
         }
     }
@@ -1025,6 +1028,14 @@ mod tests {
             &["compose", "--file", "f", "up"],
             &["compose", "--file", "f", "down"],
             &["compose", "--file", "f", "run", "config"],
+            // Unrecognised global flags may take a value: never skip them.
+            &["compose", "--project-directory", "config", "up"],
+            &["compose", "--ansi", "never", "config"],
+            &["compose", "--progress", "config", "up"],
+            &["compose", "--parallel", "config", "down"],
+            &["compose", "--project-directory=config", "config"],
+            &["compose", "--dry-run", "config"],
+            &["compose", "--file"],
             &["network", "create", "n"],
             &[],
         ] {

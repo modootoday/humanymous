@@ -1435,8 +1435,12 @@ passes the same explicit `--host` on every Docker command and never consults
 the selected context. It observes the engine at start, and an optional
 `--engine-id ID` must equal it. Before every Docker command that is not a
 read-only observation (`version`, `info`, `inspect`, `logs`, `ps`, image or
-network `inspect`, Compose `config`, `ps` or `logs`) it rechecks the engine ID,
-including before teardown and before attaching to the witness. A changed or
+network `inspect`, Compose `config`, `ps` or `logs`) it rechecks the engine ID.
+A Compose command counts as an observation only when every global flag before
+its subcommand is one the runner knows (`--file`/`-f`, `--project-name`/`-p`,
+`--profile`, `--env-file`, each with a separate value); any other flag may take
+a value, so the command is treated as a mutation. The recheck also runs
+before teardown and before attaching to the witness. A changed or
 unreadable engine refuses that command and every later mutation, skips
 teardown so nothing is deleted through another daemon, and still writes the
 receipt with status `engine_identity_changed`, `venue.engine_identity_change`
