@@ -405,7 +405,7 @@ fn limits_schema_labels_statistics_and_warm_shape_fail_before_work() {
             1 => limits.hidden = 257,
             2 => limits.epochs = 1001,
             3 => limits.updates = 1_000_001,
-            4 => limits.work_units = 100_000_001,
+            4 => limits.work_units = MAX_WORK_UNITS + 1,
             _ => limits.rng_draws = 0,
         }
         assert_eq!(
