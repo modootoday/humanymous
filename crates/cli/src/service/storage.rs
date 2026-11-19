@@ -255,7 +255,7 @@ fn create_private_dir(path: &Path) -> Result<()> {
     };
     builder.create(path)
 }
-pub(super) fn write_new(path: &Path, bytes: &[u8]) -> Result<()> {
+pub(crate) fn write_new(path: &Path, bytes: &[u8]) -> Result<()> {
     let mut options = fs::OpenOptions::new();
     options.write(true).create_new(true);
     #[cfg(unix)]

@@ -13,6 +13,7 @@ autobins = false
 [features]
 service-pilot = []
 runtime-service = ["humanymous-runtime/gateway", "humanymous-runtime/authority", "dep:tokio", "dep:zeroize"]
+ip-intel = ["humanymous-runtime/network", "dep:ureq"]
 runtime-service-pilot = ["runtime-service", "humanymous-runtime/credential-pilot", "humanymous-runtime/audit"]
 
 [[bin]]
@@ -33,6 +34,7 @@ serde.workspace = true
 serde_json.workspace = true
 tokio = { version = "1.54.1", features = ["rt-multi-thread", "net", "sync", "time", "signal"], optional = true }
 zeroize = { workspace = true, optional = true }
+ureq = { version = "=3.5.1", optional = true }
 
 [target.'cfg(windows)'.dependencies]
 windows-service = "=0.8.1"

@@ -1,5 +1,6 @@
 //! Bounded fixture controls and real TCP ingress/origin counters, not browser e2e.
 mod browser;
+mod ip_reputation;
 #[cfg(unix)]
 mod service;
 mod settings;

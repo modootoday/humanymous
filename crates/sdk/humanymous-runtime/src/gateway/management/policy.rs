@@ -52,7 +52,9 @@ pub(super) fn validate_request(
     if request.method != "POST"
         || !matches!(
             request.target.as_str(),
-            "/management/v0.1/status" | "/management/v0.1/settings"
+            "/management/v0.1/status"
+                | "/management/v0.1/settings"
+                | "/management/v0.1/ip-reputation"
         )
     {
         return Err(Rejection::new(403, "management_observer_route"));

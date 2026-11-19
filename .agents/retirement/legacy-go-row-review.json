@@ -3441,19 +3441,21 @@
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::trust_gate_over_real_tcp",
     "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::recovers_ipv6_source",
-    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::unspecified_and_udp_families_keep_socket_peer"
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::unspecified_and_udp_families_keep_socket_peer",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::reserved_commands_are_refused_not_treated_as_proxy"
    ],
    "go_test_map": {},
    "gaps": [
-    "WrapProxyProto/proxyListener accept loop is unported: no Rust listener applies the allowlist with a 5 s header deadline, drops a trusted peer's malformed header and keeps serving, or substitutes the declared address (B01/B26; open PR #123 wires network::proxy into the gateway listener)"
+    "WrapProxyProto/proxyListener accept-loop parity is not yet claimed: PR #123 (merged into codex/rust at db855930) now wires network::proxy::read_header into the gateway listener (gateway/application.rs, covered by gateway::tests::ip_reputation, including a header deadline and per-connection drop of malformed headers), but this row has not been re-reviewed against that listener for the 5 s deadline, the trusted-peer allowlist and declared-address substitution of Go proxyListener (B01/B26)"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "ParseCIDRs (with the /8 floor), the trusted-peer gate and readProxyV2 (IPv4, IPv6, LOCAL, UNSPEC/UDP, truncation and short blocks) are ported as the pure Network kernel network::proxy; it never creates TLS provenance (network-capture N01). The Go proxyproto_test.go cases pass on the oracle (981d25c, Go 1.25.3) and are mapped on the proxyproto_test.go row. This slice changes no proxy code because open PR #123 edits the same module.",
+   "notes": "ParseCIDRs (with the /8 floor), the trusted-peer gate and readProxyV2 (IPv4, IPv6, LOCAL, UNSPEC/UDP, truncation and short blocks) are ported as the pure Network kernel network::proxy; it never creates TLS provenance (network-capture N01). The Go proxyproto_test.go cases pass on the oracle (981d25c, Go 1.25.3) and are mapped on the proxyproto_test.go row. Deliberate difference, not parity: since PR #123 network::proxy::read_header refuses the reserved PROXY v2 commands 0x2-0xF with Refusal::Command before reading the address block, whereas Go 981d25c proxyproto.go:149 tests only for LOCAL (0x0) and treats every other command, reserved ones included, as PROXY; the Rust kernel is therefore stricter than readProxyV2 for those headers (reserved_commands_are_refused_not_treated_as_proxy). This slice changes no proxy code; PR #123 owns that module.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::trust_gate_over_real_tcp": "passed",
     "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::recovers_ipv6_source": "passed",
-    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::unspecified_and_udp_families_keep_socket_peer": "passed"
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::unspecified_and_udp_families_keep_socket_peer": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::reserved_commands_are_refused_not_treated_as_proxy": "passed"
    }
   },
   {
