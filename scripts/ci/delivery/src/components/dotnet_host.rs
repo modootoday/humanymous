@@ -26,6 +26,8 @@ use std::{
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 pub mod sdk;
+#[cfg(any(windows, test))]
+pub mod zip;
 
 /// Exactly the two row-24 tests this provider runs, each alone with --exact.
 pub const TESTS: [&str; 2] = [
