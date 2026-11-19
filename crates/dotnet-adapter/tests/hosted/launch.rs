@@ -682,8 +682,8 @@ mod tests {
         let frame = parent
             .derive(
                 DerivedMode::JitPacked,
-                Path::new("/srv/work/jit-packed/published/Humanymous.HostPilot"),
-                Path::new("/srv/work/jit-packed/audit"),
+                Path::new(&at("/srv/work/jit-packed/published/Humanymous.HostPilot")),
+                Path::new(&at("/srv/work/jit-packed/audit")),
             )
             .unwrap();
         let decoded = decode_envelope(&frame).unwrap();
@@ -695,14 +695,14 @@ mod tests {
         );
         let child = admit(&frame, &facts(), 1100, received).unwrap();
         assert_eq!(child.deadlines().unwrap(), parent.deadlines().unwrap());
-        assert_eq!(child.apphost_root(), Path::new("/srv/work"));
+        assert_eq!(child.apphost_root(), Path::new(&at("/srv/work")));
         // A derived admission never derives again, and never widens.
         assert_eq!(
             child
                 .derive(
                     DerivedMode::AotSource,
-                    Path::new("/srv/work/a/x"),
-                    Path::new("/srv/work/a/b")
+                    Path::new(&at("/srv/work/a/x")),
+                    Path::new(&at("/srv/work/a/b"))
                 )
                 .unwrap_err()
                 .kind(),
@@ -718,8 +718,8 @@ mod tests {
                 parent
                     .derive(
                         DerivedMode::AotSource,
-                        Path::new(apphost),
-                        Path::new(audit_root)
+                        Path::new(&at(apphost)),
+                        Path::new(&at(audit_root))
                     )
                     .unwrap_err()
                     .kind(),
