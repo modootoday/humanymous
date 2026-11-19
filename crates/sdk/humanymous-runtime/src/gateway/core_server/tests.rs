@@ -26,21 +26,21 @@ fn key() -> Vec<u8> {
     (0u8..32).collect()
 }
 
-struct TempDir(PathBuf);
+pub(super) struct TempDir(pub(super) PathBuf);
 impl TempDir {
-    fn new(tag: &str) -> Self {
+    pub(super) fn new(tag: &str) -> Self {
         let mut nonce = [0u8; 8];
         getrandom::fill(&mut nonce).unwrap();
         let path = std::env::temp_dir().join(format!("hmn-core-{tag}-{}", hex::encode(nonce)));
         std::fs::create_dir(&path).unwrap();
         Self(path)
     }
-    fn write(&self, name: &str, body: &[u8]) {
+    pub(super) fn write(&self, name: &str, body: &[u8]) {
         let path = self.0.join(name);
         std::fs::create_dir_all(path.parent().unwrap()).unwrap();
         std::fs::write(path, body).unwrap();
     }
-    fn text(&self) -> String {
+    pub(super) fn text(&self) -> String {
         self.0.to_str().unwrap().to_owned()
     }
 }
@@ -60,7 +60,7 @@ fn web() -> TempDir {
     dir
 }
 
-fn limits() -> Limits {
+pub(super) fn limits() -> Limits {
     Limits {
         traffic: traffic::Limits::new(4096, 4096, 4096, 64 << 20).unwrap(),
         correlation: correlation::Limits::new(4096, 4096, 256, 4096, 64 << 20).unwrap(),
@@ -338,7 +338,7 @@ fn http_routes_match_go() {
         let request = build_request(case);
         let response = server.handle(&request, &Connection::default());
         if name == "pass-mount" {
-            // Go mounted its Pass store; here the Pass owner mounts PassRoutes.
+            // Unmounted here; pass::tests replays this case with with_pass_flow.
             assert_eq!(response.status, 404, "{name}");
             continue;
         }
@@ -572,14 +572,22 @@ fn ops_views_are_absent_and_operator_views_need_the_token() {
 
 struct StubPass;
 impl PassRoutes for StubPass {
-    fn handle(&self, request: &PassRequest<'_>) -> resource::Response {
+    fn handle(
+        &self,
+        request: &PassRequest<'_>,
+        _: &mut dyn crate::gateway::pass_flow::Backend,
+    ) -> resource::Response {
         resource::Response::json(&json!({"path": request.path, "session": request.session}))
     }
 }
 
 struct PanicPass;
 impl PassRoutes for PanicPass {
-    fn handle(&self, _: &PassRequest<'_>) -> resource::Response {
+    fn handle(
+        &self,
+        _: &PassRequest<'_>,
+        _: &mut dyn crate::gateway::pass_flow::Backend,
+    ) -> resource::Response {
         panic!("pass handler failure");
     }
 }
@@ -1108,7 +1116,7 @@ async fn exchange(address: std::net::SocketAddr, bytes: &'static [u8]) -> String
     .unwrap()
 }
 
-fn options(tls: Option<Arc<rustls::ServerConfig>>, cap: usize) -> Options {
+pub(super) fn options(tls: Option<Arc<rustls::ServerConfig>>, cap: usize) -> Options {
     Options {
         tls,
         budget: Duration::from_secs(5),
