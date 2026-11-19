@@ -2,8 +2,11 @@
 //! (for example the `clickhouse/clickhouse-server` image), reached at
 //! `HUMANYMOUS_TEST_CLICKHOUSE` (`http://host:port`) with the credential in
 //! `HUMANYMOUS_TEST_CLICKHOUSE_USER` and `HUMANYMOUS_TEST_CLICKHOUSE_PASSWORD`.
-//! Ignored by default: it needs that server, and an unset variable fails the
-//! test instead of passing it.
+//! It needs that server, and an unset variable fails the test instead of
+//! passing it. No CI job provides a server, so the target is `test = false`
+//! (left out of `cargo test` and the native runner's workspace harnesses) and
+//! the test is also `#[ignore]`. Run it by hand:
+//! `cargo test -p humanymous-runtime --test audit-clickhouse-live -- --ignored`.
 use humanymous_runtime::audit::{
     projection::{
         RecordSink,

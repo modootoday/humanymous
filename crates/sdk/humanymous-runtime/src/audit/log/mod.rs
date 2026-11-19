@@ -436,10 +436,6 @@ mod tests {
         }
         fs::remove_dir(dir).unwrap();
     }
-    /// Go TestAppendPanicsWithoutHMAC (internal/audit/verifier_p0_test.go at
-    /// baseline 981d25c). Go panicked on the first Append; Rust refuses an
-    /// empty HMAC key when the log opens, so no record or WAL entry can ever be
-    /// sealed without the secondary MAC, and the MAC primitive refuses too.
     /// Go `NewLog` replaced a zero `CheckpointEvery` with 16, and Go
     /// `Checkpoint` signed a size-0 head on an empty log. Rust refuses the zero
     /// cadence when the log opens and returns no head for an empty log.
@@ -468,6 +464,10 @@ mod tests {
         drop(log);
         clean(&dir);
     }
+    /// Go TestAppendPanicsWithoutHMAC (internal/audit/verifier_p0_test.go at
+    /// baseline 981d25c). Go panicked on the first Append; Rust refuses an
+    /// empty HMAC key when the log opens, so no record or WAL entry can ever be
+    /// sealed without the secondary MAC, and the MAC primitive refuses too.
     #[test]
     fn empty_hmac_key_is_refused_before_any_append() {
         let dir = dir();
