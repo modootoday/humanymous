@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 613,
-      "macos": 613,
-      "windows": 595
+      "linux": 624,
+      "macos": 624,
+      "windows": 606
     },
     "common_test_names": [
       "gateway::admin_approval::tests::approval_store_rules",
@@ -33,6 +33,17 @@
       "gateway::admin_approval::tests::registration_refuses_empty_and_duplicate_tokens",
       "gateway::admin_approval::tests::role_wire_names_round_trip_exactly",
       "gateway::admin_approval::tests::ttl_boundary_and_clock_regression_do_not_expire",
+      "gateway::admin_plane::ops::tests::can_read_session_matches_go_golden",
+      "gateway::admin_plane::ops::tests::configure_ops_matches_go_golden",
+      "gateway::admin_plane::ops::tests::explain_fails_closed_on_non_finite_policy",
+      "gateway::admin_plane::ops::tests::explain_scores_a_copy",
+      "gateway::admin_plane::ops::tests::healthz_always_on",
+      "gateway::admin_plane::ops::tests::ops_endpoints_absent_without_token",
+      "gateway::admin_plane::ops::tests::ops_endpoints_gated",
+      "gateway::admin_plane::ops::tests::ops_exchanges_match_go_golden",
+      "gateway::admin_plane::ops::tests::ops_routes_served_on_admin_loopback_listener",
+      "gateway::admin_plane::ops::tests::ops_token_and_admin_bearers_are_separate",
+      "gateway::admin_plane::ops::tests::public_listener_never_serves_ops_routes",
       "gateway::admin_plane::tests::admin_deny_by_default",
       "gateway::admin_plane::tests::admin_off_public_listener",
       "gateway::admin_plane::tests::admin_rbac",
