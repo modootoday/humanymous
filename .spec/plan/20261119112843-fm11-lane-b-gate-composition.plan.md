@@ -34,6 +34,11 @@ loosened.
   `Application::serve` (`gateway::tests::integration`). Row
   `internal/gate/integration_test.go` stays `partial`: HTML injection is not
   composed on the served path (owner/SoT decision).
+- [x] R166 on a chain-backed admin plane: `GET integrity` answers 200 with the
+  chain verifying after the meta-audited ban list. Row
+  `internal/gate/wargame_escalation_r161_test.go` to `ported_unit`; R169 is the
+  owner-accepted difference of decision 2 (issue #20), pinned by the HTTP
+  parser test.
 
 ## Open owner questions (not decided here)
 

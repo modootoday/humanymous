@@ -15,8 +15,8 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 268,
-  "partial": 33,
+  "ported_unit": 269,
+  "partial": 32,
   "missing": 2,
   "not_applicable": 2,
   "oracle_only": 9
@@ -75,10 +75,10 @@
    "ported_unit": 5
   },
   "internal/gate": {
-   "partial": 17,
+   "partial": 16,
    "missing": 1,
    "not_applicable": 1,
-   "ported_unit": 65,
+   "ported_unit": 66,
    "oracle_only": 1
   },
   "internal/httpx": {
@@ -4916,7 +4916,7 @@
   },
   {
    "baseline_path": "internal/gate/wargame_escalation_r161_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/admin_approval.rs",
     "crates/sdk/humanymous-runtime/src/gateway/admin_approval/tests.rs",
@@ -4927,7 +4927,9 @@
     "crates/sdk/humanymous-runtime/src/gateway/route_policy.rs",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/application/edge.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/application/edge.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/admin_approval/tests.rs::r178_approval_ticket_differs_by_approver",
@@ -4968,7 +4970,9 @@
     "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r171_strict_path_login",
     "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r172_nested_strict_under_admin",
     "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r173_off_route_exact_only",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::dual_control::ledger::r162_commit_then_edge_denies"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::dual_control::ledger::r162_commit_then_edge_denies",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::wargame_r166_meta_audit_on_ban_list_keeps_the_chain_intact",
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::legacy_go_smuggle_scan_cases_are_refused_on_the_wire"
    ],
    "go_test_map": {
     "TestWargameR161_PendingBanNotEnforcedUntilCommit": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r161_pending_ban_not_enforced_until_commit",
@@ -4976,7 +4980,7 @@
     "TestWargameR163_LiftAfterPermanentCommit": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::dual_control::r163_lift_after_permanent_commit_is_refused",
     "TestWargameR164_BodyApproverStillIgnoredOnIPv6Permanent": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r164_body_approver_still_ignored_on_ipv6_permanent",
     "TestWargameR165_FPBanTemporaryDirect": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r165_fp_ban_temporary_direct",
-    "TestWargameR166_MetaAuditOnBanList": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r166_meta_audit_on_ban_list",
+    "TestWargameR166_MetaAuditOnBanList": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::wargame_r166_meta_audit_on_ban_list_keeps_the_chain_intact",
     "TestWargameR167_KillswitchEngageBlocksEnforcementPath": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r167_killswitch_pending_before_commit",
     "TestWargameR168_SmuggleAndBanIndependent": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r168_smuggle_and_ban_independent",
     "TestWargameR169_TEChunkedAloneOK": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r169_te_chunked_alone_ok",
@@ -5012,13 +5016,10 @@
     "TestWargameR199_SeriesRegressionValidBanKeyMatrix": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
     "TestWargameR200_SeriesClosePackageGreen": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::scan_classifies_in_legacy_precedence"
    },
-   "gaps": [
-    "R166 integrity soft check: GET integrity is not served by gateway::admin_plane; only the admin.access meta-audit record is asserted",
-    "R169 lone chunked TE: the classifier agrees with Go but the Rust HTTP parser refuses it (owner issue)"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Ban-key validation (R181-R185, R199), store lift/list (R191, R192), escalation (R193, deliberate 24h fourth tier), smuggle classifier (R168-R170, R197, R198) and step-up/receipt/bind rounds (R174-R177, R194-R196) are ported against the pure kernels. R200 re-asserts duplicate chunked TE refusal and ip: key validity, covered by the smuggle precedence and ban-key matrix tests. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#20; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged. B1: R171-R173 ported one-to-one against the route_policy resolver. Approval ticket, DPO superset and pending-store rounds (R178-R180, R188, R189) are ported against gateway::admin_approval. Admin HTTP rounds R161-R167, R186, R187 and R190 are ported against gateway::admin_plane over a real loopback TCP listener. R162 and R163 commit with a retained signed PermanentBan permit from a real control ledger (unix only); R163 pins the owner-accepted refusal to lift a permanent ban (decision 2). R167 asserts the pending kill switch and that an approved one commits nothing (409). FM11 slice 18: R162 now runs end to end: the dual-control commit on the admin plane (retained signed PermanentBan permit, unix only) lands in the shared store and the public listener answers 403 without Retry-After for that source, origin untouched.",
+   "notes": "Ban-key validation (R181-R185, R199), store lift/list (R191, R192), escalation (R193, deliberate 24h fourth tier), smuggle classifier (R168-R170, R197, R198) and step-up/receipt/bind rounds (R174-R177, R194-R196) are ported against the pure kernels. R200 re-asserts duplicate chunked TE refusal and ip: key validity, covered by the smuggle precedence and ban-key matrix tests. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#20; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged. B1: R171-R173 ported one-to-one against the route_policy resolver. Approval ticket, DPO superset and pending-store rounds (R178-R180, R188, R189) are ported against gateway::admin_approval. Admin HTTP rounds R161-R167, R186, R187 and R190 are ported against gateway::admin_plane over a real loopback TCP listener. R162 and R163 commit with a retained signed PermanentBan permit from a real control ledger (unix only); R163 pins the owner-accepted refusal to lift a permanent ban (decision 2). R167 asserts the pending kill switch and that an approved one commits nothing (409). FM11 slice 18: R162 now runs end to end: the dual-control commit on the admin plane (retained signed PermanentBan permit, unix only) lands in the shared store and the public listener answers 403 without Retry-After for that source, origin untouched. FM11 lane B: R166 now runs on a chain-backed admin plane (AdminPlane::with_chain over a real sealed log): the auditor's ban list is meta-audited into the chain and GET integrity answers 200 with ok true over both access records, as Go's soft check did. R169 is the owner-accepted difference of decision 2 (issue #20): the classifier passes a lone chunked Transfer-Encoding like Go, and the HTTP parser refuses it 400 http_framing, pinned by gateway::http tests legacy_go_smuggle_scan_cases_are_refused_on_the_wire. Go oracle at 981d25c: TestWargameR166_MetaAuditOnBanList and TestWargameR169_TEChunkedAloneOK PASS (go1.26.3, network none).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r168_smuggle_and_ban_independent": "passed",
@@ -5058,7 +5059,9 @@
     "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r171_strict_path_login": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r172_nested_strict_under_admin": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r173_off_route_exact_only": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::dual_control::ledger::r162_commit_then_edge_denies": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::dual_control::ledger::r162_commit_then_edge_denies": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::wargame_r166_meta_audit_on_ban_list_keeps_the_chain_intact": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::legacy_go_smuggle_scan_cases_are_refused_on_the_wire": "passed"
    }
   },
   {

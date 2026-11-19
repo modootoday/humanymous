@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 777,
-      "macos": 777,
-      "windows": 745
+      "linux": 778,
+      "macos": 778,
+      "windows": 746
     },
     "common_test_names": [
       "gateway::admin_approval::tests::approval_store_rules",
@@ -39,6 +39,7 @@
       "gateway::admin_plane::chain::tests::go_audit_stream_incidents_and_enumeration_cap_match_capture",
       "gateway::admin_plane::chain::tests::go_keys_proof_and_checkpoint_refusals_match_capture",
       "gateway::admin_plane::chain::tests::unadmitted_incident_lookups_are_capped",
+      "gateway::admin_plane::chain::tests::wargame_r166_meta_audit_on_ban_list_keeps_the_chain_intact",
       "gateway::admin_plane::ops::tests::can_read_session_matches_go_golden",
       "gateway::admin_plane::ops::tests::configure_ops_matches_go_golden",
       "gateway::admin_plane::ops::tests::explain_fails_closed_on_non_finite_policy",
