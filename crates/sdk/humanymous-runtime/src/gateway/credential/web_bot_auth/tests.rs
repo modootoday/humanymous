@@ -4,24 +4,24 @@ use super::*;
 use crate::gateway::token::MAX_NONCES;
 use ed25519_dalek::{Signer, SigningKey};
 
-pub(in crate::gateway::credential) const KID: &str = "test-agent-key-1";
-pub(in crate::gateway::credential) const NOW: u64 = 1_700_000_000;
+pub(in crate::gateway) const KID: &str = "test-agent-key-1";
+pub(in crate::gateway) const NOW: u64 = 1_700_000_000;
 const COMPONENTS: [&str; 3] = ["@authority", "@method", "@path"];
 
-pub(in crate::gateway::credential) fn now() -> Duration {
+pub(in crate::gateway) fn now() -> Duration {
     Duration::from_secs(NOW)
 }
-pub(in crate::gateway::credential) fn nonces() -> Nonces {
+pub(in crate::gateway) fn nonces() -> Nonces {
     Nonces::new(Duration::from_secs(3600), MAX_NONCES)
 }
-pub(in crate::gateway::credential) fn signer(seed: u8) -> SigningKey {
+pub(in crate::gateway) fn signer(seed: u8) -> SigningKey {
     SigningKey::from_bytes(&[seed; 32])
 }
-pub(in crate::gateway::credential) fn directory(kid: &str, key: &SigningKey) -> KeyDirectory {
+pub(in crate::gateway) fn directory(kid: &str, key: &SigningKey) -> KeyDirectory {
     let public = URL_SAFE_NO_PAD.encode(key.verifying_key().to_bytes());
     KeyDirectory::parse(&format!("{kid} {public}")).unwrap()
 }
-pub(in crate::gateway::credential) fn request<'a>(
+pub(in crate::gateway) fn request<'a>(
     authority: &'a str,
     method: &'a str,
     path: &'a str,
@@ -35,7 +35,7 @@ pub(in crate::gateway::credential) fn request<'a>(
     }
 }
 /// Sign `inner` over the request line with the verifier's own base builder.
-pub(in crate::gateway::credential) fn sign(
+pub(in crate::gateway) fn sign(
     inner: &str,
     components: &[&str],
     target: &Request<'_>,
@@ -46,7 +46,7 @@ pub(in crate::gateway::credential) fn sign(
     (format!("sig1={inner}"), format!("sig1=:{signature}:"))
 }
 /// Go `signWebBotAuth`.
-pub(in crate::gateway::credential) fn sign_wba(
+pub(in crate::gateway) fn sign_wba(
     target: &Request<'_>,
     kid: &str,
     key: &SigningKey,
@@ -61,7 +61,7 @@ pub(in crate::gateway::credential) fn sign_wba(
     }
     sign(&inner, &COMPONENTS, target, key)
 }
-pub(in crate::gateway::credential) fn check(
+pub(in crate::gateway) fn check(
     target: Request<'_>,
     headers: &(String, String),
     directory: &KeyDirectory,

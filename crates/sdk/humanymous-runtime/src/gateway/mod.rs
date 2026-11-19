@@ -18,6 +18,7 @@ pub mod credential;
 pub mod demo;
 pub mod external_input;
 pub mod gate_config;
+pub mod gates;
 pub mod guard;
 pub mod http;
 pub mod inject;
