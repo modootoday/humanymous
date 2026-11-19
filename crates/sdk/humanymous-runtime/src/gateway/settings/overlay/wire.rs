@@ -8,7 +8,7 @@
 //! unchanged, invalid UTF-8 bytes and lone surrogate escapes become U+FFFD.
 //! Error message text is this crate's own; only success versus refusal and the
 //! decoded value are oracle-equivalent.
-use super::{Mode, Overlay, RateLimitPatch, ScoringPatch, Timestamp};
+use super::{Mode, Overlay, ProposeBody, RateLimitPatch, ScoringPatch, Timestamp};
 use humanymous_core::signals::wire::{format_float_go, json_float_go, quote_json_go};
 use std::collections::BTreeMap;
 
@@ -237,6 +237,15 @@ pub(super) fn canonical(overlay: &Overlay) -> Result<String, OverlayEncodeError>
 
 /// Oracle `Overlay` struct under `json.MarshalIndent(o, "", "  ")`.
 pub(super) fn indented(overlay: &Overlay) -> Result<String, OverlayEncodeError> {
+    document(overlay).encode(true)
+}
+
+/// Oracle `Overlay` struct under `json.Marshal(o)`.
+pub(super) fn compact(overlay: &Overlay) -> Result<String, OverlayEncodeError> {
+    document(overlay).encode(false)
+}
+
+fn document(overlay: &Overlay) -> Json {
     let mut fields = vec![
         (
             "schemaVersion".into(),
@@ -258,7 +267,7 @@ pub(super) fn indented(overlay: &Overlay) -> Result<String, OverlayEncodeError> 
     );
     push_nonempty(&mut fields, "mutationClass", &overlay.mutation_class);
     push_policy_fields(&mut fields, overlay);
-    Json::Object(fields).encode(true)
+    Json::Object(fields)
 }
 
 // ---------------------------------------------------------------------------
@@ -298,6 +307,16 @@ fn is_space(byte: u8) -> bool {
 /// Syntax check of the complete document (Go `checkValid`), iterative so the
 /// 10000-level nesting limit cannot exhaust the stack.
 fn check_valid(bytes: &[u8]) -> Result<(), OverlayDecodeError> {
+    scan(bytes, true).map(|_| ())
+}
+
+/// Syntax check of the first value only, returning where it ends (the value
+/// a Go `json.Decoder.Decode` call reads; later bytes are not examined).
+fn first_value(bytes: &[u8]) -> Result<usize, OverlayDecodeError> {
+    scan(bytes, false)
+}
+
+fn scan(bytes: &[u8], whole: bool) -> Result<usize, OverlayDecodeError> {
     let mut parser = Parser { bytes, position: 0 };
     let mut stack: Vec<u8> = Vec::new();
     parser.space();
@@ -351,8 +370,8 @@ fn check_valid(bytes: &[u8]) -> Result<(), OverlayDecodeError> {
             parser.space();
             match stack.last() {
                 None => {
-                    return if parser.position == bytes.len() {
-                        Ok(())
+                    return if !whole || parser.position == bytes.len() {
+                        Ok(parser.position)
                     } else {
                         Err(error("invalid character after top-level value"))
                     };
@@ -831,4 +850,95 @@ pub(super) fn decode(bytes: &[u8]) -> Result<Overlay, OverlayDecodeError> {
             }
         })?;
     Ok(overlay)
+}
+
+const PROPOSE_FIELDS: [&str; 11] = [
+    "parentConfigVersion",
+    "hardRules",
+    "gates",
+    "scoring",
+    "weightMultipliers",
+    "netPolicy",
+    "routes",
+    "rateLimit",
+    "globalMonitor",
+    "integrityConfirm",
+    "expiresInSec",
+];
+
+/// Parse the first JSON value of `bytes` the way `json.NewDecoder(r).Decode`
+/// does: leading space is skipped, only the first value is checked and read,
+/// and anything after it is ignored. Top-level `null` leaves the zero value.
+fn decode_first(
+    bytes: &[u8],
+    what: &str,
+    field: impl FnMut(&mut Parser<'_>, String) -> Result<(), OverlayDecodeError>,
+) -> Result<(), OverlayDecodeError> {
+    let text = replace_invalid_utf8(bytes);
+    let end = first_value(text.as_bytes())?;
+    let mut parser = Parser {
+        bytes: &text.as_bytes()[..end],
+        position: 0,
+    };
+    if parser.null() {
+        return Ok(());
+    }
+    parser.object(field).map_err(|failure| {
+        if failure.0 == "cannot decode non-object into object" {
+            error(format!("cannot decode non-object into {what}"))
+        } else {
+            failure
+        }
+    })
+}
+
+/// Decode the oracle `settingsProposeBody` (admin_settings.go): an allow-list
+/// of overlay content plus the CAS parent, confirmation phrase and requested
+/// lifetime. Every other member, including a client `mutationClass`, is
+/// ignored.
+pub(super) fn decode_propose(bytes: &[u8]) -> Result<ProposeBody, OverlayDecodeError> {
+    let mut body = ProposeBody::default();
+    decode_first(bytes, "settingsProposeBody", |parser, key| {
+        let Some(name) = field(&key, &PROPOSE_FIELDS) else {
+            return parser.skip();
+        };
+        let body = &mut body;
+        match name {
+            "parentConfigVersion" => {
+                assign(&mut body.parent_config_version, parser.string_value()?)
+            }
+            "integrityConfirm" => assign(&mut body.integrity_confirm, parser.string_value()?),
+            "expiresInSec" => {
+                if let Some(seconds) = parser.int_value()? {
+                    body.expires_in_sec = seconds;
+                }
+            }
+            "gates" => parser.map_value(&mut body.gates, mode)?,
+            "hardRules" => parser.map_value(&mut body.hard_rules, mode)?,
+            "netPolicy" => parser.map_value(&mut body.net_policy, mode)?,
+            "routes" => parser.map_value(&mut body.routes, Parser::string_value)?,
+            "weightMultipliers" => {
+                parser.map_value(&mut body.weight_multipliers, Parser::float_value)?
+            }
+            "scoring" => scoring(parser, &mut body.scoring)?,
+            "rateLimit" => rate_limit(parser, &mut body.rate_limit)?,
+            _ => body.global_monitor = parser.bool_value()?,
+        }
+        Ok(())
+    })?;
+    Ok(body)
+}
+
+/// Decode the oracle rollback body `struct{ ParentConfigVersion string }`.
+pub(super) fn decode_parent(bytes: &[u8]) -> Result<String, OverlayDecodeError> {
+    let mut parent = String::new();
+    decode_first(bytes, "struct", |parser, key| {
+        if field(&key, &["parentConfigVersion"]).is_some() {
+            assign(&mut parent, parser.string_value()?);
+            Ok(())
+        } else {
+            parser.skip()
+        }
+    })?;
+    Ok(parent)
 }

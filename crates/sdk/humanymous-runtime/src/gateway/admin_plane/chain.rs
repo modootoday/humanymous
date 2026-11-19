@@ -93,7 +93,7 @@ impl Chain {
         })
     }
 
-    fn log(&self) -> MutexGuard<'_, Log> {
+    pub(super) fn log(&self) -> MutexGuard<'_, Log> {
         self.log.lock().unwrap_or_else(PoisonError::into_inner)
     }
 

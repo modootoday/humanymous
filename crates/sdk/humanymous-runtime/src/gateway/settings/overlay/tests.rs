@@ -364,3 +364,64 @@ fn decoder_rejects_malformed_documents_and_depth_beyond_go_limit() {
     let too_deep = format!("{{\"x\":{}{}}}", "[".repeat(10_000), "]".repeat(10_000));
     assert!(Overlay::from_json(too_deep.as_bytes()).is_err());
 }
+
+/// Whole-second UTC instants for the admin plane's `createdAt` and
+/// `expiresAt`, bounded to the years RFC 3339 can write.
+#[test]
+fn timestamp_from_unix_round_trips_and_bounds_the_year() {
+    for (seconds, text) in [
+        (0, "1970-01-01T00:00:00Z"),
+        (1_800_000_000, "2027-01-15T08:00:00Z"),
+        (951_782_400, "2000-02-29T00:00:00Z"),
+        (-62_135_596_800, "0001-01-01T00:00:00Z"),
+        (253_402_300_799, "9999-12-31T23:59:59Z"),
+    ] {
+        let stamp = Timestamp::from_unix(seconds).unwrap();
+        assert_eq!(stamp.format().unwrap(), text);
+        assert_eq!(stamp, Timestamp::parse(text.as_bytes()).unwrap());
+        assert_eq!(stamp.unix_nanos(), i128::from(seconds) * 1_000_000_000);
+    }
+    assert!(Timestamp::from_unix(-62_135_596_801).is_none());
+    assert!(Timestamp::from_unix(253_402_300_800).is_none());
+    assert!(Timestamp::from_unix(i64::MAX).is_none());
+    assert!(Timestamp::from_unix(i64::MIN).is_none());
+    // Instants compare across zones, like Go `Time.After`.
+    let zoned = Timestamp::parse(b"2027-01-15T09:00:00.5+01:00").unwrap();
+    assert_eq!(
+        zoned.unix_nanos(),
+        1_800_000_000 * 1_000_000_000 + 500_000_000
+    );
+}
+
+/// The propose and rollback bodies decode like Go `json.Decoder.Decode`
+/// into `settingsProposeBody` and the rollback struct.
+#[test]
+fn propose_and_rollback_bodies_decode_like_go() {
+    let body = ProposeBody::from_json(
+        br#"{"PARENTCONFIGVERSION":"cfg-1","Scoring":{"ChallengeAt":25},"expiresInSec":-7,"mutationClass":"A","bogus":[1]} trailing"#,
+    )
+    .unwrap();
+    assert_eq!(body.parent_config_version, "cfg-1");
+    assert_eq!(body.scoring.unwrap().challenge_at, Some(25.0));
+    assert_eq!(body.expires_in_sec, -7);
+    assert_eq!(
+        ProposeBody::from_json(b"null").unwrap(),
+        ProposeBody::default()
+    );
+    for refused in [
+        &b""[..],
+        b"not json",
+        b"{",
+        br#"{"expiresInSec":1.5}"#,
+        br#"{"expiresInSec":"x"}"#,
+        br#"{"hardRules":{"HR-1":5}}"#,
+    ] {
+        assert!(ProposeBody::from_json(refused).is_err(), "{refused:?}");
+    }
+    assert_eq!(
+        decode_rollback_parent(br#"{"parentConfigVersion":"cfg-2"} x"#).unwrap(),
+        "cfg-2"
+    );
+    assert_eq!(decode_rollback_parent(b"{}").unwrap(), "");
+    assert!(decode_rollback_parent(br#"{"parentConfigVersion":7}"#).is_err());
+}

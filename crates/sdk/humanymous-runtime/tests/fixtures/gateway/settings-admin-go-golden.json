@@ -1,0 +1,7816 @@
+{
+ "provenance": {
+  "oracle_commit": "981d25cf71a5a54855d7e2b4359e832a9d5998e5",
+  "oracle_packages": [
+   "internal/gate (admin_settings.go, settings_runtime.go, admin.go settings routes and approval commits, gate.go SetSettingsStore/SettingsEffective/resolvePath)",
+   "internal/gate/settings"
+  ],
+  "image": "mirror.gcr.io/library/golang@sha256:91eda9776261207ea25fd06b5b7fed8d397dd2c0a283e77f2ab6e91bfa71079d (the 1.26.3-alpine digest used by settings-overlay-go-golden.json)",
+  "go_version": "go1.26.3 linux/amd64 (GOTOOLCHAIN=local)",
+  "command": "docker run --rm --network none -e GOTOOLCHAIN=local -e GOPROXY=off -e GOFLAGS=-mod=readonly -e GOMODCACHE=/modcache -e GOCACHE=/tmp/gocache -v <modcache>:/modcache:ro -v <git archive 981d25c go.mod go.sum cmd internal pkg, plus scratch internal/gate/zz_lanee_capture_test.go>:/src:ro -v <out>:/out -w /src <image> go test -count=1 -run ^TestLaneECapture$ ./internal/gate/",
+  "capture_program_sha256": "3c319ae3b98c9aa36f671b190e5f9b860eb6273d823045fced01ca8e77c6488a",
+  "capture_program_committed": false,
+  "output_sha256": "e0a91b487d590def3237dcb9d503709c77e2670fcd167ed5ec5165812aae0add",
+  "driver": "srv.AdminHandler() with bearer tokens operator-token/op-1, approver-token/appr-1, auditor-token/aud-1, dpo-token/dpo-1; node n1; token key test-token-key-32-bytes-long!!!!; routes / balanced, /checkout strict; default rate 10/60/120",
+  "nondeterministic_in_go": [
+   "overlay ids (ovl_ + 8 random bytes) and approval ids (12 random bytes): the Rust replay injects the overlay id and maps approval ids",
+   "createdAt and expiresAt carry the wall clock in nanoseconds: masked in the replay; lifetimes are pinned by the expiry table",
+   "schema integrityCriticalHardRules order comes from a Go map",
+   "GET approvals lists pending actions in random-id order"
+  ],
+  "scope": "Frozen oracle outputs for differential parity only; never regenerate to hide drift"
+ },
+ "expiry": [
+  {
+   "class": "A",
+   "nil": true,
+   "wantSec": -5
+  },
+  {
+   "class": "A",
+   "nil": true,
+   "wantSec": 0
+  },
+  {
+   "class": "A",
+   "offsetSec": 1,
+   "wantSec": 1
+  },
+  {
+   "class": "A",
+   "offsetSec": 3600,
+   "wantSec": 3600
+  },
+  {
+   "class": "A",
+   "offsetSec": 86399,
+   "wantSec": 86399
+  },
+  {
+   "class": "A",
+   "offsetSec": 86400,
+   "wantSec": 86400
+  },
+  {
+   "class": "A",
+   "offsetSec": 86401,
+   "wantSec": 86401
+  },
+  {
+   "class": "A",
+   "offsetSec": 604799,
+   "wantSec": 604799
+  },
+  {
+   "class": "A",
+   "offsetSec": 604800,
+   "wantSec": 604800
+  },
+  {
+   "class": "A",
+   "offsetSec": 604801,
+   "wantSec": 604801
+  },
+  {
+   "class": "B",
+   "offsetSec": 604800,
+   "wantSec": -5
+  },
+  {
+   "class": "B",
+   "offsetSec": 604800,
+   "wantSec": 0
+  },
+  {
+   "class": "B",
+   "offsetSec": 1,
+   "wantSec": 1
+  },
+  {
+   "class": "B",
+   "offsetSec": 3600,
+   "wantSec": 3600
+  },
+  {
+   "class": "B",
+   "offsetSec": 86399,
+   "wantSec": 86399
+  },
+  {
+   "class": "B",
+   "offsetSec": 86400,
+   "wantSec": 86400
+  },
+  {
+   "class": "B",
+   "offsetSec": 86401,
+   "wantSec": 86401
+  },
+  {
+   "class": "B",
+   "offsetSec": 604799,
+   "wantSec": 604799
+  },
+  {
+   "class": "B",
+   "offsetSec": 604800,
+   "wantSec": 604800
+  },
+  {
+   "class": "B",
+   "error": "class B/D expiresInSec max 7d",
+   "wantSec": 604801
+  },
+  {
+   "class": "C",
+   "offsetSec": 86400,
+   "wantSec": -5
+  },
+  {
+   "class": "C",
+   "offsetSec": 86400,
+   "wantSec": 0
+  },
+  {
+   "class": "C",
+   "offsetSec": 1,
+   "wantSec": 1
+  },
+  {
+   "class": "C",
+   "offsetSec": 3600,
+   "wantSec": 3600
+  },
+  {
+   "class": "C",
+   "offsetSec": 86399,
+   "wantSec": 86399
+  },
+  {
+   "class": "C",
+   "offsetSec": 86400,
+   "wantSec": 86400
+  },
+  {
+   "class": "C",
+   "error": "class C expiresInSec max 24h",
+   "wantSec": 86401
+  },
+  {
+   "class": "C",
+   "error": "class C expiresInSec max 24h",
+   "wantSec": 604799
+  },
+  {
+   "class": "C",
+   "error": "class C expiresInSec max 24h",
+   "wantSec": 604800
+  },
+  {
+   "class": "C",
+   "error": "class C expiresInSec max 24h",
+   "wantSec": 604801
+  },
+  {
+   "class": "D",
+   "offsetSec": 604800,
+   "wantSec": -5
+  },
+  {
+   "class": "D",
+   "offsetSec": 604800,
+   "wantSec": 0
+  },
+  {
+   "class": "D",
+   "offsetSec": 1,
+   "wantSec": 1
+  },
+  {
+   "class": "D",
+   "offsetSec": 3600,
+   "wantSec": 3600
+  },
+  {
+   "class": "D",
+   "offsetSec": 86399,
+   "wantSec": 86399
+  },
+  {
+   "class": "D",
+   "offsetSec": 86400,
+   "wantSec": 86400
+  },
+  {
+   "class": "D",
+   "offsetSec": 86401,
+   "wantSec": 86401
+  },
+  {
+   "class": "D",
+   "offsetSec": 604799,
+   "wantSec": 604799
+  },
+  {
+   "class": "D",
+   "offsetSec": 604800,
+   "wantSec": 604800
+  },
+  {
+   "class": "D",
+   "error": "class B/D expiresInSec max 7d",
+   "wantSec": 604801
+  },
+  {
+   "class": "",
+   "nil": true,
+   "wantSec": -5
+  },
+  {
+   "class": "",
+   "nil": true,
+   "wantSec": 0
+  },
+  {
+   "class": "",
+   "nil": true,
+   "wantSec": 1
+  },
+  {
+   "class": "",
+   "nil": true,
+   "wantSec": 3600
+  },
+  {
+   "class": "",
+   "nil": true,
+   "wantSec": 86399
+  },
+  {
+   "class": "",
+   "nil": true,
+   "wantSec": 86400
+  },
+  {
+   "class": "",
+   "nil": true,
+   "wantSec": 86401
+  },
+  {
+   "class": "",
+   "nil": true,
+   "wantSec": 604799
+  },
+  {
+   "class": "",
+   "nil": true,
+   "wantSec": 604800
+  },
+  {
+   "class": "",
+   "nil": true,
+   "wantSec": 604801
+  }
+ ],
+ "scenarios": [
+  {
+   "attachError": "",
+   "attachRecords": [],
+   "name": "class-a-apply",
+   "setup": {
+    "store": "empty"
+   },
+   "steps": [
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "GET",
+     "name": "effective-empty",
+     "path": "settings/effective",
+     "records": [],
+     "response": "{\"effective\":{\"configVersion\":\"cfg-77fcaf51b74b\",\"globalMonitor\":false,\"killSwitch\":false,\"gates\":{\"gate.attest_floor\":\"enforce\",\"gate.ban\":\"enforce\",\"gate.inject\":\"enforce\",\"gate.recon_sweep\":\"enforce\",\"gate.smuggle\":\"enforce\",\"gate.spoof_header\":\"enforce\",\"gate.verdict_token\":\"enforce\"},\"hardRules\":{},\"challengeAt\":30,\"denyAt\":70,\"layerCap\":60,\"routes\":{\"/\":\"balanced\",\"/checkout\":\"strict\"},\"rateWindowSec\":10,\"rateSoft\":60,\"rateHard\":120,\"emptyOverlay\":true},\"storeAttached\":true}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "GET",
+     "name": "schema",
+     "path": "settings/schema",
+     "records": [],
+     "response": "{\"emptyOverlayMeans\":\"no active overlay; preserve built-in and startup behavior\",\"gates\":[\"gate.smuggle\",\"gate.spoof_header\",\"gate.ban\",\"gate.verdict_token\",\"gate.recon_sweep\",\"gate.inject\",\"gate.attest_floor\"],\"integrityCriticalGates\":[\"gate.smuggle\",\"gate.spoof_header\",\"gate.verdict_token\"],\"integrityCriticalHardRules\":[\"HR-2\",\"HR-16\",\"HR-18\",\"HR-19\",\"HR-1\"],\"modes\":{\"gates\":[\"enforce\",\"monitor\",\"shadow\",\"off\"],\"hardRules\":[\"enforce\",\"monitor\"],\"netPolicy\":[\"enforce\",\"monitor\",\"shadow\"]},\"netPolicyClasses\":[\"net.proxy.hop\",\"net.proxy.anon\",\"net.proxy.spoof\",\"net.vpn\",\"net.tor\",\"net.tcp\",\"net.correlation\",\"net.h2.spoof\",\"net.header.order\",\"net.tls.pq\",\"net.tls.alps\",\"net.tls.certcomp\",\"net.http.h1\",\"net.tls.ech\"],\"notes\":[\"Detection measurements remain observable; enforcement changes are governed\",\"Transport-pattern evidence never auto-enforces\",\"Protection-reducing changes require a distinct Approver\",\"Integrity-reducing changes also require an explicit confirmation phrase\",\"Preview uses aggregates only and makes no numeric claim below 50 samples\",\"No active overlay preserves built-in and startup behavior\",\"Settings do not overcome the coherent real-browser and human-paced automation boundary\"],\"schemaVersion\":\"1.0.0\",\"scoringBounds\":{\"challengeAt\":{\"default\":30,\"max\":60,\"min\":10},\"denyAt\":{\"default\":70,\"max\":95,\"min\":40},\"layerCap\":{\"default\":60,\"max\":80,\"min\":30}},\"weightMultiplier\":{\"max\":2,\"min\":0,\"step\":0.05}}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "GET",
+     "name": "list-empty",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "{\"active\":null,\"effective\":{\"configVersion\":\"cfg-77fcaf51b74b\",\"globalMonitor\":false,\"killSwitch\":false,\"gates\":{\"gate.attest_floor\":\"enforce\",\"gate.ban\":\"enforce\",\"gate.inject\":\"enforce\",\"gate.recon_sweep\":\"enforce\",\"gate.smuggle\":\"enforce\",\"gate.spoof_header\":\"enforce\",\"gate.verdict_token\":\"enforce\"},\"hardRules\":{},\"challengeAt\":30,\"denyAt\":70,\"layerCap\":60,\"routes\":{\"/\":\"balanced\",\"/checkout\":\"strict\"},\"rateWindowSec\":10,\"rateSoft\":60,\"rateHard\":120,\"emptyOverlay\":true}}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    },
+    {
+     "kind": "resolve",
+     "results": [
+      {
+       "enforce": true,
+       "name": "balanced",
+       "path": "/"
+      },
+      {
+       "enforce": true,
+       "name": "strict",
+       "path": "/checkout"
+      },
+      {
+       "enforce": true,
+       "name": "strict",
+       "path": "/checkout/x"
+      },
+      {
+       "enforce": true,
+       "name": "balanced",
+       "path": "/other"
+      }
+     ]
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"scoring\":{\"challengeAt\":20}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "auditor-cannot-propose",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "role auditor not permitted\n",
+     "role": "auditor",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"scoring\":{\"challengeAt\":20}}",
+     "status": 403
+    },
+    {
+     "body": "",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "GET",
+     "name": "unknown-settings-path",
+     "path": "settings/nope",
+     "records": [],
+     "response": "404 page not found\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 404
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"scoring\":{\"challengeAt\":20}}",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "propose-a",
+     "path": "settings/overlays",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.proposed",
+       "fail_reason": "class=A overlayId=ovl_70c762caec0133c8",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.applied",
+       "fail_reason": "settings.overlay applied class=A id=ovl_70c762caec0133c8",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "config.changed",
+       "fail_reason": "config_version=cfg-919634e4e134",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"applied\":true,\"class\":\"A\",\"configVersion\":\"cfg-919634e4e134\",\"ok\":true,\"overlayId\":\"ovl_70c762caec0133c8\"}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"scoring\":{\"challengeAt\":20}}",
+     "status": 200
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-919634e4e134",
+     "kind": "request",
+     "method": "GET",
+     "name": "list-active",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "{\"active\":{\"schemaVersion\":\"1.0.0\",\"overlayId\":\"ovl_70c762caec0133c8\",\"createdAt\":\"2026-11-19T13:15:25.703857692Z\",\"createdBy\":\"op-1\",\"status\":\"active\",\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"mutationClass\":\"A\",\"scoring\":{\"challengeAt\":20}},\"effective\":{\"configVersion\":\"cfg-919634e4e134\",\"globalMonitor\":false,\"killSwitch\":false,\"gates\":{\"gate.attest_floor\":\"enforce\",\"gate.ban\":\"enforce\",\"gate.inject\":\"enforce\",\"gate.recon_sweep\":\"enforce\",\"gate.smuggle\":\"enforce\",\"gate.spoof_header\":\"enforce\",\"gate.verdict_token\":\"enforce\"},\"hardRules\":{},\"challengeAt\":20,\"denyAt\":70,\"layerCap\":60,\"routes\":{\"/\":\"balanced\",\"/checkout\":\"strict\"},\"rateWindowSec\":10,\"rateSoft\":60,\"rateHard\":120,\"overlayId\":\"ovl_70c762caec0133c8\",\"overlayStatus\":\"active\",\"emptyOverlay\":false}}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-919634e4e134",
+     "kind": "request",
+     "method": "GET",
+     "name": "effective-active",
+     "path": "settings/effective",
+     "records": [],
+     "response": "{\"effective\":{\"configVersion\":\"cfg-919634e4e134\",\"globalMonitor\":false,\"killSwitch\":false,\"gates\":{\"gate.attest_floor\":\"enforce\",\"gate.ban\":\"enforce\",\"gate.inject\":\"enforce\",\"gate.recon_sweep\":\"enforce\",\"gate.smuggle\":\"enforce\",\"gate.spoof_header\":\"enforce\",\"gate.verdict_token\":\"enforce\"},\"hardRules\":{},\"challengeAt\":20,\"denyAt\":70,\"layerCap\":60,\"routes\":{\"/\":\"balanced\",\"/checkout\":\"strict\"},\"rateWindowSec\":10,\"rateSoft\":60,\"rateHard\":120,\"overlayId\":\"ovl_70c762caec0133c8\",\"overlayStatus\":\"active\",\"emptyOverlay\":false},\"storeAttached\":true}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"cfg-stale\",\"scoring\":{\"challengeAt\":20}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-919634e4e134",
+     "kind": "request",
+     "method": "POST",
+     "name": "stale",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "CAS: parentConfigVersion mismatch (stale)\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-stale\",\"scoring\":{\"challengeAt\":20}}",
+     "status": 409
+    },
+    {
+     "body": "{\"scoring\":{\"challengeAt\":20}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-919634e4e134",
+     "kind": "request",
+     "method": "POST",
+     "name": "empty-parent",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "CAS: parentConfigVersion mismatch (stale)\n",
+     "role": "operator",
+     "sentBody": "{\"scoring\":{\"challengeAt\":20}}",
+     "status": 409
+    },
+    {
+     "body": "null",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-919634e4e134",
+     "kind": "request",
+     "method": "POST",
+     "name": "null-body",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "CAS: parentConfigVersion mismatch (stale)\n",
+     "role": "operator",
+     "sentBody": "null",
+     "status": 409
+    },
+    {
+     "json": "{\"configVersion\":\"cfg-919634e4e134\",\"globalMonitor\":false,\"killSwitch\":false,\"gates\":{\"gate.attest_floor\":\"enforce\",\"gate.ban\":\"enforce\",\"gate.inject\":\"enforce\",\"gate.recon_sweep\":\"enforce\",\"gate.smuggle\":\"enforce\",\"gate.spoof_header\":\"enforce\",\"gate.verdict_token\":\"enforce\"},\"hardRules\":{},\"challengeAt\":20,\"denyAt\":70,\"layerCap\":60,\"routes\":{\"/\":\"balanced\",\"/checkout\":\"strict\"},\"rateWindowSec\":10,\"rateSoft\":60,\"rateHard\":120,\"overlayId\":\"ovl_70c762caec0133c8\",\"overlayStatus\":\"active\",\"emptyOverlay\":false}",
+     "kind": "effective"
+    }
+   ]
+  },
+  {
+   "attachError": "",
+   "attachRecords": [],
+   "name": "class-b-dual-control",
+   "setup": {
+    "store": "empty"
+   },
+   "steps": [
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"hardRules\":{\"HR-12\":\"monitor\"}}",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "propose-b",
+     "path": "settings/overlays",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.proposed",
+       "fail_reason": "class=B overlayId=ovl_6d2a156379a564b9",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "approval.requested",
+       "fail_reason": "settings.overlay pending class=B id=9796f5f4c51b9c62d48f713d",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"approvalId\":\"9796f5f4c51b9c62d48f713d\",\"class\":\"B\",\"needsRole\":\"approver\",\"ok\":true,\"overlayId\":\"ovl_6d2a156379a564b9\",\"pending\":true}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"hardRules\":{\"HR-12\":\"monitor\"}}",
+     "status": 200
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "GET",
+     "name": "pending-list",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "{\"active\":null,\"effective\":{\"configVersion\":\"cfg-77fcaf51b74b\",\"globalMonitor\":false,\"killSwitch\":false,\"gates\":{\"gate.attest_floor\":\"enforce\",\"gate.ban\":\"enforce\",\"gate.inject\":\"enforce\",\"gate.recon_sweep\":\"enforce\",\"gate.smuggle\":\"enforce\",\"gate.spoof_header\":\"enforce\",\"gate.verdict_token\":\"enforce\"},\"hardRules\":{},\"challengeAt\":30,\"denyAt\":70,\"layerCap\":60,\"routes\":{\"/\":\"balanced\",\"/checkout\":\"strict\"},\"rateWindowSec\":10,\"rateSoft\":60,\"rateHard\":120,\"emptyOverlay\":true}}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    },
+    {
+     "body": "",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "self-approve",
+     "path": "approvals/$AID",
+     "records": [],
+     "response": "role operator not permitted\n",
+     "role": "operator",
+     "sentBody": "",
+     "status": 403
+    },
+    {
+     "body": "",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "auditor-approve",
+     "path": "approvals/$AID",
+     "records": [],
+     "response": "role auditor not permitted\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 403
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "approve",
+     "path": "approvals/$AID",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.applied",
+       "fail_reason": "settings.overlay applied class=B id=ovl_6d2a156379a564b9 dual-control op-1→appr-1",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "config.changed",
+       "fail_reason": "config_version=cfg-3e3f843393ae",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"committed\":\"settings.overlay\",\"configVersion\":\"cfg-3e3f843393ae\",\"ok\":true,\"overlayId\":\"ovl_6d2a156379a564b9\"}\n",
+     "role": "approver",
+     "sentBody": "",
+     "status": 200
+    },
+    {
+     "body": "",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-3e3f843393ae",
+     "kind": "request",
+     "method": "POST",
+     "name": "approve-again",
+     "path": "approvals/$AID",
+     "records": [],
+     "response": "no such pending action\n",
+     "role": "approver",
+     "sentBody": "",
+     "status": 403
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-3e3f843393ae",
+     "kind": "request",
+     "method": "GET",
+     "name": "list-active",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "{\"active\":{\"schemaVersion\":\"1.0.0\",\"overlayId\":\"ovl_6d2a156379a564b9\",\"createdAt\":\"2026-11-19T13:15:25.704979832Z\",\"createdBy\":\"op-1\",\"approvedBy\":\"appr-1\",\"status\":\"active\",\"expiresAt\":\"2026-11-26T13:15:25.70498863Z\",\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"mutationClass\":\"B\",\"hardRules\":{\"HR-12\":\"monitor\"}},\"effective\":{\"configVersion\":\"cfg-3e3f843393ae\",\"globalMonitor\":false,\"killSwitch\":false,\"gates\":{\"gate.attest_floor\":\"enforce\",\"gate.ban\":\"enforce\",\"gate.inject\":\"enforce\",\"gate.recon_sweep\":\"enforce\",\"gate.smuggle\":\"enforce\",\"gate.spoof_header\":\"enforce\",\"gate.verdict_token\":\"enforce\"},\"hardRules\":{\"HR-12\":\"monitor\"},\"challengeAt\":30,\"denyAt\":70,\"layerCap\":60,\"routes\":{\"/\":\"balanced\",\"/checkout\":\"strict\"},\"rateWindowSec\":10,\"rateSoft\":60,\"rateHard\":120,\"overlayId\":\"ovl_6d2a156379a564b9\",\"overlayStatus\":\"active\",\"emptyOverlay\":false}}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\"}",
+     "contentType": "application/json",
+     "cv": "cfg-3e3f843393ae",
+     "kind": "request",
+     "method": "POST",
+     "name": "rollback-demotion-immediate",
+     "path": "settings/rollback",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.rolled_back",
+       "fail_reason": "settings.overlay rolled back to empty",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "config.changed",
+       "fail_reason": "config_version=cfg-77fcaf51b74b",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"configVersion\":\"cfg-77fcaf51b74b\",\"ok\":true,\"rolledBack\":true}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-3e3f843393ae\"}",
+     "status": 200
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\"}",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "rollback-noop",
+     "path": "settings/rollback",
+     "records": [],
+     "response": "{\"noop\":true,\"note\":\"already empty\",\"ok\":true}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\"}",
+     "status": 200
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"cfg-stale\"}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "rollback-stale",
+     "path": "settings/rollback",
+     "records": [],
+     "response": "CAS: parentConfigVersion mismatch (stale)\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-stale\"}",
+     "status": 409
+    },
+    {
+     "body": "{\"parentConfigVersion\":7}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "rollback-bad",
+     "path": "settings/rollback",
+     "records": [],
+     "response": "bad request\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":7}",
+     "status": 400
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "GET",
+     "name": "list-empty",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "{\"active\":null,\"effective\":{\"configVersion\":\"cfg-77fcaf51b74b\",\"globalMonitor\":false,\"killSwitch\":false,\"gates\":{\"gate.attest_floor\":\"enforce\",\"gate.ban\":\"enforce\",\"gate.inject\":\"enforce\",\"gate.recon_sweep\":\"enforce\",\"gate.smuggle\":\"enforce\",\"gate.spoof_header\":\"enforce\",\"gate.verdict_token\":\"enforce\"},\"hardRules\":{},\"challengeAt\":30,\"denyAt\":70,\"layerCap\":60,\"routes\":{\"/\":\"balanced\",\"/checkout\":\"strict\"},\"rateWindowSec\":10,\"rateSoft\":60,\"rateHard\":120,\"emptyOverlay\":true}}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    }
+   ]
+  },
+  {
+   "attachError": "",
+   "attachRecords": [],
+   "name": "class-c",
+   "setup": {
+    "store": "empty"
+   },
+   "steps": [
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"hardRules\":{\"HR-18\":\"monitor\"}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "c-no-confirm",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "class C requires integrityConfirm=DISABLE-INTEGRITY\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"hardRules\":{\"HR-18\":\"monitor\"}}",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"hardRules\":{\"HR-18\":\"monitor\"},\"integrityConfirm\":\"disable-integrity\"}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "c-wrong-confirm",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "class C requires integrityConfirm=DISABLE-INTEGRITY\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"hardRules\":{\"HR-18\":\"monitor\"},\"integrityConfirm\":\"disable-integrity\"}",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"hardRules\":{\"HR-18\":\"monitor\"},\"integrityConfirm\":\"DISABLE-INTEGRITY\",\"expiresInSec\":86401}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "c-expiry-over-cap",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "class C expiresInSec max 24h\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"hardRules\":{\"HR-18\":\"monitor\"},\"integrityConfirm\":\"DISABLE-INTEGRITY\",\"expiresInSec\":86401}",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"globalMonitor\":true,\"integrityConfirm\":\"DISABLE-INTEGRITY\"}",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "c-global-monitor",
+     "path": "settings/overlays",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.proposed",
+       "fail_reason": "class=C overlayId=ovl_6582ab3beab96efe",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "approval.requested",
+       "fail_reason": "settings.overlay pending class=C id=3eb55a00f2ae354523a00395",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"approvalId\":\"3eb55a00f2ae354523a00395\",\"class\":\"C\",\"needsRole\":\"approver\",\"ok\":true,\"overlayId\":\"ovl_6582ab3beab96efe\",\"pending\":true}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"globalMonitor\":true,\"integrityConfirm\":\"DISABLE-INTEGRITY\"}",
+     "status": 200
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"weightMultipliers\":{\"s.a\":0,\"s.b\":0,\"s.c\":0,\"s.d\":0,\"s.e\":0},\"integrityConfirm\":\"DISABLE-INTEGRITY\"}",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "c-zero-weights",
+     "path": "settings/overlays",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.proposed",
+       "fail_reason": "class=C overlayId=ovl_994c631084938eb8",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "approval.requested",
+       "fail_reason": "settings.overlay pending class=C id=e7b7a7ec745f3a9dc4ad1e02",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"approvalId\":\"e7b7a7ec745f3a9dc4ad1e02\",\"class\":\"C\",\"needsRole\":\"approver\",\"ok\":true,\"overlayId\":\"ovl_994c631084938eb8\",\"pending\":true}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"weightMultipliers\":{\"s.a\":0,\"s.b\":0,\"s.c\":0,\"s.d\":0,\"s.e\":0},\"integrityConfirm\":\"DISABLE-INTEGRITY\"}",
+     "status": 200
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"hardRules\":{\"HR-18\":\"monitor\"},\"integrityConfirm\":\"DISABLE-INTEGRITY\",\"expiresInSec\":3600}",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "c-confirmed",
+     "path": "settings/overlays",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.proposed",
+       "fail_reason": "class=C overlayId=ovl_e27d7985cb7ef162",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "approval.requested",
+       "fail_reason": "settings.overlay pending class=C id=f092f6be67a628be324cb420",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"approvalId\":\"f092f6be67a628be324cb420\",\"class\":\"C\",\"needsRole\":\"approver\",\"ok\":true,\"overlayId\":\"ovl_e27d7985cb7ef162\",\"pending\":true}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"hardRules\":{\"HR-18\":\"monitor\"},\"integrityConfirm\":\"DISABLE-INTEGRITY\",\"expiresInSec\":3600}",
+     "status": 200
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "GET",
+     "name": "approvals",
+     "path": "approvals",
+     "records": [],
+     "response": "{\"count\":3,\"pending\":[{\"id\":\"e7b7a7ec745f3a9dc4ad1e02\",\"kind\":\"settings.overlay\",\"needsRole\":\"approver\",\"params\":{\"body\":\"{\\\"schemaVersion\\\":\\\"1.0.0\\\",\\\"overlayId\\\":\\\"ovl_994c631084938eb8\\\",\\\"createdAt\\\":\\\"2026-11-19T13:15:25.706656792Z\\\",\\\"createdBy\\\":\\\"op-1\\\",\\\"status\\\":\\\"pending\\\",\\\"expiresAt\\\":\\\"2026-11-20T13:15:25.706676194Z\\\",\\\"parentConfigVersion\\\":\\\"cfg-77fcaf51b74b\\\",\\\"mutationClass\\\":\\\"C\\\",\\\"weightMultipliers\\\":{\\\"s.a\\\":0,\\\"s.b\\\":0,\\\"s.c\\\":0,\\\"s.d\\\":0,\\\"s.e\\\":0}}\",\"integrityConfirm\":\"DISABLE-INTEGRITY\",\"mutationClass\":\"C\",\"overlayId\":\"ovl_994c631084938eb8\",\"parentConfigVersion\":\"cfg-77fcaf51b74b\"}},{\"id\":\"f092f6be67a628be324cb420\",\"kind\":\"settings.overlay\",\"needsRole\":\"approver\",\"params\":{\"body\":\"{\\\"schemaVersion\\\":\\\"1.0.0\\\",\\\"overlayId\\\":\\\"ovl_e27d7985cb7ef162\\\",\\\"createdAt\\\":\\\"2026-11-19T13:15:25.70673237Z\\\",\\\"createdBy\\\":\\\"op-1\\\",\\\"status\\\":\\\"pending\\\",\\\"expiresAt\\\":\\\"2026-11-19T14:15:25.706738108Z\\\",\\\"parentConfigVersion\\\":\\\"cfg-77fcaf51b74b\\\",\\\"mutationClass\\\":\\\"C\\\",\\\"hardRules\\\":{\\\"HR-18\\\":\\\"monitor\\\"}}\",\"integrityConfirm\":\"DISABLE-INTEGRITY\",\"mutationClass\":\"C\",\"overlayId\":\"ovl_e27d7985cb7ef162\",\"parentConfigVersion\":\"cfg-77fcaf51b74b\"}},{\"id\":\"3eb55a00f2ae354523a00395\",\"kind\":\"settings.overlay\",\"needsRole\":\"approver\",\"params\":{\"body\":\"{\\\"schemaVersion\\\":\\\"1.0.0\\\",\\\"overlayId\\\":\\\"ovl_6582ab3beab96efe\\\",\\\"createdAt\\\":\\\"2026-11-19T13:15:25.706539433Z\\\",\\\"createdBy\\\":\\\"op-1\\\",\\\"status\\\":\\\"pending\\\",\\\"expiresAt\\\":\\\"2026-11-20T13:15:25.706544761Z\\\",\\\"parentConfigVersion\\\":\\\"cfg-77fcaf51b74b\\\",\\\"mutationClass\\\":\\\"C\\\",\\\"globalMonitor\\\":true}\",\"integrityConfirm\":\"DISABLE-INTEGRITY\",\"mutationClass\":\"C\",\"overlayId\":\"ovl_6582ab3beab96efe\",\"parentConfigVersion\":\"cfg-77fcaf51b74b\"}}]}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "approve-c",
+     "path": "approvals/$AID",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.applied",
+       "fail_reason": "settings.overlay applied class=C id=ovl_e27d7985cb7ef162 dual-control op-1→appr-1",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "config.changed",
+       "fail_reason": "config_version=cfg-c22f714d1324",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"committed\":\"settings.overlay\",\"configVersion\":\"cfg-c22f714d1324\",\"ok\":true,\"overlayId\":\"ovl_e27d7985cb7ef162\"}\n",
+     "role": "approver",
+     "sentBody": "",
+     "status": 200
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-c22f714d1324",
+     "kind": "request",
+     "method": "GET",
+     "name": "list-c",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "{\"active\":{\"schemaVersion\":\"1.0.0\",\"overlayId\":\"ovl_e27d7985cb7ef162\",\"createdAt\":\"2026-11-19T13:15:25.70673237Z\",\"createdBy\":\"op-1\",\"approvedBy\":\"appr-1\",\"status\":\"active\",\"expiresAt\":\"2026-11-19T14:15:25.706738108Z\",\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"mutationClass\":\"C\",\"hardRules\":{\"HR-18\":\"monitor\"}},\"effective\":{\"configVersion\":\"cfg-c22f714d1324\",\"globalMonitor\":false,\"killSwitch\":false,\"gates\":{\"gate.attest_floor\":\"enforce\",\"gate.ban\":\"enforce\",\"gate.inject\":\"enforce\",\"gate.recon_sweep\":\"enforce\",\"gate.smuggle\":\"enforce\",\"gate.spoof_header\":\"enforce\",\"gate.verdict_token\":\"enforce\"},\"hardRules\":{\"HR-18\":\"monitor\"},\"challengeAt\":30,\"denyAt\":70,\"layerCap\":60,\"routes\":{\"/\":\"balanced\",\"/checkout\":\"strict\"},\"rateWindowSec\":10,\"rateSoft\":60,\"rateHard\":120,\"overlayId\":\"ovl_e27d7985cb7ef162\",\"overlayStatus\":\"active\",\"emptyOverlay\":false}}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\"}",
+     "contentType": "application/json",
+     "cv": "cfg-c22f714d1324",
+     "kind": "request",
+     "method": "POST",
+     "name": "rollback-c-immediate",
+     "path": "settings/rollback",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.rolled_back",
+       "fail_reason": "settings.overlay rolled back to empty",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "config.changed",
+       "fail_reason": "config_version=cfg-77fcaf51b74b",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"configVersion\":\"cfg-77fcaf51b74b\",\"ok\":true,\"rolledBack\":true}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-c22f714d1324\"}",
+     "status": 200
+    }
+   ]
+  },
+  {
+   "attachError": "",
+   "attachRecords": [],
+   "name": "refusals",
+   "setup": {
+    "store": "empty"
+   },
+   "steps": [
+    {
+     "body": "not json",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "not-json",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "bad request\n",
+     "role": "operator",
+     "sentBody": "not json",
+     "status": 400
+    },
+    {
+     "body": "",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "empty-body",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "bad request\n",
+     "role": "operator",
+     "sentBody": "",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"expiresInSec\":\"x\"}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "type-mismatch-expiry",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "bad request\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"expiresInSec\":\"x\"}",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"hardRules\":{\"HR-1\":5}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "type-mismatch-mode",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "bad request\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"hardRules\":{\"HR-1\":5}}",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"expiresInSec\":1.5}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "float-expiry",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "bad request\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"expiresInSec\":1.5}",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"gates\":{\"gate.nope\":\"monitor\"}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "unknown-gate",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "unknown gate module \"gate.nope\"\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"gates\":{\"gate.nope\":\"monitor\"}}",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"gates\":{\"gate.smuggle\":\"off\"}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "integrity-gate-off",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "gate.smuggle cannot be off (integrity-critical)\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"gates\":{\"gate.smuggle\":\"off\"}}",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"hardRules\":{\"HR-3\":\"off\"}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "hr-off",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "engine hard rule HR-3 cannot be off (use monitor)\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"hardRules\":{\"HR-3\":\"off\"}}",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"hardRules\":{\"X-3\":\"monitor\"}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "hr-bad-id",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "invalid hard rule id \"X-3\"\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"hardRules\":{\"X-3\":\"monitor\"}}",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"scoring\":{\"challengeAt\":5}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "challenge-out",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "challengeAt 5.0 out of [10,60]\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"scoring\":{\"challengeAt\":5}}",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"scoring\":{\"challengeAt\":55,\"denyAt\":50}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "challenge-ge-deny",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "challengeAt (55.0) must be < denyAt (50.0)\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"scoring\":{\"challengeAt\":55,\"denyAt\":50}}",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"weightMultipliers\":{\"s.a\":2.5}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "weight-out",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "weight multiplier s.a=2.5 out of [0,2]\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"weightMultipliers\":{\"s.a\":2.5}}",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"rateLimit\":{\"soft\":10,\"hard\":5}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "rate-hard-lt-soft",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "rateLimit.hard must be >= soft\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"rateLimit\":{\"soft\":10,\"hard\":5}}",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"rateLimit\":{\"windowSec\":0}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "rate-window-zero",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "rateLimit.windowSec must be >= 1\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"rateLimit\":{\"windowSec\":0}}",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"netPolicy\":{\"net.tcp\":\"enforce\"}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "net-tcp-enforce",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "net.tcp cannot be enforce (Audit+Ban only)\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"netPolicy\":{\"net.tcp\":\"enforce\"}}",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"netPolicy\":{\"net.nope\":\"monitor\"}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "net-unknown",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "unknown netPolicy class \"net.nope\"\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"netPolicy\":{\"net.nope\":\"monitor\"}}",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"routes\":{\"/\":\"attested\"}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "attested-catch-all",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "attested refused on catch-all prefix /\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"routes\":{\"/\":\"attested\"}}",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"rateLimit\":{\"soft\":500}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "runtime-soft-over-hard",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "settings: invalid effective rate limit 10/500/120\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"rateLimit\":{\"soft\":500}}",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"hardRules\":{\"HR-12\":\"monitor\"},\"expiresInSec\":604801}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "b-expiry-over-cap",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "class B/D expiresInSec max 7d\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"hardRules\":{\"HR-12\":\"monitor\"},\"expiresInSec\":604801}",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"weightMultipliers\":{\"s.a\":0.5}}",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "b-weight-half",
+     "path": "settings/overlays",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.proposed",
+       "fail_reason": "class=B overlayId=ovl_399fc7a5e79ab724",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "approval.requested",
+       "fail_reason": "settings.overlay pending class=B id=761bd780a869ccd1b013a74d",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"approvalId\":\"761bd780a869ccd1b013a74d\",\"class\":\"B\",\"needsRole\":\"approver\",\"ok\":true,\"overlayId\":\"ovl_399fc7a5e79ab724\",\"pending\":true}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"weightMultipliers\":{\"s.a\":0.5}}",
+     "status": 200
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "GET",
+     "name": "approvals",
+     "path": "approvals",
+     "records": [],
+     "response": "{\"count\":1,\"pending\":[{\"id\":\"761bd780a869ccd1b013a74d\",\"kind\":\"settings.overlay\",\"needsRole\":\"approver\",\"params\":{\"body\":\"{\\\"schemaVersion\\\":\\\"1.0.0\\\",\\\"overlayId\\\":\\\"ovl_399fc7a5e79ab724\\\",\\\"createdAt\\\":\\\"2026-11-19T13:15:25.7085549Z\\\",\\\"createdBy\\\":\\\"op-1\\\",\\\"status\\\":\\\"pending\\\",\\\"expiresAt\\\":\\\"2026-11-26T13:15:25.708562171Z\\\",\\\"parentConfigVersion\\\":\\\"cfg-77fcaf51b74b\\\",\\\"mutationClass\\\":\\\"B\\\",\\\"weightMultipliers\\\":{\\\"s.a\\\":0.5}}\",\"integrityConfirm\":\"\",\"mutationClass\":\"B\",\"overlayId\":\"ovl_399fc7a5e79ab724\",\"parentConfigVersion\":\"cfg-77fcaf51b74b\"}}]}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    }
+   ]
+  },
+  {
+   "attachError": "",
+   "attachRecords": [],
+   "name": "decoding",
+   "setup": {
+    "store": "empty"
+   },
+   "steps": [
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"bogus\":1,\"mutationClass\":\"A\",\"overlayId\":\"ovl_client\"}",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "unknown-field-empty-overlay",
+     "path": "settings/overlays",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.proposed",
+       "fail_reason": "class=A overlayId=ovl_2a52ee481967304f",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.applied",
+       "fail_reason": "settings.overlay applied class=A id=ovl_2a52ee481967304f",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "config.changed",
+       "fail_reason": "config_version=cfg-87f1fedbd0e0",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"applied\":true,\"class\":\"A\",\"configVersion\":\"cfg-87f1fedbd0e0\",\"ok\":true,\"overlayId\":\"ovl_2a52ee481967304f\"}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"bogus\":1,\"mutationClass\":\"A\",\"overlayId\":\"ovl_client\"}",
+     "status": 200
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"weightMultipliers\":{\"s.a\":1.5}} trailing",
+     "contentType": "application/json",
+     "cv": "cfg-87f1fedbd0e0",
+     "kind": "request",
+     "method": "POST",
+     "name": "trailing-data",
+     "path": "settings/overlays",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.proposed",
+       "fail_reason": "class=A overlayId=ovl_a3807e22c539ff3a",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.applied",
+       "fail_reason": "settings.overlay applied class=A id=ovl_a3807e22c539ff3a",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "config.changed",
+       "fail_reason": "config_version=cfg-9944873294ba",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"applied\":true,\"class\":\"A\",\"configVersion\":\"cfg-9944873294ba\",\"ok\":true,\"overlayId\":\"ovl_a3807e22c539ff3a\"}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-87f1fedbd0e0\",\"weightMultipliers\":{\"s.a\":1.5}} trailing",
+     "status": 200
+    },
+    {
+     "body": "{\"PARENTCONFIGVERSION\":\"$CV\",\"Scoring\":{\"ChallengeAt\":25},\"ExpiresInSec\":-7}",
+     "contentType": "application/json",
+     "cv": "cfg-9944873294ba",
+     "kind": "request",
+     "method": "POST",
+     "name": "case-folded",
+     "path": "settings/overlays",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.proposed",
+       "fail_reason": "class=A overlayId=ovl_32e79fc1a1b93c31",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.applied",
+       "fail_reason": "settings.overlay applied class=A id=ovl_32e79fc1a1b93c31",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "config.changed",
+       "fail_reason": "config_version=cfg-67abdd488796",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"applied\":true,\"class\":\"A\",\"configVersion\":\"cfg-67abdd488796\",\"ok\":true,\"overlayId\":\"ovl_32e79fc1a1b93c31\"}\n",
+     "role": "operator",
+     "sentBody": "{\"PARENTCONFIGVERSION\":\"cfg-9944873294ba\",\"Scoring\":{\"ChallengeAt\":25},\"ExpiresInSec\":-7}",
+     "status": 200
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"routes\":{\"/a\":null,\"/checkout\":\"attested\"},\"rateLimit\":{\"windowSec\":30}}",
+     "contentType": "application/json",
+     "cv": "cfg-67abdd488796",
+     "kind": "request",
+     "method": "POST",
+     "name": "null-route-member",
+     "path": "settings/overlays",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.proposed",
+       "fail_reason": "class=A overlayId=ovl_09c880ac9bad9275",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.applied",
+       "fail_reason": "settings.overlay applied class=A id=ovl_09c880ac9bad9275",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "config.changed",
+       "fail_reason": "config_version=cfg-5f7b6396657b",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"applied\":true,\"class\":\"A\",\"configVersion\":\"cfg-5f7b6396657b\",\"ok\":true,\"overlayId\":\"ovl_09c880ac9bad9275\"}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-67abdd488796\",\"routes\":{\"/a\":null,\"/checkout\":\"attested\"},\"rateLimit\":{\"windowSec\":30}}",
+     "status": 200
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-5f7b6396657b",
+     "kind": "request",
+     "method": "GET",
+     "name": "list",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "{\"active\":{\"schemaVersion\":\"1.0.0\",\"overlayId\":\"ovl_09c880ac9bad9275\",\"createdAt\":\"2026-11-19T13:15:25.712298249Z\",\"createdBy\":\"op-1\",\"status\":\"active\",\"parentConfigVersion\":\"cfg-67abdd488796\",\"mutationClass\":\"A\",\"routes\":{\"/a\":\"\",\"/checkout\":\"attested\"},\"rateLimit\":{\"windowSec\":30}},\"effective\":{\"configVersion\":\"cfg-5f7b6396657b\",\"globalMonitor\":false,\"killSwitch\":false,\"gates\":{\"gate.attest_floor\":\"enforce\",\"gate.ban\":\"enforce\",\"gate.inject\":\"enforce\",\"gate.recon_sweep\":\"enforce\",\"gate.smuggle\":\"enforce\",\"gate.spoof_header\":\"enforce\",\"gate.verdict_token\":\"enforce\"},\"hardRules\":{},\"challengeAt\":30,\"denyAt\":70,\"layerCap\":60,\"routes\":{\"/\":\"balanced\",\"/a\":\"\",\"/checkout\":\"attested\"},\"rateWindowSec\":30,\"rateSoft\":60,\"rateHard\":120,\"overlayId\":\"ovl_09c880ac9bad9275\",\"overlayStatus\":\"active\",\"emptyOverlay\":false}}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    },
+    {
+     "kind": "resolve",
+     "results": [
+      {
+       "enforce": true,
+       "name": "balanced",
+       "path": "/a"
+      },
+      {
+       "enforce": true,
+       "name": "balanced",
+       "path": "/a/b"
+      },
+      {
+       "enforce": true,
+       "name": "attested",
+       "path": "/checkout"
+      },
+      {
+       "enforce": true,
+       "name": "balanced",
+       "path": "/"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "attachError": "",
+   "attachRecords": [],
+   "name": "net-routes-rate",
+   "setup": {
+    "store": "empty"
+   },
+   "steps": [
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"netPolicy\":{\"net.proxy.hop\":\"enforce\"},\"routes\":{\"/checkout\":\"attested\"}}",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "net-and-routes-a",
+     "path": "settings/overlays",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.proposed",
+       "fail_reason": "class=A overlayId=ovl_ce9ab1cc1b33b023",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.applied",
+       "fail_reason": "settings.overlay applied class=A id=ovl_ce9ab1cc1b33b023",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "config.changed",
+       "fail_reason": "config_version=cfg-dc61f6cff5c0",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"applied\":true,\"class\":\"A\",\"configVersion\":\"cfg-dc61f6cff5c0\",\"ok\":true,\"overlayId\":\"ovl_ce9ab1cc1b33b023\"}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"netPolicy\":{\"net.proxy.hop\":\"enforce\"},\"routes\":{\"/checkout\":\"attested\"}}",
+     "status": 200
+    },
+    {
+     "kind": "resolve",
+     "results": [
+      {
+       "enforce": true,
+       "name": "attested",
+       "path": "/checkout"
+      },
+      {
+       "enforce": true,
+       "name": "attested",
+       "path": "/checkout/pay"
+      },
+      {
+       "enforce": true,
+       "name": "balanced",
+       "path": "/"
+      },
+      {
+       "enforce": true,
+       "name": "balanced",
+       "path": "/x"
+      }
+     ]
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"routes\":{\"/checkout\":\"monitor\"}}",
+     "contentType": "application/json",
+     "cv": "cfg-dc61f6cff5c0",
+     "kind": "request",
+     "method": "POST",
+     "name": "route-weaken-d",
+     "path": "settings/overlays",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.proposed",
+       "fail_reason": "class=D overlayId=ovl_e3ae9085af9030b0",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "approval.requested",
+       "fail_reason": "settings.overlay pending class=D id=c8369e3dad9b36343e9f64b9",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"approvalId\":\"c8369e3dad9b36343e9f64b9\",\"class\":\"D\",\"needsRole\":\"approver\",\"ok\":true,\"overlayId\":\"ovl_e3ae9085af9030b0\",\"pending\":true}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-dc61f6cff5c0\",\"routes\":{\"/checkout\":\"monitor\"}}",
+     "status": 200
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-dc61f6cff5c0",
+     "kind": "request",
+     "method": "POST",
+     "name": "approve-d",
+     "path": "approvals/$AID",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.applied",
+       "fail_reason": "settings.overlay applied class=D id=ovl_e3ae9085af9030b0 dual-control op-1→appr-1",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "config.changed",
+       "fail_reason": "config_version=cfg-01087b0c4244",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"committed\":\"settings.overlay\",\"configVersion\":\"cfg-01087b0c4244\",\"ok\":true,\"overlayId\":\"ovl_e3ae9085af9030b0\"}\n",
+     "role": "approver",
+     "sentBody": "",
+     "status": 200
+    },
+    {
+     "kind": "resolve",
+     "results": [
+      {
+       "enforce": false,
+       "name": "monitor",
+       "path": "/checkout"
+      },
+      {
+       "enforce": true,
+       "name": "balanced",
+       "path": "/"
+      }
+     ]
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-01087b0c4244",
+     "kind": "request",
+     "method": "GET",
+     "name": "list-d",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "{\"active\":{\"schemaVersion\":\"1.0.0\",\"overlayId\":\"ovl_e3ae9085af9030b0\",\"createdAt\":\"2026-11-19T13:15:25.714251203Z\",\"createdBy\":\"op-1\",\"approvedBy\":\"appr-1\",\"status\":\"active\",\"expiresAt\":\"2026-11-26T13:15:25.714257763Z\",\"parentConfigVersion\":\"cfg-dc61f6cff5c0\",\"mutationClass\":\"D\",\"routes\":{\"/checkout\":\"monitor\"}},\"effective\":{\"configVersion\":\"cfg-01087b0c4244\",\"globalMonitor\":false,\"killSwitch\":false,\"gates\":{\"gate.attest_floor\":\"enforce\",\"gate.ban\":\"enforce\",\"gate.inject\":\"enforce\",\"gate.recon_sweep\":\"enforce\",\"gate.smuggle\":\"enforce\",\"gate.spoof_header\":\"enforce\",\"gate.verdict_token\":\"enforce\"},\"hardRules\":{},\"challengeAt\":30,\"denyAt\":70,\"layerCap\":60,\"routes\":{\"/\":\"balanced\",\"/checkout\":\"monitor\"},\"rateWindowSec\":10,\"rateSoft\":60,\"rateHard\":120,\"overlayId\":\"ovl_e3ae9085af9030b0\",\"overlayStatus\":\"active\",\"emptyOverlay\":false}}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\"}",
+     "contentType": "application/json",
+     "cv": "cfg-01087b0c4244",
+     "kind": "request",
+     "method": "POST",
+     "name": "rollback-d-immediate",
+     "path": "settings/rollback",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.rolled_back",
+       "fail_reason": "settings.overlay rolled back to empty",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "config.changed",
+       "fail_reason": "config_version=cfg-77fcaf51b74b",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"configVersion\":\"cfg-77fcaf51b74b\",\"ok\":true,\"rolledBack\":true}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-01087b0c4244\"}",
+     "status": 200
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"rateLimit\":{\"hard\":170}}",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "rate-loosen-b",
+     "path": "settings/overlays",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.proposed",
+       "fail_reason": "class=B overlayId=ovl_cebd9c14964b370b",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "approval.requested",
+       "fail_reason": "settings.overlay pending class=B id=0c7f10bfdfd06453a7df7e5c",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"approvalId\":\"0c7f10bfdfd06453a7df7e5c\",\"class\":\"B\",\"needsRole\":\"approver\",\"ok\":true,\"overlayId\":\"ovl_cebd9c14964b370b\",\"pending\":true}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"rateLimit\":{\"hard\":170}}",
+     "status": 200
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"netPolicy\":{\"net.correlation\":\"monitor\"}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "net-correlation-c",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "class C requires integrityConfirm=DISABLE-INTEGRITY\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"netPolicy\":{\"net.correlation\":\"monitor\"}}",
+     "status": 400
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"routes\":{\"/\":\"off\"}}",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "route-balanced-off-b",
+     "path": "settings/overlays",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.proposed",
+       "fail_reason": "class=B overlayId=ovl_5cf5e022d0d5261a",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "approval.requested",
+       "fail_reason": "settings.overlay pending class=B id=9b855842cd58782a48de5d6d",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"approvalId\":\"9b855842cd58782a48de5d6d\",\"class\":\"B\",\"needsRole\":\"approver\",\"ok\":true,\"overlayId\":\"ovl_5cf5e022d0d5261a\",\"pending\":true}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"routes\":{\"/\":\"off\"}}",
+     "status": 200
+    }
+   ]
+  },
+  {
+   "attachError": "",
+   "attachRecords": [],
+   "name": "rollback-dual-control",
+   "setup": {
+    "store": "empty"
+   },
+   "steps": [
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"scoring\":{\"challengeAt\":20}}",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "propose-a",
+     "path": "settings/overlays",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.proposed",
+       "fail_reason": "class=A overlayId=ovl_777ec0d05e4bfb37",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.applied",
+       "fail_reason": "settings.overlay applied class=A id=ovl_777ec0d05e4bfb37",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "config.changed",
+       "fail_reason": "config_version=cfg-f4c0fa435788",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"applied\":true,\"class\":\"A\",\"configVersion\":\"cfg-f4c0fa435788\",\"ok\":true,\"overlayId\":\"ovl_777ec0d05e4bfb37\"}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"scoring\":{\"challengeAt\":20}}",
+     "status": 200
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\"}",
+     "contentType": "application/json",
+     "cv": "cfg-f4c0fa435788",
+     "kind": "request",
+     "method": "POST",
+     "name": "rollback-a-pending",
+     "path": "settings/rollback",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "approval.requested",
+       "fail_reason": "settings rollback pending id=fe78fc74e6ad07311d85c080",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"approvalId\":\"fe78fc74e6ad07311d85c080\",\"needsRole\":\"approver\",\"ok\":true,\"pending\":true}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-f4c0fa435788\"}",
+     "status": 200
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-f4c0fa435788",
+     "kind": "request",
+     "method": "POST",
+     "name": "approve-rollback",
+     "path": "approvals/$AID",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.rolled_back",
+       "fail_reason": "settings.overlay rolled back to empty dual-control op-1→appr-1",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "config.changed",
+       "fail_reason": "config_version=cfg-77fcaf51b74b",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"committed\":\"settings.overlay.rollback\",\"configVersion\":\"cfg-77fcaf51b74b\",\"ok\":true}\n",
+     "role": "approver",
+     "sentBody": "",
+     "status": 200
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "GET",
+     "name": "list-empty",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "{\"active\":null,\"effective\":{\"configVersion\":\"cfg-77fcaf51b74b\",\"globalMonitor\":false,\"killSwitch\":false,\"gates\":{\"gate.attest_floor\":\"enforce\",\"gate.ban\":\"enforce\",\"gate.inject\":\"enforce\",\"gate.recon_sweep\":\"enforce\",\"gate.smuggle\":\"enforce\",\"gate.spoof_header\":\"enforce\",\"gate.verdict_token\":\"enforce\"},\"hardRules\":{},\"challengeAt\":30,\"denyAt\":70,\"layerCap\":60,\"routes\":{\"/\":\"balanced\",\"/checkout\":\"strict\"},\"rateWindowSec\":10,\"rateSoft\":60,\"rateHard\":120,\"emptyOverlay\":true}}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"hardRules\":{\"HR-12\":\"monitor\"}}",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "propose-b",
+     "path": "settings/overlays",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.proposed",
+       "fail_reason": "class=B overlayId=ovl_8e90ffa1d0bbef08",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "approval.requested",
+       "fail_reason": "settings.overlay pending class=B id=bb14f66aed31679a47f14584",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"approvalId\":\"bb14f66aed31679a47f14584\",\"class\":\"B\",\"needsRole\":\"approver\",\"ok\":true,\"overlayId\":\"ovl_8e90ffa1d0bbef08\",\"pending\":true}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"hardRules\":{\"HR-12\":\"monitor\"}}",
+     "status": 200
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"scoring\":{\"denyAt\":60}}",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "propose-a-meanwhile",
+     "path": "settings/overlays",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.proposed",
+       "fail_reason": "class=A overlayId=ovl_c2e29d1ec5ad7fc5",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.applied",
+       "fail_reason": "settings.overlay applied class=A id=ovl_c2e29d1ec5ad7fc5",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "config.changed",
+       "fail_reason": "config_version=cfg-f93551f6337f",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"applied\":true,\"class\":\"A\",\"configVersion\":\"cfg-f93551f6337f\",\"ok\":true,\"overlayId\":\"ovl_c2e29d1ec5ad7fc5\"}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"scoring\":{\"denyAt\":60}}",
+     "status": 200
+    },
+    {
+     "body": "",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-f93551f6337f",
+     "kind": "request",
+     "method": "POST",
+     "name": "approve-stale-b",
+     "path": "approvals/$AID",
+     "records": [
+      {
+       "actor_kind": "system",
+       "event_type": "settings.overlay.rejected",
+       "fail_reason": "CAS: parentConfigVersion mismatch (stale)",
+       "mode": "monitor"
+      }
+     ],
+     "response": "CAS: parentConfigVersion mismatch (stale)\n",
+     "role": "approver",
+     "sentBody": "",
+     "status": 409
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\"}",
+     "contentType": "application/json",
+     "cv": "cfg-f93551f6337f",
+     "kind": "request",
+     "method": "POST",
+     "name": "rollback-a-pending-2",
+     "path": "settings/rollback",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "approval.requested",
+       "fail_reason": "settings rollback pending id=234b7e478ff034738795968a",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"approvalId\":\"234b7e478ff034738795968a\",\"needsRole\":\"approver\",\"ok\":true,\"pending\":true}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-f93551f6337f\"}",
+     "status": 200
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"scoring\":{\"denyAt\":55}}",
+     "contentType": "application/json",
+     "cv": "cfg-f93551f6337f",
+     "kind": "request",
+     "method": "POST",
+     "name": "propose-a-again",
+     "path": "settings/overlays",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.proposed",
+       "fail_reason": "class=A overlayId=ovl_2e5d4abb69a39424",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.applied",
+       "fail_reason": "settings.overlay applied class=A id=ovl_2e5d4abb69a39424",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "config.changed",
+       "fail_reason": "config_version=cfg-d9ead519121a",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"applied\":true,\"class\":\"A\",\"configVersion\":\"cfg-d9ead519121a\",\"ok\":true,\"overlayId\":\"ovl_2e5d4abb69a39424\"}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-f93551f6337f\",\"scoring\":{\"denyAt\":55}}",
+     "status": 200
+    },
+    {
+     "body": "",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-d9ead519121a",
+     "kind": "request",
+     "method": "POST",
+     "name": "approve-stale-rollback",
+     "path": "approvals/$AID",
+     "records": [
+      {
+       "actor_kind": "system",
+       "event_type": "settings.overlay.rejected",
+       "fail_reason": "CAS: parentConfigVersion mismatch (stale)",
+       "mode": "monitor"
+      }
+     ],
+     "response": "CAS: parentConfigVersion mismatch (stale)\n",
+     "role": "approver",
+     "sentBody": "",
+     "status": 409
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-d9ead519121a",
+     "kind": "request",
+     "method": "GET",
+     "name": "list",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "{\"active\":{\"schemaVersion\":\"1.0.0\",\"overlayId\":\"ovl_2e5d4abb69a39424\",\"createdAt\":\"2026-11-19T13:15:25.718975814Z\",\"createdBy\":\"op-1\",\"status\":\"active\",\"parentConfigVersion\":\"cfg-f93551f6337f\",\"mutationClass\":\"A\",\"scoring\":{\"denyAt\":55}},\"effective\":{\"configVersion\":\"cfg-d9ead519121a\",\"globalMonitor\":false,\"killSwitch\":false,\"gates\":{\"gate.attest_floor\":\"enforce\",\"gate.ban\":\"enforce\",\"gate.inject\":\"enforce\",\"gate.recon_sweep\":\"enforce\",\"gate.smuggle\":\"enforce\",\"gate.spoof_header\":\"enforce\",\"gate.verdict_token\":\"enforce\"},\"hardRules\":{},\"challengeAt\":30,\"denyAt\":55,\"layerCap\":60,\"routes\":{\"/\":\"balanced\",\"/checkout\":\"strict\"},\"rateWindowSec\":10,\"rateSoft\":60,\"rateHard\":120,\"overlayId\":\"ovl_2e5d4abb69a39424\",\"overlayStatus\":\"active\",\"emptyOverlay\":false}}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    }
+   ]
+  },
+  {
+   "attachError": "",
+   "attachRecords": [],
+   "name": "kill-switch",
+   "setup": {
+    "store": "empty"
+   },
+   "steps": [
+    {
+     "kind": "kill",
+     "on": true
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-e89fa042f43b",
+     "kind": "request",
+     "method": "GET",
+     "name": "effective-kill",
+     "path": "settings/effective",
+     "records": [],
+     "response": "{\"effective\":{\"configVersion\":\"cfg-e89fa042f43b\",\"globalMonitor\":true,\"killSwitch\":true,\"gates\":{\"gate.attest_floor\":\"enforce\",\"gate.ban\":\"enforce\",\"gate.inject\":\"enforce\",\"gate.recon_sweep\":\"enforce\",\"gate.smuggle\":\"enforce\",\"gate.spoof_header\":\"enforce\",\"gate.verdict_token\":\"enforce\"},\"hardRules\":{},\"challengeAt\":30,\"denyAt\":70,\"layerCap\":60,\"routes\":{\"/\":\"balanced\",\"/checkout\":\"strict\"},\"rateWindowSec\":10,\"rateSoft\":60,\"rateHard\":120,\"emptyOverlay\":true},\"storeAttached\":true}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"hardRules\":{\"HR-12\":\"monitor\"}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-e89fa042f43b",
+     "kind": "request",
+     "method": "POST",
+     "name": "b-blocked",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "kill switch engaged: loosening overlays blocked\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-e89fa042f43b\",\"hardRules\":{\"HR-12\":\"monitor\"}}",
+     "status": 409
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"rateLimit\":{\"hard\":100}}",
+     "contentType": "application/json",
+     "cv": "cfg-e89fa042f43b",
+     "kind": "request",
+     "method": "POST",
+     "name": "a-applies",
+     "path": "settings/overlays",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.proposed",
+       "fail_reason": "class=A overlayId=ovl_7131faec067dac90",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.applied",
+       "fail_reason": "settings.overlay applied class=A id=ovl_7131faec067dac90",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "config.changed",
+       "fail_reason": "config_version=cfg-240c71161bc6",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"applied\":true,\"class\":\"A\",\"configVersion\":\"cfg-240c71161bc6\",\"ok\":true,\"overlayId\":\"ovl_7131faec067dac90\"}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-e89fa042f43b\",\"rateLimit\":{\"hard\":100}}",
+     "status": 200
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\"}",
+     "contentType": "application/json",
+     "cv": "cfg-240c71161bc6",
+     "kind": "request",
+     "method": "POST",
+     "name": "rollback-a-pending",
+     "path": "settings/rollback",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "approval.requested",
+       "fail_reason": "settings rollback pending id=da995b51bbd02b76eca278d6",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"approvalId\":\"da995b51bbd02b76eca278d6\",\"needsRole\":\"approver\",\"ok\":true,\"pending\":true}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-240c71161bc6\"}",
+     "status": 200
+    },
+    {
+     "kind": "kill",
+     "on": false
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-0caaea2db7d1",
+     "kind": "request",
+     "method": "GET",
+     "name": "effective-released",
+     "path": "settings/effective",
+     "records": [],
+     "response": "{\"effective\":{\"configVersion\":\"cfg-0caaea2db7d1\",\"globalMonitor\":false,\"killSwitch\":false,\"gates\":{\"gate.attest_floor\":\"enforce\",\"gate.ban\":\"enforce\",\"gate.inject\":\"enforce\",\"gate.recon_sweep\":\"enforce\",\"gate.smuggle\":\"enforce\",\"gate.spoof_header\":\"enforce\",\"gate.verdict_token\":\"enforce\"},\"hardRules\":{},\"challengeAt\":30,\"denyAt\":70,\"layerCap\":60,\"routes\":{\"/\":\"balanced\",\"/checkout\":\"strict\"},\"rateWindowSec\":10,\"rateSoft\":60,\"rateHard\":100,\"overlayId\":\"ovl_7131faec067dac90\",\"overlayStatus\":\"active\",\"emptyOverlay\":false},\"storeAttached\":true}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    }
+   ]
+  },
+  {
+   "attachError": "",
+   "attachRecords": [],
+   "name": "dry-run",
+   "setup": {
+    "store": "empty"
+   },
+   "steps": [
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\",\"scoring\":{\"challengeAt\":40}}",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "dry-low-n",
+     "path": "settings/dry-run",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.dry_run.completed",
+       "fail_reason": "n=0 class=B",
+       "mode": "monitor"
+      }
+     ],
+     "response": "{\"class\":\"B\",\"confidence\":\"approximate\",\"minN\":50,\"n\":0,\"note\":\"aggregate-only; not a freeze claim; empty store → usable=false\",\"usable\":false}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-77fcaf51b74b\",\"scoring\":{\"challengeAt\":40}}",
+     "status": 200
+    },
+    {
+     "body": "{\"scoring\":{\"challengeAt\":40}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "dry-auditor",
+     "path": "settings/dry-run",
+     "records": [],
+     "response": "role auditor not permitted\n",
+     "role": "auditor",
+     "sentBody": "{\"scoring\":{\"challengeAt\":40}}",
+     "status": 403
+    },
+    {
+     "kind": "emit",
+     "records": [
+      {
+       "event": "scoring.evaluated",
+       "risk": 0,
+       "rules": [
+        "HR-12",
+        "HR-3"
+       ]
+      },
+      {
+       "event": "enforcement.deny",
+       "risk": 7,
+       "rules": null
+      },
+      {
+       "event": "enforcement.challenge.issued",
+       "risk": 14,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 21,
+       "rules": null
+      },
+      {
+       "event": "gate.decision",
+       "risk": 28,
+       "rules": null
+      },
+      {
+       "event": "scoring.evaluated",
+       "risk": 35,
+       "rules": [
+        "HR-12"
+       ]
+      },
+      {
+       "event": "enforcement.deny",
+       "risk": 42,
+       "rules": null
+      },
+      {
+       "event": "enforcement.challenge.issued",
+       "risk": 49,
+       "rules": [
+        "HR-12",
+        "HR-3"
+       ]
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 56,
+       "rules": null
+      },
+      {
+       "event": "gate.decision",
+       "risk": 63,
+       "rules": null
+      },
+      {
+       "event": "scoring.evaluated",
+       "risk": 70,
+       "rules": [
+        "HR-12"
+       ]
+      },
+      {
+       "event": "enforcement.deny",
+       "risk": 77,
+       "rules": null
+      },
+      {
+       "event": "enforcement.challenge.issued",
+       "risk": 84,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 91,
+       "rules": null
+      },
+      {
+       "event": "gate.decision",
+       "risk": 98,
+       "rules": [
+        "HR-12",
+        "HR-3"
+       ]
+      },
+      {
+       "event": "scoring.evaluated",
+       "risk": 4,
+       "rules": [
+        "HR-12"
+       ]
+      },
+      {
+       "event": "enforcement.deny",
+       "risk": 11,
+       "rules": null
+      },
+      {
+       "event": "enforcement.challenge.issued",
+       "risk": 18,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 25,
+       "rules": null
+      },
+      {
+       "event": "gate.decision",
+       "risk": 32,
+       "rules": null
+      },
+      {
+       "event": "scoring.evaluated",
+       "risk": 39,
+       "rules": [
+        "HR-12"
+       ]
+      },
+      {
+       "event": "enforcement.deny",
+       "risk": 46,
+       "rules": [
+        "HR-12",
+        "HR-3"
+       ]
+      },
+      {
+       "event": "enforcement.challenge.issued",
+       "risk": 53,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 60,
+       "rules": null
+      },
+      {
+       "event": "gate.decision",
+       "risk": 67,
+       "rules": null
+      },
+      {
+       "event": "scoring.evaluated",
+       "risk": 74,
+       "rules": [
+        "HR-12"
+       ]
+      },
+      {
+       "event": "enforcement.deny",
+       "risk": 81,
+       "rules": null
+      },
+      {
+       "event": "enforcement.challenge.issued",
+       "risk": 88,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 95,
+       "rules": [
+        "HR-12",
+        "HR-3"
+       ]
+      },
+      {
+       "event": "gate.decision",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "scoring.evaluated",
+       "risk": 8,
+       "rules": [
+        "HR-12"
+       ]
+      },
+      {
+       "event": "enforcement.deny",
+       "risk": 15,
+       "rules": null
+      },
+      {
+       "event": "enforcement.challenge.issued",
+       "risk": 22,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 29,
+       "rules": null
+      },
+      {
+       "event": "gate.decision",
+       "risk": 36,
+       "rules": null
+      },
+      {
+       "event": "scoring.evaluated",
+       "risk": 43,
+       "rules": [
+        "HR-12",
+        "HR-3"
+       ]
+      },
+      {
+       "event": "enforcement.deny",
+       "risk": 50,
+       "rules": null
+      },
+      {
+       "event": "enforcement.challenge.issued",
+       "risk": 57,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 64,
+       "rules": null
+      },
+      {
+       "event": "gate.decision",
+       "risk": 71,
+       "rules": null
+      },
+      {
+       "event": "scoring.evaluated",
+       "risk": 78,
+       "rules": [
+        "HR-12"
+       ]
+      },
+      {
+       "event": "enforcement.deny",
+       "risk": 85,
+       "rules": null
+      },
+      {
+       "event": "enforcement.challenge.issued",
+       "risk": 92,
+       "rules": [
+        "HR-12",
+        "HR-3"
+       ]
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 99,
+       "rules": null
+      },
+      {
+       "event": "gate.decision",
+       "risk": 5,
+       "rules": null
+      },
+      {
+       "event": "scoring.evaluated",
+       "risk": 12,
+       "rules": [
+        "HR-12"
+       ]
+      },
+      {
+       "event": "enforcement.deny",
+       "risk": 19,
+       "rules": null
+      },
+      {
+       "event": "enforcement.challenge.issued",
+       "risk": 26,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 33,
+       "rules": null
+      },
+      {
+       "event": "gate.decision",
+       "risk": 40,
+       "rules": [
+        "HR-12",
+        "HR-3"
+       ]
+      },
+      {
+       "event": "scoring.evaluated",
+       "risk": 47,
+       "rules": [
+        "HR-12"
+       ]
+      },
+      {
+       "event": "enforcement.deny",
+       "risk": 54,
+       "rules": null
+      },
+      {
+       "event": "enforcement.challenge.issued",
+       "risk": 61,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 68,
+       "rules": null
+      },
+      {
+       "event": "gate.decision",
+       "risk": 75,
+       "rules": null
+      },
+      {
+       "event": "scoring.evaluated",
+       "risk": 82,
+       "rules": [
+        "HR-12"
+       ]
+      },
+      {
+       "event": "enforcement.deny",
+       "risk": 89,
+       "rules": [
+        "HR-12",
+        "HR-3"
+       ]
+      },
+      {
+       "event": "enforcement.challenge.issued",
+       "risk": 96,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "gate.decision",
+       "risk": 9,
+       "rules": null
+      },
+      {
+       "event": "scoring.evaluated",
+       "risk": 16,
+       "rules": [
+        "HR-12"
+       ]
+      },
+      {
+       "event": "enforcement.deny",
+       "risk": 23,
+       "rules": null
+      },
+      {
+       "event": "enforcement.challenge.issued",
+       "risk": 30,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 37,
+       "rules": [
+        "HR-12",
+        "HR-3"
+       ]
+      },
+      {
+       "event": "gate.decision",
+       "risk": 44,
+       "rules": null
+      },
+      {
+       "event": "scoring.evaluated",
+       "risk": 51,
+       "rules": [
+        "HR-12"
+       ]
+      },
+      {
+       "event": "enforcement.deny",
+       "risk": 58,
+       "rules": null
+      },
+      {
+       "event": "enforcement.challenge.issued",
+       "risk": 65,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 72,
+       "rules": null
+      },
+      {
+       "event": "gate.decision",
+       "risk": 79,
+       "rules": null
+      }
+     ]
+    },
+    {
+     "body": "{\"scoring\":{\"challengeAt\":40,\"denyAt\":80}}",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "dry-thresholds",
+     "path": "settings/dry-run",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.dry_run.completed",
+       "fail_reason": "n=56 class=B",
+       "mode": "monitor"
+      }
+     ],
+     "response": "{\"allowDelta\":23,\"challengeDelta\":22,\"class\":\"B\",\"confidence\":\"approximate\",\"denyDelta\":11,\"hardRuleDemoteHits\":0,\"minN\":50,\"n\":56,\"note\":\"aggregate-only; not a freeze claim; empty store → usable=false\",\"usable\":true}\n",
+     "role": "operator",
+     "sentBody": "{\"scoring\":{\"challengeAt\":40,\"denyAt\":80}}",
+     "status": 200
+    },
+    {
+     "body": "{\"hardRules\":{\"HR-12\":\"monitor\",\"HR-3\":\"monitor\"}}",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "dry-demote",
+     "path": "settings/dry-run",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.dry_run.completed",
+       "fail_reason": "n=56 class=B",
+       "mode": "monitor"
+      }
+     ],
+     "response": "{\"allowDelta\":33,\"challengeDelta\":14,\"class\":\"B\",\"confidence\":\"approximate\",\"denyDelta\":9,\"hardRuleDemoteHits\":28,\"minN\":50,\"n\":56,\"note\":\"aggregate-only; not a freeze claim; empty store → usable=false\",\"usable\":true}\n",
+     "role": "operator",
+     "sentBody": "{\"hardRules\":{\"HR-12\":\"monitor\",\"HR-3\":\"monitor\"}}",
+     "status": 200
+    },
+    {
+     "body": "{\"hardRules\":{\"HR-1\":\"monitor\"},\"scoring\":{\"challengeAt\":20}}",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "dry-class-c",
+     "path": "settings/dry-run",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.dry_run.completed",
+       "fail_reason": "n=56 class=C",
+       "mode": "monitor"
+      }
+     ],
+     "response": "{\"allowDelta\":12,\"challengeDelta\":28,\"class\":\"C\",\"confidence\":\"approximate\",\"denyDelta\":16,\"hardRuleDemoteHits\":0,\"minN\":50,\"n\":56,\"note\":\"aggregate-only; not a freeze claim; empty store → usable=false\",\"usable\":true}\n",
+     "role": "operator",
+     "sentBody": "{\"hardRules\":{\"HR-1\":\"monitor\"},\"scoring\":{\"challengeAt\":20}}",
+     "status": 200
+    },
+    {
+     "body": "{\"scoring\":{\"challengeAt\":99}}",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "dry-invalid",
+     "path": "settings/dry-run",
+     "records": [],
+     "response": "challengeAt 99.0 out of [10,60]\n",
+     "role": "operator",
+     "sentBody": "{\"scoring\":{\"challengeAt\":99}}",
+     "status": 400
+    },
+    {
+     "body": "{",
+     "contentType": "text/plain; charset=utf-8",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "dry-bad-json",
+     "path": "settings/dry-run",
+     "records": [],
+     "response": "bad request\n",
+     "role": "operator",
+     "sentBody": "{",
+     "status": 400
+    },
+    {
+     "kind": "emit",
+     "records": [
+      {
+       "event": "enforcement.allow",
+       "risk": 0,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 3,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 4,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 5,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 6,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 7,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 8,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 9,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 10,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 11,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 12,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 13,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 14,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 15,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 16,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 17,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 18,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 19,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 20,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 21,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 22,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 23,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 24,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 25,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 26,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 27,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 28,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 29,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 30,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 31,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 32,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 33,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 34,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 35,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 36,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 37,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 38,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 39,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 40,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 41,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 42,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 43,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 44,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 45,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 46,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 47,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 48,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 49,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 0,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 3,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 4,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 5,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 6,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 7,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 8,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 9,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 10,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 11,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 12,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 13,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 14,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 15,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 16,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 17,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 18,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 19,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 20,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 21,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 22,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 23,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 24,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 25,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 26,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 27,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 28,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 29,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 30,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 31,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 32,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 33,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 34,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 35,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 36,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 37,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 38,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 39,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 40,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 41,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 42,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 43,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 44,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 45,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 46,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 47,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 48,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 49,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 0,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 3,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 4,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 5,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 6,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 7,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 8,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 9,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 10,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 11,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 12,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 13,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 14,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 15,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 16,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 17,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 18,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 19,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 20,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 21,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 22,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 23,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 24,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 25,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 26,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 27,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 28,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 29,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 30,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 31,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 32,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 33,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 34,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 35,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 36,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 37,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 38,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 39,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 40,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 41,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 42,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 43,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 44,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 45,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 46,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 47,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 48,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 49,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 0,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 3,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 4,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 5,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 6,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 7,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 8,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 9,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 10,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 11,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 12,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 13,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 14,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 15,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 16,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 17,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 18,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 19,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 20,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 21,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 22,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 23,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 24,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 25,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 26,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 27,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 28,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 29,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 30,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 31,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 32,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 33,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 34,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 35,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 36,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 37,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 38,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 39,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 40,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 41,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 42,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 43,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 44,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 45,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 46,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 47,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 48,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 49,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 0,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 3,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 4,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 5,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 6,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 7,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 8,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 9,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 10,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 11,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 12,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 13,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 14,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 15,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 16,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 17,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 18,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 19,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 20,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 21,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 22,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 23,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 24,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 25,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 26,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 27,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 28,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 29,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 30,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 31,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 32,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 33,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 34,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 35,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 36,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 37,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 38,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 39,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 40,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 41,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 42,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 43,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 44,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 45,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 46,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 47,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 48,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 49,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 0,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 3,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 4,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 5,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 6,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 7,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 8,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 9,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 10,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 11,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 12,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 13,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 14,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 15,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 16,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 17,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 18,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 19,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 20,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 21,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 22,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 23,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 24,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 25,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 26,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 27,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 28,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 29,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 30,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 31,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 32,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 33,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 34,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 35,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 36,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 37,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 38,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 39,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 40,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 41,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 42,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 43,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 44,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 45,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 46,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 47,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 48,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 49,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 0,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 3,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 4,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 5,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 6,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 7,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 8,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 9,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 10,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 11,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 12,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 13,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 14,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 15,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 16,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 17,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 18,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 19,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 20,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 21,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 22,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 23,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 24,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 25,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 26,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 27,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 28,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 29,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 30,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 31,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 32,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 33,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 34,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 35,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 36,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 37,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 38,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 39,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 40,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 41,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 42,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 43,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 44,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 45,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 46,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 47,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 48,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 49,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 0,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 3,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 4,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 5,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 6,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 7,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 8,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 9,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 10,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 11,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 12,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 13,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 14,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 15,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 16,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 17,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 18,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 19,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 20,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 21,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 22,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 23,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 24,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 25,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 26,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 27,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 28,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 29,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 30,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 31,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 32,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 33,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 34,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 35,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 36,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 37,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 38,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 39,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 40,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 41,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 42,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 43,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 44,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 45,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 46,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 47,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 48,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 49,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 0,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 3,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 4,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 5,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 6,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 7,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 8,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 9,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 10,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 11,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 12,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 13,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 14,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 15,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 16,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 17,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 18,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 19,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 20,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 21,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 22,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 23,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 24,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 25,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 26,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 27,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 28,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 29,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 30,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 31,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 32,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 33,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 34,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 35,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 36,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 37,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 38,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 39,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 40,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 41,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 42,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 43,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 44,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 45,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 46,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 47,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 48,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 49,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 0,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 3,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 4,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 5,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 6,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 7,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 8,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 9,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 10,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 11,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 12,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 13,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 14,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 15,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 16,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 17,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 18,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 19,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 20,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 21,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 22,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 23,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 24,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 25,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 26,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 27,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 28,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 29,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 30,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 31,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 32,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 33,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 34,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 35,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 36,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 37,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 38,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 39,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 40,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 41,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 42,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 43,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 44,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 45,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 46,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 47,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 48,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 49,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 0,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 3,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 4,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 5,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 6,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 7,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 8,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 9,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 10,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 11,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 12,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 13,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 14,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 15,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 16,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 17,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 18,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 19,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 20,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 21,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 22,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 23,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 24,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 25,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 26,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 27,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 28,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 29,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 30,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 31,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 32,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 33,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 34,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 35,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 36,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 37,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 38,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 39,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 40,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 41,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 42,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 43,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 44,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 45,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 46,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 47,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 48,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 49,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 0,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 3,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 4,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 5,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 6,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 7,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 8,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 9,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 10,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 11,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 12,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 13,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 14,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 15,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 16,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 17,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 18,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 19,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 20,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 21,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 22,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 23,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 24,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 25,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 26,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 27,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 28,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 29,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 30,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 31,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 32,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 33,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 34,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 35,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 36,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 37,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 38,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 39,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 40,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 41,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 42,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 43,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 44,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 45,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 46,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 47,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 48,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 49,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 0,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 3,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 4,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 5,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 6,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 7,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 8,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 9,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 10,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 11,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 12,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 13,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 14,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 15,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 16,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 17,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 18,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 19,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 20,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 21,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 22,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 23,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 24,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 25,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 26,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 27,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 28,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 29,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 30,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 31,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 32,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 33,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 34,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 35,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 36,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 37,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 38,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 39,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 40,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 41,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 42,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 43,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 44,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 45,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 46,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 47,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 48,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 49,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 0,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 3,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 4,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 5,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 6,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 7,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 8,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 9,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 10,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 11,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 12,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 13,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 14,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 15,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 16,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 17,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 18,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 19,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 20,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 21,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 22,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 23,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 24,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 25,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 26,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 27,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 28,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 29,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 30,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 31,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 32,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 33,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 34,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 35,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 36,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 37,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 38,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 39,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 40,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 41,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 42,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 43,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 44,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 45,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 46,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 47,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 48,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 49,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 0,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 3,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 4,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 5,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 6,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 7,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 8,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 9,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 10,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 11,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 12,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 13,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 14,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 15,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 16,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 17,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 18,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 19,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 20,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 21,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 22,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 23,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 24,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 25,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 26,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 27,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 28,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 29,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 30,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 31,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 32,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 33,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 34,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 35,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 36,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 37,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 38,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 39,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 40,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 41,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 42,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 43,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 44,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 45,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 46,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 47,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 48,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 49,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 0,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 3,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 4,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 5,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 6,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 7,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 8,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 9,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 10,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 11,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 12,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 13,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 14,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 15,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 16,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 17,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 18,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 19,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 20,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 21,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 22,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 23,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 24,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 25,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 26,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 27,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 28,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 29,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 30,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 31,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 32,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 33,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 34,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 35,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 36,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 37,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 38,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 39,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 40,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 41,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 42,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 43,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 44,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 45,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 46,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 47,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 48,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 49,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 0,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 3,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 4,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 5,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 6,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 7,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 8,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 9,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 10,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 11,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 12,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 13,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 14,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 15,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 16,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 17,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 18,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 19,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 20,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 21,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 22,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 23,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 24,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 25,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 26,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 27,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 28,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 29,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 30,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 31,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 32,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 33,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 34,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 35,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 36,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 37,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 38,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 39,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 40,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 41,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 42,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 43,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 44,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 45,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 46,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 47,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 48,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 49,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 0,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 3,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 4,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 5,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 6,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 7,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 8,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 9,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 10,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 11,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 12,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 13,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 14,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 15,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 16,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 17,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 18,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 19,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 20,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 21,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 22,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 23,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 24,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 25,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 26,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 27,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 28,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 29,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 30,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 31,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 32,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 33,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 34,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 35,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 36,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 37,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 38,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 39,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 40,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 41,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 42,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 43,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 44,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 45,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 46,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 47,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 48,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 49,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 0,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 3,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 4,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 5,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 6,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 7,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 8,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 9,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 10,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 11,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 12,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 13,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 14,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 15,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 16,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 17,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 18,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 19,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 20,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 21,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 22,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 23,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 24,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 25,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 26,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 27,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 28,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 29,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 30,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 31,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 32,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 33,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 34,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 35,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 36,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 37,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 38,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 39,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 40,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 41,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 42,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 43,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 44,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 45,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 46,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 47,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 48,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 49,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 0,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 3,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 4,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 5,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 6,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 7,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 8,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 9,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 10,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 11,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 12,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 13,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 14,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 15,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 16,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 17,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 18,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 19,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 20,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 21,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 22,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 23,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 24,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 25,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 26,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 27,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 28,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 29,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 30,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 31,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 32,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 33,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 34,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 35,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 36,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 37,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 38,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 39,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 40,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 41,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 42,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 43,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 44,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 45,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 46,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 47,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 48,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 49,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 0,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 1,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 2,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 3,
+       "rules": null
+      },
+      {
+       "event": "enforcement.allow",
+       "risk": 4,
+       "rules": null
+      }
+     ]
+    },
+    {
+     "body": "{\"scoring\":{\"challengeAt\":25}}",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "POST",
+     "name": "dry-cap",
+     "path": "settings/dry-run",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.dry_run.completed",
+       "fail_reason": "n=1000 class=A",
+       "mode": "monitor"
+      }
+     ],
+     "response": "{\"allowDelta\":500,\"challengeDelta\":500,\"class\":\"A\",\"confidence\":\"approximate\",\"denyDelta\":0,\"hardRuleDemoteHits\":0,\"minN\":50,\"n\":1000,\"note\":\"aggregate-only; not a freeze claim; empty store → usable=false\",\"usable\":true}\n",
+     "role": "operator",
+     "sentBody": "{\"scoring\":{\"challengeAt\":25}}",
+     "status": 200
+    }
+   ]
+  },
+  {
+   "attachError": "",
+   "attachRecords": [],
+   "name": "expiry",
+   "setup": {
+    "overlay": "{\"schemaVersion\":\"1.0.0\",\"overlayId\":\"ovl_expired\",\"status\":\"active\",\"mutationClass\":\"B\",\"expiresAt\":\"2020-01-01T00:00:00Z\",\"hardRules\":{\"HR-12\":\"monitor\"}}",
+    "store": "overlay"
+   },
+   "steps": [
+    {
+     "json": "{\"configVersion\":\"cfg-aa6e7ee510ea\",\"globalMonitor\":false,\"killSwitch\":false,\"gates\":{\"gate.attest_floor\":\"enforce\",\"gate.ban\":\"enforce\",\"gate.inject\":\"enforce\",\"gate.recon_sweep\":\"enforce\",\"gate.smuggle\":\"enforce\",\"gate.spoof_header\":\"enforce\",\"gate.verdict_token\":\"enforce\"},\"hardRules\":{\"HR-12\":\"monitor\"},\"challengeAt\":30,\"denyAt\":70,\"layerCap\":60,\"routes\":{\"/\":\"balanced\",\"/checkout\":\"strict\"},\"rateWindowSec\":10,\"rateSoft\":60,\"rateHard\":120,\"overlayId\":\"ovl_expired\",\"overlayStatus\":\"active\",\"emptyOverlay\":false}",
+     "kind": "effective"
+    },
+    {
+     "kind": "kill",
+     "on": true
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-2bcbd9128914",
+     "kind": "request",
+     "method": "GET",
+     "name": "effective-kill-holds",
+     "path": "settings/effective",
+     "records": [],
+     "response": "{\"effective\":{\"configVersion\":\"cfg-2bcbd9128914\",\"globalMonitor\":true,\"killSwitch\":true,\"gates\":{\"gate.attest_floor\":\"enforce\",\"gate.ban\":\"enforce\",\"gate.inject\":\"enforce\",\"gate.recon_sweep\":\"enforce\",\"gate.smuggle\":\"enforce\",\"gate.spoof_header\":\"enforce\",\"gate.verdict_token\":\"enforce\"},\"hardRules\":{\"HR-12\":\"monitor\"},\"challengeAt\":30,\"denyAt\":70,\"layerCap\":60,\"routes\":{\"/\":\"balanced\",\"/checkout\":\"strict\"},\"rateWindowSec\":10,\"rateSoft\":60,\"rateHard\":120,\"overlayId\":\"ovl_expired\",\"overlayStatus\":\"active\",\"emptyOverlay\":false},\"storeAttached\":true}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    },
+    {
+     "kind": "kill",
+     "on": false
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-aa6e7ee510ea",
+     "kind": "request",
+     "method": "GET",
+     "name": "effective-expires",
+     "path": "settings/effective",
+     "records": [
+      {
+       "actor_kind": "system",
+       "event_type": "settings.overlay.expired",
+       "fail_reason": "overlayId=ovl_expired",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"effective\":{\"configVersion\":\"cfg-77fcaf51b74b\",\"globalMonitor\":false,\"killSwitch\":false,\"gates\":{\"gate.attest_floor\":\"enforce\",\"gate.ban\":\"enforce\",\"gate.inject\":\"enforce\",\"gate.recon_sweep\":\"enforce\",\"gate.smuggle\":\"enforce\",\"gate.spoof_header\":\"enforce\",\"gate.verdict_token\":\"enforce\"},\"hardRules\":{},\"challengeAt\":30,\"denyAt\":70,\"layerCap\":60,\"routes\":{\"/\":\"balanced\",\"/checkout\":\"strict\"},\"rateWindowSec\":10,\"rateSoft\":60,\"rateHard\":120,\"emptyOverlay\":true},\"storeAttached\":true}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    },
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "GET",
+     "name": "list-empty",
+     "path": "settings/overlays",
+     "records": [],
+     "response": "{\"active\":null,\"effective\":{\"configVersion\":\"cfg-77fcaf51b74b\",\"globalMonitor\":false,\"killSwitch\":false,\"gates\":{\"gate.attest_floor\":\"enforce\",\"gate.ban\":\"enforce\",\"gate.inject\":\"enforce\",\"gate.recon_sweep\":\"enforce\",\"gate.smuggle\":\"enforce\",\"gate.spoof_header\":\"enforce\",\"gate.verdict_token\":\"enforce\"},\"hardRules\":{},\"challengeAt\":30,\"denyAt\":70,\"layerCap\":60,\"routes\":{\"/\":\"balanced\",\"/checkout\":\"strict\"},\"rateWindowSec\":10,\"rateSoft\":60,\"rateHard\":120,\"emptyOverlay\":true}}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    }
+   ]
+  },
+  {
+   "attachError": "",
+   "attachRecords": [],
+   "name": "future-expiry",
+   "setup": {
+    "overlay": "{\"schemaVersion\":\"1.0.0\",\"overlayId\":\"ovl_future\",\"status\":\"active\",\"mutationClass\":\"B\",\"expiresAt\":\"2100-01-01T00:00:00Z\",\"gates\":{\"gate.ban\":\"monitor\"}}",
+    "store": "overlay"
+   },
+   "steps": [
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-1f0cd5f44137",
+     "kind": "request",
+     "method": "GET",
+     "name": "effective",
+     "path": "settings/effective",
+     "records": [],
+     "response": "{\"effective\":{\"configVersion\":\"cfg-1f0cd5f44137\",\"globalMonitor\":false,\"killSwitch\":false,\"gates\":{\"gate.attest_floor\":\"enforce\",\"gate.ban\":\"monitor\",\"gate.inject\":\"enforce\",\"gate.recon_sweep\":\"enforce\",\"gate.smuggle\":\"enforce\",\"gate.spoof_header\":\"enforce\",\"gate.verdict_token\":\"enforce\"},\"hardRules\":{},\"challengeAt\":30,\"denyAt\":70,\"layerCap\":60,\"routes\":{\"/\":\"balanced\",\"/checkout\":\"strict\"},\"rateWindowSec\":10,\"rateSoft\":60,\"rateHard\":120,\"overlayId\":\"ovl_future\",\"overlayStatus\":\"active\",\"emptyOverlay\":false},\"storeAttached\":true}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    },
+    {
+     "body": "{\"parentConfigVersion\":\"$CV\"}",
+     "contentType": "application/json",
+     "cv": "cfg-1f0cd5f44137",
+     "kind": "request",
+     "method": "POST",
+     "name": "rollback",
+     "path": "settings/rollback",
+     "records": [
+      {
+       "actor_kind": "operator",
+       "event_type": "settings.overlay.rolled_back",
+       "fail_reason": "settings.overlay rolled back to empty",
+       "mode": "enforce"
+      },
+      {
+       "actor_kind": "operator",
+       "event_type": "config.changed",
+       "fail_reason": "config_version=cfg-77fcaf51b74b",
+       "mode": "enforce"
+      }
+     ],
+     "response": "{\"configVersion\":\"cfg-77fcaf51b74b\",\"ok\":true,\"rolledBack\":true}\n",
+     "role": "operator",
+     "sentBody": "{\"parentConfigVersion\":\"cfg-1f0cd5f44137\"}",
+     "status": 200
+    }
+   ]
+  },
+  {
+   "attachError": "",
+   "attachRecords": [
+    {
+     "actor_kind": "system",
+     "event_type": "settings.store.degraded",
+     "fail_reason": "load: active overlay invalid and no LKG",
+     "mode": "monitor"
+    }
+   ],
+   "name": "invalid-active-file",
+   "setup": {
+    "raw": "{\"schemaVersion\":\"1.0.0\",\"overlayId\":\"ovl_bad\",\"gates\":{\"gate.nope\":\"enforce\"}}",
+    "store": "raw"
+   },
+   "steps": [
+    {
+     "body": "",
+     "contentType": "application/json",
+     "cv": "cfg-77fcaf51b74b",
+     "kind": "request",
+     "method": "GET",
+     "name": "effective-warning",
+     "path": "settings/effective",
+     "records": [],
+     "response": "{\"effective\":{\"configVersion\":\"cfg-77fcaf51b74b\",\"globalMonitor\":false,\"killSwitch\":false,\"gates\":{\"gate.attest_floor\":\"enforce\",\"gate.ban\":\"enforce\",\"gate.inject\":\"enforce\",\"gate.recon_sweep\":\"enforce\",\"gate.smuggle\":\"enforce\",\"gate.spoof_header\":\"enforce\",\"gate.verdict_token\":\"enforce\"},\"hardRules\":{},\"challengeAt\":30,\"denyAt\":70,\"layerCap\":60,\"routes\":{\"/\":\"balanced\",\"/checkout\":\"strict\"},\"rateWindowSec\":10,\"rateSoft\":60,\"rateHard\":120,\"emptyOverlay\":true},\"storeAttached\":true,\"storeWarning\":\"active overlay invalid and no LKG\"}\n",
+     "role": "auditor",
+     "sentBody": "",
+     "status": 200
+    }
+   ]
+  },
+  {
+   "attachError": "settings: invalid effective rate limit 10/500/120",
+   "attachRecords": [],
+   "name": "runtime-refused-attach",
+   "setup": {
+    "overlay": "{\"schemaVersion\":\"1.0.0\",\"overlayId\":\"ovl_rate\",\"status\":\"active\",\"rateLimit\":{\"soft\":500}}",
+    "store": "overlay"
+   },
+   "steps": []
+  }
+ ]
+}

@@ -343,6 +343,16 @@ impl ApprovalStore {
         Ok((action, ticket))
     }
 
+    /// Remove a pending action without committing it (a create whose audit
+    /// record could not be written). Returns whether it was pending.
+    pub fn withdraw(&self, id: &str) -> bool {
+        self.pending
+            .lock()
+            .unwrap_or_else(PoisonError::into_inner)
+            .remove(id)
+            .is_some()
+    }
+
     /// Unexpired pending actions in id order; expired ones are removed.
     pub fn pending(&self, now: Duration) -> Vec<PendingAction> {
         let mut pending = self.pending.lock().unwrap_or_else(PoisonError::into_inner);
