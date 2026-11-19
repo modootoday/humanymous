@@ -11,10 +11,10 @@
 //! - Spoof-header gate: `spoof_gate` is the pure port of legacy gates.go
 //!   `spoofHeaderGate` (strip, HR-27b record, deny when enforcing).
 //!
-//! `http::origin_request` drops internal headers before forwarding; running
-//! `spoof_gate` and attaching the origin-cloak header are not wired into
-//! `Application` (owner decision 2026-11-16 leaves serving composition
-//! undecided). Deliberate fail-closed differences, pinned by tests: an origin
+//! `http::origin_request` drops internal headers before forwarding and, with
+//! a configured `edge.origin_key_hex`, attaches the origin-cloak token for the
+//! current epoch; `Application` runs `spoof_gate` on the served path
+//! (`application::edge`). Deliberate fail-closed differences, pinned by tests: an origin
 //! key shorter than `MIN_ORIGIN_KEY` bytes is refused (Go accepted any), and
 //! `spoof_gate` strips internal headers even when none carried a value.
 use crate::audit::record::Record;

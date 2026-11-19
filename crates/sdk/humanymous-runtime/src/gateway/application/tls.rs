@@ -246,7 +246,16 @@ impl Application {
                     .map_err(|_| Rejection::new(503, "serialization"))?;
                 return Ok(bytes);
             }
+            Decision::Gate(gate) => {
+                let head = request.method == "HEAD";
+                return http::text_frame(gate.status, gate.body, &gate.fields, head)
+                    .map_err(|_| Rejection::new(503, "serialization"));
+            }
+            Decision::Probe(status, body) => {
+                return Ok(http::probe_frame(status, body, request.method == "HEAD"));
+            }
             Decision::Origin { deadline, upstream } => {
+                let origin_auth = self.origin_auth()?;
                 self.check_deadline(deadline, crate::authority::now_ms())?;
                 let remaining = deadline
                     .checked_sub(crate::authority::now_ms()?)
@@ -274,7 +283,11 @@ impl Application {
                         return Err(Rejection::new(503, "service_stopping").into());
                     }
                     origin_stream
-                        .write_all(&http::origin_request(request, &self.config.scope.authority))
+                        .write_all(&http::origin_request(
+                            request,
+                            &self.config.scope.authority,
+                            origin_auth.as_deref(),
+                        ))
                         .await
                         .map_err(|error| OriginError::io("origin_write", &error))?;
                     let mut bytes = Vec::new();
@@ -291,6 +304,9 @@ impl Application {
                 outcome.map_err(|error| self.upstream_failure(&upstream, error, false))?
             }
         };
+        let mut response = response;
+        // TLS listener: HSTS only when configured (owner decision C10).
+        response.secure(self.config.edge.hsts);
         let headers = ack
             .as_ref()
             .map(|value| value.headers(response.status))
