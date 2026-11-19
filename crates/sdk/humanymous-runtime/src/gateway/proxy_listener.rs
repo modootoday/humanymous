@@ -17,9 +17,9 @@
 //! delays later accepts by at most the read timeout. Only the bytes of the
 //! header are consumed; the TLS ClientHello that follows stays on the stream.
 //! The returned [`Peer`] is only for address-keyed state; it never becomes TLS
-//! or original-client provenance (network-capture N01). Which listener the
-//! gate composition wraps is not decided here (owner decision 2026-11-16,
-//! `.agents/retirement/owner-decisions-2026-11-16.md`).
+//! or original-client provenance (network-capture N01). This module does not
+//! choose which listener the gate composition wraps; no composition root
+//! wraps one yet.
 use crate::network::proxy::{self, Allowlist, FIXED_LEN, Header, Peer, Refusal};
 use std::io;
 use std::net::SocketAddr;

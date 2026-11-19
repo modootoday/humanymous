@@ -114,7 +114,7 @@ fn cidr_difference(input: &str) -> Option<Difference> {
         "" | " " | "," | " , " => (None, Err(Refusal::Allowlist)),
         "10.1.2.3/024" => (Some(&["10.1.2.0/24"]), Err(Refusal::Cidr)),
         "10.0.0.0/08" => (Some(&["10.0.0.0/8"]), Err(Refusal::Cidr)),
-        "::ffff:10.0.0.1" => (Some(&["::/32"]), Ok(vec!["10.0.0.1/32"])),
+        "::ffff:10.0.0.1" => (Some(&["::/32"]), Err(Refusal::Cidr)),
         "::ffff:0:0/96" => (Some(&["0.0.0.0/0"]), Err(Refusal::TooBroad)),
         "::ffff:10.0.0.0/100" => (Some(&["0.0.0.0/4"]), Err(Refusal::TooBroad)),
         _ => return None,
@@ -194,10 +194,15 @@ fn trust_gate_matches_go_golden() {
                 assert!(go);
                 assert_eq!(Allowlist::parse(list), Err(Refusal::TooBroad));
             }
-            // Go parsed this host entry as `::/32`; Rust keeps the IPv4 host.
+            // Go parsed this bare entry as `::/32` and did not trust the
+            // IPv4 host; Rust refuses the entry, so it never trusts it either.
             "::ffff:10.0.0.1" => {
-                assert!(!go);
-                assert!(Allowlist::parse(list).unwrap().trusts_peer(peer));
+                assert!(!go, "{list} {peer}");
+                assert_eq!(Allowlist::parse(list), Err(Refusal::Cidr));
+                assert!(
+                    Allowlist::parse("172.40.0.0/24, ::ffff:10.0.0.1").is_err(),
+                    "one bare mapped entry refuses the whole list"
+                );
             }
             _ => assert_eq!(
                 Allowlist::parse(list).unwrap().trusts_peer(peer),

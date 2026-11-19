@@ -15,9 +15,14 @@
 //! Deliberate fail-closed differences from Go, pinned by the golden test:
 //! - An empty allowlist is a refusal (Go returned no networks and no error).
 //! - A prefix length with a leading zero (`/08`) is refused (Go accepted it).
-//! - An IPv4-mapped IPv6 entry is an IPv4 network whose breadth is checked
-//!   after mapping: Go accepted `::ffff:0:0/96`, which trusts every IPv4 peer,
-//!   and turned a bare `::ffff:a.b.c.d` into `::/32`.
+//! - An IPv4-mapped IPv6 entry with a prefix is an IPv4 network whose breadth
+//!   is checked after mapping: Go accepted `::ffff:0:0/96`, which trusts every
+//!   IPv4 peer.
+//! - A bare IPv4-mapped entry (`::ffff:a.b.c.d`, no prefix) is refused. Go
+//!   appended `/32` because the address has an IPv4 form and so parsed it as
+//!   the IPv6 network `::/32`, which did not trust that IPv4 host; keeping the
+//!   host instead would trust a peer Go did not, so the entry is refused and
+//!   the operator must write `a.b.c.d` or `::ffff:a.b.c.d/128`.
 //! - More than [`MAX_ENTRIES`] entries is a refusal.
 use std::io::Read;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
@@ -65,6 +70,11 @@ impl Cidr {
             None => (text, None),
         };
         let address: IpAddr = address.parse().map_err(|_| Refusal::Cidr)?;
+        // Go read a bare mapped address as `::/32`; neither that nor the
+        // IPv4 host it names is kept (see the module documentation).
+        if prefix.is_none() && matches!(address, IpAddr::V6(v6) if v6.to_ipv4_mapped().is_some()) {
+            return Err(Refusal::Cidr);
+        }
         let width = if address.is_ipv4() { 32 } else { 128 };
         let prefix = match prefix {
             None => width,
