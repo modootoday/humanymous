@@ -483,6 +483,39 @@ range, sweeps nothing. A refused store sweep or poisoned store lock reports
 503 `ban_ledger`; serving continues because the ban gate refuses on the same
 ledger. Pinned by `gateway::tests::maintenance`.
 
+Credential, upgrade and sweep gates (FM11 lane D, 2026-11-19): the rest of
+the legacy `ServeHTTP` chain is the pure kernel `gateway::gates`, replayed
+against the Go capture `tests/fixtures/gateway/gates-go-golden.json`, and
+`gateway::application::gates` composes agent auth (Web Bot Auth), PAT,
+WebAuthn with the credential fan-out cap, upgrade and sweep in Go order for
+proxied requests. Same detection freeze as above.
+
+- They run after session authorization and admission and immediately before
+  scoring, not before route inventory as in Go: a credential is a trust
+  upgrade over scoring, never a substitute for request integrity, and the
+  session is the signed RIT session, not the legacy `hsid` cookie.
+- Each capability is opt-in (`Application::install_agent_keys`,
+  `install_pat_issuers`, `install_webauthn`, `install_sweep` with its
+  `gate.recon_sweep` mode); the service binary installs none. WebAuthn is
+  refused without the trusted PROXY v2 client address, which the fan-out
+  subnet needs; without an attributed client the fast path is withheld.
+- A trust upgrade forwards without scoring; its record carries the request
+  id and commitment of the ALLOW, so an `upstream.error` links to it. A deny
+  answers Go's 403 with the incident pointer and, after authorization, the
+  counter acknowledgement. Every record is appended before its effect; an
+  append failure poisons the epoch and answers 503 `durable_audit`.
+- Every inventoried route enforces and none carries the attestation floor:
+  route presets and the kill switch are not on the served path, so the
+  attestation floor audit is never written there. The verdict-token gate is
+  not composed because nothing on the served path mints `hmn_vt`; the upgrade
+  gate therefore denies every WebSocket upgrade (HR-26), as Go did without a
+  token key.
+- The sweep detector and fan-out tracker run on a monotonic epoch and are
+  swept by `Application::gc`; an enforcing detector that cannot count answers
+  503 `sweep_unavailable`, a non-enforcing one continues unrecorded.
+
+Pinned by `gateway::gates::tests` and `gateway::tests::gates`.
+
 ### Gate operational logging in the runtime binary (FM11 lane B, 2026-11-19)
 
 The legacy cmd/gate `-log-level`, `-log-console-format`, `-log-console-stream`,

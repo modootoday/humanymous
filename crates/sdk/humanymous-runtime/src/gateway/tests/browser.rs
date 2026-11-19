@@ -9,7 +9,7 @@ use humanymous_collector::session::{
 };
 use humanymous_core::integrity::request::browser::PROTOCOL;
 
-fn configured(origin: std::net::SocketAddr) -> Configuration {
+pub(super) fn configured(origin: std::net::SocketAddr) -> Configuration {
     let mut config = configuration(origin);
     config.browser = Some(BrowserPolicy {
         origin: "http://owned.test".into(),
@@ -18,7 +18,7 @@ fn configured(origin: std::net::SocketAddr) -> Configuration {
     config.timeout_ms = 5000;
     config
 }
-fn scope() -> ClientScope {
+pub(super) fn scope() -> ClientScope {
     ClientScope {
         installation: "install".into(),
         tenant: "tenant".into(),
@@ -27,7 +27,7 @@ fn scope() -> ClientScope {
         authority: "owned.test".into(),
     }
 }
-fn browser_request(method: &str, target: &str, body: Vec<u8>) -> Request {
+pub(super) fn browser_request(method: &str, target: &str, body: Vec<u8>) -> Request {
     let mut req = request(method, target, body);
     req.headers.extend([
         ("Origin".into(), "http://owned.test".into()),
@@ -40,7 +40,7 @@ fn browser_request(method: &str, target: &str, body: Vec<u8>) -> Request {
     }
     req
 }
-fn signed(client: &mut ClientSession, req: &mut Request, now: u64) -> u64 {
+pub(super) fn signed(client: &mut ClientSession, req: &mut Request, now: u64) -> u64 {
     let signed = client
         .begin(
             &ClientRequest {

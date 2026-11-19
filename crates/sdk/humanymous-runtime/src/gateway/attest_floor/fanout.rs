@@ -21,6 +21,7 @@
 //! over-long field), the upgrade is withheld on every route and the request
 //! takes the ordinary pipeline. Go's unbounded map never refused.
 use crate::network::correlation::{FleetInput, Registry, Stats};
+use crate::network::history::Unavailable;
 use std::time::Duration;
 
 /// Go `DefaultCredFanoutCap`.
@@ -64,6 +65,12 @@ impl CredentialFanout {
     /// Effective cap.
     pub fn cap(&self) -> usize {
         self.cap
+    }
+
+    /// Evict credentials whose window has passed (Go `credCorr.GC` in
+    /// `Server.GC`).
+    pub fn gc(&mut self, now: Duration) -> Result<(), Unavailable> {
+        self.registry.gc(now)
     }
 
     /// Count this verified assertion and decide the fast path.

@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 853,
-      "macos": 853,
-      "windows": 821
+      "linux": 866,
+      "macos": 866,
+      "windows": 834
     },
     "common_test_names": [
       "gateway::admin_approval::tests::approval_store_rules",
@@ -705,6 +705,19 @@
       "gateway::tests::edge::spoofed_trust_headers_are_denied_before_origin",
       "gateway::tests::edge::unaudited_gate_effect_is_refused_and_poisons_the_epoch",
       "gateway::tests::fresh_collector_provenance_gates_required_collector",
+      "gateway::tests::gates::forged_agent_signature_is_denied_before_scoring",
+      "gateway::tests::gates::gate_deny_fields_precede_the_acknowledgement",
+      "gateway::tests::gates::maintenance_sweeps_installed_gate_kernels",
+      "gateway::tests::gates::pat_is_not_presentable_under_the_native_profile",
+      "gateway::tests::gates::pat_upgrades_once_under_the_browser_profile",
+      "gateway::tests::gates::sweep_gate_denies_the_ninth_session_and_monitor_only_records",
+      "gateway::tests::gates::unaudited_trust_upgrade_fails_closed",
+      "gateway::tests::gates::uninstalled_gates_leave_the_served_path_unchanged",
+      "gateway::tests::gates::unknown_agent_key_is_recorded_and_scored",
+      "gateway::tests::gates::upgrade_without_verdict_token_is_denied",
+      "gateway::tests::gates::verified_agent_signature_forwards_without_scoring",
+      "gateway::tests::gates::webauthn_assertion_upgrades_only_with_an_attributed_client",
+      "gateway::tests::gates::webauthn_needs_the_trusted_client_address",
       "gateway::tests::integration::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies",
       "gateway::tests::ip_reputation::datacenter_classification_challenges_and_shadow_categories_change_nothing",
       "gateway::tests::ip_reputation::ip_reputation_configuration_is_optional_and_reported",

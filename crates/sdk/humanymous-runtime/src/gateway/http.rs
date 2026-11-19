@@ -201,7 +201,7 @@ pub(in crate::gateway) async fn write_text(
     stream: &mut (impl AsyncWrite + Unpin),
     status: u16,
     body: &str,
-    fields: &[(&'static str, String)],
+    fields: &[(impl AsRef<str>, String)],
     head: bool,
 ) -> std::io::Result<()> {
     stream
@@ -230,7 +230,7 @@ pub(in crate::gateway) fn probe_frame(status: u16, body: &str, head: bool) -> Ve
 pub(in crate::gateway) fn text_frame(
     status: u16,
     body: &str,
-    fields: &[(&'static str, String)],
+    fields: &[(impl AsRef<str>, String)],
     head: bool,
 ) -> std::io::Result<Vec<u8>> {
     let mut header = format!(
@@ -239,6 +239,7 @@ pub(in crate::gateway) fn text_frame(
         body.len() + 1
     );
     for (name, value) in fields {
+        let name = name.as_ref();
         if !name.bytes().all(token) || value.bytes().any(|b| !(32..127).contains(&b)) {
             return Err(std::io::Error::other("invalid gate response field"));
         }

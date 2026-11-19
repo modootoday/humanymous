@@ -7,17 +7,19 @@
 //! fan-out tracker once a minute, so fingerprint- and address-keyed maps could
 //! not grow without bound under bot churn. Here the one serialized
 //! [`Application`] owner sweeps every kernel it composes: the session epoch
-//! (expired sessions) and the installed ban store, on the same one-minute
-//! cadence, between requests in both accept loops. Kernels the served path
-//! does not compose (verdict store, sweep detector, anomaly shadow, credential
-//! fan-out) are not held by this owner and keep their own tested `gc`.
+//! (expired sessions), the installed ban store and, once installed, the sweep
+//! detector and the WebAuthn credential fan-out tracker (FM11 lane D), on the
+//! same one-minute cadence, between requests in both accept loops. Kernels
+//! the served path does not compose (verdict store, anomaly shadow) are not
+//! held by this owner and keep their own tested `gc`.
 //!
 //! Deliberate differences:
 //! - A sweep never moves the session epoch's clock and never poisons it: a
 //!   wall clock behind the last observed request sweeps nothing, and the next
 //!   request still fails closed on the rollback as before.
 //! - A ban store sweep the rate history refuses, or a poisoned store lock, is
-//!   reported as `503 ban_ledger`; the accept loop keeps serving because the
+//!   reported as `503 ban_ledger`, and a refused detector or tracker sweep as
+//!   `503 sweep_unavailable`; the accept loop keeps serving because the
 //!   ban gate itself refuses on the same ledger (fail closed), as Go ignored
 //!   GC outcomes.
 use super::Application;
@@ -62,6 +64,7 @@ impl Application {
         ban_now: Option<Duration>,
     ) -> Result<(), Rejection> {
         self.sessions.sweep(now_ms);
+        let installed = self.installed.gc();
         if let (Some(bans), Some(now)) = (self.bans.as_ref(), ban_now) {
             let ledger = Rejection::new(503, "ban_ledger");
             bans.store
@@ -70,7 +73,7 @@ impl Application {
                 .gc(now)
                 .map_err(|_| ledger)?;
         }
-        Ok(())
+        installed
     }
 
     /// Sessions held by the serving epoch (tests).

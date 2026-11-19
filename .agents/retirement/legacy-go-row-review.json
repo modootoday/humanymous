@@ -3439,14 +3439,16 @@
     "crates/sdk/humanymous-runtime/src/gateway/application.rs",
     "crates/sdk/humanymous-runtime/src/gateway/service.rs",
     "crates/sdk/humanymous-runtime/src/gateway/http.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/application/maintenance.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/application/maintenance.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application/gates.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::real_tcp_audit_before_origin_and_negative_counter_zero",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::client_abort_during_audit_never_dispatches_origin",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::signed_method_target_body_scope_policy_and_deadline_cannot_change",
     "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::accept_loop_sweeps_on_the_maintenance_tick",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::maintenance_sweeps_installed_gate_kernels"
    ],
    "go_test_map": {},
    "gaps": [
@@ -3459,13 +3461,14 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust application gives an audited loopback forwarder, not the Gate server composition (B13/B14). FM11 lane B (2026-11-19): the Go gcLoop composite (verdict sessions plus the installed ban store, 60 s) now runs on both accept loops (gateway::application::maintenance); the integration flow (bot beacon denied at the edge, human page untouched, sealed chain verifies) is pinned by tests/integration.rs.",
+   "notes": "Rust application gives an audited loopback forwarder, not the Gate server composition (B13/B14). FM11 lane B (2026-11-19): the Go gcLoop composite (verdict sessions plus the installed ban store, 60 s) now runs on both accept loops (gateway::application::maintenance); the integration flow (bot beacon denied at the edge, human page untouched, sealed chain verifies) is pinned by tests/integration.rs. FM11 lane D (2026-11-19): the optional NewServer capabilities AgentKeys, PATIssuers, WebAuthnCreds (with credCorr) and the sweep detector are Application::install_* on the served path, and Server.GC sweeps the installed sweep detector and fan-out tracker; the service binary installs none of them.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::client_abort_during_audit_never_dispatches_origin": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::real_tcp_audit_before_origin_and_negative_counter_zero": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::signed_method_target_body_scope_policy_and_deadline_cannot_change": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::accept_loop_sweeps_on_the_maintenance_tick": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::maintenance_sweeps_installed_gate_kernels": "passed"
    }
   },
   {
@@ -3477,7 +3480,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/session.rs",
     "crates/sdk/humanymous-runtime/src/gateway/application/edge.rs",
     "crates/sdk/humanymous-runtime/src/gateway/configuration/edge.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/gates.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/gates.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application/gates.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization",
@@ -3498,7 +3502,20 @@
     "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::webauthn_gate_and_fanout_cap_match_go",
     "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::sweep_gate_matches_go",
     "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::sweep_detector_refusal_fails_closed_only_when_enforcing",
-    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::gates_skip_their_kernels_where_go_did"
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::gates_skip_their_kernels_where_go_did",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::verified_agent_signature_forwards_without_scoring",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::forged_agent_signature_is_denied_before_scoring",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::unknown_agent_key_is_recorded_and_scored",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::uninstalled_gates_leave_the_served_path_unchanged",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::upgrade_without_verdict_token_is_denied",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::sweep_gate_denies_the_ninth_session_and_monitor_only_records",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::unaudited_trust_upgrade_fails_closed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::webauthn_needs_the_trusted_client_address",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::webauthn_assertion_upgrades_only_with_an_attributed_client",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::pat_is_not_presentable_under_the_native_profile",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::pat_upgrades_once_under_the_browser_profile",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::maintenance_sweeps_installed_gate_kernels",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::gate_deny_fields_precede_the_acknowledgement"
    ],
    "go_test_map": {
     "TestSettingsVerdictTokenMonitorDoesNotFastPath": "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::verdict_token_gate_matches_go",
@@ -3507,16 +3524,15 @@
     "TestSettingsAttestationFloorMonitorAllowsVerdictTokenFastPath": "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::verdict_token_gate_matches_go"
    },
    "gaps": [
-    "verdict-token gate: the decision is ported (gateway::gates::verdict_token, Go-golden parity) but not composed on the served path",
-    "upgrade gate: the decision is ported (gateway::gates::upgrade, Go-golden parity) but not composed on the served path",
-    "agent-auth, PAT and WebAuthn gates: the decisions are ported (gateway::gates::{agent_auth, pat, webauthn}, Go-golden parity over the real credential kernels) but not composed on the served path",
-    "sweep gate: the decision is ported (gateway::gates::sweep, Go-golden parity over the real sweep detector) but not composed on the served path",
-    "attestation floor audit: the record is ported (gateway::gates::attestation_floor_audit, Go-golden parity) but the served path has no route presets, so no route carries the attestation floor",
+    "verdict-token gate: the decision is ported (gateway::gates::verdict_token, Go-golden parity) but not composed on the served path: nothing there mints hmn_vt (the gate control plane that issued it is not composed), so the upgrade gate always sees no valid token, as Go did without a token key",
+    "attestation floor audit: the record is ported (gateway::gates::attestation_floor_audit, Go-golden parity) but the served path has no route presets, so no route carries the attestation floor and the record is never written there",
+    "credential gates replace scoring only after request integrity: Go let a verified credential stand in for the hsid cookie session before any scoring; the served path runs them after RIT authorization and admission (owner question)",
+    "credential and sweep gate provisioning: Application::install_agent_keys, install_pat_issuers, install_webauthn and install_sweep compose the gates on the served path, but the service binary installs none (no configuration document for key directories, issuers, credentials or the gate.recon_sweep mode; gate default modes open in issue #75)",
     "ban gate provisioning: Application runs gateway::ban::gate once a store is installed (Application::install_bans), but the service binary (gateway::service) provisions no store because no rate-limit configuration document exists, and the store's monotonic epoch is not shared with an admin plane's serving epoch"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Only framing and RIT/verdict application were present (B13 M). FM11 slice 18: the served path now runs the legacy ServeHTTP gate order for proxied requests (gateway::application::edge): after the reserved control routes, the ban gate (ban::gate::evaluate, HR-21) and then the spoof-header gate (guard::spoof_gate, HR-27b), before route inventory, authorization and scoring. Modes come from the startup edge section (default enforce, Go's default without a settings store). Responses and records match the Go capture tests/fixtures/gateway/edge-gates-go-golden.json (Go 1.25.3 at 981d25c, network none). Named deviations: the ban gate needs the trusted PROXY v2 client address and refuses an unattributed connection when enforcing (503 ban_client_address); a ledger refusal is 503 ban_ledger; records carry no subject pseudonym and verdict DENY; an append failure poisons the epoch. Owner decision 2026-11-16 left serving composition undecided; this wiring needs owner review. Signal IDs and scoring are unchanged. Review follow-up (FM11 slice 18): a non-enforcing spoof gate now strips the forged trust headers from the scored and forwarded view, as Go's spoofHeaderGate called stripInbound(r) before the mode check; request integrity and the commitment still cover the sent bytes. A refusal to a HEAD request keeps the head and Content-Length without the body, as Go's server did. FM11 lane B (2026-11-19): the installed ban store is now swept by the Application maintenance tick (Server.gc parity); ban-store provisioning, the shared ban clock, metrics and default modes remain owner questions in issue #75. FM11 lane D slice 1 (2026-11-19): the remaining ServeHTTP gates (verdict token with the attestation floor, upgrade, agent auth, PAT, WebAuthn with the fan-out cap, sweep) and the attestation floor audit record are a pure kernel, gateway::gates, replayed against the Go capture tests/fixtures/gateway/gates-go-golden.json (981d25c, Go 1.26.3, network none; plan:root/20261119134717). Named differences, each pinned: uppercase verdicts, a neutral Web Bot Auth keyid recorded as presented, a fan-out observation the registry cannot admit withholds the upgrade without a record, and an enforcing sweep detector that cannot count is an error (fail closed). The settings_runtime monitor-mode cases are mapped at kernel level; the settings overlay that sets the modes is not composed.",
+   "notes": "Only framing and RIT/verdict application were present (B13 M). FM11 slice 18: the served path now runs the legacy ServeHTTP gate order for proxied requests (gateway::application::edge): after the reserved control routes, the ban gate (ban::gate::evaluate, HR-21) and then the spoof-header gate (guard::spoof_gate, HR-27b), before route inventory, authorization and scoring. Modes come from the startup edge section (default enforce, Go's default without a settings store). Responses and records match the Go capture tests/fixtures/gateway/edge-gates-go-golden.json (Go 1.25.3 at 981d25c, network none). Named deviations: the ban gate needs the trusted PROXY v2 client address and refuses an unattributed connection when enforcing (503 ban_client_address); a ledger refusal is 503 ban_ledger; records carry no subject pseudonym and verdict DENY; an append failure poisons the epoch. Owner decision 2026-11-16 left serving composition undecided; this wiring needs owner review. Signal IDs and scoring are unchanged. Review follow-up (FM11 slice 18): a non-enforcing spoof gate now strips the forged trust headers from the scored and forwarded view, as Go's spoofHeaderGate called stripInbound(r) before the mode check; request integrity and the commitment still cover the sent bytes. A refusal to a HEAD request keeps the head and Content-Length without the body, as Go's server did. FM11 lane B (2026-11-19): the installed ban store is now swept by the Application maintenance tick (Server.gc parity); ban-store provisioning, the shared ban clock, metrics and default modes remain owner questions in issue #75. FM11 lane D slice 1 (2026-11-19): the remaining ServeHTTP gates (verdict token with the attestation floor, upgrade, agent auth, PAT, WebAuthn with the fan-out cap, sweep) and the attestation floor audit record are a pure kernel, gateway::gates, replayed against the Go capture tests/fixtures/gateway/gates-go-golden.json (981d25c, Go 1.26.3, network none; plan:root/20261119134717). Named differences, each pinned: uppercase verdicts, a neutral Web Bot Auth keyid recorded as presented, a fan-out observation the registry cannot admit withholds the upgrade without a record, and an enforcing sweep detector that cannot count is an error (fail closed). The settings_runtime monitor-mode cases are mapped at kernel level; the settings overlay that sets the modes is not composed. FM11 lane D slice 2 (2026-11-19): gateway::application::gates composes agent auth, PAT, WebAuthn (with the fan-out cap), upgrade and sweep in Go order on the served path, after session authorization and admission and before scoring; a trust upgrade forwards without scoring and its record carries the request id and commitment; a deny answers Go 403 with the incident pointer (plus the counter acknowledgement after authorization); every record is appended before its effect. All routes enforce and none is attested (no presets); WebAuthn needs the PROXY v2 client address; an enforcing sweep detector that cannot count answers 503 sweep_unavailable. Pinned by gateway::tests::gates.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::missing_client_is_challenge_and_missing_planes_are_not_ready": "passed",
@@ -3536,7 +3552,20 @@
     "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::webauthn_gate_and_fanout_cap_match_go": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::sweep_gate_matches_go": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::sweep_detector_refusal_fails_closed_only_when_enforcing": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::gates_skip_their_kernels_where_go_did": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::gates_skip_their_kernels_where_go_did": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::verified_agent_signature_forwards_without_scoring": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::forged_agent_signature_is_denied_before_scoring": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::unknown_agent_key_is_recorded_and_scored": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::uninstalled_gates_leave_the_served_path_unchanged": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::upgrade_without_verdict_token_is_denied": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::sweep_gate_denies_the_ninth_session_and_monitor_only_records": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::unaudited_trust_upgrade_fails_closed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::webauthn_needs_the_trusted_client_address": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::webauthn_assertion_upgrades_only_with_an_attributed_client": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::pat_is_not_presentable_under_the_native_profile": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::pat_upgrades_once_under_the_browser_profile": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::maintenance_sweeps_installed_gate_kernels": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::gate_deny_fields_precede_the_acknowledgement": "passed"
    }
   },
   {
@@ -3875,7 +3904,7 @@
    "go_test_map": {},
    "gaps": [
     "Challenge binding is off by default until Runtime issues PrivateToken challenges",
-    "Not wired into request routing; Runtime composition owns that"
+    "Wired into the served path by Application::install_agent_keys, install_pat_issuers or install_webauthn (FM11 lane D, gateway::application::gates), but the service binary installs no key directory, issuer or credential registry"
    ],
    "retire_basis": null,
    "confidence": "high",
@@ -5638,7 +5667,7 @@
    "go_test_map": {},
    "gaps": [
     "No server-issued challenge; replay relies on the signature counter, as in Go",
-    "Not wired into request routing; Runtime composition owns that"
+    "Wired into the served path by Application::install_agent_keys, install_pat_issuers or install_webauthn (FM11 lane D, gateway::application::gates), but the service binary installs no key directory, issuer or credential registry"
    ],
    "retire_basis": null,
    "confidence": "high",
@@ -5731,7 +5760,7 @@
    "go_test_map": {},
    "gaps": [
     "Live JWKS key-directory fetch remains a future seam, as in Go",
-    "Not wired into request routing; Runtime composition owns that"
+    "Wired into the served path by Application::install_agent_keys, install_pat_issuers or install_webauthn (FM11 lane D, gateway::application::gates), but the service binary installs no key directory, issuer or credential registry"
    ],
    "retire_basis": null,
    "confidence": "high",

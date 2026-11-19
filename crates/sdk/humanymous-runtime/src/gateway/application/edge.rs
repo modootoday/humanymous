@@ -87,6 +87,25 @@ pub struct GateResponse {
     pub body: &'static str,
 }
 
+impl GateResponse {
+    /// Fields to write: the gate's own, then the counter acknowledgement of
+    /// an authorized request (a gate that runs after session authorization).
+    pub(in crate::gateway) fn with_ack(
+        &self,
+        ack: Option<&crate::gateway::browser::Ack>,
+    ) -> Result<Vec<(String, String)>, Rejection> {
+        let mut fields: Vec<(String, String)> = self
+            .fields
+            .iter()
+            .map(|(name, value)| ((*name).to_owned(), value.clone()))
+            .collect();
+        if let Some(ack) = ack {
+            fields.extend(ack.headers(self.status)?);
+        }
+        Ok(fields)
+    }
+}
+
 /// Readiness gate shared with a supervisor (Go `ControlPlane.SetReady`).
 /// Liveness is unaffected.
 #[derive(Clone)]
