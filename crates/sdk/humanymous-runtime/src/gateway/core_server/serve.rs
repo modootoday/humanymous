@@ -24,12 +24,12 @@ use std::future::Future;
 use std::io::{self, Read, Write};
 use std::net::{Shutdown, SocketAddr, TcpStream};
 use std::sync::Arc;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 use tokio::net::TcpListener;
 
 /// Bytes drained after a response so unread request bytes do not reset it.
 const DRAIN_LIMIT: usize = 256 * 1024;
-/// Time allowed for that drain.
+/// Absolute time allowed for that drain.
 const DRAIN_TIME: Duration = Duration::from_millis(500);
 
 /// Listener options.
@@ -37,7 +37,9 @@ const DRAIN_TIME: Duration = Duration::from_millis(500);
 pub struct Options {
     /// TLS server configuration; `None` serves plaintext.
     pub tls: Option<Arc<ServerConfig>>,
-    /// Whole-connection I/O budget (TLS handshake, request read and write).
+    /// Whole-connection I/O budget: one absolute deadline over the TLS
+    /// handshake (when TLS), the request read and the response write. A peer
+    /// that trickles bytes cannot extend it.
     pub budget: Duration,
     /// Concurrent connection cap.
     pub cap: ConnectionCap,
@@ -114,13 +116,20 @@ pub fn serve_connection(
     let remote = stream.peer_addr()?.to_string();
     match &options.tls {
         None => {
+            let deadline = Bounded::deadline(options.budget)?;
             stream.set_read_timeout(Some(options.budget))?;
             stream.set_write_timeout(Some(options.budget))?;
             let peek = peek_tcp(&stream);
             let connection = Connection::plaintext(peek.wire_order());
-            let mut reader = peek.into_replay(&stream);
+            let mut reader = peek.into_replay(Bounded {
+                stream: &stream,
+                deadline,
+            });
             let request = read_request(&mut reader, &remote, |head| server.body_limit(head));
-            let mut writer = &stream;
+            let mut writer = Bounded {
+                stream: &stream,
+                deadline,
+            };
             respond(server, request, &connection, &mut writer)?;
             drain(&stream);
             Ok(())
@@ -171,8 +180,10 @@ fn respond(
 
 fn drain(stream: &TcpStream) {
     let _ = stream.shutdown(Shutdown::Write);
-    let _ = stream.set_read_timeout(Some(DRAIN_TIME));
-    let mut reader = stream;
+    let Ok(deadline) = Bounded::deadline(DRAIN_TIME) else {
+        return;
+    };
+    let mut reader = Bounded { stream, deadline };
     let mut left = DRAIN_LIMIT;
     let mut buffer = [0u8; 4096];
     while left > 0 {
@@ -180,6 +191,49 @@ fn drain(stream: &TcpStream) {
             Ok(0) | Err(_) => break,
             Ok(n) => left -= n,
         }
+    }
+}
+
+/// A plaintext socket under one absolute deadline, as the TLS capture
+/// transport bounds its whole lifetime: each read or write gets only the
+/// time left, so a slow peer cannot reset the budget byte by byte.
+struct Bounded<'a> {
+    stream: &'a TcpStream,
+    deadline: Instant,
+}
+
+impl Bounded<'_> {
+    fn deadline(budget: Duration) -> io::Result<Instant> {
+        Instant::now()
+            .checked_add(budget)
+            .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidInput, "budget out of range"))
+    }
+
+    fn remaining(&self) -> io::Result<Duration> {
+        self.deadline
+            .checked_duration_since(Instant::now())
+            .filter(|left| !left.is_zero())
+            .ok_or_else(|| io::Error::new(io::ErrorKind::TimedOut, "connection budget"))
+    }
+}
+
+impl Read for Bounded<'_> {
+    fn read(&mut self, buffer: &mut [u8]) -> io::Result<usize> {
+        self.stream.set_read_timeout(Some(self.remaining()?))?;
+        let mut stream = self.stream;
+        stream.read(buffer)
+    }
+}
+
+impl Write for Bounded<'_> {
+    fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
+        self.stream.set_write_timeout(Some(self.remaining()?))?;
+        let mut stream = self.stream;
+        stream.write(bytes)
+    }
+    fn flush(&mut self) -> io::Result<()> {
+        let mut stream = self.stream;
+        stream.flush()
     }
 }
 

@@ -33,6 +33,9 @@
 //!   a session id over 128 bytes is refused (400); Go accepted both.
 //! - A store, limiter or scoring failure fails closed (503) instead of
 //!   proceeding unmetered; a KPI counter overflow drops the count only.
+//!   A velocity level is committed only after its escalation is scored, and
+//!   a solve is scored before its trace is reserved, so a 503 neither hides
+//!   the escalation from the next request nor spends the trace.
 //! - A trace with a sample outside the int64 range is rejected as unusable
 //!   (Go hashed an implementation-defined integer).
 //! - The step-up receipt is omitted when the session id cannot be sealed.
@@ -486,11 +489,7 @@ impl PassFlow {
         }
         let previous = self
             .store
-            .with_session(session, now.mono, |state| {
-                let previous = state.velocity_level;
-                state.velocity_level = previous.max(level);
-                previous
-            })
+            .with_session(session, now.mono, |state| state.velocity_level)
             .map_err(Failure::Store)?;
         if let Some(signal) = velocity_escalation(level, previous) {
             let mut report = backend.report(session).unwrap_or_default();
@@ -498,6 +497,13 @@ impl PassFlow {
             backend.score(&mut report).ok_or(Failure::Scoring)?;
             backend.store_scored(session, report, now.wall);
         }
+        // Committed only once the escalation is scored and stored, so a
+        // scoring failure (503) cannot hide the signal from the next request.
+        self.store
+            .with_session(session, now.mono, |state| {
+                state.velocity_level = state.velocity_level.max(level);
+            })
+            .map_err(Failure::Store)?;
         Ok((level, session_level))
     }
 
@@ -834,12 +840,14 @@ impl PassFlow {
         let Some(digest) = trace_digest(proof) else {
             return Ok(reject(self, backend, "unusable interaction trace"));
         };
-        if !self.store.reserve_trace(digest, now.mono) {
-            return Ok(reject(self, backend, "duplicate interaction trace"));
-        }
+        // Scored before the trace is reserved: scoring is pure, and a scoring
+        // failure (503) must not spend the trace on an unrecorded solve.
         let mut report = backend.report(session).unwrap_or_default();
         append(&mut report, vec![solved_signal()]);
         let scored = backend.score(&mut report).ok_or(Failure::Scoring)?;
+        if !self.store.reserve_trace(digest, now.mono) {
+            return Ok(reject(self, backend, "duplicate interaction trace"));
+        }
         self.record(&kpi_label, attempt.difficulty, true);
         self.store
             .with_session(session, now.mono, |state| state.solved = true)

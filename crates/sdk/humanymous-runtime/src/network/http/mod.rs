@@ -3,6 +3,8 @@ mod client;
 mod headers;
 mod peek;
 mod projection;
+#[cfg(feature = "gateway")]
+pub(crate) use client::local as local_address;
 pub use client::{
     client_ip, client_subnet, direct_peer, forwarded_ip, is_datacenter_ip, is_trusted_proxy,
     parse_ip,

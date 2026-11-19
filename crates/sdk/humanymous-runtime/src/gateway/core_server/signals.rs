@@ -8,11 +8,10 @@
 //! TTL); Go's map grew without bound. A full table refuses the observation
 //! instead of evicting a live session.
 use crate::network::history::Unavailable;
-use crate::network::http::parse_ip;
+use crate::network::http::{local_address as local, parse_ip};
 use humanymous_core::signals::observation::{Signal, Source, Verdict};
 use serde_json::json;
 use std::collections::BTreeMap;
-use std::net::IpAddr;
 use std::time::Duration;
 
 /// Bounded per-session last-fingerprint memory (Go `app.lastFP`).
@@ -74,17 +73,6 @@ impl FingerprintTracker {
     /// Whether no session is retained.
     pub fn is_empty(&self) -> bool {
         self.last.is_empty()
-    }
-}
-
-// Go IsLoopback || IsPrivate || IsLinkLocalUnicast.
-fn local(ip: IpAddr) -> bool {
-    match ip {
-        IpAddr::V4(v4) => v4.is_loopback() || v4.is_private() || v4.is_link_local(),
-        IpAddr::V6(v6) => {
-            let head = v6.segments()[0];
-            v6.is_loopback() || head & 0xfe00 == 0xfc00 || head & 0xffc0 == 0xfe80
-        }
     }
 }
 

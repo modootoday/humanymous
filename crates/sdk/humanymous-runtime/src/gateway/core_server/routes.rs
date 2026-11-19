@@ -2,7 +2,9 @@
 //! Core (Go `routes`, `withSecurityHeaders`, `withTrafficLog`,
 //! `withObservability`, handlers.go, resource_handlers.go, ops.go `healthz`,
 //! and the `ServeMux`/`FileServer`/`ServeFile` behaviour they relied on).
-use super::http::{Request, Response, clean, clean_mux_path, http_date, unescape};
+use super::http::{
+    Request, Response, clean, clean_mux_path, escape_path, escaped_path, http_date, unescape,
+};
 use super::{Connection, CoreServer, Now, PassRequest, State, timestamp};
 use crate::gateway::demo;
 use crate::gateway::logging::{Completion, HttpVersion, observe};
@@ -23,7 +25,7 @@ use serde_json::{Value, json};
 use std::cell::Cell;
 use std::collections::BTreeMap;
 use std::panic::{AssertUnwindSafe, catch_unwind, resume_unwind};
-use std::path::Path;
+use std::path::{Component, Path};
 use std::sync::MutexGuard;
 
 /// Go `withSecurityHeaders` (SoT-11): set on every response, before the
@@ -102,9 +104,15 @@ pub(super) enum Dispatch {
 /// Go 1.26 `ServeMux`: a subtree pattern without its trailing slash redirects
 /// to it, then an unclean escaped path redirects to its cleaned form (both
 /// 307, query preserved); otherwise the most specific pattern handles.
+///
+/// The mux sees Go's `URL.EscapedPath`, and each `Location` is Go's
+/// `url.URL{Path}.String()`: the path is escaped again, so a literal `\`
+/// leaves as `%255C` and can never read as a protocol-relative `/\host`.
 pub(super) fn dispatch(request: &Request) -> Option<Dispatch> {
-    let (escaped, query) = request.split_target()?;
-    let cleaned = clean_mux_path(escaped);
+    let (raw, query) = request.split_target()?;
+    let decoded = unescape(raw, false)?;
+    let escaped = escaped_path(raw, &decoded);
+    let cleaned = clean_mux_path(&escaped);
     let with_query = |path: String| {
         if query.is_empty() {
             path
@@ -116,11 +124,12 @@ pub(super) fn dispatch(request: &Request) -> Option<Dispatch> {
     if found.is_none() && !cleaned.ends_with('/') {
         let slashed = format!("{cleaned}/");
         if matched(&slashed).is_some() {
-            return Some(Dispatch::Redirect(with_query(slashed)));
+            let location = format!("{}/", clean_mux_path(&decoded));
+            return Some(Dispatch::Redirect(with_query(escape_path(&location))));
         }
     }
     if cleaned != escaped {
-        return Some(Dispatch::Redirect(with_query(cleaned)));
+        return Some(Dispatch::Redirect(with_query(escape_path(&cleaned))));
     }
     Some(Dispatch::Handle(found.unwrap_or(Route::Page)))
 }
@@ -224,7 +233,64 @@ fn file_response(file: &Path) -> resource::Response {
     }
 }
 
+/// Go `isReservedBaseName` after `isReservedName`'s trimming: a Windows
+/// device name (`CON`, `NUL`, `COM1`, `CONIN$`, ...). A device name with an
+/// extension is always reserved here, where Go asked `FullPath`.
+fn reserved_device(element: &str) -> bool {
+    let base = element
+        .split(['.', ':'])
+        .next()
+        .unwrap_or_default()
+        .trim_end_matches(' ')
+        .to_ascii_uppercase();
+    match base.as_str() {
+        "CON" | "PRN" | "AUX" | "NUL" | "CONIN$" | "CONOUT$" => true,
+        _ => {
+            (base.starts_with("COM") || base.starts_with("LPT"))
+                && matches!(
+                    base.get(3..),
+                    Some(
+                        "1" | "2"
+                            | "3"
+                            | "4"
+                            | "5"
+                            | "6"
+                            | "7"
+                            | "8"
+                            | "9"
+                            | "\u{b9}"
+                            | "\u{b2}"
+                            | "\u{b3}"
+                    )
+                )
+        }
+    }
+}
+
+/// Go `http.Dir.Open`'s `filepath.Localize` guard for the cleaned name
+/// below the web root. Go on Windows refuses `\`, `:`, NUL and device
+/// names; this refuses `\`, `:` and NUL on every OS (device names on
+/// Windows only) and then requires every component to be `Normal`, so OS
+/// path syntax (a separator, a drive or UNC prefix, a root, `..`) can never
+/// leave the root. `None` is refused.
+pub(super) fn local_name(name: &str, windows: bool) -> Option<&Path> {
+    if name.contains(['\\', ':', '\0']) {
+        return None;
+    }
+    if windows && name.split('/').any(reserved_device) {
+        return None;
+    }
+    let path = Path::new(name);
+    path.components()
+        .all(|component| matches!(component, Component::Normal(_)))
+        .then_some(path)
+}
+
 /// Go `http.FileServer(http.Dir(root))` behind `StripPrefix("/static/")`.
+///
+/// A name refused by [`local_name`] answers 404 `404 page not found`: the
+/// status Go 1.26 returns for these targets on Linux, where they are plain
+/// absent file names (Go on Windows maps its refusal to 500).
 fn static_file(root: &str, path: &str, query: &str) -> resource::Response {
     let Some(stripped) = path.strip_prefix("/static/") else {
         return not_found();
@@ -238,7 +304,10 @@ fn static_file(root: &str, path: &str, query: &str) -> resource::Response {
         return local_redirect("./", query);
     }
     let name = clean(&url);
-    let file = Path::new(root).join(name.trim_start_matches('/'));
+    let Some(local) = local_name(name.trim_start_matches('/'), cfg!(windows)) else {
+        return not_found();
+    };
+    let file = Path::new(root).join(local);
     let meta = match std::fs::metadata(&file) {
         Ok(meta) => meta,
         Err(error) => return file_error(&error),

@@ -808,6 +808,119 @@ fn static_file_server_follows_go_redirects_without_listing() {
 }
 
 #[test]
+fn static_local_name_refuses_os_path_syntax() {
+    use super::routes::local_name;
+    for name in [
+        "..\\..\\secret.txt",
+        "js\\app.js",
+        "C:/Windows/win.ini",
+        "C:",
+        "\\\\server\\share\\x",
+        "a\0b",
+        "..",
+        "../x",
+        "./x",
+    ] {
+        assert!(local_name(name, false).is_none(), "{name:?}");
+        assert!(local_name(name, true).is_none(), "{name:?}");
+    }
+    for device in [
+        "CON",
+        "nul",
+        "con.txt",
+        "COM1",
+        "lpt9.log",
+        "COM\u{b9}",
+        "CONIN$",
+        "aux .x",
+    ] {
+        assert!(local_name(device, true).is_none(), "{device:?}");
+        assert!(
+            local_name(&format!("js/{device}"), true).is_none(),
+            "{device:?}"
+        );
+        assert!(local_name(device, false).is_some(), "{device:?}");
+    }
+    for name in ["", "js/app.js", "COM0", "COM10", "console.js", "a..b/c.d"] {
+        assert!(local_name(name, true).is_some(), "{name:?}");
+        assert!(local_name(name, false).is_some(), "{name:?}");
+    }
+}
+
+#[test]
+fn static_file_server_refuses_backslash_and_drive_targets() {
+    let web = web();
+    let server = server(&web.text(), false);
+    // A real file one level above the web root.
+    let parent = web.0.parent().unwrap();
+    let secret_name = format!(
+        "{}-secret.txt",
+        web.0.file_name().unwrap().to_str().unwrap()
+    );
+    let secret = parent.join(&secret_name);
+    std::fs::write(&secret, b"secret").unwrap();
+    let mut targets = vec![
+        format!("/static/..%5C{secret_name}"),
+        format!("/static/..%5c..%5C{secret_name}"),
+        format!("/static/..\\{secret_name}"),
+        "/static/C:/Windows/win.ini".to_owned(),
+        "/static/C%3A/Windows/win.ini".to_owned(),
+        "/static/js%5Capp.js".to_owned(),
+    ];
+    if cfg!(windows) {
+        let absolute = secret.to_str().unwrap().replace('\\', "/");
+        targets.push(format!("/static/{absolute}"));
+    }
+    if cfg!(unix) {
+        // Unix names may hold `\` and `:`; they are still refused.
+        web.write("js\\app.js", b"backslash");
+        web.write("c:d.js", b"colon");
+        targets.push("/static/c:d.js".to_owned());
+    }
+    for target in &targets {
+        let reply = get(&server, target, &[]);
+        assert_eq!(
+            (reply.status, reply.body.as_slice()),
+            (404, b"404 page not found\n".as_slice()),
+            "{target}"
+        );
+    }
+    let _ = std::fs::remove_file(&secret);
+    let normal = get(&server, "/static/js/app.js", &[]);
+    assert_eq!(
+        (normal.status, normal.body.as_slice()),
+        (200, b"console.log(1);\n".as_slice())
+    );
+}
+
+#[test]
+fn redirect_location_escapes_like_go_url_string() {
+    let web = web();
+    let server = server(&web.text(), false);
+    // Locations captured from Go 1.26 net/http ServeMux for the same targets.
+    for (target, location) in [
+        ("/./\\evil.com", "/%255Cevil.com"),
+        ("/./%5Cevil.com", "/%255Cevil.com"),
+        ("/a/../b%20c", "/b%2520c"),
+        ("/x/../d%C3%A9mo", "/d%25C3%25A9mo"),
+        ("/x/../a<b>", "/a%253Cb%253E"),
+        ("/x/../\"q\"", "/%2522q%2522"),
+        ("/api/tra%66fic", "/api/traffic/"),
+        ("/api/traffic?x=<1>", "/api/traffic/?x=<1>"),
+        ("/static/../demo", "/demo"),
+        ("//demo", "/demo"),
+    ] {
+        let reply = get(&server, target, &[]);
+        assert_eq!(
+            (reply.status, reply.header("Location")),
+            (307, Some(location)),
+            "{target}"
+        );
+        assert!(!reply.header("Location").unwrap().contains('\\'));
+    }
+}
+
+#[test]
 fn redirects_preserve_query_and_escape_html() {
     let web = web();
     let server = server(&web.text(), false);
@@ -1117,6 +1230,48 @@ async fn connection_cap_holds_the_next_peer_in_the_backlog() {
     assert!(held, "second peer was served while the cap was full");
     assert!(reply.contains("200 OK"), "{reply}");
     task.abort();
+}
+
+#[test]
+fn plaintext_budget_is_one_deadline_for_a_trickling_peer() {
+    let web = web();
+    let server = CoreServer::new(config(&web.text(), false), Arc::new(SystemTime::now)).unwrap();
+    let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+    let address = listener.local_addr().unwrap();
+    let stop = Arc::new(std::sync::atomic::AtomicBool::new(false));
+    let trickle = {
+        let stop = Arc::clone(&stop);
+        std::thread::spawn(move || {
+            let mut socket = std::net::TcpStream::connect(address).unwrap();
+            let _ = socket.write_all(b"GET /healthz HTTP/1.1\r\nHost: x\r\nX-Pad: ");
+            // One byte well inside every per-read window, for far longer
+            // than the whole budget.
+            for _ in 0..200 {
+                if stop.load(std::sync::atomic::Ordering::Acquire)
+                    || socket.write_all(b"a").is_err()
+                {
+                    break;
+                }
+                std::thread::sleep(Duration::from_millis(40));
+            }
+        })
+    };
+    let (stream, _) = listener.accept().unwrap();
+    let budget = Duration::from_millis(1200);
+    let options = Options {
+        tls: None,
+        budget,
+        cap: ConnectionCap::new(1).unwrap(),
+    };
+    let started = std::time::Instant::now();
+    let _ = super::serve::serve_connection(&server, stream, &options);
+    let elapsed = started.elapsed();
+    stop.store(true, std::sync::atomic::Ordering::Release);
+    trickle.join().unwrap();
+    // Budget, plus the bounded post-response drain, plus scheduling slack;
+    // a per-read timeout would have kept reading for the full 8 s trickle.
+    assert!(elapsed >= budget, "{elapsed:?}");
+    assert!(elapsed < Duration::from_secs(4), "{elapsed:?}");
 }
 
 fn tls_configurations() -> (Arc<rustls::ServerConfig>, Arc<rustls::ClientConfig>) {

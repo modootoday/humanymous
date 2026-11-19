@@ -681,3 +681,156 @@ fn unusable_trace_is_rejected_after_alignment() {
         json!({"ok": false, "reason": "unusable interaction trace", "triesLeft": 3})
     );
 }
+
+/// A store backend whose frozen-engine call can be made to fail.
+struct Flaky<'a> {
+    inner: StoreBackend<'a>,
+    fail: bool,
+}
+
+impl Backend for Flaky<'_> {
+    fn ensure(&mut self, session: &str, now: Timestamp) {
+        self.inner.ensure(session, now);
+    }
+    fn report(&self, session: &str) -> Option<SessionReport> {
+        self.inner.report(session)
+    }
+    fn store_scored(&mut self, session: &str, report: SessionReport, now: Timestamp) {
+        self.inner.store_scored(session, report, now);
+    }
+    fn score(&mut self, report: &mut SessionReport) -> Option<ScoreResult> {
+        if self.fail {
+            None
+        } else {
+            self.inner.score(report)
+        }
+    }
+}
+
+fn unavailable(response: &Response) -> (u16, &[u8]) {
+    (response.status, body(response))
+}
+
+const UNAVAILABLE: (u16, &[u8]) = (503, b"pass unavailable\n");
+
+/// A scoring failure on a solve fails closed with 503 and spends neither
+/// the solve nor the interaction trace: the same proof clears once scoring
+/// is back.
+#[test]
+fn scoring_failure_on_solve_fails_closed_and_keeps_the_trace() {
+    let mut flow = mounted(MotorEvidence::Off);
+    let mut harness = Harness::new();
+    let now = at(1_795_000_000, Duration::from_secs(1));
+    let issued = issue_and_pay(&mut flow, &mut harness, "hsid=sc1", now);
+    let proof = json!({
+        "challengeNonce": issued["challengeNonce"],
+        "offsets": solution(&issued),
+        "keyDurs": [90, 110, 95],
+    })
+    .to_string();
+    let solve = post(SOLVE_PATH, "hsid=sc1", proof.as_bytes());
+    let failed = flow
+        .handle(
+            &mut Flaky {
+                inner: harness.backend(),
+                fail: true,
+            },
+            &solve,
+            now,
+        )
+        .unwrap();
+    assert_eq!(unavailable(&failed), UNAVAILABLE);
+    assert!(harness.signal_ids("sc1").is_empty());
+    let cleared = body_json(&flow.handle(&mut harness.backend(), &solve, now).unwrap());
+    assert_eq!(cleared["ok"], json!(true), "{cleared}");
+    assert_eq!(harness.signal_ids("sc1"), ["l7.pass.solved"]);
+}
+
+/// A scoring failure on a velocity escalation fails closed with 503 and
+/// does not commit the level, so the next request still adds the signal.
+#[test]
+fn scoring_failure_on_velocity_fails_closed_and_keeps_the_escalation() {
+    let mut flow = mounted(MotorEvidence::Off);
+    let mut harness = Harness::new();
+    let now = at(1_795_000_000, Duration::from_secs(1));
+    let new = get(NEW_PATH, Some("hsid=v1"));
+    let mut refused = false;
+    for _ in 0..VELOCITY_HARD {
+        let reply = flow
+            .handle(
+                &mut Flaky {
+                    inner: harness.backend(),
+                    fail: true,
+                },
+                &new,
+                now,
+            )
+            .unwrap();
+        if reply.status == 503 {
+            assert_eq!(unavailable(&reply), UNAVAILABLE);
+            refused = true;
+            break;
+        }
+        assert_eq!(reply.status, 200);
+    }
+    assert!(refused, "velocity never escalated");
+    assert!(harness.signal_ids("v1").is_empty());
+    let reply = flow.handle(&mut harness.backend(), &new, now).unwrap();
+    assert_eq!(reply.status, 200);
+    assert_eq!(harness.signal_ids("v1"), ["l7.pass.velocity"]);
+}
+
+/// A limiter refusal (here an over-long limiter key) fails closed with 503
+/// on both the velocity and the attestation limiter.
+#[test]
+fn limiter_failure_fails_closed() {
+    let mut flow = mounted(MotorEvidence::Off);
+    let mut harness = Harness::new();
+    let now = at(1_795_000_000, Duration::from_secs(1));
+    let long = "f".repeat(MAX_LIMITER_KEY_BYTES);
+    let mut new = get(NEW_PATH, Some("hsid=l1"));
+    new.fingerprint = &long;
+    let reply = flow.handle(&mut harness.backend(), &new, now).unwrap();
+    assert_eq!(unavailable(&reply), UNAVAILABLE);
+
+    let issued = body_json(
+        &flow
+            .handle(&mut harness.backend(), &get(NEW_PATH, Some("hsid=l1")), now)
+            .unwrap(),
+    );
+    let attest = json!({"challengeNonce": issued["challengeNonce"]}).to_string();
+    let mut request = post(ATTEST_PATH, "hsid=l1", attest.as_bytes());
+    request.fingerprint = &long;
+    let reply = flow.handle(&mut harness.backend(), &request, now).unwrap();
+    assert_eq!(unavailable(&reply), UNAVAILABLE);
+}
+
+/// A Pass store full of fresh sessions refuses a new session with 503 on
+/// issue and on solve instead of serving it unmetered (Go did).
+#[test]
+fn saturated_store_fails_closed() {
+    let mut flow = mounted(MotorEvidence::Off);
+    let mut harness = Harness::new();
+    let now = at(1_795_000_000, Duration::from_secs(1));
+    for index in 0..crate::gateway::pass_store::MAX_PASS_SESSIONS {
+        flow.store()
+            .with_session(&format!("held-{index}"), now.mono, |_| ())
+            .unwrap();
+    }
+    let reply = flow
+        .handle(
+            &mut harness.backend(),
+            &get(NEW_PATH, Some("hsid=late")),
+            now,
+        )
+        .unwrap();
+    assert_eq!(unavailable(&reply), UNAVAILABLE);
+    let reply = flow
+        .handle(
+            &mut harness.backend(),
+            &post(SOLVE_PATH, "hsid=late", b"{}"),
+            now,
+        )
+        .unwrap();
+    assert_eq!(unavailable(&reply), UNAVAILABLE);
+}

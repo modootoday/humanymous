@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 827,
-      "macos": 827,
-      "windows": 795
+      "linux": 835,
+      "macos": 835,
+      "windows": 803
     },
     "common_test_names": [
       "gateway::admin_approval::tests::approval_store_rules",
@@ -255,11 +255,15 @@
       "gateway::core_server::tests::observability_records_requests_and_recovers_panics",
       "gateway::core_server::tests::ops_views_are_absent_and_operator_views_need_the_token",
       "gateway::core_server::tests::pass_routes_mount_point_dispatches_every_pass_path",
+      "gateway::core_server::tests::plaintext_budget_is_one_deadline_for_a_trickling_peer",
       "gateway::core_server::tests::rate_limiter_matches_go",
+      "gateway::core_server::tests::redirect_location_escapes_like_go_url_string",
       "gateway::core_server::tests::redirects_preserve_query_and_escape_html",
       "gateway::core_server::tests::resource_is_gated_watermarked_and_signals_recorded",
       "gateway::core_server::tests::rit_canonical_seed_and_mac_match_go",
       "gateway::core_server::tests::static_file_server_follows_go_redirects_without_listing",
+      "gateway::core_server::tests::static_file_server_refuses_backslash_and_drive_targets",
+      "gateway::core_server::tests::static_local_name_refuses_os_path_syntax",
       "gateway::core_server::tests::tls_connection_owns_its_client_hello",
       "gateway::core_server::tests::trace_reads_only_for_an_operator_post",
       "gateway::core_server::tests::trusted_proxy_headers_are_ignored_without_an_allowlist",
@@ -471,9 +475,13 @@
       "gateway::pass_flow::tests::expired_instance_reports_expiry_not_failure",
       "gateway::pass_flow::tests::fingerprint_matches_go_golden",
       "gateway::pass_flow::tests::handler_scenarios_match_go_golden",
+      "gateway::pass_flow::tests::limiter_failure_fails_closed",
       "gateway::pass_flow::tests::motor_evidence_is_off_by_default_and_never_gates_pass",
       "gateway::pass_flow::tests::page_serves_accessible_pass_html_with_session",
       "gateway::pass_flow::tests::refusals_and_decoding_differences_are_pinned",
+      "gateway::pass_flow::tests::saturated_store_fails_closed",
+      "gateway::pass_flow::tests::scoring_failure_on_solve_fails_closed_and_keeps_the_trace",
+      "gateway::pass_flow::tests::scoring_failure_on_velocity_fails_closed_and_keeps_the_escalation",
       "gateway::pass_flow::tests::unusable_trace_is_rejected_after_alignment",
       "gateway::pass_flow::tests::velocity_fusion_matches_go_golden",
       "gateway::pass_proof::tests::behavior_timing_statistics_separate_human_and_machine",

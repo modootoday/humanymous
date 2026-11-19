@@ -833,7 +833,7 @@
    ],
    "go_test_map": {},
    "gaps": [
-    "isProxyVPNIP/isTorExitIP enrichment: the Core passes is_proxy/is_tor_exit false (intel SoT keeps Tor shadow-only and has no proxy-VPN category; owner decision); datacenter comes from IntelReader"
+    "isProxyVPNIP/isTorExitIP enrichment: the Core passes is_proxy/is_tor_exit false (this follows the ip-reputation SoT shadow-only rule: Tor stays shadow-only and there is no proxy-VPN category; whether these CIDR sets feed scoring is an open owner decision, an unchecked checkbox in the lane A plan); datacenter comes from IntelReader"
    ],
    "retire_basis": null,
    "confidence": "medium",
@@ -1055,13 +1055,16 @@
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::redirects_preserve_query_and_escape_html",
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::static_file_server_follows_go_redirects_without_listing",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::missing_client_is_challenge_and_missing_planes_are_not_ready",
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::sessions_capacity_expiry_restart_and_rollback"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::sessions_capacity_expiry_restart_and_rollback",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::static_local_name_refuses_os_path_syntax",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::static_file_server_refuses_backslash_and_drive_targets",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::redirect_location_escapes_like_go_url_string"
    ],
    "go_test_map": {},
    "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Gateway serves /_humanymous/session and /_humanymous/collect; page/report/CSP handlers are missing (plan B05/B07). Lane A (2026-11-19): responsibility and Rust tests exist; runtime proof pending. gateway::core_server serves page/demo (index.html), /static/ (FileServer redirects, index.html, no listing), /api/session with Accept-CH, report single/list views (owner or operator token), /api/csp-report (204 + csp_violation), and ensureSession (hsid cookie, Go readCookies). Go capture: tests/fixtures/gateway/core-server-go-golden.json (go1.26.3 in mirror.gcr.io/library/golang, --network none, oracle 981d25c; 50 HTTP cases through a.routes(), RIT/fp-churn/WebRTC kernels, stored sessions, traffic records, 85-request rate run). Deliberate differences: no Last-Modified/Range/conditional serving, unknown extensions are application/octet-stream (Go sniffed text/plain), serde ClientReport decoding is case-sensitive, Pass routes are a PassRoutes mount point (lane C).",
+   "notes": "Gateway serves /_humanymous/session and /_humanymous/collect; page/report/CSP handlers are missing (plan B05/B07). Lane A (2026-11-19): responsibility and Rust tests exist; runtime proof pending. gateway::core_server serves page/demo (index.html), /static/ (FileServer redirects, index.html, no listing), /api/session with Accept-CH, report single/list views (owner or operator token), /api/csp-report (204 + csp_violation), and ensureSession (hsid cookie, Go readCookies). Go capture: tests/fixtures/gateway/core-server-go-golden.json (go1.26.3 in mirror.gcr.io/library/golang, --network none, oracle 981d25c; 50 HTTP cases through a.routes(), RIT/fp-churn/WebRTC kernels, stored sessions, traffic records, 85-request rate run). Deliberate differences: no Last-Modified/Range/conditional serving, unknown extensions are application/octet-stream (Go sniffed text/plain), serde ClientReport decoding is case-sensitive, Pass routes are a PassRoutes mount point; mounting gateway::pass_flow into gateway::core_server through a PassRoutes adapter is an open follow-up that neither lane owns yet (lane A and lane C plans). PR #150 review (lane A): /static/ refuses a cleaned name containing a backslash, a colon or NUL, a Windows device name on Windows, or any path component other than Normal, with Go's Linux answer 404 on every OS, so neither %5C nor a drive prefix can leave the web root (Go http.Dir refused these only on Windows, through filepath.Localize, as 500); the mux sees Go's URL.EscapedPath and writes each redirect Location as Go's url.URL{Path}.String(), so a literal backslash leaves as %255C, never as a protocol-relative /\\host.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::missing_client_is_challenge_and_missing_planes_are_not_ready": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::sessions_capacity_expiry_restart_and_rollback": "passed",
@@ -1070,7 +1073,10 @@
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::redirects_preserve_query_and_escape_html": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::ops_views_are_absent_and_operator_views_need_the_token": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::pass_routes_mount_point_dispatches_every_pass_path": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::cookie_value_follows_go_read_cookies": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::cookie_value_follows_go_read_cookies": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::static_local_name_refuses_os_path_syntax": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::static_file_server_refuses_backslash_and_drive_targets": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::redirect_location_escapes_like_go_url_string": "passed"
    }
   },
   {
@@ -1350,7 +1356,8 @@
     "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_acme_it_cannot_run",
     "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_the_dev_flag_without_the_build_feature",
     "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_tls_requests_without_exactly_one_usable_source",
-    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_serves_tls_from_a_provisioned_pair"
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_serves_tls_from_a_provisioned_pair",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::plaintext_budget_is_one_deadline_for_a_trickling_peer"
    ],
    "go_test_map": {},
    "gaps": [
@@ -1361,7 +1368,7 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust runtime main reads private stdin config and binds loopback only; Core demo role is plan B01/B05 missing. B02 binary wiring (2026-11-18): the runtime binary reads an optional tls object from its private inherited configuration (certificate/key, acme {domains, cache, email, directory, directory_root, check_interval_seconds}, dev_self_signed), selects exactly one source through tls::listener::prepare before custody opens, binds ServiceHost::bind_tls and starts AcmeIssuer::maintain beside the listener when ACME is selected. A tls request with no, ambiguous or unavailable source exits non-zero before custody (Go fell back to self-signed); ServiceHost refuses a tls request without a server configuration. tests/gateway/tls_startup.rs runs the real binary: refusals before custody, and a provisioned pair served over TLS/H1 on loopback (Unix). Lane A (2026-11-19): gateway::core_server::serve is the Core accept loop: a ConnectionCap permit before each accept, one blocking worker per connection, plaintext wire-order peek or capture::tls, Content-Length-only framing (Transfer-Encoding 400, 64 KiB head 431), Date and Connection: close on every reply.",
+   "notes": "Rust runtime main reads private stdin config and binds loopback only; Core demo role is plan B01/B05 missing. B02 binary wiring (2026-11-18): the runtime binary reads an optional tls object from its private inherited configuration (certificate/key, acme {domains, cache, email, directory, directory_root, check_interval_seconds}, dev_self_signed), selects exactly one source through tls::listener::prepare before custody opens, binds ServiceHost::bind_tls and starts AcmeIssuer::maintain beside the listener when ACME is selected. A tls request with no, ambiguous or unavailable source exits non-zero before custody (Go fell back to self-signed); ServiceHost refuses a tls request without a server configuration. tests/gateway/tls_startup.rs runs the real binary: refusals before custody, and a provisioned pair served over TLS/H1 on loopback (Unix). Lane A (2026-11-19): gateway::core_server::serve is the Core accept loop: a ConnectionCap permit before each accept, one blocking worker per connection, plaintext wire-order peek or capture::tls, Content-Length-only framing (Transfer-Encoding 400, 64 KiB head 431), Date and Connection: close on every reply. PR #150 review (lane A): a plaintext Core connection reads and writes under one absolute deadline (Options::budget), as the TLS capture transport does, and the post-response drain has its own absolute deadline, so a peer trickling bytes cannot hold a ConnectionCap permit past the budget.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/tests/tls.rs::actual_tls_coalesced_request_is_refused_before_audit_or_origin": "passed",
     "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_tls_requests_without_exactly_one_usable_source": "passed",
@@ -1371,7 +1378,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::bind_refuses_non_loopback_addresses": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::loopback_socket_serves_one_request_with_wire_order": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::connection_cap_holds_the_next_peer_in_the_backlog": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::tls_connection_owns_its_client_hello": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::tls_connection_owns_its_client_hello": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::plaintext_budget_is_one_deadline_for_a_trickling_peer": "passed"
    }
   },
   {
@@ -1386,7 +1394,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/connection_cap/tests.rs::connection_concurrency_is_capped",
     "crates/sdk/humanymous-runtime/src/gateway/connection_cap/tests.rs::limit_bounds_are_refused",
     "crates/sdk/humanymous-runtime/src/gateway/connection_cap/tests.rs::permits_are_counted_and_released_on_drop",
-    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::connection_cap_holds_the_next_peer_in_the_backlog"
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::connection_cap_holds_the_next_peer_in_the_backlog",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::plaintext_budget_is_one_deadline_for_a_trickling_peer"
    ],
    "go_test_map": {
     "TestConnConcurrencyIsCapped": "crates/sdk/humanymous-runtime/src/gateway/connection_cap/tests.rs::connection_concurrency_is_capped"
@@ -1394,13 +1403,14 @@
    "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Semaphore-backed connection cap tested over real loopback TCP; a resource bound only, never a signal. Lane A (2026-11-19): the cap is wired into the Core accept loop (permit before accept); a limit-1 loopback test holds the next peer in the backlog until the first connection closes.",
+   "notes": "Semaphore-backed connection cap tested over real loopback TCP; a resource bound only, never a signal. Lane A (2026-11-19): the cap is wired into the Core accept loop (permit before accept); a limit-1 loopback test holds the next peer in the backlog until the first connection closes. PR #150 review (lane A): a plaintext Core connection reads and writes under one absolute deadline (Options::budget), as the TLS capture transport does, and the post-response drain has its own absolute deadline, so a peer trickling bytes cannot hold a ConnectionCap permit past the budget.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/connection_cap/tests.rs::connection_concurrency_is_capped": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/connection_cap/tests.rs::limit_bounds_are_refused": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/connection_cap/tests.rs::permits_are_counted_and_released_on_drop": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/connection_cap/tests.rs::close_refuses_new_and_waiting_acquisitions": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::connection_cap_holds_the_next_peer_in_the_backlog": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::connection_cap_holds_the_next_peer_in_the_backlog": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::plaintext_budget_is_one_deadline_for_a_trickling_peer": "passed"
    }
   },
   {
@@ -1725,13 +1735,17 @@
     "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::attest_issuance_budget_is_per_fingerprint_and_self_clearing",
     "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::page_serves_accessible_pass_html_with_session",
     "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::refusals_and_decoding_differences_are_pinned",
-    "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::unusable_trace_is_rejected_after_alignment"
+    "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::unusable_trace_is_rejected_after_alignment",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::saturated_store_fails_closed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::limiter_failure_fails_closed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::scoring_failure_on_solve_fails_closed_and_keeps_the_trace",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::scoring_failure_on_velocity_fails_closed_and_keeps_the_escalation"
    ],
    "go_test_map": {},
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Pure pass/pow/attestation kernels are core's. gateway::pass_flow ports the page, new, pow, attest, solve and KPI handlers with single-use instance state, Go handler order and a mount function; the full Go transcripts (status, content type, Set-Cookie, JSON bytes after key normalization, challenges, PoW seeds, attestation tokens, step-up receipts and the final stored signals and frozen-engine scores) replay exactly. Owner decision B1 (#75 comment 6979694428) exact-parity port checked against the Go-captured golden tests/fixtures/gateway/pass-flow-go-golden.json (go1.26.3, --network none). Accessibility conflict recorded for the owner: realEventOK and the applyPassBehavior tells gate or penalise Pass on motor richness and timing; they are ported exactly but gateway::pass_flow keeps them off (MotorEvidence::Off) unless the owner enables MotorEvidence::GoParity. Deliberate differences pinned by tests: exact JSON field names (Go also matched case-insensitively and let a later duplicate key win); invalid red-team labels and session ids over 128 bytes get 400; store, limiter or scoring failure fails closed with 503; a trace sample outside int64 is rejected as unusable; the step-up receipt is omitted when it cannot be sealed; a KPI counter overflow drops the count; limiters are bounded. feedPassOutcome and hub publishing are Backend hooks (the mlcorrect consumer is not part of this row). gateway::pass_flow::mount is not yet mounted on the served path (lane A, claude/fm11-lane-a).",
+   "notes": "Pure pass/pow/attestation kernels are core's. gateway::pass_flow ports the page, new, pow, attest, solve and KPI handlers with single-use instance state, Go handler order and a mount function; the full Go transcripts (status, content type, Set-Cookie, JSON bytes after key normalization, challenges, PoW seeds, attestation tokens, step-up receipts and the final stored signals and frozen-engine scores) replay exactly. Owner decision B1 (#75 comment 6979694428) exact-parity port checked against the Go-captured golden tests/fixtures/gateway/pass-flow-go-golden.json (go1.26.3, --network none). Accessibility conflict recorded for the owner: realEventOK and the applyPassBehavior tells gate or penalise Pass on motor richness and timing; they are ported exactly but gateway::pass_flow keeps them off (MotorEvidence::Off) unless the owner enables MotorEvidence::GoParity. Deliberate differences pinned by tests: exact JSON field names (Go also matched case-insensitively and let a later duplicate key win); invalid red-team labels and session ids over 128 bytes get 400; store saturation, limiter refusal and scoring failure each fail closed with 503 (saturated_store_fails_closed, limiter_failure_fails_closed, scoring_failure_on_solve_fails_closed_and_keeps_the_trace, scoring_failure_on_velocity_fails_closed_and_keeps_the_escalation), and a 503 neither commits the velocity level nor spends the interaction trace (Go's order committed the level first and Go's scoring could not fail); a trace sample outside int64 is rejected as unusable; the step-up receipt is omitted when it cannot be sealed; a KPI counter overflow drops the count; limiters are bounded. feedPassOutcome and hub publishing are Backend hooks (the mlcorrect consumer is not part of this row). gateway::pass_flow::mount is not yet mounted on the served path: mounting gateway::pass_flow into gateway::core_server through a PassRoutes adapter is an open follow-up that neither lane owns yet (lane A and lane C plans).",
    "test_verification": {
     "crates/sdk/humanymous-core/src/challenge/pass/tests.rs::canonical_solutions_verify": "passed",
     "crates/sdk/humanymous-core/src/challenge/pass/tests.rs::r325_fixed_cross_instance_solution_fails": "passed",
@@ -1744,7 +1758,11 @@
     "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::attest_issuance_budget_is_per_fingerprint_and_self_clearing": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::page_serves_accessible_pass_html_with_session": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::refusals_and_decoding_differences_are_pinned": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::unusable_trace_is_rejected_after_alignment": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::unusable_trace_is_rejected_after_alignment": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::saturated_store_fails_closed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::limiter_failure_fails_closed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::scoring_failure_on_solve_fails_closed_and_keeps_the_trace": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::scoring_failure_on_velocity_fails_closed_and_keeps_the_escalation": "passed"
    }
   },
   {
@@ -2190,15 +2208,18 @@
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::trusted_proxy_headers_are_ignored_without_an_allowlist",
     "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_proxy_rotation_at_three_not_two_subnets",
     "crates/sdk/humanymous-runtime/src/network/residual/mod.rs::observations_are_audited_without_becoming_actionable_or_scored",
-    "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::all_report_signals_and_admin_observations_match_go"
+    "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::all_report_signals_and_admin_observations_match_go",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::static_local_name_refuses_os_path_syntax",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::static_file_server_refuses_backslash_and_drive_targets",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::redirect_location_escapes_like_go_url_string"
    ],
    "go_test_map": {},
    "gaps": [
-    "proxy-VPN and Tor exit CIDR sets: Go set IsProxy/IsTorExit from operator lists (SetProxyVPNCIDRs/SetTorExitCIDRs); the Rust intel SoT keeps Tor/blocklist shadow-only and has no proxy-VPN category, so the Core passes false and only the datacenter category feeds scoring (owner decision)"
+    "proxy-VPN and Tor exit CIDR sets: Go set IsProxy/IsTorExit from operator lists (SetProxyVPNCIDRs/SetTorExitCIDRs); the Rust intel SoT keeps Tor/blocklist shadow-only and has no proxy-VPN category, so the Core passes false and only the datacenter category feeds scoring (this follows the ip-reputation SoT shadow-only rule; whether proxy-VPN and Tor exit sets feed scoring is an open owner decision, an unchecked checkbox in the lane A plan)"
    ],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Network signal kernels exist; HTTP app composition (routes, headers, CIDR sets) is missing. Lane A (2026-11-19): gateway::core_server composes the Go app: route mux with Go 1.22 pattern semantics (subtree 307, unclean-path 307 with the HTML body for GET, unescaped segment matching), the three security headers with Set semantics, traffic-log middleware (TLS record from the connection's own ClientHello, HTTP record with cookie), GC sweep each minute, fingerprintChurn (bounded per-session map expiring with the session TTL) and vpnWebRTCLeak wired into collect. Go capture: tests/fixtures/gateway/core-server-go-golden.json (go1.26.3 in mirror.gcr.io/library/golang, --network none, oracle 981d25c; 50 HTTP cases through a.routes(), RIT/fp-churn/WebRTC kernels, stored sessions, traffic records, 85-request rate run). Deliberate differences: explain/counters/mlcorrect/playground are not mounted on the Core (B09), Pass routes 404 until lane C mounts PassRoutes, trusted proxies come from an explicit CIDR allowlist (C1) instead of Go's implicit private peers, bounded histories fail closed (503 history unavailable).",
+   "notes": "Network signal kernels exist; HTTP app composition (routes, headers, CIDR sets) is missing. Lane A (2026-11-19): gateway::core_server composes the Go app: route mux with Go 1.22 pattern semantics (subtree 307, unclean-path 307 with the HTML body for GET, unescaped segment matching), the three security headers with Set semantics, traffic-log middleware (TLS record from the connection's own ClientHello, HTTP record with cookie), GC sweep each minute, fingerprintChurn (bounded per-session map expiring with the session TTL) and vpnWebRTCLeak wired into collect. Go capture: tests/fixtures/gateway/core-server-go-golden.json (go1.26.3 in mirror.gcr.io/library/golang, --network none, oracle 981d25c; 50 HTTP cases through a.routes(), RIT/fp-churn/WebRTC kernels, stored sessions, traffic records, 85-request rate run). Deliberate differences: explain/counters/mlcorrect/playground are not mounted on the Core (B09), Pass routes 404 until a PassRoutes adapter is mounted (mounting gateway::pass_flow into gateway::core_server through a PassRoutes adapter is an open follow-up that neither lane owns yet (lane A and lane C plans)), trusted proxies come from an explicit CIDR allowlist (C1) instead of Go's implicit private peers, bounded histories fail closed (503 history unavailable). PR #150 review (lane A): /static/ refuses a cleaned name containing a backslash, a colon or NUL, a Windows device name on Windows, or any path component other than Normal, with Go's Linux answer 404 on every OS, so neither %5C nor a drive prefix can leave the web root (Go http.Dir refused these only on Windows, through filepath.Localize, as 500); the mux sees Go's URL.EscapedPath and writes each redirect Location as Go's url.URL{Path}.String(), so a literal backslash leaves as %255C, never as a protocol-relative /\\host.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_proxy_rotation_at_three_not_two_subnets": "passed",
     "crates/sdk/humanymous-runtime/src/network/residual/mod.rs::observations_are_audited_without_becoming_actionable_or_scored": "passed",
@@ -2212,7 +2233,10 @@
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::clock_regression_is_absorbed_by_monotone_ticks": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::trusted_proxy_headers_are_ignored_without_an_allowlist": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::construction_refuses_weak_keys_and_empty_roots": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::ops_views_are_absent_and_operator_views_need_the_token": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::ops_views_are_absent_and_operator_views_need_the_token": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::static_local_name_refuses_os_path_syntax": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::static_file_server_refuses_backslash_and_drive_targets": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::redirect_location_escapes_like_go_url_string": "passed"
    }
   },
   {

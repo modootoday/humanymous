@@ -139,6 +139,71 @@ pub(super) fn unescape(text: &str, plus: bool) -> Option<String> {
     String::from_utf8(out).ok()
 }
 
+/// Go `url.shouldEscape(byte, encodePath)`.
+fn path_escapes(byte: u8) -> bool {
+    !(byte.is_ascii_alphanumeric()
+        || matches!(
+            byte,
+            b'-' | b'_'
+                | b'.'
+                | b'~'
+                | b'$'
+                | b'&'
+                | b'+'
+                | b','
+                | b'/'
+                | b':'
+                | b';'
+                | b'='
+                | b'@'
+        ))
+}
+
+/// Go `url.escape(text, encodePath)`: what `url.URL{Path: text}.String()`
+/// writes for a rooted path. A `%` is escaped too, as Go does.
+pub(super) fn escape_path(text: &str) -> String {
+    let mut out = String::with_capacity(text.len());
+    for &byte in text.as_bytes() {
+        if path_escapes(byte) {
+            out.push_str(&format!("%{byte:02X}"));
+        } else {
+            out.push(char::from(byte));
+        }
+    }
+    out
+}
+
+/// Go `URL.EscapedPath` of a request target parsed from `raw`, whose
+/// decoded form is `decoded`: `raw` when it is validly encoded, otherwise
+/// the canonical escaping of `decoded` (so a literal `\` becomes `%5C`).
+pub(super) fn escaped_path(raw: &str, decoded: &str) -> String {
+    let valid = raw.bytes().all(|byte| {
+        matches!(
+            byte,
+            b'!' | b'$'
+                | b'&'
+                | b'\''
+                | b'('
+                | b')'
+                | b'*'
+                | b'+'
+                | b','
+                | b';'
+                | b'='
+                | b':'
+                | b'@'
+                | b'['
+                | b']'
+                | b'%'
+        ) || !path_escapes(byte)
+    });
+    if valid {
+        raw.to_owned()
+    } else {
+        escape_path(decoded)
+    }
+}
+
 /// Go `url.ParseQuery(raw)` then `Get(key)`: the first value of `key`;
 /// pairs with a semicolon or an invalid escape are skipped.
 pub(super) fn query_value(raw: &str, key: &str) -> String {

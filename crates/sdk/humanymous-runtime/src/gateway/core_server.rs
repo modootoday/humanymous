@@ -22,8 +22,13 @@
 //! - `/api/explain`, `/api/counters` and `/api/mlcorrect` are not mounted on
 //!   the Core plane; they live on the separate admin plane (plan B09). The
 //!   SoT-30 playground surface is not mounted here either.
-//! - The `/pass` and `/api/pass/*` routes answer 404 unless the Pass owner
-//!   mounts [`PassRoutes`].
+//! - The `/pass` and `/api/pass/*` routes answer 404 unless a [`PassRoutes`]
+//!   adapter is mounted; mounting `gateway::pass_flow` through it is an open
+//!   follow-up.
+//! - `/static/` refuses a name with `\`, `:` or NUL, a Windows device name
+//!   (on Windows) or any non-`Normal` path component with 404 on every OS; Go
+//!   refused these only on Windows (500) and served them as plain names on
+//!   Linux.
 //! - Every history kernel is bounded by explicit [`Limits`]; a refused
 //!   admission, a poisoned state lock or a scoring failure answers 503
 //!   instead of growing without bound.
