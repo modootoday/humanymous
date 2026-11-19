@@ -50,9 +50,17 @@
 //! - The console page and the integrity, proof, audit, incident, policy,
 //!   settings, erasure list/cancel, metrics, keys, checkpoints and virtual-USB
 //!   routes are not served here; they answer 404 after authentication.
+//! - JSON numbers use Go `encoding/json` text (`1`, not `1.0`).
+//!
+//! The operator ops routes of legacy cmd/server/ops.go (liveness, score
+//! explanation and counters) share this listener under [`ops::OPS_PREFIX`]
+//! with their own operator token when attached by [`AdminPlane::with_ops`];
+//! see [`ops`].
 //!
 //! Composition into `gateway::service` (listener address and the provisioning
-//! of admin bearer tokens) is not done here.
+//! of admin bearer tokens and the ops token) is not done here.
+pub mod ops;
+
 use crate::audit::control::{Action, RetainedActionPermit, Scope};
 use crate::audit::record::{Actor, Record};
 use crate::authority::decision::DurableAudit;
@@ -61,6 +69,7 @@ use crate::gateway::ban::{self, Key, Source, Store};
 use crate::gateway::http::{self, Request};
 use crate::gateway::service::ShutdownRequest;
 use hmac::{Hmac, Mac};
+use humanymous_core::signals::wire::json_float_go;
 use serde::Serialize;
 use serde_json::{Map, Value, json};
 use sha2::Sha256;
@@ -122,14 +131,35 @@ impl Response {
 
     /// Go `writeJSON`: `json.NewEncoder(w).Encode(v)`.
     fn json(value: &impl Serialize) -> Self {
-        match serde_json::to_vec(value) {
-            Ok(bytes) => Self {
+        let mut bytes = Vec::new();
+        let encoded = value.serialize(&mut serde_json::Serializer::with_formatter(
+            &mut bytes, GoNumbers,
+        ));
+        match encoded {
+            Ok(()) => Self {
                 status: 200,
                 content_type: JSON,
                 body: go_escape(bytes),
             },
             Err(_) => Self::text(500, "response encoding failed"),
         }
+    }
+}
+
+/// Number text of Go `encoding/json` (`strconv.AppendFloat` shortest, `e`
+/// form outside `[1e-6, 1e21)`). `serde_json` writes non-finite floats as
+/// `null` before reaching the formatter.
+struct GoNumbers;
+
+impl serde_json::ser::Formatter for GoNumbers {
+    fn write_f64<W: ?Sized + io::Write>(&mut self, writer: &mut W, value: f64) -> io::Result<()> {
+        writer.write_all(json_float_go(value).as_deref().unwrap_or("null").as_bytes())
+    }
+
+    fn write_f32<W: ?Sized + io::Write>(&mut self, writer: &mut W, value: f32) -> io::Result<()> {
+        // Go encodes a float32 with 32-bit shortest digits.
+        let shortest: f64 = value.to_string().parse().unwrap_or(f64::NAN);
+        self.write_f64(writer, shortest)
     }
 }
 
@@ -319,6 +349,7 @@ pub struct AdminPlane {
     bans: Arc<Mutex<Store>>,
     permits: Mutex<Vec<RetainedActionPermit>>,
     audit: Mutex<Box<dyn DurableAudit>>,
+    ops: Option<ops::Ops>,
 }
 
 impl AdminPlane {
@@ -342,7 +373,16 @@ impl AdminPlane {
             bans,
             permits: Mutex::new(Vec::new()),
             audit: Mutex::new(audit),
+            ops: None,
         }
+    }
+
+    /// Attach the legacy operator ops routes (Go cmd/server/ops.go) to this
+    /// listener under [`ops::OPS_PREFIX`]. Without them every ops path is the
+    /// plain 404.
+    pub fn with_ops(mut self, ops: ops::Ops) -> Self {
+        self.ops = Some(ops);
+        self
     }
 
     /// The bearer table, for seeding operators (Go `Server.Auth`).
@@ -370,6 +410,9 @@ impl AdminPlane {
 
     /// Serve one parsed request (Go `AdminHandler` then `handleAdmin`).
     pub fn handle(&self, request: &Request, clock: Clock) -> Response {
+        if let Some(response) = self.ops.as_ref().and_then(|ops| ops.handle(request, clock)) {
+            return response;
+        }
         let path = request.target.split('?').next().unwrap_or("");
         let Some(sub) = path.strip_prefix(PREFIX) else {
             return Response::not_found();
