@@ -55,11 +55,12 @@ use crate::gateway::token::TokenKey;
 use crate::network::history::Unavailable;
 use crate::network::history::rate::{Config as RateConfig, Level, Limiter, Limits, Observation};
 use humanymous_core::challenge::{attestation, pass, proof_of_work};
+use humanymous_core::model::go_json;
 use humanymous_core::scoring::engine::Engine;
 use humanymous_core::signals::observation::Signal;
 use humanymous_core::signals::report::{ScoreResult, SessionReport, Timestamp};
-use serde::Deserialize;
 use serde::de::DeserializeOwned;
+use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -280,9 +281,16 @@ fn text(status: u16, message: &str) -> Response {
     }
 }
 
-/// Go `writeJSON`: sorted object keys and a trailing newline.
+/// Go `writeJSON`: sorted object keys, Go `encoding/json` number and string
+/// text (an integral float is `0`, not `0.0`) and a trailing newline.
 fn json_response(value: &Value) -> Response {
-    let mut body = serde_json::to_vec(value).unwrap_or_default();
+    json_body(value)
+}
+
+/// Go `writeJSON` of any value: a `map[string]any` as sorted keys, a nested
+/// struct in its declaration order.
+fn json_body<T: Serialize + ?Sized>(value: &T) -> Response {
+    let mut body = go_json::to_vec(value).unwrap_or_default();
     body.push(b'\n');
     Response {
         status: 200,
@@ -361,6 +369,28 @@ fn valid_red_team(header: Option<&str>) -> Result<Option<&str>, Failure> {
         }
         Some(_) => Err(Failure::Store(Refusal::Label)),
     }
+}
+
+/// The `/api/pass/new` reply: Go's `map[string]any` keys in sorted order
+/// with the challenge and PoW structs in their Go field order.
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct Issued<'a> {
+    bucket: u64,
+    challenge: &'a pass::Challenge,
+    challenge_nonce: &'a str,
+    difficulty: u32,
+    expires_in_s: u64,
+    ok: bool,
+    preflight: Preflight<'a>,
+    tries_left: u32,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct Preflight<'a> {
+    attest_required: bool,
+    pow: &'a proof_of_work::Challenge,
 }
 
 #[derive(Default, Deserialize)]
@@ -572,16 +602,19 @@ impl PassFlow {
             pow_bits as i32,
             seconds / proof_of_work::WINDOW,
         );
-        Ok(json_response(&json!({
-            "ok": true,
-            "bucket": bucket,
-            "difficulty": puzzle,
-            "challenge": challenge,
-            "challengeNonce": nonce,
-            "triesLeft": PASS_MAX_TRIES,
-            "expiresInS": EXPIRES_IN_SECS,
-            "preflight": {"pow": pow, "attestRequired": attest_required},
-        })))
+        Ok(json_body(&Issued {
+            bucket,
+            challenge: &challenge,
+            challenge_nonce: &nonce,
+            difficulty: puzzle,
+            expires_in_s: EXPIRES_IN_SECS,
+            ok: true,
+            preflight: Preflight {
+                attest_required,
+                pow: &pow,
+            },
+            tries_left: PASS_MAX_TRIES,
+        }))
     }
 
     fn preflight_session<'r>(request: &Request<'r>) -> Result<&'r str, Response> {

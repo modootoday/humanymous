@@ -6,16 +6,19 @@ use super::http::{
     Request, Response, clean, clean_mux_path, escape_path, escaped_path, http_date, unescape,
 };
 use super::{Connection, CoreServer, Now, PassRequest, State, timestamp};
+use crate::gateway::control_plane;
 use crate::gateway::demo;
 use crate::gateway::logging::{Completion, HttpVersion, observe};
 use crate::gateway::operations::mlcorrect::operator_authorized;
-use crate::gateway::request::{day_bucket, traffic_ip_hash};
+use crate::gateway::pass_flow::StoreBackend;
+use crate::gateway::pass_scoring;
+use crate::gateway::request::{day_bucket, ja4_stable, traffic_ip_hash};
 use crate::gateway::resource::{
     self, Issuer, MAX_TRACE_BODY, ResourceRequest, SessionView, Tracer,
 };
 use crate::gateway::session::pow;
 use crate::network::http::{
-    canonical_name, client_ip, cookie_value, first_value, parse_ip, project_request,
+    canonical_name, client_ip, client_subnet, cookie_value, first_value, parse_ip, project_request,
 };
 use crate::network::tls::{engine_from_client_hello, extension_order_hash, ja3, ja4};
 use crate::network::traffic::{Record, hash_order, hash_ua};
@@ -214,7 +217,7 @@ fn file_error(error: &std::io::Error) -> resource::Response {
 
 /// Serve one regular file's bytes typed by extension (the subset of Go
 /// `serveContent` used here; no conditional or range handling).
-fn file_response(file: &Path) -> resource::Response {
+pub(super) fn file_response(file: &Path) -> resource::Response {
     match std::fs::metadata(file) {
         Ok(meta) if meta.is_dir() => return not_found(),
         Ok(_) => {}
@@ -716,18 +719,46 @@ impl CoreServer {
         reply
     }
 
-    /// The Pass mount point; 404 when the Pass owner has not mounted it.
+    /// The Pass mount point; 404 when nothing is mounted. The handler runs
+    /// under the Core state lock over the shared collector store; a panic is
+    /// caught before the guard drops, so it cannot poison the Core state, and
+    /// is re-raised to the observability layer (500 or a dropped connection).
     fn pass(&self, ctx: &Ctx<'_>) -> resource::Response {
-        match &self.pass {
-            Some(pass) => pass.handle(&PassRequest {
-                method: &ctx.request.method,
-                path: &ctx.path,
-                request: ctx.request,
-                session: &ctx.cookie,
-                client_ip: &ctx.client_ip,
-            }),
-            None => not_found(),
-        }
+        let Some(pass) = &self.pass else {
+            return not_found();
+        };
+        let fingerprint = pass_scoring::fingerprint(
+            &ja4_stable(ctx.connection.hello()),
+            &client_subnet(
+                &ctx.request.remote_addr,
+                &ctx.fields,
+                &self.config.trusted_proxies,
+            ),
+        );
+        let (mut state, now) = match self.locked() {
+            Ok(locked) => locked,
+            Err(refused) => return refused,
+        };
+        let mut backend = StoreBackend {
+            store: &mut state.store,
+            engine: &self.engine,
+            hub: self.hub.as_ref(),
+        };
+        let request = PassRequest {
+            method: &ctx.request.method,
+            path: &ctx.path,
+            request: ctx.request,
+            session: &ctx.cookie,
+            client_ip: &ctx.client_ip,
+            fingerprint: &fingerprint,
+            now: control_plane::Now {
+                wall: now.ts,
+                mono: now.tick,
+            },
+        };
+        let outcome = catch_unwind(AssertUnwindSafe(|| pass.handle(&request, &mut backend)));
+        drop(state);
+        outcome.unwrap_or_else(|panic| resume_unwind(panic))
     }
 
     /// Go `handleTrace` (operator only).

@@ -22,9 +22,16 @@
 //! - `/api/explain`, `/api/counters` and `/api/mlcorrect` are not mounted on
 //!   the Core plane; they live on the separate admin plane (plan B09). The
 //!   SoT-30 playground surface is not mounted here either.
-//! - The `/pass` and `/api/pass/*` routes answer 404 unless a [`PassRoutes`]
-//!   adapter is mounted; mounting `gateway::pass_flow` through it is an open
-//!   follow-up.
+//! - The `/pass` and `/api/pass/*` routes are served by `gateway::pass_flow`
+//!   once [`CoreServer::with_pass_flow`] mounts it through the
+//!   [`pass::PassMount`] adapter (404 while nothing is mounted). The mount
+//!   serves only `MotorEvidence::Off`: Go's `realEventOK` pre-filter and
+//!   behavior tells, which gate or penalise Pass on motor richness and
+//!   timing, stay off (accessibility hard rule). Go's `feedPassOutcome` has
+//!   no consumer here: the self-correcting control plane is not on the Core
+//!   plane (plan B09). A store, limiter or scoring failure, a poisoned Pass
+//!   lock or a panicking Pass handler answers 503 or 500 for Pass only; the
+//!   Core state stays usable.
 //! - `/static/` refuses a name with `\`, `:` or NUL, a Windows device name
 //!   (on Windows) or any non-`Normal` path component with 404 on every OS; Go
 //!   refused these only on Windows (500) and served them as plain names on
@@ -40,6 +47,7 @@
 //!   unknown extensions `application/octet-stream` instead of sniffing.
 mod collect;
 pub mod http;
+pub mod pass;
 pub mod rit;
 mod routes;
 pub mod serve;
@@ -143,6 +151,8 @@ pub enum Refusal {
     WebDir,
     /// A history configuration was refused by its kernel.
     Limits,
+    /// The Pass flow could not be mounted (see [`pass::MountRefusal`]).
+    Pass(pass::MountRefusal),
 }
 
 /// Wall clock the server reads; injectable for tests.
@@ -197,13 +207,23 @@ pub struct PassRequest<'a> {
     pub session: &'a str,
     /// Legacy client address (trusted-proxy aware).
     pub client_ip: &'a str,
+    /// Legacy `passFP`: stable JA4 prefix of this connection's ClientHello
+    /// and the trust-gated client subnet, `|`-joined.
+    pub fingerprint: &'a str,
+    /// Request time read under the Core state lock (monotone ticks).
+    pub now: crate::gateway::control_plane::Now,
 }
 
 /// Mount point for the SoT-36 Pass routes (`/pass`, `/api/pass/new`, `pow`,
-/// `attest`, `solve`, `kpi`), owned outside this module.
+/// `attest`, `solve`, `kpi`); [`pass::PassMount`] serves `gateway::pass_flow`.
 pub trait PassRoutes: Send + Sync {
-    /// Answer one Pass request.
-    fn handle(&self, request: &PassRequest<'_>) -> crate::gateway::resource::Response;
+    /// Answer one Pass request while the Core state is locked; `backend` is
+    /// the Core collector store, the frozen engine and the live feed.
+    fn handle(
+        &self,
+        request: &PassRequest<'_>,
+        backend: &mut dyn crate::gateway::pass_flow::Backend,
+    ) -> crate::gateway::resource::Response;
 }
 
 pub(crate) struct State {
@@ -354,6 +374,24 @@ impl CoreServer {
     pub fn with_pass_routes(mut self, pass: Arc<dyn PassRoutes>) -> Self {
         self.pass = Some(pass);
         self
+    }
+
+    /// Mount `gateway::pass_flow` (Go `routes` Pass handlers) with this
+    /// server's master key and web root, `MotorEvidence::Off`, and the shared
+    /// Gate token key for step-up receipts (Go `HMN_TOKEN_KEY`; `None` is the
+    /// standalone Core, which issues no receipt).
+    pub fn with_pass_flow(
+        self,
+        step_up: Option<crate::gateway::token::TokenKey>,
+    ) -> Result<Self, Refusal> {
+        let mount = pass::PassMount::new(crate::gateway::pass_flow::Config {
+            master_key: self.config.master_key.to_vec(),
+            web_dir: std::path::PathBuf::from(&self.config.web_dir),
+            step_up,
+            motor_evidence: crate::gateway::pass_flow::MotorEvidence::Off,
+        })
+        .map_err(Refusal::Pass)?;
+        Ok(self.with_pass_routes(Arc::new(mount)))
     }
 
     /// Current wall time as a duration since the Unix epoch.

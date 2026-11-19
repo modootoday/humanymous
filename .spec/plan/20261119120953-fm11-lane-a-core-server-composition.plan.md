@@ -3,7 +3,7 @@ id: plan:root/20261119120953
 title: FM11 lane A Core server composition
 status: active
 created: 2026-11-19T12:09:53Z
-updated: 2026-11-19T12:09:53Z
+updated: 2026-11-19T13:21:00Z
 rel:
   governs: [crates/sdk/humanymous-runtime/src/gateway/core_server.rs, crates/sdk/humanymous-runtime/tests/fixtures/gateway/core-server-go-golden.json]
   depends_on: [sot:root/rust-migration, sot:root/runtime-application]
@@ -25,9 +25,9 @@ The work is bounded:
 
 - Detection freeze: no score, weight, threshold, hard-rule predicate, verdict
   band or signal ID changes.
-- The Pass flow is lane C's code; core_server exposes only the `PassRoutes`
-  mount point. Mounting `gateway::pass_flow` through it is an open follow-up
-  that neither lane owns yet.
+- The Pass flow is lane C's code; core_server exposes the `PassRoutes` mount
+  point. Lane F (`plan:root/20261119132028`) mounts `gateway::pass_flow`
+  through it.
 - The `internal/gate` composition stays with lane B.
 - The ML activation (`ml_setup.go`, `mlcorrect/bundle.go`) is reserved to the
   owner and is left alone.
@@ -64,8 +64,9 @@ The work is bounded:
 - [ ] Public Core listener and binary role (plan B01, Root profile).
 - [ ] Decide whether proxy-VPN and Tor exit CIDR sets feed `is_proxy` and
   `is_tor_exit` (owner). The intel SoT keeps them shadow-only.
-- [ ] Mount `gateway::pass_flow` into `core_server` through a `PassRoutes`
-  adapter (open follow-up; no lane owns it yet).
+- [x] Mount `gateway::pass_flow` into `core_server` through a `PassRoutes`
+  adapter: `core_server::pass::PassMount` and `CoreServer::with_pass_flow`
+  (lane F, `plan:root/20261119132028`).
 - [ ] Product e2e under Docker (`red-blue-validate`).
 - [ ] Owner review of the pull request.
 
@@ -115,6 +116,6 @@ Deliberate differences, each pinned in a test:
 - **Proxies:** trusted proxies come from an explicit CIDR allowlist (C1).
 - **Routes**
   - explain, counters, mlcorrect and playground are not mounted (B09).
-  - Pass routes give 404 until a `PassRoutes` adapter is mounted (open
-    follow-up).
+  - Pass routes give 404 until a `PassRoutes` adapter is mounted
+    (`CoreServer::with_pass_flow`, lane F).
 - **Panics:** with logging off, a panic drops the connection.
