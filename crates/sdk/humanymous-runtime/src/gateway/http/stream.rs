@@ -278,6 +278,16 @@ mod tests {
         let text = std::str::from_utf8(&output).unwrap();
         assert!(text.contains("Transfer-Encoding: chunked\r\n"));
         assert!(!text.contains("X-Humanymous-Ack"));
+        // Owner decision C10: the native-stream profile gets no add-only
+        // security headers until qualified separately (Go added them).
+        for field in [
+            "X-Content-Type-Options",
+            "Referrer-Policy",
+            "X-Frame-Options",
+            "Strict-Transport-Security",
+        ] {
+            assert!(!text.contains(field), "{field}");
+        }
         assert!(!text.contains("Content-Length:"));
         assert!(output.ends_with(b"2\r\nhe\r\n3\r\nllo\r\n0\r\n\r\n"));
     }

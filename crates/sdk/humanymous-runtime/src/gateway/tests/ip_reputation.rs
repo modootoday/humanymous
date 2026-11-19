@@ -26,6 +26,8 @@ fn verdict_with(classification: Option<Classification>) -> (String, Vec<Record>)
     let req = protected(&cfg, &issued, 2, 10_000);
     let verdict = match app.decide(&req, || Ok(10_000)).unwrap() {
         Decision::Origin { .. } => "ALLOW".to_owned(),
+        Decision::Gate(gate) => panic!("edge gate {}", gate.status),
+        Decision::Probe(status, _) => panic!("probe {status}"),
         Decision::Local(_, body) => serde_json::from_slice::<Value>(&body).unwrap()["verdict"]
             .as_str()
             .unwrap()

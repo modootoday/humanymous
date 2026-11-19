@@ -175,6 +175,27 @@ impl Sessions {
         Ok(())
     }
 
+    /// Maintenance sweep of expired sessions (legacy `Server.GC`). It never
+    /// moves the epoch clock or poisons it: a clock behind the last observed
+    /// request or past the safe integer range sweeps nothing, and the next
+    /// request still fails closed on it.
+    pub fn sweep(&mut self, now: u64) {
+        if self.poisoned || now < self.last_now || now > 9_007_199_254_740_991 {
+            return;
+        }
+        self.entries.retain(|_, s| s.expires > now);
+    }
+
+    /// Number of sessions held by this epoch.
+    pub fn len(&self) -> usize {
+        self.entries.len()
+    }
+
+    /// True when this epoch holds no session.
+    pub fn is_empty(&self) -> bool {
+        self.entries.is_empty()
+    }
+
     /// Random capability plus independent secret; no caller-chosen session IDs.
     pub fn issue(&mut self, config: &Configuration, now: u64) -> Result<Issued, Rejection> {
         self.issue_profile(config, now, RitProfile::NativeFull)

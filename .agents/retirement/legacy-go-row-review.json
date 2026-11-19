@@ -15,9 +15,9 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 264,
-  "partial": 37,
-  "missing": 2,
+  "ported_unit": 271,
+  "partial": 31,
+  "missing": 1,
   "not_applicable": 2,
   "oracle_only": 9
  },
@@ -75,10 +75,9 @@
    "ported_unit": 5
   },
   "internal/gate": {
-   "partial": 21,
-   "missing": 1,
+   "partial": 15,
    "not_applicable": 1,
-   "ported_unit": 61,
+   "ported_unit": 68,
    "oracle_only": 1
   },
   "internal/httpx": {
@@ -177,7 +176,9 @@
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/logging.rs",
     "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/sink.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/sink.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/inherited.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/main.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::environment_value_or_fallback",
@@ -187,16 +188,17 @@
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::fatal_class_does_not_reflect_dynamic_error_text",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_fatal_record_carries_only_the_static_class",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_normalizes_selectors_core_does_not",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::empty_level_is_refused_for_both_roles"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::empty_level_is_refused_for_both_roles",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::inherited_logging_defaults_follow_the_go_gate_flags",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::inherited_logging_refuses_the_readiness_pipe_and_invalid_selectors",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::inherited_logging_writes_the_go_configured_record_without_paths",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_opens_gate_logging_before_custody"
    ],
    "go_test_map": {},
-   "gaps": [
-    "Not wired into the Gate or Core process composition",
-    "Synchronous emit: no bounded async queue or per-level drop counters"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Gate operational logging kernel with explicit settings, sinks and a static fatal class. Deliberate differences: empty level refused, file paths must be absolute without .., no global logger or environment reads. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "notes": "Gate operational logging kernel with explicit settings, sinks and a static fatal class. Deliberate differences: empty level refused, file paths must be absolute without .., no global logger or environment reads. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged. FM11 lane B: wired into the Gate process composition. The runtime binary (gateway/main.rs) reads the five -log-* selectors from an optional logging object of its private inherited configuration (Go Gate defaults for omitted fields), validates and opens every sink before the TLS source and custody, writes Go's runtime.logging_configured record and, on a later startup or serving failure, emit_gate_fatal with the static fatal_class (gateFatalf). Deliberate differences: without the object nothing is logged (Go always logged at its defaults); console_stream stdout is refused (log_console_stream_reserved) because standard output is the readiness pipe; a refusal exits with its static log_* code. The synchronous emit path is the owner-accepted difference of decision 2 (bounded async queue ported as the opt-in QueuedLogger). Core (cmd/server) wiring is that row's concern.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::environment_value_or_fallback": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_writes_console_plain_and_jsonl_file": "passed",
@@ -205,7 +207,11 @@
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::fatal_class_does_not_reflect_dynamic_error_text": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_fatal_record_carries_only_the_static_class": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_normalizes_selectors_core_does_not": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::empty_level_is_refused_for_both_roles": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::empty_level_is_refused_for_both_roles": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::inherited_logging_defaults_follow_the_go_gate_flags": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::inherited_logging_refuses_the_readiness_pipe_and_invalid_selectors": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::inherited_logging_writes_the_go_configured_record_without_paths": "passed",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_opens_gate_logging_before_custody": "passed"
    }
   },
   {
@@ -218,7 +224,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/management/mod.rs",
     "crates/sdk/humanymous-runtime/src/gateway/service.rs",
     "crates/sdk/humanymous-runtime/src/gateway/shipping.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/tls/listener.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/tls/listener.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/inherited.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope",
@@ -227,12 +234,13 @@
     "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_acme_it_cannot_run",
     "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_the_dev_flag_without_the_build_feature",
     "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_tls_requests_without_exactly_one_usable_source",
-    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_serves_tls_from_a_provisioned_pair"
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_serves_tls_from_a_provisioned_pair",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_opens_gate_logging_before_custody"
    ],
    "go_test_map": {},
    "gaps": [
     "public edge listener and separate admin TCP listener (B01)",
-    "flag/env configuration surface (56 of 62 flags; the six edge TLS flags -tls-cert/-tls-key/-acme-domain/-acme-cache/-acme-email/-acme-directory now map to the inherited configuration's tls object)",
+    "flag/env configuration surface: the remaining cmd/gate flags and HMN_* environment values (cmd/gate/main.go at 981d25c defines 35 flags and reads 17 HMN_* variables). Mapped so far: the six edge TLS flags -tls-cert/-tls-key/-acme-domain/-acme-cache/-acme-email/-acme-directory to the inherited configuration's tls object, and the five operational logging flags -log-level/-log-console-format/-log-console-stream/-log-plain-file/-log-jsonl-file (with their HMN_LOG_* fallbacks) to its logging object",
     "origin reverse proxy to non-loopback upstream, origin-auth (B14)",
     "ordered gate composition: bans/token/upgrade/sweep (B13,B17,B18)",
     "admin RBAC/console (B19-B21)",
@@ -242,7 +250,7 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust runtime is a private-config loopback-only gateway (stdin config, loopback listen/origin); shipping plan B01-B27 lists the Gate edge composition as partial/missing. B02 binary wiring (2026-11-18): the runtime binary reads an optional tls object from its private inherited configuration (certificate/key, acme {domains, cache, email, directory, directory_root, check_interval_seconds}, dev_self_signed), selects exactly one source through tls::listener::prepare before custody opens, binds ServiceHost::bind_tls and starts AcmeIssuer::maintain beside the listener when ACME is selected. A tls request with no, ambiguous or unavailable source exits non-zero before custody (Go fell back to self-signed); ServiceHost refuses a tls request without a server configuration. tests/gateway/tls_startup.rs runs the real binary: refusals before custody, and a provisioned pair served over TLS/H1 on loopback (Unix).",
+   "notes": "Rust runtime is a private-config loopback-only gateway (stdin config, loopback listen/origin); shipping plan B01-B27 lists the Gate edge composition as partial/missing. B02 binary wiring (2026-11-18): the runtime binary reads an optional tls object from its private inherited configuration (certificate/key, acme {domains, cache, email, directory, directory_root, check_interval_seconds}, dev_self_signed), selects exactly one source through tls::listener::prepare before custody opens, binds ServiceHost::bind_tls and starts AcmeIssuer::maintain beside the listener when ACME is selected. A tls request with no, ambiguous or unavailable source exits non-zero before custody (Go fell back to self-signed); ServiceHost refuses a tls request without a server configuration. tests/gateway/tls_startup.rs runs the real binary: refusals before custody, and a provisioned pair served over TLS/H1 on loopback (Unix). FM11 lane B: the five -log-* flags are the inherited configuration's logging object; the binary opens the Gate operational logger before custody and logs runtime.logging_configured and runtime.fatal (tests/gateway/tls_startup.rs runtime_binary_opens_gate_logging_before_custody). Public listeners stay owner-gated (B01).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::configuration_and_readiness_are_honest": "passed",
@@ -250,7 +258,8 @@
     "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_tls_requests_without_exactly_one_usable_source": "passed",
     "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_the_dev_flag_without_the_build_feature": "passed",
     "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_acme_it_cannot_run": "passed",
-    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_serves_tls_from_a_provisioned_pair": "passed"
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_serves_tls_from_a_provisioned_pair": "passed",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_opens_gate_logging_before_custody": "passed"
    }
   },
   {
@@ -2703,11 +2712,14 @@
   },
   {
    "baseline_path": "internal/gate/ban_integration_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/ban.rs",
     "crates/sdk/humanymous-runtime/src/gateway/ban/gate.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/token.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/token.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application/edge.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::flood_is_auto_banned_audited_and_spares_other_address",
@@ -2720,20 +2732,21 @@
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::manual_temporary_ban_lifecycle",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::already_banned_source_reports_existing_ban",
     "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::monitor_and_shadow_record_rate_refusal_and_never_block",
-    "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::fourth_strike_block_flags_dual_control"
+    "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::fourth_strike_block_flags_dual_control",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::flood_is_auto_banned_at_the_edge_and_spares_other_address",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::ip_rotating_flood_is_banned_by_fingerprint_on_the_served_path",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::admin_temporary_ban_blocks_at_the_edge_until_lifted",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::ban_gate_requires_a_trusted_client_address"
    ],
    "go_test_map": {
-    "TestAutoBanEndToEnd": "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::flood_is_auto_banned_audited_and_spares_other_address",
-    "TestFingerprintAutoBan": "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::ip_rotating_flood_is_banned_by_fingerprint",
-    "TestConsoleBanManagement": "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::manual_temporary_ban_blocks_with_retry_after_until_lifted"
+    "TestAutoBanEndToEnd": "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::flood_is_auto_banned_at_the_edge_and_spares_other_address",
+    "TestFingerprintAutoBan": "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::ip_rotating_flood_is_banned_by_fingerprint_on_the_served_path",
+    "TestConsoleBanManagement": "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::admin_temporary_ban_blocks_at_the_edge_until_lifted"
    },
-   "gaps": [
-    "gateway::ban::gate is not run by Application: the served path has no HTTP 403 with Retry-After, no origin skip for a banned source and no per-request ip:+fp: metering (owner decision 2026-11-16 leaves serving composition undecided)",
-    "Authenticated admin bans HTTP API (add, list, lift) with RBAC, which TestConsoleBanManagement drives over HTTP, is unported here (open PR #122 serves it)"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "All three Go tests pass on the oracle (981d25c, Go 1.25.3). Their kernel halves are ported against gateway::ban::gate with the Go-measured sequence: with soft 8 and hard 10 requests 8 and 9 record ratelimit.soft_exceeded and request 10 is blocked with ban.applied then ban.enforced; the records are appended to a real audit Log and the chain verifies; an unrelated address passes; an IP-rotating flood is banned by fp:d_Tues8bRjsNLZHw (Go bindKey); a manual temporary ban blocks with Retry-After until lifted. The HTTP response, origin and admin halves stay gaps. Temporary auto and manual bans need no dual control; permanent and cidr bans do (pinned by the dual-control tests). Review follow-up: monitor and shadow never block; a rate-history refusal there is recorded as ratelimit.unavailable (would_refuse) and the request continues, while enforce mode still returns the refusal for the caller to fail closed. A fourth auto strike blocks with the 24h term and Block.dual_control_required set.",
+   "notes": "All three Go tests pass on the oracle (981d25c, Go 1.25.3). Their kernel halves are ported against gateway::ban::gate with the Go-measured sequence: with soft 8 and hard 10 requests 8 and 9 record ratelimit.soft_exceeded and request 10 is blocked with ban.applied then ban.enforced; the records are appended to a real audit Log and the chain verifies; an unrelated address passes; an IP-rotating flood is banned by fp:d_Tues8bRjsNLZHw (Go bindKey); a manual temporary ban blocks with Retry-After until lifted. Temporary auto and manual bans need no dual control; permanent and cidr bans do (pinned by the dual-control tests). Review follow-up: monitor and shadow never block; a rate-history refusal there is recorded as ratelimit.unavailable (would_refuse) and the request continues, while enforce mode still returns the refusal for the caller to fail closed. A fourth auto strike blocks with the 24h term and Block.dual_control_required set. FM11 slice 18 closes both gaps on a real loopback listener behind a PROXY v2 edge: Application runs the ban gate, so the flood's 10th request answers 403 with the Go headers and body (Retry-After 3600 or 3599; Go measured 3599 because its clock had moved between ban and block), later requests stay blocked, the record sequence equals the Go capture except verdict DENY, the origin is never contacted and 198.51.100.2 passes; the IP-rotating flood is banned by fp: and blocks a fresh address; an operator's temporary ban through gateway::admin_plane (bans, list, lift) blocks at the public edge with Retry-After until lifted. The service binary still provisions no ban store (gap tracked on internal/gate/gates.go).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::flood_is_auto_banned_audited_and_spares_other_address": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::ip_rotating_flood_is_banned_by_fingerprint": "passed",
@@ -2745,7 +2758,11 @@
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::manual_temporary_ban_lifecycle": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::already_banned_source_reports_existing_ban": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::monitor_and_shadow_record_rate_refusal_and_never_block": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::fourth_strike_block_flags_dual_control": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::fourth_strike_block_flags_dual_control": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::flood_is_auto_banned_at_the_edge_and_spares_other_address": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::ip_rotating_flood_is_banned_by_fingerprint_on_the_served_path": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::admin_temporary_ban_blocks_at_the_edge_until_lifted": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::ban_gate_requires_a_trusted_client_address": "passed"
    }
   },
   {
@@ -2922,17 +2939,25 @@
   },
   {
    "baseline_path": "internal/gate/configsign_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/settings/configsign.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_signed_and_stable",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_matches_go_capture"
+   ],
    "go_test_map": {
-    "TestConfigVersionSignedAndStable": null
+    "TestConfigVersionSignedAndStable": "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_signed_and_stable"
    },
    "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust config_version is the provisioned scope revision, not a keyed hash of effective policy.",
-   "test_verification": {}
+   "notes": "FM11 lane B: the Go test pins Server.configVersion (cfg- prefix, stable across calls, changes when the kill switch flips); the configsign kernel test asserts the same three properties and the Go golden capture covers 18 postures. Oracle rerun 2026-11-19 (go1.26.3, 981d25c, network none): PASS. Whether the live gateway binds this signed version instead of scope.revision is a serving-composition question recorded on internal/gate/configsign.go, not a gap in this test.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_signed_and_stable": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_matches_go_capture": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/configsign.go",
@@ -2950,7 +2975,7 @@
     "TestConfigVersionSignedAndStable": "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_signed_and_stable"
    },
    "gaps": [
-    "Gateway audit records, the admin view and the config-version metric still carry scope.revision; the live gateway does not compute or bind the signed effective-policy version (serving composition)"
+    "Gateway audit records, the admin view and the config-version metric still carry scope.revision; binding the signed effective-policy version needs an owner/SoT decision because the runtime-application SoT pins config_version to the provisioned scope revision"
    ],
    "retire_basis": null,
    "confidence": "medium",
@@ -3215,28 +3240,31 @@
   },
   {
    "baseline_path": "internal/gate/forward_fidelity_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/http.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/http/origin_response.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/http/origin_response.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application/edge.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::real_shared_client_consumption_ack_and_origin_fidelity",
-    "crates/sdk/humanymous-runtime/src/gateway/http/origin_response.rs::nominated_hop_fields_are_removed_without_coalescing_ordinary_headers"
+    "crates/sdk/humanymous-runtime/src/gateway/http/origin_response.rs::nominated_hop_fields_are_removed_without_coalescing_ordinary_headers",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoofed_trust_headers_are_denied_before_origin",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::forwarded_request_is_cloaked_and_response_gains_add_only_security_headers"
    ],
    "go_test_map": {
     "TestProxyForwardsClientRequestFaithfully": "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::real_shared_client_consumption_ack_and_origin_fidelity",
-    "TestProxyBlocksSpoofedTrustHeaders": null
+    "TestProxyBlocksSpoofedTrustHeaders": "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoofed_trust_headers_are_denied_before_origin"
    },
-   "gaps": [
-    "deny forged X-Forwarded-For/X-Real-Ip/Forwarded/Cf-Connecting-Ip/origin-auth before origin"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust forwards request bytes faithfully; it drops its own x-humanymous-* fields and the six internal trust headers (guard::is_internal, including X-Forwarded-For), so client XFF is not forwarded.",
+   "notes": "Rust forwards request bytes faithfully; it drops its own x-humanymous-* fields and the six internal trust headers (guard::is_internal, including X-Forwarded-For), so client XFF is not forwarded. FM11 slice 18: the spoof-header gate runs on the served path, so each forged X-Forwarded-For, X-Real-Ip, X-Hmny-Origin-Auth, Forwarded and Cf-Connecting-Ip (and X-Hmn-Verdict) is denied 403 with the Go response bytes before the origin is contacted; the origin-cloak token of TestProxyForwardsClientRequestFaithfully is attached and validates (gateway::tests::edge). Named deviation kept: the gateway sets no X-Forwarded-For or X-Forwarded-Host toward the origin (Go set them from the socket); the trusted client address arrives only by PROXY v2 and is not re-emitted.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/http/origin_response.rs::nominated_hop_fields_are_removed_without_coalescing_ordinary_headers": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::real_shared_client_consumption_ack_and_origin_fidelity": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::real_shared_client_consumption_ack_and_origin_fidelity": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoofed_trust_headers_are_denied_before_origin": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::forwarded_request_is_cloaked_and_response_gains_add_only_security_headers": "passed"
    }
   },
   {
@@ -3245,29 +3273,34 @@
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/application.rs",
     "crates/sdk/humanymous-runtime/src/gateway/service.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application/maintenance.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::real_tcp_audit_before_origin_and_negative_counter_zero",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::client_abort_during_audit_never_dispatches_origin",
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::signed_method_target_body_scope_policy_and_deadline_cannot_change"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::signed_method_target_body_scope_policy_and_deadline_cannot_change",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::accept_loop_sweeps_on_the_maintenance_tick",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies"
    ],
    "go_test_map": {},
    "gaps": [
-    "ordered gate pipeline with control/admin split",
-    "monitor/kill-switch global mode",
-    "HTML injection",
-    "erasure shred runner",
-    "projection/operational metrics",
-    "settings-driven module modes"
+    "ordered gate pipeline with control/admin split: no service composes an admin plane beside the served path (B01, owner)",
+    "monitor/kill-switch global mode: kill switch commit semantics are owner-reserved",
+    "HTML injection: no served loader route and no SoT authorisation for response mutation",
+    "erasure shred runner: AdminPlane::run_due_shreds exists but no service composes an admin plane (B01)",
+    "projection/operational metrics: Prometheus metrics open in issue #75",
+    "settings-driven module modes: gate default modes open in issue #75"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust application gives an audited loopback forwarder, not the Gate server composition (B13/B14).",
+   "notes": "Rust application gives an audited loopback forwarder, not the Gate server composition (B13/B14). FM11 lane B (2026-11-19): the Go gcLoop composite (verdict sessions plus the installed ban store, 60 s) now runs on both accept loops (gateway::application::maintenance); the integration flow (bot beacon denied at the edge, human page untouched, sealed chain verifies) is pinned by tests/integration.rs.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::client_abort_during_audit_never_dispatches_origin": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::real_tcp_audit_before_origin_and_negative_counter_zero": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::signed_method_target_body_scope_policy_and_deadline_cannot_change": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::signed_method_target_body_scope_policy_and_deadline_cannot_change": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::accept_loop_sweeps_on_the_maintenance_tick": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies": "passed"
    }
   },
   {
@@ -3276,35 +3309,50 @@
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/application.rs",
     "crates/sdk/humanymous-runtime/src/gateway/http.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/session.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/session.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application/edge.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/configuration/edge.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::signed_method_target_body_scope_policy_and_deadline_cannot_change",
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::missing_client_is_challenge_and_missing_planes_are_not_ready"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::missing_client_is_challenge_and_missing_planes_are_not_ready",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoofed_trust_headers_are_denied_before_origin",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoof_gate_monitor_records_and_continues",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::flood_is_auto_banned_at_the_edge_and_spares_other_address",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::ip_rotating_flood_is_banned_by_fingerprint_on_the_served_path",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::ban_gate_requires_a_trusted_client_address",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::unaudited_gate_effect_is_refused_and_poisons_the_epoch",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoof_gate_monitor_strips_forged_headers_before_scoring"
    ],
    "go_test_map": {},
    "gaps": [
-    "ban gate: the kernel gateway::ban::gate (port of banGate, enforceBan, banReason) exists, but Application does not run it",
-    "spoof-header gate: the kernel guard::spoof_gate (port of spoofHeaderGate) exists, but Application does not run it",
     "verdict-token gate",
     "upgrade gate",
     "agent-auth, PAT and WebAuthn gates",
     "sweep gate",
-    "attestation floor audit"
+    "attestation floor audit",
+    "ban gate provisioning: Application runs gateway::ban::gate once a store is installed (Application::install_bans), but the service binary (gateway::service) provisions no store because no rate-limit configuration document exists, and the store's monotonic epoch is not shared with an admin plane's serving epoch"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Only framing and RIT/verdict application are present (B13 M).",
+   "notes": "Only framing and RIT/verdict application were present (B13 M). FM11 slice 18: the served path now runs the legacy ServeHTTP gate order for proxied requests (gateway::application::edge): after the reserved control routes, the ban gate (ban::gate::evaluate, HR-21) and then the spoof-header gate (guard::spoof_gate, HR-27b), before route inventory, authorization and scoring. Modes come from the startup edge section (default enforce, Go's default without a settings store). Responses and records match the Go capture tests/fixtures/gateway/edge-gates-go-golden.json (Go 1.25.3 at 981d25c, network none). Named deviations: the ban gate needs the trusted PROXY v2 client address and refuses an unattributed connection when enforcing (503 ban_client_address); a ledger refusal is 503 ban_ledger; records carry no subject pseudonym and verdict DENY; an append failure poisons the epoch. Owner decision 2026-11-16 left serving composition undecided; this wiring needs owner review. Signal IDs and scoring are unchanged. Review follow-up (FM11 slice 18): a non-enforcing spoof gate now strips the forged trust headers from the scored and forwarded view, as Go's spoofHeaderGate called stripInbound(r) before the mode check; request integrity and the commitment still cover the sent bytes. A refusal to a HEAD request keeps the head and Content-Length without the body, as Go's server did. FM11 lane B (2026-11-19): the installed ban store is now swept by the Application maintenance tick (Server.gc parity); ban-store provisioning, the shared ban clock, metrics and default modes remain owner questions in issue #75.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::missing_client_is_challenge_and_missing_planes_are_not_ready": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::signed_method_target_body_scope_policy_and_deadline_cannot_change": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::signed_method_target_body_scope_policy_and_deadline_cannot_change": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoofed_trust_headers_are_denied_before_origin": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoof_gate_monitor_records_and_continues": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::flood_is_auto_banned_at_the_edge_and_spares_other_address": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::ip_rotating_flood_is_banned_by_fingerprint_on_the_served_path": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::ban_gate_requires_a_trusted_client_address": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::unaudited_gate_effect_is_refused_and_poisons_the_epoch": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoof_gate_monitor_strips_forged_headers_before_scoring": "passed"
    }
   },
   {
    "baseline_path": "internal/gate/gc_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/ban.rs",
     "crates/sdk/humanymous-runtime/src/gateway/token.rs",
@@ -3312,7 +3360,8 @@
     "crates/sdk/humanymous-runtime/src/network/history/cohort/mod.rs",
     "crates/sdk/humanymous-runtime/src/network/history/interarrival/mod.rs",
     "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs",
-    "crates/sdk/humanymous-runtime/src/network/history/sweep/mod.rs"
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/mod.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application/maintenance.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::gc_sweeps_stale_strikes_and_expired_bans",
@@ -3322,20 +3371,23 @@
     "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r259_idle_cohort_is_evicted_strictly_after_ten_minutes",
     "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r266_gc_drops_last_seen_strictly_after_idle",
     "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::bounded_gc_cursor_progresses_and_ttl_equality_survives",
-    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed"
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::server_gc_sweeps_sessions_without_optional_kernels",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::server_gc_sweeps_the_installed_ban_store",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::server_gc_never_moves_or_poisons_the_session_epoch",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::server_gc_reports_an_unavailable_ban_ledger",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::accept_loop_sweeps_on_the_maintenance_tick"
    ],
    "go_test_map": {
     "TestVerdictStoreGC": "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::gc_sweeps_expired_sticky_verdicts",
     "TestBanStoreGCSweepsStrikesAndExpired": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::gc_sweeps_stale_strikes_and_expired_bans",
     "TestSweepDetectorGC": "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed",
-    "TestServerGCRunsWithoutPanic": null
+    "TestServerGCRunsWithoutPanic": "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::server_gc_sweeps_sessions_without_optional_kernels"
    },
-   "gaps": [
-    "No Runtime composite GC owner (Go Server.GC) sweeps every kernel"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Each kernel GC is tested on its own; an expired ban drops at once while its strike survives until STRIKE_DECAY.",
+   "notes": "Each kernel GC is tested on its own; an expired ban drops at once while its strike survives until STRIKE_DECAY. FM11 lane B: Application::gc (gateway::application::maintenance) is the composite owner of legacy Server.GC: it sweeps every kernel the serving owner composes, the session epoch (expired sessions) and the installed ban store (bans, strikes and rate windows), and both accept loops (plaintext and TLS) run it between requests on the legacy one-minute maintenance tick. The verdict store, sweep detector, anomaly shadow and credential fan-out are not composed on the served path (gates.go gaps), so no owner holds them yet; each keeps its tested kernel gc. Deliberate differences: a sweep never moves or poisons the session epoch (a clock behind the last request or past the safe integer range sweeps nothing), and a refused ban-store sweep or poisoned store lock reports 503 ban_ledger while serving continues because the ban gate refuses on the same ledger. Go oracle at 981d25c: go test -run ^(TestVerdictStoreGC|TestBanStoreGCSweepsStrikesAndExpired|TestSweepDetectorGC|TestServerGCRunsWithoutPanic)$ ./internal/gate PASS (go1.26.3, network none).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::gc_sweeps_stale_strikes_and_expired_bans": "passed",
     "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed": "passed",
@@ -3344,16 +3396,24 @@
     "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r266_gc_drops_last_seen_strictly_after_idle": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::nonce_cache_expires_and_saturates_closed": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::spent_nonce_expires_after_ttl": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::gc_sweeps_expired_sticky_verdicts": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::gc_sweeps_expired_sticky_verdicts": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::server_gc_sweeps_sessions_without_optional_kernels": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::server_gc_sweeps_the_installed_ban_store": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::server_gc_never_moves_or_poisons_the_session_epoch": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::server_gc_reports_an_unavailable_ban_ledger": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::accept_loop_sweeps_on_the_maintenance_tick": "passed"
    }
   },
   {
    "baseline_path": "internal/gate/guard.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/guard.rs",
     "crates/sdk/humanymous-runtime/src/gateway/http.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/smuggle.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application/edge.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/configuration/edge.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/guard/parity.rs::origin_cloak_matches_go_capture",
@@ -3373,16 +3433,20 @@
     "crates/sdk/humanymous-runtime/src/gateway/http/stream.rs::complete_chunk_stream_reframes_and_strips_forged_gateway_fields",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::spoof_record_lists_only_static_header_names",
     "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::real_shared_client_consumption_ack_and_origin_fidelity",
-    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::spoof_deny_carries_the_incident_pointer"
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::spoof_deny_carries_the_incident_pointer",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::forwarded_request_is_cloaked_and_response_gains_add_only_security_headers",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoofed_trust_headers_are_denied_before_origin",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoof_gate_monitor_records_and_continues",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::invalid_origin_key_and_plaintext_hsts_are_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::origin_request_drops_forged_trust_headers",
+    "crates/sdk/humanymous-runtime/src/gateway/configuration/edge.rs::defaults_enforce_and_short_or_malformed_keys_are_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoof_gate_monitor_strips_forged_headers_before_scoring"
    ],
    "go_test_map": {},
-   "gaps": [
-    "Forwarding does not attach the origin-cloak header: legacy gate.go Rewrite set X-Hmny-Origin-Auth from originAuth(originEpoch(now)) on every upstream request, and no origin key is provisioned in the Rust configuration",
-    "guard::spoof_gate (HR-27b strip, record and deny) is not run by Application, so the record is never appended on the served path (gates.go spoof-header gate)"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "low",
-   "notes": "Every guard.go function is ported as a pure kernel: spoofScan, stripInbound, originAuth/originEpoch/originEpochGrace/ValidateOriginAuth (OriginKey, byte-identical to Go) and spoofRecord (smuggle::spoof_record). guard::spoof_gate ports gates.go spoofHeaderGate with the Go-measured output (Go 1.25.3 at 981d25c): enforce denies with the HR-27b record listing non-empty names in legacy order, and monitor and shadow both record mode monitor and continue with the headers stripped. The existing Rust forwarder already drops every internal header (http::origin_request). Owner decision 2026-11-16 (#24; .agents/retirement/owner-decisions-2026-11-16.md) accepts the fail-closed differences (short origin keys refused) and leaves wiring into serving composition undecided, so the two wiring gaps remain. Signal IDs and scoring are unchanged. Review follow-up: the spoof deny carries Go's X-Hmn-Incident: see-audit-log pointer through guard::INCIDENT_HEADER and Spoof::headers(), shared with the ban gate. Go golden tests/fixtures/gateway/configsign-guard-go-golden.json (Go 1.25.3 at 981d25c, offline) pins spoofScan/stripInbound, origin epochs/grace/tokens/validation and spoofRecord; the spoof record now carries the legacy subject actor and key_id k1. Named deviations: Rust spoof_scan reports a forged value behind an empty first value (Go Header.Get read only the first); Rust records write verdict DENY where Go wrote deny; keys under 32 bytes are refused.",
+   "confidence": "medium",
+   "notes": "Every guard.go function is ported as a pure kernel: spoofScan, stripInbound, originAuth/originEpoch/originEpochGrace/ValidateOriginAuth (OriginKey, byte-identical to Go) and spoofRecord (smuggle::spoof_record); guard::spoof_gate ports gates.go spoofHeaderGate with the Go-measured output (Go 1.25.3 at 981d25c): enforce denies with the HR-27b record listing non-empty names in legacy order, and monitor and shadow record mode monitor. The spoof deny carries Go's X-Hmn-Incident: see-audit-log pointer (guard::INCIDENT_HEADER, Spoof::headers()), shared with the ban gate. Go golden tests/fixtures/gateway/configsign-guard-go-golden.json (Go 1.25.3 at 981d25c, offline) pins spoofScan/stripInbound, origin epochs/grace/tokens/validation and spoofRecord, including the legacy subject actor and key_id k1. Owner decision 2026-11-16 (#24; .agents/retirement/owner-decisions-2026-11-16.md) accepts the fail-closed differences and left wiring into serving composition undecided; FM11 slice 18 wires both halves (owner review requested on the PR). Origin cloak: the key is provisioned as edge.origin_key_hex in the private startup document (owner decision C10; malformed or short keys refuse the configuration, readiness reports only origin_cloak true/false), and http::origin_request drops every client copy of the internal headers and attaches one X-Hmny-Origin-Auth token for origin_epoch(now) on every origin request of the plaintext and TLS paths. Spoof gate: Application runs guard::spoof_gate for proxied requests and appends its record before acting (gateway::application::edge); in monitor, shadow and off mode the forged headers are removed from the view that is scored and forwarded, as Go's stripInbound(r) did, while request-integrity verification and the request commitment still cover the bytes the client sent. Pinned on a real loopback listener and through Application::decide by gateway::tests::edge. Named deviations: Rust spoof_scan reports a forged value behind an empty first value (Go Header.Get read only the first); Rust records write verdict DENY where Go wrote deny; keys under 32 bytes are refused; spoof_gate strips empty-valued internal headers too, but the scored view keeps them when nothing was forged (Go stripped only on a finding) and the forwarder drops them. Signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::clean_request_has_no_spoof": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::enforcing_spoof_gate_denies_each_forged_trust_header": "passed",
@@ -3401,7 +3465,14 @@
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::spoof_deny_carries_the_incident_pointer": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/guard/parity.rs::spoof_scan_and_strip_match_go_capture": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/guard/parity.rs::origin_cloak_matches_go_capture": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/guard/parity.rs::spoof_and_smuggle_records_match_go_capture": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/guard/parity.rs::spoof_and_smuggle_records_match_go_capture": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::forwarded_request_is_cloaked_and_response_gains_add_only_security_headers": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoofed_trust_headers_are_denied_before_origin": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoof_gate_monitor_records_and_continues": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::invalid_origin_key_and_plaintext_hsts_are_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::origin_request_drops_forged_trust_headers": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/configuration/edge.rs::defaults_enforce_and_short_or_malformed_keys_are_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoof_gate_monitor_strips_forged_headers_before_scoring": "passed"
    }
   },
   {
@@ -3502,26 +3573,27 @@
    "baseline_path": "internal/gate/integration_test.go",
    "disposition": "partial",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/application.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/application.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::real_tcp_audit_before_origin_and_negative_counter_zero",
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies"
    ],
    "go_test_map": {
-    "TestProxyEnforcementAndAudit": "crates/sdk/humanymous-runtime/src/gateway/tests.rs::real_tcp_audit_before_origin_and_negative_counter_zero"
+    "TestProxyEnforcementAndAudit": "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies"
    },
    "gaps": [
-    "HTML injection step",
-    "edge block of scored bot without origin contact via beacon",
-    "audit chain verification at end"
+    "HTML injection step: gateway::inject::Injector is not composed on the served path. Go injected <script src=/__hmn/loader.js> into every 200 text/html response of an inject route; the runtime-application SoT defines no served response mutation and the served path has no loader route (the browser profile bootstraps through /_humanymous/browser/session), so composing it needs an owner/SoT decision"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust covers audit-before-origin over real TCP, not the inject/score/block flow.",
+   "notes": "Rust covers audit-before-origin over real TCP. FM11 lane B: tests/integration.rs runs the Go flow end to end through Application::serve on real loopback listeners with a counting origin and a real sealed log (node test, HMAC key k, a head every four records over a write-ahead log): a bot beacon (webdriver and headless token, no motor data) is collected, the same session's next protected request is scored DENY and answered 403 with the origin never contacted, a human session's HTML passes through byte for byte, and Log::self_verify reports ok with the DENY and ALLOW runtime.decision records in the chain. Deliberate differences: the beacon answers COLLECTED, not DENY with a sticky verdict cookie (the verdict is scored on the next request of the request-integrity session; the initial profile refuses cookies); the block is a runtime.decision DENY record with a JSON 403 body, not enforcement.deny with http.Error text. Go oracle at 981d25c: go test -run ^TestProxyEnforcementAndAudit$ ./internal/gate PASS (go1.26.3, network none).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::real_tcp_audit_before_origin_and_negative_counter_zero": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies": "passed"
    }
   },
   {
@@ -3543,7 +3615,7 @@
     "TestKillSwitchDualControlAndEffect": "crates/sdk/humanymous-runtime/src/gateway/control/state.rs::spent_intent_without_covered_effect_cannot_become_healthy"
    },
    "gaps": [
-    "kill switch effect on the enforcement path (Go global monitor mode that lets a scored-DENY session pass)",
+    "kill switch effect on the enforcement path (Go global monitor mode that lets a scored-DENY session pass): kill switch commit semantics are owner-reserved, so this is an owner decision, not a port",
     "the approved kill-switch commit answers 409 by design: it needs the signed one-way node kill (gateway::control), which the admin plane does not hold"
    ],
    "retire_basis": null,
@@ -3637,35 +3709,49 @@
     "crates/sdk/humanymous-runtime/src/gateway/http.rs",
     "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application/edge.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/http/origin_response.rs",
+    "crates/sdk/humanymous-runtime/tests/fixtures/gateway/edge-probe-methods-go-golden.json",
+    "crates/sdk/humanymous-runtime/src/gateway/http/stream.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/tests/browser/contract.rs::shared_lab_request_limit_413_has_no_ack_and_closes_client_epoch",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::configuration_and_readiness_are_honest",
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved",
-    "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search/tests.rs::audit_subject_filter"
+    "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search/tests.rs::audit_subject_filter",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::forwarded_request_is_cloaked_and_response_gains_add_only_security_headers",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::readiness_probe_drains_and_liveness_stays_ok",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::poisoned_epoch_is_not_ready",
+    "crates/sdk/humanymous-runtime/src/gateway/http/origin_response.rs::security_headers_are_add_only_and_hsts_is_opt_in",
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::probe_frame_keeps_content_length_and_drops_the_body_for_head",
+    "crates/sdk/humanymous-runtime/src/gateway/http/stream.rs::complete_chunk_stream_reframes_and_strips_forged_gateway_fields"
    ],
    "go_test_map": {
-    "TestSecurityHeadersAddOnly": null,
+    "TestSecurityHeadersAddOnly": "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::forwarded_request_is_cloaked_and_response_gains_add_only_security_headers",
     "TestMaxBodyCap": "crates/sdk/humanymous-runtime/src/gateway/tests/browser/contract.rs::shared_lab_request_limit_413_has_no_ack_and_closes_client_epoch",
-    "TestReadinessProbe": "crates/sdk/humanymous-runtime/src/gateway/tests.rs::configuration_and_readiness_are_honest",
+    "TestReadinessProbe": "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::readiness_probe_drains_and_liveness_stays_ok",
     "TestIntegrityOKDefaultsFalseOnEmptyServer": "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved",
     "TestAdminMetricsExposition": null,
     "TestAuditSubjectFilter": "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search/tests.rs::audit_subject_filter"
    },
    "gaps": [
-    "security headers add-only",
-    "readyz/healthz draining HTTP probes",
     "Prometheus metrics"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Body cap and empty-chain failure exist; readiness is a document, not readyz/healthz endpoints. TestAuditSubjectFilter is ported against the gateway::operations::audit_search kernel (session or actor pseudonym); no admin audit route serves it yet.",
+   "notes": "Body cap and empty-chain failure exist. TestAuditSubjectFilter is ported against the gateway::operations::audit_search kernel (session or actor pseudonym); no admin audit route serves it yet. FM11 slice 18: add-only security headers are added to complete proxied responses (owner decision C10; HSTS only with edge.hsts on the TLS listener, refused on plaintext, pinned at unit level only). /_humanymous/healthz and /_humanymous/readyz answer GET with the Go bodies and HEAD with the same head and Content-Length and no body (Go capture tests/fixtures/gateway/edge-probe-methods-go-golden.json over a real listener); readyz answers 503 draining after ReadySwitch::set_ready(false) or once the epoch has failed closed. Named deviations: native-stream responses carry no added security headers because owner decision C10 keeps the native-stream profile out of scope until qualified separately (Go modifyResponse added them to every proxied response; pinned by http::stream::tests::complete_chunk_stream_reframes_and_strips_forged_gateway_fields); other methods stay refused 403 reserved_route (Go's mux answered every method), and the draining body is sent as application/json (Go sniffed text/plain; charset=utf-8). Prometheus exposition (TestAdminMetricsExposition) is not served.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::configuration_and_readiness_are_honest": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests/browser/contract.rs::shared_lab_request_limit_413_has_no_ack_and_closes_client_epoch": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search/tests.rs::audit_subject_filter": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search/tests.rs::audit_subject_filter": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::forwarded_request_is_cloaked_and_response_gains_add_only_security_headers": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::readiness_probe_drains_and_liveness_stays_ok": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::poisoned_epoch_is_not_ready": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/http/origin_response.rs::security_headers_are_add_only_and_hsts_is_opt_in": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::probe_frame_keeps_content_length_and_drops_the_body_for_head": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/http/stream.rs::complete_chunk_stream_reframes_and_strips_forged_gateway_fields": "passed"
    }
   },
   {
@@ -4425,28 +4511,29 @@
   },
   {
    "baseline_path": "internal/gate/upstream_error_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/application.rs",
     "crates/sdk/humanymous-runtime/src/gateway/application/tls.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/request.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/request.rs",
+    "crates/sdk/humanymous-runtime/src/audit/log/stamp.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::upstream_errors_map_to_stable_classes_without_raw_text",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::origin_failure_acknowledges_consumed_counter_without_claiming_zero_effects"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::origin_failure_acknowledges_consumed_counter_without_claiming_zero_effects",
+    "crates/sdk/humanymous-runtime/src/audit/log/stamp.rs::event_ids_are_unique_across_many_mints"
    ],
    "go_test_map": {
     "TestUpstreamErrorAudited": "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::origin_failure_acknowledges_consumed_counter_without_claiming_zero_effects"
    },
-   "gaps": [
-    "client response stays 503 with the consumed-counter ACK and a static JSON code, and upstream.status records that 503; Go answers 502 with an empty body. runtime-application SoT pins 503 for post-consumption origin errors, so adopting 502 is an owner/SoT decision"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Ported: an origin refusal after the committed ALLOW and before any client byte appends one upstream.error record (actor system, tenant, host, route class, the ALLOW record's request id and commitment as correlation, revision, latency_us, mode enforce, fail_mode degraded, upstream.status and a stable error_class) through Application::upstream_failure on the plaintext and TLS paths; event_id is stamped by the durable log (audit/log/stamp.rs). The socket test covers a malformed origin frame (unreachable) and a closed origin port (connection_refused, Go's dead-upstream case); the TLS path shares the helper but has no origin-failure socket test. Deliberate fail-closed differences: fail_reason carries the static refusal code, never transport error text; a failed upstream.error append poisons the epoch and answers durable_audit (Go logged and continued); a malformed or truncated buffered origin frame is audited because Rust buffers the whole frame before the first client byte. Go oracle at 981d25c: go test ./internal/gate -run TestUpstreamErrorAudited PASS (go1.25.3).",
+   "notes": "Ported: an origin refusal after the committed ALLOW and before any client byte appends one upstream.error record (actor system, tenant, host, route class, the ALLOW record's request id and commitment as correlation, revision, latency_us, mode enforce, fail_mode degraded, upstream.status and a stable error_class) through Application::upstream_failure on the plaintext and TLS paths; event_id is stamped by the durable log (audit/log/stamp.rs). The socket test covers a malformed origin frame (unreachable) and a closed origin port (connection_refused, Go's dead-upstream case); the TLS path shares the helper but has no origin-failure socket test. Deliberate fail-closed differences: fail_reason carries the static refusal code, never transport error text; a failed upstream.error append poisons the epoch and answers durable_audit (Go logged and continued); a malformed or truncated buffered origin frame is audited because Rust buffers the whole frame before the first client byte. Go oracle at 981d25c: go test ./internal/gate -run TestUpstreamErrorAudited PASS (go1.25.3). FM11 lane B: the remaining gap was settled before this lane: owner decision C10 on issue #75 (runtime-application SoT, \"Origin failure, origin cloak and security headers\") fixes HTTP 503 with body {\"error\":\"<origin code>\"} and upstream.status 503 as the documented, deliberate difference from Go's empty-body 502, so the client gets a typed code and the consumed-counter ACK binds the actual status. Every other Go assertion is covered: the record exists, upstream.status and error_class are set, correlation_id links the ALLOW record, and event_id is stamped by the durable log (audit::log::stamp, event_ids_are_unique_across_many_mints). Go oracle at 981d25c re-run: TestUpstreamErrorAudited PASS (go1.26.3, network none).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::upstream_errors_map_to_stable_classes_without_raw_text": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::origin_failure_acknowledges_consumed_counter_without_claiming_zero_effects": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::origin_failure_acknowledges_consumed_counter_without_claiming_zero_effects": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/log/stamp.rs::event_ids_are_unique_across_many_mints": "passed"
    }
   },
   {
@@ -4852,7 +4939,7 @@
   },
   {
    "baseline_path": "internal/gate/wargame_escalation_r161_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/admin_approval.rs",
     "crates/sdk/humanymous-runtime/src/gateway/admin_approval/tests.rs",
@@ -4862,7 +4949,10 @@
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs",
     "crates/sdk/humanymous-runtime/src/gateway/route_policy.rs",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application/edge.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/admin_approval/tests.rs::r178_approval_ticket_differs_by_approver",
@@ -4902,15 +4992,18 @@
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r196_sec_ch_ua_affects_bind_key",
     "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r171_strict_path_login",
     "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r172_nested_strict_under_admin",
-    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r173_off_route_exact_only"
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r173_off_route_exact_only",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::dual_control::ledger::r162_commit_then_edge_denies",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::wargame_r166_meta_audit_on_ban_list_keeps_the_chain_intact",
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::legacy_go_smuggle_scan_cases_are_refused_on_the_wire"
    ],
    "go_test_map": {
     "TestWargameR161_PendingBanNotEnforcedUntilCommit": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r161_pending_ban_not_enforced_until_commit",
-    "TestWargameR162_CommitThenEdgeDenies": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::dual_control::r162_commit_then_ban_store_denies",
+    "TestWargameR162_CommitThenEdgeDenies": "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::dual_control::ledger::r162_commit_then_edge_denies",
     "TestWargameR163_LiftAfterPermanentCommit": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::dual_control::r163_lift_after_permanent_commit_is_refused",
     "TestWargameR164_BodyApproverStillIgnoredOnIPv6Permanent": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r164_body_approver_still_ignored_on_ipv6_permanent",
     "TestWargameR165_FPBanTemporaryDirect": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r165_fp_ban_temporary_direct",
-    "TestWargameR166_MetaAuditOnBanList": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r166_meta_audit_on_ban_list",
+    "TestWargameR166_MetaAuditOnBanList": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::wargame_r166_meta_audit_on_ban_list_keeps_the_chain_intact",
     "TestWargameR167_KillswitchEngageBlocksEnforcementPath": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r167_killswitch_pending_before_commit",
     "TestWargameR168_SmuggleAndBanIndependent": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r168_smuggle_and_ban_independent",
     "TestWargameR169_TEChunkedAloneOK": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r169_te_chunked_alone_ok",
@@ -4946,14 +5039,10 @@
     "TestWargameR199_SeriesRegressionValidBanKeyMatrix": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
     "TestWargameR200_SeriesClosePackageGreen": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::scan_classifies_in_legacy_precedence"
    },
-   "gaps": [
-    "R162 edge 403: the commit is asserted in the shared ban store; no runtime ban gate consults it on the public listener (serving composition not decided, owner decisions 2026-11-16)",
-    "R166 integrity soft check: GET integrity is not served by gateway::admin_plane; only the admin.access meta-audit record is asserted",
-    "R169 lone chunked TE: the classifier agrees with Go but the Rust HTTP parser refuses it (owner issue)"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Ban-key validation (R181-R185, R199), store lift/list (R191, R192), escalation (R193, deliberate 24h fourth tier), smuggle classifier (R168-R170, R197, R198) and step-up/receipt/bind rounds (R174-R177, R194-R196) are ported against the pure kernels. R200 re-asserts duplicate chunked TE refusal and ip: key validity, covered by the smuggle precedence and ban-key matrix tests. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#20; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged. B1: R171-R173 ported one-to-one against the route_policy resolver. Approval ticket, DPO superset and pending-store rounds (R178-R180, R188, R189) are ported against gateway::admin_approval. Admin HTTP rounds R161-R167, R186, R187 and R190 are ported against gateway::admin_plane over a real loopback TCP listener. R162 and R163 commit with a retained signed PermanentBan permit from a real control ledger (unix only); R163 pins the owner-accepted refusal to lift a permanent ban (decision 2). R167 asserts the pending kill switch and that an approved one commits nothing (409).",
+   "notes": "Ban-key validation (R181-R185, R199), store lift/list (R191, R192), escalation (R193, deliberate 24h fourth tier), smuggle classifier (R168-R170, R197, R198) and step-up/receipt/bind rounds (R174-R177, R194-R196) are ported against the pure kernels. R200 re-asserts duplicate chunked TE refusal and ip: key validity, covered by the smuggle precedence and ban-key matrix tests. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#20; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged. B1: R171-R173 ported one-to-one against the route_policy resolver. Approval ticket, DPO superset and pending-store rounds (R178-R180, R188, R189) are ported against gateway::admin_approval. Admin HTTP rounds R161-R167, R186, R187 and R190 are ported against gateway::admin_plane over a real loopback TCP listener. R162 and R163 commit with a retained signed PermanentBan permit from a real control ledger (unix only); R163 pins the owner-accepted refusal to lift a permanent ban (decision 2). R167 asserts the pending kill switch and that an approved one commits nothing (409). FM11 slice 18: R162 now runs end to end: the dual-control commit on the admin plane (retained signed PermanentBan permit, unix only) lands in the shared store and the public listener answers 403 without Retry-After for that source, origin untouched. FM11 lane B: R166 now runs on a chain-backed admin plane (AdminPlane::with_chain over a real sealed log): the auditor's ban list is meta-audited into the chain and GET integrity answers 200 with ok true over both access records, as Go's soft check did. R169 is the owner-accepted difference of decision 2 (issue #20): the classifier passes a lone chunked Transfer-Encoding like Go, and the HTTP parser refuses it 400 http_framing, pinned by gateway::http tests legacy_go_smuggle_scan_cases_are_refused_on_the_wire. Go oracle at 981d25c: TestWargameR166_MetaAuditOnBanList and TestWargameR169_TEChunkedAloneOK PASS (go1.26.3, network none).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r168_smuggle_and_ban_independent": "passed",
@@ -4992,7 +5081,10 @@
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::r190_operator_lift_other_key_noop": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r171_strict_path_login": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r172_nested_strict_under_admin": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r173_off_route_exact_only": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r173_off_route_exact_only": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::dual_control::ledger::r162_commit_then_edge_denies": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::wargame_r166_meta_audit_on_ban_list_keeps_the_chain_intact": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::legacy_go_smuggle_scan_cases_are_refused_on_the_wire": "passed"
    }
   },
   {

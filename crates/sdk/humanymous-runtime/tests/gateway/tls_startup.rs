@@ -119,6 +119,49 @@ fn runtime_binary_refuses_tls_requests_without_exactly_one_usable_source() {
     refused(json!({"self_signed": true}), "configuration pipe");
 }
 
+/// Legacy cmd/gate `-log-*` flags as the configuration's `logging` object:
+/// validated and opened before the TLS source and custody. A standard-output
+/// console (the readiness pipe) or an invalid selector is refused with its
+/// static code; an accepted logger writes Go's configured record and, on the
+/// later startup failure, Go's `runtime.fatal` record with a static class.
+#[test]
+fn runtime_binary_opens_gate_logging_before_custody() {
+    let with_logging = |logging: Value| {
+        let mut config = configuration(json!({}));
+        config["logging"] = logging;
+        run(&config)
+    };
+    for (logging, code) in [
+        (
+            json!({"console_stream": "stdout"}),
+            "log_console_stream_reserved",
+        ),
+        (json!({"level": "verbose"}), "log_level"),
+        (json!({"jsonl_file": "relative.jsonl"}), "log_sink_path"),
+    ] {
+        let (success, stdout, stderr) = with_logging(logging);
+        assert!(!success);
+        assert!(stdout.is_empty(), "readiness written: {stdout}");
+        assert_eq!(stderr.trim_end(), format!("humanymous-runtime: {code}"));
+    }
+    let (success, stdout, stderr) = with_logging(json!({"console_format": "jsonl"}));
+    assert!(!success);
+    assert!(stdout.is_empty(), "readiness written: {stdout}");
+    let lines: Vec<&str> = stderr.lines().collect();
+    assert_eq!(lines.len(), 3, "{stderr}");
+    let configured: Value = serde_json::from_str(lines[0]).unwrap();
+    assert_eq!(configured["service"], "gate");
+    assert_eq!(configured["node"], "runtime-test");
+    assert_eq!(configured["event"], "runtime.logging_configured");
+    let fatal: Value = serde_json::from_str(lines[1]).unwrap();
+    assert_eq!(fatal["event"], "runtime.fatal");
+    assert_eq!(fatal["fields"]["error_class"], "tls");
+    assert_eq!(
+        lines[2],
+        "humanymous-runtime: tls certificate source absent; self-signed is not a fallback"
+    );
+}
+
 #[test]
 fn runtime_binary_refuses_the_dev_flag_without_the_build_feature() {
     if cfg!(feature = "dev-self-signed") {

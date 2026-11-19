@@ -39,6 +39,9 @@ impl Response {
         } else {
             Framing::Eof
         };
+        // No add-only security headers here: owner decision C10 keeps the
+        // native-stream profile out of scope until qualified separately (Go
+        // added them to streamed responses too; named deviation).
         let mut encoded = parsed.encode(&[])?;
         if matches!(framing, Framing::Chunked | Framing::Eof) {
             let end = encoded.len() - 2;
@@ -147,6 +150,37 @@ impl Response {
         })
     }
 
+    /// Add-only security headers on a proxied complete response (legacy
+    /// gate.go `addSecurityHeaders`; owner decision C10): each field is
+    /// appended only when the origin sent no field of that name, compared
+    /// case-insensitively, so no origin field is overwritten, removed or
+    /// reordered and the status and entity are untouched. `hsts` is set only
+    /// by the TLS listener; Go also replaced an empty origin value, which
+    /// this never does.
+    pub(in crate::gateway) fn secure(&mut self, hsts: bool) {
+        const FIELDS: [(&str, &str); 4] = [
+            ("X-Content-Type-Options", "nosniff"),
+            ("Referrer-Policy", "strict-origin-when-cross-origin"),
+            ("X-Frame-Options", "SAMEORIGIN"),
+            (
+                "Strict-Transport-Security",
+                "max-age=31536000; includeSubDomains",
+            ),
+        ];
+        for (index, (name, value)) in FIELDS.into_iter().enumerate() {
+            if index == 3 && !hsts
+                || self
+                    .headers
+                    .iter()
+                    .any(|(field, _)| field.eq_ignore_ascii_case(name))
+            {
+                continue;
+            }
+            // Stored values keep their wire OWS; encode writes `name:value`.
+            self.headers.push((name.into(), format!(" {value}")));
+        }
+    }
+
     /// Reframe one already-validated entity, preserving duplicate end-to-end fields
     /// while preventing an origin from forging gateway counter acknowledgements.
     pub(in crate::gateway) fn encode(
@@ -245,6 +279,34 @@ mod tests {
                 format!("HTTP/1.1 200 OK\r\nContent-Length: 0\r\nConnection: {field}\r\n\r\n");
             assert!(Response::parse(frame.as_bytes(), false).is_err());
         }
+    }
+    /// Go TestSecurityHeadersAddOnly field values (oracle capture
+    /// edge-gates-go-golden.json): added only when absent, HSTS only on request.
+    #[test]
+    fn security_headers_are_add_only_and_hsts_is_opt_in() {
+        let mut response = Response::parse(
+            b"HTTP/1.1 201 Created\r\nContent-Length: 2\r\nx-frame-options: DENY\r\nSet-Cookie: a=1\r\n\r\nok",
+            false,
+        )
+        .unwrap();
+        response.secure(false);
+        assert_eq!(
+            String::from_utf8(response.encode(&[]).unwrap()).unwrap(),
+            "HTTP/1.1 201 Created\r\nContent-Length: 2\r\nx-frame-options: DENY\r\nSet-Cookie: a=1\r\nX-Content-Type-Options: nosniff\r\nReferrer-Policy: strict-origin-when-cross-origin\r\nConnection: close\r\n\r\nok"
+        );
+        let mut response =
+            Response::parse(b"HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n", false).unwrap();
+        response.secure(true);
+        let text = String::from_utf8(response.encode(&[]).unwrap()).unwrap();
+        assert!(text.contains(
+            "\r\nX-Frame-Options: SAMEORIGIN\r\nStrict-Transport-Security: max-age=31536000; includeSubDomains\r\n"
+        ));
+        response.secure(true);
+        assert_eq!(
+            String::from_utf8(response.encode(&[]).unwrap()).unwrap(),
+            text,
+            "idempotent"
+        );
     }
     #[test]
     fn chunked_complete_body_reframes_and_preserves_cookie_fields() {

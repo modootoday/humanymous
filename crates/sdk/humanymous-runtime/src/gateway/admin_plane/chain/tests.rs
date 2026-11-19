@@ -549,3 +549,26 @@ fn chain_routes_are_not_served_without_a_chain() {
         assert_eq!((w.status, body(&w)), (404, "404 page not found\n"), "{sub}");
     }
 }
+
+/// Go TestWargameR166_MetaAuditOnBanList on a chain-backed plane: an
+/// auditor's ban list is meta-audited into the shared chain, and the soft
+/// check `GET integrity` then answers 200 with the chain verifying.
+#[test]
+fn wargame_r166_meta_audit_on_ban_list_keeps_the_chain_intact() {
+    let s = ban_stack();
+    assert_eq!(s.get("auditor", "bans").status, 200);
+    let access: Vec<_> = s
+        .records()
+        .into_iter()
+        .filter(|record| record.event_type == "admin.access")
+        .collect();
+    assert_eq!(access.len(), 1);
+    assert_eq!(access[0].fail_reason, "bans (role=auditor)");
+    let w = s.get("auditor", "integrity");
+    assert_eq!(w.status, 200, "{}", body(&w));
+    let integrity = json(&w);
+    assert_eq!(integrity["ok"], true);
+    assert_eq!(integrity["class"], "ok");
+    // The integrity read meta-audits itself before verifying: two records.
+    assert_eq!(integrity["records"], 2);
+}

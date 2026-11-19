@@ -492,9 +492,10 @@ async fn r165_fp_ban_temporary_direct() {
     assert_eq!(entry.until, Some(entry.created + Duration::from_secs(120)));
 }
 
-/// Go R166 soft-checks the chain through `GET integrity`. That route is not
-/// served here (no audit-chain verifier in this plane); the meta-audit record
-/// of the auditor's ban-list access is asserted directly.
+/// Go R166 soft-checks the chain through `GET integrity`. This plane has no
+/// chain attached, so that route answers 404 here and the meta-audit record of
+/// the auditor's ban-list access is asserted directly; the chain-backed half
+/// is `chain::tests::wargame_r166_meta_audit_on_ban_list_keeps_the_chain_intact`.
 #[tokio::test]
 async fn r166_meta_audit_on_ban_list() {
     let s = stack().await;

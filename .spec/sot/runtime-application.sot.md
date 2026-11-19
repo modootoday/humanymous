@@ -3,7 +3,7 @@ id: sot:root/runtime-application
 title: Runtime application and session owner
 status: active
 created: 2026-11-07T00:20:25Z
-updated: 2026-11-18T00:00:00Z
+updated: 2026-11-19T00:00:00Z
 verify: [cargo test -p humanymous-runtime --locked, cargo clippy -p humanymous-runtime --all-targets --locked -- -D warnings]
 rel:
   governs: [crates/sdk/humanymous-runtime/**]
@@ -403,8 +403,12 @@ environment-variable fallback, no argv source (secret argv is already
 forbidden) and no self-generated random key: Go's `-origin-key` flag and its
 random fallback are not ported. If cloaking is enabled without a valid key,
 startup is refused (fail-closed). The key never reaches logs, readiness,
-`Debug` or audit. Status: contract only. Attaching the header on the origin
-request is not wired yet.
+`Debug` or audit. Status: implemented (FM11 slice 18). The key is
+`edge.origin_key_hex` in the private startup document; a malformed or short
+key refuses the configuration; readiness reports only `origin_cloak: true`.
+Every origin request on the plaintext and TLS paths drops client copies of
+the field and carries one token for the current epoch. Pinned by
+`gateway::tests::edge::forwarded_request_is_cloaked_and_response_gains_add_only_security_headers`.
 
 **Add-only security headers.** This amends the opaque-frame rule above for
 proxied origin responses only. The gateway may add `X-Content-Type-Options:
@@ -417,7 +421,84 @@ by configuration, off by default, and is never added on a plaintext listener.
 Gateway-local responses and the native-stream profile are out of scope until
 qualified separately. The ACK still binds the status only. Go parity:
 `internal/gate/gate.go` `addSecurityHeaders` and `TestSecurityHeadersAddOnly`.
-Status: SoT delta approved, implementation not yet authored.
+Status: implemented (FM11 slice 18) for complete proxied responses on both
+listeners; `edge.hsts` is refused without a TLS listener. Go also replaced an
+empty origin value; this never does. HSTS is pinned at unit level
+(`gateway::http::origin_response::tests::security_headers_are_add_only_and_hsts_is_opt_in`);
+no TLS ALLOW-to-origin pilot asserts it end to end yet.
+
+### Edge gates on the served path (FM11 slice 18, 2026-11-19)
+
+Port of legacy `gate.go` `ServeHTTP` gate order for proxied requests: after
+the reserved control routes, the ban gate (`ban::gate::evaluate`, HR-21) and
+then the spoof-header gate (`guard::spoof_gate`, HR-27b) run before route
+inventory, session authorization and scoring. Modes come from the startup
+`edge` section (`spoof_header`, `ban`: `off`, `monitor`, `shadow` or
+`enforce`; default `enforce`, Go's default without a settings store). No
+score, weight, threshold, hard-rule predicate, verdict band or signal ID
+changes; the gates enforce existing kernel decisions only.
+
+- Ban gate: runs only with a store installed by `Application::install_bans`
+  (shareable with `admin_plane::AdminPlane`), which is refused unless the
+  client address comes from the trusted PROXY v2 edge
+  (`ip_reputation.client_address`). HTTP forwarding headers are never a
+  source. An unattributed connection is refused 503 `ban_client_address`
+  when enforcing; a ledger refusal or poisoned lock is 503 `ban_ledger`.
+  A block answers 403 in Go `http.Error` form with `X-Hmn-Incident` and, for
+  a temporary ban, `Retry-After`; the origin is never contacted. The service
+  binary does not yet provision a store (no rate-limit configuration
+  document) and the store's monotonic epoch is not shared with an admin
+  plane's serving epoch.
+- Spoof-header gate: enforcing denies 403 with the incident pointer; other
+  modes record mode `monitor` and continue with the forged trust headers
+  stripped from the view that is scored and forwarded, as Go's
+  `spoofHeaderGate` called `stripInbound(r)` before the mode check. Request
+  integrity verification and the request commitment still cover the bytes
+  the client sent and signed. When no value was forged nothing is stripped
+  from the scored view; the forwarder drops internal headers regardless.
+- A gate refusal or probe answering a HEAD request keeps the head and
+  Content-Length and omits the body, as Go's server did.
+- Every gate record is appended before its effect; an append failure poisons
+  the epoch and answers 503 `durable_audit`.
+- Probes `GET` and `HEAD /_humanymous/healthz` (always `ok`) and
+  `/_humanymous/readyz` (`ready`, or 503 `draining` once
+  `ReadySwitch::set_ready(false)` or the epoch has failed closed), for the
+  configured authority only. Go's mux answered every method; other methods
+  stay refused as a reserved route. Prometheus metrics are not served.
+- Native-stream responses get no add-only security headers: this section's
+  owner decision C10 keeps that profile out of scope until qualified
+  separately, although Go added them to every proxied response.
+
+Pinned by `gateway::tests::edge` against the oracle captures
+`tests/fixtures/gateway/edge-gates-go-golden.json` and
+`tests/fixtures/gateway/edge-probe-methods-go-golden.json`.
+
+Composite sweep (FM11 lane B, 2026-11-19): `Application::gc` is legacy
+`Server.GC`. It sweeps every kernel the serving owner composes, expired
+sessions and the installed ban store (bans, strikes and rate windows at the
+store's own monotonic epoch), and both accept loops run it between requests
+on the legacy one-minute maintenance tick. A sweep never moves or poisons the
+session epoch: a clock behind the last request, or past the safe integer
+range, sweeps nothing. A refused store sweep or poisoned store lock reports
+503 `ban_ledger`; serving continues because the ban gate refuses on the same
+ledger. Pinned by `gateway::tests::maintenance`.
+
+### Gate operational logging in the runtime binary (FM11 lane B, 2026-11-19)
+
+The legacy cmd/gate `-log-level`, `-log-console-format`, `-log-console-stream`,
+`-log-plain-file` and `-log-jsonl-file` flags are the fields of an optional
+`logging` object in the binary's private inherited configuration, with the Go
+Gate defaults for omitted fields (`info`, `plain`, `stderr`, no files). The
+binary validates it and opens every sink before the TLS source and custody; a
+refusal exits non-zero with its static `log_*` code and no readiness line. It
+then writes Go's `runtime.logging_configured` record (file sinks as enabled
+flags, never paths) and, when startup or serving later fails, Go's
+`runtime.fatal` record with the static `fatal_class` of the error. Operational
+logs stay diagnostics only: no scoring, enforcement, settings or audit input.
+Deliberate differences: without the object nothing is logged (Go always logged
+at its defaults); `console_stream: "stdout"` is refused
+(`log_console_stream_reserved`) because standard output is the readiness pipe.
+Pinned by `gateway::logging` tests and the `gateway-tls-startup` process test.
 
 ### Review reflected
 
