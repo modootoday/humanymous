@@ -1,11 +1,13 @@
 //! Small request-derivation helpers (legacy internal/gate/request.go at
 //! baseline 981d25c): route class for policy and audit, saturating latency,
 //! per-request correlation ids and a stable upstream error class, plus the
-//! watermark day bucket and keyed IP pseudonym from cmd/server/helpers.go.
+//! watermark day bucket, keyed IP pseudonym and JA4 stable part from
+//! cmd/server/helpers.go (its `readFile` lives with `resource::read_asset`).
 //!
 //! The client subnet lives in `token::client_subnet`; the session id comes from
 //! signed RIT headers, not the legacy `hsid` cookie.
 use super::Rejection;
+use crate::network::tls::{ClientHello, ja4};
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
 use std::io;
@@ -119,6 +121,20 @@ pub fn traffic_ip_hash(key: &[u8], ip: IpAddr) -> Option<String> {
     mac.update(b"ipwm|");
     mac.update(ip.to_string().as_bytes());
     Some(hex::encode(&mac.finalize().into_bytes()[..8]))
+}
+
+/// Permutation-invariant `a_b` part of a connection's JA4 (legacy
+/// `ja4Stable`, the network half of correlation keys): the hashed JA4 up to
+/// its second underscore, or empty without a ClientHello.
+pub fn ja4_stable(hello: Option<&ClientHello>) -> String {
+    let Some(hello) = hello else {
+        return String::new();
+    };
+    let (mut ja4, _) = ja4(hello);
+    if let Some((index, _)) = ja4.match_indices('_').nth(1) {
+        ja4.truncate(index);
+    }
+    ja4
 }
 
 #[cfg(test)]

@@ -15,8 +15,8 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 238,
-  "partial": 57,
+  "ported_unit": 239,
+  "partial": 56,
   "missing": 8,
   "not_applicable": 2,
   "oracle_only": 9
@@ -40,8 +40,8 @@
   },
   "cmd/server": {
    "missing": 3,
-   "partial": 20,
-   "ported_unit": 16,
+   "partial": 19,
+   "ported_unit": 17,
    "oracle_only": 3
   },
   "cmd/tlsparrot": {
@@ -1053,9 +1053,10 @@
   },
   {
    "baseline_path": "cmd/server/helpers.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/request.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/resource.rs",
     "crates/sdk/humanymous-runtime/src/network/traffic/consistency.rs",
     "crates/sdk/humanymous-runtime/src/network/traffic/record.rs"
    ],
@@ -1063,21 +1064,22 @@
     "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::day_bucket_matches_go_and_clamps_pre_epoch",
     "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::traffic_ip_hash_matches_go_golden_and_needs_a_key",
     "crates/sdk/humanymous-runtime/src/network/traffic/tests.rs::oracle_subnet_and_hash_transforms_retain_text_quirks",
-    "crates/sdk/humanymous-runtime/src/network/traffic/tests.rs::two_ja4_resumption_values_are_tolerated_but_three_rotate"
+    "crates/sdk/humanymous-runtime/src/network/traffic/tests.rs::two_ja4_resumption_values_are_tolerated_but_three_rotate",
+    "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::ja4_stable_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::read_asset_matches_go_read_file_golden"
    ],
    "go_test_map": {},
-   "gaps": [
-    "readFile static-asset helper (Core page/demo, B05)",
-    "watermark ledger wiring of traffic_ip_hash"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "low",
-   "notes": "JA4 stable-part and subnet/hash transforms exist in network/traffic; the small Go helpers have no direct counterpart. dayBucket and the keyed trafficIPHash pseudonym are ported in gateway/request.rs with a Go 1.25.3 golden; an empty key is refused.",
+   "confidence": "medium",
+   "notes": "All four helpers ported with Go 1.25.3 goldens from 981d25c: dayBucket and the keyed trafficIPHash pseudonym in gateway/request.rs (an empty key is refused); ja4Stable as request::ja4_stable over network::tls::ja4 (nil hello is empty, cut at the second underscore) checked against the captured Go JA4 and stable part (tests/fixtures/gateway/pow-asset-go-golden.json); readFile as resource::read_asset (directory or failed stat is not found, symlinks followed) checked against a captured temporary tree. Feeding traffic_ip_hash into the watermark ledger is resource_handlers.go composition (Issuer.ip_pseudonym). legacy file has no Go test.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/network/traffic/tests.rs::oracle_subnet_and_hash_transforms_retain_text_quirks": "passed",
     "crates/sdk/humanymous-runtime/src/network/traffic/tests.rs::two_ja4_resumption_values_are_tolerated_but_three_rotate": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::day_bucket_matches_go_and_clamps_pre_epoch": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::traffic_ip_hash_matches_go_golden_and_needs_a_key": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::traffic_ip_hash_matches_go_golden_and_needs_a_key": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::ja4_stable_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::read_asset_matches_go_read_file_golden": "passed"
    }
   },
   {
@@ -1798,10 +1800,12 @@
    "baseline_path": "cmd/server/powhandler_launder_test.go",
    "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs"
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/session/pow/tests.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::too_fast_cannot_be_laundered_by_delayed_resubmit"
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::too_fast_cannot_be_laundered_by_delayed_resubmit",
+    "crates/sdk/humanymous-runtime/src/gateway/session/pow/tests.rs::too_fast_cannot_be_laundered_by_delayed_resubmit"
    ],
    "go_test_map": {
     "TestPoWTooFastCannotBeLaunderedByDelayedResubmit": "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::too_fast_cannot_be_laundered_by_delayed_resubmit"
@@ -1809,9 +1813,10 @@
    "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Kernel-level port using the real Rust PoW issue/solve/verify and an injected clock instead of a sleep; the HTTP response shape is part of the powhandler.go gap.",
+   "notes": "Kernel-level port using the real Rust PoW issue/solve/verify and an injected clock instead of a sleep, plus the handler-level port in gateway/session/pow/tests.rs (first instant submit ok:false, delayed resubmit of the same nonce never ok:true, too_fast stays set).",
    "test_verification": {
-    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::too_fast_cannot_be_laundered_by_delayed_resubmit": "passed"
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::too_fast_cannot_be_laundered_by_delayed_resubmit": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/pow/tests.rs::too_fast_cannot_be_laundered_by_delayed_resubmit": "passed"
    }
   },
   {
@@ -1820,24 +1825,31 @@
    "rust_paths": [
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs",
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/target.rs",
-    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time.rs"
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/session/pow.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::floor_matches_go",
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::too_fast_cannot_be_laundered_by_delayed_resubmit",
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::plausible_solve_is_solved_and_boundary_is_inclusive",
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::unverified_or_unissued_submissions_change_nothing",
-    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::unrepresentable_difficulty_and_clock_regression_fail_closed"
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::unrepresentable_difficulty_and_clock_regression_fail_closed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/pow/tests.rs::submission_decode_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/gateway/session/pow/tests.rs::issue_header_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/gateway/session/pow/tests.rs::handle_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/gateway/session/pow/tests.rs::too_fast_cannot_be_laundered_by_delayed_resubmit",
+    "crates/sdk/humanymous-runtime/src/gateway/session/pow/tests.rs::non_finite_risk_score_writes_no_json"
    ],
-   "go_test_map": {},
+   "go_test_map": {
+    "TestPoWTooFastCannotBeLaunderedByDelayedResubmit": "crates/sdk/humanymous-runtime/src/gateway/session/pow/tests.rs::too_fast_cannot_be_laundered_by_delayed_resubmit"
+   },
    "gaps": [
-    "PoW header issuance",
-    "/pow HTTP handler",
-    "Emitting the l7.pow.too_fast and pow.solved signals into a session report and re-scoring (no Rust Core session handler)"
+    "mounting /api/pow and setting X-HM-PoW on challenged collect replies in a Core server (no Core server binary yet)",
+    "wiring the real scoring engine as the injected re-score and the hsid session identity (Go r.Cookie) at the composition root"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "plausibleBrowserSolve and the sticky too-fast decision are ported unchanged (3,000,000 hashes/s floor). Deliberate differences: an unrepresentable difficulty or a clock regression counts as too fast (fail closed).",
+   "notes": "powSolvedSignal, issuePoWHeader and handlePoW ported as gateway::session::pow over the collector-store port: X-HM-PoW only for CHALLENGE and unsolved, first-issued difficulty re-delivered and verified against, first-write-wins issue record (unknown sessions get the header without a record), POST only/no session/bad body http.Error replies, sticky l7.pow.too_fast versus l7.pow.solved with re-score and StoreScored, and the Go map JSON replies. The body decoder reproduces json.Decoder over MaxBytesReader(4096) (first value only, case-folded keys incl. KELVIN SIGN, null no-ops, U+FFFD repair, ParseUint bucket). Parity: Go 1.25.3 capture of the real handlers at 981d25c (61 bodies, 9 header steps, 14 handler steps; tests/fixtures/gateway/pow-asset-go-golden.json); the Go verdict/riskScore are fed back as the injected scorer result. plausibleBrowserSolve and the sticky decision remain in humanymous-core solve_time. Deliberate differences: a difficulty without a representable floor (>= 64 bits, never issued) counts as too fast; a non-finite risk score writes the empty JSON reply Go wrote on encoder error. No score, weight, threshold or signal ID change.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time": "passed",
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/target.rs::frozen_thresholds_and_nonfinite_risk": "passed",
@@ -1846,7 +1858,12 @@
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::too_fast_cannot_be_laundered_by_delayed_resubmit": "passed",
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::plausible_solve_is_solved_and_boundary_is_inclusive": "passed",
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::unverified_or_unissued_submissions_change_nothing": "passed",
-    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::unrepresentable_difficulty_and_clock_regression_fail_closed": "passed"
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::unrepresentable_difficulty_and_clock_regression_fail_closed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/pow/tests.rs::submission_decode_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/pow/tests.rs::issue_header_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/pow/tests.rs::handle_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/pow/tests.rs::too_fast_cannot_be_laundered_by_delayed_resubmit": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/session/pow/tests.rs::non_finite_risk_score_writes_no_json": "passed"
    }
   },
   {
@@ -1871,18 +1888,21 @@
     "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::trace_gates_before_reading_and_bounds_the_body",
     "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::forged_carrier_is_not_an_attribution",
     "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::channel_label_follows_legacy_names",
-    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::traffic_view_is_owner_or_operator_only"
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::traffic_view_is_owner_or_operator_only",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::asset_file_matches_go_join_golden",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::read_asset_matches_go_read_file_golden"
    ],
    "go_test_map": {},
    "gaps": [
     "mounting /res/, /api/trace and /api/traffic/{sid} in a Core server (plan B05/B07; no Core server binary yet)",
-    "reading the asset from the web root (filepath.Join + readFile, 404 on error) and ensureSession cookie issuance",
+    "ensureSession cookie issuance",
     "session-store lookup feeding SessionView and AppendNetworkSignals of the returned signals",
+    "feeding request::traffic_ip_hash of the peer into Issuer.ip_pseudonym at the composition root",
     "traffic-log projection (tlog.Session) written for an authorized /api/traffic reader"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Handler decisions ported as pure kernel gateway::resource: asset_path (Go path.Clean + `..` reject = 400 bad path), Go built-in mime table, sessionVerdict (unknown -> CHALLENGE), sessionLiveness (mouse samples > 3 or any keystroke), externalReferer (host substring), classify+gate with X-HM-Gate `<decision>:<tier>`, the 403/451/downgrade-preview responses (http.Error text, nosniff), recordResourceSignals (embed inspect for every request, media observe for heavy/media) over the frozen L5 signals, watermark issuance via ledger reserve -> apply -> commit with no-store and X-HM-Watermark (png-multi for png-text+png-lsb), handleTrace (operator gate before the body, POST only, 32 MiB bound, read error 400) and canReadSession for /api/traffic. No score, threshold, verdict band or signal ID changes. Deliberate fail-closed deltas: W07 a watermark/ledger failure is 503 with no bytes (Go served the unmarked source with channel none); W09 a forged carrier is traced:false reason forged (Go returned traced:true with forged:true), and unknown/expired/no-frame/ambiguous carriers return stable reason codes instead of Go error text; mime uses only Go's built-in table (Go also read host mime.types); issuedAt is derived from the monotonic ledger instant plus an owner-supplied epoch, rendered in UTC. legacy file has no Go test.",
+   "notes": "Handler decisions ported as pure kernel gateway::resource: asset_path (Go path.Clean + `..` reject = 400 bad path), Go built-in mime table, sessionVerdict (unknown -> CHALLENGE), sessionLiveness (mouse samples > 3 or any keystroke), externalReferer (host substring), classify+gate with X-HM-Gate `<decision>:<tier>`, the 403/451/downgrade-preview responses (http.Error text, nosniff), recordResourceSignals (embed inspect for every request, media observe for heavy/media) over the frozen L5 signals, watermark issuance via ledger reserve -> apply -> commit with no-store and X-HM-Watermark (png-multi for png-text+png-lsb), handleTrace (operator gate before the body, POST only, 32 MiB bound, read error 400) and canReadSession for /api/traffic. No score, threshold, verdict band or signal ID changes. Deliberate fail-closed deltas: W07 a watermark/ledger failure is 503 with no bytes (Go served the unmarked source with channel none); W09 a forged carrier is traced:false reason forged (Go returned traced:true with forged:true), and unknown/expired/no-frame/ambiguous carriers return stable reason codes instead of Go error text; mime uses only Go's built-in table (Go also read host mime.types); issuedAt is derived from the monotonic ledger instant plus an owner-supplied epoch, rendered in UTC. legacy file has no Go test. Asset read ported: resource::asset_file reproduces filepath.Join(webDir, FromSlash(asset)) and load_asset answers http.NotFound on any read failure, checked against a Go 1.25.3 capture (35 joins, 8 readFile cases; tests/fixtures/gateway/pow-asset-go-golden.json). Deliberate difference: an empty web root resolves nothing (404) instead of Go joining the asset onto the filesystem root.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/integrity/resource/mod.rs::signature_binds_session_asset_key_and_inclusive_expiry": "passed",
     "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs::signed_urls_and_expiry_match_go": "passed",
@@ -1897,7 +1917,9 @@
     "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::trace_gates_before_reading_and_bounds_the_body": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::forged_carrier_is_not_an_attribution": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::channel_label_follows_legacy_names": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::traffic_view_is_owner_or_operator_only": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::traffic_view_is_owner_or_operator_only": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::asset_file_matches_go_join_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/resource/tests.rs::read_asset_matches_go_read_file_golden": "passed"
    }
   },
   {
