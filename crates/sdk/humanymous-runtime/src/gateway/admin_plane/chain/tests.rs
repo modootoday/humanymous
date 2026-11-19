@@ -572,3 +572,51 @@ fn wargame_r166_meta_audit_on_ban_list_keeps_the_chain_intact() {
     // The integrity read meta-audits itself before verifying: two records.
     assert_eq!(integrity["records"], 2);
 }
+
+static POLICY_GOLDEN: LazyLock<Value> = LazyLock::new(|| {
+    serde_json::from_str(include_str!(
+        "../../../../tests/fixtures/gateway/admin-policy-console-go-golden.json"
+    ))
+    .unwrap()
+});
+
+/// Go wargame R113 (wargame_escalation_r81_test.go): the keys route publishes
+/// `sth_public_key` and no `hmac_key`. The body equals the capture once the
+/// random writer key hex is masked as the capture masked it.
+#[test]
+fn r113_keys_omit_hmac_secret() {
+    let s = ban_stack();
+    let w = s.get("auditor", "keys");
+    assert_eq!(w.status, 200);
+    let text = body(&w);
+    assert!(!text.contains("hmac_key"), "{text}");
+    assert!(text.contains("sth_public_key"), "{text}");
+    let key = json(&w)["sth_public_key"].as_str().unwrap().to_owned();
+    assert_eq!(key.len(), 64);
+    let masked = text.replacen(&key, "<64 hex chars>", 1);
+    let golden = &POLICY_GOLDEN["keys"];
+    assert_eq!(w.content_type, golden["content_type"]);
+    assert_eq!(masked, golden["body"]);
+}
+
+/// Go wargame R131 (wargame_escalation_r121_test.go): a log without a
+/// co-signer has no witness public key, so integrity omits `witnessed` and
+/// `witnessFailAt`.
+#[test]
+fn r131_nil_witness_public_omits_witnessed_field() {
+    let golden = &POLICY_GOLDEN["integrity_no_witness"];
+    let s = ban_stack();
+    assert_eq!(
+        s.log.lock().unwrap().witness_public_key().is_none(),
+        golden["witness_public_key_nil"]
+    );
+    let w = s.get("auditor", "integrity");
+    assert_eq!(w.status, golden["status"]);
+    let report = json(&w);
+    let object = report.as_object().unwrap();
+    assert_eq!(object.contains_key("witnessed"), golden["has_witnessed"]);
+    assert_eq!(
+        object.contains_key("witnessFailAt"),
+        golden["has_witnessFailAt"]
+    );
+}

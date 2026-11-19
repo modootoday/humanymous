@@ -15,8 +15,8 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 280,
-  "partial": 23,
+  "ported_unit": 283,
+  "partial": 20,
   "missing": 0,
   "not_applicable": 2,
   "oracle_only": 9
@@ -74,9 +74,9 @@
    "ported_unit": 5
   },
   "internal/gate": {
-   "partial": 15,
+   "partial": 12,
    "not_applicable": 1,
-   "ported_unit": 68,
+   "ported_unit": 71,
    "oracle_only": 1
   },
   "internal/httpx": {
@@ -2496,7 +2496,9 @@
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane.rs",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain.rs",
     "crates/sdk/humanymous-runtime/src/gateway/management/mod.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/management/policy.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/management/policy.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/policy.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/console.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::settings_view_is_observer_only_and_cannot_be_used_for_mutation",
@@ -2504,26 +2506,31 @@
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_audit_stream_incidents_and_enumeration_cap_match_capture",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_admin_integrity_empty_chain_matches_capture",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_keys_proof_and_checkpoint_refusals_match_capture",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::route_table_follows_go_dispatch"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::route_table_follows_go_dispatch",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::go_admin_console_and_features",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/policy/tests.rs::go_policy_view_matches_capture",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/policy/tests.rs::go_console_page_matches_capture"
    ],
    "go_test_map": {
     "TestAdminReadAPIs": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_audit_stream_incidents_and_enumeration_cap_match_capture",
-    "TestAdminConsoleAndFeatures": null
+    "TestAdminConsoleAndFeatures": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::go_admin_console_and_features"
    },
    "gaps": [
-    "admin console page (internal/gate/console.go is missing) and the policy read route of TestAdminConsoleAndFeatures",
-    "the DPO erasure commit answers 409 by design (needs the vault erasure permit and hold queue); Go committed it"
+    "the DPO erasure commit of TestAdminConsoleAndFeatures answers 409 by design without a staged ledger-issued erasure permit (owner-reserved dual control; the permit-backed commit is covered by gateway::admin_plane::erasure tests); Go committed it on the DPO approval alone"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "TestAdminReadAPIs is covered across gateway::admin_plane::chain tests: unauthenticated reads are the 404, keys and checkpoints publish verification material, integrity self-verifies, the audit stream is newest first with opaque incident handles, a handle resolves while a raw sequence does not, and reads are meta-audited. TestAdminConsoleAndFeatures stays unmapped: the console and policy routes are not served, and the erasure request and DPO-only approval match Go up to the commit, which answers 409.",
+   "notes": "TestAdminReadAPIs is covered across gateway::admin_plane::chain tests: unauthenticated reads are the 404, keys and checkpoints publish verification material, integrity self-verifies, the audit stream is newest first with opaque incident handles, a handle resolves while a raw sequence does not, and reads are meta-audited. TestAdminConsoleAndFeatures (FM11 slice 19) is ported over the served listener: the console page (gateway::console::page, byte-identical to Go styledConsoleHTML) is text/html with no-store and X-Frame-Options DENY, the policy view carries routes and rateLimit (byte-identical to the Go capture in tests/fixtures/gateway/admin-policy-console-go-golden.json), and the erasure request and DPO-only approval match Go up to the commit, which answers 409. Deliberate difference: the console needs a bearer token (Go served it unauthenticated and could inject a dev bearer token into the page).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::settings_view_is_observer_only_and_cannot_be_used_for_mutation": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_audit_stream_incidents_and_enumeration_cap_match_capture": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_admin_integrity_empty_chain_matches_capture": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_keys_proof_and_checkpoint_refusals_match_capture": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::route_table_follows_go_dispatch": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::route_table_follows_go_dispatch": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests.rs::go_admin_console_and_features": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/policy/tests.rs::go_policy_view_matches_capture": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/policy/tests.rs::go_console_page_matches_capture": "passed"
    }
   },
   {
@@ -2595,7 +2602,9 @@
     "crates/sdk/humanymous-runtime/src/gateway/management/operator.rs",
     "crates/sdk/humanymous-runtime/src/gateway/management/policy.rs",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/erasure.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/operations/erasure_hold.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/operations/erasure_hold.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/policy.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved",
@@ -2608,19 +2617,25 @@
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/dual_control/erasure.rs::hold_window_flow_matches_go_capture",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/dual_control/erasure.rs::cancel_cases_match_go_capture",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/dual_control/erasure.rs::no_subject_matches_go_capture",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/dual_control/erasure.rs::commit_without_permit_is_refused"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/dual_control/erasure.rs::commit_without_permit_is_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/policy/tests.rs::go_policy_view_matches_capture",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/policy/tests.rs::go_policy_defaults_under_global_monitor_match_capture",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/policy/tests.rs::policy_view_keys_the_version_to_the_active_overlay_and_only_reads",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/policy/tests.rs::go_console_page_matches_capture",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_keys_proof_and_checkpoint_refusals_match_capture",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_audit_stream_incidents_and_enumeration_cap_match_capture"
    ],
    "go_test_map": {},
    "gaps": [
     "composition of gateway::admin_plane into gateway::service (listener address and admin bearer-token provisioning)",
-    "integrity/proof/audit/incidents/policy/settings/metrics/keys/checkpoints/virtual-usb read routes and the console page",
+    "settings (effective, schema, overlays, dry-run, rollback), metrics and virtual-usb routes (integrity, proof, audit, incidents, keys and checkpoints are served by gateway::admin_plane::chain; policy and the console page by gateway::admin_plane::policy)",
     "kill-switch commit (signed node kill)",
     "intake path that stages retained PermanentBan permits into the plane",
     "intake path that stages ledger-issued ErasurePermits into the plane and the periodic RunDueShreds caller with the attached chain's latest checkpoint"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Native observer/operator IPC, kill-status assessment and audit verification primitives exist. gateway::admin_plane serves the Go route table subset for ban list/add/bulk/lift, approvals list, whoami, erasure and kill-switch requests and the dual-control approve route on a separate loopback TCP listener, with Go 404 deny-by-default, 403 role refusals, meta-audit, JSON decoding and response shapes; permanent and broad ban commits also consume a retained signed permit. Erasure: gateway::admin_plane::erasure resolves the requested handle through the vault, schedules a DPO-approved erasure into the hold queue only with a staged ledger-issued ErasurePermit for that subject, serves GET erasures and POST erasures/{id}/cancel (Go adminWrapped) and executes due shreds (run_due_shreds, Go RunDueShreds), pinned against tests/fixtures/gateway/admin-erasure-go-golden.json.",
+   "notes": "Native observer/operator IPC, kill-status assessment and audit verification primitives exist. gateway::admin_plane serves the Go route table subset for ban list/add/bulk/lift, approvals list, whoami, erasure and kill-switch requests and the dual-control approve route on a separate loopback TCP listener, with Go 404 deny-by-default, 403 role refusals, meta-audit, JSON decoding and response shapes; permanent and broad ban commits also consume a retained signed permit. Erasure: gateway::admin_plane::erasure resolves the requested handle through the vault, schedules a DPO-approved erasure into the hold queue only with a staged ledger-issued ErasurePermit for that subject, serves GET erasures and POST erasures/{id}/cancel (Go adminWrapped) and executes due shreds (run_due_shreds, Go RunDueShreds), pinned against tests/fixtures/gateway/admin-erasure-go-golden.json. FM11 slice 19: gateway::admin_plane::policy serves the read-only GET policy route (adminPolicy, byte-identical to the Go capture with routes in prefix order, configVersion from settings::configsign::BootPolicy with the active overlay, no write verb) and the console page (adminConsole) as an authenticated GET read with X-Frame-Options DENY; Go served the console unauthenticated and could inject a dev bearer token, which is not ported.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/control/state.rs::spent_intent_without_covered_effect_cannot_become_healthy": "passed",
@@ -2632,7 +2647,13 @@
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/dual_control/erasure.rs::hold_window_flow_matches_go_capture": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/dual_control/erasure.rs::cancel_cases_match_go_capture": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/dual_control/erasure.rs::no_subject_matches_go_capture": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/dual_control/erasure.rs::commit_without_permit_is_refused": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/dual_control/erasure.rs::commit_without_permit_is_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/policy/tests.rs::go_policy_view_matches_capture": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/policy/tests.rs::go_policy_defaults_under_global_monitor_match_capture": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/policy/tests.rs::policy_view_keys_the_version_to_the_active_overlay_and_only_reads": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/policy/tests.rs::go_console_page_matches_capture": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_keys_proof_and_checkpoint_refusals_match_capture": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_audit_stream_incidents_and_enumeration_cap_match_capture": "passed"
    }
   },
   {
@@ -3621,22 +3642,25 @@
   },
   {
    "baseline_path": "internal/gate/incident.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/token.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/token.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::incident_handles_are_stable_opaque_and_keyed"
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::incident_handles_are_stable_opaque_and_keyed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_audit_stream_incidents_and_enumeration_cap_match_capture",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::unadmitted_incident_lookups_are_capped"
    ],
    "go_test_map": {},
-   "gaps": [
-    "resolver over the audit log and per-operator lookup cap (admin API, B19)"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "The keyed opaque handle INC-<10 hex> is ported; resolution needs the admin API.",
+   "notes": "The keyed opaque handle INC-<10 hex> is ported in gateway::token. FM11 slice 19 review: the resolver over the audit log (resolveIncident: only the opaque handle resolves, never a raw sequence) and the per-operator lookup cap of adminIncident (120 lookups per minute per operator, 429 plus a recon.decision_probing record) are served by gateway::admin_plane::chain on the attached shared log and pinned against the Go capture in tests/fixtures/gateway/attest-floor-and-admin-chain-go-golden.json. Deliberate difference: a lookup the limiter cannot admit counts as over the cap.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::incident_handles_are_stable_opaque_and_keyed": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::incident_handles_are_stable_opaque_and_keyed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_audit_stream_incidents_and_enumeration_cap_match_capture": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::unadmitted_incident_lookups_are_capped": "passed"
    }
   },
   {
@@ -4943,7 +4967,7 @@
   },
   {
    "baseline_path": "internal/gate/wargame_escalation_r121_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs",
     "crates/sdk/humanymous-runtime/src/gateway/http.rs",
@@ -4951,7 +4975,10 @@
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs",
     "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/erasure.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/erasure.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/policy.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/tests/browser/contract.rs::shared_lab_request_limit_413_has_no_ack_and_closes_client_epoch",
@@ -4990,7 +5017,9 @@
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r144_incidents_auth_required",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r145_approvals_list_auth_required",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r146_console_unauth_404",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/dual_control/erasure.rs::r132_erasure_cancel_hold_window"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/dual_control/erasure.rs::r132_erasure_cancel_hold_window",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::r131_nil_witness_public_omits_witnessed_field",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r141_config_version_stable_across_calls"
    ],
    "go_test_map": {
     "TestWargameR121_WebAuthnNoneDoesNotTrust": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r121_credential_like_fingerprint_is_a_valid_key",
@@ -5003,7 +5032,7 @@
     "TestWargameR128_SelfVerifyEmptyFails": "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved",
     "TestWargameR129_WrongHMACClass": "crates/sdk/humanymous-runtime/src/audit/storage/witness_recovery/tests.rs::rollback_fork_bad_hmac_wrong_witness_and_missing_chain_fail_closed",
     "TestWargameR130_WitnessStripFailsSelfVerify": "crates/sdk/humanymous-runtime/src/audit/verification/scan/tests/crypto.rs::checkpoint_beyond_eof_and_missing_required_witness_never_imply_coverage",
-    "TestWargameR131_NilWitnessPublicOmitsWitnessedField": null,
+    "TestWargameR131_NilWitnessPublicOmitsWitnessedField": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::r131_nil_witness_public_omits_witnessed_field",
     "TestWargameR132_ErasureCancelHoldWindow": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/dual_control/erasure.rs::r132_erasure_cancel_hold_window",
     "TestWargameR133_AuditorCannotErasureRequest": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r133_auditor_cannot_erasure_request",
     "TestWargameR134_AuditorCannotKillswitch": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r134_auditor_cannot_killswitch",
@@ -5013,7 +5042,7 @@
     "TestWargameR138_BulkSkipsCIDRKeys": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r138_bulk_skips_cidr_keys",
     "TestWargameR139_SingleCIDRStillDualControlHTTP": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r139_single_cidr_still_dual_control_http",
     "TestWargameR140_IPv6BanHTTPAccepts": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r140_ipv6_ban_http_accepts",
-    "TestWargameR141_ConfigVersionStableAcrossCalls": null,
+    "TestWargameR141_ConfigVersionStableAcrossCalls": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r141_config_version_stable_across_calls",
     "TestWargameR142_PolicyHasNoWriteVerb": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r142_policy_has_no_write_verb",
     "TestWargameR143_ProofEndpointAuthRequired": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r143_proof_endpoint_auth_required",
     "TestWargameR144_IncidentsAuthRequired": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r144_incidents_auth_required",
@@ -5034,13 +5063,10 @@
     "TestWargameR159_BindMismatchOnVerdict": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r159_bind_mismatch_on_verdict",
     "TestWargameR160_ExpiredVerdict": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r160_expired_verdict"
    },
-   "gaps": [
-    "audit witness public-key projection R131 (audit keys; not touched)",
-    "R141 admin policy read route is not served (route presets B12)"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Ban-key residuals (R121, R122, R124-R126, R148), store GC/list (R149, R150), bind (R123, R151), sweep (R152) and token rounds (R153-R160) are ported against the pure kernels. Rust token keys must be at least 32 bytes, so the Go 29-byte seeds are padded. Admin HTTP rounds R133-R140 and R142-R146 are ported against gateway::admin_plane over a real loopback TCP listener: auditors are refused erasure, kill-switch and bulk-ban mutations (403), bulk bans reject permanent and at-cap terms (400) and skip CIDR keys, a single CIDR ban stays pending dual control, an IPv6 ban applies, POST policy and unauthenticated proof/incidents/approvals/console answer 404. R132 is ported in gateway::admin_plane erasure tests (unix only): after a DPO commit scheduled with a ledger-issued erasure permit, cancelling an unknown id answers 404.",
+   "notes": "Ban-key residuals (R121, R122, R124-R126, R148), store GC/list (R149, R150), bind (R123, R151), sweep (R152) and token rounds (R153-R160) are ported against the pure kernels. Rust token keys must be at least 32 bytes, so the Go 29-byte seeds are padded. Admin HTTP rounds R133-R140 and R142-R146 are ported against gateway::admin_plane over a real loopback TCP listener: auditors are refused erasure, kill-switch and bulk-ban mutations (403), bulk bans reject permanent and at-cap terms (400) and skip CIDR keys, a single CIDR ban stays pending dual control, an IPv6 ban applies, POST policy and unauthenticated proof/incidents/approvals/console answer 404. R132 is ported in gateway::admin_plane erasure tests (unix only): after a DPO commit scheduled with a ledger-issued erasure permit, cancelling an unknown id answers 404. FM11 slice 19: R131 is ported against the chain-backed integrity route (a log without a co-signer has no witness key and integrity omits witnessed and witnessFailAt, as captured from Go), and R141 against the read-only policy route of gateway::admin_plane::policy (two reads serve and are byte-identical). R146 now also pins that the console page is served to an authenticated role while the unauthenticated request keeps the 404 (Go served it unauthenticated; the test accepts either).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/storage/witness_recovery/tests.rs::rollback_fork_bad_hmac_wrong_witness_and_missing_chain_fail_closed": "passed",
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved": "passed",
@@ -5078,7 +5104,9 @@
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r144_incidents_auth_required": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r145_approvals_list_auth_required": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r146_console_unauth_404": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/dual_control/erasure.rs::r132_erasure_cancel_hold_window": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/dual_control/erasure.rs::r132_erasure_cancel_hold_window": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::r131_nil_witness_public_omits_witnessed_field": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r141_config_version_stable_across_calls": "passed"
    }
   },
   {
@@ -5324,7 +5352,7 @@
   },
   {
    "baseline_path": "internal/gate/wargame_escalation_r81_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs",
@@ -5334,7 +5362,9 @@
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs",
     "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r111_unauth_admin_whoami_404",
@@ -5374,7 +5404,8 @@
     "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::wargame_r103_sweep_window_resets",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r108_inject_idempotent_double",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r109_no_html_no_inject",
-    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r110_oversize_head_gives_up"
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r110_oversize_head_gives_up",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::r113_keys_omit_hmac_secret"
    ],
    "go_test_map": {
     "TestWargameR081_PathDotDotAdminStaysStrict": "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r081_path_dot_dot_admin_stays_strict",
@@ -5409,7 +5440,7 @@
     "TestWargameR110_OversizeHeadGivesUp": "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r110_oversize_head_gives_up",
     "TestWargameR111_UnauthAdminWhoami404": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r111_unauth_admin_whoami_404",
     "TestWargameR112_AuditorWhoamiOK": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r112_auditor_whoami_ok",
-    "TestWargameR113_KeysOmitHMACSecret": null,
+    "TestWargameR113_KeysOmitHMACSecret": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::r113_keys_omit_hmac_secret",
     "TestWargameR114_CheckpointsAuthRequired": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r114_checkpoints_auth_required",
     "TestWargameR115_MetricsAuthRequired": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r115_metrics_auth_required",
     "TestWargameR116_OperatorCannotListAsUnscoped": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/tests/wargame.rs::r116_operator_cannot_list_as_unscoped",
@@ -5418,12 +5449,10 @@
     "TestWargameR119_BanKeyRejectsTabChar": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r119_ban_key_rejects_tab_char",
     "TestWargameR120_FPWithSpacesRejected": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r120_fp_with_spaces_rejected"
    },
-   "gaps": [
-    "admin keys route R113 (sth_public_key projection; route not served by gateway::admin_plane)"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Token/step-up/receipt separation, bind key, smuggle classifier, sweep and ban-store rounds are ported against the pure kernels in gateway/token, gateway/smuggle, network/history/sweep and gateway/ban. Deliberate differences pinned: R105 (no single-operator permanent ban) and R107 (fourth strike stays 24h and needs dual control). B1: R081-R085 ported one-to-one against the route_policy resolver (R081/R082 previously cited the HTTP framing test). Admin auth rounds R111, R112 and R114-R116 are ported against gateway::admin_plane over a real loopback TCP listener (deny-by-default 404, auditor whoami). HTML inject rounds R108-R110 are ported against gateway::inject (R110 also pins the unchanged pass-through, beyond the Go no-panic check).",
+   "notes": "Token/step-up/receipt separation, bind key, smuggle classifier, sweep and ban-store rounds are ported against the pure kernels in gateway/token, gateway/smuggle, network/history/sweep and gateway/ban. Deliberate differences pinned: R105 (no single-operator permanent ban) and R107 (fourth strike stays 24h and needs dual control). B1: R081-R085 ported one-to-one against the route_policy resolver (R081/R082 previously cited the HTTP framing test). Admin auth rounds R111, R112 and R114-R116 are ported against gateway::admin_plane over a real loopback TCP listener (deny-by-default 404, auditor whoami). HTML inject rounds R108-R110 are ported against gateway::inject (R110 also pins the unchanged pass-through, beyond the Go no-panic check). R113 (FM11 slice 19) is ported against the chain-backed keys route of gateway::admin_plane::chain: an auditor reads sth_public_key and no hmac_key, and the body equals the Go capture in tests/fixtures/gateway/admin-policy-console-go-golden.json once the random writer key hex is masked.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r086_verdict_not_valid_as_step_up": "passed",
@@ -5462,7 +5491,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/route_policy/tests.rs::wargame_r085_default_balanced_for_unknown": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r108_inject_idempotent_double": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r109_no_html_no_inject": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r110_oversize_head_gives_up": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/inject/tests.rs::wargame_r110_oversize_head_gives_up": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::r113_keys_omit_hmac_secret": "passed"
    }
   },
   {

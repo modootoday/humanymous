@@ -117,6 +117,8 @@ async fn stack_with(build: impl FnOnce(AdminPlane) -> AdminPlane) -> Stack {
 
 struct Reply {
     status: u16,
+    /// Status line and header lines.
+    head: String,
     content_type: String,
     body: String,
 }
@@ -165,6 +167,7 @@ impl Stack {
             .to_owned();
         Reply {
             status: status.parse().unwrap(),
+            head: head.to_owned(),
             content_type,
             body: body.to_owned(),
         }
@@ -613,6 +616,67 @@ async fn route_table_follows_go_dispatch() {
         .admin_do(s.token("dpo"), "POST", &format!("approvals/{id}"), "")
         .await;
     assert_eq!(w.status, 409, "{}", w.body);
+}
+
+/// The read-only policy view with boot defaults, for served-stack tests.
+fn default_policy() -> policy::Policy {
+    policy::Policy::new(
+        crate::gateway::settings::configsign::BootPolicy::default(),
+        Arc::default(),
+        Arc::default(),
+    )
+}
+
+/// Go TestAdminConsoleAndFeatures over the served listener. Kept: the console
+/// page is `text/html` with the Ledger view, the policy view carries `routes`
+/// and `rateLimit`, an erasure request is a pending DPO approval the requester
+/// cannot self-approve and a non-DPO approver cannot approve. Deliberate
+/// differences: the console needs a bearer token (Go served it
+/// unauthenticated), and the DPO commit answers 409 without a staged
+/// ledger-issued erasure permit (Go committed it); the permit-backed commit is
+/// covered in `dual_control::erasure`.
+#[tokio::test]
+async fn go_admin_console_and_features() {
+    let s = stack_with(|plane| plane.with_policy(default_policy())).await;
+    let unauthenticated = s.admin_do("", "GET", "console", "").await;
+    assert_eq!(unauthenticated.status, 404);
+    let cw = s.admin_do(s.token("auditor"), "GET", "console", "").await;
+    assert_eq!(cw.status, 200);
+    assert!(cw.body.contains("Ledger"));
+    assert!(cw.content_type.contains("text/html"), "{}", cw.content_type);
+    for header in ["Cache-Control: no-store", "X-Frame-Options: DENY"] {
+        assert!(cw.head.contains(header), "{header}: {}", cw.head);
+    }
+
+    let pw = s.admin_do(s.token("auditor"), "GET", "policy", "").await;
+    assert!(pw.body.contains("\"routes\"") && pw.body.contains("rateLimit"));
+
+    let er = s
+        .admin_do(
+            s.token("operator"),
+            "POST",
+            "erasure",
+            r#"{"Subject":"sess-1","LegalBasis":"GDPR Art.17"}"#,
+        )
+        .await;
+    assert_eq!(er.status, 200, "{}", er.body);
+    let id = approval_id(&er);
+    assert!(!id.is_empty(), "{}", er.body);
+    let own = s
+        .admin_do(s.token("operator"), "POST", &format!("approvals/{id}"), "")
+        .await;
+    assert_ne!(
+        own.status, 200,
+        "operator must not approve their own erasure"
+    );
+    let approver = s
+        .admin_do(s.token("approver"), "POST", &format!("approvals/{id}"), "")
+        .await;
+    assert_ne!(approver.status, 200, "erasure needs the DPO role");
+    let dpo = s
+        .admin_do(s.token("dpo"), "POST", &format!("approvals/{id}"), "")
+        .await;
+    assert_eq!(dpo.status, 409, "no staged erasure permit: {}", dpo.body);
 }
 
 /// Go `encoding/json` struct decoding and the handler refusal order.
