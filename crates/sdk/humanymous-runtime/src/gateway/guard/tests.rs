@@ -114,3 +114,92 @@ fn clean_request_has_no_spoof() {
     strip_inbound(&mut h);
     assert_eq!(h, before);
 }
+
+/// Go TestProxyBlocksSpoofedTrustHeaders and the measured `spoofHeaderGate`
+/// output (Go 1.25.3 against 981d25c): every forged trust header denies when
+/// enforcing, and the record lists the non-empty names in legacy order.
+#[test]
+fn enforcing_spoof_gate_denies_each_forged_trust_header() {
+    for name in [
+        "X-Forwarded-For",
+        "X-Real-Ip",
+        "X-Hmny-Origin-Auth",
+        "Forwarded",
+        "Cf-Connecting-Ip",
+    ] {
+        let mut h = headers(&[("Accept", "*/*"), (name, "203.0.113.66")]);
+        let spoof = spoof_gate(&mut h, true, "node-1", "psn").expect(name);
+        assert!(spoof.deny, "spoofed {name} must be blocked");
+        assert_eq!(spoof.record.enforcement_mode, "enforce");
+        assert_eq!(
+            spoof.record.fail_reason,
+            format!("inbound internal headers: {name}")
+        );
+        assert_eq!(h, headers(&[("Accept", "*/*")]), "{name} must not survive");
+    }
+    let mut h = headers(&[
+        ("Cf-Connecting-Ip", "1.1.1.1"),
+        ("X-Real-Ip", "9.9.9.9"),
+        ("X-Hmn-Verdict", "allow"),
+        ("Forwarded", ""),
+    ]);
+    let spoof = spoof_gate(&mut h, true, "node-1", "psn").unwrap();
+    assert_eq!(spoof.record.event_type, "hdr.internal_header_ingress");
+    assert_eq!(spoof.record.route_class, "html");
+    assert_eq!(spoof.record.enforcement_action, "block");
+    assert_eq!(
+        spoof.record.triggered_rules,
+        Some(vec!["HR-27b".to_owned()])
+    );
+    assert_eq!(
+        spoof.record.fail_reason,
+        "inbound internal headers: X-Hmn-Verdict,X-Real-Ip,Cf-Connecting-Ip"
+    );
+    assert!(h.is_empty());
+    assert_eq!(
+        SPOOF_DENY_BODY,
+        "Request blocked by humanymous (automation detected)."
+    );
+}
+
+/// Go monitor and shadow `gate.spoof_header` modes record mode `monitor`,
+/// strip the headers and let the request reach the origin.
+#[test]
+fn monitoring_spoof_gate_audits_strips_and_continues() {
+    let mut h = headers(&[("X-Real-Ip", "9.9.9.9"), ("Accept", "*/*")]);
+    let spoof = spoof_gate(&mut h, false, "node-1", "psn").unwrap();
+    assert!(!spoof.deny);
+    assert_eq!(spoof.record.enforcement_mode, "monitor");
+    assert_eq!(spoof.record.enforcement_action, "block");
+    assert_eq!(h, headers(&[("Accept", "*/*")]));
+}
+
+/// No value means no forged claim and no record; the empty header is still
+/// removed (stricter than Go's gate, equal to its forwarder).
+#[test]
+fn spoof_gate_without_a_claim_records_nothing_but_still_strips() {
+    let mut h = headers(&[("Forwarded", ""), ("Accept", "*/*")]);
+    assert_eq!(spoof_gate(&mut h, true, "node-1", "psn"), None);
+    assert_eq!(h, headers(&[("Accept", "*/*")]));
+    let mut clean = headers(&[("Host", "x")]);
+    assert_eq!(spoof_gate(&mut clean, true, "node-1", "psn"), None);
+    assert_eq!(clean, headers(&[("Host", "x")]));
+}
+
+/// Go `deny()` set `X-Hmn-Incident: see-audit-log` on the 403; the spoof deny
+/// carries the same pointer and a monitored request carries none.
+#[test]
+fn spoof_deny_carries_the_incident_pointer() {
+    assert_eq!(INCIDENT_HEADER, ("X-Hmn-Incident", "see-audit-log"));
+    let mut h = headers(&[("X-Real-Ip", "9.9.9.9")]);
+    let denied = spoof_gate(&mut h, true, "node-1", "psn").unwrap();
+    assert_eq!(
+        denied.headers(),
+        vec![("X-Hmn-Incident", "see-audit-log".to_owned())]
+    );
+    let mut h = headers(&[("X-Real-Ip", "9.9.9.9")]);
+    let monitored = spoof_gate(&mut h, false, "node-1", "psn").unwrap();
+    assert!(monitored.headers().is_empty());
+    // The ban gate shares the same constant.
+    assert_eq!(crate::gateway::ban::gate::INCIDENT_HEADER, INCIDENT_HEADER);
+}

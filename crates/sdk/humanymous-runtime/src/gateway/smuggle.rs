@@ -6,7 +6,7 @@
 //! `http_framing` before a request exists. This kernel classifies a header
 //! list the way Go did so the refusal can carry a stable reason, and builds the
 //! audit records. Records are DENY/block/enforce and never carry header values.
-use crate::audit::record::Record;
+use crate::audit::record::{Actor, Record};
 
 /// Legacy smuggle reason classes, in Go precedence order.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -62,11 +62,17 @@ pub fn scan(headers: &[(String, String)]) -> Option<Reason> {
     None
 }
 
+/// Legacy record shape: the session pseudonym is the subject actor and the
+/// key version is `k1`, as Go's `smuggleRecord` and `spoofRecord` set them.
 fn deny(event: &str, tenant: &str, session: &str, rule: &str, reason: String) -> Record {
     Record {
         event_type: event.into(),
+        actor: Actor {
+            kind: "subject".into(),
+            id_pseudonym: session.into(),
+        },
         tenant_id: tenant.into(),
-        session_pseudonym: session.into(),
+        key_id: "k1".into(),
         verdict: "DENY".into(),
         triggered_rules: Some(vec![rule.into()]),
         enforcement_action: "block".into(),

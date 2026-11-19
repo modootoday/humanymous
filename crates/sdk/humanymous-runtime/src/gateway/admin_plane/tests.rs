@@ -76,15 +76,21 @@ impl Drop for Stack {
 }
 
 async fn stack() -> Stack {
+    stack_with(|plane| plane).await
+}
+
+/// [`stack`] with the plane adjusted (for example an attached erasure hold)
+/// before it is served.
+async fn stack_with(build: impl FnOnce(AdminPlane) -> AdminPlane) -> Stack {
     let bans = ban_store();
     let journal = Journal::default();
-    let plane = Arc::new(AdminPlane::new(
+    let plane = Arc::new(build(AdminPlane::new(
         "test",
         scope(),
         b"k",
         bans.clone(),
         Box::new(journal.clone()),
-    ));
+    )));
     let mut tokens = BTreeMap::new();
     for role in [Role::Auditor, Role::Operator, Role::Approver, Role::Dpo] {
         let token = format!("{}-token-0123456789", role.as_str());
@@ -772,6 +778,7 @@ mod dual_control {
         NativeAnchorRetainer, RetentionRequirement,
     };
     use crate::audit::keys::custody::Owner;
+    use crate::audit::keys::vault::ErasurePermit;
     use ed25519_dalek::{Signer, SigningKey};
     use std::path::PathBuf;
     use std::sync::atomic::AtomicU64;
@@ -859,17 +866,7 @@ mod dual_control {
                 .authority
                 .propose(action, target, now, now + 90)
                 .unwrap();
-            let approvals: Vec<Approval> = [("one", 11u8), ("two", 12u8)]
-                .iter()
-                .map(|(id, seed)| Approval {
-                    administrator: (*id).into(),
-                    signature: hex::encode(
-                        SigningKey::from_bytes(&[*seed; 32])
-                            .sign(&proposal.signing_bytes().unwrap())
-                            .to_bytes(),
-                    ),
-                })
-                .collect();
+            let approvals = signatures(&proposal);
             self.authority
                 .authorize_retained_action(
                     ApprovalRequest {
@@ -886,6 +883,36 @@ mod dual_control {
         fn ban_permit(&mut self, key: &str) -> RetainedActionPermit {
             self.permit(Action::PermanentBan, Key::parse(key).unwrap().commitment())
         }
+
+        /// An exact-subject erasure permit issued by the ledger after two
+        /// signed approvals (`ControlAuthority::issue_erasure`).
+        fn erasure_permit(&mut self, subject: &str) -> ErasurePermit {
+            let now = crate::authority::now_ms().unwrap() / 1000;
+            let target = crate::audit::control::target_commitment(subject.as_bytes());
+            let proposal = self
+                .authority
+                .propose(Action::EraseSubject, target, now, now + 90)
+                .unwrap();
+            let approvals = signatures(&proposal);
+            self.authority
+                .issue_erasure(&proposal, &approvals, now, subject)
+                .unwrap()
+                .0
+        }
+    }
+
+    fn signatures(proposal: &crate::audit::control::Proposal) -> Vec<Approval> {
+        [("one", 11u8), ("two", 12u8)]
+            .iter()
+            .map(|(id, seed)| Approval {
+                administrator: (*id).into(),
+                signature: hex::encode(
+                    SigningKey::from_bytes(&[*seed; 32])
+                        .sign(&proposal.signing_bytes().unwrap())
+                        .to_bytes(),
+                ),
+            })
+            .collect()
     }
 
     async fn request_permanent(s: &Stack, key: &str, reason: &str) -> String {
@@ -1087,6 +1114,8 @@ mod dual_control {
         assert!(entry.permanent());
         assert_eq!(entry.source, Source::DualControl);
     }
+
+    mod erasure;
 }
 
 mod wargame;

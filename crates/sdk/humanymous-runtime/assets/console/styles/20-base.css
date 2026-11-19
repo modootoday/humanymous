@@ -1,0 +1,9 @@
+/* SoT-33 P2 — reset + base typography. */
+@layer base {
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  h1,h2,h3{margin:0;font-weight:600}
+  a{color:var(--accent)}
+}

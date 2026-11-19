@@ -13,14 +13,18 @@ autotests = false
 
 [features]
 default = ["gateway"]
-gateway = ["authority", "audit", "capture", "network", "dep:humanymous-core", "dep:serde", "dep:serde_json", "dep:sha2", "dep:hex", "dep:base64", "dep:getrandom", "dep:zeroize", "dep:socket2", "dep:rustls", "dep:tokio"]
+gateway = ["authority", "audit", "audit-tls", "capture", "network", "dep:humanymous-core", "dep:serde", "dep:serde_json", "dep:sha2", "dep:hex", "dep:base64", "dep:getrandom", "dep:zeroize", "dep:socket2", "dep:rustls", "dep:tokio"]
 authority = ["audit", "network", "native-security", "dep:humanymous-core", "dep:serde", "dep:serde_json", "dep:sha2", "dep:hex", "dep:base64", "dep:subtle", "dep:ed25519-dalek", "dep:getrandom", "dep:zeroize", "dep:tokio", "dep:rustix", "dep:interprocess", "dep:widestring"]
 audit = ["native-security", "dep:humanymous-core", "dep:serde", "dep:serde_json", "dep:sha2", "dep:hex", "dep:subtle", "dep:ed25519-dalek", "dep:unicode-normalization", "dep:hmac", "dep:base64", "dep:getrandom", "dep:zeroize", "dep:time", "dep:aes-gcm", "dep:scrypt", "dep:rustix"]
+# HTTPS for the audit ClickHouse projection with caller-supplied trust roots.
+audit-tls = ["audit", "dep:rustls"]
 capture = ["network", "dep:rustls", "dep:httlib-hpack"]
 network = ["dep:humanymous-core", "dep:serde", "dep:serde_json", "dep:sha2", "dep:md-5", "dep:hex"]
 native-security = ["dep:zeroize", "dep:rustix", "dep:winsafe", "dep:windows-permissions", "dep:keyring-core", "dep:windows-native-keyring-store"]
 hosted-pilot = ["capture", "dep:rcgen"]
 credential-pilot = ["native-security"]
+acme = ["gateway", "dep:instant-acme", "dep:rcgen", "dep:x509-parser"]
+dev-self-signed = ["gateway", "dep:rcgen", "dep:time"]
 # Owner decision D4 (2026-11-18): test-only short decision expiry. Debug builds only.
 test-authority = ["authority"]
 
@@ -42,12 +46,15 @@ socket2 = { version = "0.6.5", optional = true }
 rustls = { optional = true, version = "=0.23.46", default-features = false, features = ["std", "ring", "tls12"] }
 httlib-hpack = { version = "=0.1.3", optional = true }
 rcgen = { version = "=0.14.10", optional = true, default-features = false, features = ["crypto", "ring"] }
+instant-acme = { version = "=0.8.5", optional = true, default-features = false, features = ["ring", "hyper-rustls"] }
+x509-parser = { version = "=0.18.1", optional = true, default-features = false }
 tokio = { optional = true, version = "1.54.1", features = ["rt-multi-thread", "net", "io-util", "time", "sync", "macros"] }
 
 [dev-dependencies]
 humanymous-collector = { path = "../../collector", version = "0.1.0" }
 humanymous-platform = { workspace = true, features = ["testing"] }
 rcgen = { version = "=0.14.10", default-features = false, features = ["crypto", "ring"] }
+x509-parser = { version = "=0.18.1", default-features = false }
 
 [target.'cfg(any(unix, windows))'.dependencies]
 time = { workspace = true, optional = true }
@@ -103,6 +110,16 @@ path = "tests/gateway/native_process.rs"
 required-features = ["gateway"]
 
 [[test]]
+name = "gateway-acme-pebble"
+path = "tests/gateway/acme_pebble.rs"
+required-features = ["acme"]
+
+[[test]]
+name = "gateway-tls-startup"
+path = "tests/gateway/tls_startup.rs"
+required-features = ["gateway"]
+
+[[test]]
 name = "gateway-witness-input"
 path = "tests/gateway/witness_input.rs"
 required-features = ["gateway"]
@@ -128,9 +145,24 @@ path = "tests/authority/native_process.rs"
 required-features = ["authority"]
 
 [[test]]
+name = "audit-chain-parity"
+path = "tests/audit/chain_parity.rs"
+required-features = ["audit"]
+
+[[test]]
 name = "audit-checkpoint-parity"
 path = "tests/audit/checkpoint_parity.rs"
 required-features = ["audit"]
+
+[[test]]
+name = "audit-clickhouse-live"
+path = "tests/audit/clickhouse_live.rs"
+required-features = ["audit"]
+# Live check against a real ClickHouse server the test starts in Docker. Left
+# out of `cargo test`/`--all-targets` discovery (no Docker on every native
+# runner); the required msrv job runs it and the quality job lints it:
+# `cargo test --locked -p humanymous-runtime --features audit --test audit-clickhouse-live -- --ignored`.
+test = false
 
 [[test]]
 name = "audit-control-operations"

@@ -149,3 +149,5 @@ fn excessive_fragment_records_fail_with_constant_count_budget() {
     }
     assert_eq!(capture.feed(&record(&[0])), Err(CaptureError::Budget));
 }
+
+mod go_capture;

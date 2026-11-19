@@ -50,7 +50,12 @@ fn smuggle_record_matches_legacy_shape() {
     let r = smuggle_record("node-1", "psn", Reason::TeClConflict);
     assert_eq!(r.event_type, "net.smuggle");
     assert_eq!(r.tenant_id, "node-1");
-    assert_eq!(r.session_pseudonym, "psn");
+    assert_eq!(
+        (r.actor.kind.as_str(), r.actor.id_pseudonym.as_str()),
+        ("subject", "psn")
+    );
+    assert!(r.session_pseudonym.is_empty());
+    assert_eq!(r.key_id, "k1");
     assert_eq!(r.verdict, "DENY");
     assert_eq!(r.triggered_rules, Some(vec!["HR-23".to_owned()]));
     assert_eq!(

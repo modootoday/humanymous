@@ -1,15 +1,16 @@
 //! Gated, watermarked resource serving and the forensic trace view (port of
 //! legacy cmd/server/resource_handlers.go `handleResource`, `handleTrace`,
 //! `handleTraffic` authorization, `recordResourceSignals`, `sessionVerdict`,
-//! `sessionLiveness` and `externalReferer` at baseline 981d25c; SoT
+//! `sessionLiveness` and `externalReferer`, plus the asset read of
+//! cmd/server/helpers.go `readFile`, at baseline 981d25c; SoT
 //! resource-watermark W07/W09).
 //!
-//! These are the handler decisions over owner-supplied inputs: the asset bytes,
+//! These are the handler decisions over owner-supplied inputs: the web root,
 //! the session's stored verdict and behavior, the watermark key and ledger, the
 //! media tracker and the clock. Mounting `/res/`, `/api/trace` and
-//! `/api/traffic/` in a Core server, reading the asset root, appending the
-//! returned signals to the session store and rendering the traffic log stay
-//! with their runtime owners (plan B05/B07); nothing here changes a score,
+//! `/api/traffic/` in a Core server, appending the returned signals to the
+//! session store and rendering the traffic log stay with their runtime
+//! owners (plan B05/B07); nothing here changes a score,
 //! verdict, threshold or signal identity, and the signals returned are the
 //! frozen L5 media/embed signals of `integrity::resource`.
 //!
@@ -27,6 +28,8 @@
 //! - MIME by extension uses Go's built-in `mime` table only (lowercased
 //!   extension); Go additionally consulted host `mime.types` files, which made
 //!   the served type host-dependent.
+//! - An empty web root resolves no asset (404); Go's `filepath.Join` skipped
+//!   the empty element and resolved the asset against the filesystem root.
 use super::operations::mlcorrect::{NOT_FOUND_BODY, operator_authorized};
 use humanymous_core::integrity::resource::{
     Decision, EmbedContext, MediaEvent, MediaTracker, Tier, classify, gate, inspect,
@@ -39,6 +42,8 @@ use humanymous_core::watermark::issuance::{Fallback, apply};
 use humanymous_core::watermark::ledger::{Issuance, Ledger, Trace};
 use humanymous_core::watermark::payload::{Payload, WatermarkKey};
 use serde::Serialize;
+use std::io::{self, Read};
+use std::path::Path;
 use std::time::Duration;
 
 /// Largest trace upload read (Go `MaxBytesReader(.., 32<<20)`).
@@ -59,7 +64,12 @@ pub struct Response {
 }
 
 impl Response {
-    fn text(status: u16, headers: Vec<(&'static str, String)>, body: &str) -> Self {
+    /// Go `http.Error`: plain text, `nosniff`, body plus newline.
+    pub(in crate::gateway) fn text(
+        status: u16,
+        headers: Vec<(&'static str, String)>,
+        body: &str,
+    ) -> Self {
         let mut all = headers;
         all.push(("Content-Type", "text/plain; charset=utf-8".to_owned()));
         all.push(("X-Content-Type-Options", "nosniff".to_owned()));
@@ -81,7 +91,8 @@ impl Response {
         }
     }
 
-    fn json<T: Serialize>(value: &T) -> Self {
+    /// Go `httpx.WriteJSON`: `application/json`, Go encoding plus newline.
+    pub(in crate::gateway) fn json<T: Serialize>(value: &T) -> Self {
         let mut body = go_json::to_vec(value).unwrap_or_default();
         body.push(b'\n');
         Self {
@@ -139,6 +150,43 @@ pub fn asset_path(url_path: &str) -> Option<String> {
     let rest = url_path.strip_prefix("/res/").unwrap_or(url_path);
     let asset = clean(&format!("/{rest}"));
     (!asset.contains("..")).then_some(asset)
+}
+
+/// Served file of an asset (legacy `filepath.Join(a.webDir,
+/// filepath.FromSlash(asset))`): Go's lexical clean of `root/asset`, slash
+/// separated (accepted by `std::path` on every supported OS). `None` for an
+/// empty root, which Go would have resolved against the filesystem root.
+pub fn asset_file(web_root: &str, asset: &str) -> Option<String> {
+    (!web_root.is_empty()).then(|| clean(&format!("{web_root}/{asset}")))
+}
+
+/// Legacy `readFile`: the whole file, with a directory (or a failed stat)
+/// reported as not found. Symlinks are followed, as `os.Open` did.
+pub fn read_asset(path: &Path) -> io::Result<Vec<u8>> {
+    let not_found = || io::Error::from(io::ErrorKind::NotFound);
+    let mut file = match std::fs::File::open(path) {
+        Ok(file) => file,
+        // Opening a directory fails on some platforms; Go reported it as
+        // not found after the stat.
+        Err(_) if std::fs::metadata(path).is_ok_and(|meta| meta.is_dir()) => {
+            return Err(not_found());
+        }
+        Err(error) => return Err(error),
+    };
+    if !file.metadata().is_ok_and(|meta| !meta.is_dir()) {
+        return Err(not_found());
+    }
+    let mut bytes = Vec::new();
+    file.read_to_end(&mut bytes)?;
+    Ok(bytes)
+}
+
+/// Legacy `handleResource` read step: the asset bytes, or Go's
+/// `http.NotFound` when the root is empty or the file cannot be read.
+pub fn load_asset(web_root: &str, asset: &str) -> Result<Vec<u8>, Response> {
+    asset_file(web_root, asset)
+        .and_then(|file| read_asset(Path::new(&file)).ok())
+        .ok_or_else(Response::not_found)
 }
 
 /// Go `mime.TypeByExtension` over its built-in table, defaulting to
