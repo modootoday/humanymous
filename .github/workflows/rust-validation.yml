@@ -138,7 +138,7 @@ jobs:
         - macos-15
         - windows-2025
   msrv:
-    needs: [policy, native]
+    needs: policy
     if: ${{ !cancelled() && needs.policy.result == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30

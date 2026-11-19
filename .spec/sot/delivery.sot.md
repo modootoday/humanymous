@@ -3,11 +3,8 @@ id: sot:root/delivery
 title: Rust delivery and Pages contracts
 status: active
 created: 2026-11-06T20:27:03Z
-updated: 2026-11-18T00:00:00Z
-verify:
-  - cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- policy
-  - cargo test --locked --manifest-path scripts/ci/delivery/Cargo.toml
-  - cargo test --locked --manifest-path scripts/ci/docs-review/Cargo.toml
+updated: 2026-11-19T22:12:17Z
+verify: [cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- policy, cargo test --locked --manifest-path scripts/ci/delivery/Cargo.toml, cargo test --locked --manifest-path scripts/ci/docs-review/Cargo.toml]
 rel:
   governs: [docs/**, .github/workflows/**, scripts/ci/**, scripts/migration/**, build/rust/**]
   depends_on: [sot:root/rust-migration, sot:root/container-test-environments]
@@ -383,6 +380,30 @@ Keep unique-action deduplication, report lookup index/total on failure, no retry
 loop or paid fixed-IP service. Shared-host unauthenticated quota is a stability
 limitation. Local read-only direct public commit+raw metadata lookup succeeded;
 the corrected hosted source still requires its own actual run.
+
+### Required checks do not wait for the native matrix (2026-11-19)
+
+Owner decision 2026-11-19 (direct instruction in a humanymous cloud session):
+`msrv` needs only `policy`, not `native`. Lane A becomes `policy` → `msrv` →
+`quality` → `documentation` → `pages`, with the `native` matrix
+(Ubuntu 24.04, macOS 15, Windows 2025, `max-parallel` 1) running beside it as
+its own lane. Reason: the required checks on `codex/rust` are `validate / policy`,
+`validate / msrv` and `validate / quality` (common-rules section 12), and `msrv`
+builds and tests the workspace on Ubuntu without consuming any native-matrix
+output. Waiting for the matrix tied every merge to the hosted Windows queue,
+which held #157 and #158 for one to two hours on 2026-11-19 with no runner
+assigned.
+
+Unchanged: the scheduling condition
+`${{ !cancelled() && needs.policy.result == 'success' }}`, the `native` jobs and
+their reports, and `merge-ready`/`ready`, which still need `native` and still fail
+on every native failure, skip or cancel. No required check is removed or weakened.
+Cost: up to three heavy hosted jobs (native, msrv, docker) can run at once instead
+of two; public-repository hosted minutes are free, and the concurrency stays within
+the free-plan job limit. A self-hosted Windows runner was considered and rejected
+for this purpose, per [[sot:root/cross-os-runners]]: public fork code must not run
+on a persistent privileged fleet, and the only candidate device is the owner's
+everyday PC.
 
 ### Workflow identity convention
 
