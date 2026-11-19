@@ -85,6 +85,8 @@ pub(super) fn directory_manifest_excluding_venv(bundle: &Path) -> Result<String>
     }
     Ok(hex::encode(Sha256::digest(rows.join("\n").as_bytes())))
 }
+/// Index mode of a gitlink (a submodule commit pointer, not a file).
+const GITLINK_MODE: &str = "160000";
 pub(super) fn source_manifest(root: &Path) -> Result<String> {
     let mut command = Command::new("git");
     command
@@ -95,20 +97,27 @@ pub(super) fn source_manifest(root: &Path) -> Result<String> {
     if !clean.status.success() || !clean.stdout.is_empty() {
         return Err("tracked source changed".into());
     }
+    // Staged entries carry their mode, so gitlinks (mode 160000: submodule
+    // commits, not files in this tree) are skipped by kind, not by path.
     let mut command = Command::new("git");
-    command.args(["ls-files", "-z"]).current_dir(root);
-    let files = capture_with_stderr(&mut command, b"", Duration::from_secs(15), 4 << 20)
+    command.args(["ls-files", "-z", "-s"]).current_dir(root);
+    let files = capture_with_stderr(&mut command, b"", Duration::from_secs(15), 16 << 20)
         .map_err(|_| "source inventory failed")?;
     if !files.status.success() {
         return Err("source inventory failed".into());
     }
     let mut rows = Vec::new();
-    for name in files
+    for entry in files
         .stdout
         .split(|byte| *byte == 0)
-        .filter(|name| !name.is_empty())
+        .filter(|entry| !entry.is_empty())
     {
-        let name = std::str::from_utf8(name).map_err(|_| "source path encoding")?;
+        let entry = std::str::from_utf8(entry).map_err(|_| "source path encoding")?;
+        let (stage, name) = entry.split_once('\t').ok_or("source inventory entry")?;
+        let mode = stage.split(' ').next().ok_or("source inventory mode")?;
+        if mode == GITLINK_MODE {
+            continue;
+        }
         rows.push(format!("{name} {}", digest(&root.join(name))?));
     }
     rows.sort();

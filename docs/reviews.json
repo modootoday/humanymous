@@ -3,13 +3,14 @@
   "reviews": [
     {
       "source": "Cargo.lock",
-      "sha256": "e9b0d008aba836c2cc1d118766fa5aa39c3ef77feaf5a9ab41c36c6090535090",
+      "sha256": "ca8b4314e5337cb000fe04f4676a081054078ab0ff4da4678b3f59b0198e570a",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Cargo-generated lockfile (format version 4) pinning 664 packages, including the consolidated workspace members humanymous-core, humanymous-runtime, humanymous-platform, the adapter, browser, CEF and CLI crates and their third-party dependencies. Re-reviewed 2026-11-18: the only change since the prior review adds the already-locked rustix 1.1.6 to the dependency list of humanymous-runtime-pilot (test/lab/runtime, a Unix-only target dependency for clearing close-on-exec on inherited witness pipes); the package count is unchanged and `cargo metadata --locked` resolves. It fixes resolution for --locked builds only; it is not install, OS-support or artifact qualification evidence. Re-reviewed 2026-11-18 for the PR #80 merge of codex/rust: on top of that, humanymous-attacker additionally depends on the already-locked base64 0.22.1, hex, hmac 0.12.1, sha2 0.10.9 and humanymous-runtime; no package added or version changed.",
+      "notes": "Cargo-generated lockfile (format version 4) pinning 664 packages, including the consolidated workspace members humanymous-core, humanymous-runtime, humanymous-platform, the adapter, browser, CEF and CLI crates and their third-party dependencies. Re-reviewed 2026-11-18: the only change since the prior review adds the already-locked rustix 1.1.6 to the dependency list of humanymous-runtime-pilot (test/lab/runtime, a Unix-only target dependency for clearing close-on-exec on inherited witness pipes); the package count is unchanged and `cargo metadata --locked` resolves. It fixes resolution for --locked builds only; it is not install, OS-support or artifact qualification evidence. Re-reviewed 2026-11-18 (IP reputation feed): adds the already-locked ureq 3.5.1 to humanymous-cli's dependency list as an optional dependency of the ip-intel feature; no new package. Merge 2026-11-18 (codex/rust 4998af75 into claude/ip-reputation-feed): the merged lockfile carries both changes (ureq in humanymous-cli and rustix 1.1.6 in humanymous-runtime-pilot) and no other package change; cargo metadata --locked resolves. Re-reviewed 2026-11-18 for the PR #80 merge of codex/rust: on top of that, humanymous-attacker additionally depends on the already-locked base64 0.22.1, hex, hmac 0.12.1, sha2 0.10.9 and humanymous-runtime; no package added or version changed. Merge 2026-11-18 (codex/rust 4308ff47 into claude/ip-reputation-feed): the merged lockfile carries the ureq, rustix and humanymous-attacker dependency-list changes and no other package change.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/start-here/developer.md",
-        "docs/reference/install-requirements.md"
+        "docs/reference/install-requirements.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -2404,12 +2405,13 @@
     },
     {
       "source": "crates/cli/Cargo.toml",
-      "sha256": "93e95b9da635acc4e466e8da4fb92c4c5d17a734ff51a307d9443da9734c6cc6",
+      "sha256": "b93f5ca8c8e2589a9d70af20429564883c2747afdce6f816beae8612fda7835f",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "48-line manifest for humanymous-cli (description, readme INTEGRATION.md, publish = [\"crates-io\"] as part of the first crates.io wave; opening the manifest performs no upload) with the humanymous binary and the humanymous-service-fixture binary, which needs the service-pilot feature. runtime-service adds the runtime gateway and authority features plus optional Tokio and zeroize; runtime-service-pilot adds credential-pilot and audit. Windows targets add windows-service, and Windows dev-dependencies add windows-permissions and junction. Features do not prove native execution, deployment support or registry publication.",
+      "notes": "48-line manifest for humanymous-cli (description, readme INTEGRATION.md, publish = [\"crates-io\"] as part of the first crates.io wave; opening the manifest performs no upload) with the humanymous binary and the humanymous-service-fixture binary, which needs the service-pilot feature. runtime-service adds the runtime gateway and authority features plus optional Tokio and zeroize; runtime-service-pilot adds credential-pilot and audit. Windows targets add windows-service, and Windows dev-dependencies add windows-permissions and junction. Features do not prove native execution, deployment support or registry publication. Re-reviewed 2026-11-18: adds the optional ip-intel feature (runtime network feature plus optional ureq =3.5.1) for the IP reputation updater; default features unchanged.",
       "pages": [
         "docs/reference/install-requirements.md",
-        "docs/reference/cli-config-policy.md"
+        "docs/reference/cli-config-policy.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -2443,13 +2445,14 @@
     },
     {
       "source": "crates/cli/src/commands.rs",
-      "sha256": "abac4c2db93b854c0c935de9d55eb22775494f4eff3d5e459f0e13a6f1a294f6",
+      "sha256": "d192a16b54d745f050ef978be7dcfb912a1b275277f4905bc7a389317a574892",
       "reviewer": "codex/rust-pages",
       "pages": [
         "docs/reference/install-requirements.md",
-        "docs/reference/cli-config-policy.md"
+        "docs/reference/cli-config-policy.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ],
-      "notes": "Complete147-line strict service/runtime-host CLI composition. Unknown/duplicate options refused, activate and dry mutually exclusive; doctor read-only requires observed running/diagnostic report. Install/upgrade/rollback/remove delegate to ServicePlan; mutation authorization and filesystem/native guarantees require underlying code, not argument parsing. Success JSON keeps product_qualified false."
+      "notes": "Complete147-line strict service/runtime-host CLI composition. Unknown/duplicate options refused, activate and dry mutually exclusive; doctor read-only requires observed running/diagnostic report. Install/upgrade/rollback/remove delegate to ServicePlan; mutation authorization and filesystem/native guarantees require underlying code, not argument parsing. Success JSON keeps product_qualified false. Re-reviewed 2026-11-18: adds the feature-gated ip-intel command (update, sources, inspect) with strict argument parsing; a partial update prints its report and exits non-zero. Re-reviewed 2026-11-18 for PR #123 review fixes: ip-intel update gains the strict single-use --allow-unpinned-checkout flag (duplicate refused, default off) that sets UpdatePlan.allow_unpinned; the usage text names it. No other command changes. Re-reviewed 2026-11-18 for PR #123 second review: ip-intel update refuses a --source named twice at parse time, and the parsed plan goes through ip_intel::check_plan, so an unknown source name or a --url for a source without an operator URL (anything but azure-service-tags) is refused instead of ignored; the strict-argument test covers each refusal. No other command changes."
     },
     {
       "source": "crates/cli/src/installation/mod.rs",
@@ -2488,24 +2491,44 @@
       ]
     },
     {
+      "source": "crates/cli/src/ip_intel/mod.rs",
+      "sha256": "e8f1d1955dafc27a2f6a3aa670987d957825119f48e0ce178d7d53c1c3ef541e",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Operator IP reputation updater behind the ip-intel feature: reads pinned submodule checkouts (commit from git metadata, no git process), operator --input files and HTTPS sources (https only, 60 s timeout, per-source byte bound), normalizes through the runtime source registry, encodes the humanymous-ip-intel/1 snapshot and writes it atomically (create_new 0600 sibling, sync, rename). Refuses to write when no source succeeded; missing/uninitialized sources stay listed with a static reason. Re-reviewed 2026-11-18 for PR #123 review fixes: each normalized source is passed through the runtime's shared snapshot::check_breadth, so an over-broad datacenter source (shorter than IPv4 /8 or IPv6 /16, or over the coverage cap) is refused as invalid with that static code instead of written as ok. Git sources compare the checkout HEAD with the parent repository's gitlink (git ls-tree -z HEAD -- path, mode 160000 only) and require git status --porcelain to be empty; mismatch, dirt or an unreadable gitlink refuse the source as invalid (submodule_head_mismatch, submodule_dirty, submodule_gitlink_unreadable) unless allow_unpinned, and the snapshot records the checkout {gitlink, clean, unpinned_override} either way. git runs with GIT_DIR/GIT_WORK_TREE/GIT_INDEX_FILE/GIT_OBJECT_DIRECTORY removed and stdin/stderr null. Re-reviewed 2026-11-18 for PR #123 second review: new pub check_plan refuses duplicate --source, unknown names and --url for a source whose origin is not OperatorUrl, and update runs it before acquiring anything (no fetch, no write). A scoring category whose union exceeds the coverage cap although each source fits alone no longer aborts the update: fit_union_caps drops the ok source with the largest coverage in the overflowing family (ties: lowest name), marks it invalid with the static detail category_union_coverage_cap (UNION_CAP_DROPPED), repeats until the union fits, and the rest is written; encode still validates so a union above the cap is never written.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/cli/src/ip_intel/tests.rs",
+      "sha256": "dc68338f09b3c7849d62d687cef8babde82e4db31c193d61ef75e2715b6c3363",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Updater unit tests with an injected fake fetcher and temporary checkouts: git commit recorded, uninitialized submodule reported missing, offline mode never fetches, all-failed update writes nothing, written snapshot parses back. No network access. Re-reviewed 2026-11-18 for PR #123 review fixes: the git-source test now builds a real submodule repository pinned by a real mode 160000 gitlink; new tests cover a dirty checkout and a moved HEAD (refused, then accepted and recorded with the override), an unreadable gitlink, and over-broad input (0.0.0.0/0, ::/0, /7) refused on update both alone (nothing written) and next to another source (partial, invalid, no datacenter prefixes), with /8 and /16 accepted. Re-reviewed 2026-11-18 for PR #123 second review: the at-floor case uses IPv6 /19 (the new floor); new tests cover a union over the cap dropping only the largest source, equal-coverage sources dropped lowest-name-first until the union fits with every drop recorded, a union exactly at the cap with no drop, an IPv6-only overflow dropping the largest IPv6 source rather than the largest IPv4 one, and duplicate --source plus misplaced --url refused before any fetch or write.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
       "source": "crates/cli/src/lib.rs",
-      "sha256": "ed5ef8a2da815e2995eb661737ba59c693145271ca7aee64930c1e456e11ae6c",
+      "sha256": "adcf041f6ec8a5cfe5b9585f9bd8b1621b084010be81dbf40eb5209240fe7377",
       "reviewer": "codex/rust-pages",
       "pages": [
         "docs/reference/install-requirements.md",
-        "docs/reference/cli-config-policy.md"
+        "docs/reference/cli-config-policy.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ],
-      "notes": "Complete7-line root. Plan/release/service always exported, runtime_host feature gated; native-cli browser tooling remains separate."
+      "notes": "Complete7-line root. Plan/release/service always exported, runtime_host feature gated; native-cli browser tooling remains separate. Re-reviewed 2026-11-18: declares the feature-gated ip_intel module."
     },
     {
       "source": "crates/cli/src/main.rs",
-      "sha256": "5b9889403a4d1dce532f97d7dd02ecaaf2b040a9380dec07f23a58a4d7ca4f9b",
+      "sha256": "3d7bc83a2d60dce66df224461525875d05d38098de7819ff79632ab840086423",
       "reviewer": "codex/rust-pages",
       "pages": [
         "docs/reference/install-requirements.md",
-        "docs/reference/cli-config-policy.md"
+        "docs/reference/cli-config-policy.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ],
-      "notes": "Complete70-line dispatcher. Legacy doctor/install/rollback require explicit artifact/destination/digest/locality acknowledgement; service-prefixed commands separate. runtime-host refuses without feature. Doctor/dry branch read-only by intended Plan interface, actual Plan implementation not newly read in this batch."
+      "notes": "Complete70-line dispatcher. Legacy doctor/install/rollback require explicit artifact/destination/digest/locality acknowledgement; service-prefixed commands separate. runtime-host refuses without feature. Doctor/dry branch read-only by intended Plan interface, actual Plan implementation not newly read in this batch. Re-reviewed 2026-11-18: dispatches the feature-gated ip-intel command."
     },
     {
       "source": "crates/cli/src/release.rs",
@@ -2629,22 +2652,24 @@
     },
     {
       "source": "crates/cli/src/service/mod.rs",
-      "sha256": "7edd0fad1c4f3651212b60d7c851e05853edde0471da0c21d7f963cd336ab010",
+      "sha256": "7127bcae3fa6e65bd48f38336af4aa6af11fd8bbf69936844bf52140b57cc641",
       "reviewer": "codex/rust-pages",
       "pages": [
         "docs/reference/install-requirements.md",
-        "docs/reference/cli-config-policy.md"
+        "docs/reference/cli-config-policy.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ],
-      "notes": "Complete366-line service state machine fully read. Explicit activate, exact signed artifact/private root, create-new lock/pending marker; install repeat verifies native state+diagnostic. Upgrade higher than retained floor, stages immutable generation then unregisters old/activates new; ordinary activation/persistence failure attempts prior restore, failures preserve pending. Rollback known predecessor preserves floor; removal verifies owned generations first. No power-loss/crash-atomic recovery, anti-rollback external anchor or actual native qualification. Doctor registration/running/loopback diagnostic not management authorization."
+      "notes": "Complete366-line service state machine fully read. Explicit activate, exact signed artifact/private root, create-new lock/pending marker; install repeat verifies native state+diagnostic. Upgrade higher than retained floor, stages immutable generation then unregisters old/activates new; ordinary activation/persistence failure attempts prior restore, failures preserve pending. Rollback known predecessor preserves floor; removal verifies owned generations first. No power-loss/crash-atomic recovery, anti-rollback external anchor or actual native qualification. Doctor registration/running/loopback diagnostic not management authorization. Re-reviewed 2026-11-18: storage module made crate-visible so the IP reputation updater reuses its private create-new writer."
     },
     {
       "source": "crates/cli/src/service/storage.rs",
-      "sha256": "7d7a5cd4ed0aee527f5052c7ea21925f261232edbd4d3fc4b817eac7cb95cd7e",
+      "sha256": "b017501bfa46ea6762197b543135b1571735b9f4137b8210f6d3f389d89d4cd4",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Managed immutable service generations and fail-closed state (320 lines): each generation is signature-revalidated against the trust key, staged as a create-new Plan plus an exact declarative definition file, verified for service-SID access and (with runtime-service on Windows) runtime activation grants, and removed only after verification; deployment.json is schema/trust-key checked with at most 14 retired generations, unique sequences <= highest and one service name, written via create-new deployment.next+fsync then rename. A pending.json marker or existing service.lock fails closed and requires manual recovery; lock removal on Drop is best effort and there is no directory fsync or general recovery backend.",
+      "notes": "Managed immutable service generations and fail-closed state (320 lines): each generation is signature-revalidated against the trust key, staged as a create-new Plan plus an exact declarative definition file, verified for service-SID access and (with runtime-service on Windows) runtime activation grants, and removed only after verification; deployment.json is schema/trust-key checked with at most 14 retired generations, unique sequences <= highest and one service name, written via create-new deployment.next+fsync then rename. A pending.json marker or existing service.lock fails closed and requires manual recovery; lock removal on Drop is best effort and there is no directory fsync or general recovery backend. Re-reviewed 2026-11-18: write_new made crate-visible for the IP reputation updater's atomic snapshot write; behaviour unchanged.",
       "pages": [
         "docs/reference/install-requirements.md",
-        "docs/reference/cli-config-policy.md"
+        "docs/reference/cli-config-policy.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -4518,9 +4543,9 @@
     },
     {
       "source": "crates/python-adapter/tests/component_controller.rs",
-      "sha256": "ce7ffb6cc96b76f1b3d80b2e1e3719a029336a61e0615fd7fe58eda9695573a6",
+      "sha256": "82a16e14edff30a6f4c2fca824339df1e0b382e63995150a59053a1dfb32bb0b",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Ignored hosted coordinator (unix, host-pilot feature) whose coordinate test first calls require_safe_lifecycle, then requires a non-root GITHUB_ACTIONS actor, a fresh 0700 bundle in RUNNER_TEMP and a target dir inside it. The controller records nine steps: checks git HEAD equals GITHUB_SHA, builds a venv with hash-pinned waitress plus Flask/Django, runs check, Clippy, pure wsgi_server tests (expects exactly 2 passed 6 ignored), builds the extension module and authority, copies the harness, validates discovery and the actual 8-test/14-row/28-case receipt, and compares before/after source, dependency and artifact manifests. Summaries keep wholeProductQualified false; existing code is not an executed success.",
+      "notes": "Ignored hosted coordinator (unix, host-pilot feature) whose coordinate test first calls require_safe_lifecycle, then requires a non-root GITHUB_ACTIONS actor, a fresh 0700 bundle in RUNNER_TEMP and a target dir inside it. The controller records nine steps: checks git HEAD equals GITHUB_SHA, builds a venv with hash-pinned waitress plus Flask/Django, runs check, Clippy, pure wsgi_server tests (expects exactly 2 passed 6 ignored), builds the extension module and authority, copies the harness, validates discovery and the actual 8-test/14-row/28-case receipt, and compares before/after source, dependency and artifact manifests. Summaries keep wholeProductQualified false; existing code is not an executed success. Re-reviewed 2026-11-18 for PR #123 review fixes: adds the non-ignored source_manifest_skips_gitlinks_by_mode test, which builds a temporary git repository, adds a mode 160000 gitlink with an empty directory (an uninitialized submodule) and asserts the source manifest is unchanged by it. The ignored coordinate and coordinate_cleanup controllers are unchanged.",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
@@ -4536,9 +4561,9 @@
     },
     {
       "source": "crates/python-adapter/tests/support/component_files.rs",
-      "sha256": "f9eafed042d88a1a3abf5c9705fad9eb4cb1f624408d987efbf94ecb75fac246",
+      "sha256": "4644233ce19ed5ad22e4cc1d39bd8c792e07b54e9612b14e0837ed4b88acf58e",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Immutable source, dependency and artifact closure helpers for the Python component harness: selects exactly one Cargo wsgi_server executable from JSON output, streams SHA-256 digests, builds sorted directory manifests (symlinks record target text plus file digest or a directory-link marker), hashes exactly three copied bundle files, and hashes all Git-tracked files after a bounded clean-status check. Untracked files are ignored and compiler/registry/environment closure is not captured, so this is not artifact provenance attestation.",
+      "notes": "Immutable source, dependency and artifact closure helpers for the Python component harness: selects exactly one Cargo wsgi_server executable from JSON output, streams SHA-256 digests, builds sorted directory manifests (symlinks record target text plus file digest or a directory-link marker), hashes exactly three copied bundle files, and hashes all Git-tracked files after a bounded clean-status check. Untracked files are ignored and compiler/registry/environment closure is not captured, so this is not artifact provenance attestation. Re-reviewed 2026-11-18 for PR #123 review fixes: source_manifest lists the index with git ls-files -z -s and skips entries by mode 160000 (gitlinks are submodule commit pointers, not files), instead of reading every path and failing on the third_party/ip-intel gitlinks; the inventory bound rises to 16 MiB for the longer staged lines. The clean-status precondition and row format are unchanged.",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
@@ -6835,13 +6860,14 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/Cargo.toml",
-      "sha256": "970143810331975f9012863f287c07b41281aa067c1d8aa30925038e262e0612",
+      "sha256": "641df0f3be0b57b25b17b5401603ca29ce9bc16d01e0fbc2f97eb93d5a20aca1",
       "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Manifest for the consolidated humanymous-runtime crate (description, readme README.md, publish = [\"crates-io\"] in the first crates.io wave, which performs no upload; autobins/autotests off, default feature gateway): feature-gated contexts gateway, authority, audit, capture, network and native-security plus hosted-pilot and credential-pilot, with pinned optional dependencies such as rustls 0.23.46 (ring, tls12), httlib-hpack 0.1.3, rcgen 0.14.10, interprocess 2.4.7, winsafe/keyring stores on Windows and rustix on Unix; the collector dev-dependency carries a registry version beside its path. It declares five binaries (humanymous-runtime, humanymous-h2-product-binding-measure, humanymous-authority, audit-witness, audit-control-retainer) and named gateway (now also gateway-witness-input, path tests/gateway/witness_input.rs, required feature gateway, beside gateway-deployment-manifests), authority, audit, capture and network parity integration tests. No dependency changed in this revision. The first [[bin]] table also repeats the package description line, which is not a Cargo target field. The manifest itself is not evidence that those binaries or tests ran. 2026-11-18: test-authority feature (D4), test-only.",
+      "notes": "Manifest for the consolidated humanymous-runtime crate (description, readme README.md, publish = [\"crates-io\"] in the first crates.io wave, which performs no upload; autobins/autotests off, default feature gateway): feature-gated contexts gateway, authority, audit, capture, network and native-security plus hosted-pilot and credential-pilot, with pinned optional dependencies such as rustls 0.23.46 (ring, tls12), httlib-hpack 0.1.3, rcgen 0.14.10, interprocess 2.4.7, winsafe/keyring stores on Windows and rustix on Unix; the collector dev-dependency carries a registry version beside its path. It declares five binaries (humanymous-runtime, humanymous-h2-product-binding-measure, humanymous-authority, audit-witness, audit-control-retainer) and named gateway (now also gateway-witness-input, path tests/gateway/witness_input.rs, required feature gateway, beside gateway-deployment-manifests), authority, audit, capture and network parity integration tests. No dependency changed in this revision. The first [[bin]] table also repeats the package description line, which is not a Cargo target field. The manifest itself is not evidence that those binaries or tests ran. 2026-11-18: test-authority feature (D4), test-only. Re-reviewed 2026-11-18: registers the network_ip_intel integration test (requires the network feature). Merge 2026-11-18 (codex/rust 4998af75 into claude/ip-reputation-feed): the merged manifest keeps both the test-authority feature and the network_ip_intel integration test with no other change.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/reference/supported-topologies.md",
-        "docs/standards/draft-v0/validation/implementation-map.md"
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -6885,12 +6911,13 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
-      "sha256": "4048e3048596c56f8de42c0b28ec8c54db1149f15dc865f8f1d0cb2399aa5de6",
+      "sha256": "ac689379ad8621ac560b675227786f66446b92e1a7f75c3e41d4716c4fe8cab3",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 583 / macos 583 / windows 565 (565 common names plus 18 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for claude/gate-residual-ws: 19 common names were added for the attested-route floor, operations (audit search, counters, erasure hold) and bulk ban tests, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 450 listed names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect. Re-reviewed 2026-11-18 for the merge of codex/rust into claude/b1-settings-parity (PR #124): the common list is the union of both parents' additions (25 gateway::settings::overlay names and the 19 names above), so expected counts are linux 475 / macos 475 / windows 463, and the Linux exact-source --list gateway:: inventory equals the 475 listed names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 (PR #124 review fix): adds gateway::settings::overlay::tests::nan_scoring_overlay_validates_like_go_but_scoring_fails_closed, so expected counts are linux 476 / macos 476 / windows 464, and the Linux exact-source --list gateway:: inventory equals the 476 listed names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for claude/fm11-residual-4: adds the 21 gateway::admin_approval::tests names to the common list and raises every count by 21; on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 452 gateway:: names, equal to the 440 common plus 12 Unix-only names. macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for the merge of codex/rust into claude/fm11-residual-4: the common list is the union of both sides' additions (21 gateway::admin_approval names and 19 claude/gate-residual-ws names), giving expected counts linux 471 / macos 471 / windows 459, and on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 471 gateway:: names, equal to the 459 common plus 12 Unix-only names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for the merge of codex/rust (PR #121, f8382085) into claude/b1-settings-parity (PR #124): the common list is the union of both parents (26 gateway::settings::overlay names from this branch and 21 gateway::admin_approval names from claude/fm11-residual-4), so expected counts are linux 497 / macos 497 / windows 485 (485 common plus the same 12 Unix-only names), and the Linux exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 497 gateway:: names, equal to the listed names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 (B1 route policy slice): 22 gateway::route_policy names added to the common list, so expected counts are linux 478 / macos 478 / windows 466; the Linux --list gateway:: inventory equals common plus unix_extra. Re-reviewed 2026-11-18 for the merge of claude/b1-settings-parity (PR #124, which now includes codex/rust through PR #121) into claude/b1-enforce-parity (PR #125): the common list is the union of both parents (22 gateway::route_policy names from this branch beside the parent list), so expected counts are linux 519 / macos 519 / windows 507 (507 common plus the same 12 Unix-only names), and the Linux exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 519 gateway:: names, equal to the listed names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for claude/fm11-residual-5 (stacked on claude/fm11-residual-4 and claude/gate-residual-ws): the common list is the union of both parents (459 names) plus 25 gateway::admin_plane::tests names, and unix_extra_test_names gains the four admin_plane dual_control tests and ban::tests::dual_control::temporary_ban_cannot_replace_permanent (17 names). Expected counts are linux 501 / macos 501 / windows 484; on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 501 gateway:: names, equal to the 484 common plus 17 Unix-only names. macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for the merge of claude/fm11-residual-4 (with codex/rust) into claude/fm11-residual-5: the merged name lists are the union of both sides and equal the claude/fm11-residual-5 lists, keeping expected counts linux 501 / macos 501 / windows 484, and on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 501 gateway:: names, equal to the 484 common plus 17 Unix-only names; macOS and Windows inventories were not re-run. Merge 2026-11-18 (codex/rust 4998af75 into claude/fm11-residual-5): the common list is the union of both parents (25 gateway::admin_plane names from this branch; 26 gateway::settings::overlay and 22 gateway::route_policy names from codex/rust) and unix_extra_test_names keeps this branch's 17 names, so expected counts are linux 549 / macos 549 / windows 532 (532 common plus 17 Unix-only names), and the Linux exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 549 gateway:: names, equal to the listed names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for claude/fm11-residual-6 (stacked on claude/fm11-residual-5): the common list gains 24 names (18 gateway::admin_plane::tests::wargame rounds, 5 gateway::control_flood::tests and gateway::operations::audit_search::tests::audit_subject_filter) and unix_extra_test_names gains gateway::admin_plane::tests::dual_control::r01_permanent_ban_ignores_body_approver (18 names). Expected counts are linux 526 / macos 526 / windows 508; on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 526 gateway:: names, equal to the 508 common plus 18 Unix-only names. macOS and Windows inventories were not re-run. Merge 2026-11-18 (claude/fm11-residual-5 79275b93, with codex/rust 4998af75, into claude/fm11-residual-6): the common list is the union of both parents (24 names from this branch; 26 gateway::settings::overlay and 22 gateway::route_policy names from codex/rust via the parent) and unix_extra_test_names is the union (18 names), so expected counts are linux 574 / macos 574 / windows 556 (556 common plus 18 Unix-only names), and the Linux exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 574 gateway:: names, equal to the listed names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for claude/fm11-residual-7 (stacked on claude/fm11-residual-6): the common list gains 9 names (5 gateway::coordinator::correlation::tests, 2 gateway::coordinator::ledger::tests wargame R276/R277 rounds and 2 gateway::recon::tests); unix_extra_test_names is unchanged (18 names). The 11 gateway::inject::tests names this branch first added were withdrawn with its inject port, which PR #74 carries instead. Expected counts are linux 535 / macos 535 / windows 517; on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 535 gateway:: names, equal to the 517 common plus 18 Unix-only names. macOS and Windows inventories were not re-run. Merge 2026-11-18 (claude/fm11-residual-6 778f7a88, with codex/rust 4998af75, into claude/fm11-residual-7): the common list is the union of both parents (9 names from this branch; 26 gateway::settings::overlay and 22 gateway::route_policy names from codex/rust via the parents) and unix_extra_test_names is unchanged (18 names), so expected counts are linux 583 / macos 583 / windows 565 (565 common plus 18 Unix-only names), and the Linux exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 583 gateway:: names, equal to the listed names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for claude/fm11-residual-9: 21 common names were added (four model_admission lab-control tests, five operations::mlcorrect tests and twelve resource tests), expected counts are linux 540 / macos 540 / windows 528, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 540 listed names; macOS and Windows inventories were not re-run. Merge 2026-11-18 (codex/rust 71ee0f62 into claude/fm11-residual-9): the common list is the union of both parents (21 names from this branch: 4 gateway::model_admission, 5 gateway::operations::mlcorrect and 12 gateway::resource names; 25 gateway::admin_plane names from codex/rust) and unix_extra_test_names keeps codex/rust's 17 names, so expected counts are linux 570 / macos 570 / windows 553 (553 common plus 17 Unix-only names), and the Linux exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 570 gateway:: names, equal to the listed names; macOS and Windows inventories were not re-run. Merge 2026-11-18 (codex/rust 382dbdfa into claude/fm11-residual-9): the common list is the union of both parents (21 names from this branch: 4 gateway::model_admission, 5 gateway::operations::mlcorrect and 12 gateway::resource names; codex/rust's admin_plane wargame, control_flood, coordinator, audit_search and recon names) and unix_extra_test_names is codex/rust's 18 names, so expected counts are linux 604 / macos 604 / windows 586 (586 common plus 18 Unix-only names), and the Linux exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 604 gateway:: names, equal to the listed names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for claude/fm11-residual-11 (merged with codex/rust 3a7578b3): the common list is the union of codex/rust and the 11 gateway::admin_plane::ops::tests names (none Unix-only), so expected counts are linux 615 / macos 615 / windows 597 (597 common plus the same 18 Unix-only names), and on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 615 gateway:: names, equal to the listed names; macOS and Windows inventories were not re-run.",
+      "notes": "Gateway-context qualification inventory (schema humanymous.runtime-qualification/0.2) consumed by scripts/ci/delivery runtime component: all features, --locked, library filter gateway:: with expected counts linux 583 / macos 583 / windows 565 (565 common names plus 18 Unix-only names in unix_extra_test_names, listed exactly), one gateway-native-process integration test on every OS, zero required ignored, both targets must be attempted, and only non-gateway names may be filtered. Re-reviewed 2026-11-18 for claude/gate-residual-ws: 19 common names were added for the attested-route floor, operations (audit search, counters, erasure hold) and bulk ban tests, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 450 listed names; macOS and Windows inventories were not re-run. Explicitly limited to the gateway context, not whole-Runtime qualification, with full_product_qualified false. Reader page coverage is indirect. Re-reviewed 2026-11-18 for the merge of codex/rust into claude/b1-settings-parity (PR #124): the common list is the union of both parents' additions (25 gateway::settings::overlay names and the 19 names above), so expected counts are linux 475 / macos 475 / windows 463, and the Linux exact-source --list gateway:: inventory equals the 475 listed names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 (PR #124 review fix): adds gateway::settings::overlay::tests::nan_scoring_overlay_validates_like_go_but_scoring_fails_closed, so expected counts are linux 476 / macos 476 / windows 464, and the Linux exact-source --list gateway:: inventory equals the 476 listed names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for claude/fm11-residual-4: adds the 21 gateway::admin_approval::tests names to the common list and raises every count by 21; on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 452 gateway:: names, equal to the 440 common plus 12 Unix-only names. macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for the merge of codex/rust into claude/fm11-residual-4: the common list is the union of both sides' additions (21 gateway::admin_approval names and 19 claude/gate-residual-ws names), giving expected counts linux 471 / macos 471 / windows 459, and on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 471 gateway:: names, equal to the 459 common plus 12 Unix-only names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for the merge of codex/rust (PR #121, f8382085) into claude/b1-settings-parity (PR #124): the common list is the union of both parents (26 gateway::settings::overlay names from this branch and 21 gateway::admin_approval names from claude/fm11-residual-4), so expected counts are linux 497 / macos 497 / windows 485 (485 common plus the same 12 Unix-only names), and the Linux exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 497 gateway:: names, equal to the listed names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 (B1 route policy slice): 22 gateway::route_policy names added to the common list, so expected counts are linux 478 / macos 478 / windows 466; the Linux --list gateway:: inventory equals common plus unix_extra. Re-reviewed 2026-11-18 for the merge of claude/b1-settings-parity (PR #124, which now includes codex/rust through PR #121) into claude/b1-enforce-parity (PR #125): the common list is the union of both parents (22 gateway::route_policy names from this branch beside the parent list), so expected counts are linux 519 / macos 519 / windows 507 (507 common plus the same 12 Unix-only names), and the Linux exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 519 gateway:: names, equal to the listed names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for claude/fm11-residual-5 (stacked on claude/fm11-residual-4 and claude/gate-residual-ws): the common list is the union of both parents (459 names) plus 25 gateway::admin_plane::tests names, and unix_extra_test_names gains the four admin_plane dual_control tests and ban::tests::dual_control::temporary_ban_cannot_replace_permanent (17 names). Expected counts are linux 501 / macos 501 / windows 484; on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 501 gateway:: names, equal to the 484 common plus 17 Unix-only names. macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for the merge of claude/fm11-residual-4 (with codex/rust) into claude/fm11-residual-5: the merged name lists are the union of both sides and equal the claude/fm11-residual-5 lists, keeping expected counts linux 501 / macos 501 / windows 484, and on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 501 gateway:: names, equal to the 484 common plus 17 Unix-only names; macOS and Windows inventories were not re-run. Merge 2026-11-18 (codex/rust 4998af75 into claude/fm11-residual-5): the common list is the union of both parents (25 gateway::admin_plane names from this branch; 26 gateway::settings::overlay and 22 gateway::route_policy names from codex/rust) and unix_extra_test_names keeps this branch's 17 names, so expected counts are linux 549 / macos 549 / windows 532 (532 common plus 17 Unix-only names), and the Linux exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 549 gateway:: names, equal to the listed names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for claude/fm11-residual-6 (stacked on claude/fm11-residual-5): the common list gains 24 names (18 gateway::admin_plane::tests::wargame rounds, 5 gateway::control_flood::tests and gateway::operations::audit_search::tests::audit_subject_filter) and unix_extra_test_names gains gateway::admin_plane::tests::dual_control::r01_permanent_ban_ignores_body_approver (18 names). Expected counts are linux 526 / macos 526 / windows 508; on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 526 gateway:: names, equal to the 508 common plus 18 Unix-only names. macOS and Windows inventories were not re-run. Merge 2026-11-18 (claude/fm11-residual-5 79275b93, with codex/rust 4998af75, into claude/fm11-residual-6): the common list is the union of both parents (24 names from this branch; 26 gateway::settings::overlay and 22 gateway::route_policy names from codex/rust via the parent) and unix_extra_test_names is the union (18 names), so expected counts are linux 574 / macos 574 / windows 556 (556 common plus 18 Unix-only names), and the Linux exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 574 gateway:: names, equal to the listed names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for claude/fm11-residual-7 (stacked on claude/fm11-residual-6): the common list gains 9 names (5 gateway::coordinator::correlation::tests, 2 gateway::coordinator::ledger::tests wargame R276/R277 rounds and 2 gateway::recon::tests); unix_extra_test_names is unchanged (18 names). The 11 gateway::inject::tests names this branch first added were withdrawn with its inject port, which PR #74 carries instead. Expected counts are linux 535 / macos 535 / windows 517; on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 535 gateway:: names, equal to the 517 common plus 18 Unix-only names. macOS and Windows inventories were not re-run. Merge 2026-11-18 (claude/fm11-residual-6 778f7a88, with codex/rust 4998af75, into claude/fm11-residual-7): the common list is the union of both parents (9 names from this branch; 26 gateway::settings::overlay and 22 gateway::route_policy names from codex/rust via the parents) and unix_extra_test_names is unchanged (18 names), so expected counts are linux 583 / macos 583 / windows 565 (565 common plus 18 Unix-only names), and the Linux exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 583 gateway:: names, equal to the listed names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for claude/fm11-residual-9: 21 common names were added (four model_admission lab-control tests, five operations::mlcorrect tests and twelve resource tests), expected counts are linux 540 / macos 540 / windows 528, and on Linux the exact-source cargo test --locked --all-features --lib -- --list gateway:: inventory equals the 540 listed names; macOS and Windows inventories were not re-run. Merge 2026-11-18 (codex/rust 71ee0f62 into claude/fm11-residual-9): the common list is the union of both parents (21 names from this branch: 4 gateway::model_admission, 5 gateway::operations::mlcorrect and 12 gateway::resource names; 25 gateway::admin_plane names from codex/rust) and unix_extra_test_names keeps codex/rust's 17 names, so expected counts are linux 570 / macos 570 / windows 553 (553 common plus 17 Unix-only names), and the Linux exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 570 gateway:: names, equal to the listed names; macOS and Windows inventories were not re-run. Merge 2026-11-18 (codex/rust 382dbdfa into claude/fm11-residual-9): the common list is the union of both parents (21 names from this branch: 4 gateway::model_admission, 5 gateway::operations::mlcorrect and 12 gateway::resource names; codex/rust's admin_plane wargame, control_flood, coordinator, audit_search and recon names) and unix_extra_test_names is codex/rust's 18 names, so expected counts are linux 604 / macos 604 / windows 586 (586 common plus 18 Unix-only names), and the Linux exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 604 gateway:: names, equal to the listed names; macOS and Windows inventories were not re-run. Merge 2026-11-18 (codex/rust into claude/ip-reputation-feed): union of both sides; counts linux/macos 480 = 468 common + 12 Unix-only, windows 468; equals the Linux --list gateway:: inventory. Merge 2026-11-18 (codex/rust 3939b015 into claude/ip-reputation-feed): the common list is the union of both parents (9 ip_reputation names from this branch, 26 gateway::settings::overlay and 22 gateway::route_policy names from codex/rust), so expected counts are linux 528 / macos 528 / windows 516 (516 common plus the same 12 Unix-only names), and the Linux exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 528 gateway:: names, equal to the listed names; macOS and Windows inventories were not re-run. Merge 2026-11-18 (codex/rust 382dbdfa into claude/ip-reputation-feed): the common list is the union of both parents (9 ip_reputation names from this branch; codex/rust's admin_plane, control_flood, coordinator, audit_search and recon names) and unix_extra_test_names is codex/rust's 18 names, so expected counts are linux 592 / macos 592 / windows 574 (574 common plus 18 Unix-only names), and the Linux exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 592 gateway:: names, equal to the listed names; macOS and Windows inventories were not re-run. Merge 2026-11-18 (codex/rust 3a7578b3 into claude/ip-reputation-feed): the common list is the union of both parents (9 ip_reputation names from this branch; codex/rust's model_admission, operations::mlcorrect and resource names), unix_extra_test_names keeps codex/rust's 18 names, so expected counts are linux 613 / macos 613 / windows 595 (595 common plus 18 Unix-only names), and the Linux exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 613 gateway:: names, equal to the listed names; macOS and Windows inventories were not re-run. Re-reviewed 2026-11-18 for claude/fm11-residual-11 (merged with codex/rust 3a7578b3): the common list is the union of codex/rust and the 11 gateway::admin_plane::ops::tests names (none Unix-only), so expected counts are linux 615 / macos 615 / windows 597 (597 common plus the same 18 Unix-only names), and on Linux the exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list inventory has 615 gateway:: names, equal to the listed names; macOS and Windows inventories were not re-run. Merge 2026-11-19 (codex/rust e05aadc4 into claude/ip-reputation-feed): regenerated from the Linux exact-source cargo test --locked -p humanymous-runtime --all-features --lib -- --list gateway:: inventory (624 names): the common list is the union of both parents (this branch's 9 ip_reputation names; codex/rust's 11 gateway::admin_plane::ops::tests names, none Unix-only) and unix_extra_test_names keeps the same 18 names, so expected counts are linux 624 / macos 624 / windows 606 (606 common plus 18 Unix-only names); macOS and Windows inventories were not re-run.",
       "pages": [
         "docs/reference/production-vs-reference.md",
-        "docs/explanation/how-this-was-built.md"
+        "docs/explanation/how-this-was-built.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -8230,13 +8257,14 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/application.rs",
-      "sha256": "7a8bce5b4da396e62a95b15087cadf9bde800591bfab2be1f3472f21450640c6",
+      "sha256": "e126bbdd2ab60c5f6516e49814050872dfa298b766b7e12c9a60c8b53e8e2c64",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Single-owner gateway Application that composes sessions, the frozen scoring engine and durable audit. It enforces Host==scope authority and validates browser/native session bootstrap and collect routes, rejecting reserved routes (403), route-inventory or profile mismatch (409), missing required raw_tls/original_h2/collector evidence (422) and failed admission (429); it scores other requests and appends a runtime.decision/collect audit record (request commitment hash, fail_closed) before answering, and audit failure poisons sessions with 503. Re-reviewed 2026-11-18: an origin_* refusal after the committed ALLOW and before any client byte now appends one upstream.error record linked by the ALLOW record's request id and commitment, with route class, revision, latency, a static error class and code but no transport error text; the client still gets the 503 refusal, and a failed append poisons the epoch and answers durable_audit. serve/serve_until are loopback-only, one request per connection with per-connection deadlines, bounded shutdown drain and settings-command handling; the code says this is an experimental loopback pilot, not a production throughput claim.",
+      "notes": "Single-owner gateway Application that composes sessions, the frozen scoring engine and durable audit. It enforces Host==scope authority and validates browser/native session bootstrap and collect routes, rejecting reserved routes (403), route-inventory or profile mismatch (409), missing required raw_tls/original_h2/collector evidence (422) and failed admission (429); it scores other requests and appends a runtime.decision/collect audit record (request commitment hash, fail_closed) before answering, and audit failure poisons sessions with 503. Re-reviewed 2026-11-18: an origin_* refusal after the committed ALLOW and before any client byte now appends one upstream.error record linked by the ALLOW record's request id and commitment, with route class, revision, latency, a static error class and code but no transport error text; the client still gets the 503 refusal, and a failed append poisons the epoch and answers durable_audit. serve/serve_until are loopback-only, one request per connection with per-connection deadlines, bounded shutdown drain and settings-command handling; the code says this is an experimental loopback pilot, not a production throughput claim. Re-reviewed 2026-11-18: optional IntelReader install; when ip_reputation is configured each loopback connection must start with a PROXY v2 header (dropped otherwise) and the recovered client address sets only the frozen is_datacenter_ip observation input. Tor and blocklist never reach the observation. Re-reviewed 2026-11-18 for PR #123 review fixes: the PROXY v2 header wait is raced against shutdown (a requested shutdown ends it with no request read, so nothing to drain) and ends at the earlier of the request deadline and the configured proxy_header_timeout_ms (default 1000 ms), so a silent loopback peer can no longer hold the serialized accept loop for the full request deadline. Malformed, truncated or late headers still drop only that connection; LOCAL/UNSPEC stay unattributed.",
       "pages": [
         "docs/reference/gate-origin-contract.md",
         "docs/reference/production-vs-reference.md",
-        "docs/standards/draft-v0/validation/implementation-map.md"
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -8321,13 +8349,14 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/application/tls.rs",
-      "sha256": "c07ff283f37eb9acb34393e3d6a9cf4f8825e561555ccce921ea45d1b922c8ff",
+      "sha256": "c51149e9facb7745bfae87f68d7fc604077a3ad93508a7d34d03c6c162e0758a",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Bounded TLS consumers for the Application: serve_tls_until validates the rustls config, accepts loopback peers only with admission and settings handling, and dispatches captured H1 or R14 H2 requests through the same decide_observed authority. It checks client idle or stream liveness before and after the decision and before origin dispatch, then encodes local or origin responses with ACK headers. Re-reviewed 2026-11-18: origin connect, write, read, frame-parse and timeout refusals now go through the Application's upstream.error audit before the refusal is encoded, since no TLS response byte precedes it. The doc comments state there is no plaintext fallback, no early data and no native streaming inference.",
+      "notes": "Bounded TLS consumers for the Application: serve_tls_until validates the rustls config, accepts loopback peers only with admission and settings handling, and dispatches captured H1 or R14 H2 requests through the same decide_observed authority. It checks client idle or stream liveness before and after the decision and before origin dispatch, then encodes local or origin responses with ACK headers. Re-reviewed 2026-11-18: origin connect, write, read, frame-parse and timeout refusals now go through the Application's upstream.error audit before the refusal is encoded, since no TLS response byte precedes it. The doc comments state there is no plaintext fallback, no early data and no native streaming inference. Re-reviewed 2026-11-18: the same PROXY v2 client-address recovery runs before TLS capture when ip_reputation is configured. Re-reviewed 2026-11-18 for PR #123 review fixes: the TLS accept loop uses the same shutdown-aware, header-deadline-bounded edge wait as plaintext serving before any TLS bytes are read.",
       "pages": [
         "docs/how-to/https-tls-certificates.md",
         "docs/reference/gate-origin-contract.md",
-        "docs/standards/draft-v0/validation/implementation-map.md"
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -8380,12 +8409,13 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
-      "sha256": "5d5adb1fe30511db1a2330cdde10eaa1cbd2f23f3221f3bec7f99c31acccc9d9",
+      "sha256": "9cc6926818c192385187df8d51f6ec0c7737489cf2c599829ffa499b12b43c06",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Private inherited gateway configuration (deny_unknown_fields, no Debug). It re-exports Audit, SealedKeys, WitnessInput, WitnessInputDurability and MAX_WITNESS_PROOF. validate() fails closed with 503 unless listen and origin are distinct loopback addresses with a nonzero origin port, operational settings are valid, there are 1-4096 routes, the audit witness input (when present) is structurally valid, scope identities and authority are well formed, the browser origin equals http://<authority>, and every route has an allowed method, a strict target, no reserved path, rit required and no duplicates. BrowserAuthOnly routes need a browser policy and cannot use NativeStream. readiness() reports profile experimental-loopback-http1 with raw_tls, original_h2, browser collector, administration and product_qualified all false.",
+      "notes": "Private inherited gateway configuration (deny_unknown_fields, no Debug). It re-exports Audit, SealedKeys, WitnessInput, WitnessInputDurability and MAX_WITNESS_PROOF. validate() fails closed with 503 unless listen and origin are distinct loopback addresses with a nonzero origin port, operational settings are valid, there are 1-4096 routes, the audit witness input (when present) is structurally valid, scope identities and authority are well formed, the browser origin equals http://<authority>, and every route has an allowed method, a strict target, no reserved path, rit required and no duplicates. BrowserAuthOnly routes need a browser policy and cannot use NativeStream. readiness() reports profile experimental-loopback-http1 with raw_tls, original_h2, browser collector, administration and product_qualified all false. Re-reviewed 2026-11-18: optional ip_reputation object validated and summarized in readiness (scoring versus shadow categories).",
       "pages": [
         "docs/reference/cli-config-policy.md",
-        "docs/reference/gate-origin-contract.md"
+        "docs/reference/gate-origin-contract.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -8396,6 +8426,15 @@
       "pages": [
         "docs/how-to/key-management.md",
         "docs/how-to/verify-audit-log.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/configuration/ip_reputation.rs",
+      "sha256": "26d03f9fd21aed7eef88370d8a9464c71b70db722f17efd3f34778d679cdc1a0",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Optional ip_reputation gateway configuration (snapshot path, client_address proxy_v2, max_age_s default 7 days, expire_after_s default 30 days, categories) with deny_unknown_fields and bounded validation; maps to the store policy and a readiness summary that separates scoring (datacenter only) from shadow categories. Re-reviewed 2026-11-18 for PR #123 review fixes: adds proxy_header_timeout_ms (default DEFAULT_PROXY_HEADER_TIMEOUT_MS = 1000, bounds 10..=30000, refused otherwise) and reports it in readiness; tests cover the default and both bounds.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -8750,12 +8789,13 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/management/mod.rs",
-      "sha256": "4fc7875cbf1c7eea6cbfd45efdd827c4048998afceb5c21c3ad609f779bb7e8d",
+      "sha256": "ba9ec5249e7e5c71097d9c5aa1bc661abe084bb5e62d504d86d55b996b142c4f",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Separate native management listener over a private IPC endpoint bound to an authenticated native peer, limited to 8 connections, 20 per second and 1 s timeouts, with a drain budget from the stop policy. It serves an observer role, gated by exact peer, observer credential and exact scope body, at POST /management/v0.1/status and /settings. Status returns the profile snapshot with destructive_controls=false; settings returns the operational settings and revision. The settings/commit route is delegated to the optional operator. Application and browser credentials never enter.",
+      "notes": "Separate native management listener over a private IPC endpoint bound to an authenticated native peer, limited to 8 connections, 20 per second and 1 s timeouts, with a drain budget from the stop policy. It serves an observer role, gated by exact peer, observer credential and exact scope body, at POST /management/v0.1/status and /settings. Status returns the profile snapshot with destructive_controls=false; settings returns the operational settings and revision. The settings/commit route is delegated to the optional operator. Application and browser credentials never enter. Re-reviewed 2026-11-18: observer route POST /management/v0.1/ip-reputation returns the store status (freshness, sources, reload errors, counters, shadow hits; no client addresses) under the existing authentication and scope checks.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
-        "docs/reference/rbac-separation-of-duties.md"
+        "docs/reference/rbac-separation-of-duties.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -8770,22 +8810,24 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/management/policy.rs",
-      "sha256": "e31edc95f50ec70922fcdca2d6081346633e75ed9b9949cacf0c6bbd358576b2",
+      "sha256": "314804add5fa46230b90611be7bfa07558de8ba6be96f7d8c0a2ec4a16b89b5d",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Management policy types and request validation. ManagementPolicy holds the trusted endpoint, peer, stop budget and observer credential; ManagementScope is the exact installation/tenant/origin/revision/authority binding. Observer requests must be POST to status or settings with an exact scope body. Header checks refuse duplicates, Cookie, Origin, Referer, sec-*, proxy-* and x-humanymous-* fields, and require Host humanymous.management.local, Content-Type application/json and a body of at most 8 KiB.",
+      "notes": "Management policy types and request validation. ManagementPolicy holds the trusted endpoint, peer, stop budget and observer credential; ManagementScope is the exact installation/tenant/origin/revision/authority binding. Observer requests must be POST to status or settings with an exact scope body. Header checks refuse duplicates, Cookie, Origin, Referer, sec-*, proxy-* and x-humanymous-* fields, and require Host humanymous.management.local, Content-Type application/json and a body of at most 8 KiB. Re-reviewed 2026-11-18: the ip-reputation route is an observer-scope read.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
-        "docs/reference/rbac-separation-of-duties.md"
+        "docs/reference/rbac-separation-of-duties.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs",
-      "sha256": "8fcaeeeba71ab346493d0d5fcfaab8b6e781c96601ad0f78e09b9b3e21f471be",
+      "sha256": "3d8565df2f59047a223e1496404a43a54bcacb50404b535a878cf1e085652069",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Unit tests for the native management Handler: observer requests need the exact native peer, the separate management Bearer credential and exact scope body; Origin, Cookie, Referer, Sec-Fetch-Site, session and proxy headers, non-status targets, query strings and duplicate Host are refused; the settings view is observer-only for POST and refuses PATCH/PUT/DELETE; operator commits require a distinct operator credential, native peer, no browser headers, matching scope and valid settings (status 401/403/400 paths).",
+      "notes": "Unit tests for the native management Handler: observer requests need the exact native peer, the separate management Bearer credential and exact scope body; Origin, Cookie, Referer, Sec-Fetch-Site, session and proxy headers, non-status targets, query strings and duplicate Host are refused; the settings view is observer-only for POST and refuses PATCH/PUT/DELETE; operator commits require a distinct operator credential, native peer, no browser headers, matching scope and valid settings (status 401/403/400 paths). Re-reviewed 2026-11-18: management tests updated for the store parameter and the ip-reputation observer route.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
-        "docs/reference/rbac-separation-of-duties.md"
+        "docs/reference/rbac-separation-of-duties.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -8889,12 +8931,13 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/service.rs",
-      "sha256": "6e539e3e1d2138fba1f4ef325b2dc0332c0c6c7d278507bd11630364b148dc4d",
+      "sha256": "7c311d7cb57f085f4d86d30a29501da817d4e349bb78802e8c8da346f375efdd",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "OS-independent ServiceHost lifecycle: read_configuration (64 KiB budget, validated), and bind variants for plain, witness, management, witnessed recovery, settings, TLS and resource operator. bind_inner validates config and TLS, requires management plus witnessed settings for an operator, opens or recovers sealed audit (never recovery without a witness), restores settings, binds the listener and builds the readiness profile. run/run_report serve application and management, then flush audit, and report drain or flush failure rather than Stopped. Blocking I/O needs an external supervisor deadline.",
+      "notes": "OS-independent ServiceHost lifecycle: read_configuration (64 KiB budget, validated), and bind variants for plain, witness, management, witnessed recovery, settings, TLS and resource operator. bind_inner validates config and TLS, requires management plus witnessed settings for an operator, opens or recovers sealed audit (never recovery without a witness), restores settings, binds the listener and builds the readiness profile. run/run_report serve application and management, then flush audit, and report drain or flush failure rather than Stopped. Blocking I/O needs an external supervisor deadline. Re-reviewed 2026-11-18: opens the IP reputation store at bind (never fails startup), reports it in readiness, installs it in the application and management handler, and runs a 60 s change-detected reload on the blocking pool.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
-        "docs/standards/draft-v0/validation/implementation-map.md"
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -8983,12 +9026,13 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/service/readiness.rs",
-      "sha256": "fcf3394303ba80c140b2a4d603125a849c650036bd99ad12e00f8802788182d1",
+      "sha256": "9f956ba5f4e333a3690f3e71b2f7eb77aa959d4774514dbc0c32705b4e9363b7",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Builds the readiness profile manifest: standalone_profile for the inherited-pipe executable and profile() adding external-witness flags (independence always false), startup recovery, administration flags and operational revision; tls_h1 marks the experimental-loopback-tls-h1 profile with raw_tls and per-route ready only when original H2 and collector are not required. One test asserts honest defaults and product_qualified false. Expected configuration, not runtime attestation.",
+      "notes": "Builds the readiness profile manifest: standalone_profile for the inherited-pipe executable and profile() adding external-witness flags (independence always false), startup recovery, administration flags and operational revision; tls_h1 marks the experimental-loopback-tls-h1 profile with raw_tls and per-route ready only when original H2 and collector are not required. One test asserts honest defaults and product_qualified false. Expected configuration, not runtime attestation. Re-reviewed 2026-11-18: startup readiness records the IP reputation state, whether datacenter scoring is active and the last reload error. Re-reviewed 2026-11-18 for PR #123 review fixes: the startup ip_reputation readiness block also carries startup_degraded_reasons from the store status.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
-        "docs/standards/draft-v0/validation/implementation-map.md"
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -9273,12 +9317,13 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/tests.rs",
-      "sha256": "4b16b07267bc8a4290511be1de70fdee8b110ab565326a8aac86caafe462110e",
+      "sha256": "4c6309ff32ece666ea7e827c55ee2db7c63b28afcb0d09ad41ae93f8b8a097f5",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Gateway unit and loopback TCP tests with fixture controls (not browser e2e): streaming requires a native profile, required external witness and recovery refusals, honest readiness, session capacity/expiry/rollback, RIT binding against 12 method/target/body/scope/deadline/header mutations, replay and cross-session collect refusal, missing client giving CHALLENGE and missing planes 422, fresh collector provenance gating, minimized audit with permanent poison, deadline and rollback never releasing origin, server-plane signal refusal with registry scores, and real TCP checks that audit precedes origin and client abort never dispatches origin. Re-reviewed 2026-11-18: the shared Audit fixture gains a fail_upstream switch that fails only upstream.error appends; no test here changed.",
+      "notes": "Gateway unit and loopback TCP tests with fixture controls (not browser e2e): streaming requires a native profile, required external witness and recovery refusals, honest readiness, session capacity/expiry/rollback, RIT binding against 12 method/target/body/scope/deadline/header mutations, replay and cross-session collect refusal, missing client giving CHALLENGE and missing planes 422, fresh collector provenance gating, minimized audit with permanent poison, deadline and rollback never releasing origin, server-plane signal refusal with registry scores, and real TCP checks that audit precedes origin and client abort never dispatches origin. Re-reviewed 2026-11-18: the shared Audit fixture gains a fail_upstream switch that fails only upstream.error appends; no test here changed. Re-reviewed 2026-11-18: registers the ip_reputation gateway test module.",
       "pages": [
         "docs/reference/on-call-quick-reference.md",
-        "docs/reference/gate-origin-contract.md"
+        "docs/reference/gate-origin-contract.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -9307,6 +9352,15 @@
       "notes": "Owned bounded TCP harness for the browser contract tests: loads tests/fixtures/gateway/collector-pilot.json, configures scope, browser origin and two browser auth-only routes, serves the Application on loopback, bootstraps the shared client, completes or refuses responses by ACK/counter headers, and on finish sends a 100 ms shutdown, joins within 4 s and asserts no origin connection occurred.",
       "pages": [
         "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/gateway/tests/ip_reputation.rs",
+      "sha256": "bc6073df66ccf8193ac753fdf9be0856b6ce9a55862c35123dc69450b13e65a9",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Gateway tests: a datacenter classification yields CHALLENGE with triggered rule HR-11 while tor-exit and blocklist classifications leave the verdict unchanged; configuration is optional and reported in readiness; a PROXY v2 header source reaches the reader and a connection without the header is dropped. Re-reviewed 2026-11-18 for PR #123 review fixes: adds real-TCP tests for wrong signature, wrong version, short address block and truncated fixed/address parts (each dropped, nothing classified, listener keeps serving), LOCAL and UNSPEC (reader gets None) and an IPv6 source, a short header deadline that releases the accept loop from a silent peer, shutdown observed during a 30 s header wait, and an IntelStore loaded from an encoded snapshot file wired into the gateway end to end (non-datacenter client reaches the origin, the same session from 192.0.2.44 gets the frozen HR-11 CHALLENGE, datacenter_inputs 1).",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
@@ -9939,29 +9993,274 @@
       ]
     },
     {
-      "source": "crates/sdk/humanymous-runtime/src/network/mod.rs",
-      "sha256": "bec828813ede036623cb58dc6f57fa224cb10de5b326755c600f9a7210e2cf15",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Network context root listing order-preserving protocol observation modules captured before HTTP normalization: correlation, history, http, http2, ingress, proxy, report, residual, tcp, tls and traffic. No logic of its own.",
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/mod.rs",
+      "sha256": "25d085b6991bee39cd68998f2126fb36b46f12ac09984d0ab7b2a21bc15ab2e1",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "IP intelligence facade: IntelCategory (datacenter, tor_exit, blocklist) where only datacenter feeds scoring, Classification, the IntelReader contract the serving path consumes, strict client-address parsing and the rule that loopback, private, link-local and unspecified addresses are never classified.",
       "pages": [
-        "docs/reference/supported-topologies.md"
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/prefix_set/mod.rs",
+      "sha256": "90b95466dbb2ec5b815415d463a2dc8ec8dbe714b19a992b611f62373f42b13e",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Pure IPv4/IPv6 prefix parser and set: canonical and masked parsing, host-bit refusal, merged inclusive ranges with binary-search lookup, IPv4-mapped IPv6 looked up as IPv4. Shared by the PROXY v2 allowlist. Re-reviewed 2026-11-18 for PR #123 review fixes: adds PrefixError::TooBroad, the per-family Floor breadth check (also used by the PROXY v2 allowlist) and PrefixSet::coverage, the merged address count per family (IPv6 saturating).",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/prefix_set/tests.rs",
+      "sha256": "c4f336f79421166bd8e1c17c98a79fbe8b2055ebfda95a3fc209bd3737026a57",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Prefix-set tests covering v4 and v6 boundaries (/0, /32, /128, first and last addresses, adjacency merging), host-bit and syntax refusal, and mapped-address lookup. Re-reviewed 2026-11-18 for PR #123 review fixes: adds floor (refuses /0, /7, ::/0, /15; accepts /8, /16, hosts) and coverage (overlap counted once, /0 and ::/0 extremes) tests.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/shadow/mod.rs",
+      "sha256": "9e0d51a78b9a03d46afdadbc92b5f1cd0f82499bd810ab84d392870d71b0dc30",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Process-lifetime shadow counters for tor-exit and blocklist hits; aggregate only, no per-client keys, never consulted by scoring.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/shadow/tests.rs",
+      "sha256": "c3342fd8dedd0ac67fc025cfe4aa7da3f8638461c660674015cb6b2bf2c70c47",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Shadow counter tests: each category and the overlap are counted independently and clean classifications count nothing.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/snapshot/mod.rs",
+      "sha256": "4ed5529e5f993563952679f58b8af686e34c619186af3a7d61d914d5a62e5d9e",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Versioned snapshot format humanymous-ip-intel/1: per-source provenance (git commit, http url and fetched_at, file read_at), status and canonical prefixes; parse and encode share one validation with size, count, text, commit and timestamp bounds and static refusal codes. Re-reviewed 2026-11-18 for PR #123 review fixes: the shared validator (encode and every runtime parse) now enforces the SoT: sources strictly sorted by name, prefixes strictly ascending (sorted, unique; canonical via parse), a registry source's category equal to the registered one (no promotion by edit), the git checkout record ({gitlink, clean, unpinned_override}, present exactly with commit; an ok source must be pinned or record the override), and check_breadth for scoring categories: no prefix shorter than IPv4 /8 or IPv6 /16 and at most 2^30 IPv4 / 2^116 IPv6 merged addresses per category across sources. New static codes snapshot_prefix_too_broad, snapshot_coverage_cap, snapshot_order, snapshot_category, snapshot_checkout. Shadow-only categories are not breadth-bounded. Re-reviewed 2026-11-18 for PR #123 second review: IPv6 breadth tightened: SCORING_FLOOR v6 /16 -> /19 and SCORING_MAX_V6 2^116 -> 2^112, with the measured numbers in the doc comments (pinned X4BNet shortest IPv6 /20 and 2^109.76 addresses; cloud endpoints /32 or longer; union 2^109.76). IPv4 values (/8, 2^30) unchanged. Sixteen /16s covering 2600::/12 are now refused by the floor, and 2600::/12 as /20s by the cap. No scoring, weight, threshold, hard rule, verdict band or signal ID changes. Re-reviewed 2026-11-18 after the third independent review: doc comment only, now stating that coverage above one /16 (2^112) is refused and exactly one /16 still fits.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/snapshot/tests.rs",
+      "sha256": "489c64c1d97d8d2230df03737c09221351a42cb5c53593df42384f96dea0d3c4",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Snapshot tests: round trip, unknown fields, format, bounds, duplicate names, status/prefix agreement, commit and future-timestamp refusal. Re-reviewed 2026-11-18 for PR #123 review fixes: adds refusal cases for /0, ::/0 and /7 datacenter prefixes, unsorted and duplicate prefixes, unsorted sources, a Tor source relabelled datacenter, and inconsistent checkout records; accepts an explicit override and the floor itself; enforces the coverage cap at 64 versus 65 /8s and 16 versus 17 IPv6 /16s, including across two sources. Re-reviewed 2026-11-18 for PR #123 second review: floor and cap tests follow the new IPv6 values; carrier_scale_ipv6_aggregates_are_refused refuses 2600::/12 split into /16s (TooBroad) and into /20s (Coverage); measured_x4bnet_breadth_fits_with_headroom builds a fixture with X4BNet's measured shortest prefixes and exact merged coverage and checks it passes with headroom; the ignored pinned_x4bnet_datacenter_list_passes_the_breadth_guard reads the real submodule data and asserts the same exact numbers, and fails with a SKIPPED-not-passed reason when the data is absent. Re-reviewed 2026-11-18 for the PR #123 native coverage-accounting failure: the ignored real-submodule test is removed, because the native job does not check out submodules and so it could not be declared as a pilot that actually runs; x4bnet_layout_fixture_normalizes_and_passes_the_breadth_guard instead reads the x4bnet-datacenter registry entry's own files and format from a committed synthetic fixture at the checkout layout, checks the normalized prefixes pass the breadth guard, and checks one appended over-broad line refuses the source. The real pinned data stays checked by the updater and the gateway on every write and load.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/aws_json/mod.rs",
+      "sha256": "8121b706c99a5d989f20fbecd26e1c217cac70652bde42bd5d7c9a45c0a7e544",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Parser for the AWS ip-ranges.json document (prefixes and ipv6_prefixes).",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/aws_json/tests.rs",
+      "sha256": "bffa3bbe34c0412035f259b67dee37b0015826bfc51b32713d8cf334344adb48",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "AWS format parser tests on synthetic documentation ranges, including malformed prefix refusal.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/azure_tags/mod.rs",
+      "sha256": "2c87686d4614a591c438f8c903e50f44fdd1047c63d6bbb9d65d58dfbb3ac36c",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Parser for the Azure Service Tags public JSON document (values[].properties.addressPrefixes).",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/azure_tags/tests.rs",
+      "sha256": "218a81dc111f6d9e3c33b8e7f99067af25285c991db6892c9df594c02d6b027b",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Azure Service Tags parser tests on synthetic documentation ranges, including malformed input refusal.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/gcp_json/mod.rs",
+      "sha256": "b7381c8f5794496d651802d5878f86743e926b7891ef3fd1d973d476c6dfca6f",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Parser for the Google Cloud cloud.json document (ipv4Prefix and ipv6Prefix entries).",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/gcp_json/tests.rs",
+      "sha256": "82bfbb1f513ce0b96a905d32753913c7501b48423f7bd487a2319ab4aa87db73",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "GCP format parser tests on synthetic documentation ranges, including entries without a prefix.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/geofeed/mod.rs",
+      "sha256": "89bb6839232ca301667f8876bcd6398834b6df1dcbdad82da956083dd4cf7a13",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Parser for RFC 8805 geofeed CSV (first column prefix, comments skipped) used by DigitalOcean and Linode.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/geofeed/tests.rs",
+      "sha256": "22f617d6b4a64ffdf8d374d4907c1fee8b79a0eaa8ee54fb8436c11d94af3dc0",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Geofeed parser tests: comments, blank lines, masked prefixes and line-numbered refusal.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/mod.rs",
+      "sha256": "d80448bc53cf3d261b46c4e5077af95125382bac96cbb42d8f066f3ccdfc851e",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Format-grouped source parsers with shared prefix and JSON document helpers; each parser returns prefixes or a static source error.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/netset/mod.rs",
+      "sha256": "4884a3ac3427291c1048862747b7041b9b3fee90e1f331778085f93a6ef9b7dc",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Parser for one-prefix-or-address-per-line netset/text lists (FireHOL, X4BNet, Tor bulk exit list).",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/netset/tests.rs",
+      "sha256": "2888ea2578e2883a9117999856c9a23585a5f4ef25f73110555f250ba691ae03",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Netset parser tests: comments, bare addresses as host prefixes, and line-numbered refusal.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/oracle_json/mod.rs",
+      "sha256": "e5764981412503431f201bf03146a1ed4d6e64bdfe8063c5c22c345dcd689e45",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Parser for the Oracle Cloud public_ip_ranges.json document (regions[].cidrs[].cidr).",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/oracle_json/tests.rs",
+      "sha256": "5719674ee9b66eaf05a0a583022c90f472457ccfee8a7213eff19543b54cda00",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Oracle format parser tests on synthetic documentation ranges.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/spamhaus_jsonl/mod.rs",
+      "sha256": "bec957ef9498d72ad1583d6dcb3f8c78d8d38e9163fcc20eb8440d58c238dfdb",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Parser for Spamhaus DROP JSON-lines (cidr records; the trailing metadata record is skipped).",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/format/spamhaus_jsonl/tests.rs",
+      "sha256": "a0d3fd71944f6b3b0cef8c2de655a1294b24feca5c00c4fb3206e5159ed50811",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Spamhaus DROP parser tests: metadata line skipped, malformed line refused with its number.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/mod.rs",
+      "sha256": "1386c7aca62e781f7fd2a835c4cd877c69e1d409ff42fead0c8e14f23089ee15",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Const source registry as data (ten public sources with category, licence note, format and origin: pinned git submodule, HTTPS endpoint or operator-supplied URL) and normalize(format, bytes) with byte and prefix bounds, sorting, de-duplication and empty-list refusal.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/source/tests.rs",
+      "sha256": "10fe3f987a815da4ff337dcf57b64f1cc14255f74c626816c34954a9ddf97cff",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Registry tests: unique valid names, every category covered, submodule paths only for git sources under third_party/ip-intel, https-only URLs; normalize sorting, masking and bound refusals.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/store/mod.rs",
+      "sha256": "35121f52b8d58678f89560266eae64687470a6e57bf90ccd03e8dd9fd0587171",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Snapshot store I/O boundary: bounded file load, RwLock Arc swap that keeps the previous snapshot on a refused reload, freshness (missing, fresh, stale, expired) from an injected clock, change-detected reload, and an operator status with sources, reload errors, lookup counters and shadow hits but no client addresses. Re-reviewed 2026-11-18 for PR #123 review fixes: the status adds degraded and degraded_reasons (snapshot_missing|stale|expired, reload_refused, and per registry or snapshot scoring source source_absent/missing/invalid/stale:<name>, stale meaning an HTTP fetch or file read older than max_age_s); only enabled scoring categories count. Old data is not carried forward for a failed source. Re-reviewed 2026-11-18 for PR #123 second review: degraded_reasons adds source_unpinned:<name> for an ok scoring git source whose checkout records unpinned_override true; the data is still served, but the status never reports it as complete.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/store/tests.rs",
+      "sha256": "ea55cd7c4d2707c0860aa1df730c59f681e70dd721ee73fa629778b9f45501c3",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Store tests: classification per category, missing feed visible and denies nobody, stale still classifies and expires, malformed reloads refused without state change, change-only swap, disabled categories not loaded. Re-reviewed 2026-11-18 for PR #123 review fixes: adds an unchecked hand-written 0.0.0.0/0 or ::/0 snapshot refused on first load (missing, scoring inactive, last_reload_error snapshot_prefix_too_broad, degraded) and on reload (previous snapshot kept), and degraded reasons for missing, invalid, stale and absent datacenter sources, a stale snapshot and a shadow-only configuration. Re-reviewed 2026-11-18 for PR #123 second review: the degraded test adds an unpinned-override x4bnet-datacenter record (reported as source_unpinned and still classified) and the same record pinned (not degraded).",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/intel/tests.rs",
+      "sha256": "d9f87bb837d0da71c9c2af0ba28c3eea6c0eb4dcb17aa819d39c105f8a2aec7a",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Facade tests: only datacenter feeds scoring, strict client-address parsing, non-public addresses never classifiable.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/network/mod.rs",
+      "sha256": "dace79ff6e8a8eb0efc0901c96c122e9a64211cb5c50cbcadf749b0f6e27fabc",
+      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
+      "notes": "Network context root listing order-preserving protocol observation modules captured before HTTP normalization: correlation, history, http, http2, ingress, proxy, report, residual, tcp, tls and traffic. No logic of its own. Re-reviewed 2026-11-18: declares the intel module.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/network/proxy/mod.rs",
-      "sha256": "dc0c08f967bc69464fc3d1948e46d7d469b1b2b1194fac5f34557aefeaa587ca",
+      "sha256": "5cf2742efd8058c1205bb485f1c055ebc0cfc69a0e6722fdd6f1e4b855d58d66",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "PROXY protocol v2 peer recovery behind a trusted-balancer allowlist (shipping-plan row B26): Cidr parses canonical prefixes and refuses anything broader than /8, Allowlist must be 1..256 entries, read_header reads exactly one v2 header (LOCAL keeps the socket peer, TCP4/TCP6 yield the declared source, other families are Unspecified) and leaves following bytes on the stream, and resolve never reads bytes from an untrusted peer. It does not create TLS or original-client provenance and ignores HTTP forwarding headers. Reader page coverage is indirect.",
+      "notes": "PROXY protocol v2 peer recovery behind a trusted-balancer allowlist (shipping-plan row B26): Cidr parses canonical prefixes and refuses anything broader than /8, Allowlist must be 1..256 entries, read_header reads exactly one v2 header (LOCAL keeps the socket peer, TCP4/TCP6 yield the declared source, other families are Unspecified) and leaves following bytes on the stream, and resolve never reads bytes from an untrusted peer. It does not create TLS or original-client provenance and ignores HTTP forwarding headers. Reader page coverage is indirect. Re-reviewed 2026-11-18: Cidr now wraps the shared intel Prefix parser instead of a local mask; refusal codes, the /8 breadth floor and containment behaviour are unchanged. Re-reviewed 2026-11-18 for PR #123 review fixes: the allowlist breadth limit now goes through the shared prefix_set::Floor with MIN_PREFIX for both families; behaviour and the TooBroad refusal are unchanged. Re-reviewed 2026-11-18 for PR #123 second review: PROXY v2 commands 0x2-0xF are refused with the new static Refusal::Command before the address block is read; only LOCAL (0x0) and PROXY (0x1) decode. Previously they were treated as PROXY.",
       "pages": [
         "docs/reference/supported-topologies.md",
-        "docs/concepts/how-gate-sees-a-request.md"
+        "docs/concepts/how-gate-sees-a-request.md",
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs",
-      "sha256": "e9c2bccf639634dfb5f0540b39de59acec748efb69b4334f73a424687ad7a7da",
+      "sha256": "09b58d61530aecb41b7b35f15a367f3fec459f48f49106c5dc5f833407f164c9",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Eight tests porting proxyproto_test.go plus boundaries: IPv4 and IPv6 source recovery keeping the trailing payload, LOCAL and unspecified/UDP families keeping the socket peer, garbage, wrong version, truncation and short address blocks refused, a real loopback TCP trust gate, allowlist rejection of broad and malformed entries, and CIDR masking with IPv4-mapped IPv6 matching. Reader page coverage is indirect.",
+      "notes": "Eight tests porting proxyproto_test.go plus boundaries: IPv4 and IPv6 source recovery keeping the trailing payload, LOCAL and unspecified/UDP families keeping the socket peer, garbage, wrong version, truncation and short address blocks refused, a real loopback TCP trust gate, allowlist rejection of broad and malformed entries, and CIDR masking with IPv4-mapped IPv6 matching. Reader page coverage is indirect. Re-reviewed 2026-11-18 for PR #123 second review: reserved_commands_are_refused_not_treated_as_proxy checks every command 0x2..=0xF with an otherwise valid IPv4 block is refused, and LOCAL and PROXY still decode.",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
@@ -10344,6 +10643,87 @@
       ]
     },
     {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/aws-ip-ranges.json",
+      "sha256": "f47f04fd5172d50e5167bc0180072584b984e9f24eaeef93d967c5c5ded4ffbf",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tiny synthetic AWS-format fixture using only documentation ranges (192.0.2.0/24, 2001:db8::/32); no vendored list data.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/azure-service-tags.json",
+      "sha256": "3b2871f271bcb4b1c3c744a87e85ad5b67fdb90517161680fec20acce48ea5e8",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tiny synthetic Azure Service Tags fixture using only documentation ranges; no vendored list data.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/gcp-cloud.json",
+      "sha256": "c44c422a375d0f6877d2336ca9b1f0458aefff7c6ff13587db420f54bfbecd83",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tiny synthetic GCP-format fixture using only documentation ranges; no vendored list data.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/geofeed.csv",
+      "sha256": "26405ad9e2a95223ebfea339ba11f950ba2be703002c1fc72d8e5a04a1a85cc8",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tiny synthetic RFC 8805 geofeed fixture using only documentation ranges; no vendored list data.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/netset.txt",
+      "sha256": "3c78e2aca6742419c0e5120620567d181c7e80074c60841a419b651ed666c42d",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tiny synthetic netset fixture using only documentation ranges; no vendored list data.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/oracle-cloud.json",
+      "sha256": "0898d1f9a973e737ee912d0966ae9afdca94bdaefab0d1dd69370718df6abbab",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tiny synthetic Oracle-format fixture using only documentation ranges; no vendored list data.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/spamhaus-drop.jsonl",
+      "sha256": "86c3a7e1ca70680cdfb1bb5e17563eedbf19d7921a666301dcd2d95da10801e6",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tiny synthetic Spamhaus DROP JSON-lines fixture using only documentation ranges; no vendored list data.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/x4bnet-datacenter/output/datacenter/ipv4.txt",
+      "sha256": "b8357624d10419bf1ec0d39ed3b4201b75c061e8c2a3c640c68166ff9167fb9d",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tiny synthetic netset fixture at the X4BNet checkout path, read through the x4bnet-datacenter registry entry by snapshot tests: one floor-width /8 plus two documentation ranges; no vendored list data.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/ip_intel/x4bnet-datacenter/output/datacenter/ipv6.txt",
+      "sha256": "ec550ddbf503f4a6e0464b445c3e7cf0da933214bef2dbc53ffd7ba4116fd0c1",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Tiny synthetic netset fixture at the X4BNet checkout path, read through the x4bnet-datacenter registry entry by snapshot tests: one /20 just above the IPv6 floor plus the documentation range; no vendored list data.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
+      ]
+    },
+    {
       "source": "crates/sdk/humanymous-runtime/tests/fixtures/network/h2.json",
       "sha256": "5d2958a8dc33a81283d75cb67116e6e9762bfbc928db0a4ce820bc572836a866",
       "reviewer": "codex/rust-pages",
@@ -10426,6 +10806,15 @@
       "pages": [
         "docs/concepts/how-gate-sees-a-request.md",
         "docs/explanation/detection-engine-internals.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/network/ip_intel.rs",
+      "sha256": "e586f5310f5ffc16f724c20031d64b49aac0b69e7937b8fba3bc8b7616a62c30",
+      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
+      "notes": "Integration test: .gitmodules entries under third_party/ip-intel equal the registry git sources exactly; every format normalizes its synthetic fixture; a snapshot datacenter classification sets only the frozen l5.ip.datacenter_asn input while tor-exit and blocklist leave signals and verdict unchanged.",
+      "pages": [
+        "docs/how-to/update-ip-reputation-feed.md"
       ]
     },
     {

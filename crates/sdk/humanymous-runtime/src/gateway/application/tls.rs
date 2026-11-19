@@ -53,6 +53,15 @@ impl Application {
             }
             let budget = Duration::from_millis(self.config.timeout_ms);
             let until = Instant::now() + budget;
+            let mut stream = stream;
+            self.client = None;
+            match edge_client(self.edge_policy(), &mut stream, until, &mut shutdown).await? {
+                Edge::Client(client) => self.client = client,
+                // The trusted edge contract was violated; drop this connection only.
+                Edge::Drop => continue,
+                // No TLS bytes were read yet, so there is nothing to drain.
+                Edge::Stop => return Ok(()),
+            }
             let connection_shutdown = shutdown.clone();
             let pending = timeout_at(until, async {
                 let captured =

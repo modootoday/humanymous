@@ -22,6 +22,18 @@ pub(super) fn tls_h1(profile: &mut Value, config: &Configuration) {
             .collect::<Vec<_>>()
     );
 }
+/// Startup IP reputation state. Live freshness, counters and shadow hits are
+/// served by the management status route, not by this static manifest.
+pub(super) fn ip_reputation(
+    profile: &mut Value,
+    status: &crate::network::intel::store::StoreStatus,
+) {
+    profile["ip_reputation"]["startup_state"] = json!(status.state);
+    profile["ip_reputation"]["startup_datacenter_scoring_active"] =
+        json!(status.datacenter_scoring_active);
+    profile["ip_reputation"]["startup_reload_error"] = json!(status.last_reload_error);
+    profile["ip_reputation"]["startup_degraded_reasons"] = json!(status.degraded_reasons);
+}
 pub(super) fn profile(
     config: &Configuration,
     witness: Option<&str>,
