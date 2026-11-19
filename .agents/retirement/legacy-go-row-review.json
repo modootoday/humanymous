@@ -16,8 +16,8 @@
  },
  "totals": {
   "ported_unit": 238,
-  "partial": 57,
-  "missing": 8,
+  "partial": 58,
+  "missing": 7,
   "not_applicable": 2,
   "oracle_only": 9
  },
@@ -76,8 +76,8 @@
    "ported_unit": 5
   },
   "internal/gate": {
-   "partial": 31,
-   "missing": 5,
+   "partial": 32,
+   "missing": 4,
    "not_applicable": 1,
    "ported_unit": 47,
    "oracle_only": 1
@@ -1997,8 +1997,9 @@
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/capture/tls/hello/tests.rs::every_chunk_and_record_split_preserves_the_same_hello",
     "crates/sdk/humanymous-runtime/src/capture/tls/hello/tests.rs::every_truncated_wire_prefix_refuses_instead_of_using_tolerant_parser",
-    "crates/sdk/humanymous-runtime/tests/network/tls_parity.rs::raw_observation_and_ja4_match_frozen_go",
-    "crates/sdk/humanymous-runtime/tests/capture/hosted_transport.rs::actual_invalid_tls_never_creates_an_owner"
+    "crates/sdk/humanymous-runtime/src/capture/tls/hello/tests/go_capture.rs::first_record_capture_matches_go_capture_conn",
+    "crates/sdk/humanymous-runtime/tests/capture/hosted_transport.rs::actual_invalid_tls_never_creates_an_owner",
+    "crates/sdk/humanymous-runtime/tests/network/tls_parity.rs::raw_observation_and_ja4_match_frozen_go"
    ],
    "go_test_map": {},
    "gaps": [
@@ -2007,12 +2008,13 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "ClientHello capture is owner-bound in capture/tls; hosted_transport tests are #[ignore] hosted-only pilots.",
+   "notes": "ClientHello capture is owner-bound in capture/tls; hosted_transport tests are #[ignore] hosted-only pilots. Go golden tests/fixtures/network/tlsconn-go-golden.json (Go 1.25.3 at 981d25c, offline) feeds real crypto/tls ClientHellos and variants through captureConn.Read; 32 of 50 streams match exactly. Named deviations: a hello fragmented over records is reassembled (Go captured nothing), and a record version outside 3.1..3.3 or bytes after the hello in its record are refused (Go captured them).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/capture/tls/hello/tests.rs::every_chunk_and_record_split_preserves_the_same_hello": "passed",
     "crates/sdk/humanymous-runtime/src/capture/tls/hello/tests.rs::every_truncated_wire_prefix_refuses_instead_of_using_tolerant_parser": "passed",
     "crates/sdk/humanymous-runtime/tests/capture/hosted_transport.rs::actual_invalid_tls_never_creates_an_owner": "not_run: ignored (hosted transport)",
-    "crates/sdk/humanymous-runtime/tests/network/tls_parity.rs::raw_observation_and_ja4_match_frozen_go": "passed"
+    "crates/sdk/humanymous-runtime/tests/network/tls_parity.rs::raw_observation_and_ja4_match_frozen_go": "passed",
+    "crates/sdk/humanymous-runtime/src/capture/tls/hello/tests/go_capture.rs::first_record_capture_matches_go_capture_conn": "passed"
    }
   },
   {
@@ -2706,15 +2708,30 @@
   },
   {
    "baseline_path": "internal/gate/configsign.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/settings/configsign.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/resolve.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_matches_go_capture",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_signed_and_stable",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::rate_defaults_follow_legacy_helpers"
+   ],
+   "go_test_map": {
+    "TestConfigVersionSignedAndStable": "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_signed_and_stable"
+   },
+   "gaps": [
+    "Gateway audit records, the admin view and the config-version metric still carry scope.revision; the live gateway does not compute or bind the signed effective-policy version (serving composition)"
+   ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust records copy scope.revision as config_version; no signed effective-policy hash.",
-   "test_verification": {}
+   "notes": "gateway/settings/configsign.rs ports Server.configVersion (SettingsEffective().ConfigVersion over boot monitor, live kill switch, routes, rlWindow/rlSoft/rlHard defaults, the active overlay and the token HMAC key) on the frozen overlay resolver; Go golden tests/fixtures/gateway/configsign-guard-go-golden.json (Go 1.25.3 at 981d25c, offline) covers 18 server/overlay postures. The unreachable overlay-free fallback (nil server) is not ported.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_matches_go_capture": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_signed_and_stable": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::rate_defaults_follow_legacy_helpers": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/console_test.go",
@@ -3060,6 +3077,9 @@
     "crates/sdk/humanymous-runtime/src/gateway/smuggle.rs"
    ],
    "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/guard/parity.rs::origin_cloak_matches_go_capture",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/parity.rs::spoof_and_smuggle_records_match_go_capture",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/parity.rs::spoof_scan_and_strip_match_go_capture",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::clean_request_has_no_spoof",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::epoch_buckets_by_hour",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::origin_handler_example_direct_hit_fails",
@@ -3079,7 +3099,7 @@
    ],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Spoof scan, inbound strip and origin-cloak token/grace are ported as pure kernels in gateway/guard.rs; the existing Rust forwarder strips only its own x-humanymous-* namespace. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "notes": "Spoof scan, inbound strip and origin-cloak token/grace are ported as pure kernels in gateway/guard.rs; the existing Rust forwarder strips only its own x-humanymous-* namespace. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged. Go golden tests/fixtures/gateway/configsign-guard-go-golden.json (Go 1.25.3 at 981d25c, offline) pins spoofScan/stripInbound, origin epochs/grace/tokens/validation and spoofRecord; the spoof record now carries the legacy subject actor and key_id k1. Named deviations: Rust spoof_scan reports a forged value behind an empty first value (Go Header.Get read only the first); Rust records write verdict DENY where Go wrote deny; keys under 32 bytes are refused.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/http/stream.rs::complete_chunk_stream_reframes_and_strips_forged_gateway_fields": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::real_shared_client_consumption_ack_and_origin_fidelity": "passed",
@@ -3091,7 +3111,10 @@
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_is_hmac_hex": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_matches_go_golden_bytes": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::valid_with_symmetric_grace": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::spoof_record_lists_only_static_header_names": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::spoof_record_lists_only_static_header_names": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/parity.rs::spoof_scan_and_strip_match_go_capture": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/parity.rs::origin_cloak_matches_go_capture": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/parity.rs::spoof_and_smuggle_records_match_go_capture": "passed"
    }
   },
   {
@@ -3936,6 +3959,7 @@
     "crates/sdk/humanymous-runtime/src/gateway/smuggle.rs"
    ],
    "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/guard/parity.rs::spoof_and_smuggle_records_match_go_capture",
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::scan_classifies_in_legacy_precedence",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::smuggle_record_matches_legacy_shape"
@@ -3950,7 +3974,8 @@
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::scan_classifies_in_legacy_precedence": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::smuggle_record_matches_legacy_shape": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::smuggle_record_matches_legacy_shape": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/guard/parity.rs::spoof_and_smuggle_records_match_go_capture": "passed"
    }
   },
   {

@@ -113,4 +113,6 @@ impl OriginKey {
 }
 
 #[cfg(test)]
+mod parity;
+#[cfg(test)]
 mod tests;
