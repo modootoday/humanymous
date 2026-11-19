@@ -15,8 +15,8 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 283,
-  "partial": 20,
+  "ported_unit": 285,
+  "partial": 18,
   "missing": 0,
   "not_applicable": 2,
   "oracle_only": 9
@@ -74,9 +74,9 @@
    "ported_unit": 5
   },
   "internal/gate": {
-   "partial": 12,
+   "partial": 10,
    "not_applicable": 1,
-   "ported_unit": 71,
+   "ported_unit": 73,
    "oracle_only": 1
   },
   "internal/httpx": {
@@ -2414,79 +2414,110 @@
   },
   {
    "baseline_path": "internal/gate/admin_settings_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/settings.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/management/operator.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings.rs",
+    "crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-admin-go-golden.json"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::operational_candidate_freezes_exact_parent_scope_and_serialized_bytes",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs::native_operator_commit_is_witnessed_cas_and_invalidates_sessions",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_a_apply",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_b_dual_control",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_c",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_dry_run",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_net_routes_rate",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_rollback_dual_control",
     "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::configure_engine_from_effective_net_policy"
    ],
    "go_test_map": {
-    "TestSettingsProposeClassAApplies": "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs::native_operator_commit_is_witnessed_cas_and_invalidates_sessions",
-    "TestSettingsProposeClassBPending": null,
-    "TestSettingsCASStale": "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::operational_candidate_freezes_exact_parent_scope_and_serialized_bytes",
-    "TestSettingsClassCRequiresConfirm": null,
-    "TestSettingsDryRunLowNUnusable": null,
-    "TestSettingsRollbackClearBClassOverlayIsA": null,
-    "TestSettingsRollbackDemotionIsImmediate": null,
-    "TestSettingsProposeNetPolicyAndRoutes": null,
-    "TestSettingsProposeRateLoosenIsB": null,
+    "TestSettingsProposeClassAApplies": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_a_apply",
+    "TestSettingsProposeClassBPending": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_b_dual_control",
+    "TestSettingsCASStale": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_rollback_dual_control",
+    "TestSettingsClassCRequiresConfirm": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_c",
+    "TestSettingsDryRunLowNUnusable": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_dry_run",
+    "TestSettingsRollbackClearBClassOverlayIsA": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_rollback_dual_control",
+    "TestSettingsRollbackDemotionIsImmediate": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_b_dual_control",
+    "TestSettingsProposeNetPolicyAndRoutes": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_net_routes_rate",
+    "TestSettingsProposeRateLoosenIsB": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_net_routes_rate",
     "TestConfigureEngineFromEffectiveNetPolicy": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::configure_engine_from_effective_net_policy"
    },
-   "gaps": [
-    "A/B/C/D mutation classes and pending approval for B",
-    "Class C confirm requirement",
-    "dry-run with low-N usability",
-    "rollback of overlays and immediate demotion",
-    "net-policy and route overlays",
-    "rate-loosen as class B"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "medium",
-   "notes": "Rust has resource-only CAS commits via native operator; scoring/route/net overlays and class workflow are absent. B1: TestConfigureEngineFromEffectiveNetPolicy ported in the settings overlay context; the admin HTTP surface remains unported.",
+   "confidence": "high",
+   "notes": "Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning, no new defaults. FM11 lane E (2026-11-19): gateway::admin_plane::settings serves the SoT-39 settings write plane on the admin listener when attached with AdminPlane::with_settings, pinned by a request-by-request replay of the Go AdminHandler capture crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-admin-go-golden.json (Go 1.26.3 Docker capture, provenance inside; overlay ids injected, approval ids mapped, wall-clock createdAt/expiresAt masked). All 10 Go tests mapped: each Go scenario (class A apply and stale CAS, class B pending with distinct-approver commit, class C confirmation, low-N dry-run, rollback of a class A overlay needing an approver, immediate demotion rollback, net-policy and route overlays, rate loosening as class B) is a step of the captured scenarios replayed byte-for-byte (status, content type, body and the settings/config/approval audit records). TestConfigureEngineFromEffectiveNetPolicy stays in the settings overlay tests. Earlier approximate mappings to the operational settings tests replaced.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs::native_operator_commit_is_witnessed_cas_and_invalidates_sessions": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::operational_candidate_freezes_exact_parent_scope_and_serialized_bytes": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_a_apply": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_b_dual_control": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_c": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_dry_run": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_net_routes_rate": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_rollback_dual_control": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::configure_engine_from_effective_net_policy": "passed"
    }
   },
   {
    "baseline_path": "internal/gate/admin_settings.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/settings.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store/journal.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/management/operator.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/wire.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_approval.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::operational_candidate_freezes_exact_parent_scope_and_serialized_bytes",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs::native_operator_commit_is_witnessed_cas_and_invalidates_sessions",
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs::crash_selection_applies_only_the_journal_committed_candidate"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_a_apply",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_b_dual_control",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_c",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_refusals",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_decoding",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_net_routes_rate",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_rollback_dual_control",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_kill_switch",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_dry_run",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_expiry",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_future_expiry",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_expiry_for_class",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::class_b_lifetime_defaults_to_seven_days",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::commit_after_expiry_is_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::sweep_expires_the_active_overlay",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::unrepresentable_lifetime_is_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::apply_audit_failure_changes_nothing",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::pending_audit_failure_withdraws_the_action",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::proposal_audit_failure_refuses",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::sweep_audit_failure_keeps_the_overlay",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::unattached_settings_routes_are_not_found",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::propose_and_rollback_bodies_decode_like_go",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::timestamp_from_unix_round_trips_and_bounds_the_year"
    ],
    "go_test_map": {},
-   "gaps": [
-    "propose with mutation class and expiry",
-    "overlay list",
-    "dry-run",
-    "rollback / clear overlay CAS",
-    "approval-backed commit",
-    "overlay expiry",
-    "scoring/route/net-policy overlay content"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "medium",
-   "notes": "Only parent-revision CAS of operational resource settings is ported (B20 P).",
+   "confidence": "high",
+   "notes": "Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning, no new defaults. FM11 lane E (2026-11-19): gateway::admin_plane::settings serves the SoT-39 settings write plane on the admin listener when attached with AdminPlane::with_settings, pinned by a request-by-request replay of the Go AdminHandler capture crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-admin-go-golden.json (Go 1.26.3 Docker capture, provenance inside; overlay ids injected, approval ids mapped, wall-clock createdAt/expiresAt masked). Ported: propose (server-computed class A/B/C/D, Go lifetime caps and defaults, class C DISABLE-INTEGRITY confirmation, kill switch blocking B/C/D), overlay list, effective and schema reads, dry-run (newest 1000 scoring/enforcement records of the attached chain, usable only at n >= 50), rollback and clear-overlay CAS (dual-control when undoing a stored class A), approval-backed commit (distinct approver, ticket-bound overlay JSON, CAS, class and expiry re-checked), expiry on read/write and on sweep_settings. Fail-closed differences (pinned): mutations serialized under one lock; records before effect with 503 and no change on audit failure (Go wrote after and ignored the sink); a pending action whose record fails is withdrawn; the ban-store limiter can refuse a Go-valid rate (rejected with its own message); whole-second timestamps; an unrepresentable lifetime is a 400; no store answers 404 (Go 503). Not composed into gateway::service (see the internal/gate/admin.go row).",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs::crash_selection_applies_only_the_journal_committed_candidate": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs::native_operator_commit_is_witnessed_cas_and_invalidates_sessions": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::operational_candidate_freezes_exact_parent_scope_and_serialized_bytes": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_a_apply": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_b_dual_control": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_c": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_refusals": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_decoding": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_net_routes_rate": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_rollback_dual_control": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_kill_switch": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_dry_run": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_expiry": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_future_expiry": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_expiry_for_class": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::class_b_lifetime_defaults_to_seven_days": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::commit_after_expiry_is_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::sweep_expires_the_active_overlay": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::unrepresentable_lifetime_is_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::apply_audit_failure_changes_nothing": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::pending_audit_failure_withdraws_the_action": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::proposal_audit_failure_refuses": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::sweep_audit_failure_keeps_the_overlay": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::unattached_settings_routes_are_not_found": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::propose_and_rollback_bodies_decode_like_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::timestamp_from_unix_round_trips_and_bounds_the_year": "passed"
    }
   },
   {
@@ -2628,14 +2659,14 @@
    "go_test_map": {},
    "gaps": [
     "composition of gateway::admin_plane into gateway::service (listener address and admin bearer-token provisioning)",
-    "settings (effective, schema, overlays, dry-run, rollback), metrics and virtual-usb routes (integrity, proof, audit, incidents, keys and checkpoints are served by gateway::admin_plane::chain; policy and the console page by gateway::admin_plane::policy)",
+    "metrics and virtual-usb routes (integrity, proof, audit, incidents, keys and checkpoints are served by gateway::admin_plane::chain; policy and the console page by gateway::admin_plane::policy; the settings routes and the settings.overlay and settings.overlay.rollback approval commits by gateway::admin_plane::settings)",
     "kill-switch commit (signed node kill)",
     "intake path that stages retained PermanentBan permits into the plane",
     "intake path that stages ledger-issued ErasurePermits into the plane and the periodic RunDueShreds caller with the attached chain's latest checkpoint"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Native observer/operator IPC, kill-status assessment and audit verification primitives exist. gateway::admin_plane serves the Go route table subset for ban list/add/bulk/lift, approvals list, whoami, erasure and kill-switch requests and the dual-control approve route on a separate loopback TCP listener, with Go 404 deny-by-default, 403 role refusals, meta-audit, JSON decoding and response shapes; permanent and broad ban commits also consume a retained signed permit. Erasure: gateway::admin_plane::erasure resolves the requested handle through the vault, schedules a DPO-approved erasure into the hold queue only with a staged ledger-issued ErasurePermit for that subject, serves GET erasures and POST erasures/{id}/cancel (Go adminWrapped) and executes due shreds (run_due_shreds, Go RunDueShreds), pinned against tests/fixtures/gateway/admin-erasure-go-golden.json. FM11 slice 19: gateway::admin_plane::policy serves the read-only GET policy route (adminPolicy, byte-identical to the Go capture with routes in prefix order, configVersion from settings::configsign::BootPolicy with the active overlay, no write verb) and the console page (adminConsole) as an authenticated GET read with X-Frame-Options DENY; Go served the console unauthenticated and could inject a dev bearer token, which is not ported.",
+   "notes": "Native observer/operator IPC, kill-status assessment and audit verification primitives exist. gateway::admin_plane serves the Go route table subset for ban list/add/bulk/lift, approvals list, whoami, erasure and kill-switch requests and the dual-control approve route on a separate loopback TCP listener, with Go 404 deny-by-default, 403 role refusals, meta-audit, JSON decoding and response shapes; permanent and broad ban commits also consume a retained signed permit. Erasure: gateway::admin_plane::erasure resolves the requested handle through the vault, schedules a DPO-approved erasure into the hold queue only with a staged ledger-issued ErasurePermit for that subject, serves GET erasures and POST erasures/{id}/cancel (Go adminWrapped) and executes due shreds (run_due_shreds, Go RunDueShreds), pinned against tests/fixtures/gateway/admin-erasure-go-golden.json. FM11 slice 19: gateway::admin_plane::policy serves the read-only GET policy route (adminPolicy, byte-identical to the Go capture with routes in prefix order, configVersion from settings::configsign::BootPolicy with the active overlay, no write verb) and the console page (adminConsole) as an authenticated GET read with X-Frame-Options DENY; Go served the console unauthenticated and could inject a dev bearer token, which is not ported. FM11 lane E (B1): gateway::admin_plane::settings serves the six settings routes in Go table order and the two settings approval commits when attached with AdminPlane::with_settings, pinned against tests/fixtures/gateway/settings-admin-go-golden.json.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/control/state.rs::spent_intent_without_covered_effect_cannot_become_healthy": "passed",
@@ -4264,15 +4295,17 @@
    "baseline_path": "internal/gate/settings_runtime_test.go",
    "disposition": "partial",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/settings.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_configure_preserves_rolling_hits_and_applies_cutpoints",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs::native_operator_commit_is_witnessed_cas_and_invalidates_sessions"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_hot_apply_preserves_counters",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_level_is_hard_after_hot_apply",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::stats_reflect_apply_and_rejection",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_configure_preserves_rolling_hits_and_applies_cutpoints"
    ],
    "go_test_map": {
-    "TestSettingsRateHotApplyPreservesCounters": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_configure_preserves_rolling_hits_and_applies_cutpoints",
+    "TestSettingsRateHotApplyPreservesCounters": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_hot_apply_preserves_counters",
     "TestSettingsGateBanMonitorIsAuditOnly": null,
     "TestSettingsVerdictTokenMonitorDoesNotFastPath": null,
     "TestSettingsReconMonitorAuditsWithoutBlocking": null,
@@ -4282,14 +4315,16 @@
     "TestSettingsMetricsReflectApply": null
    },
    "gaps": [
-    "per-gate monitor modes",
-    "settings apply metrics"
+    "per-gate monitor modes on the request path (gate.ban audit-only, verdict_token fast path, recon_sweep, inject, attest_floor): settings-driven module modes are open in issue #75 and the hosted gateway does not consume the effective overlay",
+    "settings metrics exposition (TestSettingsMetricsReflectApply): Prometheus metrics and labels are owner-pending; the counters it reads are pinned by stats_reflect_apply_and_rejection"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Only rate reconfiguration preserving counters has a primitive counterpart.",
+   "notes": "Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning, no new defaults. FM11 lane E (2026-11-19): gateway::admin_plane::settings serves the SoT-39 settings write plane on the admin listener when attached with AdminPlane::with_settings, pinned by a request-by-request replay of the Go AdminHandler capture crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-admin-go-golden.json (Go 1.26.3 Docker capture, provenance inside; overlay ids injected, approval ids mapped, wall-clock createdAt/expiresAt masked). TestSettingsRateHotApplyPreservesCounters is ported end to end: four hits under 60s/5/10, a class A propose of hard 5 through the admin handler, and the fifth hit auto-bans at the hard level. The six per-gate monitor tests and the metrics test stay unmapped (gaps).",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs::native_operator_commit_is_witnessed_cas_and_invalidates_sessions": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_hot_apply_preserves_counters": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_level_is_hard_after_hot_apply": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::stats_reflect_apply_and_rejection": "passed",
     "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_configure_preserves_rolling_hits_and_applies_cutpoints": "passed"
    }
   },
@@ -4297,26 +4332,38 @@
    "baseline_path": "internal/gate/settings_runtime.go",
    "disposition": "partial",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/settings.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/service.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_approval.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs::native_operator_commit_is_witnessed_cas_and_invalidates_sessions",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service.rs::hosted_only_witnessed_settings_commit_invalidates_sessions_and_restores"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_runtime_refused_attach",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_invalid_active_file",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_refusals",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_hot_apply_preserves_counters",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_level_is_hard_after_hot_apply",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_limiter_refusal_rejects_the_change",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::stats_reflect_apply_and_rejection",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::class_b_commit_rejected_when_stale_counts_rejection",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::class_b_lifetime_defaults_to_seven_days"
    ],
    "go_test_map": {},
    "gaps": [
-    "runtime validation of effective overlay",
-    "store error and pending-age metrics",
-    "Prometheus labels"
+    "Prometheus exposition of the settings counters (hmn_gate_settings_apply_total, store_errors_total), overlay_active and pending_age_seconds gauges and the config_version label (prometheusLabel): metrics and labels are owner-pending in issue #75; Settings::stats and AdminPlane::settings_pending_age hold the values"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust applies witnessed operational commits and invalidates sessions; metrics are absent.",
+   "notes": "Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning, no new defaults. FM11 lane E (2026-11-19): gateway::admin_plane::settings serves the SoT-39 settings write plane on the admin listener when attached with AdminPlane::with_settings, pinned by a request-by-request replay of the Go AdminHandler capture crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-admin-go-golden.json (Go 1.26.3 Docker capture, provenance inside; overlay ids injected, approval ids mapped, wall-clock createdAt/expiresAt masked). Ported: validateSettingsRuntime (Go message, on propose candidates, commits, rollback and attach), syncSettingsRuntime as a hot reconfigure of the shared ban store's limiter that keeps rolling hits, recordSettingsStoreError (settings.store.degraded), settingsApplyError/settingsApplyRejected (settings.overlay.rejected) and the applied/rolled-back/rejected/error/store-error counters, settingsPendingAgeSeconds. The rate is restored if the change's records fail.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service.rs::hosted_only_witnessed_settings_commit_invalidates_sessions_and_restores": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs::native_operator_commit_is_witnessed_cas_and_invalidates_sessions": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_runtime_refused_attach": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_invalid_active_file": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_refusals": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_hot_apply_preserves_counters": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_level_is_hard_after_hot_apply": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_limiter_refusal_rejects_the_change": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::stats_reflect_apply_and_rejection": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::class_b_commit_rejected_when_stale_counts_rejection": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::class_b_lifetime_defaults_to_seven_days": "passed"
    }
   },
   {
