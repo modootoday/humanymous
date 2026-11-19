@@ -15,9 +15,9 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 270,
+  "ported_unit": 271,
   "partial": 31,
-  "missing": 2,
+  "missing": 1,
   "not_applicable": 2,
   "oracle_only": 9
  },
@@ -76,9 +76,8 @@
   },
   "internal/gate": {
    "partial": 15,
-   "missing": 1,
    "not_applicable": 1,
-   "ported_unit": 67,
+   "ported_unit": 68,
    "oracle_only": 1
   },
   "internal/httpx": {
@@ -2940,17 +2939,25 @@
   },
   {
    "baseline_path": "internal/gate/configsign_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/settings/configsign.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_signed_and_stable",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_matches_go_capture"
+   ],
    "go_test_map": {
-    "TestConfigVersionSignedAndStable": null
+    "TestConfigVersionSignedAndStable": "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_signed_and_stable"
    },
    "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust config_version is the provisioned scope revision, not a keyed hash of effective policy.",
-   "test_verification": {}
+   "notes": "FM11 lane B: the Go test pins Server.configVersion (cfg- prefix, stable across calls, changes when the kill switch flips); the configsign kernel test asserts the same three properties and the Go golden capture covers 18 postures. Oracle rerun 2026-11-19 (go1.26.3, 981d25c, network none): PASS. Whether the live gateway binds this signed version instead of scope.revision is a serving-composition question recorded on internal/gate/configsign.go, not a gap in this test.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_signed_and_stable": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_matches_go_capture": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/configsign.go",
@@ -2968,7 +2975,7 @@
     "TestConfigVersionSignedAndStable": "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_signed_and_stable"
    },
    "gaps": [
-    "Gateway audit records, the admin view and the config-version metric still carry scope.revision; the live gateway does not compute or bind the signed effective-policy version (serving composition)"
+    "Gateway audit records, the admin view and the config-version metric still carry scope.revision; binding the signed effective-policy version needs an owner/SoT decision because the runtime-application SoT pins config_version to the provisioned scope revision"
    ],
    "retire_basis": null,
    "confidence": "medium",
@@ -3266,29 +3273,34 @@
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/application.rs",
     "crates/sdk/humanymous-runtime/src/gateway/service.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application/maintenance.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::real_tcp_audit_before_origin_and_negative_counter_zero",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::client_abort_during_audit_never_dispatches_origin",
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::signed_method_target_body_scope_policy_and_deadline_cannot_change"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::signed_method_target_body_scope_policy_and_deadline_cannot_change",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::accept_loop_sweeps_on_the_maintenance_tick",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies"
    ],
    "go_test_map": {},
    "gaps": [
-    "ordered gate pipeline with control/admin split",
-    "monitor/kill-switch global mode",
-    "HTML injection",
-    "erasure shred runner",
-    "projection/operational metrics",
-    "settings-driven module modes"
+    "ordered gate pipeline with control/admin split: no service composes an admin plane beside the served path (B01, owner)",
+    "monitor/kill-switch global mode: kill switch commit semantics are owner-reserved",
+    "HTML injection: no served loader route and no SoT authorisation for response mutation",
+    "erasure shred runner: AdminPlane::run_due_shreds exists but no service composes an admin plane (B01)",
+    "projection/operational metrics: Prometheus metrics open in issue #75",
+    "settings-driven module modes: gate default modes open in issue #75"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust application gives an audited loopback forwarder, not the Gate server composition (B13/B14).",
+   "notes": "Rust application gives an audited loopback forwarder, not the Gate server composition (B13/B14). FM11 lane B (2026-11-19): the Go gcLoop composite (verdict sessions plus the installed ban store, 60 s) now runs on both accept loops (gateway::application::maintenance); the integration flow (bot beacon denied at the edge, human page untouched, sealed chain verifies) is pinned by tests/integration.rs.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::client_abort_during_audit_never_dispatches_origin": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::real_tcp_audit_before_origin_and_negative_counter_zero": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::signed_method_target_body_scope_policy_and_deadline_cannot_change": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::signed_method_target_body_scope_policy_and_deadline_cannot_change": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::accept_loop_sweeps_on_the_maintenance_tick": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies": "passed"
    }
   },
   {
@@ -3324,7 +3336,7 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Only framing and RIT/verdict application were present (B13 M). FM11 slice 18: the served path now runs the legacy ServeHTTP gate order for proxied requests (gateway::application::edge): after the reserved control routes, the ban gate (ban::gate::evaluate, HR-21) and then the spoof-header gate (guard::spoof_gate, HR-27b), before route inventory, authorization and scoring. Modes come from the startup edge section (default enforce, Go's default without a settings store). Responses and records match the Go capture tests/fixtures/gateway/edge-gates-go-golden.json (Go 1.25.3 at 981d25c, network none). Named deviations: the ban gate needs the trusted PROXY v2 client address and refuses an unattributed connection when enforcing (503 ban_client_address); a ledger refusal is 503 ban_ledger; records carry no subject pseudonym and verdict DENY; an append failure poisons the epoch. Owner decision 2026-11-16 left serving composition undecided; this wiring needs owner review. Signal IDs and scoring are unchanged. Review follow-up (FM11 slice 18): a non-enforcing spoof gate now strips the forged trust headers from the scored and forwarded view, as Go's spoofHeaderGate called stripInbound(r) before the mode check; request integrity and the commitment still cover the sent bytes. A refusal to a HEAD request keeps the head and Content-Length without the body, as Go's server did.",
+   "notes": "Only framing and RIT/verdict application were present (B13 M). FM11 slice 18: the served path now runs the legacy ServeHTTP gate order for proxied requests (gateway::application::edge): after the reserved control routes, the ban gate (ban::gate::evaluate, HR-21) and then the spoof-header gate (guard::spoof_gate, HR-27b), before route inventory, authorization and scoring. Modes come from the startup edge section (default enforce, Go's default without a settings store). Responses and records match the Go capture tests/fixtures/gateway/edge-gates-go-golden.json (Go 1.25.3 at 981d25c, network none). Named deviations: the ban gate needs the trusted PROXY v2 client address and refuses an unattributed connection when enforcing (503 ban_client_address); a ledger refusal is 503 ban_ledger; records carry no subject pseudonym and verdict DENY; an append failure poisons the epoch. Owner decision 2026-11-16 left serving composition undecided; this wiring needs owner review. Signal IDs and scoring are unchanged. Review follow-up (FM11 slice 18): a non-enforcing spoof gate now strips the forged trust headers from the scored and forwarded view, as Go's spoofHeaderGate called stripInbound(r) before the mode check; request integrity and the commitment still cover the sent bytes. A refusal to a HEAD request keeps the head and Content-Length without the body, as Go's server did. FM11 lane B (2026-11-19): the installed ban store is now swept by the Application maintenance tick (Server.gc parity); ban-store provisioning, the shared ban clock, metrics and default modes remain owner questions in issue #75.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::missing_client_is_challenge_and_missing_planes_are_not_ready": "passed",
@@ -3603,7 +3615,7 @@
     "TestKillSwitchDualControlAndEffect": "crates/sdk/humanymous-runtime/src/gateway/control/state.rs::spent_intent_without_covered_effect_cannot_become_healthy"
    },
    "gaps": [
-    "kill switch effect on the enforcement path (Go global monitor mode that lets a scored-DENY session pass)",
+    "kill switch effect on the enforcement path (Go global monitor mode that lets a scored-DENY session pass): kill switch commit semantics are owner-reserved, so this is an owner decision, not a port",
     "the approved kill-switch commit answers 409 by design: it needs the signed one-way node kill (gateway::control), which the admin plane does not hold"
    ],
    "retire_basis": null,

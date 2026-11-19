@@ -47,12 +47,24 @@ loosened.
   as the inherited configuration's `logging` object, opened before custody,
   with Go's configured and `runtime.fatal` records. Row `cmd/gate/logging.go`
   has no open gap left; `cmd/gate/main.go` narrows its flag gap.
+- [x] Ledger truth pass: `internal/gate/configsign_test.go` moves to
+  `ported_unit` (its Go test pins the signing function, which the configsign
+  kernel ports); binding the signed version in the live gateway stays a gap on
+  `configsign.go` because this SoT pins `config_version` to the scope
+  revision. `gate.go`, `gates.go` and `killswitch_test.go` gaps name their
+  owner gates (B01, issue #75, owner-reserved kill switch commit semantics).
 
 ## Open owner questions (not decided here)
 
 - Public edge listener and separate admin listener (plan B01).
 - Prometheus metrics, gate default modes, ban-store provisioning and a shared
   ban clock (issue #75).
+- Whether the live gateway binds the signed configsign version instead of the
+  provisioned scope revision (SoT change).
+- Kill switch effect as Go's reversible global monitor mode versus the Rust
+  signed one-way node kill (owner-reserved commit semantics).
+- HTML loader injection on the served path (no SoT authorisation for response
+  mutation).
 
 ## Record
 
