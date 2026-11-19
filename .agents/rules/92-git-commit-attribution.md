@@ -18,8 +18,20 @@ Owner decision 2026-11-16 (common automation rules C10.2):
 6. Historical provider trailers and identities stay; history is not rewritten.
    The identity check starts after commit `7e986a5`.
 
+7. **Branch history (playpilot H1–H7, adopted 2026-11-19):** merge commit stays
+   the merge method, so a topic branch is clean at merge time: no merge
+   commits (rebase onto `codex/rust`), no `WIP`/`fixup!`/`squash!`/`amend!` or
+   empty commits, generated churn in its own `chore(deps)`/`build` commit, no
+   session or tool trailers. An agent may tidy **its own unmerged**
+   `<provider>/<slug>` branch and push it with
+   `--force-with-lease=<branch>:<expected-sha>` (narrows common rule C1.3);
+   never plain `--force`, `+refspec`, or another branch. Turn auto-merge on
+   right after opening a pull request; turn it off before adding commits, then
+   on again. Details: `COMMIT-CONVENTION.md` §5.
+
 Check: `cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- commit-trailers <base>..<head>`
 (trailers on every commit; author/committer on commits after the cutoff).
+History: the non-required `History` CI job runs `playpilot history-check --method merge`.
 
 ## Full canon
 

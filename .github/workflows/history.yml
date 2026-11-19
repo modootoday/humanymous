@@ -1,0 +1,38 @@
+# Authored workflow; canon: .spec/sot/common-automation-rules.sot.md (section 13, H6)
+# Commit history check (playpilot H1-H7) on the pull request range. Not a
+# required check: it reports merge commits, WIP/fixup commits, subjects,
+# identities and trailers that H3 and C10 forbid. Rust tooling only, installed
+# from a pinned playpilot revision.
+name: CI / History
+'on':
+  pull_request: null
+permissions:
+  contents: read
+concurrency:
+  group: history-${{ github.ref }}
+  cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
+jobs:
+  history:
+    name: History
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+      with:
+        toolchain: 1.99.1
+    - name: Install playpilot at a pinned revision
+      run: cargo install --locked --git https://github.com/modootoday/playpilot --rev 0ddc0e1dfd1bac378901817a5fb106935fd5fba1 playpilot
+    - name: Check the pull request history
+      env:
+        BASE: ${{ github.event.pull_request.base.sha }}
+        HEAD: ${{ github.event.pull_request.head.sha }}
+      run: playpilot history-check --method merge --range "$BASE..$HEAD"
