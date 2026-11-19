@@ -1,5 +1,5 @@
 //! Actual CLI observations are private; shared test-support owns comparisons.
-use super::{Docker, Result, actual_hosted_linux};
+use super::{CLOUD_CONTAINER_ENDPOINT, Docker, Result, Venue, actual_hosted_linux};
 use humanymous_platform::testing::{
     docker::{DesktopObservation, ServerIdentity, verify_allocated_cli, verify_desktop},
     json::decode_strict_json,
@@ -42,7 +42,58 @@ fn baseline(value: &Value) -> Result<DesktopObservation<'_>> {
     verify_desktop(&observed, &observed)?;
     Ok(observed)
 }
+/// Pure judgement for the explicit cloud-container venue: the observed engine
+/// must be the Linux engine whose ID the operator supplied before the run.
+fn cloud_container_proof(expected: &str, server: &ServerIdentity<'_>) -> Result<Value> {
+    if server.server_id.is_empty()
+        || server.server_id != expected
+        || server.server_version.is_empty()
+        || server.server_version.len() > 128
+        || server.os_type != "linux"
+    {
+        return Err(
+            "cloud-container engine is not the Linux engine whose ID was supplied; refuse before mutation"
+                .into(),
+        );
+    }
+    Ok(
+        json!({"qualification":"explicit-cloud-container-engine-observation","expected_engine_id":expected,
+        "engine_id_matched":true,"authenticated_provenance":false,"qualifying_venue":false,
+        "desktop_equivalence_claimed":false,"github_hosted":false}),
+    )
+}
 impl Docker {
+    /// Explicit cloud-container preflight: the endpoint is the fixed local
+    /// socket passed with `--host`, never the selected context.
+    fn cloud_container(&mut self, expected: &str) -> Result<()> {
+        let bytes = self.engine_capture(&["info", "--format", "{{json .}}"])?;
+        let info = decode_strict_json(&bytes, 1048576)?;
+        let server = ServerIdentity {
+            server_id: field(&info, "ID")?,
+            server_version: field(&info, "ServerVersion")?,
+            os_type: field(&info, "OSType")?,
+        };
+        let proof = cloud_container_proof(expected, &server)?;
+        let observed = json!({"context":null,"endpoint":CLOUD_CONTAINER_ENDPOINT,
+            "endpoint_selection":"explicit --host","server_id":server.server_id,
+            "server_version":server.server_version,"os_type":server.os_type});
+        if self
+            .engine_identity
+            .as_ref()
+            .is_some_and(|previous| previous["observed"] != observed)
+        {
+            return Err(
+                "Docker engine identity changed during lab; resolve before mutation or cleanup"
+                    .into(),
+            );
+        }
+        self.engine_identity = Some(
+            json!({"schema":"humanymous.lab-engine-observation/1","venue":"cloud-container","observed":observed,
+            "desktop_baseline":null,"proof":proof,"sdk_affinity_claimed":false,
+            "credential_helper_presence_checked":false,"credential_contents_read":false}),
+        );
+        Ok(())
+    }
     fn engine_capture(&mut self, args: &[&str]) -> Result<Vec<u8>> {
         let args: Vec<String> = args.iter().map(|s| (*s).into()).collect();
         let mut command = self.raw_command(&args, &[])?;
@@ -56,6 +107,10 @@ impl Docker {
     pub(super) fn preflight(&mut self, force: bool) -> Result<()> {
         if self.engine_identity.is_some() && !force {
             return Ok(());
+        }
+        if let Venue::CloudContainer { engine_id } = &self.venue {
+            let expected = engine_id.clone();
+            return self.cloud_container(&expected);
         }
         let hosted = actual_hosted_linux();
         if !hosted && self.desktop_baseline.is_none() {
@@ -176,6 +231,27 @@ impl Docker {
 }
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn cloud_container_binds_the_supplied_engine_id_and_never_qualifies() {
+        use super::{ServerIdentity, cloud_container_proof};
+        let server = |id, os| ServerIdentity {
+            server_id: id,
+            server_version: "29.1.3",
+            os_type: os,
+        };
+        let proof = cloud_container_proof("engine-a", &server("engine-a", "linux")).unwrap();
+        assert_eq!(proof["expected_engine_id"], "engine-a");
+        assert_eq!(proof["authenticated_provenance"], false);
+        assert_eq!(proof["qualifying_venue"], false);
+        for observed in [
+            server("engine-b", "linux"),
+            server("", "linux"),
+            server("engine-a", "windows"),
+        ] {
+            assert!(cloud_container_proof("engine-a", &observed).is_err());
+        }
+        assert!(cloud_container_proof("", &server("", "linux")).is_err());
+    }
     #[test]
     fn baseline_is_explicit_strict_and_never_inferred_from_current_daemon() {
         use serde_json::json;

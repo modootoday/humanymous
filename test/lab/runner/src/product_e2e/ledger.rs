@@ -165,7 +165,9 @@ pub(super) fn ledger(receipt: &Value, cleanup_verified: bool) -> Value {
     if receipt["attack_catalog"].is_object() {
         cases.push(attack_catalog_case(&receipt["attack_catalog"]));
     }
-    let assessed = qualification::assess(&cases, cleanup_verified);
+    let mut assessed = qualification::assess(&cases, cleanup_verified);
+    // This profile runs only on the explicit cloud-container venue.
+    assessed.non_qualifying_venue();
     let mut fields = assessed.report_fields();
     fields["derivation"] = json!(
         "test/lab/runner/src/orchestration/qualification.rs assess over this run's mapped cases"
@@ -289,6 +291,12 @@ mod tests {
         let empty = ledger(&json!({}), true);
         assert_eq!(empty["skips"], all);
         assert_eq!(empty["full_product_qualified"], false);
+        assert!(
+            empty["required_unavailable"]
+                .as_array()
+                .unwrap()
+                .contains(&json!(qualification::QUALIFYING_VENUE))
+        );
         assert_eq!(empty["mapped_cases"], json!([]));
         let report = report(7);
         let run = judge(true, &none(), Some(&report), &[receipt(&report, "s")], "s");

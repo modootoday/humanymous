@@ -140,7 +140,7 @@ fn run() -> Result<()> {
         "crate-waves" => registry::wave_output(&root),
         "publish-wave" => registry::publish_wave(&root, argument(1)?.parse::<usize>().map_err(|e| e.to_string())?),
         "publish-npm" => registry::publish_npm(&root),
-        "pilot" => pilot::run(&root, argument(1)?),
+        "pilot" => pilot::run(&root, argument(1)?, &args[2..]),
         "snapshot" => { println!("{}", source::snapshot(&root)?); Ok(()) },
         "observe-run" => remote::observe(&root, argument(1)?, argument(2)?, Path::new(argument(3)?)),
         "audit-closure" => package::audit_closure(&root),
@@ -155,7 +155,7 @@ fn run() -> Result<()> {
         "probe" => workspace::run(&root,argument(1)?,argument(2)?),
         "nginx-report" => evidence::emit_public_summary("Source-bound nginx scenario groups", &nginx::validate(&read_json(Path::new(argument(1)?))?, argument(2)?, argument(3)?, argument(4)?)?),
         "nginx" => nginx::run(&root),
-        _ => Err("usage: humanymous-delivery policy|action-pins|jobs|package|image-sources|native-artifacts|node|readiness|release|crate-waves|publish-wave N|publish-npm|pilot native|browser|browser-product|docker|snapshot|observe-run ID SHA OUTPUT|audit-closure".into()),
+        _ => Err("usage: humanymous-delivery policy|action-pins|jobs|package|image-sources|native-artifacts|node|readiness|release|crate-waves|publish-wave N|publish-npm|pilot native|browser|browser-product|docker [--venue cloud-container --engine-id ID]|snapshot|observe-run ID SHA OUTPUT|audit-closure".into()),
     }
 }
 fn main() {

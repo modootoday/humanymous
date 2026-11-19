@@ -61,6 +61,90 @@ impl FailureKind {
     }
 }
 mod affinity;
+/// Local engine endpoint of an explicitly named cloud-container venue.
+pub const CLOUD_CONTAINER_ENDPOINT: &str = "unix:///var/run/docker.sock";
+/// Engine venue chosen by the operator. Never inferred from the daemon the CLI
+/// currently selects: the cloud-container venue exists only when it is named
+/// together with the engine ID the operator observed before the run.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum Venue {
+    /// Rule 96 affinity: genuine GitHub-hosted Linux, the Windows Desktop
+    /// `desktop-linux` engine, or an allocated Desktop CLI proxy.
+    Affinity,
+    /// A cloud session container's own Linux engine on the local Unix socket,
+    /// bound to an explicitly supplied engine ID. Never a qualifying venue.
+    CloudContainer { engine_id: String },
+}
+impl Venue {
+    /// Parse `--venue` and `--engine-id`. Both or neither; only one venue name.
+    pub fn parse(venue: Option<&str>, engine_id: Option<&str>) -> Result<Self> {
+        match (venue, engine_id) {
+            (None, None) => Ok(Self::Affinity),
+            (Some("cloud-container"), Some(id)) => {
+                if id.is_empty()
+                    || id.len() > 256
+                    || !id
+                        .bytes()
+                        .all(|b| b.is_ascii_alphanumeric() || b"-:".contains(&b))
+                {
+                    return Err("--engine-id must be the observed engine ID".into());
+                }
+                Ok(Self::CloudContainer {
+                    engine_id: id.to_owned(),
+                })
+            }
+            (Some("cloud-container"), None) => Err(
+                "--venue cloud-container requires --engine-id ID observed before the run".into(),
+            ),
+            (Some(_), _) => Err("--venue accepts only cloud-container; hosted and Desktop venues follow rule 96 without a flag".into()),
+            (None, Some(_)) => Err("--engine-id binds only an explicit --venue".into()),
+        }
+    }
+    /// Only rule 96 affinity venues can qualify a product run.
+    pub fn qualifying(&self) -> bool {
+        matches!(self, Self::Affinity)
+    }
+    /// Receipt fields: the venue name, its bound engine ID and its limits.
+    pub fn report(&self) -> Value {
+        match self {
+            Self::Affinity => {
+                json!({"venue":"rule-96-affinity","qualifying_venue":true,"explicit":false})
+            }
+            Self::CloudContainer { engine_id } => {
+                json!({"venue":"cloud-container","explicit":true,"endpoint":CLOUD_CONTAINER_ENDPOINT,
+                "bound_engine_id":engine_id,"authenticated_provenance":false,"qualifying_venue":false,
+                "github_hosted":false,"windows_desktop_affinity_claimed":false})
+            }
+        }
+    }
+}
+/// The cloud-container venue runs only where it was named: not on Windows, not
+/// on genuine GitHub-hosted Linux, and with no engine or Desktop override in
+/// the environment that could point the CLI at another daemon.
+fn cloud_container_environment(
+    windows: bool,
+    hosted: bool,
+    variable: &dyn Fn(&str) -> Option<String>,
+) -> Result<()> {
+    if windows || hosted {
+        return Err("cloud-container venue refused on Windows Desktop or GitHub-hosted Linux; those use rule 96 affinity".into());
+    }
+    for name in [
+        "DOCKER_HOST",
+        "DOCKER_CONTEXT",
+        "HUMANYMOUS_DOCKER_DESKTOP_PROXY",
+        "HUMANYMOUS_DOCKER_DESKTOP_BASELINE",
+    ] {
+        let value = variable(name).unwrap_or_default();
+        if !value.is_empty() && !(name == "DOCKER_HOST" && value == CLOUD_CONTAINER_ENDPOINT) {
+            return Err(format!(
+                "{name} refused for the cloud-container venue; its endpoint is explicit"
+            )
+            .into());
+        }
+    }
+    Ok(())
+}
 pub(crate) fn hosted_context(
     actions: Option<&str>,
     os: Option<&str>,
@@ -87,6 +171,7 @@ pub struct Docker {
     pub engine_identity: Option<Value>,
     pub(crate) last_failure: Option<FailureKind>,
     desktop_baseline: Option<Value>,
+    venue: Venue,
 }
 pub struct Output {
     pub success: bool,
@@ -95,6 +180,9 @@ pub struct Output {
 }
 impl Docker {
     pub fn new(root: &Path) -> Self {
+        Self::with_venue(root, Venue::Affinity)
+    }
+    pub fn with_venue(root: &Path, venue: Venue) -> Self {
         let windows = PathBuf::from("C:/Program Files/Docker/Docker/resources/bin/docker.exe");
         Self {
             root: root.into(),
@@ -107,6 +195,7 @@ impl Docker {
             engine_identity: None,
             last_failure: None,
             desktop_baseline: None,
+            venue,
         }
     }
     pub fn invoke(
@@ -119,7 +208,12 @@ impl Docker {
     }
     fn raw_command(&self, args: &[String], environment: &[(String, String)]) -> Result<Command> {
         let mut command = Command::new(&self.executable);
-        if cfg!(windows) {
+        if matches!(self.venue, Venue::CloudContainer { .. }) {
+            cloud_container_environment(cfg!(windows), actual_hosted_linux(), &|name| {
+                std::env::var(name).ok()
+            })?;
+            command.args(["--host", CLOUD_CONTAINER_ENDPOINT]);
+        } else if cfg!(windows) {
             if !self.executable.is_file() {
                 return Err("installed Windows Docker Desktop CLI missing; no WSL fallback".into());
             }
@@ -290,11 +384,26 @@ impl Docker {
     }
 }
 pub fn engine_preflight(args: &[String]) -> Result<i32> {
-    if args.len() != 2 || args[0] != "--evidence" {
-        return Err("engine-preflight --evidence FRESH_PRIVATE_BUNDLE required".into());
+    let (mut evidence, mut venue, mut engine_id) = (None, None, None);
+    let mut rest = args.iter();
+    while let Some(flag) = rest.next() {
+        let slot = match flag.as_str() {
+            "--evidence" => &mut evidence,
+            "--venue" => &mut venue,
+            "--engine-id" => &mut engine_id,
+            _ => return Err("engine-preflight --evidence FRESH_PRIVATE_BUNDLE [--venue cloud-container --engine-id ID] required".into()),
+        };
+        if slot
+            .replace(rest.next().ok_or("flag value missing")?)
+            .is_some()
+        {
+            return Err("engine-preflight flag repeated".into());
+        }
     }
+    let venue = Venue::parse(venue.map(String::as_str), engine_id.map(String::as_str))?;
     let root = crate::snapshot::root()?;
-    let evidence = PathBuf::from(&args[1]).canonicalize()?;
+    let evidence =
+        PathBuf::from(evidence.ok_or("engine-preflight --evidence required")?).canonicalize()?;
     if !evidence.starts_with(root.join(".spec.local/root/evidence"))
         || !evidence.join("index.evidence.md").is_file()
     {
@@ -307,16 +416,62 @@ pub fn engine_preflight(args: &[String]) -> Result<i32> {
     {
         return Err("fresh preflight evidence bundle required; preserve prior runs".into());
     }
-    let mut docker = Docker::new(&root);
+    let mut docker = Docker::with_venue(&root, venue.clone());
     let result = docker.recheck_engine();
-    let report = json!({"schema":"humanymous.lab-engine-preflight/1","status":if result.is_ok(){"observed"}else{"failed"},"observation":docker.engine_identity,"private_transcript":docker.transcript,"error":result.as_ref().err().map(|e|e.to_string()),"executable_sha256":crate::snapshot::digest(&std::fs::read(std::env::current_exe()?)?),"actual_sdk_connection_observed":false,"full_product_qualified":false});
+    let report = json!({"schema":"humanymous.lab-engine-preflight/1","status":if result.is_ok(){"observed"}else{"failed"},"venue":venue.report(),"observation":docker.engine_identity,"private_transcript":docker.transcript,"error":result.as_ref().err().map(|e|e.to_string()),"executable_sha256":crate::snapshot::digest(&std::fs::read(std::env::current_exe()?)?),"actual_sdk_connection_observed":false,"full_product_qualified":false});
     crate::snapshot::write(&evidence, "engine-preflight.private.json", &report)?;
     println!(
         "{}",
-        json!({"schema":"humanymous.lab-engine-preflight-public/1","status":report["status"],"private_report_sha256":crate::snapshot::digest(&std::fs::read(path)?),"authenticated_provenance":false,"actual_sdk_connection_observed":false,"full_product_qualified":false})
+        json!({"schema":"humanymous.lab-engine-preflight-public/1","status":report["status"],"private_report_sha256":crate::snapshot::digest(&std::fs::read(path)?),"venue":venue.report(),"authenticated_provenance":false,"actual_sdk_connection_observed":false,"full_product_qualified":false})
     );
     result?;
     Ok(0)
+}
+#[cfg(test)]
+mod venue_tests {
+    use super::{CLOUD_CONTAINER_ENDPOINT, Venue, cloud_container_environment};
+    #[test]
+    fn cloud_container_venue_is_explicit_and_bound_to_an_engine_id() {
+        assert_eq!(Venue::parse(None, None).unwrap(), Venue::Affinity);
+        assert!(Venue::Affinity.qualifying());
+        let venue = Venue::parse(Some("cloud-container"), Some("c7f5a196-202c")).unwrap();
+        assert!(matches!(venue, Venue::CloudContainer { .. }) && !venue.qualifying());
+        let report = venue.report();
+        assert_eq!(report["bound_engine_id"], "c7f5a196-202c");
+        assert_eq!(report["authenticated_provenance"], false);
+        assert_eq!(report["qualifying_venue"], false);
+        for (name, id) in [
+            (Some("cloud-container"), None),
+            (Some("cloud-container"), Some("")),
+            (Some("cloud-container"), Some("id with space")),
+            (Some("github-hosted"), Some("id")),
+            (Some("windows-desktop"), None),
+            (None, Some("id")),
+        ] {
+            assert!(Venue::parse(name, id).is_err(), "{name:?} {id:?}");
+        }
+    }
+    #[test]
+    fn cloud_container_venue_refuses_other_engines_and_hosted_runs() {
+        let none = |_: &str| None;
+        assert!(cloud_container_environment(false, false, &none).is_ok());
+        assert!(cloud_container_environment(true, false, &none).is_err());
+        assert!(cloud_container_environment(false, true, &none).is_err());
+        let same = |name: &str| (name == "DOCKER_HOST").then(|| CLOUD_CONTAINER_ENDPOINT.into());
+        assert!(cloud_container_environment(false, false, &same).is_ok());
+        for name in [
+            "DOCKER_HOST",
+            "DOCKER_CONTEXT",
+            "HUMANYMOUS_DOCKER_DESKTOP_PROXY",
+            "HUMANYMOUS_DOCKER_DESKTOP_BASELINE",
+        ] {
+            let other = |n: &str| (n == name).then(|| "unix:///other.sock".to_owned());
+            assert!(
+                cloud_container_environment(false, false, &other).is_err(),
+                "{name}"
+            );
+        }
+    }
 }
 #[cfg(test)]
 mod failure_tests {

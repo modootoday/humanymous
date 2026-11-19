@@ -43,6 +43,9 @@ struct Options {
     build_ca: Option<PathBuf>,
     build_proxy: Option<String>,
     keep_image: bool,
+    /// Engine ID observed by the operator before the run; when given, the
+    /// observed engine must match it.
+    engine_id: Option<String>,
 }
 
 fn options(args: &[String]) -> Result<Options> {
@@ -51,6 +54,7 @@ fn options(args: &[String]) -> Result<Options> {
     let mut build_ca = None;
     let mut build_proxy = None;
     let mut keep_image = false;
+    let mut engine_id = None;
     let mut rest = args.iter();
     while let Some(flag) = rest.next() {
         match flag.as_str() {
@@ -59,6 +63,9 @@ fn options(args: &[String]) -> Result<Options> {
             "--build-ca" => build_ca = rest.next().map(PathBuf::from),
             "--build-proxy" => build_proxy = rest.next().cloned(),
             "--keep-image" => keep_image = true,
+            "--engine-id" => {
+                engine_id = Some(rest.next().cloned().ok_or("--engine-id value missing")?)
+            }
             _ => return Err(format!("unknown product-e2e argument {flag}").into()),
         }
     }
@@ -68,6 +75,9 @@ fn options(args: &[String]) -> Result<Options> {
     let emit = emit.ok_or("--emit PATH required")?;
     if emit.exists() {
         return Err("receipt path exists; preserve prior runs".into());
+    }
+    if let Some(id) = &engine_id {
+        crate::docker::Venue::parse(Some("cloud-container"), Some(id))?;
     }
     if build_ca.as_ref().is_some_and(|path| !path.is_file()) {
         return Err("--build-ca must name an existing file".into());
@@ -84,6 +94,7 @@ fn options(args: &[String]) -> Result<Options> {
         build_ca,
         build_proxy,
         keep_image,
+        engine_id,
     })
 }
 
@@ -96,6 +107,8 @@ struct Output {
 struct Lab {
     root: PathBuf,
     transcript: Vec<Value>,
+    /// Operator-supplied engine ID the observed engine must equal, if any.
+    expected_engine: Option<String>,
 }
 
 impl Lab {
@@ -192,15 +205,21 @@ impl Lab {
             "client_version":version["Client"]["Version"],"server_version":version["Server"]["Version"],
             "server_api_version":version["Server"]["ApiVersion"],
             "engine_id":info["ID"],"os_type":info["OSType"],"info_server_version":info["ServerVersion"],
-            "windows_desktop_affinity_claimed":false,"github_hosted":false});
+            "windows_desktop_affinity_claimed":false,"github_hosted":false,
+            "explicit":true,"bound_engine_id":self.expected_engine,
+            "authenticated_provenance":false,"qualifying_venue":false});
         if engine["os_type"] != "linux"
             || !engine["engine_id"]
                 .as_str()
                 .is_some_and(|id| !id.is_empty())
             || selected != ENDPOINT
+            || self
+                .expected_engine
+                .as_ref()
+                .is_some_and(|expected| engine["engine_id"] != expected.as_str())
         {
             return Err(
-                "cloud-container engine identity incomplete or not the local socket".into(),
+                "cloud-container engine identity incomplete, not the local socket or not the supplied engine ID".into(),
             );
         }
         Ok(engine)
@@ -325,6 +344,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     let mut lab = Lab {
         root: crate::snapshot::root()?,
         transcript: Vec::new(),
+        expected_engine: options.engine_id.clone(),
     };
     let commit = lab.git(&["rev-parse", "HEAD"])?;
     let branch = lab.git(&["rev-parse", "--abbrev-ref", "HEAD"])?;
@@ -847,6 +867,17 @@ mod tests {
             fresh.display().to_string(),
         ];
         assert!(options(&args).is_ok());
+        let with_id = |id: &str| {
+            let mut bound = args.to_vec();
+            bound.extend(["--engine-id".into(), id.into()]);
+            options(&bound)
+        };
+        assert_eq!(
+            with_id("c7f5a196-202c").unwrap().engine_id.as_deref(),
+            Some("c7f5a196-202c")
+        );
+        assert!(with_id("").is_err());
+        assert!(with_id("id with space").is_err());
     }
     #[test]
     fn build_proxy_is_host_loopback_only() {
