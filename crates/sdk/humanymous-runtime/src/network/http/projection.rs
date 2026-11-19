@@ -60,27 +60,29 @@ fn trim_ascii(value: &str) -> &str {
     value.trim_matches([' ', '\t', '\r', '\n'])
 }
 
-// Go parseCookieValue(raw, allowDoubleQuote=true) acceptance.
-fn cookie_value_ok(raw: &str) -> bool {
-    let bytes = raw.as_bytes();
-    let bytes = if bytes.len() > 1 && bytes[0] == b'"' && bytes[bytes.len() - 1] == b'"' {
-        &bytes[1..bytes.len() - 1]
+// Go parseCookieValue(raw, allowDoubleQuote=true): the value with one pair of
+// surrounding quotes removed, or None when any byte is not a cookie octet.
+fn cookie_value_parsed(raw: &str) -> Option<&str> {
+    let unquoted = if raw.len() > 1 && raw.starts_with('"') && raw.ends_with('"') {
+        &raw[1..raw.len() - 1]
     } else {
-        bytes
+        raw
     };
-    bytes
-        .iter()
-        .all(|&b| (0x20..0x7f).contains(&b) && !matches!(b, b'"' | b';' | b'\\'))
+    unquoted
+        .bytes()
+        .all(|b| (0x20..0x7f).contains(&b) && !matches!(b, b'"' | b';' | b'\\'))
+        .then_some(unquoted)
 }
 
-/// Cookie names in the order Go `Request.Cookies` returns them.
-fn cookie_names(fields: &[(String, String)]) -> Vec<String> {
+/// Go `readCookies`: every valid `(name, value)` pair in request order, or
+/// nothing when the cookie-count ceiling is exceeded.
+fn cookies(fields: &[(String, String)]) -> Vec<(&str, &str)> {
     let lines: Vec<&str> = values(fields, "Cookie").collect();
     let count: usize = lines.iter().map(|line| line.matches(';').count() + 1).sum();
     if lines.is_empty() || count > COOKIE_LIMIT {
         return Vec::new();
     }
-    let mut names = Vec::new();
+    let mut pairs = Vec::new();
     for line in lines {
         let mut line = trim_ascii(line);
         while !line.is_empty() {
@@ -92,13 +94,33 @@ fn cookie_names(fields: &[(String, String)]) -> Vec<String> {
             }
             let (name, value) = part.split_once('=').unwrap_or((part, ""));
             let name = trim_ascii(name);
-            if name.is_empty() || !name.bytes().all(token) || !cookie_value_ok(value) {
+            if name.is_empty() || !name.bytes().all(token) {
                 continue;
             }
-            names.push(name.to_owned());
+            if let Some(value) = cookie_value_parsed(value) {
+                pairs.push((name, value));
+            }
         }
     }
-    names
+    pairs
+}
+
+/// Cookie names in the order Go `Request.Cookies` returns them.
+fn cookie_names(fields: &[(String, String)]) -> Vec<String> {
+    cookies(fields)
+        .into_iter()
+        .map(|(name, _)| name.to_owned())
+        .collect()
+}
+
+/// Legacy Core `cookieValue` (Go `Request.Cookie(name).Value`): the value of
+/// the first valid cookie with exactly this name, one pair of surrounding
+/// double quotes removed; empty when absent or invalid.
+pub fn cookie_value(fields: &[(String, String)], name: &str) -> String {
+    cookies(fields)
+        .into_iter()
+        .find(|(found, _)| *found == name)
+        .map_or_else(String::new, |(_, value)| value.to_owned())
 }
 
 /// Project a handler-visible request into [`HeaderInfo`] exactly as the legacy

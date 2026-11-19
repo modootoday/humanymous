@@ -24,6 +24,7 @@ use tokio::{
     time::{Instant, timeout_at},
 };
 mod edge;
+mod maintenance;
 mod settings;
 mod tls;
 // L1 consumer adapter only; no serving observation point is accepted yet.
@@ -98,6 +99,8 @@ pub struct Application {
     origin_key: Option<crate::gateway::guard::OriginKey>,
     /// Readiness gate of the `/_humanymous/readyz` probe.
     ready: ReadySwitch,
+    /// Period of the composite in-memory sweep (legacy maintenance ticker).
+    sweep_interval: Duration,
 }
 impl Application {
     /// Compose existing services without changing policy or deriving new tells.
@@ -119,6 +122,7 @@ impl Application {
             bans: None,
             origin_key,
             ready: ReadySwitch::default(),
+            sweep_interval: maintenance::INTERVAL,
         })
     }
 
@@ -530,6 +534,7 @@ impl Application {
         let mut admission = Admission::new(self.config.rate_per_second);
         let mut commands = self.take_settings_commands();
         let mut admission_rate = self.config.rate_per_second;
+        let mut sweep = maintenance::ticker(self.sweep_interval);
         loop {
             if shutdown.borrow().is_some() {
                 return Ok(());
@@ -542,6 +547,10 @@ impl Application {
                 }
                 command = settings::next_command(&mut commands) => {
                     self.apply_settings_command(command, &shutdown)?;
+                    continue;
+                }
+                _ = sweep.tick() => {
+                    self.maintenance_tick();
                     continue;
                 }
                 accepted = listener.accept() => accepted?,

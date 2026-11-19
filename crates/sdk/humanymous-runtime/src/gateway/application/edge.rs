@@ -107,8 +107,8 @@ impl Default for ReadySwitch {
 
 /// Installed ban store and the monotonic epoch of its `now`.
 pub(super) struct Bans {
-    store: Arc<Mutex<Store>>,
-    epoch: Instant,
+    pub(super) store: Arc<Mutex<Store>>,
+    pub(super) epoch: Instant,
 }
 
 impl Application {

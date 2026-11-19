@@ -547,13 +547,13 @@ fn poisoned_epoch_is_not_ready() {
     );
 }
 
-fn ban_store(soft: usize, hard: usize) -> Arc<Mutex<Store>> {
+pub(super) fn ban_store(soft: usize, hard: usize) -> Arc<Mutex<Store>> {
     let limits = Limits::new(64, 64, 128, Duration::from_secs(60), 1 << 20, 64).unwrap();
     let rate = RateConfig::new(Duration::from_secs(60), soft, hard, limits).unwrap();
     Arc::new(Mutex::new(Store::new(rate, 64).unwrap()))
 }
 
-fn edge_config(origin: std::net::SocketAddr) -> Configuration {
+pub(super) fn edge_config(origin: std::net::SocketAddr) -> Configuration {
     let mut cfg = configuration(origin);
     cfg.ip_reputation = Some(
         serde_json::from_value(json!({"snapshot":"/nonexistent/ip-intel.json",

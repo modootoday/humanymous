@@ -1,0 +1,2766 @@
+{
+ "provenance": {
+  "oracle_commit": "981d25cf71a5a54855d7e2b4359e832a9d5998e5",
+  "oracle_packages": [
+   "cmd/server (server.go routes/withSecurityHeaders/withTrafficLog/fingerprintChurnSignal/vpnWebRTCLeakSignal, handlers.go, collect_pipeline.go, rit.go, resource_handlers.go, powhandler.go, ops.go healthz/operatorAuthorized/canReadSession)",
+   "internal/collector (Store)",
+   "internal/trafficguard (Log, Check)",
+   "internal/correlation",
+   "internal/abuse (Limiter)",
+   "internal/integrity (SessionKey/Seed/TimeBucket)",
+   "internal/scoring (NewEngine)",
+   "net/http ServeMux/FileServer/ServeFile of the toolchain below"
+  ],
+  "image": "mirror.gcr.io/library/golang@sha256:91eda9776261207ea25fd06b5b7fed8d397dd2c0a283e77f2ab6e91bfa71079d",
+  "go_version": "go1.26.3 linux/amd64 (GOTOOLCHAIN=local)",
+  "command": "docker run --rm --network none -e GOTOOLCHAIN=local -e GOPROXY=off -e GOFLAGS=-mod=readonly -e GOCACHE=/tmp/gocache -v <modcache>:/go/pkg/mod:ro -v <git archive 981d25c go.mod go.sum internal pkg cmd/server web, plus the scratch in-package capture test cmd/server/zz_fm11la_capture_test.go>:/src:ro -v <out>:/out -w /src <image> sh -c \"go test -count=1 -run ^TestFM11LACapture$ ./cmd/server/\"",
+  "capture_program_sha256": {
+   "cmd/server/zz_fm11la_capture_test.go": "fa0241beaea3e4d5452bc4f4804391bbe6c97aa1075402917b1eaabc6ac7b564"
+  },
+  "capture_program_committed": false,
+  "output_sha256": {
+   "capture.json": "46860b4f3afa5ab3ec0ac61120245b9cc2c29bffce847e59b3c7978762f67557"
+  },
+  "capture_notes": [
+   "master key is bytes 0..31; ritCanonical seeds use counter n-1 and tokens are HMAC-SHA256(seed, canonical), base64url without padding",
+   "verifyRIT steps ran on one app (rit on); tb = current bucket + tbOffset; token none|valid|bad; seedAfter is issueSeed after the step",
+   "http cases ran in order through a.routes() with opsToken optok and rit on, via httptest (remote 192.0.2.1:1234 unless set); Last-Modified and Date are <masked>, X-Hm-Pow is <present>, fresh hsid values are hsid=<random>, the report-own body is <report>",
+   "collect-signed* cases are signed with the live token for counter tokenAt over the body in the current bucket",
+   "stored lists every session in the store after the http cases (sorted by id) with its network signals; traffic lists the trafficguard records of s2 and x1 with ts masked",
+   "rate is 85 POST /api/collect {} with cookie hsid=rl on a fresh app with rit off",
+   "ritCanonical[].token of capture.json is stored here as ritCanonical[].mac (renamed only, value unchanged) so the repository secret scanner does not read a test HMAC as a credential; output_sha256 is of the unrenamed capture.json"
+  ]
+ },
+ "capture": {
+  "fpChurn": [
+   {
+    "Sid": "",
+    "FP": "a",
+    "Sig": {
+     "id": "",
+     "value": null,
+     "verdict": "",
+     "notes": ""
+    }
+   },
+   {
+    "Sid": "c1",
+    "FP": "",
+    "Sig": {
+     "id": "",
+     "value": null,
+     "verdict": "",
+     "notes": ""
+    }
+   },
+   {
+    "Sid": "c1",
+    "FP": "a",
+    "Sig": {
+     "id": "",
+     "value": null,
+     "verdict": "",
+     "notes": ""
+    }
+   },
+   {
+    "Sid": "c1",
+    "FP": "a",
+    "Sig": {
+     "id": "",
+     "value": null,
+     "verdict": "",
+     "notes": ""
+    }
+   },
+   {
+    "Sid": "c1",
+    "FP": "b",
+    "Sig": {
+     "id": "l5.correlation.fp_churn_proxy",
+     "value": {
+      "next": "b",
+      "prev": "a"
+     },
+     "verdict": "BOT",
+     "notes": "fingerprintId rotated mid-session (proxy fp-churn evasion)"
+    }
+   },
+   {
+    "Sid": "c1",
+    "FP": "",
+    "Sig": {
+     "id": "",
+     "value": null,
+     "verdict": "",
+     "notes": ""
+    }
+   },
+   {
+    "Sid": "c1",
+    "FP": "b",
+    "Sig": {
+     "id": "",
+     "value": null,
+     "verdict": "",
+     "notes": ""
+    }
+   },
+   {
+    "Sid": "c2",
+    "FP": "b",
+    "Sig": {
+     "id": "",
+     "value": null,
+     "verdict": "",
+     "notes": ""
+    }
+   },
+   {
+    "Sid": "c1",
+    "FP": "a",
+    "Sig": {
+     "id": "l5.correlation.fp_churn_proxy",
+     "value": {
+      "next": "a",
+      "prev": "b"
+     },
+     "verdict": "BOT",
+     "notes": "fingerprintId rotated mid-session (proxy fp-churn evasion)"
+    }
+   }
+  ],
+  "http": [
+   {
+    "name": "page",
+    "method": "GET",
+    "target": "/",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 200,
+    "respHeaders": {
+     "Accept-Ranges": [
+      "bytes"
+     ],
+     "Content-Length": [
+      "36"
+     ],
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/html; charset=utf-8"
+     ],
+     "Last-Modified": [
+      "<masked>"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "Set-Cookie": [
+      "hsid=<random>; Path=/; HttpOnly; Secure; SameSite=Lax"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "<!doctype html><title>index</title>\n"
+   },
+   {
+    "name": "page-cookie",
+    "method": "GET",
+    "target": "/",
+    "remote": "",
+    "headers": [
+     [
+      "Cookie",
+      "hsid=p1"
+     ]
+    ],
+    "body": "",
+    "status": 200,
+    "respHeaders": {
+     "Accept-Ranges": [
+      "bytes"
+     ],
+     "Content-Length": [
+      "36"
+     ],
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/html; charset=utf-8"
+     ],
+     "Last-Modified": [
+      "<masked>"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "<!doctype html><title>index</title>\n"
+   },
+   {
+    "name": "page-head",
+    "method": "HEAD",
+    "target": "/",
+    "remote": "",
+    "headers": [
+     [
+      "Cookie",
+      "hsid=p1"
+     ]
+    ],
+    "body": "",
+    "status": 200,
+    "respHeaders": {
+     "Accept-Ranges": [
+      "bytes"
+     ],
+     "Content-Length": [
+      "36"
+     ],
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/html; charset=utf-8"
+     ],
+     "Last-Modified": [
+      "<masked>"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": ""
+   },
+   {
+    "name": "page-post",
+    "method": "POST",
+    "target": "/",
+    "remote": "",
+    "headers": [
+     [
+      "Cookie",
+      "hsid=p1"
+     ]
+    ],
+    "body": "",
+    "status": 200,
+    "respHeaders": {
+     "Accept-Ranges": [
+      "bytes"
+     ],
+     "Content-Length": [
+      "36"
+     ],
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/html; charset=utf-8"
+     ],
+     "Last-Modified": [
+      "<masked>"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "<!doctype html><title>index</title>\n"
+   },
+   {
+    "name": "page-other",
+    "method": "GET",
+    "target": "/nope",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 404,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "404 page not found\n"
+   },
+   {
+    "name": "page-index",
+    "method": "GET",
+    "target": "/index.html",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 404,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "404 page not found\n"
+   },
+   {
+    "name": "demo",
+    "method": "GET",
+    "target": "/demo",
+    "remote": "",
+    "headers": [
+     [
+      "Cookie",
+      "hsid=d1"
+     ]
+    ],
+    "body": "",
+    "status": 200,
+    "respHeaders": {
+     "Accept-Ranges": [
+      "bytes"
+     ],
+     "Content-Length": [
+      "35"
+     ],
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/html; charset=utf-8"
+     ],
+     "Last-Modified": [
+      "<masked>"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "<!doctype html><title>demo</title>\n"
+   },
+   {
+    "name": "demo-fresh",
+    "method": "GET",
+    "target": "/demo",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 200,
+    "respHeaders": {
+     "Accept-Ranges": [
+      "bytes"
+     ],
+     "Content-Length": [
+      "35"
+     ],
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/html; charset=utf-8"
+     ],
+     "Last-Modified": [
+      "<masked>"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "Set-Cookie": [
+      "hsid=<random>; Path=/; HttpOnly; Secure; SameSite=Lax"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "<!doctype html><title>demo</title>\n"
+   },
+   {
+    "name": "demo-sub",
+    "method": "GET",
+    "target": "/demo/x",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 404,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "404 page not found\n"
+   },
+   {
+    "name": "unclean",
+    "method": "GET",
+    "target": "/static/../demo",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 307,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/html; charset=utf-8"
+     ],
+     "Location": [
+      "/demo"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "<a href=\"/demo\">Temporary Redirect</a>.\n\n"
+   },
+   {
+    "name": "double-slash",
+    "method": "GET",
+    "target": "//demo",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 307,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/html; charset=utf-8"
+     ],
+     "Location": [
+      "/demo"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "<a href=\"/demo\">Temporary Redirect</a>.\n\n"
+   },
+   {
+    "name": "static-js",
+    "method": "GET",
+    "target": "/static/js/app.js",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 200,
+    "respHeaders": {
+     "Accept-Ranges": [
+      "bytes"
+     ],
+     "Content-Length": [
+      "16"
+     ],
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/javascript; charset=utf-8"
+     ],
+     "Last-Modified": [
+      "<masked>"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "console.log(1);\n"
+   },
+   {
+    "name": "static-css",
+    "method": "GET",
+    "target": "/static/css/site.css",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 200,
+    "respHeaders": {
+     "Accept-Ranges": [
+      "bytes"
+     ],
+     "Content-Length": [
+      "7"
+     ],
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/css; charset=utf-8"
+     ],
+     "Last-Modified": [
+      "<masked>"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "body{}\n"
+   },
+   {
+    "name": "static-unknown",
+    "method": "GET",
+    "target": "/static/data/x.unknownext",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 200,
+    "respHeaders": {
+     "Accept-Ranges": [
+      "bytes"
+     ],
+     "Content-Length": [
+      "4"
+     ],
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Last-Modified": [
+      "<masked>"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "raw\n"
+   },
+   {
+    "name": "static-missing",
+    "method": "GET",
+    "target": "/static/js/none.js",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 404,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "404 page not found\n"
+   },
+   {
+    "name": "static-bare",
+    "method": "GET",
+    "target": "/static",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 307,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/html; charset=utf-8"
+     ],
+     "Location": [
+      "/static/"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "<a href=\"/static/\">Temporary Redirect</a>.\n\n"
+   },
+   {
+    "name": "static-index-redirect",
+    "method": "GET",
+    "target": "/static/index.html",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 301,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Location": [
+      "./"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": ""
+   },
+   {
+    "name": "static-post",
+    "method": "POST",
+    "target": "/static/js/app.js",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 200,
+    "respHeaders": {
+     "Accept-Ranges": [
+      "bytes"
+     ],
+     "Content-Length": [
+      "16"
+     ],
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/javascript; charset=utf-8"
+     ],
+     "Last-Modified": [
+      "<masked>"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "console.log(1);\n"
+   },
+   {
+    "name": "session",
+    "method": "GET",
+    "target": "/api/session",
+    "remote": "",
+    "headers": [
+     [
+      "Cookie",
+      "hsid=s1"
+     ]
+    ],
+    "body": "",
+    "status": 200,
+    "respHeaders": {
+     "Accept-Ch": [
+      "Sec-CH-UA-Full-Version-List, Sec-CH-UA-Platform-Version, Sec-CH-UA-Arch"
+     ],
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "application/json"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "{\"ritN\":0,\"ritOn\":true,\"ritSeed\":\"aBCBX5f7QZhzXmc4WP8MyoZ6CVxOd2Ld3CWlpAAy-AA\",\"ritW\":10,\"sessionId\":\"s1\"}\n"
+   },
+   {
+    "name": "session-fresh",
+    "method": "GET",
+    "target": "/api/session",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 200,
+    "respHeaders": {
+     "Accept-Ch": [
+      "Sec-CH-UA-Full-Version-List, Sec-CH-UA-Platform-Version, Sec-CH-UA-Arch"
+     ],
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "application/json"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "Set-Cookie": [
+      "hsid=<random>; Path=/; HttpOnly; Secure; SameSite=Lax"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "{\"ritN\":0,\"ritOn\":true,\"ritSeed\":\"0ITfRhN647hqmJAFJxR78_C96sE6TN3KoX72ZHYcKgs\",\"ritW\":10,\"sessionId\":\"d1b9abaf59af617f79f2489ad221c1bd\"}\n"
+   },
+   {
+    "name": "collect-get",
+    "method": "GET",
+    "target": "/api/collect",
+    "remote": "",
+    "headers": [
+     [
+      "Cookie",
+      "hsid=s1"
+     ]
+    ],
+    "body": "",
+    "status": 405,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "POST only\n"
+   },
+   {
+    "name": "collect-bad-body",
+    "method": "POST",
+    "target": "/api/collect",
+    "remote": "",
+    "headers": [
+     [
+      "Cookie",
+      "hsid=s1"
+     ]
+    ],
+    "body": "{",
+    "status": 400,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Hm-N": [
+      "0"
+     ],
+     "X-Hm-Seed": [
+      "aBCBX5f7QZhzXmc4WP8MyoZ6CVxOd2Ld3CWlpAAy-AA"
+     ],
+     "X-Hm-W": [
+      "10"
+     ]
+    },
+    "respBody": "bad body\n"
+   },
+   {
+    "name": "collect-tokenless-again",
+    "method": "POST",
+    "target": "/api/collect",
+    "remote": "",
+    "headers": [
+     [
+      "Cookie",
+      "hsid=s1"
+     ],
+     [
+      "User-Agent",
+      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+     ]
+    ],
+    "body": "{\"userAgent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\",\"fingerprintId\":\"fpA\"}",
+    "status": 200,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "application/json"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Hm-N": [
+      "0"
+     ],
+     "X-Hm-Seed": [
+      "aBCBX5f7QZhzXmc4WP8MyoZ6CVxOd2Ld3CWlpAAy-AA"
+     ],
+     "X-Hm-W": [
+      "10"
+     ]
+    },
+    "respBody": "{\"hardRuleFired\":\"HR-18\",\"policyVersion\":\"1.0.0\",\"riskScore\":79.5,\"sessionId\":\"s1\",\"topContributors\":[{\"id\":\"x.browser_no_js\",\"score\":45},{\"id\":\"x.uach_present\",\"score\":40},{\"id\":\"x.ua_vs_header\",\"score\":35},{\"id\":\"l5.rit.absent\",\"score\":30},{\"id\":\"l5.header.sec_fetch_missing\",\"score\":25}],\"verdict\":\"DENY\"}\n"
+   },
+   {
+    "name": "collect-signed",
+    "method": "POST",
+    "target": "/api/collect?label=human",
+    "remote": "",
+    "headers": [
+     [
+      "Cookie",
+      "hsid=s2"
+     ],
+     [
+      "User-Agent",
+      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+     ],
+     [
+      "Accept-Language",
+      "en-US"
+     ],
+     [
+      "Accept-Encoding",
+      "gzip, deflate, br"
+     ]
+    ],
+    "body": "{\"userAgent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\",\"fingerprintId\":\"fpB\"}",
+    "tokenAt": 1,
+    "status": 200,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "application/json"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Hm-N": [
+      "1"
+     ],
+     "X-Hm-Seed": [
+      "K5JztkZW4RhfR3nP3mIidG8zhytdtouQfT-uex_gFiE"
+     ],
+     "X-Hm-W": [
+      "10"
+     ]
+    },
+    "respBody": "{\"hardRuleFired\":\"HR-18\",\"policyVersion\":\"1.0.0\",\"riskScore\":70.8,\"sessionId\":\"s2\",\"topContributors\":[{\"id\":\"x.browser_no_js\",\"score\":45},{\"id\":\"x.uach_present\",\"score\":40},{\"id\":\"x.ua_vs_header\",\"score\":35},{\"id\":\"l5.header.sec_fetch_missing\",\"score\":25},{\"id\":\"l5.header.accept_encoding\",\"score\":4}],\"verdict\":\"DENY\"}\n"
+   },
+   {
+    "name": "collect-signed-2",
+    "method": "POST",
+    "target": "/api/collect",
+    "remote": "",
+    "headers": [
+     [
+      "Cookie",
+      "hsid=s2"
+     ],
+     [
+      "User-Agent",
+      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+     ],
+     [
+      "Accept-Language",
+      "en-US"
+     ],
+     [
+      "Accept-Encoding",
+      "gzip, deflate, br"
+     ]
+    ],
+    "body": "{\"userAgent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\",\"fingerprintId\":\"fpC\",\"advanced\":{\"webrtcPublicAddrs\":[\"198.51.100.7\"]}}",
+    "tokenAt": 2,
+    "status": 200,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "application/json"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Hm-N": [
+      "2"
+     ],
+     "X-Hm-Seed": [
+      "ip5EH0cUfYaaRrXEWMwPWrJIc4oVKWfZsTURjmO1_Fw"
+     ],
+     "X-Hm-W": [
+      "10"
+     ]
+    },
+    "respBody": "{\"hardRuleFired\":\"HR-18\",\"policyVersion\":\"1.0.0\",\"riskScore\":70.8,\"sessionId\":\"s2\",\"topContributors\":[{\"id\":\"x.browser_no_js\",\"score\":45},{\"id\":\"x.uach_present\",\"score\":40},{\"id\":\"x.ua_vs_header\",\"score\":35},{\"id\":\"l5.header.sec_fetch_missing\",\"score\":25},{\"id\":\"l5.header.accept_encoding\",\"score\":4}],\"verdict\":\"DENY\"}\n"
+   },
+   {
+    "name": "collect-fresh",
+    "method": "POST",
+    "target": "/api/collect",
+    "remote": "",
+    "headers": [
+     [
+      "User-Agent",
+      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+     ]
+    ],
+    "body": "{\"userAgent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\",\"fingerprintId\":\"fpD\"}",
+    "status": 200,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "application/json"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "Set-Cookie": [
+      "hsid=<random>; Path=/; HttpOnly; Secure; SameSite=Lax"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Hm-N": [
+      "0"
+     ],
+     "X-Hm-Seed": [
+      "YXjuSCd-O6CEvOnDspJ9jp5ZD66-FvXbD-UK4HV5Zwc"
+     ],
+     "X-Hm-W": [
+      "10"
+     ]
+    },
+    "respBody": "{\"hardRuleFired\":\"HR-18\",\"policyVersion\":\"1.0.0\",\"riskScore\":70.8,\"sessionId\":\"92fe4def3a7e248b3806aa205e26667b\",\"topContributors\":[{\"id\":\"x.browser_no_js\",\"score\":45},{\"id\":\"x.uach_present\",\"score\":40},{\"id\":\"x.ua_vs_header\",\"score\":35},{\"id\":\"l5.header.sec_fetch_missing\",\"score\":25},{\"id\":\"l2.env.probe_dead\",\"score\":2.5}],\"verdict\":\"DENY\"}\n"
+   },
+   {
+    "name": "collect-xff-1",
+    "method": "POST",
+    "target": "/api/collect",
+    "remote": "10.0.0.5:4000",
+    "headers": [
+     [
+      "Cookie",
+      "hsid=x1"
+     ],
+     [
+      "User-Agent",
+      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+     ],
+     [
+      "X-Forwarded-For",
+      "198.51.100.10, 10.0.0.1"
+     ]
+    ],
+    "body": "{\"userAgent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\",\"fingerprintId\":\"fpX\"}",
+    "status": 200,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "application/json"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Hm-N": [
+      "0"
+     ],
+     "X-Hm-Seed": [
+      "Ah0eKTPGfrL157qNyZXZSCAtoSWWglxAEcGFjMZriMQ"
+     ],
+     "X-Hm-W": [
+      "10"
+     ]
+    },
+    "respBody": "{\"hardRuleFired\":\"HR-18\",\"policyVersion\":\"1.0.0\",\"riskScore\":70.8,\"sessionId\":\"x1\",\"topContributors\":[{\"id\":\"x.browser_no_js\",\"score\":45},{\"id\":\"x.uach_present\",\"score\":40},{\"id\":\"x.ua_vs_header\",\"score\":35},{\"id\":\"l5.header.sec_fetch_missing\",\"score\":25},{\"id\":\"l2.env.probe_dead\",\"score\":2.5}],\"verdict\":\"DENY\"}\n"
+   },
+   {
+    "name": "collect-xff-2",
+    "method": "POST",
+    "target": "/api/collect",
+    "remote": "10.0.0.5:4001",
+    "headers": [
+     [
+      "Cookie",
+      "hsid=x2"
+     ],
+     [
+      "User-Agent",
+      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+     ],
+     [
+      "X-Forwarded-For",
+      "198.51.101.10"
+     ]
+    ],
+    "body": "{\"userAgent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\",\"fingerprintId\":\"fpX\"}",
+    "status": 200,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "application/json"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Hm-N": [
+      "0"
+     ],
+     "X-Hm-Seed": [
+      "hJtiVbBKjoODrPq_nOHz5m4kRtiyj40S84KlpHAYJH0"
+     ],
+     "X-Hm-W": [
+      "10"
+     ]
+    },
+    "respBody": "{\"hardRuleFired\":\"HR-18\",\"policyVersion\":\"1.0.0\",\"riskScore\":70.8,\"sessionId\":\"x2\",\"topContributors\":[{\"id\":\"x.browser_no_js\",\"score\":45},{\"id\":\"x.uach_present\",\"score\":40},{\"id\":\"x.ua_vs_header\",\"score\":35},{\"id\":\"l5.header.sec_fetch_missing\",\"score\":25},{\"id\":\"l2.env.probe_dead\",\"score\":2.5}],\"verdict\":\"DENY\"}\n"
+   },
+   {
+    "name": "collect-xff-3",
+    "method": "POST",
+    "target": "/api/collect",
+    "remote": "10.0.0.5:4002",
+    "headers": [
+     [
+      "Cookie",
+      "hsid=x3"
+     ],
+     [
+      "User-Agent",
+      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+     ],
+     [
+      "X-Real-IP",
+      "198.51.102.10"
+     ]
+    ],
+    "body": "{\"userAgent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\",\"fingerprintId\":\"fpX\"}",
+    "status": 200,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "application/json"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Hm-N": [
+      "0"
+     ],
+     "X-Hm-Seed": [
+      "NxezNbtcgIQQxBqHNushJKXwY6lhcGIbIzIATJiD3fY"
+     ],
+     "X-Hm-W": [
+      "10"
+     ]
+    },
+    "respBody": "{\"hardRuleFired\":\"HR-18\",\"policyVersion\":\"1.0.0\",\"riskScore\":70.8,\"sessionId\":\"x3\",\"topContributors\":[{\"id\":\"x.browser_no_js\",\"score\":45},{\"id\":\"x.uach_present\",\"score\":40},{\"id\":\"x.ua_vs_header\",\"score\":35},{\"id\":\"l5.header.sec_fetch_missing\",\"score\":25},{\"id\":\"l2.env.probe_dead\",\"score\":2.5}],\"verdict\":\"DENY\"}\n"
+   },
+   {
+    "name": "report-own",
+    "method": "GET",
+    "target": "/api/report/s2",
+    "remote": "",
+    "headers": [
+     [
+      "Cookie",
+      "hsid=s2"
+     ]
+    ],
+    "body": "",
+    "status": 200,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "application/json"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "<report>"
+   },
+   {
+    "name": "report-other",
+    "method": "GET",
+    "target": "/api/report/s2",
+    "remote": "",
+    "headers": [
+     [
+      "Cookie",
+      "hsid=s1"
+     ]
+    ],
+    "body": "",
+    "status": 404,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "404 page not found\n"
+   },
+   {
+    "name": "report-operator-missing",
+    "method": "GET",
+    "target": "/api/report/zz",
+    "remote": "",
+    "headers": [
+     [
+      "Authorization",
+      "Bearer optok"
+     ]
+    ],
+    "body": "",
+    "status": 404,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "404 page not found\n"
+   },
+   {
+    "name": "report-empty",
+    "method": "GET",
+    "target": "/api/report/",
+    "remote": "",
+    "headers": [
+     [
+      "Cookie",
+      "hsid="
+     ]
+    ],
+    "body": "",
+    "status": 404,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "404 page not found\n"
+   },
+   {
+    "name": "report-list-anon",
+    "method": "GET",
+    "target": "/api/report",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 404,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "404 page not found\n"
+   },
+   {
+    "name": "report-list-badtoken",
+    "method": "GET",
+    "target": "/api/report",
+    "remote": "",
+    "headers": [
+     [
+      "Authorization",
+      "Bearer nope"
+     ]
+    ],
+    "body": "",
+    "status": 404,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "404 page not found\n"
+   },
+   {
+    "name": "csp",
+    "method": "POST",
+    "target": "/api/csp-report",
+    "remote": "",
+    "headers": [
+     [
+      "Cookie",
+      "hsid=s2"
+     ]
+    ],
+    "body": "{}",
+    "status": 204,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": ""
+   },
+   {
+    "name": "csp-anon",
+    "method": "GET",
+    "target": "/api/csp-report",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 204,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": ""
+   },
+   {
+    "name": "pow-get",
+    "method": "GET",
+    "target": "/api/pow",
+    "remote": "",
+    "headers": [
+     [
+      "Cookie",
+      "hsid=s2"
+     ]
+    ],
+    "body": "",
+    "status": 405,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "POST only\n"
+   },
+   {
+    "name": "pow-nosession",
+    "method": "POST",
+    "target": "/api/pow",
+    "remote": "",
+    "headers": null,
+    "body": "{}",
+    "status": 400,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "no session\n"
+   },
+   {
+    "name": "pow-unissued",
+    "method": "POST",
+    "target": "/api/pow",
+    "remote": "",
+    "headers": [
+     [
+      "Cookie",
+      "hsid=s2"
+     ]
+    ],
+    "body": "{\"bucket\":1,\"nonce\":\"0\"}",
+    "status": 200,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "application/json"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "{\"ok\":false}\n"
+   },
+   {
+    "name": "trace-anon",
+    "method": "POST",
+    "target": "/api/trace",
+    "remote": "",
+    "headers": null,
+    "body": "x",
+    "status": 404,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "404 page not found\n"
+   },
+   {
+    "name": "trace-get",
+    "method": "GET",
+    "target": "/api/trace",
+    "remote": "",
+    "headers": [
+     [
+      "Authorization",
+      "Bearer optok"
+     ]
+    ],
+    "body": "",
+    "status": 405,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "POST only\n"
+   },
+   {
+    "name": "traffic-anon",
+    "method": "GET",
+    "target": "/api/traffic/s2",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 404,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "404 page not found\n"
+   },
+   {
+    "name": "res-bad",
+    "method": "GET",
+    "target": "/res/a/..%2f..%2fx",
+    "remote": "",
+    "headers": [
+     [
+      "Cookie",
+      "hsid=s2"
+     ]
+    ],
+    "body": "",
+    "status": 404,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "404 page not found\n"
+   },
+   {
+    "name": "res-missing",
+    "method": "GET",
+    "target": "/res/none.js",
+    "remote": "",
+    "headers": [
+     [
+      "Cookie",
+      "hsid=s2"
+     ]
+    ],
+    "body": "",
+    "status": 404,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "404 page not found\n"
+   },
+   {
+    "name": "res-fresh-missing",
+    "method": "GET",
+    "target": "/res/none.js",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 404,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "Set-Cookie": [
+      "hsid=<random>; Path=/; HttpOnly; Secure; SameSite=Lax"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "404 page not found\n"
+   },
+   {
+    "name": "healthz",
+    "method": "GET",
+    "target": "/healthz",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 200,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "application/json"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "{\"status\":\"ok\",\"uptimeSec\":0,\"version\":\"dev\"}\n"
+   },
+   {
+    "name": "explain-anon",
+    "method": "GET",
+    "target": "/api/explain/s2",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 404,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "404 page not found\n"
+   },
+   {
+    "name": "counters-anon",
+    "method": "GET",
+    "target": "/api/counters",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 404,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "text/plain; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "404 page not found\n"
+   },
+   {
+    "name": "pass-mount",
+    "method": "GET",
+    "target": "/api/pass/kpi",
+    "remote": "",
+    "headers": null,
+    "body": "",
+    "status": 200,
+    "respHeaders": {
+     "Content-Security-Policy-Report-Only": [
+      "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; base-uri 'none'; report-uri /api/csp-report"
+     ],
+     "Content-Type": [
+      "application/json"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ]
+    },
+    "respBody": "{\"botAttempts\":0,\"bypassRate\":0,\"humanAttempts\":0,\"humanPassRate\":0,\"perDifficulty\":{},\"perStrategy\":{},\"raw\":{},\"unknownPassRate\":0}\n"
+   }
+  ],
+  "parseUint": [
+   {
+    "in": "",
+    "out": 0
+   },
+   {
+    "in": "1",
+    "out": 1
+   },
+   {
+    "in": "+1",
+    "out": 0
+   },
+   {
+    "in": "-1",
+    "out": 0
+   },
+   {
+    "in": " 1",
+    "out": 0
+   },
+   {
+    "in": "01",
+    "out": 1
+   },
+   {
+    "in": "18446744073709551615",
+    "out": 18446744073709551615
+   },
+   {
+    "in": "18446744073709551616",
+    "out": 18446744073709551615
+   },
+   {
+    "in": "1a",
+    "out": 0
+   },
+   {
+    "in": "0x10",
+    "out": 0
+   }
+  ],
+  "rateSignals": [
+   "l5.tls.not_observed",
+   "l5.tcp.not_observed",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.rate_exceeded",
+   "l5.abuse.flood",
+   "l5.abuse.flood",
+   "l5.abuse.flood",
+   "l5.abuse.flood",
+   "l5.abuse.flood",
+   "l5.abuse.flood"
+  ],
+  "rateVerdicts": [
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE",
+   "CHALLENGE"
+  ],
+  "ritCanonical": [
+   {
+    "sid": "s1",
+    "n": 1,
+    "tb": 179000000,
+    "body": "",
+    "canonical": "s1\n1\n179000000\ne3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "seed": "aBCBX5f7QZhzXmc4WP8MyoZ6CVxOd2Ld3CWlpAAy-AA",
+    "mac": "ctXldbWXTGB4mYxsFKLtIDDuSsakL9hhlfB8TEDaXXI"
+   },
+   {
+    "sid": "s1",
+    "n": 2,
+    "tb": 179000001,
+    "body": "e30=",
+    "canonical": "s1\n2\n179000001\n44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "seed": "dRDhK2nc1REdyCwpW8GKr6ATiaB158fhjbsXrmi8LgA",
+    "mac": "fmHBwloWb2dAKPRyQNiWfb7jxs9h5j-QjZunifT79QQ"
+   },
+   {
+    "sid": "0123456789abcdef0123456789abcdef",
+    "n": 7,
+    "tb": 0,
+    "body": "eyJhIjoxfQ==",
+    "canonical": "0123456789abcdef0123456789abcdef\n7\n0\n015abd7f5cc57a2dd94b7590f04ad8084273905ee33ec5cebeae62276a97f862",
+    "seed": "rjhnf9JEnTpsx6ckPIR5WJJjqZDQwzCTzNvnzWNJ7ks",
+    "mac": "Ey55isfqo_8aywkXKPHqzPbH37091oBOrdVI0tOiQMI"
+   },
+   {
+    "sid": "",
+    "n": 0,
+    "tb": 18446744073709551615,
+    "body": "AP8=",
+    "canonical": "\n0\n18446744073709551615\n06eb7d6a69ee19e5fbdf749018d3d2abfa04bcbd1365db312eb86dc7169389b8",
+    "seed": "Q2WYab_gpMfINzQaLvMgBDYKjwlrBXz9jpY4Sw4PMEw",
+    "mac": "Du_ENaLfy7ACKWmoALbOdat1cfRkc21aYA7ObZ4Ac6Q"
+   }
+  ],
+  "stored": [
+   {
+    "sid": "522c2e652ebe2f50d72d7b04471e96a3",
+    "label": "",
+    "signals": null,
+    "verdict": "",
+    "riskScore": 0,
+    "ritCounter": 0,
+    "hardRule": ""
+   },
+   {
+    "sid": "92fe4def3a7e248b3806aa205e26667b",
+    "label": "",
+    "signals": [
+     {
+      "id": "l5.tls.not_observed",
+      "value": true,
+      "verdict": "UNKNOWN",
+      "notes": "no ClientHello captured — TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)"
+     },
+     {
+      "id": "l5.header.sec_fetch_missing",
+      "value": true,
+      "verdict": "BOT",
+      "notes": "Chrome UA but no sec-fetch-*"
+     },
+     {
+      "id": "l5.tcp.not_observed",
+      "value": true,
+      "verdict": "UNKNOWN",
+      "notes": "no TCP SYN/PROXY-TLV capture — L4 plane inactive (wire eBPF/PROXY TLV for full residual)"
+     },
+     {
+      "id": "l5.rit.bootstrap",
+      "value": "bootstrap",
+      "verdict": "OK",
+      "notes": "first request, token grace"
+     }
+    ],
+    "verdict": "DENY",
+    "riskScore": 70.8,
+    "ritCounter": 0,
+    "hardRule": "HR-18"
+   },
+   {
+    "sid": "cdf3f8fbe866a283d6cb167c4668034c",
+    "label": "",
+    "signals": null,
+    "verdict": "",
+    "riskScore": 0,
+    "ritCounter": 0,
+    "hardRule": ""
+   },
+   {
+    "sid": "d1",
+    "label": "",
+    "signals": null,
+    "verdict": "",
+    "riskScore": 0,
+    "ritCounter": 0,
+    "hardRule": ""
+   },
+   {
+    "sid": "d1b9abaf59af617f79f2489ad221c1bd",
+    "label": "",
+    "signals": null,
+    "verdict": "",
+    "riskScore": 0,
+    "ritCounter": 0,
+    "hardRule": ""
+   },
+   {
+    "sid": "p1",
+    "label": "",
+    "signals": null,
+    "verdict": "",
+    "riskScore": 0,
+    "ritCounter": 0,
+    "hardRule": ""
+   },
+   {
+    "sid": "s1",
+    "label": "",
+    "signals": [
+     {
+      "id": "l5.tls.not_observed",
+      "value": true,
+      "verdict": "UNKNOWN",
+      "notes": "no ClientHello captured — TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)"
+     },
+     {
+      "id": "l5.header.sec_fetch_missing",
+      "value": true,
+      "verdict": "BOT",
+      "notes": "Chrome UA but no sec-fetch-*"
+     },
+     {
+      "id": "l5.tcp.not_observed",
+      "value": true,
+      "verdict": "UNKNOWN",
+      "notes": "no TCP SYN/PROXY-TLV capture — L4 plane inactive (wire eBPF/PROXY TLV for full residual)"
+     },
+     {
+      "id": "l5.rit.absent",
+      "value": true,
+      "verdict": "BOT",
+      "notes": "repeated tokenless API call (grace already consumed)"
+     }
+    ],
+    "verdict": "DENY",
+    "riskScore": 79.5,
+    "ritCounter": 0,
+    "hardRule": "HR-18"
+   },
+   {
+    "sid": "s2",
+    "label": "human",
+    "signals": [
+     {
+      "id": "l5.tls.not_observed",
+      "value": true,
+      "verdict": "UNKNOWN",
+      "notes": "no ClientHello captured — TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)"
+     },
+     {
+      "id": "l5.header.sec_fetch_missing",
+      "value": true,
+      "verdict": "BOT",
+      "notes": "Chrome UA but no sec-fetch-*"
+     },
+     {
+      "id": "l5.header.accept_encoding",
+      "value": "gzip, deflate, br",
+      "verdict": "SUSPICIOUS",
+      "notes": "Chrome UA but accept-encoding lacks zstd"
+     },
+     {
+      "id": "l5.tcp.not_observed",
+      "value": true,
+      "verdict": "UNKNOWN",
+      "notes": "no TCP SYN/PROXY-TLV capture — L4 plane inactive (wire eBPF/PROXY TLV for full residual)"
+     },
+     {
+      "id": "l5.rit.ok",
+      "value": true,
+      "verdict": "OK",
+      "notes": "RIT valid"
+     },
+     {
+      "id": "l5.rit.ok",
+      "value": true,
+      "verdict": "OK",
+      "notes": "RIT valid"
+     },
+     {
+      "id": "l5.correlation.fp_churn_proxy",
+      "value": {
+       "next": "fpC",
+       "prev": "fpB"
+      },
+      "verdict": "BOT",
+      "notes": "fingerprintId rotated mid-session (proxy fp-churn evasion)"
+     },
+     {
+      "id": "l5.proxy.vpn_webrtc_leak",
+      "value": {
+       "tcp": "192.0.2.1",
+       "webrtc": "198.51.100.7"
+      },
+      "verdict": "BOT",
+      "notes": "WebRTC public candidate ≠ TCP client IP (VPN/tunnel leak)"
+     },
+     {
+      "id": "l3.guard.csp_violation",
+      "value": true,
+      "verdict": "SUSPICIOUS",
+      "notes": "CSP violation reported"
+     }
+    ],
+    "verdict": "DENY",
+    "riskScore": 70.8,
+    "ritCounter": 2,
+    "hardRule": "HR-18"
+   },
+   {
+    "sid": "x1",
+    "label": "",
+    "signals": [
+     {
+      "id": "l5.tls.not_observed",
+      "value": true,
+      "verdict": "UNKNOWN",
+      "notes": "no ClientHello captured — TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)"
+     },
+     {
+      "id": "l5.header.sec_fetch_missing",
+      "value": true,
+      "verdict": "BOT",
+      "notes": "Chrome UA but no sec-fetch-*"
+     },
+     {
+      "id": "l5.header.xff_multi_hop",
+      "value": 2,
+      "verdict": "SUSPICIOUS",
+      "notes": "multi-hop X-Forwarded-For chain"
+     },
+     {
+      "id": "l5.tcp.not_observed",
+      "value": true,
+      "verdict": "UNKNOWN",
+      "notes": "no TCP SYN/PROXY-TLV capture — L4 plane inactive (wire eBPF/PROXY TLV for full residual)"
+     },
+     {
+      "id": "l5.rit.bootstrap",
+      "value": "bootstrap",
+      "verdict": "OK",
+      "notes": "first request, token grace"
+     }
+    ],
+    "verdict": "DENY",
+    "riskScore": 70.8,
+    "ritCounter": 0,
+    "hardRule": "HR-18"
+   },
+   {
+    "sid": "x2",
+    "label": "",
+    "signals": [
+     {
+      "id": "l5.tls.not_observed",
+      "value": true,
+      "verdict": "UNKNOWN",
+      "notes": "no ClientHello captured — TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)"
+     },
+     {
+      "id": "l5.header.sec_fetch_missing",
+      "value": true,
+      "verdict": "BOT",
+      "notes": "Chrome UA but no sec-fetch-*"
+     },
+     {
+      "id": "l5.tcp.not_observed",
+      "value": true,
+      "verdict": "UNKNOWN",
+      "notes": "no TCP SYN/PROXY-TLV capture — L4 plane inactive (wire eBPF/PROXY TLV for full residual)"
+     },
+     {
+      "id": "l5.rit.bootstrap",
+      "value": "bootstrap",
+      "verdict": "OK",
+      "notes": "first request, token grace"
+     }
+    ],
+    "verdict": "DENY",
+    "riskScore": 70.8,
+    "ritCounter": 0,
+    "hardRule": "HR-18"
+   },
+   {
+    "sid": "x3",
+    "label": "",
+    "signals": [
+     {
+      "id": "l5.tls.not_observed",
+      "value": true,
+      "verdict": "UNKNOWN",
+      "notes": "no ClientHello captured — TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)"
+     },
+     {
+      "id": "l5.header.sec_fetch_missing",
+      "value": true,
+      "verdict": "BOT",
+      "notes": "Chrome UA but no sec-fetch-*"
+     },
+     {
+      "id": "l5.tcp.not_observed",
+      "value": true,
+      "verdict": "UNKNOWN",
+      "notes": "no TCP SYN/PROXY-TLV capture — L4 plane inactive (wire eBPF/PROXY TLV for full residual)"
+     },
+     {
+      "id": "l5.rit.bootstrap",
+      "value": "bootstrap",
+      "verdict": "OK",
+      "notes": "first request, token grace"
+     },
+     {
+      "id": "l5.correlation.proxy_rotation",
+      "value": 3,
+      "verdict": "BOT",
+      "notes": "one fingerprint across many subnets (residential-proxy rotation)"
+     }
+    ],
+    "verdict": "DENY",
+    "riskScore": 70.8,
+    "ritCounter": 0,
+    "hardRule": "HR-18"
+   }
+  ],
+  "traffic": [
+   {
+    "hasSecFetch": false,
+    "headerOrderHash": "685f2e5a2fc6",
+    "method": "POST",
+    "path": "/api/collect",
+    "proto": "1.1",
+    "remoteAddr": "192.0.2.1",
+    "sessionId": "s2",
+    "ts": "<masked>",
+    "uaHash": "4e410e0cf6c3"
+   },
+   {
+    "hasSecFetch": false,
+    "headerOrderHash": "685f2e5a2fc6",
+    "method": "POST",
+    "path": "/api/collect",
+    "proto": "1.1",
+    "remoteAddr": "192.0.2.1",
+    "sessionId": "s2",
+    "ts": "<masked>",
+    "uaHash": "4e410e0cf6c3"
+   },
+   {
+    "hasSecFetch": false,
+    "headerOrderHash": "d7e83e28a04b",
+    "method": "GET",
+    "path": "/api/report/s2",
+    "proto": "1.1",
+    "remoteAddr": "192.0.2.1",
+    "sessionId": "s2",
+    "ts": "<masked>"
+   },
+   {
+    "hasSecFetch": false,
+    "headerOrderHash": "d7e83e28a04b",
+    "method": "POST",
+    "path": "/api/csp-report",
+    "proto": "1.1",
+    "remoteAddr": "192.0.2.1",
+    "sessionId": "s2",
+    "ts": "<masked>"
+   },
+   {
+    "hasSecFetch": false,
+    "headerOrderHash": "d7e83e28a04b",
+    "method": "GET",
+    "path": "/api/pow",
+    "proto": "1.1",
+    "remoteAddr": "192.0.2.1",
+    "sessionId": "s2",
+    "ts": "<masked>"
+   },
+   {
+    "hasSecFetch": false,
+    "headerOrderHash": "d7e83e28a04b",
+    "method": "POST",
+    "path": "/api/pow",
+    "proto": "1.1",
+    "remoteAddr": "192.0.2.1",
+    "sessionId": "s2",
+    "ts": "<masked>"
+   },
+   {
+    "hasSecFetch": false,
+    "headerOrderHash": "d7e83e28a04b",
+    "method": "GET",
+    "path": "/res/a/../../x",
+    "proto": "1.1",
+    "remoteAddr": "192.0.2.1",
+    "sessionId": "s2",
+    "ts": "<masked>"
+   },
+   {
+    "hasSecFetch": false,
+    "headerOrderHash": "d7e83e28a04b",
+    "method": "GET",
+    "path": "/res/none.js",
+    "proto": "1.1",
+    "remoteAddr": "192.0.2.1",
+    "sessionId": "s2",
+    "ts": "<masked>"
+   },
+   {
+    "hasSecFetch": false,
+    "headerOrderHash": "5e48cfb4e671",
+    "method": "POST",
+    "path": "/api/collect",
+    "proto": "1.1",
+    "remoteAddr": "198.51.100.10",
+    "sessionId": "x1",
+    "ts": "<masked>",
+    "uaHash": "4e410e0cf6c3"
+   }
+  ],
+  "verifyRIT": [
+   {
+    "sid": "r1",
+    "token": "none",
+    "n": 0,
+    "tbOffset": 0,
+    "body": "",
+    "counterBefore": 0,
+    "counterAfter": 0,
+    "signal": {
+     "id": "l5.rit.bootstrap",
+     "value": "bootstrap",
+     "verdict": "OK",
+     "notes": "first request, token grace"
+    },
+    "seedAfter": "fLxyFpD47iG1yXpHXTKd6aDYBXamqS928DEvqrwE87U"
+   },
+   {
+    "sid": "r1",
+    "token": "none",
+    "n": 0,
+    "tbOffset": 0,
+    "body": "",
+    "counterBefore": 0,
+    "counterAfter": 0,
+    "signal": {
+     "id": "l5.rit.absent",
+     "value": true,
+     "verdict": "BOT",
+     "notes": "repeated tokenless API call (grace already consumed)"
+    },
+    "seedAfter": "fLxyFpD47iG1yXpHXTKd6aDYBXamqS928DEvqrwE87U"
+   },
+   {
+    "sid": "r1",
+    "token": "valid",
+    "n": 1,
+    "tbOffset": 0,
+    "body": "{}",
+    "counterBefore": 0,
+    "counterAfter": 1,
+    "signal": {
+     "id": "l5.rit.ok",
+     "value": true,
+     "verdict": "OK",
+     "notes": "RIT valid"
+    },
+    "seedAfter": "xOkw_vQUyX_LPFqUesegnWqid8BpdmZPo89mrk_g56A"
+   },
+   {
+    "sid": "r1",
+    "token": "valid",
+    "n": 2,
+    "tbOffset": 1,
+    "body": "{\"x\":1}",
+    "counterBefore": 1,
+    "counterAfter": 2,
+    "signal": {
+     "id": "l5.rit.ok",
+     "value": true,
+     "verdict": "OK",
+     "notes": "RIT valid"
+    },
+    "seedAfter": "C08Zq3jKRVxNMdlP53GjUsPQTDl5BP5vdBZME_RFK_8"
+   },
+   {
+    "sid": "r1",
+    "token": "valid",
+    "n": 3,
+    "tbOffset": -1,
+    "body": "",
+    "counterBefore": 2,
+    "counterAfter": 3,
+    "signal": {
+     "id": "l5.rit.ok",
+     "value": true,
+     "verdict": "OK",
+     "notes": "RIT valid"
+    },
+    "seedAfter": "CaqNO_OJfMCSTMSUuiN742IvbYnGCDWNIpKN5b9nMAs"
+   },
+   {
+    "sid": "r1",
+    "token": "valid",
+    "n": 4,
+    "tbOffset": 2,
+    "body": "",
+    "counterBefore": 3,
+    "counterAfter": 3,
+    "signal": {
+     "id": "l5.rit.stale_replay",
+     "value": 179508760,
+     "verdict": "SUSPICIOUS",
+     "notes": "RIT time bucket outside window (replay)"
+    },
+    "seedAfter": "CaqNO_OJfMCSTMSUuiN742IvbYnGCDWNIpKN5b9nMAs"
+   },
+   {
+    "sid": "r1",
+    "token": "valid",
+    "n": 4,
+    "tbOffset": -2,
+    "body": "",
+    "counterBefore": 3,
+    "counterAfter": 3,
+    "signal": {
+     "id": "l5.rit.stale_replay",
+     "value": 179508756,
+     "verdict": "SUSPICIOUS",
+     "notes": "RIT time bucket outside window (replay)"
+    },
+    "seedAfter": "CaqNO_OJfMCSTMSUuiN742IvbYnGCDWNIpKN5b9nMAs"
+   },
+   {
+    "sid": "r1",
+    "token": "valid",
+    "n": 3,
+    "tbOffset": 0,
+    "body": "",
+    "counterBefore": 3,
+    "counterAfter": 3,
+    "signal": {
+     "id": "l5.rit.stale_replay",
+     "value": 3,
+     "verdict": "SUSPICIOUS",
+     "notes": "RIT counter out of sequence (replay)"
+    },
+    "seedAfter": "CaqNO_OJfMCSTMSUuiN742IvbYnGCDWNIpKN5b9nMAs"
+   },
+   {
+    "sid": "r1",
+    "token": "bad",
+    "n": 4,
+    "tbOffset": 0,
+    "body": "",
+    "counterBefore": 3,
+    "counterAfter": 3,
+    "signal": {
+     "id": "l5.rit.header_tampered",
+     "value": true,
+     "verdict": "BOT",
+     "notes": "signed request != observed (invalid HMAC / body or token tampered)"
+    },
+    "seedAfter": "CaqNO_OJfMCSTMSUuiN742IvbYnGCDWNIpKN5b9nMAs"
+   },
+   {
+    "sid": "r1",
+    "token": "valid",
+    "n": 9,
+    "tbOffset": 0,
+    "body": "",
+    "counterBefore": 3,
+    "counterAfter": 3,
+    "signal": {
+     "id": "l5.rit.stale_replay",
+     "value": 9,
+     "verdict": "SUSPICIOUS",
+     "notes": "RIT counter out of sequence (replay)"
+    },
+    "seedAfter": "CaqNO_OJfMCSTMSUuiN742IvbYnGCDWNIpKN5b9nMAs"
+   },
+   {
+    "sid": "r1",
+    "token": "valid",
+    "n": 4,
+    "tbOffset": 0,
+    "body": "body",
+    "counterBefore": 3,
+    "counterAfter": 4,
+    "signal": {
+     "id": "l5.rit.ok",
+     "value": true,
+     "verdict": "OK",
+     "notes": "RIT valid"
+    },
+    "seedAfter": "0n1hI6aF8IJFbJmvrExbgW72PBPAmc3EI0Y96HrhIIk"
+   },
+   {
+    "sid": "r2",
+    "token": "valid",
+    "n": 1,
+    "tbOffset": 0,
+    "body": "",
+    "counterBefore": 0,
+    "counterAfter": 1,
+    "signal": {
+     "id": "l5.rit.ok",
+     "value": true,
+     "verdict": "OK",
+     "notes": "RIT valid"
+    },
+    "seedAfter": "Ei18YltOIhePuZNeaHBcUn16JvaEgYDdcGDmhCkDWsc"
+   },
+   {
+    "sid": "r3",
+    "token": "bad",
+    "n": 1,
+    "tbOffset": 0,
+    "body": "",
+    "counterBefore": 0,
+    "counterAfter": 0,
+    "signal": {
+     "id": "l5.rit.header_tampered",
+     "value": true,
+     "verdict": "BOT",
+     "notes": "signed request != observed (invalid HMAC / body or token tampered)"
+    },
+    "seedAfter": "gk0no0ceGYOklX6Gy230EmTYmze1QQG4KuxTFy4ZsSo"
+   },
+   {
+    "sid": "r3",
+    "token": "none",
+    "n": 0,
+    "tbOffset": 0,
+    "body": "",
+    "counterBefore": 0,
+    "counterAfter": 0,
+    "signal": {
+     "id": "l5.rit.bootstrap",
+     "value": "bootstrap",
+     "verdict": "OK",
+     "notes": "first request, token grace"
+    },
+    "seedAfter": "gk0no0ceGYOklX6Gy230EmTYmze1QQG4KuxTFy4ZsSo"
+   },
+   {
+    "sid": "r3",
+    "token": "none",
+    "n": 0,
+    "tbOffset": 0,
+    "body": "",
+    "counterBefore": 0,
+    "counterAfter": 0,
+    "signal": {
+     "id": "l5.rit.absent",
+     "value": true,
+     "verdict": "BOT",
+     "notes": "repeated tokenless API call (grace already consumed)"
+    },
+    "seedAfter": "gk0no0ceGYOklX6Gy230EmTYmze1QQG4KuxTFy4ZsSo"
+   },
+   {
+    "sid": "r4",
+    "token": "valid",
+    "n": 1,
+    "tbOffset": 0,
+    "nHeader": "+1",
+    "body": "",
+    "counterBefore": 0,
+    "counterAfter": 0,
+    "signal": {
+     "id": "l5.rit.stale_replay",
+     "value": 0,
+     "verdict": "SUSPICIOUS",
+     "notes": "RIT counter out of sequence (replay)"
+    },
+    "seedAfter": "W8athj4q9qSkMZTAJ_r6cxjFsZV5SrhkqchfcPX93w8"
+   }
+  ],
+  "webrtcLeak": [
+   {
+    "tcp": "203.0.113.9",
+    "addrs": [
+     "203.0.113.9"
+    ],
+    "sig": {
+     "id": "",
+     "value": null,
+     "verdict": "",
+     "notes": ""
+    }
+   },
+   {
+    "tcp": "203.0.113.9",
+    "addrs": [
+     " 198.51.100.7 "
+    ],
+    "sig": {
+     "id": "l5.proxy.vpn_webrtc_leak",
+     "value": {
+      "tcp": "203.0.113.9",
+      "webrtc": "198.51.100.7"
+     },
+     "verdict": "BOT",
+     "notes": "WebRTC public candidate ≠ TCP client IP (VPN/tunnel leak)"
+    }
+   },
+   {
+    "tcp": "203.0.113.9",
+    "addrs": [
+     "10.0.0.1",
+     "fe80::1",
+     "0.0.0.0",
+     "bad",
+     "198.51.100.7"
+    ],
+    "sig": {
+     "id": "l5.proxy.vpn_webrtc_leak",
+     "value": {
+      "tcp": "203.0.113.9",
+      "webrtc": "198.51.100.7"
+     },
+     "verdict": "BOT",
+     "notes": "WebRTC public candidate ≠ TCP client IP (VPN/tunnel leak)"
+    }
+   },
+   {
+    "tcp": "10.1.2.3",
+    "addrs": [
+     "198.51.100.7"
+    ],
+    "sig": {
+     "id": "",
+     "value": null,
+     "verdict": "",
+     "notes": ""
+    }
+   },
+   {
+    "tcp": "bad",
+    "addrs": [
+     "198.51.100.7"
+    ],
+    "sig": {
+     "id": "",
+     "value": null,
+     "verdict": "",
+     "notes": ""
+    }
+   },
+   {
+    "tcp": "::ffff:203.0.113.9",
+    "addrs": [
+     "203.0.113.9"
+    ],
+    "sig": {
+     "id": "",
+     "value": null,
+     "verdict": "",
+     "notes": ""
+    }
+   },
+   {
+    "tcp": "2001:db8::1",
+    "addrs": [
+     "2001:db8::2"
+    ],
+    "sig": {
+     "id": "l5.proxy.vpn_webrtc_leak",
+     "value": {
+      "tcp": "2001:db8::1",
+      "webrtc": "2001:db8::2"
+     },
+     "verdict": "BOT",
+     "notes": "WebRTC public candidate ≠ TCP client IP (VPN/tunnel leak)"
+    }
+   },
+   {
+    "tcp": "2001:db8::1",
+    "addrs": [
+     "2001:DB8::1"
+    ],
+    "sig": {
+     "id": "",
+     "value": null,
+     "verdict": "",
+     "notes": ""
+    }
+   },
+   {
+    "tcp": "203.0.113.9",
+    "addrs": null,
+    "sig": {
+     "id": "",
+     "value": null,
+     "verdict": "",
+     "notes": ""
+    }
+   },
+   {
+    "tcp": "127.0.0.1",
+    "addrs": [
+     "8.8.8.8"
+    ],
+    "sig": {
+     "id": "",
+     "value": null,
+     "verdict": "",
+     "notes": ""
+    }
+   },
+   {
+    "tcp": "203.0.113.9",
+    "addrs": [
+     "::"
+    ],
+    "sig": {
+     "id": "",
+     "value": null,
+     "verdict": "",
+     "notes": ""
+    }
+   }
+  ],
+  "withinTB": [
+   {
+    "A": 5,
+    "B": 5,
+    "Tol": 1,
+    "Within": true
+   },
+   {
+    "A": 5,
+    "B": 6,
+    "Tol": 1,
+    "Within": true
+   },
+   {
+    "A": 6,
+    "B": 5,
+    "Tol": 1,
+    "Within": true
+   },
+   {
+    "A": 5,
+    "B": 7,
+    "Tol": 1,
+    "Within": false
+   },
+   {
+    "A": 7,
+    "B": 5,
+    "Tol": 1,
+    "Within": false
+   },
+   {
+    "A": 0,
+    "B": 18446744073709551615,
+    "Tol": 1,
+    "Within": false
+   },
+   {
+    "A": 18446744073709551615,
+    "B": 0,
+    "Tol": 1,
+    "Within": false
+   },
+   {
+    "A": 3,
+    "B": 0,
+    "Tol": 3,
+    "Within": true
+   }
+  ]
+ }
+}

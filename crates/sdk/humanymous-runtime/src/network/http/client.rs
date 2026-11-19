@@ -37,8 +37,8 @@ fn local_v6(ip: Ipv6Addr) -> bool {
     ip.is_loopback() || head & 0xfe00 == 0xfc00 || head & 0xffc0 == 0xfe80
 }
 
-// Go IsLoopback || IsPrivate || IsLinkLocalUnicast.
-fn local(ip: IpAddr) -> bool {
+/// Go `IsLoopback || IsPrivate || IsLinkLocalUnicast`.
+pub(crate) fn local(ip: IpAddr) -> bool {
     match ip {
         IpAddr::V4(v4) => local_v4(v4),
         IpAddr::V6(v6) => local_v6(v6),

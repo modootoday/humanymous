@@ -28,6 +28,7 @@ impl Application {
         let mut admission = Admission::new(self.config.rate_per_second);
         let mut commands = self.take_settings_commands();
         let mut admission_rate = self.config.rate_per_second;
+        let mut sweep = maintenance::ticker(self.sweep_interval);
         loop {
             if shutdown.borrow().is_some() {
                 return Ok(());
@@ -40,6 +41,10 @@ impl Application {
                 }
                 command = settings::next_command(&mut commands) => {
                     self.apply_settings_command(command, &shutdown)?;
+                    continue;
+                }
+                _ = sweep.tick() => {
+                    self.maintenance_tick();
                     continue;
                 }
                 accepted = listener.accept() => accepted?,

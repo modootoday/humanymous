@@ -473,6 +473,33 @@ Pinned by `gateway::tests::edge` against the oracle captures
 `tests/fixtures/gateway/edge-gates-go-golden.json` and
 `tests/fixtures/gateway/edge-probe-methods-go-golden.json`.
 
+Composite sweep (FM11 lane B, 2026-11-19): `Application::gc` is legacy
+`Server.GC`. It sweeps every kernel the serving owner composes, expired
+sessions and the installed ban store (bans, strikes and rate windows at the
+store's own monotonic epoch), and both accept loops run it between requests
+on the legacy one-minute maintenance tick. A sweep never moves or poisons the
+session epoch: a clock behind the last request, or past the safe integer
+range, sweeps nothing. A refused store sweep or poisoned store lock reports
+503 `ban_ledger`; serving continues because the ban gate refuses on the same
+ledger. Pinned by `gateway::tests::maintenance`.
+
+### Gate operational logging in the runtime binary (FM11 lane B, 2026-11-19)
+
+The legacy cmd/gate `-log-level`, `-log-console-format`, `-log-console-stream`,
+`-log-plain-file` and `-log-jsonl-file` flags are the fields of an optional
+`logging` object in the binary's private inherited configuration, with the Go
+Gate defaults for omitted fields (`info`, `plain`, `stderr`, no files). The
+binary validates it and opens every sink before the TLS source and custody; a
+refusal exits non-zero with its static `log_*` code and no readiness line. It
+then writes Go's `runtime.logging_configured` record (file sinks as enabled
+flags, never paths) and, when startup or serving later fails, Go's
+`runtime.fatal` record with the static `fatal_class` of the error. Operational
+logs stay diagnostics only: no scoring, enforcement, settings or audit input.
+Deliberate differences: without the object nothing is logged (Go always logged
+at its defaults); `console_stream: "stdout"` is refused
+(`log_console_stream_reserved`) because standard output is the readiness pipe.
+Pinned by `gateway::logging` tests and the `gateway-tls-startup` process test.
+
 ### Review reflected
 
 Blue: reuse one engine/integrity/network/audit implementation. Red P0: method,
