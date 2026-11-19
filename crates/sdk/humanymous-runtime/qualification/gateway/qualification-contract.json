@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 615,
-      "macos": 615,
-      "windows": 597
+      "linux": 630,
+      "macos": 630,
+      "windows": 612
     },
     "common_test_names": [
       "gateway::admin_approval::tests::approval_store_rules",
@@ -33,6 +33,12 @@
       "gateway::admin_approval::tests::registration_refuses_empty_and_duplicate_tokens",
       "gateway::admin_approval::tests::role_wire_names_round_trip_exactly",
       "gateway::admin_approval::tests::ttl_boundary_and_clock_regression_do_not_expire",
+      "gateway::admin_plane::chain::tests::chain_routes_are_not_served_without_a_chain",
+      "gateway::admin_plane::chain::tests::go_admin_integrity_empty_chain_matches_capture",
+      "gateway::admin_plane::chain::tests::go_admin_keys_enable_offline_verify",
+      "gateway::admin_plane::chain::tests::go_audit_stream_incidents_and_enumeration_cap_match_capture",
+      "gateway::admin_plane::chain::tests::go_keys_proof_and_checkpoint_refusals_match_capture",
+      "gateway::admin_plane::chain::tests::unadmitted_incident_lookups_are_capped",
       "gateway::admin_plane::ops::tests::can_read_session_matches_go_golden",
       "gateway::admin_plane::ops::tests::configure_ops_matches_go_golden",
       "gateway::admin_plane::ops::tests::explain_fails_closed_on_non_finite_policy",
@@ -99,6 +105,15 @@
       "gateway::attest_floor::tests::foreign_or_verdict_proofs_do_not_unlock_the_floor",
       "gateway::attest_floor::tests::monitor_and_shadow_forward_and_report_off_forwards_silently",
       "gateway::attest_floor::tests::non_allow_and_non_enforcing_routes_are_left_to_the_pipeline",
+      "gateway::attest_floor::tests::parity::go_attest_floor_http_cases_match_capture",
+      "gateway::attest_floor::tests::parity::go_attested_catch_all_refusal_matches_capture",
+      "gateway::attest_floor::tests::parity::go_fanout_cap_leaves_unmarked_routes_untouched",
+      "gateway::attest_floor::tests::parity::go_fanout_cap_withholds_past_cap_on_attested_route",
+      "gateway::attest_floor::tests::parity::go_receipt_reasons_match_capture",
+      "gateway::attest_floor::tests::parity::go_step_up_exchange_matches_capture",
+      "gateway::attest_floor::tests::parity::non_positive_cap_selects_the_go_default",
+      "gateway::attest_floor::tests::parity::unadmitted_observation_withholds_the_upgrade_everywhere",
+      "gateway::attest_floor::tests::parity::unencodable_proof_is_refused_without_a_cookie",
       "gateway::attest_floor::tests::wargame_r346_t4_allow_token_priced_on_attested_route",
       "gateway::attest_floor::tests::wargame_r347_t4_step_up_unlocks_attested_after_proof",
       "gateway::attest_floor::tests::wargame_r348_t4_sticky_allow_cannot_skip_floor",

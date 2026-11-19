@@ -21,8 +21,8 @@ use std::collections::BTreeMap;
 mod routes_file;
 
 pub use routes_file::{
-    AttestedRouteError, RoutesError, VALID_PRESETS, load_routes, parse_routes,
-    validate_attested_routes,
+    AttestedCatchAll, AttestedRouteError, RoutesError, VALID_PRESETS, load_routes, parse_routes,
+    refuse_attested_catch_all, validate_attested_routes,
 };
 
 /// Resolved policy for a matched route (Go `routePolicy`).

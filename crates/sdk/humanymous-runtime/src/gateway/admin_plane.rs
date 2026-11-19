@@ -47,9 +47,13 @@
 //! - Mutations are audited before their effect; an audit failure answers 503
 //!   and applies nothing. A failure after the record answers 503.
 //! - Records carry a keyed operator pseudonym, not the Go vault pseudonym.
-//! - The console page and the integrity, proof, audit, incident, policy,
-//!   settings, erasure list/cancel, metrics, keys, checkpoints and virtual-USB
-//!   routes are not served here; they answer 404 after authentication.
+//! - The integrity, proof, audit, incident, keys and checkpoints reads are
+//!   served only when a shared audit chain is attached with
+//!   [`AdminPlane::with_chain`] (see [`chain`]); otherwise they answer 404
+//!   after authentication.
+//! - The console page and the policy, settings, erasure list/cancel, metrics
+//!   and virtual-USB routes are not served here; they answer 404 after
+//!   authentication.
 //! - JSON numbers use Go `encoding/json` text (`1`, not `1.0`).
 //!
 //! The operator ops routes of legacy cmd/server/ops.go (liveness, score
@@ -59,6 +63,7 @@
 //!
 //! Composition into `gateway::service` (listener address and the provisioning
 //! of admin bearer tokens and the ops token) is not done here.
+pub mod chain;
 pub mod ops;
 
 use crate::audit::control::{Action, RetainedActionPermit, Scope};
@@ -249,6 +254,12 @@ impl Matcher {
 #[derive(Clone, Copy)]
 enum Handler {
     ListBans,
+    Integrity,
+    Proof,
+    Audit,
+    Incident,
+    Keys,
+    Checkpoints,
     ListApprovals,
     Whoami,
     AddBan,
@@ -260,12 +271,36 @@ enum Handler {
 }
 
 /// Ordered dispatch and capability table (Go `adminRoutes`, served subset).
-const ROUTES: [(&str, Matcher, Capability, Handler); 9] = [
+const ROUTES: [(&str, Matcher, Capability, Handler); 15] = [
     (
         "GET",
         Matcher::Exact("bans"),
         Capability::Read,
         Handler::ListBans,
+    ),
+    (
+        "GET",
+        Matcher::Exact("integrity"),
+        Capability::Read,
+        Handler::Integrity,
+    ),
+    (
+        "GET",
+        Matcher::Exact("proof"),
+        Capability::Read,
+        Handler::Proof,
+    ),
+    (
+        "GET",
+        Matcher::Exact("audit"),
+        Capability::Read,
+        Handler::Audit,
+    ),
+    (
+        "GET",
+        Matcher::Prefix("incidents/"),
+        Capability::Read,
+        Handler::Incident,
     ),
     (
         "GET",
@@ -278,6 +313,18 @@ const ROUTES: [(&str, Matcher, Capability, Handler); 9] = [
         Matcher::Exact("whoami"),
         Capability::Read,
         Handler::Whoami,
+    ),
+    (
+        "GET",
+        Matcher::Exact("keys"),
+        Capability::Read,
+        Handler::Keys,
+    ),
+    (
+        "GET",
+        Matcher::Exact("checkpoints"),
+        Capability::Read,
+        Handler::Checkpoints,
     ),
     (
         "POST",
@@ -350,6 +397,7 @@ pub struct AdminPlane {
     permits: Mutex<Vec<RetainedActionPermit>>,
     audit: Mutex<Box<dyn DurableAudit>>,
     ops: Option<ops::Ops>,
+    chain: Option<chain::Chain>,
 }
 
 impl AdminPlane {
@@ -374,6 +422,7 @@ impl AdminPlane {
             permits: Mutex::new(Vec::new()),
             audit: Mutex::new(audit),
             ops: None,
+            chain: None,
         }
     }
 
@@ -459,6 +508,12 @@ impl AdminPlane {
             }
             return match handler {
                 Handler::ListBans => self.list_bans(clock),
+                Handler::Integrity => self.integrity(),
+                Handler::Proof => self.proof(&request.target),
+                Handler::Audit => self.audit_stream(&request.target),
+                Handler::Incident => self.incident(argument, &operator, clock),
+                Handler::Keys => self.keys(),
+                Handler::Checkpoints => self.checkpoints(),
                 Handler::ListApprovals => self.list_approvals(clock),
                 Handler::Whoami => {
                     Response::json(&json!({"id": operator.id, "role": operator.role.as_str()}))
@@ -1092,6 +1147,7 @@ async fn write(stream: &mut TcpStream, response: &Response) -> io::Result<()> {
         404 => "Not Found",
         409 => "Conflict",
         413 => "Content Too Large",
+        429 => "Too Many Requests",
         500 => "Internal Server Error",
         _ => "Service Unavailable",
     };

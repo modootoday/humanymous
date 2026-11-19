@@ -1,0 +1,610 @@
+{
+ "provenance": {
+  "oracle_commit": "981d25cf71a5a54855d7e2b4359e832a9d5998e5",
+  "oracle_packages": [
+   "internal/gate (attestfloor_test.go buildAttestStack/aReq/serve; control.go handleStepUp; token.go verifyStepUpReceipt/IssueStepUpReceipt; gates.go webauthnGate fan-out cap; gate.go NewServer errAttestedCatchAll and DefaultCredFanoutCap; admin.go adminIntegrity/adminKeys/adminCheckpoints/adminProof/adminAudit/adminIncident; incident.go incidentHandle/resolveIncident; ban_integration_test.go banStack; adminhelpers_test.go seedAdmins/adminDo; webauthn_test.go signAssertion/webauthnDir)"
+  ],
+  "image": "mirror.gcr.io/library/golang:1.25.3@sha256:6d4e5e74f47db00f7f24da5f53c1b4198ae46862a47395e30477365458347bf2",
+  "go_version": "go1.25.3 linux/amd64 (go.mod at 981d25c pins go 1.25.3; GOTOOLCHAIN=local)",
+  "command": "git archive 981d25c go.mod go.sum internal pkg | tar -x -C <oracle>; add scratch in-package capture test internal/gate/zz_fm11r17_capture_test.go; docker run --rm --network none -e GOTOOLCHAIN=local -e GOPROXY=off -e GOFLAGS=-mod=readonly -e GOCACHE=/tmp/gocache -e FM11R17_OUT=/out/capture.json -v <modcache>:/go/pkg/mod:ro -v <oracle>:/src:ro -v <out>:/out -w /src <image> go test -count=1 -run ^TestFM11R17Capture$ ./internal/gate/",
+  "capture_program_sha256": {
+   "internal/gate/zz_fm11r17_capture_test.go": "7510b7d33d556958b2bb6a9f008cc7a15f69b978cb075a3fd394f6c428b7c34f"
+  },
+  "capture_program_committed": false,
+  "output_sha256": "cc4f1e81d77aee31aa5d391d6ca87f3fa4cdf344d80c27c6fcedea7824fd4371",
+  "capture_notes": [
+   "two consecutive runs produced byte-identical output; random keys, signatures and hashes are reduced to key sets, lengths and counts",
+   "records lists hold the audit records appended by one exchange, reduced to event_type, actor_kind, tenant_id, route_class, verdict, action, mode, fail_reason and key_id; the fan-out rows drop tenant_id",
+   "step_up_cookie.header is the Set-Cookie header with the cookie value replaced by <value>",
+   "incidents.audit.records_before is a constant written by the capture program (three emitted records plus the admin.access record of the audit request itself)",
+   "incidents.enumeration.sampled_statuses are the statuses of lookups 0-2, 115-120 and 197-199 of 200 lookups of INC-NOPE by one auditor, after two earlier lookups by that auditor"
+  ],
+  "scope": "Frozen oracle outputs for differential parity only; never regenerate to hide drift"
+ },
+ "attest_floor_http": [
+  {
+   "case": "allow_token_public_route",
+   "status": 200,
+   "origin_contacted": true
+  },
+  {
+   "case": "allow_token_attested_route",
+   "status": 401,
+   "origin_contacted": false
+  },
+  {
+   "case": "step_up_attested_route",
+   "status": 200,
+   "origin_contacted": true
+  },
+  {
+   "case": "sticky_allow_attested_route",
+   "status": 401,
+   "origin_contacted": false
+  },
+  {
+   "case": "lifted_step_up_attested_route",
+   "status": 401,
+   "origin_contacted": false
+  },
+  {
+   "case": "verdict_token_in_step_up_slot",
+   "status": 401,
+   "origin_contacted": false
+  }
+ ],
+ "catch_all": {
+  "attested ": "gate: the \"attested\" preset (attestation floor) is refused on the catch-all/root prefix — mark specific high-value routes (e.g. /checkout), not the whole site",
+  "attested /": "gate: the \"attested\" preset (attestation floor) is refused on the catch-all/root prefix — mark specific high-value routes (e.g. /checkout), not the whole site",
+  "attested /./": "gate: the \"attested\" preset (attestation floor) is refused on the catch-all/root prefix — mark specific high-value routes (e.g. /checkout), not the whole site",
+  "attested //": "gate: the \"attested\" preset (attestation floor) is refused on the catch-all/root prefix — mark specific high-value routes (e.g. /checkout), not the whole site",
+  "attested /a/..": "gate: the \"attested\" preset (attestation floor) is refused on the catch-all/root prefix — mark specific high-value routes (e.g. /checkout), not the whole site",
+  "attested /transfer": "",
+  "attested /transfer/": "",
+  "strict ": "",
+  "strict /": "",
+  "strict /./": "",
+  "strict //": "",
+  "strict /a/..": "",
+  "strict /transfer": "",
+  "strict /transfer/": ""
+ },
+ "chain_reads": {
+  "checkpoints_empty": {
+   "body": "{\"checkpoints\":null,\"count\":0}\n",
+   "status": 200
+  },
+  "checkpoints_witness": {
+   "checkpoint_keys": [
+    "merkle_root",
+    "node_id",
+    "prev_checkpoint_hash",
+    "root",
+    "sig",
+    "tree_size",
+    "witness_sig"
+   ],
+   "count": 2,
+   "keys": [
+    "checkpoints",
+    "count"
+   ],
+   "status": 200,
+   "tree_size": 4
+  },
+  "integrity_witness": {
+   "checkpoints": 2,
+   "class": "ok",
+   "keys": [
+    "checkpoints",
+    "class",
+    "lastSTH",
+    "node",
+    "ok",
+    "records",
+    "witnessed"
+   ],
+   "lastSTH_keys": [
+    "root",
+    "treeSize"
+   ],
+   "ok": true,
+   "records": 11,
+   "witnessed": true
+  },
+  "keys_no_witness": {
+   "key_id": "k1",
+   "keys": [
+    "key_id",
+    "node_id",
+    "sth_public_key",
+    "witness_public_key"
+   ],
+   "node_id": "test",
+   "status": 200,
+   "sth_public_key_len": 64,
+   "witness_public_key": ""
+  },
+  "keys_witness": {
+   "key_id": "k1",
+   "keys": [
+    "key_id",
+    "node_id",
+    "sth_public_key",
+    "witness_public_key"
+   ],
+   "node_id": "audit-node",
+   "status": 200,
+   "sth_public_key_len": 64,
+   "witness_public_key_len": 64
+  },
+  "offline_verify": {
+   "class": "hmac-unchecked",
+   "ok": true
+  },
+  "proof_bad_seq": {
+   "body": "seq query parameter required\n",
+   "status": 400
+  },
+  "proof_no_seq": {
+   "body": "seq query parameter required\n",
+   "status": 400
+  },
+  "proof_no_sth": {
+   "body": "no signed tree head yet (record not checkpointed)\n",
+   "records": 4,
+   "status": 404
+  },
+  "proof_ok": {
+   "keys": [
+    "leafData",
+    "leafIndex",
+    "proof",
+    "seq",
+    "sth",
+    "treeSize"
+   ],
+   "leafIndex": 0,
+   "proof_len": 3,
+   "seq": 1,
+   "status": 200,
+   "sth_keys": [
+    "merkleRoot",
+    "sig",
+    "treeSize",
+    "witnessSig"
+   ],
+   "sth_treeSize": 8,
+   "treeSize": 8
+  },
+  "proof_uncovered": {
+   "body": "record not covered by the latest signed tree head\n",
+   "status": 404
+  }
+ },
+ "default_cred_fanout_cap": 8,
+ "fanout_cap_attested": [
+  {
+   "path": "/transfer",
+   "addr": "203.0.113.1:1",
+   "status": 200,
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "event_type": "webauthn.assertion.verified",
+     "fail_reason": "verified WebAuthn assertion, credential cred-ceiling",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "verdict": "allow"
+    }
+   ]
+  },
+  {
+   "path": "/transfer",
+   "addr": "203.0.114.1:1",
+   "status": 200,
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "event_type": "webauthn.assertion.verified",
+     "fail_reason": "verified WebAuthn assertion, credential cred-ceiling",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "verdict": "allow"
+    }
+   ]
+  },
+  {
+   "path": "/transfer",
+   "addr": "203.0.115.1:1",
+   "status": 401,
+   "records": [
+    {
+     "action": "",
+     "actor_kind": "subject",
+     "event_type": "webauthn.assertion.verified",
+     "fail_reason": "webauthn credential cred-ceiling fan-out 3 subnets > cap 2 — trust-upgrade withheld on attested route, routed to Pass",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "verdict": ""
+    },
+    {
+     "action": "challenge_pow",
+     "actor_kind": "subject",
+     "event_type": "enforcement.challenge.issued",
+     "fail_reason": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "verdict": "none"
+    }
+   ]
+  }
+ ],
+ "fanout_cap_unmarked": [
+  {
+   "path": "/browse",
+   "addr": "203.0.113.1:1",
+   "status": 200,
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "event_type": "webauthn.assertion.verified",
+     "fail_reason": "verified WebAuthn assertion, credential cred-ceiling",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "verdict": "allow"
+    }
+   ]
+  },
+  {
+   "path": "/browse",
+   "addr": "203.0.114.1:1",
+   "status": 200,
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "event_type": "webauthn.assertion.verified",
+     "fail_reason": "verified WebAuthn assertion, credential cred-ceiling",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "verdict": "allow"
+    }
+   ]
+  },
+  {
+   "path": "/browse",
+   "addr": "203.0.115.1:1",
+   "status": 200,
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "event_type": "webauthn.assertion.verified",
+     "fail_reason": "verified WebAuthn assertion, credential cred-ceiling",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "verdict": "allow"
+    }
+   ]
+  },
+  {
+   "path": "/browse",
+   "addr": "203.0.116.1:1",
+   "status": 200,
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "event_type": "webauthn.assertion.verified",
+     "fail_reason": "verified WebAuthn assertion, credential cred-ceiling",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "verdict": "allow"
+    }
+   ]
+  },
+  {
+   "path": "/transfer",
+   "addr": "203.0.117.1:1",
+   "status": 401,
+   "records": [
+    {
+     "action": "",
+     "actor_kind": "subject",
+     "event_type": "webauthn.assertion.verified",
+     "fail_reason": "webauthn credential cred-ceiling fan-out 5 subnets > cap 2 — trust-upgrade withheld on attested route, routed to Pass",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "verdict": ""
+    },
+    {
+     "action": "challenge_pow",
+     "actor_kind": "subject",
+     "event_type": "enforcement.challenge.issued",
+     "fail_reason": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "verdict": "none"
+    }
+   ]
+  }
+ ],
+ "incidents": {
+  "audit": {
+   "count": 2,
+   "handle_len": 14,
+   "handle_prefix": "INC-",
+   "keys": [
+    "count",
+    "nextBefore",
+    "records"
+   ],
+   "nextBefore": 3,
+   "records_before": 4,
+   "seqs": [
+    4,
+    3
+   ],
+   "status": 200
+  },
+  "enumeration": {
+   "body_429": "too many incident lookups\n",
+   "first_429_index": 117,
+   "other_operator_body": "incident not found\n",
+   "other_operator_status": 404,
+   "recon_first": {
+    "action": "",
+    "actor_kind": "operator",
+    "event_type": "recon.decision_probing",
+    "fail_reason": "incident enumeration cap exceeded (bulk-read)",
+    "key_id": "k1",
+    "mode": "",
+    "route_class": "control",
+    "tenant_id": "test",
+    "verdict": ""
+   },
+   "recon_records": 83,
+   "sampled_statuses": [
+    404,
+    404,
+    404,
+    404,
+    404,
+    429,
+    429,
+    429,
+    429,
+    429,
+    429,
+    429
+   ]
+  },
+  "incident": {
+   "event_type": "admin.access",
+   "incident_equals_handle": true,
+   "seq": 4,
+   "status": 200
+  },
+  "incident_raw": {
+   "body": "incident not found\n",
+   "status": 404
+  }
+ },
+ "integrity": {
+  "empty": {
+   "body": "{\"checkpoints\":0,\"class\":\"empty-chain\",\"detail\":\"empty chain is not a pass\",\"divergentSeq\":0,\"node\":\"test\",\"ok\":false,\"records\":0}\n",
+   "content_type": "application/json",
+   "status": 200
+  },
+  "http_auditor": {
+   "checkpoints": 0,
+   "class": "ok",
+   "keys": [
+    "checkpoints",
+    "class",
+    "node",
+    "ok",
+    "records"
+   ],
+   "ok": true,
+   "records": 3,
+   "status": 200
+  },
+  "one_record": {
+   "checkpoints": 0,
+   "class": "ok",
+   "keys": [
+    "checkpoints",
+    "class",
+    "node",
+    "ok",
+    "records"
+   ],
+   "ok": true,
+   "records": 1
+  },
+  "unauth": {
+   "body": "404 page not found\n",
+   "status": 404
+  }
+ },
+ "receipt_reasons": {
+  "empty_session": "sid_mismatch",
+  "garbage": "bad_sig",
+  "ok": "",
+  "past_skew": "expired",
+  "sid_mismatch": "sid_mismatch",
+  "within_skew": ""
+ },
+ "step_up_exchange": [
+  {
+   "case": "get_method",
+   "status": 405,
+   "body": "POST only\n",
+   "step_up_cookie": null,
+   "records": []
+  },
+  {
+   "case": "no_session",
+   "status": 400,
+   "body": "no session\n",
+   "step_up_cookie": null,
+   "records": []
+  },
+  {
+   "case": "missing_receipt",
+   "status": 403,
+   "body": "invalid or missing step-up receipt\n",
+   "step_up_cookie": null,
+   "records": [
+    {
+     "action": "",
+     "actor_kind": "subject",
+     "event_type": "token.binding_mismatch",
+     "fail_reason": "step-up: missing/invalid Pass receipt (bad_sig)",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "control",
+     "tenant_id": "control",
+     "verdict": "deny"
+    }
+   ]
+  },
+  {
+   "case": "garbage_receipt",
+   "status": 403,
+   "body": "invalid or missing step-up receipt\n",
+   "step_up_cookie": null,
+   "records": [
+    {
+     "action": "",
+     "actor_kind": "subject",
+     "event_type": "token.binding_mismatch",
+     "fail_reason": "step-up: missing/invalid Pass receipt (bad_sig)",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "control",
+     "tenant_id": "control",
+     "verdict": "deny"
+    }
+   ]
+  },
+  {
+   "case": "key_mismatch",
+   "status": 403,
+   "body": "invalid or missing step-up receipt\n",
+   "step_up_cookie": null,
+   "records": [
+    {
+     "action": "",
+     "actor_kind": "subject",
+     "event_type": "token.binding_mismatch",
+     "fail_reason": "step-up: missing/invalid Pass receipt (bad_sig)",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "control",
+     "tenant_id": "control",
+     "verdict": "deny"
+    }
+   ]
+  },
+  {
+   "case": "sid_divergence",
+   "status": 403,
+   "body": "invalid or missing step-up receipt\n",
+   "step_up_cookie": null,
+   "records": [
+    {
+     "action": "",
+     "actor_kind": "subject",
+     "event_type": "token.binding_mismatch",
+     "fail_reason": "step-up receipt sid mismatch — Core Pass likely not co-served in the Gate cookie jar (hsid diverged); real human may loop on the attested route",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "control",
+     "tenant_id": "control",
+     "verdict": "deny"
+    }
+   ]
+  },
+  {
+   "case": "expired",
+   "status": 403,
+   "body": "invalid or missing step-up receipt\n",
+   "step_up_cookie": null,
+   "records": [
+    {
+     "action": "",
+     "actor_kind": "subject",
+     "event_type": "token.binding_mismatch",
+     "fail_reason": "step-up receipt expired (check Core↔Gate clock skew / NTP; the client can re-solve for a fresh receipt)",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "control",
+     "tenant_id": "control",
+     "verdict": "deny"
+    }
+   ]
+  },
+  {
+   "case": "verdict_token_as_receipt",
+   "status": 403,
+   "body": "invalid or missing step-up receipt\n",
+   "step_up_cookie": null,
+   "records": [
+    {
+     "action": "",
+     "actor_kind": "subject",
+     "event_type": "token.binding_mismatch",
+     "fail_reason": "step-up: missing/invalid Pass receipt (bad_sig)",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "control",
+     "tenant_id": "control",
+     "verdict": "deny"
+    }
+   ]
+  },
+  {
+   "case": "valid",
+   "status": 200,
+   "body": "{\"ok\":true}\n",
+   "step_up_cookie": {
+    "header": "hmn_su=<value>; Path=/; HttpOnly; Secure; SameSite=Lax",
+    "http_only": true,
+    "max_age": 0,
+    "path": "/",
+    "same_site": 2,
+    "secure": true,
+    "value_nonempty": true
+   },
+   "records": [
+    {
+     "action": "",
+     "actor_kind": "subject",
+     "event_type": "token.issued",
+     "fail_reason": "step-up proof minted (Pass solved)",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "control",
+     "tenant_id": "control",
+     "verdict": "allow"
+    }
+   ]
+  }
+ ]
+}
