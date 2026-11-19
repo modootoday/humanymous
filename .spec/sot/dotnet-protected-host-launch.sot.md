@@ -3,7 +3,7 @@ id: sot:root/dotnet-protected-host-launch
 title: Protected .NET host launch admission and B2 custody
 status: draft
 created: 2026-11-18T00:00:00Z
-updated: 2026-11-19T12:00:00Z
+updated: 2026-11-19T18:00:00Z
 verify: manual
 rel:
   governs: [crates/dotnet-adapter/tests/hosted/retained.rs]
@@ -12,7 +12,7 @@ rel:
 
 # Protected .NET host launch admission and B2 custody
 
-Document version: 0.3.0. Status: **proposed**. The owner chose the SoT design
+Document version: 0.4.0. Status: **proposed**. The owner chose the SoT design
 path under decision D1(a) on 2026-11-18 (issue #75 comment 6968092014). D1(a)
 approves *drafting* this SoT. It does not accept the native operations listed
 below. Every item marked UNAPPROVED here needs the review that the structural
@@ -46,6 +46,19 @@ admin ACL repair or ownership change. State after this version:
 - N3 is implemented and its unit test passed on windows-2025 (4.1).
 - N4 is implemented but blocked before launch by the carrier owner rule
   (4.1, 7). Windows hosted and Windows package stay undeclared.
+
+Version 0.4.0 update (2026-11-19). The owner chose D5-N4 option (a) and
+rejected (b) (issue #75 comment 6999924070): the carrier directory and files
+get owner BUILTIN\Administrators in the creating call; no owner of an
+existing object is changed. For the foreign-owner test case the owner chose
+(ii), strengthened: the case branches on measured token privileges and
+asserts in both branches. State after this version:
+- N4 hosted ran and passed on windows-2025 (4.1), and `dotnet-hosted-windows`
+  is declared with the new `job.runner` check (4.3).
+- The elevated windows-2025 runner token can assign a foreign owner at
+  creation, so owner-at-creation alone is not a guard; the publisher
+  validation is the authority (4.1, 7).
+- Windows package is not wired and stays undeclared (4.1, 7).
 
 Scope: how `Host::start()` in `crates/dotnet-adapter/tests/hosted/retained.rs`
 gets protected host admission; who holds custody of the process tree, account,
@@ -262,7 +275,7 @@ These reuse code that already exists: `OwnedActor`/`OwnedFailure`,
 | N1 | Set `STARTF_USESTDHANDLES` on the existing `CreateProcessWithLogonW` `STARTUPINFOW`. `hStdInput` is the read end of a `std::io::pipe()`. Std output and error use bounded parent readers. No new Win32 function. | APPROVED (D3). Implemented as an opt-in launch variant; existing modes are unchanged. **Ran and passed** on windows-2025 through `delivery component dotnet-stdio` (Validate run 44450072313, job 135312398686): the secondary-logon service delivered the piped stdin and bounded stdout/stderr to the NoProfile actor child, which read exactly one frame and then EOF. The `DuplicateHandle` fallback is not needed. |
 | N2 | One read-only `GetFileType(stdin)` query in the native-security boundary. | APPROVED (D3). Implemented as `humanymous_platform::windows_object::stdin_is_pipe`, because the runtime crate forbids unsafe code and the platform object bridge already owns the deny-with-local-allow Win32 scope. Ran in the N1 fixture child (same run): stdin observed as a pipe. |
 | N3 | Bind `InspectedActorContext` to the envelope and make `require_exact_producer_identity` pass (rule 3.1.6). Safe Rust. | APPROVED (D5(a)). Implemented as `InspectedActorContext::bind_creator_channel(CreatorChannelFrame)`: it binds once, refuses a non-pipe stdin or a frame not followed by EOF as Unsupported, and refuses a nonce or context/binding byte mismatch against the carrier as PermissionDenied. `require_exact_producer_identity` returns Ok only after that binding. The cfg(windows) unit test ran and passed on windows-2025 inside `component dotnet-stdio` (Validate run 44453094364, job 135322965663). |
-| N4 | Wire the `dotnet-prebuilt` runner mode: take `prebuilt.rs` out of `cfg(test)`. Allowlist two fixed selectors: the existing Kestrel selector and `generic::actual_generic_abi_only_process`. | APPROVED (D5(a); amends the plan's single `SELECTOR`). Implemented: `dotnet-prebuilt --input --report` with the closed `humanymous.dotnet-prebuilt-actor-input/2` input and two fixed selectors, `hosted` (Kestrel plus generic) and `package` (the package matrix). The parent stages the win-x64 app closure and the pinned runtime (336 files, manifest SHA-256 `eaf43db5…f6680`, muxer `1e881ec1…b822f`) and then publishes the actor carrier; the `dotnet-prebuilt-actor` child binds N3 and runs the harness. **Blocked before launch**: on windows-2025 `publish_actor_context` refuses after creation with "protected CI actor carrier required" (Validate runs 44456615333 and 44458337027, jobs 135334612350 and 135340157970). See 7. Only `hosted` is wired in delivery; `package` on Windows is not wired. |
+| N4 | Wire the `dotnet-prebuilt` runner mode: take `prebuilt.rs` out of `cfg(test)`. Allowlist two fixed selectors: the existing Kestrel selector and `generic::actual_generic_abi_only_process`. | APPROVED (D5(a); amends the plan's single `SELECTOR`). Implemented: `dotnet-prebuilt --input --report` with the closed `humanymous.dotnet-prebuilt-actor-input/2` input and two fixed selectors, `hosted` (Kestrel plus generic) and `package` (the package matrix). The parent stages the win-x64 app closure and the pinned runtime (336 files, manifest SHA-256 `eaf43db5…f6680`, muxer `1e881ec1…b822f`) and then publishes the actor carrier; the `dotnet-prebuilt-actor` child binds N3 and runs the harness. First runs refused at carrier publication because the token default owner is the runner user (Validate runs 44456615333 and 44458337027). **D5-N4 option (a)** (issue #75 comment 6999924070): the carrier directory is created through the platform `create_directory_with_descriptor` and its files through the Root-accepted B1 `windows_object::create_file` primitive (feature `windows-file-create`), both with the publisher's exact `O:BA` descriptor in the creating call; `publish_actor_context_created_with` then re-runs the unchanged owner and exact-DACL checks. **Hosted passed** on windows-2025: Validate run 44464366183, job 135359916898 (Kestrel and generic tests passed, natural exit, Job empty, profile absent after, account deleted; 9,809 ms from issue against the 180 s original budget, not renewed). `package` on Windows is not wired (7). |
 | N5 | NoProfile `logonflags 0` with actual ProfileList and directory absence before and after. | APPROVED (D3). Implemented with the N1 variant: one `RegOpenKeyExW` ProfileList query plus a directory check. Ran in the N1 fixture (same run): ProfileList entry and profile directory absent before and after. |
 
 N1 needs a real fixture. The fixture must show that the secondary-logon
@@ -315,6 +328,16 @@ approved, and nothing has run on Windows.
 hosted pilot has not passed, so `dotnet-hosted-windows` and
 `dotnet-package-windows` stay undeclared, and the `job.runner` check that
 would bind them to the windows-2025 runner is not added yet.
+
+2026-11-19 (0.4.0): the hosted pilot passed on windows-2025 (Validate run
+44464366183, job 135359916898), so `dotnet-hosted-windows` is declared
+(hosted target, `os: [windows]`, job `dotnet`, `job.runner: windows-2025`).
+The new `job.runner` check binds a job pilot to one runner image: the image's
+OS must be the pilot's only OS, the job must run on that image (literal
+`runs-on`, or `${{ matrix.os }}` listing it), and the named step must not be
+guarded for another OS. Test names are now unique per harness and OS, so the
+Linux and Windows rows stay disjoint. `dotnet-package-windows` stays
+undeclared: it has not run.
 
 Also declared 2026-11-18: `dotnet-sdk-download` (package
 `humanymous-delivery`, binary target, `os: [linux, macos, windows]`, job
@@ -528,25 +551,36 @@ Receipts keep `full_product=false`.
 ## 7. Residual risks
 
 - N1, N2 and N5 passed the Windows fixture; N3's unit test passed on
-  windows-2025. N4 is implemented but has not reached actor launch.
-- **Carrier owner blocker (needs owner decision).** On windows-2025 the
-  elevated runner user's default owner for new objects is that user, not
-  Administrators (diagnostic `admin_default_owner: other`, run 44458337027).
-  `publish_actor_context` requires an Administrators or SYSTEM owner, so it
-  refuses after creating the carrier, and the partial carrier is removed.
-  The publisher rule says never to repair or change an owner, so this change
-  does not set the owner and does not relax the rule. A fix needs a decision:
-  either a new reviewed native operation that creates the carrier with an
-  Administrators owner (for example an explicit owner in the creation
-  security descriptor, or the token default owner), or an amended publisher
-  rule that accepts the publishing user as owner. Neither is approved.
-- The 180 s original budget is unmeasured on Windows, because no run has
-  reached actor launch.
+  windows-2025; N4 hosted passed on windows-2025 (run 44464366183).
+- **Owner at creation is not a guard on this runner.** On windows-2025 image
+  20261103.298.1 the elevated runner token has `SeRestorePrivilege`
+  ENABLED and `SeTakeOwnershipPrivilege` not enabled (measured through
+  `TokenPrivileges` by the runner `carrier-owner-fixture`, run 44464366183).
+  With that token a file created with owner Everyone (`O:WD`) succeeds. So
+  an elevated creator can give a carrier any owner, and the publisher
+  validation is the authority. The fixture asserts it on every run: both
+  `publish_actor_context_created_with` cases (Everyone-owned folder,
+  Everyone-owned `context.json`) refuse with "protected CI actor carrier
+  required" and clean up; `publish_actor_context` refuses an Everyone-owned
+  folder squatting the carrier path before creation (create-new, error 183)
+  and leaves it untouched; and its default-owner path refuses and cleans up.
+  On a token with neither privilege enabled, the fixture instead requires the
+  `O:WD` creation itself to be refused.
+- The 180 s original budget held on Windows hosted: 9,809 ms from issue to
+  actor exit (run 44464366183). Windows package is unmeasured.
+- **Windows package is not wired (needs a design decision).** The prebuilt
+  actor stages only the runtime closure. The package controller
+  (`tests/package.rs`) needs the full SDK (`dotnet pack`, `dotnet publish`
+  with `PublishAot`), the source root, a NuGet feed and cache, and for
+  NativeAOT the MSVC linker, all reachable from the NoProfile standard-user
+  actor whose PATH is System32 only; it also needs the derived admission of
+  3.5 on Windows. None of that is in the `/2` input or approved staging.
 - Parent death leaves account, profile and private residue as Unknown.
 - The prebuilt plan already blocks a clean pass on profile residue (N5).
 - Rows 72/73 ran locally on Linux in four modes, NativeAOT included; the
   hosted CI job has not run yet. The whole matrix shares one 180 s original
   budget, and the local margin is about 65 s. A slow hosted NuGet restore can
   exhaust it; the remedy would be a budget decision, never a renewed budget.
-- Windows rows 24 and 73 need the carrier owner decision, then an actual
-  hosted and package pass on windows-2025.
+- Windows row 24 (hosted) is accounted by `dotnet-hosted-windows`. Windows
+  row 73 (package) needs the package design decision above, then an actual
+  package pass on windows-2025.
