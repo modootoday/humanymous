@@ -12458,9 +12458,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/configuration/admin.rs",
-      "sha256": "730b2d15ddd44222fc1621c25e06870eec862ef05fc2f98dd3d42fb10a6bd1ed",
+      "sha256": "6c4528dcfc4dfa63c9c6cb5d222cda83bd1b5e715310a305e502076cbfe37a69",
       "reviewer": "claude agent first-pass review 2026-11-19 (Claude Code author session, owner decision B01 #1 lane G; independent agent review pending)",
-      "notes": "AdminListener configuration: loopback listen, 1..=64 operators with role, id and Zeroizing token, explicit ban store bounds and optional settings_dir. validate() refuses non-loopback listens, unknown roles, non-graphic or oversized ids and tokens, duplicate ids or tokens and Go weak secrets (e2e- prefix, placeholder markers, under 16 characters) with no demo mode. Three unit tests.",
+      "notes": "AdminListener configuration: loopback listen, 1..=64 operators with role, id and Zeroizing token, explicit ban store bounds and optional settings_dir. validate() refuses non-loopback listens, unknown roles, non-graphic or oversized ids and tokens, duplicate ids or tokens and Go weak secrets (e2e- prefix, placeholder markers, under 16 characters) with no demo mode. Three unit tests. Fixture bearer tokens are low-entropy test strings so secret scanning stays clean.",
       "pages": [
         "docs/reference/rbac-separation-of-duties.md",
         "docs/how-to/https-tls-certificates.md"
@@ -12497,18 +12497,18 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/tests/exposure.rs",
-      "sha256": "30242de44c65a5abfb98c23a2de9d77d30d51895d94292cb09c5f006f125620f",
+      "sha256": "ec44cf63d65222120f85745a3c176913c144fded9269301a5389fcbbc292671f",
       "reviewer": "claude agent first-pass review 2026-11-19 (Claude Code author session, owner decision B01 #1 lane G; independent agent review pending)",
-      "notes": "Four gateway tests: public edge configuration needs the key and a real TLS source (no public plaintext, no development certificate, loopback origin, no PROXY v2); the admin listener is loopback and distinct; a loopback configuration refuses a wide listener in TLS and plaintext; a public application serves a non-loopback peer over TLS only.",
+      "notes": "Four gateway tests: public edge configuration needs the key and a real TLS source (no public plaintext, no development certificate, loopback origin, no PROXY v2); the admin listener is loopback and distinct; a loopback configuration refuses a wide listener in TLS and plaintext; a public application serves a non-loopback peer over TLS only. Fixture bearer tokens are low-entropy test strings so secret scanning stays clean.",
       "pages": [
         "docs/how-to/https-tls-certificates.md"
       ]
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/gateway/tests/service/exposure.rs",
-      "sha256": "3eaaf35aed07a76fdbc75b77eb0976b4fd42f145b3a08fc8a3f11d47d33e866f",
+      "sha256": "f6058b9e45911c1ca7f2c9bc06e038666f3fd06fc6a987fa837d79ecf1171cb6",
       "reviewer": "claude agent first-pass review 2026-11-19 (Claude Code author session, owner decision B01 #1 lane G; independent agent review pending)",
-      "notes": "Two Unix service tests over real custody and sockets: a public TLS edge serves a non-loopback peer while the admin plane is never served there, the loopback admin listener answers whoami and settings/effective only with a token and is unreachable via the interface, and the stop report is clean; admin bans with an enforcing edge gate and no client address source are refused at startup.",
+      "notes": "Two Unix service tests over real custody and sockets: a public TLS edge serves a non-loopback peer while the admin plane is never served there, the loopback admin listener answers whoami and settings/effective only with a token and is unreachable via the interface, and the stop report is clean; admin bans with an enforcing edge gate and no client address source are refused at startup. Fixture bearer tokens are low-entropy test strings so secret scanning stays clean.",
       "pages": [
         "docs/how-to/https-tls-certificates.md",
         "docs/reference/rbac-separation-of-duties.md"
@@ -12516,9 +12516,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/tests/gateway/exposure.rs",
-      "sha256": "81258a5d5f9980b1bc74d579e469f28bc2de1e891e2e01fb1498adfc940602e6",
+      "sha256": "1cb6d691582411bb4f95a5987f4f75ebe0687e7567cb322823d291c507a31fec",
       "reviewer": "claude agent first-pass review 2026-11-19 (Claude Code author session, owner decision B01 #1 lane G; independent agent review pending)",
-      "notes": "Five real-binary tests: Core loopback start and readiness, Core exposure refusals, a public Core over TLS from the interface address, Gate exposure refusals before custody, and (Unix) a Gate public TLS edge beside a loopback admin listener with the settings plane. Requests carry Content-Length as the gateway framing requires.",
+      "notes": "Five real-binary tests: Core loopback start and readiness, Core exposure refusals, a public Core over TLS from the interface address, Gate exposure refusals before custody, and (Unix) a Gate public TLS edge beside a loopback admin listener with the settings plane. Requests carry Content-Length as the gateway framing requires. Fixture bearer tokens are low-entropy test strings so secret scanning stays clean.",
       "pages": [
         "docs/how-to/https-tls-certificates.md"
       ]

@@ -211,9 +211,9 @@ mod tests {
             assert!(weak_token(token), "{token}");
             assert!(admin("127.0.0.1:0", token).validate().is_err(), "{token}");
         }
-        assert!(!weak_token("8f1c2a9be04d7c11a5"));
+        assert!(!weak_token("operator-fixture-token"));
         assert!(
-            admin("127.0.0.1:0", "8f1c2a9be04d7c11a5")
+            admin("127.0.0.1:0", "operator-fixture-token")
                 .validate()
                 .is_ok()
         );
@@ -221,7 +221,7 @@ mod tests {
 
     #[test]
     fn non_loopback_admin_listen_is_refused() {
-        let token = "8f1c2a9be04d7c11a5";
+        let token = "operator-fixture-token";
         assert!(admin("127.0.0.1:8445", token).validate().is_ok());
         assert!(admin("[::1]:8445", token).validate().is_ok());
         assert!(admin("0.0.0.0:8445", token).validate().is_err());
@@ -230,7 +230,7 @@ mod tests {
 
     #[test]
     fn operator_table_and_ban_bounds_fail_closed() {
-        let token = "8f1c2a9be04d7c11a5";
+        let token = "operator-fixture-token";
         let mut config = admin("127.0.0.1:0", token);
         config.operators.clear();
         assert!(config.validate().is_err());

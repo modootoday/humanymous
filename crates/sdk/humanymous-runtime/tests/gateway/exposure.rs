@@ -267,7 +267,7 @@ fn gate_document(owner: Value) -> Value {
 fn admin_object() -> Value {
     json!({
         "listen": "127.0.0.1:0",
-        "operators": [{"role":"auditor","id":"aud-1","token":"8f1c2a9be04d7c11a5d0"}],
+        "operators": [{"role":"auditor","id":"aud-1","token":"operator-fixture-token-a"}],
         "bans": {"capacity":64,"max_keys":64,"max_hits_per_key":256,"max_key_bytes":128,
             "max_payload_bytes":1_048_576,"gc_scan_budget":64}
     })
@@ -343,7 +343,7 @@ fn runtime_binary_serves_a_public_tls_edge_beside_a_loopback_admin_listener() {
     document["admin"] = admin_object();
     document["admin"]["settings_dir"] = json!(settings);
     let (child, ready) = start(&[], &document).unwrap();
-    assert!(!ready.to_string().contains("8f1c2a9be04d7c11a5d0"));
+    assert!(!ready.to_string().contains("operator-fixture-token-a"));
     assert_eq!(ready["tls_mode"], "operator_certificate");
     assert_eq!(ready["profile"]["profile"], "experimental-public-tls");
     assert_eq!(ready["profile"]["public_listen"], true);
@@ -366,13 +366,13 @@ fn runtime_binary_serves_a_public_tls_edge_beside_a_loopback_admin_listener() {
         certificate,
         "owned.test",
         "GET /_humanymous/admin/whoami HTTP/1.1\r\nHost: owned.test\r\nContent-Length: 0\r\n\
-         Authorization: Bearer 8f1c2a9be04d7c11a5d0\r\n\r\n",
+         Authorization: Bearer operator-fixture-token-a\r\n\r\n",
     );
     assert!(!refused.starts_with("HTTP/1.1 200"), "{refused}");
     let whoami = plain(
         admin,
         "GET /_humanymous/admin/whoami HTTP/1.1\r\nHost: admin\r\nContent-Length: 0\r\n\
-         Authorization: Bearer 8f1c2a9be04d7c11a5d0\r\n\r\n",
+         Authorization: Bearer operator-fixture-token-a\r\n\r\n",
     );
     assert!(whoami.starts_with("HTTP/1.1 200"), "{whoami}");
     assert!(whoami.contains("\"auditor\""), "{whoami}");

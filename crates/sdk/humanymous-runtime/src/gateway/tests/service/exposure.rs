@@ -10,7 +10,7 @@ use std::net::{SocketAddr, TcpStream as NativeStream};
 use std::time::Duration;
 
 const BUDGET: Duration = Duration::from_secs(5);
-const TOKEN: &str = "8f1c2a9be04d7c11a5d0";
+const TOKEN: &str = "operator-fixture-token-a";
 
 fn admin(settings: &std::path::Path) -> AdminListener {
     serde_json::from_value(json!({

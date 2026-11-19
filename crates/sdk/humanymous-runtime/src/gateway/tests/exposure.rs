@@ -50,7 +50,7 @@ fn admin_listener_configuration_is_loopback_and_distinct() {
     let admin = |listen: &str| -> crate::gateway::configuration::AdminListener {
         serde_json::from_value(json!({
             "listen": listen,
-            "operators": [{"role":"auditor","id":"aud-1","token":"8f1c2a9be04d7c11a5d0"}],
+            "operators": [{"role":"auditor","id":"aud-1","token":"operator-fixture-token-a"}],
             "bans": {"capacity":64,"max_keys":64,"max_hits_per_key":256,"max_key_bytes":128,
                 "max_payload_bytes":1_048_576,"gc_scan_budget":64},
         }))
