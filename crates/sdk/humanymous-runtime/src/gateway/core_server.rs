@@ -49,6 +49,7 @@ mod collect;
 pub mod http;
 pub mod pass;
 pub mod rit;
+pub mod role;
 mod routes;
 pub mod serve;
 pub mod signals;

@@ -16,6 +16,7 @@ use std::{
 };
 use tokio::{net::TcpListener, sync::watch};
 use zeroize::Zeroizing;
+mod admin;
 mod authorization;
 mod lifecycle;
 mod observed;
@@ -81,8 +82,12 @@ impl DurableAudit for SharedAudit {
 /// Readiness is available only after custody recovery and listener bind.
 #[derive(Serialize)]
 pub struct Readiness {
-    /// Actual bound loopback endpoint, including an assigned ephemeral port.
+    /// Actual bound endpoint, including an assigned ephemeral port. Loopback
+    /// unless the configuration opted into a public TLS edge.
     pub listen: SocketAddr,
+    /// Actual bound loopback admin endpoint, when an admin listener is configured.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub admin_listen: Option<SocketAddr>,
     /// Existing capability manifest; absent producers remain unavailable.
     pub profile: serde_json::Value,
 }
@@ -95,6 +100,7 @@ pub struct ServiceHost {
     audit: Arc<Mutex<SealedAudit>>,
     readiness: Readiness,
     management: Option<Management>,
+    admin: Option<admin::AdminService>,
     tls: Option<Arc<rustls::ServerConfig>>,
     intel: Option<Arc<IntelStore>>,
 }
@@ -297,8 +303,8 @@ impl ServiceHost {
             management_policy.is_some(),
             settings.as_ref().map(|store| store.snapshot().revision()),
         );
-        if tls.is_some() {
-            readiness::tls_h1(&mut profile, &configuration);
+        if let Some(tls) = &tls {
+            readiness::tls_listener(&mut profile, &configuration, tls);
         }
         // A missing or refused snapshot never blocks startup; its state is
         // reported here and live in the management status.
@@ -308,6 +314,24 @@ impl ServiceHost {
             .map(|policy| Arc::new(IntelStore::open(policy.store_policy(), intel_now_s())));
         if let Some(store) = &intel {
             readiness::ip_reputation(&mut profile, &store.status(intel_now_s()));
+        }
+        // Owner decision B01 #1: the admin plane on its own loopback TCP
+        // listener, bound before readiness, sharing the sealed audit sink.
+        let admin = match &configuration.admin {
+            Some(config) => Some(
+                admin::AdminService::bind(
+                    config,
+                    &configuration,
+                    Box::new(SharedAudit(audit.clone())),
+                )
+                .await?,
+            ),
+            None => None,
+        };
+        // Present only when the admin listener is configured, so the
+        // standalone profile shape is unchanged without it.
+        if let Some(admin) = &admin {
+            profile["admin_listener"] = admin.readiness()?;
         }
         profile["administration_writable"] = serde_json::json!(operator.is_some());
         let profile_shared = Arc::new(std::sync::RwLock::new(profile.clone()));
@@ -340,11 +364,24 @@ impl ServiceHost {
         if let Some(store) = &intel {
             application.install_intel(store.clone());
         }
+        if let Some(admin) = &admin {
+            // The edge ban gate consults the store the plane writes. A gate that
+            // enforces needs a trusted client address; otherwise startup is
+            // refused rather than serving bans that are never enforced.
+            let (bans, epoch) = admin.bans();
+            application
+                .install_bans(bans, epoch)
+                .map_err(|_| io::Error::other("admin ban store needs a client address source"))?;
+        }
         if let Some(tls) = &tls {
             application.validate_tls_h1(tls)?;
         }
         let readiness = Readiness {
             listen: listener.local_addr()?,
+            admin_listen: admin
+                .as_ref()
+                .map(admin::AdminService::local_addr)
+                .transpose()?,
             profile,
         };
         Ok(Self {
@@ -353,6 +390,7 @@ impl ServiceHost {
             audit,
             readiness,
             management,
+            admin,
             tls,
             intel,
         })
@@ -404,11 +442,14 @@ impl ServiceHost {
             .intel
             .take()
             .map(|store| tokio::spawn(reload_intel(store)));
-        let drained = if let Some(management) = self.management {
+        let drained = if self.management.is_some() || self.admin.is_some() {
             lifecycle::run(
                 &mut self.application,
                 self.listener,
-                management,
+                lifecycle::Siblings {
+                    management: self.management,
+                    admin: self.admin,
+                },
                 shutdown,
                 self.tls,
             )

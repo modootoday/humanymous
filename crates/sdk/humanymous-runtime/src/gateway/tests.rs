@@ -1,6 +1,7 @@
 //! Bounded fixture controls and real TCP ingress/origin counters, not browser e2e.
 mod browser;
 mod edge;
+mod exposure;
 mod gates;
 mod integration;
 mod ip_reputation;
@@ -41,6 +42,65 @@ fn configuration(origin: std::net::SocketAddr) -> Configuration {
 }
 pub(in crate::gateway) fn config() -> Configuration {
     configuration("127.0.0.1:32123".parse().unwrap())
+}
+
+/// A local non-loopback interface address, for real-socket exposure tests.
+/// Connecting a UDP socket sends nothing; it only selects the source address
+/// of the default route. A host without one fails the test loudly instead of
+/// skipping it.
+pub(in crate::gateway) fn interface_ip() -> std::net::IpAddr {
+    let socket = std::net::UdpSocket::bind("0.0.0.0:0").unwrap();
+    socket
+        .connect("198.51.100.1:9")
+        .expect("exposure tests need a non-loopback IPv4 interface with a route");
+    let ip = socket.local_addr().unwrap().ip();
+    assert!(
+        !ip.is_loopback() && !ip.is_unspecified(),
+        "exposure tests need a non-loopback IPv4 interface, found {ip}"
+    );
+    ip
+}
+
+/// Write a fresh self-signed pair for `name` under `dir` as a provisioned
+/// TLS source; returns the source and the certificate a client trusts.
+pub(in crate::gateway) fn provisioned_pair(
+    dir: &std::path::Path,
+    name: &str,
+) -> (
+    crate::gateway::tls::listener::ListenerTls,
+    rustls::pki_types::CertificateDer<'static>,
+) {
+    use base64::Engine as _;
+    let pem = |label: &str, der: &[u8]| {
+        let body = base64::engine::general_purpose::STANDARD.encode(der);
+        let lines: Vec<&str> = body
+            .as_bytes()
+            .chunks(64)
+            .map(|chunk| std::str::from_utf8(chunk).unwrap())
+            .collect();
+        format!(
+            "-----BEGIN {label}-----\n{}\n-----END {label}-----\n",
+            lines.join("\n")
+        )
+    };
+    std::fs::create_dir_all(dir).unwrap();
+    let issued = rcgen::generate_simple_self_signed(vec![name.to_owned()]).unwrap();
+    let chain = dir.join("chain.pem");
+    let key = dir.join("key.pem");
+    std::fs::write(&chain, pem("CERTIFICATE", issued.cert.der())).unwrap();
+    std::fs::write(
+        &key,
+        pem("PRIVATE KEY", &issued.signing_key.serialize_der()),
+    )
+    .unwrap();
+    (
+        crate::gateway::tls::listener::ListenerTls {
+            certificate: Some(chain),
+            key: Some(key),
+            ..Default::default()
+        },
+        issued.cert.der().clone(),
+    )
 }
 fn config_with_collector() -> Configuration {
     let mut cfg = config();

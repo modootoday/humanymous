@@ -1121,6 +1121,7 @@ pub(super) fn options(tls: Option<Arc<rustls::ServerConfig>>, cap: usize) -> Opt
         tls,
         budget: Duration::from_secs(5),
         cap: ConnectionCap::new(cap).unwrap(),
+        public: false,
     }
 }
 
@@ -1270,6 +1271,7 @@ fn plaintext_budget_is_one_deadline_for_a_trickling_peer() {
         tls: None,
         budget,
         cap: ConnectionCap::new(1).unwrap(),
+        public: false,
     };
     let started = std::time::Instant::now();
     let _ = super::serve::serve_connection(&server, stream, &options);
