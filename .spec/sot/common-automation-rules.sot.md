@@ -3,8 +3,8 @@ id: sot:root/common-automation-rules
 title: Common automation rules (humanymous copy and project profile)
 status: active
 created: 2026-11-16T07:44:00Z
-updated: 2026-11-17T21:00:00Z
-verify: ["spec check --no-local", "cargo test --locked --manifest-path scripts/ci/delivery/Cargo.toml", "cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- policy"]
+updated: 2026-11-19T19:47:51Z
+verify: [spec check --no-local, cargo test --locked --manifest-path scripts/ci/delivery/Cargo.toml, cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- policy]
 rel:
   depends_on: [sot:root/delivery, sot:root/milestones]
 ---
@@ -41,7 +41,7 @@ They apply to new commits. History is not rewritten.
 
 - C1.1 Every change reaches the protected base branch through a pull request from a topic branch. No direct push to it, by agents or by the owner.
 - C1.2 Agent branches start with the provider prefix (`claude/`, `codex/`, `cursor/`, ...). One work package is one pull request. The work package id is recorded in the pull request body. Where a session can push to only one branch, the next work package starts on that branch after the previous pull request merges.
-- C1.3 Agents never rewrite pushed history, never push tags, and never delete remote branches. Exception: after its pull request has merged, a session may restart its own branch under the same name on top of the base branch with `--force-with-lease`, when that branch holds only merged history. Merged branches are removed by "Automatically delete head branches".
+- C1.3 Agents never rewrite pushed history, never push tags, and never delete remote branches. Exception: after its pull request has merged, a session may restart its own branch under the same name on top of the base branch with `--force-with-lease`, when that branch holds only merged history. Merged branches are removed by "Automatically delete head branches". humanymous narrows the first clause by H4 (section 13): no rewriting of merged, shared or base history; an agent may rewrite its own unmerged provider-prefixed branch and push it with `--force-with-lease=<branch>:<expected-sha>`.
 - C1.4 An agent stages explicit paths only. `git add .` and `git add -A` are not used.
 - C1.5 A session does not start a new work package while another open agent pull request holds the same lock unit (section 12).
 - C1.6 An unattended session ends its work by opening or updating a pull request (a draft is fine), because CI authority (C3.4) exists only on a pull request.
@@ -138,7 +138,7 @@ Each repository has `SECURITY.md`, a pull request template with an `Agent-Provid
 | Value | humanymous |
 | --- | --- |
 | Base branch for agent work | `codex/rust` (O6, owner confirmed 2026-11-16). `main` is frozen except Dependabot and security fixes until the parity-gated main merge in [[sot:root/milestones]] |
-| Merge method | merge commit |
+| Merge method | merge commit; topic branches clean at merge time (section 13, H1 and H3) |
 | Lock unit (C1.5) | lane (`.agents/sessions/lanes.json`); `detection-core` and `gate-edge` mutually exclusive |
 | Ruleset files | `.github/rulesets/main-protected.json` (`main`), `.github/rulesets/codex-rust-protected.json` (`codex/rust`), `.github/rulesets/v-tags.json` |
 | Settings files | `.github/labels.json`, `.github/settings/repository.json` |
@@ -152,9 +152,24 @@ Each repository has `SECURITY.md`, a pull request template with an `Agent-Provid
 | Machine-local state (C9.2) | `.agents/sessions/ACTIVE.md`, `.agents/sessions/claims/`, `.agent-runs/`, `.spec.local/` |
 | Document language | English |
 | Roadmap source | [[sot:root/milestones]], [[sot:root/program-roadmap]], [[plan:root/20261116060213]], [[plan:root/20261116070000]] |
-| Merging phase | Phase 2 from 2026-11-16 (owner direction): an agent turns on GitHub auto-merge (merge commit) for its own pull request when `delivery merge-gate <base> <head>` finds no human-gated path; otherwise it adds `needs-human` and leaves the merge to the owner. The `Merge gate` job (`.github/workflows/merge-gate.yml`) enforces the same path check on every pull request: it turns auto-merge off and adds `needs-human` (C2.10). Required checks still decide when an auto-merge lands |
+| Merging phase | Phase 2 from 2026-11-16 (owner direction): an agent turns on GitHub auto-merge (merge commit) for its own pull request right after opening it (H7, section 13, from 2026-11-19). When `delivery merge-gate <base> <head>` finds a human-gated path, the agent adds `needs-human` and the owner merges. The `Merge gate` job (`.github/workflows/merge-gate.yml`) enforces the same path check on every pull request: it turns auto-merge off and adds `needs-human` (C2.10). Required checks still decide when an auto-merge lands |
 | Human-gated paths (C2.10) | `scripts/ci/human-gated-paths.json`: workflows, rulesets, settings, labels, Dependabot, CODEOWNERS, this SoT, the gate itself, the workflow catalog, `Cargo.lock`, toolchain, release changelog config, Go sources and modules, Rust scoring and signals, audit and gateway control, public standards docs, `SECURITY.md` |
 | Human-gated areas | detection scoring; erasure, kill switch, permanent ban; handoff, grant and Cap artifacts; release, tag, Pages deploy, merge to `main`; audit key custody; public standard docs; Go retirement decisions |
+
+## 13. Commit history (playpilot H1–H7)
+
+Adopted 2026-11-19 (owner direction, playpilot phase 1) from the shared canon
+`modootoday/playpilot` `.agents/rules/commit-history.md` (H1–H7). The agent
+rule text is `.agents/sessions/COMMIT-CONVENTION.md` section 5. humanymous
+values:
+
+- H1 Merge method: merge commit (section 12). Records cite topic-branch commit hashes, so the topic branch itself must be clean (H3).
+- H2 Squash commit text: not applicable.
+- H3 At merge time a topic branch holds no merge commits (catch up by rebasing; "Update branch" uses rebase) and no `WIP`, `fixup!`, `squash!`, `amend!` or empty commits. Generated churn goes in its own `chore(deps)` or `build` commit. No tool or session trailers (C10.2, C10.3); identity per C10.5.
+- H4 The base branches and tags are never rewritten. An agent may rewrite its own unmerged `<provider>/<slug>` branch (only its own commits) to meet H3 and push it with `--force-with-lease=<branch>:<expected-sha>`. Plain `--force`, `+refspec` and rewriting anyone else's branch stay forbidden. This narrows C1.3.
+- H5 Undo with `git revert` in a pull request titled `revert: <original subject>`. Merged head branches are deleted by setting; an agent branch with no pull request for 14 days is reported in an issue and the owner deletes it.
+- H6 Enforcement: job `History` in `.github/workflows/history.yml` runs `playpilot history-check --method merge --range "$BASE..$HEAD"` with playpilot installed by `cargo install --locked` at a pinned revision. It is not a required check. The `playpilot guard` hook is phase 2, when the cloud environment has the playpilot CLI, with `PLAYPILOT_PROTECTED_BRANCHES=main,codex/rust`.
+- H7 The agent turns auto-merge (merge commit) on right after opening a pull request and turns it off before adding commits, then on again. Owner-only exceptions: removing or weakening a required check, loosening a ruleset, releases and tags. On a pull request that touches a human-gated path, the `Merge gate` job (C2.10) still turns auto-merge off and adds `needs-human`, and C7.2 still leaves that merge to the owner, until the owner changes the gate.
 
 ## Owner tasks (not automatable here)
 
