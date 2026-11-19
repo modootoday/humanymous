@@ -2,7 +2,7 @@
 layout: doc
 title: Plan TLS termination
 permalink: /how-to/https-tls-certificates.html
-reviewed: 2026-11-18
+reviewed: 2026-11-19
 ---
 # Plan TLS termination
 
@@ -53,7 +53,24 @@ renews 30 days before expiry (a third of the lifetime for shorter-lived
 certificates) and backs off after failures. The certificate authority must
 reach the listener for TLS-ALPN-01 validation.
 
-**Limit:** the TLS listener binds and accepts loopback addresses only. To serve
-public port 443, run a transport pass-through (TCP, not TLS-terminating)
-forwarder on the same host to the loopback listener. The runtime does not yet
-bind a public address itself.
+## Serve a public address
+
+By default the listener binds and accepts loopback addresses only. To serve a
+public address such as port 443 directly, set `listen` to that address and add
+`"public_listen": true` beside a `tls` object with your own certificate or ACME.
+The runtime refuses to start, before it opens audit custody, when a
+non-loopback `listen` lacks `public_listen`, when `public_listen` has no `tls`
+object, names the development certificate or sits on a loopback address, and
+when it is combined with PROXY v2 client addresses. There is no public
+plaintext listener. The protected origin stays a loopback address. The
+readiness line then reports the `experimental-public-tls` profile with
+`public_listen: true`; it remains an experimental profile, not product
+qualification.
+
+The optional administration listener (`admin` object) is always a separate
+loopback address, even when the edge is public. Reach it from the same host or
+through your own authenticated tunnel.
+
+The Core role (`humanymous-runtime core`, which reads its own role document)
+follows the same rules: loopback by default, and a public address only with
+`public_listen` and a certificate or ACME source. It serves HTTP/1.1 only.

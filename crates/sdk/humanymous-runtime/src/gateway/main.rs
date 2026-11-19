@@ -1,5 +1,8 @@
 //! Private inherited configuration, durable audit startup and native listener,
 //! plaintext loopback or TLS with one explicitly configured certificate source.
+//! A non-loopback (public) TLS edge and the loopback admin listener are
+//! explicit configuration opt-ins; `core` runs the Core role (owner decision
+//! B01 #1).
 use humanymous_runtime::gateway::{
     logging::{OperationalLogger, emit_gate_fatal, fatal_class},
     service::{ServiceHost, read_configuration},
@@ -45,6 +48,7 @@ fn run(log: &mut Option<OperationalLogger>) -> Result<(), &'static str> {
         [mode] if mode == "attestation-provision" || mode == "attestation-answer" => {
             return attestation(mode.to_str().ok_or("attestation mode")?);
         }
+        [mode] if mode == "core" => return core(),
         _ => return Err("private inherited configuration/readiness pipes required"),
     }
     let config = read_configuration(io::stdin().lock()).map_err(|_| "configuration pipe")?;
@@ -120,6 +124,59 @@ fn run(log: &mut Option<OperationalLogger>) -> Result<(), &'static str> {
         stopped.map(|_| ()).map_err(|_| "service stopped")
     })
 }
+/// Core role (legacy `cmd/server`, owner decision B01 #1): one private role
+/// document in, one readiness line out, then serve until the process ends.
+fn core() -> Result<(), &'static str> {
+    use humanymous_runtime::gateway::core_server::role::{CoreService, core_tls, read_role};
+    let role = read_role(io::stdin().lock()).map_err(|_| "core configuration")?;
+    // The certificate source is selected before any key or listener exists.
+    let mut tls = role
+        .tls
+        .as_ref()
+        .map(listener::prepare)
+        .transpose()
+        .map_err(|error| error.code())?;
+    let runtime = tokio::runtime::Builder::new_multi_thread()
+        .worker_threads(2)
+        .enable_all()
+        .build()
+        .map_err(|_| "runtime")?;
+    runtime.block_on(async move {
+        let service = CoreService::bind(
+            &role,
+            tls.as_ref().map(core_tls),
+            std::sync::Arc::new(std::time::SystemTime::now),
+        )
+        .await
+        .map_err(|_| "core startup")?;
+        let maintenance = tls
+            .as_mut()
+            .and_then(listener::PreparedTls::start_maintenance);
+        {
+            let mut ready = service.readiness().clone();
+            if let Some(tls) = &tls {
+                ready["tls_mode"] = serde_json::Value::from(tls.mode());
+            }
+            let mut stdout = io::stdout().lock();
+            serde_json::to_writer(&mut stdout, &ready)
+                .map_err(|_| "readiness pipe")
+                .and_then(|()| {
+                    stdout
+                        .write_all(b"\n")
+                        .and_then(|()| stdout.flush())
+                        .map_err(|_| "readiness pipe")
+                })?;
+        }
+        // Like the inherited-pipe Gate entrypoint, there is no platform
+        // shutdown adapter here; the supervisor ends the process.
+        let stopped = service.run(std::future::pending()).await;
+        if let Some(maintenance) = maintenance {
+            maintenance.abort();
+        }
+        stopped.map_err(|_| "core stopped")
+    })
+}
+
 fn main() {
     let mut log = None;
     if let Err(error) = run(&mut log) {

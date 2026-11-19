@@ -1,6 +1,7 @@
 //! Bounded TLS/H1 and R14 H2 consumers; all request authority stays in Application.
 use super::*;
 use crate::gateway::{
+    configuration::exposure,
     service::ShutdownRequest,
     tls::{CapturedH2Request, CapturedRequest, CapturedTls},
 };
@@ -22,7 +23,11 @@ impl Application {
         mut shutdown: watch::Receiver<Option<ShutdownRequest>>,
     ) -> io::Result<()> {
         self.validate_tls_h1(&tls)?;
-        if !listener.local_addr()?.ip().is_loopback() {
+        // Owner decision B01 #1: only an explicitly public configuration (a
+        // validated non-loopback listen with TLS) may serve a non-loopback
+        // listener and its non-loopback peers.
+        let public = self.config.public_listen;
+        if !exposure::bound_permitted(listener.local_addr()?, public) {
             return Err(io::Error::other("loopback only"));
         }
         let mut admission = Admission::new(self.config.rate_per_second);
@@ -53,7 +58,7 @@ impl Application {
                 admission_rate = self.config.rate_per_second;
                 admission = Admission::new(admission_rate);
             }
-            if !peer.ip().is_loopback() || !admission.admit() {
+            if !exposure::peer_admitted(peer, public) || !admission.admit() {
                 continue;
             }
             let budget = Duration::from_millis(self.config.timeout_ms);

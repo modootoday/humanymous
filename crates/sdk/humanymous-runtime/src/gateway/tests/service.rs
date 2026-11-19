@@ -1,4 +1,5 @@
 //! Actual Unix IPC/listener/custody boundaries; execution requires allocation.
+mod exposure;
 mod settings_operator;
 mod witness_input;
 use super::*;

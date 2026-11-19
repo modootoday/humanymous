@@ -79,8 +79,11 @@
 //! with their own operator token when attached by [`AdminPlane::with_ops`];
 //! see [`ops`].
 //!
-//! Composition into `gateway::service` (listener address and the provisioning
-//! of admin bearer tokens and the ops token) is not done here.
+//! `gateway::service` composes the plane on the separate loopback admin TCP
+//! listener of the private configuration's `admin` object (owner decision
+//! B01 #1), with its bearer tokens, the ban store it shares with the edge ban
+//! gate and, with `admin.settings_dir`, the settings engine. The ops token,
+//! chain, erasure hold and policy view are not provisioned there.
 pub mod chain;
 pub mod erasure;
 pub mod ops;
@@ -1087,12 +1090,24 @@ impl AdminPlane {
     pub async fn serve_until(
         self: Arc<Self>,
         listener: TcpListener,
-        mut shutdown: watch::Receiver<Option<ShutdownRequest>>,
+        shutdown: watch::Receiver<Option<ShutdownRequest>>,
     ) -> io::Result<()> {
-        if !listener.local_addr()?.ip().is_loopback() {
+        self.serve_from(listener, shutdown, Instant::now()).await
+    }
+
+    /// [`Self::serve_until`] with the monotonic `epoch` of the plane's clock
+    /// given by the caller, so a ban store shared with the edge ban gate
+    /// (installed with the same epoch) sees one ordered time line.
+    pub async fn serve_from(
+        self: Arc<Self>,
+        listener: TcpListener,
+        mut shutdown: watch::Receiver<Option<ShutdownRequest>>,
+        epoch: Instant,
+    ) -> io::Result<()> {
+        if !crate::gateway::configuration::exposure::admin_listen_permitted(listener.local_addr()?)
+        {
             return Err(io::Error::other("loopback only"));
         }
-        let epoch = Instant::now();
         loop {
             if shutdown.borrow().is_some() {
                 return Ok(());
