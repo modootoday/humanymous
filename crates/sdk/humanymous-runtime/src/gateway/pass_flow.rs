@@ -22,8 +22,8 @@
 //! Accessibility: [`MotorEvidence::Off`] (the default) skips the
 //! `realEventOK` pre-filter and the behavior tells, which gate or penalise
 //! Pass on motor richness and timing. [`MotorEvidence::GoParity`] restores the
-//! Go behavior and exists for differential parity; serving it needs an owner
-//! decision.
+//! Go behavior and exists for differential parity only: owner decision #9
+//! (issue #75 comment 7017558784) keeps it unserved (accessibility hard rule).
 //!
 //! Deliberate differences from Go, each pinned by tests:
 //! - Bodies decode the first JSON value of the bounded prefix with exact
@@ -115,7 +115,7 @@ pub enum MotorEvidence {
     #[default]
     Off,
     /// Go behavior: `realEventOK` rejects and the behavior tells re-score.
-    /// Conflicts with the accessibility rule; needs an owner decision.
+    /// Conflicts with the accessibility rule; never served (owner decision #9).
     GoParity,
 }
 
@@ -192,7 +192,7 @@ pub struct Config {
     pub web_dir: PathBuf,
     /// Shared Gate token key; enables step-up receipts on a solve.
     pub step_up: Option<TokenKey>,
-    /// Motor-evidence policy; [`MotorEvidence::Off`] unless the owner decides.
+    /// Motor-evidence policy; [`MotorEvidence::Off`] on every served path (owner decision #9).
     pub motor_evidence: MotorEvidence,
 }
 

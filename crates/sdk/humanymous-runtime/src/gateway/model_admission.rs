@@ -14,11 +14,13 @@
 //! parameters, arms the canary whose auto-rollback reverts the admitted lab
 //! identity through the [`BundleManager`], and loads the shadow candidate.
 //!
-//! Not ported here (they install into the scoring seam, which the
-//! model-training-correction SoT keeps annotation-only until a separately
-//! accepted activation design): installing the controller as threshold
-//! provider, feature observer or shadow observer, and installing the admitted
-//! or shadow model into the serving inference runtime.
+//! Not ported here: installing the controller as threshold provider, feature
+//! observer or shadow observer, and installing the admitted or shadow model
+//! into the serving inference runtime. Under owner decision #12 (issue #75
+//! comment 7017558784) startup never activates a model: a served model is
+//! staged with `gateway::admin_plane::models::Models::stage` and activated
+//! only by the audited, dual-controlled admin promote, which installs no
+//! threshold provider.
 //!
 //! Deliberate fail-closed differences from legacy, each pinned by a test:
 //! - A configured public-key file that is empty is refused (legacy treated an

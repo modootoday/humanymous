@@ -79,10 +79,17 @@
 //! with their own operator token when attached by [`AdminPlane::with_ops`];
 //! see [`ops`].
 //!
+//! The behavioral-model routes (`GET models`, `POST models/promote`, `POST
+//! models/rollback`) and the `ml.model.promote` approval commit are served
+//! only when a [`models::Models`] lifecycle is attached with
+//! [`AdminPlane::with_models`] (owner decision #12; see [`models`]);
+//! otherwise they answer 404 after authentication.
+//!
 //! Composition into `gateway::service` (listener address and the provisioning
 //! of admin bearer tokens and the ops token) is not done here.
 pub mod chain;
 pub mod erasure;
+pub mod models;
 pub mod ops;
 pub mod policy;
 pub mod settings;
@@ -305,6 +312,9 @@ enum Handler {
     SettingsPropose,
     SettingsDryRun,
     SettingsRollback,
+    ModelsView,
+    ModelsPromote,
+    ModelsRollback,
     ListApprovals,
     ListErasures,
     Whoami,
@@ -318,7 +328,7 @@ enum Handler {
 }
 
 /// Ordered dispatch and capability table (Go `adminRoutes`, served subset).
-const ROUTES: [(&str, Matcher, Capability, Handler); 26] = [
+const ROUTES: [(&str, Matcher, Capability, Handler); 29] = [
     (
         "GET",
         Matcher::Exact("bans"),
@@ -402,6 +412,24 @@ const ROUTES: [(&str, Matcher, Capability, Handler); 26] = [
         Matcher::Exact("settings/rollback"),
         Capability::Operate,
         Handler::SettingsRollback,
+    ),
+    (
+        "GET",
+        Matcher::Exact("models"),
+        Capability::Read,
+        Handler::ModelsView,
+    ),
+    (
+        "POST",
+        Matcher::Exact("models/promote"),
+        Capability::Operate,
+        Handler::ModelsPromote,
+    ),
+    (
+        "POST",
+        Matcher::Exact("models/rollback"),
+        Capability::Operate,
+        Handler::ModelsRollback,
     ),
     (
         "GET",
@@ -514,6 +542,7 @@ pub struct AdminPlane {
     erasure: Option<erasure::Erasure>,
     policy: Option<policy::Policy>,
     settings: Option<settings::Settings>,
+    models: Option<models::Models>,
 }
 
 impl AdminPlane {
@@ -542,6 +571,7 @@ impl AdminPlane {
             erasure: None,
             policy: None,
             settings: None,
+            models: None,
         }
     }
 
@@ -643,6 +673,9 @@ impl AdminPlane {
                 Handler::SettingsRollback => {
                     self.settings_rollback(&request.body, &operator, clock)
                 }
+                Handler::ModelsView => self.models_view(),
+                Handler::ModelsPromote => self.models_promote(&request.body, &operator, clock),
+                Handler::ModelsRollback => self.models_rollback(&request.body, &operator),
                 Handler::ListApprovals => self.list_approvals(clock),
                 Handler::ListErasures => self.list_erasures(clock.monotonic),
                 Handler::Whoami => {
@@ -957,6 +990,9 @@ impl AdminPlane {
             ),
             settings::KIND_OVERLAY => self.commit_settings(&action, operator, clock),
             settings::KIND_ROLLBACK => self.commit_settings_rollback(&action, operator, clock),
+            models::KIND_PROMOTE => {
+                self.commit_models_promote(&action.params, &action.requester, operator)
+            }
             _ => Response::text(500, "unknown action kind"),
         }
     }

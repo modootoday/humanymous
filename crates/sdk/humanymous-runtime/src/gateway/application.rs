@@ -105,6 +105,9 @@ pub struct Application {
     ready: ReadySwitch,
     /// Period of the composite in-memory sweep (legacy maintenance ticker).
     sweep_interval: Duration,
+    /// Signed effective-policy version source (owner decision #8), once
+    /// installed; records carry `scope.revision` until then.
+    signed_policy: Option<crate::gateway::settings::configsign::SignedPolicy>,
 }
 impl Application {
     /// Compose existing services without changing policy or deriving new tells.
@@ -128,7 +131,30 @@ impl Application {
             installed: gates::Installed::default(),
             ready: ReadySwitch::default(),
             sweep_interval: maintenance::INTERVAL,
+            signed_policy: None,
         })
+    }
+
+    /// Bind the signed effective-policy version (legacy
+    /// `Server.configVersion()`, internal/gate/configsign.go) in place of
+    /// `scope.revision` as the `config_version` of every decision, collect
+    /// and upstream-error record (owner decision #8). The version is read at
+    /// record time, so a kill-switch flip or an overlay change in the shared
+    /// handle shows in the next record. Policy-neutral: it changes no score,
+    /// verdict or enforcement.
+    pub fn install_signed_policy(
+        &mut self,
+        policy: crate::gateway::settings::configsign::SignedPolicy,
+    ) {
+        self.signed_policy = Some(policy);
+    }
+
+    /// `config_version` of a record written now.
+    fn config_version(&self) -> String {
+        self.signed_policy.as_ref().map_or_else(
+            || self.config.scope.revision.clone(),
+            crate::gateway::settings::configsign::SignedPolicy::version,
+        )
     }
 
     /// Install the operator IP reputation reader (`sot:root/ip-reputation`).
@@ -434,7 +460,7 @@ impl Application {
             request_id,
             correlation_id,
             route_class,
-            config_version: self.config.scope.revision.clone(),
+            config_version: self.config_version(),
             verdict: verdict.clone(),
             risk_score: risk as i64,
             enforcement_action: if collect { "collect" } else { &verdict }.into(),
@@ -493,7 +519,7 @@ impl Application {
             host: self.config.scope.authority.clone(),
             route_class: upstream.route_class.clone(),
             latency_us,
-            config_version: self.config.scope.revision.clone(),
+            config_version: self.config_version(),
             enforcement_mode: "enforce".into(),
             fail_mode: "degraded".into(),
             fail_reason: format!("upstream {class}: {}", rejection.code),

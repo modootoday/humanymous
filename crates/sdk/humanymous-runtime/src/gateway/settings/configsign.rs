@@ -10,11 +10,19 @@
 //! legacy overlay-free fallback was reachable only for a nil server, which then
 //! dereferenced nil, so it is not ported.
 //!
-//! This is a pure kernel over the frozen overlay resolver. Gateway records
-//! still carry `scope.revision` as `config_version`; binding records, the admin
-//! surface and the metric to this value is serving composition.
+//! [`BootPolicy::config_version`] is a pure kernel over the frozen overlay
+//! resolver. Owner decision #8 (issue #75 comment 7017558784) binds it in
+//! place of `scope.revision`: [`SignedPolicy`] is the shared live handle
+//! (boot slice, kill-switch flag, active overlay slot) whose
+//! [`SignedPolicy::version`] the served path stamps as `config_version` once
+//! installed with `Application::install_signed_policy`, as Go
+//! `Server.configVersion()` stamped every gate decision record. The admin
+//! `policy` view reports the same value. The Prometheus label stays owner
+//! pending with the rest of the metrics.
 use super::overlay::{BootInput, Overlay, resolve};
 use std::collections::BTreeMap;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{Arc, PoisonError, RwLock};
 
 /// Legacy `DefaultRateWindow` (10 s) in nanoseconds.
 pub const DEFAULT_RATE_WINDOW_NANOS: i64 = 10_000_000_000;
@@ -89,6 +97,39 @@ impl BootPolicy {
     /// under `kill_switch` and the store's active overlay, if any.
     pub fn config_version(&self, kill_switch: bool, active: Option<&Overlay>) -> String {
         resolve(&self.boot_input(kill_switch), active).config_version
+    }
+}
+
+/// Live inputs of the signed effective-policy version, shared with the admin
+/// plane: the boot slice, the kill-switch flag and the active overlay slot.
+/// Cloning shares the same flag and slot.
+#[derive(Clone, Debug)]
+pub struct SignedPolicy {
+    boot: Arc<BootPolicy>,
+    kill_switch: Arc<AtomicBool>,
+    active: Arc<RwLock<Option<Overlay>>>,
+}
+
+impl SignedPolicy {
+    /// Bind `boot` to the live `kill_switch` flag and `active` overlay slot.
+    pub fn new(
+        boot: BootPolicy,
+        kill_switch: Arc<AtomicBool>,
+        active: Arc<RwLock<Option<Overlay>>>,
+    ) -> Self {
+        Self {
+            boot: Arc::new(boot),
+            kill_switch,
+            active,
+        }
+    }
+
+    /// Legacy `Server.configVersion()`: the `cfg-…` version of the policy in
+    /// force now.
+    pub fn version(&self) -> String {
+        let kill = self.kill_switch.load(Ordering::SeqCst);
+        let active = self.active.read().unwrap_or_else(PoisonError::into_inner);
+        self.boot.config_version(kill, active.as_ref())
     }
 }
 
