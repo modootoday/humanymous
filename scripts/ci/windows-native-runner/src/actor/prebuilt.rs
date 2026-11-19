@@ -1,27 +1,102 @@
-//! Pure prebuilt contract only. No OS launch, file verification or cleanup proof.
+//! Pure `standard-user-dotnet-prebuilt` contract (SoT dotnet-protected-host-
+//! launch N4, owner decision D5(a), issue 75 comment 6998447599). It parses the
+//! closed `/2` input, fixes the two selectors and their test inventories, binds
+//! the staged runtime closure to constants derived from the SHA-512-pinned
+//! win-x64 SDK, and orders cleanup. It opens no file and starts no process;
+//! the native parent and actor child live in `actor/prebuilt_run.rs`.
 use humanymous_platform::testing::{
     json::decode_strict_json,
-    parent_context::{
-        self, UnverifiedLaunch, UnverifiedMappedBudget, UnverifiedParentContext,
-        UnverifiedProvenance,
-    },
+    parent_context::{UnverifiedProvenance, host::UnverifiedHostContext},
 };
 use serde_json::Value;
 use sha2::{Digest, Sha256};
 use std::{collections::BTreeSet, io};
 
-const INPUT_LIMIT: usize = 256 * 1024;
-const APP_NAMES: [&str; 6] = [
-    "Humanymous.HostPilot.exe",
-    "Humanymous.HostPilot.dll",
-    "Humanymous.HostPilot.deps.json",
-    "Humanymous.HostPilot.runtimeconfig.json",
-    "Humanymous.Native.dll",
-    "humanymous_dotnet_adapter_export.dll",
+pub(crate) const INPUT_LIMIT: usize = 256 * 1024;
+pub(crate) const INPUT_SCHEMA: &str = "humanymous.dotnet-prebuilt-actor-input/2";
+pub(crate) const PROFILE: &str = "standard-user-dotnet-prebuilt";
+const FILES_SCHEMA: &str = "humanymous.dotnet-prebuilt-files/1";
+/// App closure: the published FDD app plus both native exports it loads.
+pub(crate) const APP_FILES: [(&str, &str); 7] = [
+    ("apphost", "Humanymous.HostPilot.exe"),
+    ("assembly", "Humanymous.HostPilot.dll"),
+    ("deps", "Humanymous.HostPilot.deps.json"),
+    ("runtimeconfig", "Humanymous.HostPilot.runtimeconfig.json"),
+    ("binding", "Humanymous.Native.dll"),
+    ("facade", "humanymous_dotnet_adapter_export.dll"),
+    ("generic", "humanymous_native_abi_export.dll"),
 ];
-const SELECTOR: &str = "actual_kestrel_engine_audit_body_gc_and_shutdown";
+/// Runtime closure of the pinned SDK 10.0.403 (runtime 10.0.14): hostfxr and
+/// the two shared frameworks, 336 files and 110,309,027 bytes. This is the
+/// SHA-256 of their normalized manifest, computed 2026-11-19 from the
+/// SHA-512-verified `dotnet-sdk-10.0.403-win-x64.zip`. The same count and
+/// total as the earlier read-only observation (plan 20261107115350).
+pub(crate) const RUNTIME_MANIFEST_SHA256: &str =
+    "eaf43db54d20608d79deeadd185a63c2b24099c79db8a6fc9032b4cbd06f6680";
+pub(crate) const RUNTIME_FILES: usize = 336;
+pub(crate) const RUNTIME_BYTES: u64 = 110_309_027;
+/// The pinned archive's `dotnet.exe` muxer, which the generic case runs.
+pub(crate) const MUXER_SHA256: &str =
+    "1e881ec1786c31ba712d052258b4ad4202ac155df5965794030037878abb822f";
+pub(crate) const MUXER_BYTES: u64 = 167_208;
+pub(crate) const RUNTIME_PREFIXES: [&str; 3] = [
+    "host/fxr/10.0.14/",
+    "shared/Microsoft.NETCore.App/10.0.14/",
+    "shared/Microsoft.AspNetCore.App/10.0.14/",
+];
 
-fn invalid() -> io::Error {
+/// Kestrel case: the only one that consumes the creator-channel envelope.
+pub(crate) const KESTREL: &str = "actual_kestrel_engine_audit_body_gc_and_shutdown";
+pub(crate) const GENERIC: &str = "generic::actual_generic_abi_only_process";
+pub(crate) const PACKAGE: &str = "sdk_package_and_real_host_matrix";
+
+/// The two fixed selectors (N4 amends the plan's single `SELECTOR`).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum Selector {
+    /// Row 24: the Kestrel case, then the generic ABI-only case.
+    Hosted,
+    /// Rows 72/73: the package-matrix controller.
+    Package,
+}
+impl Selector {
+    pub(crate) fn parse(value: &str) -> io::Result<Self> {
+        match value {
+            "hosted" => Ok(Self::Hosted),
+            "package" => Ok(Self::Package),
+            _ => Err(invalid()),
+        }
+    }
+    pub(crate) fn label(self) -> &'static str {
+        match self {
+            Self::Hosted => "hosted",
+            Self::Package => "package",
+        }
+    }
+    pub(crate) fn tests(self) -> &'static [&'static str] {
+        match self {
+            Self::Hosted => &[KESTREL, GENERIC],
+            Self::Package => &[PACKAGE],
+        }
+    }
+}
+/// Fixed harness arguments for one inventoried test, the same five the Linux
+/// provider passes; nothing else is accepted.
+pub(crate) fn harness_arguments(selector: Selector, test: &str) -> io::Result<[&'static str; 5]> {
+    let name = selector
+        .tests()
+        .iter()
+        .find(|name| **name == test)
+        .ok_or_else(invalid)?;
+    Ok([
+        "--exact",
+        name,
+        "--ignored",
+        "--test-threads=1",
+        "--nocapture",
+    ])
+}
+
+pub(crate) fn invalid() -> io::Error {
     io::Error::other("invalid prebuilt contract")
 }
 fn keys(value: &Value, expected: &[&str]) -> io::Result<()> {
@@ -34,7 +109,7 @@ fn keys(value: &Value, expected: &[&str]) -> io::Result<()> {
 fn text(value: &Value) -> io::Result<&str> {
     value.as_str().ok_or_else(invalid)
 }
-fn hex(value: &str, length: usize) -> bool {
+pub(crate) fn hex(value: &str, length: usize) -> bool {
     value.len() == length
         && value
             .bytes()
@@ -49,16 +124,17 @@ fn component(value: &str) -> bool {
         && !value.ends_with('.')
         && value
             .bytes()
-            .all(|byte| byte.is_ascii_alphanumeric() || b"._-".contains(&byte))
+            .all(|byte| byte.is_ascii_alphanumeric() || b"._-+".contains(&byte))
         && !matches!(stem.as_str(), "CON" | "PRN" | "AUX" | "NUL" | "CLOCK$")
         && !(stem.len() == 4
             && (stem.starts_with("COM") || stem.starts_with("LPT"))
             && matches!(stem.as_bytes()[3], b'1'..=b'9'))
 }
-fn relative(value: &str) -> bool {
+pub(crate) fn relative(value: &str) -> bool {
     value.len() <= 512 && value.split('/').all(component)
 }
-fn absolute(value: &str) -> bool {
+/// `X:/...` forward-slash absolute local path text.
+pub(crate) fn absolute(value: &str) -> bool {
     let bytes = value.as_bytes();
     bytes.len() > 3
         && bytes.len() <= 1024
@@ -66,121 +142,22 @@ fn absolute(value: &str) -> bool {
         && bytes[1..3] == *b":/"
         && relative(&value[3..])
 }
-
-/// Parsed metadata, never native file verification or original build provenance.
-struct FileEntry {
-    path: String,
-    bytes: u64,
-    sha256: String,
+/// `child` is strictly below `root` (case-insensitive path text).
+pub(crate) fn below(child: &str, root: &str) -> bool {
+    child
+        .to_ascii_lowercase()
+        .starts_with(&(root.to_ascii_lowercase() + "/"))
 }
-struct Manifest {
-    files: Vec<FileEntry>,
-    total_bytes: u64,
-}
-#[derive(Clone, Copy)]
-enum ClosureKind {
-    App,
-    Runtime,
+fn disjoint(first: &str, second: &str) -> bool {
+    !first.eq_ignore_ascii_case(second) && !below(first, second) && !below(second, first)
 }
 
-/// The expected digest must originate in independently bound build/observation
-/// evidence. Comparing a manifest to its own advertised digest provides no trust.
-fn parse_manifest(bytes: &[u8], expected_digest: &str, kind: ClosureKind) -> io::Result<Manifest> {
-    if bytes.len() > INPUT_LIMIT
-        || !hex(expected_digest, 64)
-        || format!("{:x}", Sha256::digest(bytes)) != expected_digest
-    {
-        return Err(invalid());
-    }
-    let value = decode_strict_json(bytes, INPUT_LIMIT).map_err(|_| invalid())?;
-    keys(&value, &["schema", "files"])?;
-    if value["schema"] != "humanymous.dotnet-prebuilt-files/1" {
-        return Err(invalid());
-    }
-    let rows = value["files"].as_array().ok_or_else(invalid)?;
-    let (count, total_limit, file_limit) = match kind {
-        ClosureKind::App => (6, 512 * 1024 * 1024_u64, 256 * 1024 * 1024_u64),
-        ClosureKind::Runtime => (336, 192 * 1024 * 1024_u64, 64 * 1024 * 1024_u64),
-    };
-    if rows.len() != count || rows.len() > 512 {
-        return Err(invalid());
-    }
-    let mut names = BTreeSet::new();
-    let mut files = Vec::new();
-    let mut total_bytes = 0_u64;
-    for row in rows {
-        keys(row, &["path", "bytes", "sha256"])?;
-        let path = text(&row["path"])?;
-        let sha256 = text(&row["sha256"])?;
-        let length = row["bytes"].as_u64().ok_or_else(invalid)?;
-        if !relative(path)
-            || !hex(sha256, 64)
-            || length == 0
-            || length > file_limit
-            || !names.insert(path.to_ascii_lowercase())
-        {
-            return Err(invalid());
-        }
-        match kind {
-            ClosureKind::App if !APP_NAMES.contains(&path) => return Err(invalid()),
-            ClosureKind::Runtime
-                if !(path == "host/fxr/10.0.14/hostfxr.dll"
-                    || path.starts_with("shared/Microsoft.NETCore.App/10.0.14/")
-                    || path.starts_with("shared/Microsoft.AspNetCore.App/10.0.14/")) =>
-            {
-                return Err(invalid());
-            }
-            _ => {}
-        }
-        total_bytes = total_bytes.checked_add(length).ok_or_else(invalid)?;
-        if total_bytes > total_limit {
-            return Err(invalid());
-        }
-        files.push(FileEntry {
-            path: path.into(),
-            bytes: length,
-            sha256: sha256.into(),
-        });
-    }
-    if matches!(kind, ClosureKind::Runtime)
-        && (!names.contains("host/fxr/10.0.14/hostfxr.dll")
-            || !names
-                .iter()
-                .any(|name| name.starts_with("shared/microsoft.netcore.app/10.0.14/"))
-            || !names
-                .iter()
-                .any(|name| name.starts_with("shared/microsoft.aspnetcore.app/10.0.14/")))
-    {
-        return Err(invalid());
-    }
-    Ok(Manifest { files, total_bytes })
-}
-
-const OBSERVATION_SHA256: &str = "d9bd271d558f07ad6b1438a27d6c8678b24915e26d03b5ed8cc5e3368529944d";
-const APP_ROLES: [&str; 6] = [
-    "apphost",
-    "assembly",
-    "deps",
-    "runtimeconfig",
-    "binding",
-    "facade",
-];
-
-struct InputPins<'a> {
-    app_manifest: &'a str,
-    runtime_manifest: &'a str,
-    harness: &'a str,
-    provenance: &'a str,
-}
-struct ParsedInput {
-    nonce: String,
-    harness: FileEntry,
-    app_root: String,
-    app: Manifest,
-    runtime_root: String,
-    runtime: Manifest,
-    runtime_manifest: FileEntry,
-    provenance: Provenance,
+/// One artifact or manifest row: relative or absolute path, length, SHA-256.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) struct FileEntry {
+    pub path: String,
+    pub bytes: u64,
+    pub sha256: String,
 }
 fn artifact(value: &Value, limit: u64) -> io::Result<FileEntry> {
     keys(value, &["path", "bytes", "sha256"])?;
@@ -196,218 +173,237 @@ fn artifact(value: &Value, limit: u64) -> io::Result<FileEntry> {
         sha256: sha256.into(),
     })
 }
-/// New normalized files-only bytes, distinct from the historical observation.
-/// Normalization sorts exact relative paths, uses compact serde JSON plus LF.
-fn normalized_manifest(rows: &Value, app: bool) -> io::Result<Vec<u8>> {
-    let rows = rows.as_array().ok_or_else(invalid)?;
+
+/// Normalized files-only manifest bytes: rows sorted by exact relative path,
+/// compact serde JSON with sorted keys, then LF.
+pub(crate) fn normalized_manifest(rows: &[FileEntry]) -> io::Result<Vec<u8>> {
     if rows.len() > 512 {
         return Err(invalid());
     }
-    let mut normalized = Vec::new();
-    for row in rows {
-        if app {
-            keys(row, &["role", "relativepath", "bytes", "sha256"])?;
-        } else {
-            keys(row, &["relativepath", "bytes", "sha256"])?;
-        }
-        let path = text(&row["relativepath"])?;
-        if app {
-            let index = APP_NAMES
-                .iter()
-                .position(|name| *name == path)
-                .ok_or_else(invalid)?;
-            if row["role"] != APP_ROLES[index] {
-                return Err(invalid());
-            }
-        }
-        normalized
-            .push(serde_json::json!({"path":path,"bytes":row["bytes"],"sha256":row["sha256"]}));
-    }
-    normalized.sort_by(|first, second| first["path"].as_str().cmp(&second["path"].as_str()));
-    let mut bytes = serde_json::to_vec(
-        &serde_json::json!({"schema":"humanymous.dotnet-prebuilt-files/1","files":normalized}),
-    )
-    .map_err(|_| invalid())?;
+    let mut sorted: Vec<_> = rows.iter().collect();
+    sorted.sort_by(|first, second| first.path.cmp(&second.path));
+    let files: Vec<_> = sorted
+        .into_iter()
+        .map(|row| serde_json::json!({"path":row.path,"bytes":row.bytes,"sha256":row.sha256}))
+        .collect();
+    let mut bytes = serde_json::to_vec(&serde_json::json!({"schema":FILES_SCHEMA,"files":files}))
+        .map_err(|_| invalid())?;
     bytes.push(b'\n');
     Ok(bytes)
 }
-fn parse_input(bytes: &[u8], pins: &InputPins<'_>) -> io::Result<ParsedInput> {
+pub(crate) fn manifest_sha256(rows: &[FileEntry]) -> io::Result<String> {
+    Ok(format!("{:x}", Sha256::digest(normalized_manifest(rows)?)))
+}
+
+/// Closed runtime closure rows the parent observed while staging. They must be
+/// exactly the pinned SDK's closure, by count, total and normalized digest.
+pub(crate) fn runtime_closure_ok(rows: &[FileEntry]) -> io::Result<()> {
+    let mut names = BTreeSet::new();
+    let mut total = 0_u64;
+    for row in rows {
+        if !relative(&row.path)
+            || !hex(&row.sha256, 64)
+            || row.bytes == 0
+            || row.bytes > 64 * 1024 * 1024
+            || !RUNTIME_PREFIXES
+                .iter()
+                .any(|prefix| row.path.starts_with(prefix))
+            || !names.insert(row.path.to_ascii_lowercase())
+        {
+            return Err(invalid());
+        }
+        total = total.checked_add(row.bytes).ok_or_else(invalid)?;
+    }
+    if rows.len() != RUNTIME_FILES
+        || total != RUNTIME_BYTES
+        || !names.contains("host/fxr/10.0.14/hostfxr.dll")
+        || manifest_sha256(rows)? != RUNTIME_MANIFEST_SHA256
+    {
+        return Err(invalid());
+    }
+    Ok(())
+}
+
+/// Parsed `/2` input. Every path is admin-side source text the parent copies
+/// from; no row grants the actor anything.
+pub(crate) struct ParsedInput {
+    pub selector: Selector,
+    pub source_sha: String,
+    pub manifest_sha256: String,
+    pub harness: FileEntry,
+    pub managed_source: FileEntry,
+    pub app_root: String,
+    pub app: Vec<FileEntry>,
+    pub runtime_root: String,
+    pub provenance: UnverifiedProvenance,
+}
+pub(crate) fn parse_input(bytes: &[u8]) -> io::Result<ParsedInput> {
     let value = decode_strict_json(bytes, INPUT_LIMIT).map_err(|_| invalid())?;
     keys(
         &value,
         &[
             "schema",
             "profile",
-            "nonce",
+            "selector",
+            "source",
             "harness",
+            "managed_source",
             "app",
             "runtime",
             "provenance",
         ],
     )?;
-    if value["schema"] != "humanymous.dotnet-prebuilt-actor-input/1"
-        || value["profile"] != "standard-user-dotnet-prebuilt"
-    {
+    if value["schema"] != INPUT_SCHEMA || value["profile"] != PROFILE {
         return Err(invalid());
     }
-    let nonce = text(&value["nonce"])?;
-    if !hex(nonce, 32) || nonce.bytes().all(|byte| byte == b'0') {
-        return Err(invalid());
-    }
-    keys(&value["app"], &["root", "files"])?;
+    let selector = Selector::parse(text(&value["selector"])?)?;
     keys(
-        &value["runtime"],
-        &["root", "manifest", "files", "parent_observation_sha256"],
+        &value["source"],
+        &["sha", "manifest_sha256", "cargo_lock_sha256"],
     )?;
-    let app_root = text(&value["app"]["root"])?;
-    let runtime_root = text(&value["runtime"]["root"])?;
-    if !absolute(app_root)
-        || !absolute(runtime_root)
-        || app_root.eq_ignore_ascii_case(runtime_root)
-        || app_root
-            .to_ascii_lowercase()
-            .starts_with(&(runtime_root.to_ascii_lowercase() + "/"))
-        || runtime_root
-            .to_ascii_lowercase()
-            .starts_with(&(app_root.to_ascii_lowercase() + "/"))
-    {
-        return Err(invalid());
-    }
-    if value["runtime"]["parent_observation_sha256"] != OBSERVATION_SHA256 {
+    let source_sha = text(&value["source"]["sha"])?;
+    let manifest_sha256 = text(&value["source"]["manifest_sha256"])?;
+    let cargo_lock_sha256 = text(&value["source"]["cargo_lock_sha256"])?;
+    if !hex(source_sha, 40) || !hex(manifest_sha256, 64) || !hex(cargo_lock_sha256, 64) {
         return Err(invalid());
     }
     let harness = artifact(&value["harness"], 256 * 1024 * 1024)?;
-    if harness.sha256 != pins.harness {
+    let managed_source = artifact(&value["managed_source"], 1024 * 1024)?;
+    keys(&value["app"], &["root", "files"])?;
+    keys(&value["runtime"], &["root"])?;
+    let app_root = text(&value["app"]["root"])?;
+    let runtime_root = text(&value["runtime"]["root"])?;
+    if !absolute(app_root) || !absolute(runtime_root) || !disjoint(app_root, runtime_root) {
         return Err(invalid());
     }
-    let app = parse_manifest(
-        &normalized_manifest(&value["app"]["files"], true)?,
-        pins.app_manifest,
-        ClosureKind::App,
-    )?;
-    let runtime_bytes = normalized_manifest(&value["runtime"]["files"], false)?;
-    let runtime = parse_manifest(&runtime_bytes, pins.runtime_manifest, ClosureKind::Runtime)?;
-    let runtime_manifest = artifact(&value["runtime"]["manifest"], INPUT_LIMIT as u64)?;
-    if runtime_manifest.bytes != runtime_bytes.len() as u64
-        || runtime_manifest.sha256 != pins.runtime_manifest
-    {
+    let rows = value["app"]["files"].as_array().ok_or_else(invalid)?;
+    if rows.len() != APP_FILES.len() {
         return Err(invalid());
     }
-    let provenance = parse_provenance(&value["provenance"])?;
-    if !hex(pins.provenance, 64)
-        || format!(
-            "{:x}",
-            Sha256::digest(serde_json::to_vec(&value["provenance"]).map_err(|_| invalid())?)
-        ) != pins.provenance
+    let mut app = Vec::new();
+    for (row, (role, name)) in rows.iter().zip(APP_FILES) {
+        keys(row, &["role", "path", "bytes", "sha256"])?;
+        let bytes = row["bytes"].as_u64().ok_or_else(invalid)?;
+        let sha256 = text(&row["sha256"])?;
+        if row["role"] != role
+            || row["path"] != name
+            || bytes == 0
+            || bytes > 256 * 1024 * 1024
+            || !hex(sha256, 64)
+        {
+            return Err(invalid());
+        }
+        app.push(FileEntry {
+            path: name.into(),
+            bytes,
+            sha256: sha256.into(),
+        });
+    }
+    let provenance: UnverifiedProvenance =
+        serde_json::from_value(value["provenance"].clone()).map_err(|_| invalid())?;
+    provenance.validate_syntax().map_err(|_| invalid())?;
+    // The provenance names exactly this source and these artifacts.
+    if provenance.managed.source_sha != source_sha
+        || provenance.managed.required_source_sha != source_sha
+        || provenance.managed.receipt_sha256 != app[1].sha256
+        || provenance.native.source_sha != source_sha
+        || provenance.native.cargo_lock_sha256 != cargo_lock_sha256
+        || provenance.native.receipt_sha256 != app[5].sha256
+        || provenance.harness.source_sha != source_sha
+        || provenance.harness.cargo_lock_sha256 != cargo_lock_sha256
+        || provenance.harness.receipt_sha256 != harness.sha256
     {
         return Err(invalid());
     }
     Ok(ParsedInput {
-        nonce: nonce.into(),
+        selector,
+        source_sha: source_sha.into(),
+        manifest_sha256: manifest_sha256.into(),
         harness,
+        managed_source,
         app_root: app_root.into(),
         app,
         runtime_root: runtime_root.into(),
-        runtime,
-        runtime_manifest,
         provenance,
     })
 }
 
-type Provenance = UnverifiedProvenance;
-fn parse_provenance(value: &Value) -> io::Result<Provenance> {
-    let result: Provenance = serde_json::from_value(value.clone()).map_err(|_| invalid())?;
-    result.validate_syntax().map_err(|_| invalid())?;
-    Ok(result)
-}
-/// Syntax-only runner path policy over the shared UNVERIFIED wire. No native
-/// artifact/token/Job authority or Ready capability is created here.
-struct LaunchContext {
-    launch: UnverifiedLaunch,
-    budget: UnverifiedMappedBudget,
-}
-impl LaunchContext {
-    fn parse(bytes: &[u8], wall_ms: u64, received: std::time::Instant) -> io::Result<Self> {
-        let wire = parent_context::decode(bytes).map_err(|_| invalid())?;
-        let budget = wire.map_budget(wall_ms, received).map_err(|_| invalid())?;
-        let UnverifiedParentContext::Workload(launch) = wire else {
-            return Err(invalid());
-        };
-        if [
-            &launch.apphost,
-            &launch.app_root,
-            &launch.system_root,
-            &launch.runtime_root,
-            &launch.private_work,
-            &launch.audit_root,
-            &launch.handoff_root,
-        ]
-        .into_iter()
-        .any(|value| !absolute(value))
-        {
-            return Err(invalid());
-        }
-        if launch.apphost != format!("{}/Humanymous.HostPilot.exe", launch.app_root) {
-            return Err(invalid());
-        }
-        let parts: Vec<_> = launch.actor_sid.split('-').collect();
-        if parts.len() < 4
-            || parts.len() > 18
-            || parts[..2] != ["S", "1"]
-            || parts[2..].iter().any(|part| {
-                part.is_empty()
-                    || part.len() > 10
-                    || !part.bytes().all(|byte| byte.is_ascii_digit())
-                    || part.parse::<u32>().is_err()
-                    || (part.len() > 1 && part.starts_with('0'))
-            })
-        {
-            return Err(invalid());
-        }
-        let roots = [
-            &launch.app_root,
-            &launch.system_root,
-            &launch.runtime_root,
-            &launch.private_work,
-            &launch.handoff_root,
-        ];
-        for (index, first) in roots.iter().enumerate() {
-            for second in roots.iter().skip(index + 1) {
-                let first = first.to_ascii_lowercase();
-                let second = second.to_ascii_lowercase();
-                if first == second
-                    || first.starts_with(&(second.clone() + "/"))
-                    || second.starts_with(&(first + "/"))
-                {
-                    return Err(invalid());
-                }
+/// Actor-side path policy over a decoded, still-unverified `/2` context.
+pub(crate) fn host_paths_ok(context: &UnverifiedHostContext) -> io::Result<()> {
+    let system = context.system_root.as_deref().ok_or_else(invalid)?;
+    if [
+        context.apphost.as_str(),
+        &context.app_root,
+        &context.runtime_root,
+        system,
+        &context.private_work,
+        &context.audit_root,
+        &context.handoff_root,
+    ]
+    .into_iter()
+    .any(|value| !absolute(value))
+        || context.apphost != format!("{}/Humanymous.HostPilot.exe", context.app_root)
+        || context.audit_root != format!("{}/audit", context.private_work)
+    {
+        return Err(invalid());
+    }
+    let roots = [
+        &context.app_root,
+        &context.runtime_root,
+        &context.private_work,
+        &context.handoff_root,
+    ];
+    for (index, first) in roots.iter().enumerate() {
+        for second in roots.iter().skip(index + 1) {
+            if !disjoint(first, second) {
+                return Err(invalid());
             }
         }
-        if !launch
-            .audit_root
-            .starts_with(&(launch.private_work.clone() + "/"))
-        {
-            return Err(invalid());
-        }
-        Ok(Self { launch, budget })
     }
-    fn environment(&self) -> Vec<(&'static str, String)> {
-        self.launch.fixed_environment()
-    }
-    fn harness_arguments(&self) -> [&'static str; 5] {
-        [
-            "--ignored",
-            "--nocapture",
-            "--exact",
-            SELECTOR,
-            "--test-threads=1",
-        ]
-    }
+    Ok(())
+}
+
+/// The actor child's one result line, exactly as the parent accepts it.
+pub(crate) const CHILD_SCHEMA: &str = "humanymous.dotnet-prebuilt-child/1";
+pub(crate) fn child_line_ok(line: &Value, selector: Selector) -> bool {
+    let Some(tests) = line["tests"].as_array() else {
+        return false;
+    };
+    line["schema"] == CHILD_SCHEMA
+        && line["selector"] == selector.label()
+        && line["producer_bound"] == true
+        && line["harness_verified"] == true
+        && line["private_created"] == true
+        && line["private_removed"] == true
+        && line["handoff_written"] == true
+        && tests.len() == selector.tests().len()
+        && tests.iter().zip(selector.tests()).all(|(row, name)| {
+            row["name"] == *name
+                && row["exit_code"] == 0
+                && row["timed_out"] == false
+                && row["readers_joined"] == true
+                && row["creator_channel"] == (*name == KESTREL || *name == PACKAGE)
+        })
+}
+
+/// Exact single-test footer and case line for one `--exact` test alone.
+pub(crate) fn single_test_passed(output: &str, name: &str) -> bool {
+    let footers: Vec<_> = output
+        .lines()
+        .filter(|line| line.starts_with("test result:"))
+        .collect();
+    footers.len() == 1
+        && footers[0].starts_with("test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; ")
+        && output
+            .lines()
+            .filter(|line| line.starts_with(&format!("test {name} ... ")))
+            .count()
+            == 1
 }
 
 /// Symbolic state ordering only; observations cannot authenticate native facts.
 #[derive(Default)]
-struct CleanupOrder {
+pub(crate) struct CleanupOrder {
     started: bool,
     main_empty: bool,
     cleanup_started: bool,
@@ -417,11 +413,15 @@ struct CleanupOrder {
     profile_after_absent: bool,
     account_deleted: bool,
     scratch_deleted: bool,
-    readers_joined: bool,
-    outcome_bound: bool,
+    pub readers_joined: bool,
+    pub outcome_bound: bool,
 }
 impl CleanupOrder {
-    fn start(&mut self, profile_absent: bool) -> io::Result<()> {
+    /// Whether the actor launch sequence began; before it, no ordering fact applies.
+    pub(crate) fn started(&self) -> bool {
+        self.started
+    }
+    pub(crate) fn start(&mut self, profile_absent: bool) -> io::Result<()> {
         if self.started || !profile_absent {
             return Err(invalid());
         }
@@ -429,13 +429,14 @@ impl CleanupOrder {
         self.profile_before_absent = true;
         Ok(())
     }
-    fn main_empty(&mut self) -> io::Result<()> {
+    pub(crate) fn main_empty(&mut self) -> io::Result<()> {
         if !self.started || self.main_empty {
             return Err(invalid());
         }
         self.main_empty = true;
         Ok(())
     }
+    #[cfg(test)]
     fn start_recovery(&mut self) -> io::Result<()> {
         if !self.main_empty || self.cleanup_started || self.account_deleted {
             return Err(invalid());
@@ -445,13 +446,14 @@ impl CleanupOrder {
         self.profile_after_absent = false;
         Ok(())
     }
-    fn private_removed(&mut self) -> io::Result<()> {
+    pub(crate) fn private_removed(&mut self) -> io::Result<()> {
         if !self.started || self.account_deleted {
             return Err(invalid());
         }
         self.private_removed = true;
         Ok(())
     }
+    #[cfg(test)]
     fn cleanup_empty(&mut self) -> io::Result<()> {
         if !self.cleanup_started || !self.private_removed {
             return Err(invalid());
@@ -459,14 +461,14 @@ impl CleanupOrder {
         self.cleanup_empty = true;
         Ok(())
     }
-    fn profile_absent_after(&mut self) -> io::Result<()> {
+    pub(crate) fn profile_absent_after(&mut self) -> io::Result<()> {
         if !self.main_empty || (self.cleanup_started && !self.cleanup_empty) {
             return Err(invalid());
         }
         self.profile_after_absent = true;
         Ok(())
     }
-    fn delete_account(&mut self) -> io::Result<()> {
+    pub(crate) fn delete_account(&mut self) -> io::Result<()> {
         if !self.main_empty
             || !self.private_removed
             || !self.profile_after_absent
@@ -478,14 +480,14 @@ impl CleanupOrder {
         self.account_deleted = true;
         Ok(())
     }
-    fn delete_scratch(&mut self) -> io::Result<()> {
+    pub(crate) fn delete_scratch(&mut self) -> io::Result<()> {
         if !self.account_deleted || self.scratch_deleted {
             return Err(invalid());
         }
         self.scratch_deleted = true;
         Ok(())
     }
-    fn clean_pass(&self, execution_passed: bool) -> bool {
+    pub(crate) fn clean_pass(&self, execution_passed: bool) -> bool {
         execution_passed
             && self.started
             && self.main_empty

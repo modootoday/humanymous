@@ -173,6 +173,25 @@
       "helpers": []
     },
     {
+      "id": "dotnet-hosted-windows",
+      "package": "humanymous-dotnet-adapter",
+      "target": "hosted",
+      "kind": "test",
+      "os": ["windows"],
+      "executor": "job",
+      "job": {
+        "workflow": ".github/workflows/rust-validation.yml",
+        "name": "dotnet",
+        "run": "cargo run --locked -p humanymous-delivery -- component dotnet-host",
+        "runner": "windows-2025"
+      },
+      "tests": [
+        "actual_kestrel_engine_audit_body_gc_and_shutdown",
+        "generic::actual_generic_abi_only_process"
+      ],
+      "helpers": []
+    },
+    {
       "id": "dotnet-sdk-download",
       "package": "humanymous-delivery",
       "target": "humanymous-delivery",

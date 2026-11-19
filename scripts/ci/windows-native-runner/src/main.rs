@@ -7,7 +7,7 @@ mod evidence;
 mod fixture;
 mod harness;
 mod pilot;
-#[cfg(test)]
+#[cfg(any(windows, test))]
 #[path = "actor/prebuilt.rs"]
 mod prebuilt;
 mod service;
@@ -73,6 +73,56 @@ fn run() -> io::Result<i32> {
     #[cfg(windows)]
     if mode == "controlled-capture" {
         return controlled::run(args);
+    }
+    #[cfg(windows)]
+    if mode == actor::stdio_fixture::CHILD_MODE {
+        return actor::stdio_fixture::child(&mut args);
+    }
+    #[cfg(windows)]
+    if mode == actor::prebuilt_run::CHILD_MODE {
+        return actor::prebuilt_run::child(&mut args);
+    }
+    #[cfg(windows)]
+    if mode == actor::carrier_owner::MODE {
+        return match (args.next().as_deref(), args.next(), args.next()) {
+            (Some("--report"), Some(report), None) => {
+                actor::carrier_owner::run(std::path::Path::new(&report))
+            }
+            _ => Err(io::Error::other(
+                "carrier-owner-fixture --report <abs> required",
+            )),
+        };
+    }
+    #[cfg(windows)]
+    if mode == "dotnet-prebuilt" {
+        return match (
+            args.next().as_deref(),
+            args.next(),
+            args.next().as_deref(),
+            args.next(),
+            args.next(),
+        ) {
+            (Some("--input"), Some(input), Some("--report"), Some(report), None) => {
+                actor::prebuilt_run::run(
+                    std::path::Path::new(&input),
+                    std::path::Path::new(&report),
+                )
+            }
+            _ => Err(io::Error::other(
+                "dotnet-prebuilt --input <abs> --report <abs> required",
+            )),
+        };
+    }
+    #[cfg(windows)]
+    if mode == "dotnet-stdio-fixture" {
+        return match (args.next().as_deref(), args.next(), args.next()) {
+            (Some("--report"), Some(report), None) => {
+                actor::stdio_fixture::run(std::path::Path::new(&report))
+            }
+            _ => Err(io::Error::other(
+                "dotnet-stdio-fixture --report <abs> required",
+            )),
+        };
     }
     if mode == "summarize-service" {
         return service::summary::run(args);
