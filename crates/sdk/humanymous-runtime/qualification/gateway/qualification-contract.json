@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 766,
-      "macos": 766,
-      "windows": 734
+      "linux": 771,
+      "macos": 771,
+      "windows": 739
     },
     "common_test_names": [
       "gateway::admin_approval::tests::approval_store_rules",
@@ -328,6 +328,7 @@
       "gateway::http::tests::legacy_go_smuggle_scan_cases_are_refused_on_the_wire",
       "gateway::http::tests::origin_request_drops_forged_trust_headers",
       "gateway::http::tests::origin_response_preserves_cookie_bytes_and_rejects_ambiguity",
+      "gateway::http::tests::probe_frame_keeps_content_length_and_drops_the_body_for_head",
       "gateway::http::tests::strict_framing_rejects_smuggling_and_normalization",
       "gateway::inject::tests::falls_back_to_before_body",
       "gateway::inject::tests::injects_right_after_head_across_every_split",
@@ -454,6 +455,9 @@
       "gateway::pass_store::tests::trace_registry_saturation_fails_closed_then_drains",
       "gateway::pass_store::tests::wargame_r333_trace_replay_blocked",
       "gateway::pass_store::tests::wargame_r338_replay_lock",
+      "gateway::proxy_listener::tests::accept_matches_go_golden_over_real_tcp",
+      "gateway::proxy_listener::tests::default_timeout_is_the_go_five_seconds",
+      "gateway::proxy_listener::tests::untrusted_peer_bytes_are_never_consumed",
       "gateway::recon::tests::constant_floor_waits_out_the_floor_and_never_extends_it",
       "gateway::recon::tests::remaining_is_the_unelapsed_part_of_the_floor",
       "gateway::request::tests::correlation_ids_are_sixteen_hex_and_fresh",
@@ -621,6 +625,7 @@
       "gateway::tests::edge::poisoned_epoch_is_not_ready",
       "gateway::tests::edge::readiness_probe_drains_and_liveness_stays_ok",
       "gateway::tests::edge::spoof_gate_monitor_records_and_continues",
+      "gateway::tests::edge::spoof_gate_monitor_strips_forged_headers_before_scoring",
       "gateway::tests::edge::spoofed_trust_headers_are_denied_before_origin",
       "gateway::tests::edge::unaudited_gate_effect_is_refused_and_poisons_the_epoch",
       "gateway::tests::fresh_collector_provenance_gates_required_collector",

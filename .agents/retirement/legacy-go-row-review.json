@@ -15,8 +15,8 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 266,
-  "partial": 35,
+  "ported_unit": 267,
+  "partial": 34,
   "missing": 2,
   "not_applicable": 2,
   "oracle_only": 9
@@ -75,10 +75,10 @@
    "ported_unit": 5
   },
   "internal/gate": {
-   "partial": 19,
+   "partial": 18,
    "missing": 1,
    "not_applicable": 1,
-   "ported_unit": 63,
+   "ported_unit": 64,
    "oracle_only": 1
   },
   "internal/httpx": {
@@ -2737,7 +2737,7 @@
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "All three Go tests pass on the oracle (981d25c, Go 1.25.3). Their kernel halves are ported against gateway::ban::gate with the Go-measured sequence: with soft 8 and hard 10 requests 8 and 9 record ratelimit.soft_exceeded and request 10 is blocked with ban.applied then ban.enforced; the records are appended to a real audit Log and the chain verifies; an unrelated address passes; an IP-rotating flood is banned by fp:d_Tues8bRjsNLZHw (Go bindKey); a manual temporary ban blocks with Retry-After until lifted. The HTTP response, origin and admin halves stay gaps. Temporary auto and manual bans need no dual control; permanent and cidr bans do (pinned by the dual-control tests). Review follow-up: monitor and shadow never block; a rate-history refusal there is recorded as ratelimit.unavailable (would_refuse) and the request continues, while enforce mode still returns the refusal for the caller to fail closed. A fourth auto strike blocks with the 24h term and Block.dual_control_required set. FM11 slice 18 closes both gaps on a real loopback listener behind a PROXY v2 edge: Application runs the ban gate, so the flood's 10th request answers 403 with the Go headers and body (Retry-After 3600 or 3599; Go measured 3599 because its clock had moved between ban and block), later requests stay blocked, the record sequence equals the Go capture except verdict DENY, the origin is never contacted and 198.51.100.2 passes; the IP-rotating flood is banned by fp: and blocks a fresh address; an operator's temporary ban through gateway::admin_plane (bans, list, lift) blocks at the public edge with Retry-After until lifted. The service binary still provisions no ban store (gap tracked on internal/gate/gates.go).",
+   "notes": "All three Go tests pass on the oracle (981d25c, Go 1.25.3). Their kernel halves are ported against gateway::ban::gate with the Go-measured sequence: with soft 8 and hard 10 requests 8 and 9 record ratelimit.soft_exceeded and request 10 is blocked with ban.applied then ban.enforced; the records are appended to a real audit Log and the chain verifies; an unrelated address passes; an IP-rotating flood is banned by fp:d_Tues8bRjsNLZHw (Go bindKey); a manual temporary ban blocks with Retry-After until lifted. Temporary auto and manual bans need no dual control; permanent and cidr bans do (pinned by the dual-control tests). Review follow-up: monitor and shadow never block; a rate-history refusal there is recorded as ratelimit.unavailable (would_refuse) and the request continues, while enforce mode still returns the refusal for the caller to fail closed. A fourth auto strike blocks with the 24h term and Block.dual_control_required set. FM11 slice 18 closes both gaps on a real loopback listener behind a PROXY v2 edge: Application runs the ban gate, so the flood's 10th request answers 403 with the Go headers and body (Retry-After 3600 or 3599; Go measured 3599 because its clock had moved between ban and block), later requests stay blocked, the record sequence equals the Go capture except verdict DENY, the origin is never contacted and 198.51.100.2 passes; the IP-rotating flood is banned by fp: and blocks a fresh address; an operator's temporary ban through gateway::admin_plane (bans, list, lift) blocks at the public edge with Retry-After until lifted. The service binary still provisions no ban store (gap tracked on internal/gate/gates.go).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::flood_is_auto_banned_audited_and_spares_other_address": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/ban/gate/tests.rs::ip_rotating_flood_is_banned_by_fingerprint": "passed",
@@ -3300,7 +3300,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::flood_is_auto_banned_at_the_edge_and_spares_other_address",
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::ip_rotating_flood_is_banned_by_fingerprint_on_the_served_path",
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::ban_gate_requires_a_trusted_client_address",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::unaudited_gate_effect_is_refused_and_poisons_the_epoch"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::unaudited_gate_effect_is_refused_and_poisons_the_epoch",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoof_gate_monitor_strips_forged_headers_before_scoring"
    ],
    "go_test_map": {},
    "gaps": [
@@ -3313,7 +3314,7 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Only framing and RIT/verdict application were present (B13 M). FM11 slice 18: the served path now runs the legacy ServeHTTP gate order for proxied requests (gateway::application::edge): after the reserved control routes, the ban gate (ban::gate::evaluate, HR-21) and then the spoof-header gate (guard::spoof_gate, HR-27b), before route inventory, authorization and scoring. Modes come from the startup edge section (default enforce, Go's default without a settings store). Responses and records match the Go capture tests/fixtures/gateway/edge-gates-go-golden.json (Go 1.25.3 at 981d25c, network none). Named deviations: the ban gate needs the trusted PROXY v2 client address and refuses an unattributed connection when enforcing (503 ban_client_address); a ledger refusal is 503 ban_ledger; a monitor-mode spoof finding does not strip the headers the frozen engine observes; records carry no subject pseudonym and verdict DENY; an append failure poisons the epoch. Owner decision 2026-11-16 left serving composition undecided; this wiring needs owner review. Signal IDs and scoring are unchanged.",
+   "notes": "Only framing and RIT/verdict application were present (B13 M). FM11 slice 18: the served path now runs the legacy ServeHTTP gate order for proxied requests (gateway::application::edge): after the reserved control routes, the ban gate (ban::gate::evaluate, HR-21) and then the spoof-header gate (guard::spoof_gate, HR-27b), before route inventory, authorization and scoring. Modes come from the startup edge section (default enforce, Go's default without a settings store). Responses and records match the Go capture tests/fixtures/gateway/edge-gates-go-golden.json (Go 1.25.3 at 981d25c, network none). Named deviations: the ban gate needs the trusted PROXY v2 client address and refuses an unattributed connection when enforcing (503 ban_client_address); a ledger refusal is 503 ban_ledger; records carry no subject pseudonym and verdict DENY; an append failure poisons the epoch. Owner decision 2026-11-16 left serving composition undecided; this wiring needs owner review. Signal IDs and scoring are unchanged. Review follow-up (FM11 slice 18): a non-enforcing spoof gate now strips the forged trust headers from the scored and forwarded view, as Go's spoofHeaderGate called stripInbound(r) before the mode check; request integrity and the commitment still cover the sent bytes. A refusal to a HEAD request keeps the head and Content-Length without the body, as Go's server did.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::missing_client_is_challenge_and_missing_planes_are_not_ready": "passed",
@@ -3323,7 +3324,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::flood_is_auto_banned_at_the_edge_and_spares_other_address": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::ip_rotating_flood_is_banned_by_fingerprint_on_the_served_path": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::ban_gate_requires_a_trusted_client_address": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::unaudited_gate_effect_is_refused_and_poisons_the_epoch": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::unaudited_gate_effect_is_refused_and_poisons_the_epoch": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoof_gate_monitor_strips_forged_headers_before_scoring": "passed"
    }
   },
   {
@@ -3406,13 +3408,14 @@
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoof_gate_monitor_records_and_continues",
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::invalid_origin_key_and_plaintext_hsts_are_refused",
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::origin_request_drops_forged_trust_headers",
-    "crates/sdk/humanymous-runtime/src/gateway/configuration/edge.rs::defaults_enforce_and_short_or_malformed_keys_are_refused"
+    "crates/sdk/humanymous-runtime/src/gateway/configuration/edge.rs::defaults_enforce_and_short_or_malformed_keys_are_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoof_gate_monitor_strips_forged_headers_before_scoring"
    ],
    "go_test_map": {},
    "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Every guard.go function is ported as a pure kernel: spoofScan, stripInbound, originAuth/originEpoch/originEpochGrace/ValidateOriginAuth (OriginKey, byte-identical to Go) and spoofRecord (smuggle::spoof_record). guard::spoof_gate ports gates.go spoofHeaderGate with the Go-measured output (Go 1.25.3 at 981d25c): enforce denies with the HR-27b record listing non-empty names in legacy order, and monitor and shadow both record mode monitor and continue with the headers stripped. The existing Rust forwarder already drops every internal header (http::origin_request). Owner decision 2026-11-16 (#24; .agents/retirement/owner-decisions-2026-11-16.md) accepts the fail-closed differences (short origin keys refused) and leaves wiring into serving composition undecided, so the two wiring gaps remain. Signal IDs and scoring are unchanged. Review follow-up: the spoof deny carries Go's X-Hmn-Incident: see-audit-log pointer through guard::INCIDENT_HEADER and Spoof::headers(), shared with the ban gate. Go golden tests/fixtures/gateway/configsign-guard-go-golden.json (Go 1.25.3 at 981d25c, offline) pins spoofScan/stripInbound, origin epochs/grace/tokens/validation and spoofRecord; the spoof record now carries the legacy subject actor and key_id k1. Named deviations: Rust spoof_scan reports a forged value behind an empty first value (Go Header.Get read only the first); Rust records write verdict DENY where Go wrote deny; keys under 32 bytes are refused. FM11 slice 18 closes both wiring gaps: the origin key is provisioned as edge.origin_key_hex in the private startup document (owner decision C10; malformed or short keys refuse the configuration, readiness reports only origin_cloak true), and http::origin_request attaches one X-Hmny-Origin-Auth token for origin_epoch(now) on every origin request of the plaintext and TLS paths after dropping client copies; Application runs guard::spoof_gate on the served path and appends its record before acting (gateway::application::edge). Pinned on a real loopback listener by gateway::tests::edge.",
+   "notes": "Every guard.go function is ported as a pure kernel: spoofScan, stripInbound, originAuth/originEpoch/originEpochGrace/ValidateOriginAuth (OriginKey, byte-identical to Go) and spoofRecord (smuggle::spoof_record); guard::spoof_gate ports gates.go spoofHeaderGate with the Go-measured output (Go 1.25.3 at 981d25c): enforce denies with the HR-27b record listing non-empty names in legacy order, and monitor and shadow record mode monitor. The spoof deny carries Go's X-Hmn-Incident: see-audit-log pointer (guard::INCIDENT_HEADER, Spoof::headers()), shared with the ban gate. Go golden tests/fixtures/gateway/configsign-guard-go-golden.json (Go 1.25.3 at 981d25c, offline) pins spoofScan/stripInbound, origin epochs/grace/tokens/validation and spoofRecord, including the legacy subject actor and key_id k1. Owner decision 2026-11-16 (#24; .agents/retirement/owner-decisions-2026-11-16.md) accepts the fail-closed differences and left wiring into serving composition undecided; FM11 slice 18 wires both halves (owner review requested on the PR). Origin cloak: the key is provisioned as edge.origin_key_hex in the private startup document (owner decision C10; malformed or short keys refuse the configuration, readiness reports only origin_cloak true/false), and http::origin_request drops every client copy of the internal headers and attaches one X-Hmny-Origin-Auth token for origin_epoch(now) on every origin request of the plaintext and TLS paths. Spoof gate: Application runs guard::spoof_gate for proxied requests and appends its record before acting (gateway::application::edge); in monitor, shadow and off mode the forged headers are removed from the view that is scored and forwarded, as Go's stripInbound(r) did, while request-integrity verification and the request commitment still cover the bytes the client sent. Pinned on a real loopback listener and through Application::decide by gateway::tests::edge. Named deviations: Rust spoof_scan reports a forged value behind an empty first value (Go Header.Get read only the first); Rust records write verdict DENY where Go wrote deny; keys under 32 bytes are refused; spoof_gate strips empty-valued internal headers too, but the scored view keeps them when nothing was forged (Go stripped only on a finding) and the forwarder drops them. Signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::clean_request_has_no_spoof": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::enforcing_spoof_gate_denies_each_forged_trust_header": "passed",
@@ -3437,7 +3440,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoof_gate_monitor_records_and_continues": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::invalid_origin_key_and_plaintext_hsts_are_refused": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::origin_request_drops_forged_trust_headers": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/configuration/edge.rs::defaults_enforce_and_short_or_malformed_keys_are_refused": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/configuration/edge.rs::defaults_enforce_and_short_or_malformed_keys_are_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoof_gate_monitor_strips_forged_headers_before_scoring": "passed"
    }
   },
   {
@@ -3675,7 +3679,9 @@
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs",
     "crates/sdk/humanymous-runtime/src/gateway/operations/audit_search.rs",
     "crates/sdk/humanymous-runtime/src/gateway/application/edge.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/http/origin_response.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/http/origin_response.rs",
+    "crates/sdk/humanymous-runtime/tests/fixtures/gateway/edge-probe-methods-go-golden.json",
+    "crates/sdk/humanymous-runtime/src/gateway/http/stream.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/tests/browser/contract.rs::shared_lab_request_limit_413_has_no_ack_and_closes_client_epoch",
@@ -3685,7 +3691,9 @@
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::forwarded_request_is_cloaked_and_response_gains_add_only_security_headers",
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::readiness_probe_drains_and_liveness_stays_ok",
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::poisoned_epoch_is_not_ready",
-    "crates/sdk/humanymous-runtime/src/gateway/http/origin_response.rs::security_headers_are_add_only_and_hsts_is_opt_in"
+    "crates/sdk/humanymous-runtime/src/gateway/http/origin_response.rs::security_headers_are_add_only_and_hsts_is_opt_in",
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::probe_frame_keeps_content_length_and_drops_the_body_for_head",
+    "crates/sdk/humanymous-runtime/src/gateway/http/stream.rs::complete_chunk_stream_reframes_and_strips_forged_gateway_fields"
    ],
    "go_test_map": {
     "TestSecurityHeadersAddOnly": "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::forwarded_request_is_cloaked_and_response_gains_add_only_security_headers",
@@ -3700,7 +3708,7 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Body cap and empty-chain failure exist; readiness is a document, not readyz/healthz endpoints. TestAuditSubjectFilter is ported against the gateway::operations::audit_search kernel (session or actor pseudonym); no admin audit route serves it yet. FM11 slice 18: add-only security headers are added to complete proxied responses (owner decision C10; HSTS only with edge.hsts on the TLS listener, refused on plaintext, pinned at unit level only) and GET /_humanymous/healthz and /_humanymous/readyz are served with the Go bodies; readyz answers 503 draining after ReadySwitch::set_ready(false) or once the epoch has failed closed. Prometheus exposition (TestAdminMetricsExposition) is not served.",
+   "notes": "Body cap and empty-chain failure exist. TestAuditSubjectFilter is ported against the gateway::operations::audit_search kernel (session or actor pseudonym); no admin audit route serves it yet. FM11 slice 18: add-only security headers are added to complete proxied responses (owner decision C10; HSTS only with edge.hsts on the TLS listener, refused on plaintext, pinned at unit level only). /_humanymous/healthz and /_humanymous/readyz answer GET with the Go bodies and HEAD with the same head and Content-Length and no body (Go capture tests/fixtures/gateway/edge-probe-methods-go-golden.json over a real listener); readyz answers 503 draining after ReadySwitch::set_ready(false) or once the epoch has failed closed. Named deviations: native-stream responses carry no added security headers because owner decision C10 keeps the native-stream profile out of scope until qualified separately (Go modifyResponse added them to every proxied response; pinned by http::stream::tests::complete_chunk_stream_reframes_and_strips_forged_gateway_fields); other methods stay refused 403 reserved_route (Go's mux answered every method), and the draining body is sent as application/json (Go sniffed text/plain; charset=utf-8). Prometheus exposition (TestAdminMetricsExposition) is not served.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::configuration_and_readiness_are_honest": "passed",
@@ -3709,7 +3717,9 @@
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::forwarded_request_is_cloaked_and_response_gains_add_only_security_headers": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::readiness_probe_drains_and_liveness_stays_ok": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::poisoned_epoch_is_not_ready": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/http/origin_response.rs::security_headers_are_add_only_and_hsts_is_opt_in": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/http/origin_response.rs::security_headers_are_add_only_and_hsts_is_opt_in": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::probe_frame_keeps_content_length_and_drops_the_body_for_head": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/http/stream.rs::complete_chunk_stream_reframes_and_strips_forged_gateway_fields": "passed"
    }
   },
   {
@@ -3746,28 +3756,51 @@
   },
   {
    "baseline_path": "internal/gate/proxyproto.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/network/proxy/mod.rs"
+    "crates/sdk/humanymous-runtime/src/network/proxy/mod.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/proxy_listener.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::trust_gate_over_real_tcp",
     "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::recovers_ipv6_source",
     "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::unspecified_and_udp_families_keep_socket_peer",
-    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::reserved_commands_are_refused_not_treated_as_proxy"
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests/golden.rs::read_header_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests/golden.rs::ipv4_mapped_source_is_keyed_as_ipv4_like_go",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests/golden.rs::parse_cidrs_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests/golden.rs::trust_gate_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/gateway/proxy_listener/tests.rs::accept_matches_go_golden_over_real_tcp",
+    "crates/sdk/humanymous-runtime/src/gateway/proxy_listener/tests.rs::default_timeout_is_the_go_five_seconds",
+    "crates/sdk/humanymous-runtime/src/gateway/proxy_listener/tests.rs::untrusted_peer_bytes_are_never_consumed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::reserved_commands_are_refused_not_treated_as_proxy",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::mapped_block_entry_is_refused_as_ipv4_slash_zero",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::bare_mapped_entry_is_refused",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::mapped_entry_with_prefix_is_its_ipv4_network",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::mapped_peer_is_never_trusted_through_an_ipv6_entry",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::leading_zero_prefix_lengths_are_refused"
    ],
    "go_test_map": {},
-   "gaps": [
-    "WrapProxyProto/proxyListener accept-loop parity is not yet claimed: PR #123 (merged into codex/rust at db855930) now wires network::proxy::read_header into the gateway listener (gateway/application.rs, covered by gateway::tests::ip_reputation, including a header deadline and per-connection drop of malformed headers), but this row has not been re-reviewed against that listener for the 5 s deadline, the trusted-peer allowlist and declared-address substitution of Go proxyListener (B01/B26)"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "ParseCIDRs (with the /8 floor), the trusted-peer gate and readProxyV2 (IPv4, IPv6, LOCAL, UNSPEC/UDP, truncation and short blocks) are ported as the pure Network kernel network::proxy; it never creates TLS provenance (network-capture N01). The Go proxyproto_test.go cases pass on the oracle (981d25c, Go 1.25.3) and are mapped on the proxyproto_test.go row. Deliberate difference, not parity: since PR #123 network::proxy::read_header refuses the reserved PROXY v2 commands 0x2-0xF with Refusal::Command before reading the address block, whereas Go 981d25c proxyproto.go:149 tests only for LOCAL (0x0) and treats every other command, reserved ones included, as PROXY; the Rust kernel is therefore stricter than readProxyV2 for those headers (reserved_commands_are_refused_not_treated_as_proxy). This slice changes no proxy code; PR #123 owns that module.",
+   "notes": "FM11 residual 13: readProxyV2, ParseCIDRs and proxyListener.trusts are the Network kernel network::proxy (B26); WrapProxyProto, proxyListener.Accept and proxyConn are gateway::proxy_listener::ProxyListener, a tokio accept loop that returns an untrusted peer unread, reads one v2 header from a trusted balancer within the Go 5 s timeout, keys a declared TCP source and keeps the socket peer for LOCAL or non-TCP families, and closes a malformed, truncated or late header and keeps accepting. Go golden crates/sdk/humanymous-runtime/tests/fixtures/network/proxyproto-go-golden.json (Go 1.25.3, provenance inside): 34 header decodes (v1 text, wrong versions, truncations, short blocks, TLVs) with their remaining bytes, 43 allowlist parses, 21 trust decisions and 10 real-TCP accepts match except the deliberate differences below. Measured Go behaviour adopted: an IPv4-mapped TCP6 source and an IPv4-mapped peer are IPv4, and a zoned IPv6 peer is never trusted. Allowlist parsing and membership reuse the shared network::intel::prefix_set primitives (Prefix::parse_masked, Floor with MIN_PREFIX 8 for both families, Prefix::contains), with the allowlist's own rules applied inside network::proxy only, so the shared primitive and the IP-intel lookups are unchanged. Deliberate fail-closed differences, pinned in network/proxy/tests/golden.rs with the captured Go value still asserted (AGENTS.md fail-closed): an empty allowlist, a leading-zero prefix and more than 256 entries are refused; an IPv4-mapped entry with a prefix of at least 96 is normalised to its IPv4 network before the breadth floor (Go accepted ::ffff:0:0/96 as IPv4 /0, trusting every IPv4 peer; it is TooBroad, as is ::ffff:0:0/100, and ::ffff:10.0.0.0/104 is 10.0.0.0/8); a bare ::ffff:a.b.c.d entry is refused (Go read it as ::/32 and did not trust that IPv4 host; keeping the host would have widened trust beyond Go); and the reserved PROXY v2 commands 0x2-0xF are refused with Refusal::Command before the address block is read (since PR #123; Go 981d25c proxyproto.go:149 tested only for LOCAL and treated them as PROXY, golden rows command_2_is_proxy and command_f_is_proxy). Mapped-entry deviation (merge with the FM11 train): on the shared Floor alone ::ffff:0:0/96 passed the IPv6 floor of 8 and Prefix::contains matched every IPv4-mapped peer against it, which is effectively 0.0.0.0/0; network::proxy now normalises mapped entries before the floor and canonicalises the peer before matching, so an IPv4-mapped peer never matches an IPv6 entry, including ::/8 .. ::/95 that cover ::ffff:0:0/96 (as Go IPNet.Contains). gateway/application.rs separately decodes headers from the trusted loopback edge with network::proxy::read_header (PR #123, gateway::tests::ip_reputation) and inherits the same Command refusal; it is not the WrapProxyProto port. Which gate listener ProxyListener wraps is not chosen here and no composition root wraps one yet; the peer never becomes TLS provenance (network-capture N01).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::trust_gate_over_real_tcp": "passed",
     "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::recovers_ipv6_source": "passed",
     "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::unspecified_and_udp_families_keep_socket_peer": "passed",
-    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::reserved_commands_are_refused_not_treated_as_proxy": "passed"
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests/golden.rs::read_header_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests/golden.rs::ipv4_mapped_source_is_keyed_as_ipv4_like_go": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests/golden.rs::parse_cidrs_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests/golden.rs::trust_gate_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/proxy_listener/tests.rs::accept_matches_go_golden_over_real_tcp": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/proxy_listener/tests.rs::default_timeout_is_the_go_five_seconds": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/proxy_listener/tests.rs::untrusted_peer_bytes_are_never_consumed": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::reserved_commands_are_refused_not_treated_as_proxy": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::mapped_block_entry_is_refused_as_ipv4_slash_zero": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::bare_mapped_entry_is_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::mapped_entry_with_prefix_is_its_ipv4_network": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::mapped_peer_is_never_trusted_through_an_ipv6_entry": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::leading_zero_prefix_lengths_are_refused": "passed"
    }
   },
   {

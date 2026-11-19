@@ -22,6 +22,14 @@ fn golden() -> Value {
     .unwrap()
 }
 
+/// Oracle capture of the probes per method over a real listener.
+fn probe_methods_golden() -> Value {
+    serde_json::from_str(include_str!(
+        "../../../tests/fixtures/gateway/edge-probe-methods-go-golden.json"
+    ))
+    .unwrap()
+}
+
 /// A parsed downstream response: status, fields in wire order and body.
 struct Reply {
     status: u16,
@@ -208,6 +216,17 @@ async fn spoofed_trust_headers_are_denied_before_origin() {
         ),
         (409, 6)
     );
+    // HEAD: the same refusal head and Content-Length without body bytes.
+    let mut head = plain("/api/thing", &[("X-Real-Ip", "9.9.9.9")]);
+    head.method = "HEAD".into();
+    let reply = Reply::parse(&exchange(address, &head).await);
+    let go_body = go["spoof"]["X-Real-Ip"]["body"].as_str().unwrap();
+    assert_eq!(reply.status, 403);
+    assert_eq!(
+        reply.field("Content-Length"),
+        Some(go_body.len().to_string().as_str())
+    );
+    assert!(reply.body.is_empty());
     assert_eq!(origin.hits.load(Ordering::SeqCst), 0);
     server.abort();
 }
@@ -230,6 +249,71 @@ fn spoof_gate_monitor_records_and_continues() {
             .pop()
             .unwrap();
         assert_eq!(record.enforcement_mode, "monitor", "{mode:?}");
+    }
+}
+
+/// Signed protected request with `extra` fields, decided after a collect;
+/// returns the decision record.
+fn scored_record(mode: Mode, extra: &[(&str, &str)]) -> Record {
+    let audit = Audit::default();
+    let cfg = config();
+    let mut app_cfg = config();
+    app_cfg.edge.spoof_header = mode;
+    let mut app = Application::new(app_cfg, Default::default(), Box::new(audit.clone())).unwrap();
+    let issued = issue(&mut app, 10_000);
+    collected(&mut app, &cfg, &issued, 10_000);
+    let mut req = request("POST", "/effect?exact=1", b"original bytes".to_vec());
+    req.headers.extend(
+        extra
+            .iter()
+            .map(|(n, v)| ((*n).to_owned(), (*v).to_owned())),
+    );
+    sign(
+        &cfg,
+        &mut req,
+        issued["session"].as_str().unwrap(),
+        issued["key"].as_str().unwrap(),
+        2,
+        10_000,
+    );
+    // Integrity covers the bytes the client signed, forged field included:
+    // the request is authorized and scored (no 4xx rejection).
+    app.decide(&req, || Ok(10_000)).unwrap();
+    records(&audit, "runtime.decision").pop().unwrap()
+}
+
+/// Go spoofHeaderGate calls stripInbound(r) before the mode check: in
+/// monitor, shadow and off mode the forged trust headers are removed from
+/// the request the scorer sees, so the decision equals that of the clean
+/// request, while the commitment still binds the bytes the client sent.
+#[test]
+fn spoof_gate_monitor_strips_forged_headers_before_scoring() {
+    let clean = scored_record(Mode::Monitor, &[]);
+    assert_eq!(clean.verdict, "ALLOW");
+    // Control: a laundering header outside the internal set reaches the
+    // scorer (HR-24 CHALLENGE). Cf-Connecting-Ip would fire the same rule
+    // if it were not stripped, so the equality below is meaningful.
+    let seen = scored_record(Mode::Monitor, &[("True-Client-Ip", "203.0.113.9")]);
+    assert_eq!(
+        (seen.verdict.as_str(), seen.triggered_rules),
+        ("CHALLENGE", Some(vec!["HR-24".to_owned()]))
+    );
+    for mode in [Mode::Monitor, Mode::Shadow, Mode::Off] {
+        let forged = scored_record(
+            mode,
+            &[
+                ("X-Forwarded-For", "203.0.113.9, 198.51.100.7"),
+                ("Forwarded", "for=203.0.113.9, for=198.51.100.7"),
+                ("Cf-Connecting-Ip", "203.0.113.9"),
+                ("X-Real-Ip", "203.0.113.9"),
+            ],
+        );
+        assert_eq!(
+            (&forged.verdict, forged.risk_score, &forged.triggered_rules),
+            (&clean.verdict, clean.risk_score, &clean.triggered_rules),
+            "{mode:?}"
+        );
+        assert_ne!(forged.correlation_id, clean.correlation_id, "{mode:?}");
     }
 }
 
@@ -386,7 +470,46 @@ async fn readiness_probe_drains_and_liveness_stays_ok() {
     probe("/_humanymous/readyz")
         .await
         .assert_matches(&go["readyz"]);
-    // Only GET with the configured authority; anything else stays reserved.
+    // HEAD (Go's mux answered every method): the GET head and Content-Length
+    // over a real listener, no body bytes.
+    let methods = probe_methods_golden();
+    let head = move |target: &'static str| async move {
+        let mut req = plain(target, &[]);
+        req.method = "HEAD".into();
+        Reply::parse(&exchange(address, &req).await)
+    };
+    for (target, row) in [
+        ("/_humanymous/healthz", "healthz_HEAD"),
+        ("/_humanymous/readyz", "readyz_HEAD"),
+    ] {
+        let reply = head(target).await;
+        let go = &methods[row];
+        assert_eq!(u64::from(reply.status), go["status"].as_u64().unwrap());
+        assert_eq!(
+            reply.field("Content-Length"),
+            go["headers"]["Content-Length"].as_str()
+        );
+        assert_eq!(
+            reply.field("Content-Type"),
+            go["headers"]["Content-Type"].as_str()
+        );
+        assert!(reply.body.is_empty() && go["body"] == "");
+    }
+    switch.set_ready(false);
+    let reply = head("/_humanymous/readyz").await;
+    let go = &methods["readyz_draining_HEAD"];
+    assert_eq!(u64::from(reply.status), go["status"].as_u64().unwrap());
+    assert_eq!(
+        reply.field("Content-Length"),
+        go["headers"]["Content-Length"].as_str()
+    );
+    // Named deviation: Go sniffed text/plain for the draining body.
+    assert_eq!(reply.field("Content-Type"), Some("application/json"));
+    assert!(reply.body.is_empty());
+    switch.set_ready(true);
+    // Only GET and HEAD with the configured authority; other methods and
+    // authorities stay refused (Go's mux answered every method).
+    assert_eq!(methods["readyz_POST"]["status"], 200);
     let mut wrong_host = plain("/_humanymous/readyz", &[]);
     wrong_host.headers[0].1 = "other.test".into();
     assert!(
@@ -412,15 +535,15 @@ fn poisoned_epoch_is_not_ready() {
     let _ = app.decide(&plain("/api/thing", &[("X-Real-Ip", "1.2.3.4")]), || {
         Ok(10_000)
     });
-    let Decision::Local(status, body) = app
+    let Decision::Probe(status, body) = app
         .decide(&plain("/_humanymous/readyz", &[]), || Ok(10_000))
         .unwrap()
     else {
         panic!("probe")
     };
     assert_eq!(
-        (status, body.as_slice()),
-        (503, &b"{\"plane\":\"gate\",\"status\":\"draining\"}\n"[..])
+        (status, body),
+        (503, "{\"plane\":\"gate\",\"status\":\"draining\"}\n")
     );
 }
 

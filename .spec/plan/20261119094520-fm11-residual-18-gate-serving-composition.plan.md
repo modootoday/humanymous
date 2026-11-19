@@ -5,7 +5,7 @@ status: active
 created: 2026-11-19T09:45:20Z
 updated: 2026-11-19T09:45:20Z
 rel:
-  governs: [crates/sdk/humanymous-runtime/src/gateway/application/edge.rs, crates/sdk/humanymous-runtime/src/gateway/configuration/edge.rs, crates/sdk/humanymous-runtime/tests/fixtures/gateway/edge-gates-go-golden.json]
+  governs: [crates/sdk/humanymous-runtime/src/gateway/application/edge.rs, crates/sdk/humanymous-runtime/src/gateway/configuration/edge.rs, crates/sdk/humanymous-runtime/tests/fixtures/gateway/edge-gates-go-golden.json, crates/sdk/humanymous-runtime/tests/fixtures/gateway/edge-probe-methods-go-golden.json]
   depends_on: [sot:root/rust-migration, sot:root/runtime-application]
 ---
 
@@ -44,6 +44,11 @@ admin settings overlays) are untouched.
   dual-control R162 commit on unix).
 - [x] Update the ledger rows, `docs/reviews.json`, the runtime-application
   SoT status lines and the qualification contract.
+- [x] Review follow-up: sync with `codex/rust` 2eaed2ed; a non-enforcing spoof
+  gate strips forged trust headers from the scored and forwarded view (Go
+  `stripInbound(r)`); probes answer HEAD like Go (head and Content-Length,
+  no body), and so do gate refusals; native-stream security headers stay a
+  named deviation under owner decision C10; stale ledger notes corrected.
 - [ ] Provision a ban store from the service binary (needs a rate-limit
   configuration document) and share one monotonic epoch with the admin plane.
 - [ ] Serve Prometheus metrics (`TestAdminMetricsExposition`).
@@ -76,3 +81,13 @@ Capture, 2026-11-19, in a cloud session container with its own Docker Engine
   `TestProxyBlocksSpoofedTrustHeaders`, `TestSecurityHeadersAddOnly`,
   `TestReadinessProbe`) pass on the oracle.
 - Never regenerate these fixtures to hide drift.
+
+Review capture, 2026-11-19, same image, flags and source tree: scratch
+in-package test `internal/gate/zz_fm11s18b_capture_test.go` (SHA-256
+`2f7eb6e467ada90bb68360408773aa489abf2f212c98a4e23a3cb2e1e982b1b9`, not
+committed), run as `go test -count=1 -run ^TestFM11S18ProbeMethods$
+./internal/gate/`, sends GET, HEAD, POST, PUT and DELETE to both probes over
+a real listener. Raw output
+`e8fb46c035da00093330aec4a2f065ed84e948fc904bdd22c2654cc3e5ad745f`, identical
+on the host toolchain; committed with a `provenance` object as
+`edge-probe-methods-go-golden.json`.

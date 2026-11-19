@@ -14,7 +14,9 @@
 //!   touched. Both keys are metered: `ip:` and, with a User-Agent, `fp:`.
 //! - A forged trust header answers 403 with the incident pointer and the
 //!   static deny body when `gate.spoof_header` enforces; otherwise the HR-27b
-//!   record carries mode `monitor` and the request continues.
+//!   record carries mode `monitor` and the request continues with every
+//!   internal trust header stripped, so neither scoring nor the origin sees
+//!   the forged claim.
 //! - Probes: `{"plane":"gate","status":"ok"}` and `"ready"`/`"draining"`
 //!   (503) with a trailing newline.
 //!
@@ -28,15 +30,20 @@
 //! - The ban gate keeps its own monotonic epoch (`install_bans`); a store
 //!   shared with `admin_plane::AdminPlane` should be installed when that
 //!   plane starts serving so temporary-ban expiries line up.
-//! - In monitor mode the spoof gate does not strip the headers the frozen
-//!   engine observes: the request integrity token binds every header and the
-//!   forwarder drops internal headers anyway (`http::origin_request`).
+//! - In monitor, shadow and off mode a forged trust header is stripped from
+//!   the view that is scored and forwarded, as Go's `stripInbound(r)` did.
+//!   Request-integrity verification and the request commitment still cover
+//!   the bytes the client sent and signed (Go had no request integrity).
 //! - Records carry no subject pseudonym: no session is authenticated yet.
 //! - A record that cannot be appended poisons the epoch and answers 503
 //!   `durable_audit`, so no gate effect is unaudited.
-//! - Probes answer GET with the exact target and the configured authority
-//!   only. Readiness is also withdrawn when the serving epoch has failed
-//!   closed. The draining body is sent as `application/json`.
+//! - Probes answer GET and HEAD (HEAD: same head and Content-Length, no body,
+//!   as Go's server wrote it) for the exact target and the configured
+//!   authority only; Go's mux also answered every other method, which stays
+//!   refused here as a reserved route. Readiness is also withdrawn when the
+//!   serving epoch has failed closed. The draining body is sent as
+//!   `application/json` (Go's server sniffed `text/plain; charset=utf-8`).
+//! - Gate refusals to a HEAD request keep the head and omit the body.
 use super::{Application, Decision};
 use crate::gateway::Rejection;
 use crate::gateway::ban::{
@@ -53,6 +60,22 @@ use std::time::Instant;
 pub const HEALTHZ: &str = "/_humanymous/healthz";
 /// Readiness probe path; 503 `draining` once withdrawn.
 pub const READYZ: &str = "/_humanymous/readyz";
+/// Liveness body (Go `writeJSON` of the control-plane probe).
+const PROBE_OK: &str = "{\"plane\":\"gate\",\"status\":\"ok\"}\n";
+/// Readiness body while serving.
+const PROBE_READY: &str = "{\"plane\":\"gate\",\"status\":\"ready\"}\n";
+/// Readiness body once withdrawn (503).
+const PROBE_DRAINING: &str = "{\"plane\":\"gate\",\"status\":\"draining\"}\n";
+
+/// Outcome of the front gates for a proxied request.
+pub(super) enum Front {
+    /// Answer locally; the origin is never contacted.
+    Refuse(Decision),
+    /// Continue. `Some` carries the request's fields after the spoof gate
+    /// stripped forged trust headers (Go strips them from the request before
+    /// scoring and forwarding); `None` when nothing was stripped.
+    Continue(Option<Vec<(String, String)>>),
+}
 
 /// A fixed edge-gate refusal written in Go `http.Error` form.
 pub struct GateResponse {
@@ -109,23 +132,25 @@ impl Application {
         self.ready.clone()
     }
 
-    /// Liveness and readiness probes; `None` for any other request.
+    /// Liveness and readiness probes for GET and HEAD; `None` for any other
+    /// request. HEAD gets the GET head and Content-Length without the body.
     pub(super) fn probe(&self, req: &Request) -> Option<Result<Decision, Rejection>> {
-        if req.method != "GET" || req.target != HEALTHZ && req.target != READYZ {
+        if !matches!(req.method.as_str(), "GET" | "HEAD")
+            || req.target != HEALTHZ && req.target != READYZ
+        {
             return None;
         }
         if req.header("host") != Some(self.config.scope.authority.as_str()) {
             return Some(Err(Rejection::new(403, "authority")));
         }
-        let (status, state) = if req.target == HEALTHZ {
-            (200, "ok")
+        let (status, body) = if req.target == HEALTHZ {
+            (200, PROBE_OK)
         } else if self.ready.0.load(Ordering::Acquire) && self.sessions.health().serving() {
-            (200, "ready")
+            (200, PROBE_READY)
         } else {
-            (503, "draining")
+            (503, PROBE_DRAINING)
         };
-        let body = format!("{{\"plane\":\"gate\",\"status\":\"{state}\"}}\n");
-        Some(Ok(Decision::Local(status, body.into_bytes())))
+        Some(Ok(Decision::Probe(status, body)))
     }
 
     fn append_gate_record(
@@ -139,26 +164,32 @@ impl Application {
         Ok(())
     }
 
-    /// Ban then spoof-header gate for one proxied request. `Some` is the
-    /// refusal to write; `None` lets the request continue.
-    pub(super) fn front_gates(&mut self, req: &Request) -> Result<Option<Decision>, Rejection> {
+    /// Ban then spoof-header gate for one proxied request.
+    pub(super) fn front_gates(&mut self, req: &Request) -> Result<Front, Rejection> {
         let route_class = crate::gateway::request::route_class(&req.headers);
         if let Some(block) = self.ban_gate(req, route_class.as_str())? {
-            return Ok(Some(block));
+            return Ok(Front::Refuse(block));
         }
         let mut headers = req.headers.clone();
         let tenant = self.config.scope.tenant.clone();
         let enforce = self.config.edge.spoof_header == Mode::Enforce;
         let Some(spoof) = guard::spoof_gate(&mut headers, enforce, &tenant, "") else {
-            return Ok(None);
+            // Go strips only when a forged value was found: empty-valued
+            // internal fields stay in the scored view (the forwarder still
+            // drops them toward the origin).
+            return Ok(Front::Continue(None));
         };
         let (deny, fields) = (spoof.deny, spoof.headers());
         self.append_gate_record(spoof.record)?;
-        Ok(deny.then_some(Decision::Gate(GateResponse {
-            status: 403,
-            fields,
-            body: guard::SPOOF_DENY_BODY,
-        })))
+        Ok(if deny {
+            Front::Refuse(Decision::Gate(GateResponse {
+                status: 403,
+                fields,
+                body: guard::SPOOF_DENY_BODY,
+            }))
+        } else {
+            Front::Continue(Some(headers))
+        })
     }
 
     fn ban_gate(

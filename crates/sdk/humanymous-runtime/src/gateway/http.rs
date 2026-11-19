@@ -194,15 +194,36 @@ fn reason(status: u16) -> &'static str {
 
 /// Edge gate refusal in Go `http.Error` form: `text/plain; charset=utf-8`,
 /// `X-Content-Type-Options: nosniff` and the static body plus a newline,
-/// followed by the gate's fixed fields (incident pointer, Retry-After).
+/// followed by the gate's fixed fields (incident pointer, Retry-After). A HEAD
+/// request gets the same head and Content-Length without the body, as Go's
+/// server wrote it.
 pub(in crate::gateway) async fn write_text(
     stream: &mut (impl AsyncWrite + Unpin),
     status: u16,
     body: &str,
     fields: &[(&'static str, String)],
+    head: bool,
 ) -> std::io::Result<()> {
-    stream.write_all(&text_frame(status, body, fields)?).await?;
+    stream
+        .write_all(&text_frame(status, body, fields, head)?)
+        .await?;
     stream.shutdown().await
+}
+
+/// Gateway probe answer: the fixed JSON body with the local response head
+/// (`application/json`, close, no-store). HEAD keeps Content-Length and
+/// omits the body, as Go's server did for its control-plane probes.
+pub(in crate::gateway) fn probe_frame(status: u16, body: &str, head: bool) -> Vec<u8> {
+    let mut bytes = format!(
+        "HTTP/1.1 {status} {}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\nCache-Control: no-store\r\n\r\n",
+        reason(status),
+        body.len()
+    )
+    .into_bytes();
+    if !head {
+        bytes.extend_from_slice(body.as_bytes());
+    }
+    bytes
 }
 
 /// Encoded [`write_text`] frame; field values are printable ASCII only.
@@ -210,6 +231,7 @@ pub(in crate::gateway) fn text_frame(
     status: u16,
     body: &str,
     fields: &[(&'static str, String)],
+    head: bool,
 ) -> std::io::Result<Vec<u8>> {
     let mut header = format!(
         "HTTP/1.1 {status} {}\r\nContent-Type: text/plain; charset=utf-8\r\nX-Content-Type-Options: nosniff\r\nContent-Length: {}\r\nConnection: close\r\nCache-Control: no-store\r\n",
@@ -224,8 +246,10 @@ pub(in crate::gateway) fn text_frame(
     }
     header.push_str("\r\n");
     let mut bytes = header.into_bytes();
-    bytes.extend_from_slice(body.as_bytes());
-    bytes.push(b'\n');
+    if !head {
+        bytes.extend_from_slice(body.as_bytes());
+        bytes.push(b'\n');
+    }
     Ok(bytes)
 }
 
@@ -402,13 +426,27 @@ mod tests {
     }
     #[test]
     fn gate_text_frame_matches_go_http_error_and_refuses_unsafe_fields() {
-        let bytes = text_frame(403, "blocked", &[("Retry-After", "5".into())]).unwrap();
+        let head = "HTTP/1.1 403 Forbidden\r\nContent-Type: text/plain; charset=utf-8\r\nX-Content-Type-Options: nosniff\r\nContent-Length: 8\r\nConnection: close\r\nCache-Control: no-store\r\nRetry-After: 5\r\n\r\n";
+        let bytes = text_frame(403, "blocked", &[("Retry-After", "5".into())], false).unwrap();
         assert_eq!(
             String::from_utf8(bytes).unwrap(),
-            "HTTP/1.1 403 Forbidden\r\nContent-Type: text/plain; charset=utf-8\r\nX-Content-Type-Options: nosniff\r\nContent-Length: 8\r\nConnection: close\r\nCache-Control: no-store\r\nRetry-After: 5\r\n\r\nblocked\n"
+            format!("{head}blocked\n")
         );
-        assert!(text_frame(403, "x", &[("Retry-After", "1\r\nX: y".into())]).is_err());
-        assert!(text_frame(403, "x", &[("Bad Name", "1".into())]).is_err());
+        // HEAD: same head and Content-Length, no body bytes.
+        let bytes = text_frame(403, "blocked", &[("Retry-After", "5".into())], true).unwrap();
+        assert_eq!(String::from_utf8(bytes).unwrap(), head);
+        assert!(text_frame(403, "x", &[("Retry-After", "1\r\nX: y".into())], false).is_err());
+        assert!(text_frame(403, "x", &[("Bad Name", "1".into())], false).is_err());
+    }
+    #[test]
+    fn probe_frame_keeps_content_length_and_drops_the_body_for_head() {
+        let body = "{\"plane\":\"gate\",\"status\":\"ok\"}\n";
+        let head = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 31\r\nConnection: close\r\nCache-Control: no-store\r\n\r\n";
+        assert_eq!(
+            probe_frame(200, body, false),
+            format!("{head}{body}").into_bytes()
+        );
+        assert_eq!(probe_frame(200, body, true), head.as_bytes());
     }
     #[test]
     fn origin_response_preserves_cookie_bytes_and_rejects_ambiguity() {

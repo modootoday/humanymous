@@ -39,6 +39,9 @@ impl Response {
         } else {
             Framing::Eof
         };
+        // No add-only security headers here: owner decision C10 keeps the
+        // native-stream profile out of scope until qualified separately (Go
+        // added them to streamed responses too; named deviation).
         let mut encoded = parsed.encode(&[])?;
         if matches!(framing, Framing::Chunked | Framing::Eof) {
             let end = encoded.len() - 2;

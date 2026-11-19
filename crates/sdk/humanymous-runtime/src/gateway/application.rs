@@ -37,6 +37,8 @@ pub enum Decision {
     Local(u16, Vec<u8>),
     /// Edge gate refusal (ban or forged trust header); origin never contacted.
     Gate(GateResponse),
+    /// Liveness or readiness probe: status and fixed JSON body.
+    Probe(u16, &'static str),
     /// Audited request allowed for this exact request until its deadline.
     Origin {
         /// UTC deadline in milliseconds.
@@ -241,6 +243,8 @@ impl Application {
             ));
         }
         let collect = path == "/_humanymous/collect" || path == "/_humanymous/browser/collect";
+        // Fields after a non-enforcing spoof gate stripped forged trust headers.
+        let mut stripped = None;
         if collect {
             if req.method != "POST"
                 || req.target != path
@@ -254,8 +258,9 @@ impl Application {
             if crate::authority::configuration::reserved(path) {
                 return Err(Rejection::new(403, "reserved_route"));
             }
-            if let Some(refusal) = self.front_gates(req)? {
-                return Ok(refusal);
+            match self.front_gates(req)? {
+                edge::Front::Refuse(refusal) => return Ok(refusal),
+                edge::Front::Continue(headers) => stripped = headers,
             }
             let route = self
                 .config
@@ -294,6 +299,22 @@ impl Application {
             }
             ("COLLECTED".to_owned(), 0.0, String::new())
         } else {
+            // Legacy spoofHeaderGate strips forged trust headers from the
+            // request before scoring (stripInbound); integrity verification
+            // above covered the bytes the client sent.
+            let scored;
+            let req = match stripped {
+                Some(headers) => {
+                    scored = Request {
+                        method: req.method.clone(),
+                        target: req.target.clone(),
+                        headers,
+                        body: Vec::new(),
+                    };
+                    &scored
+                }
+                None => req,
+            };
             let mut header = HeaderInfo {
                 method: req.method.clone(),
                 version: "11".into(),
@@ -667,7 +688,20 @@ impl Application {
             }
             Decision::Gate(gate) => {
                 *response_started = true;
-                http::write_text(stream, gate.status, gate.body, &gate.fields)
+                let head = request.method == "HEAD";
+                http::write_text(stream, gate.status, gate.body, &gate.fields, head)
+                    .await
+                    .map_err(|_| Rejection::new(503, "response_write"))
+            }
+            Decision::Probe(status, body) => {
+                *response_started = true;
+                let frame = http::probe_frame(status, body, request.method == "HEAD");
+                stream
+                    .write_all(&frame)
+                    .await
+                    .map_err(|_| Rejection::new(503, "response_write"))?;
+                stream
+                    .shutdown()
                     .await
                     .map_err(|_| Rejection::new(503, "response_write"))
             }

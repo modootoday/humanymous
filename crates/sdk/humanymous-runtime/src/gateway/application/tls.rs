@@ -247,8 +247,12 @@ impl Application {
                 return Ok(bytes);
             }
             Decision::Gate(gate) => {
-                return http::text_frame(gate.status, gate.body, &gate.fields)
+                let head = request.method == "HEAD";
+                return http::text_frame(gate.status, gate.body, &gate.fields, head)
                     .map_err(|_| Rejection::new(503, "serialization"));
+            }
+            Decision::Probe(status, body) => {
+                return Ok(http::probe_frame(status, body, request.method == "HEAD"));
             }
             Decision::Origin { deadline, upstream } => {
                 let origin_auth = self.origin_auth()?;

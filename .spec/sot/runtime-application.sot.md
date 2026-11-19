@@ -450,18 +450,28 @@ changes; the gates enforce existing kernel decisions only.
   document) and the store's monotonic epoch is not shared with an admin
   plane's serving epoch.
 - Spoof-header gate: enforcing denies 403 with the incident pointer; other
-  modes record mode `monitor` and continue. The headers the frozen engine
-  observes are not stripped (request integrity binds every header; the
-  forwarder drops internal headers).
+  modes record mode `monitor` and continue with the forged trust headers
+  stripped from the view that is scored and forwarded, as Go's
+  `spoofHeaderGate` called `stripInbound(r)` before the mode check. Request
+  integrity verification and the request commitment still cover the bytes
+  the client sent and signed. When no value was forged nothing is stripped
+  from the scored view; the forwarder drops internal headers regardless.
+- A gate refusal or probe answering a HEAD request keeps the head and
+  Content-Length and omits the body, as Go's server did.
 - Every gate record is appended before its effect; an append failure poisons
   the epoch and answers 503 `durable_audit`.
-- Probes `GET /_humanymous/healthz` (always `ok`) and `/_humanymous/readyz`
-  (`ready`, or 503 `draining` once `ReadySwitch::set_ready(false)` or the
-  epoch has failed closed), for the configured authority only. Prometheus
-  metrics are not served.
+- Probes `GET` and `HEAD /_humanymous/healthz` (always `ok`) and
+  `/_humanymous/readyz` (`ready`, or 503 `draining` once
+  `ReadySwitch::set_ready(false)` or the epoch has failed closed), for the
+  configured authority only. Go's mux answered every method; other methods
+  stay refused as a reserved route. Prometheus metrics are not served.
+- Native-stream responses get no add-only security headers: this section's
+  owner decision C10 keeps that profile out of scope until qualified
+  separately, although Go added them to every proxied response.
 
-Pinned by `gateway::tests::edge` against the oracle capture
-`tests/fixtures/gateway/edge-gates-go-golden.json`.
+Pinned by `gateway::tests::edge` against the oracle captures
+`tests/fixtures/gateway/edge-gates-go-golden.json` and
+`tests/fixtures/gateway/edge-probe-methods-go-golden.json`.
 
 ### Review reflected
 

@@ -1,0 +1,121 @@
+{
+ "provenance": {
+  "oracle_commit": "981d25cf71a5a54855d7e2b4359e832a9d5998e5",
+  "oracle_packages": [
+   "internal/gate (control.go /healthz and /readyz on the ControlPlane mux; prodhardening_test.go buildStackWith)"
+  ],
+  "image": "mirror.gcr.io/library/golang:1.25.3@sha256:6d4e5e74f47db00f7f24da5f53c1b4198ae46862a47395e30477365458347bf2",
+  "go_version": "go1.25.3 linux/amd64 (go.mod at 981d25c pins go 1.25.3; GOTOOLCHAIN=local)",
+  "command": "git archive 981d25c go.mod go.sum internal pkg | tar -x -C <oracle>; add scratch in-package capture test internal/gate/zz_fm11s18b_capture_test.go; docker run --rm --network none -e GOTOOLCHAIN=local -e GOPROXY=off -e GOFLAGS=-mod=readonly -e GOCACHE=/tmp/gocache -e ZZ_OUT=/out/probe.json -v <modcache>:/go/pkg/mod:ro -v <oracle>:/src:ro -v <out>:/out -w /src <image> go test -count=1 -run ^TestFM11S18ProbeMethods$ ./internal/gate/",
+  "capture_program_sha256": {
+   "internal/gate/zz_fm11s18b_capture_test.go": "2f7eb6e467ada90bb68360408773aa489abf2f212c98a4e23a3cb2e1e982b1b9"
+  },
+  "capture_program_committed": false,
+  "output_sha256": "e8fb46c035da00093330aec4a2f065ed84e948fc904bdd22c2654cc3e5ad745f",
+  "capture_notes": [
+   "two runs (host Go 1.25.3 toolchain and the container above) produced byte-identical output",
+   "each row is one request over a real loopback listener (httptest.NewServer) read back with http.ReadResponse: status, every response field except Date, the parsed Content-Length and the body bytes",
+   "readyz_draining_HEAD is taken after ControlPlane.SetReady(false)"
+  ],
+  "scope": "Frozen oracle outputs for differential parity only; never regenerate to hide drift"
+ },
+ "healthz_DELETE": {
+  "body": "{\"plane\":\"gate\",\"status\":\"ok\"}\n",
+  "content_length": 31,
+  "headers": {
+   "Content-Length": "31",
+   "Content-Type": "application/json"
+  },
+  "status": 200
+ },
+ "healthz_GET": {
+  "body": "{\"plane\":\"gate\",\"status\":\"ok\"}\n",
+  "content_length": 31,
+  "headers": {
+   "Content-Length": "31",
+   "Content-Type": "application/json"
+  },
+  "status": 200
+ },
+ "healthz_HEAD": {
+  "body": "",
+  "content_length": 31,
+  "headers": {
+   "Content-Length": "31",
+   "Content-Type": "application/json"
+  },
+  "status": 200
+ },
+ "healthz_POST": {
+  "body": "{\"plane\":\"gate\",\"status\":\"ok\"}\n",
+  "content_length": 31,
+  "headers": {
+   "Content-Length": "31",
+   "Content-Type": "application/json"
+  },
+  "status": 200
+ },
+ "healthz_PUT": {
+  "body": "{\"plane\":\"gate\",\"status\":\"ok\"}\n",
+  "content_length": 31,
+  "headers": {
+   "Content-Length": "31",
+   "Content-Type": "application/json"
+  },
+  "status": 200
+ },
+ "readyz_DELETE": {
+  "body": "{\"plane\":\"gate\",\"status\":\"ready\"}\n",
+  "content_length": 34,
+  "headers": {
+   "Content-Length": "34",
+   "Content-Type": "application/json"
+  },
+  "status": 200
+ },
+ "readyz_GET": {
+  "body": "{\"plane\":\"gate\",\"status\":\"ready\"}\n",
+  "content_length": 34,
+  "headers": {
+   "Content-Length": "34",
+   "Content-Type": "application/json"
+  },
+  "status": 200
+ },
+ "readyz_HEAD": {
+  "body": "",
+  "content_length": 34,
+  "headers": {
+   "Content-Length": "34",
+   "Content-Type": "application/json"
+  },
+  "status": 200
+ },
+ "readyz_POST": {
+  "body": "{\"plane\":\"gate\",\"status\":\"ready\"}\n",
+  "content_length": 34,
+  "headers": {
+   "Content-Length": "34",
+   "Content-Type": "application/json"
+  },
+  "status": 200
+ },
+ "readyz_PUT": {
+  "body": "{\"plane\":\"gate\",\"status\":\"ready\"}\n",
+  "content_length": 34,
+  "headers": {
+   "Content-Length": "34",
+   "Content-Type": "application/json"
+  },
+  "status": 200
+ },
+ "readyz_draining_HEAD": {
+  "body": "",
+  "content_length": 37,
+  "headers": {
+   "Content-Length": "37",
+   "Content-Type": "text/plain; charset=utf-8"
+  },
+  "status": 503
+ }
+}
