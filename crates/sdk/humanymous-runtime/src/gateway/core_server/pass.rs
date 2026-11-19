@@ -15,6 +15,13 @@
 //! [`MotorEvidence::GoParity`], which gates or penalises Pass on motor
 //! richness and timing (accessibility hard rule). A poisoned flow lock or an
 //! unservable body answers 503 instead of an unmetered Pass.
+//!
+//! The Pass handler runs under the Core state lock, so Pass requests are
+//! serialised with every other Core request. A panicking Pass handler is
+//! caught and the Core state guard dropped before the panic resumes, so the
+//! Core state lock is never poisoned and other routes keep serving; the
+//! trade-off is that writes the handler made to the Core store before it
+//! panicked are kept as they were.
 use super::{PassRequest, PassRoutes};
 use crate::gateway::observatory::{Body, Response as FlowResponse};
 use crate::gateway::pass_flow::{self, Backend, MotorEvidence, PassFlow};

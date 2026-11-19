@@ -31,10 +31,12 @@
 //! Deliberate differences, each pinned by tests:
 //! - Records use the Runtime verdict vocabulary `ALLOW`/`DENY` (Go wrote
 //!   `allow`/`deny`), as the ban and spoof gates do.
-//! - A neutral Web Bot Auth record names the keyid only when it is on the
-//!   allowlist, and a request carrying only one of the two signature fields
-//!   is neutral (recorded) where Go ignored it: the credential kernel never
-//!   echoes unmatched attacker bytes and refuses half signatures.
+//! - A neutral Web Bot Auth record names a keyid only when the credential
+//!   kernel reports one; an unknown keyid and an expired signature (even
+//!   under an allowlisted keyid) record an empty keyid where Go echoed the
+//!   presented one, and a request carrying only one of the two signature
+//!   fields is neutral (recorded) where Go ignored it: the credential kernel
+//!   never echoes unmatched attacker bytes and refuses half signatures.
 //! - A fan-out registry that cannot admit an observation withholds the
 //!   WebAuthn trust upgrade on every route without a record
 //!   (`attest_floor::fanout`).
