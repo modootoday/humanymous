@@ -247,7 +247,8 @@ pilot, and `delivery ready` on every axis. Summarise in #65 and update #22.
   stay `not_evaluated` behind B01 #1. No signed TLS request reaches the origin.
   The frozen engine challenges every one: rustls has no GREASE
   (`l5.tls.grease_absent`, +15) and JA4 engine `go`, while the genuine
-  collector report is Firefox's, so `x.ua_vs_ja4` (+50) gives risk 57.5 in the
-  CHALLENGE band; over H2, HR-24 also wins on the `net.tls` residual. No honest
+  collector report is Firefox's, so `x.ua_vs_ja4` (+50, alone above
+  `challenge_at` 30) fails; the run at 017a4aab reconstructed risk 67.5, in the
+  CHALLENGE band, for every observed 403; over H2, HR-24 also wins on the `net.tls` residual. No honest
   lab client both completes TLS and matches its report, so no case requires a
   TLS forward. Detection is unchanged.

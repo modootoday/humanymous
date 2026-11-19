@@ -1493,8 +1493,9 @@ Profile `tls` of `deployments/lab/compose.product-e2e.yaml` runs the shipped
 - No forwarded TLS effect: rustls offers no GREASE
   (`l5.tls.grease_absent`, +15) and classifies as JA4 engine `go`, while the
   only genuine collector report is Firefox's, so the L6 cross-check
-  `x.ua_vs_ja4` (+50) is inconsistent; risk 57.5 is in the CHALLENGE band
-  (30 to 70). Over H2, hard rule HR-24 also wins on the `net.tls` residual
+  `x.ua_vs_ja4` (+50) is inconsistent, alone above `challenge_at` 30. With
+  the report's own client signals the Docker run (017a4aab) reconstructed
+  risk 67.5, in the CHALLENGE band (30 to 70), matching every observed 403. Over H2, hard rule HR-24 also wins on the `net.tls` residual
   (`l5.tls.alps_absent`, `cert_compression_absent`, `ech_absent`). The
   parrots cannot finish a handshake and the browser cannot reach the
   loopback listener, so no honest lab client both completes TLS and matches
