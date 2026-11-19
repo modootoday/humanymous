@@ -1,0 +1,1 @@
+{"last_updated_timestamp":"2026-01-01T00:00:00","regions":[{"region":"test","cidrs":[{"cidr":"192.0.2.224/28","tags":["OCI"]}],"ipv6_cidrs":[{"cidr":"2001:db8:d::/48","tags":["OCI"]}]}]}

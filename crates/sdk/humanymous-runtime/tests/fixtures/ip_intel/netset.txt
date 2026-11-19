@@ -1,0 +1,6 @@
+#
+# synthetic netset (documentation ranges only)
+#
+198.51.100.0/24
+203.0.113.7
+2001:db8:f::/48 ; note
