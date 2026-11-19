@@ -132,10 +132,16 @@ reads as a list of finished, reviewable changes. humanymous values:
   pull request titled `revert: <original subject>`. Merged head branches are
   deleted by the repository setting; an agent branch with no pull request for
   14 days is reported in an issue and the owner deletes it.
-- **H6 Enforcement:** the non-required `History` job (§3). The `playpilot
-  guard` hook is not installed yet (phase 2 starts when the cloud environment
-  has the playpilot CLI; it will run with
-  `PLAYPILOT_PROTECTED_BRANCHES=main,codex/rust`).
+- **H6 Enforcement:** the non-required `History` job (§3), and in Claude Code
+  the `playpilot guard` PreToolUse hook (`.claude/settings.json`, `Bash` and
+  `PowerShell`, protected branches `main,codex/rust`). The guard refuses a
+  push to a protected branch, a bare tag or version (`git push origin v1.0.0`),
+  a bare `git push`, `HEAD` as the branch, a `+refspec`, `--delete` and a
+  lease without a full expected SHA or `$variable`. Push with
+  `git push -u origin <provider>/<slug>`. The hook is rendered with
+  `playpilot render settings --project humanymous` from the fleet config and
+  reinstalls playpilot when its pinned rev changes. If playpilot is missing and
+  cannot be installed, the hook refuses every shell command.
 - **H7 Auto-merge:** the agent turns GitHub auto-merge (merge commit) on right
   after it opens a pull request, before checks finish; the required checks are
   the measurement. To add commits to a pull request with auto-merge on, turn

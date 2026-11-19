@@ -13,6 +13,16 @@
             "command": "node \"$CLAUDE_PROJECT_DIR/scripts/agents/hooks/pre-tool-guard.mjs\""
           }
         ]
+      },
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh -c 'R=415aeb96ae731e81c9f40f761be584d18d063c34; B=\"$(command -v playpilot || echo \"$HOME/.cargo/bin/playpilot\")\"; D=\"$(dirname \"$(dirname \"$B\")\")\"; if [ \"$(cat \"$D/share/playpilot.rev\" 2>/dev/null)\" != \"$R\" ]; then for c in cargo /root/.cargo/bin/cargo \"$HOME/.cargo/bin/cargo\"; do command -v \"$c\" >/dev/null 2>&1 && \"$c\" install --force --locked --quiet --git https://github.com/modootoday/playpilot --rev \"$R\" --root \"$D\" playpilot >&2 && mkdir -p \"$D/share\" && echo \"$R\" > \"$D/share/playpilot.rev\" && break; done; fi; [ -x \"$B\" ] || { echo \"playpilot CLI is missing and could not be installed\" >&2; exit 2; }; PLAYPILOT_PROTECTED_BRANCHES=main,codex/rust exec \"$B\" guard'",
+            "timeout": 240
+          }
+        ]
       }
     ]
   }
