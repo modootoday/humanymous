@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 760,
-      "macos": 760,
-      "windows": 729
+      "linux": 763,
+      "macos": 763,
+      "windows": 732
     },
     "common_test_names": [
       "gateway::admin_approval::tests::approval_store_rules",
@@ -460,6 +460,9 @@
       "gateway::pass_store::tests::trace_registry_saturation_fails_closed_then_drains",
       "gateway::pass_store::tests::wargame_r333_trace_replay_blocked",
       "gateway::pass_store::tests::wargame_r338_replay_lock",
+      "gateway::proxy_listener::tests::accept_matches_go_golden_over_real_tcp",
+      "gateway::proxy_listener::tests::default_timeout_is_the_go_five_seconds",
+      "gateway::proxy_listener::tests::untrusted_peer_bytes_are_never_consumed",
       "gateway::recon::tests::constant_floor_waits_out_the_floor_and_never_extends_it",
       "gateway::recon::tests::remaining_is_the_unelapsed_part_of_the_floor",
       "gateway::request::tests::correlation_ids_are_sixteen_hex_and_fresh",
