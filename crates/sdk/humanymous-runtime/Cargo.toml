@@ -13,9 +13,11 @@ autotests = false
 
 [features]
 default = ["gateway"]
-gateway = ["authority", "audit", "capture", "network", "dep:humanymous-core", "dep:serde", "dep:serde_json", "dep:sha2", "dep:hex", "dep:base64", "dep:getrandom", "dep:zeroize", "dep:socket2", "dep:rustls", "dep:tokio"]
+gateway = ["authority", "audit", "audit-tls", "capture", "network", "dep:humanymous-core", "dep:serde", "dep:serde_json", "dep:sha2", "dep:hex", "dep:base64", "dep:getrandom", "dep:zeroize", "dep:socket2", "dep:rustls", "dep:tokio"]
 authority = ["audit", "network", "native-security", "dep:humanymous-core", "dep:serde", "dep:serde_json", "dep:sha2", "dep:hex", "dep:base64", "dep:subtle", "dep:ed25519-dalek", "dep:getrandom", "dep:zeroize", "dep:tokio", "dep:rustix", "dep:interprocess", "dep:widestring"]
 audit = ["native-security", "dep:humanymous-core", "dep:serde", "dep:serde_json", "dep:sha2", "dep:hex", "dep:subtle", "dep:ed25519-dalek", "dep:unicode-normalization", "dep:hmac", "dep:base64", "dep:getrandom", "dep:zeroize", "dep:time", "dep:aes-gcm", "dep:scrypt", "dep:rustix"]
+# HTTPS for the audit ClickHouse projection with caller-supplied trust roots.
+audit-tls = ["audit", "dep:rustls"]
 capture = ["network", "dep:rustls", "dep:httlib-hpack"]
 network = ["dep:humanymous-core", "dep:serde", "dep:serde_json", "dep:sha2", "dep:md-5", "dep:hex"]
 native-security = ["dep:zeroize", "dep:rustix", "dep:winsafe", "dep:windows-permissions", "dep:keyring-core", "dep:windows-native-keyring-store"]
@@ -128,9 +130,24 @@ path = "tests/authority/native_process.rs"
 required-features = ["authority"]
 
 [[test]]
+name = "audit-chain-parity"
+path = "tests/audit/chain_parity.rs"
+required-features = ["audit"]
+
+[[test]]
 name = "audit-checkpoint-parity"
 path = "tests/audit/checkpoint_parity.rs"
 required-features = ["audit"]
+
+[[test]]
+name = "audit-clickhouse-live"
+path = "tests/audit/clickhouse_live.rs"
+required-features = ["audit"]
+# Live check against a real ClickHouse server the test starts in Docker. Left
+# out of `cargo test`/`--all-targets` discovery (no Docker on every native
+# runner); the required msrv job runs it and the quality job lints it:
+# `cargo test --locked -p humanymous-runtime --features audit --test audit-clickhouse-live -- --ignored`.
+test = false
 
 [[test]]
 name = "audit-control-operations"

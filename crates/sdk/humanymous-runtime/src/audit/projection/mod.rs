@@ -37,6 +37,83 @@ pub trait RecordSink: Send + Sync {
     fn close(&self) -> io::Result<()>;
 }
 
+/// Go `encoding/json` bytes of one record, as `json.Marshal` and
+/// `json.Encoder.Encode` (less its trailing newline) wrote them at 981d25c:
+/// struct field order, `<`, `>`, `&`, U+2028 and U+2029 escaped as `<`,
+/// `>`, `&`, ` ` and ` `, and floats in Go's shortest
+/// form (`1` not `1.0`, exponent form below 1e-6 and from 1e21 with a signed
+/// exponent such as `1e+21` or `1e-7`).
+///
+/// `None` when a signal confidence is NaN or infinite: Go refused to encode
+/// such a record (`json.UnsupportedValueError`), where serde_json would write
+/// `null`.
+pub(super) fn go_json(record: &Record) -> Option<Vec<u8>> {
+    if record
+        .top_signals
+        .iter()
+        .flatten()
+        .any(|signal| !signal.conf.is_finite())
+    {
+        return None;
+    }
+    let mut out = Vec::new();
+    let mut serializer = serde_json::Serializer::with_formatter(&mut out, GoJsonFormatter);
+    serde::Serialize::serialize(record, &mut serializer).ok()?;
+    Some(out)
+}
+
+/// serde_json formatter producing Go `encoding/json` string and float bytes.
+/// Control characters already match: both write `\b`, `\f`, `\n`, `\r`, `\t`
+/// and lowercase `\u00XX` for the rest, and neither escapes `/` or DEL.
+struct GoJsonFormatter;
+
+impl serde_json::ser::Formatter for GoJsonFormatter {
+    fn write_f64<W: ?Sized + Write>(&mut self, writer: &mut W, value: f64) -> io::Result<()> {
+        writer.write_all(go_float(value).as_bytes())
+    }
+
+    fn write_string_fragment<W: ?Sized + Write>(
+        &mut self,
+        writer: &mut W,
+        fragment: &str,
+    ) -> io::Result<()> {
+        let mut start = 0;
+        for (index, character) in fragment.char_indices() {
+            let escape = match character {
+                '<' => "\\u003c",
+                '>' => "\\u003e",
+                '&' => "\\u0026",
+                '\u{2028}' => "\\u2028",
+                '\u{2029}' => "\\u2029",
+                _ => continue,
+            };
+            writer.write_all(&fragment.as_bytes()[start..index])?;
+            writer.write_all(escape.as_bytes())?;
+            start = index + character.len_utf8();
+        }
+        writer.write_all(&fragment.as_bytes()[start..])
+    }
+}
+
+/// Go `encoding/json` float64: `strconv.AppendFloat(f, 'f', -1, 64)`, or
+/// `'e'` when `0 < |f| < 1e-6` or `|f| >= 1e21`. Both languages print the
+/// shortest round-trip digits; only the exponent spelling differs (Go writes
+/// `e+21` and `e-7`, Rust `e21` and `e-7`). Callers pass finite values.
+fn go_float(value: f64) -> String {
+    let magnitude = value.abs();
+    if magnitude != 0.0 && !(1e-6..1e21).contains(&magnitude) {
+        let text = format!("{value:e}");
+        match text.split_once('e') {
+            Some((mantissa, exponent)) if !exponent.starts_with('-') => {
+                format!("{mantissa}e+{exponent}")
+            }
+            _ => text,
+        }
+    } else {
+        format!("{value}")
+    }
+}
+
 /// A TCP connection whose reads and writes all end by one absolute deadline,
 /// like a Go `net.Conn` deadline. Before each socket call the socket timeout is
 /// set to the time remaining, so a peer that trickles bytes cannot stretch the
