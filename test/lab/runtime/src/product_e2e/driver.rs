@@ -3,7 +3,9 @@
 //! keys and tokens are never written to the receipt.
 use super::report::{self, Captured};
 use crate::client::{request, sign, wire};
-use humanymous_runtime::gateway::{configuration::Configuration, guard, http::Request};
+use humanymous_runtime::gateway::{
+    ban::gate::Mode, configuration::Configuration, guard, http::Request,
+};
 use serde_json::{Value, json};
 use std::{
     io::{Read, Write},
@@ -30,6 +32,21 @@ fn status(response: &[u8]) -> Option<u16> {
 fn body(response: &[u8]) -> Option<Value> {
     let end = response.windows(4).position(|w| w == b"\r\n\r\n")? + 4;
     serde_json::from_slice(&response[end..]).ok()
+}
+
+/// Exact body bytes after the response head, for non-JSON Gate bodies.
+fn raw_body(response: &[u8]) -> Option<&[u8]> {
+    let end = response.windows(4).position(|w| w == b"\r\n\r\n")? + 4;
+    response.get(end..)
+}
+
+/// Status and exact Gate body a sessionless forged-trust-header request must
+/// get under the configured spoof-header mode (`application/edge.rs`).
+fn spoof_expectation(mode: Mode) -> (u16, Option<&'static str>) {
+    match mode {
+        Mode::Enforce => (403, Some(guard::SPOOF_DENY_BODY)),
+        Mode::Off | Mode::Monitor | Mode::Shadow => (401, None),
+    }
 }
 
 fn records() -> Result<Vec<Value>> {
@@ -125,6 +142,32 @@ impl Driver {
         Ok((observed, new))
     }
 
+    /// Forged trust headers on a sessionless request. The expectation follows
+    /// the `edge.spoof_header` mode of the one configuration document the Gate
+    /// was started with: an enforcing spoof gate answers 403 with its static
+    /// deny body before the session check; any other mode strips the claims
+    /// and the session check answers 401. Either way the origin sees nothing.
+    /// The runner cross-checks the recorded mode against the Gate's readiness.
+    fn forged_without_session(&mut self, bytes: &[u8]) -> Result<()> {
+        let mode = self.config.edge.spoof_header;
+        let (expected, deny_body) = spoof_expectation(mode);
+        let before = records()?.len();
+        let response = exchange(super::GATE, bytes);
+        let origin_delta = records()?.len() - before;
+        let observed = response.as_deref().ok().and_then(status);
+        let local = response.as_deref().ok().and_then(raw_body);
+        let body_exact = deny_body.is_none_or(|want| local == Some(want.as_bytes()));
+        let pass = observed == Some(expected) && body_exact && origin_delta == 0;
+        self.cases.push(json!({"id":"forged_trust_headers_without_session",
+            "spoof_header_mode":self.config.edge.readiness()["spoof_header"],
+            "expected_status":expected,"observed_status":observed,
+            "expected_gate_body":deny_body,"gate_body_exact":body_exact,
+            "gate_local_body":if deny_body.is_some() { Value::Null } else { response.as_deref().ok().and_then(body).unwrap_or(Value::Null) },
+            "expected_origin_delta":0,"origin_delta":origin_delta,
+            "transport_error":response.as_ref().err().map(|e|e.to_string()),"pass":pass}));
+        Ok(())
+    }
+
     fn session(&mut self) -> Result<Value> {
         let response = exchange(super::GATE, &wire(&request("/_humanymous/session", vec![])))?;
         let issued = body(&response).ok_or("session body")?;
@@ -200,12 +243,7 @@ impl Driver {
         for (name, value) in FORGED {
             forged.headers.push(((*name).into(), (*value).into()));
         }
-        self.case(
-            "forged_trust_headers_without_session",
-            401,
-            &wire(&forged),
-            0,
-        )?;
+        self.forged_without_session(&wire(&forged))?;
         let outside = wire(&request("/not-in-inventory", b"effect".to_vec()));
         self.case("route_outside_inventory", 409, &outside, 0)?;
         let admin = wire(&request("/_humanymous/admin", vec![]));
@@ -461,4 +499,33 @@ fn finish(driver: Driver, outcome: Result<()>, schema: &str) -> Result<()> {
         return Err("product e2e assertions failed".into());
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn forged_header_expectation_follows_the_configured_spoof_mode() {
+        assert_eq!(
+            spoof_expectation(Mode::Enforce),
+            (403, Some(guard::SPOOF_DENY_BODY))
+        );
+        for mode in [Mode::Off, Mode::Monitor, Mode::Shadow] {
+            assert_eq!(spoof_expectation(mode), (401, None));
+        }
+        // The lab configuration document sets no edge section, so the Gate
+        // and the driver both resolve the runtime's enforcing default.
+        let config = driver_configuration().unwrap();
+        assert_eq!(config.edge.spoof_header, Mode::Enforce);
+        assert_eq!(config.edge.readiness()["spoof_header"], "enforce");
+    }
+
+    #[test]
+    fn raw_body_is_the_exact_bytes_after_the_head() {
+        let response = b"HTTP/1.1 403 Forbidden\r\nContent-Length: 3\r\n\r\nabc";
+        assert_eq!(raw_body(response), Some(&b"abc"[..]));
+        assert_eq!(raw_body(b"HTTP/1.1 403 Forbidden\r\n"), None);
+        assert_eq!(status(response), Some(403));
+    }
 }

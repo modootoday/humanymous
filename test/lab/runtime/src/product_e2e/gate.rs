@@ -1,9 +1,12 @@
 //! Gate container supervisors. Both provision synthetic owned sealed custody on
 //! the container tmpfs. `run` starts the shipped gateway binary with private
-//! inherited configuration. `witnessed` composes the same library `ServiceHost`
-//! with a required external witness, because the shipped binary has no witness
-//! input (`src/gateway/main.rs` calls `ServiceHost::bind` only). `witnessed`
-//! also mirrors the runtime's live epoch latch (`ServiceHost::epoch_health`)
+//! inherited configuration and no witness input, so it binds writer-only.
+//! `witnessed` composes the same library `ServiceHost` with a required
+//! external witness in this supervisor. The shipped binary also accepts
+//! inherited witness pipes (`src/gateway/main.rs` selects `bind_tls`,
+//! `bind_with_witness` or `bind`), but this topology does not yet hand it
+//! witness descriptors, so the witnessed Gate is library evidence only.
+//! `witnessed` also mirrors the runtime's live epoch latch (`ServiceHost::epoch_health`)
 //! into a private tmpfs marker for the exec readiness probe. The passphrase
 //! never leaves this process and, for `run`, its child pipe.
 use ed25519_dalek::SigningKey;
