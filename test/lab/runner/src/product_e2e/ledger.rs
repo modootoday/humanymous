@@ -115,6 +115,17 @@ fn judge(
             })
             .unwrap_or_default()
     };
+    // Distinct static refusal reasons of rows in error, e.g. an isolation
+    // precondition the venue cannot satisfy; never request or key material.
+    let error_reasons: std::collections::BTreeSet<&str> = report["rows"]
+        .as_array()
+        .map(|rows| {
+            rows.iter()
+                .filter(|row| row["status"] == "error")
+                .filter_map(|row| row["reason"].as_str())
+                .collect()
+        })
+        .unwrap_or_default();
     let scoped_passed = report["scoped_passed"] == true;
     let pass = exit_success && network_none && verified && scoped_passed;
     json!({"container":{"network_mode":container["network_mode"],"image":container["image"],
@@ -122,9 +133,10 @@ fn judge(
             "state":container["state"],"exit_code":container["exit_code"]},
         "exit_success":exit_success,"network_none":network_none,
         "byte_verification_receipts":receipts.len(),"original_byte_verified":verified,
-        "raw_sha256":raw_sha256,"report_schema":report["schema"],"mode":report["mode"],
+        "raw_sha256":raw_sha256,"report_schema":report["schema"],"evidence_type":report["evidence_type"],
         "scoped_passed":scoped_passed,"totals":report["totals"],
         "unsupported_ids":ids("unsupported"),"error_ids":ids("error"),"skipped_ids":ids("skipped"),
+        "error_reasons":error_reasons,
         "scope":"owned process network: the shipped runtime as a supervisor-owned child in a network-none container, not the product topology Gate",
         "pass":pass})
 }
@@ -251,6 +263,20 @@ mod tests {
             false
         );
         let run = judge(true, &none(), None, &[], "s");
+        assert_eq!(attack_catalog_case(&run)["status"], "failed");
+        // A venue that cannot show namespace evidence errors every program;
+        // the distinct reason is kept and the case is not passed.
+        let mut failed = report.clone();
+        failed["scoped_passed"] = json!(false);
+        failed["totals"]["errors"] = json!(1);
+        failed["rows"] = json!([{"id":"a","status":"error","reason":"namespace evidence unavailable"},
+            {"id":"b","status":"error","reason":"namespace evidence unavailable"}]);
+        let run = judge(false, &none(), Some(&failed), &[receipt(&failed, "s")], "s");
+        assert_eq!(
+            run["error_reasons"],
+            json!(["namespace evidence unavailable"])
+        );
+        assert_eq!(run["error_ids"], json!(["a", "b"]));
         assert_eq!(attack_catalog_case(&run)["status"], "failed");
     }
 
