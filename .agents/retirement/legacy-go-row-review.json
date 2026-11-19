@@ -15,16 +15,16 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 260,
-  "partial": 40,
-  "missing": 3,
+  "ported_unit": 263,
+  "partial": 38,
+  "missing": 2,
   "not_applicable": 2,
   "oracle_only": 9
  },
  "by_package": {
   "cmd/gate": {
-   "partial": 3,
-   "ported_unit": 4
+   "partial": 2,
+   "ported_unit": 5
   },
   "cmd/ml-train": {
    "ported_unit": 1
@@ -39,9 +39,9 @@
    "ported_unit": 1
   },
   "cmd/server": {
-   "missing": 2,
-   "partial": 14,
-   "ported_unit": 23,
+   "missing": 1,
+   "partial": 13,
+   "ported_unit": 25,
    "oracle_only": 3
   },
   "cmd/tlsparrot": {
@@ -212,37 +212,45 @@
    "baseline_path": "cmd/gate/main.go",
    "disposition": "partial",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/main.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/service.rs",
     "crates/sdk/humanymous-runtime/src/gateway/application.rs",
     "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/main.rs",
     "crates/sdk/humanymous-runtime/src/gateway/management/mod.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/shipping.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/service.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/shipping.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/listener.rs"
    ],
    "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::configuration_and_readiness_are_honest",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::real_tcp_audit_before_origin_and_negative_counter_zero",
-    "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope"
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_acme_it_cannot_run",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_the_dev_flag_without_the_build_feature",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_tls_requests_without_exactly_one_usable_source",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_serves_tls_from_a_provisioned_pair"
    ],
    "go_test_map": {},
    "gaps": [
     "public edge listener and separate admin TCP listener (B01)",
-    "flag/env configuration surface (62 flags)",
+    "flag/env configuration surface (56 of 62 flags; the six edge TLS flags -tls-cert/-tls-key/-acme-domain/-acme-cache/-acme-email/-acme-directory now map to the inherited configuration's tls object)",
     "origin reverse proxy to non-loopback upstream, origin-auth (B14)",
     "ordered gate composition: bans/token/upgrade/sweep (B13,B17,B18)",
     "admin RBAC/console (B19-B21)",
     "Redis/ClickHouse projections (B23,B24)",
     "PROXYv2 (B26)",
-    "signal drain/HSTS (B27)",
-    "dev self-signed cert"
+    "signal drain/HSTS (B27)"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust runtime is a private-config loopback-only gateway (stdin config, loopback listen/origin); shipping plan B01-B27 lists the Gate edge composition as partial/missing.",
+   "notes": "Rust runtime is a private-config loopback-only gateway (stdin config, loopback listen/origin); shipping plan B01-B27 lists the Gate edge composition as partial/missing. B02 binary wiring (2026-11-18): the runtime binary reads an optional tls object from its private inherited configuration (certificate/key, acme {domains, cache, email, directory, directory_root, check_interval_seconds}, dev_self_signed), selects exactly one source through tls::listener::prepare before custody opens, binds ServiceHost::bind_tls and starts AcmeIssuer::maintain beside the listener when ACME is selected. A tls request with no, ambiguous or unavailable source exits non-zero before custody (Go fell back to self-signed); ServiceHost refuses a tls request without a server configuration. tests/gateway/tls_startup.rs runs the real binary: refusals before custody, and a provisioned pair served over TLS/H1 on loopback (Unix).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::configuration_and_readiness_are_honest": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::real_tcp_audit_before_origin_and_negative_counter_zero": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::real_tcp_audit_before_origin_and_negative_counter_zero": "passed",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_tls_requests_without_exactly_one_usable_source": "passed",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_the_dev_flag_without_the_build_feature": "passed",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_acme_it_cannot_run": "passed",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_serves_tls_from_a_provisioned_pair": "passed"
    }
   },
   {
@@ -306,47 +314,61 @@
   },
   {
    "baseline_path": "cmd/gate/tls_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/listener.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/tls/acme_tests.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/listener_tests.rs"
    ],
    "go_test_map": {
-    "TestBuildEdgeTLSSelfSigned": null,
-    "TestBuildEdgeTLSACME": "gateway::tls::certificate::tests::issuer_must_cover_exactly_the_selected_domains",
-    "TestBuildEdgeTLSACMEStagingDirectory": null,
-    "TestBuildEdgeTLSBadCert": "gateway::tls::certificate::tests::provisioned_pair_refuses_empty_missing_and_mismatched_material",
-    "TestSplitDomains": "gateway::tls::certificate::tests::issuer_domains_are_normalised_and_plain_hosts_only"
+    "TestBuildEdgeTLSSelfSigned": "gateway::tls::listener::tests::no_source_fails_closed_instead_of_self_signing",
+    "TestBuildEdgeTLSACME": "gateway::tls::listener::tests::acme_selection_builds_the_challenge_resolver_configuration",
+    "TestBuildEdgeTLSACMEStagingDirectory": "gateway::tls::listener::tests::acme_staging_directory_is_honoured_and_bad_settings_are_refused",
+    "TestBuildEdgeTLSBadCert": "gateway::tls::listener::tests::missing_provisioned_files_are_a_hard_error",
+    "TestSplitDomains": "gateway::tls::listener::tests::acme_domains_are_trimmed_and_blank_entries_refused"
    },
-   "gaps": [
-    "ACME staging directory",
-    "self-signed dev mode"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Mapped to B02 certificate source tests.",
-   "test_verification": {}
+   "notes": "Remapped 2026-11-18 to the B02 binary wiring in gateway::tls::listener::tests, which builds the edge TLS configuration from the runtime's tls settings as Go buildEdgeTLS did from flags: TestBuildEdgeTLSACME and TestBuildEdgeTLSACMEStagingDirectory each map to their own test (issuer resolver, h2/http/1.1/acme-tls/1 ALPN accepted by the gateway; staging directory honoured), TestBuildEdgeTLSBadCert to the missing-pair hard error, TestSplitDomains to the JSON domain list (trimmed and normalised; a blank entry is refused rather than skipped). TestBuildEdgeTLSSelfSigned keeps the deliberate divergence required by plan B02: empty settings fail closed (NoSource) instead of falling back to self-signed; the dev certificate needs the explicit dev_self_signed setting in a dev-self-signed build. The earlier certificate/acme mappings remain valid unit coverage. Public :443 binding is tracked on cmd/gate/tls.go.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/tls/listener_tests.rs::no_source_fails_closed_instead_of_self_signing": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/listener_tests.rs::acme_selection_builds_the_challenge_resolver_configuration": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/listener_tests.rs::acme_staging_directory_is_honoured_and_bad_settings_are_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/listener_tests.rs::missing_provisioned_files_are_a_hard_error": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/listener_tests.rs::acme_domains_are_trimmed_and_blank_entries_refused": "passed"
+   }
   },
   {
    "baseline_path": "cmd/gate/tls.go",
    "disposition": "partial",
    "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/main.rs",
     "crates/sdk/humanymous-runtime/src/gateway/tls.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/tls/acme.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/listener.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/tls/acme_tests.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/listener_tests.rs",
+    "crates/sdk/humanymous-runtime/tests/gateway/acme_pebble.rs",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs"
    ],
    "go_test_map": {},
    "gaps": [
-    "concrete ACME TLS-ALPN-01 issuer with staging directory",
-    "dev self-signed fallback"
+    "Application::serve_tls_until and the gateway Configuration accept only a loopback listener and loopback peers, so the runtime cannot bind a public :443 itself; a TLS-ALPN-01 validator reaches it only through a same-host transport pass-through forwarder. Not widened: the gateway's admission, readiness (experimental-loopback-tls-h1, product_qualified false) and peer model are loopback-only, so a public bind needs its own reviewed change",
+    "divergence: Go defaulted -acme-cache to the working-directory path acme-cache; the runtime requires an explicit owner-only tls.acme.cache and refuses a configuration without it",
+    "divergence: Go autocert issued on demand inside the first matching handshake (GetCertificate); the runtime pre-issues through AcmeIssuer::maintain after the listener binds and re-checks on an interval, so handshakes before the first issuance find no certificate and fail"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "B02 slice 1 provides source selection, bounded BYO loading and the issuer contract; concrete issuer pending.",
+   "notes": "B02: select() refuses absent/incomplete/ambiguous sources; provisioned pair loads bounded PEM with key-match check. AcmeIssuer (feature acme) follows Go autocert: Let's Encrypt production default, operator directory (staging/private CA), AcceptTOS, optional contact, domains normalised by issuer_domains (lower-case plain DNS names, wildcards and IP literals refused), owner-only cache whose account and certificate entries are keyed by a directory hash, cached pairs refused when expired, not yet valid or not covering every domain (Go validCert), ECDSA P-256 CSR, TLS-ALPN-01 answered only for declared SNI, renewal at min(30 days, one third of the leaf lifetime) before NotAfter (the Go autocert 30 days for a 90-day leaf), exponential retry backoff in maintain(), issuance serialized per issuer, renewal facts (attempts, generation, last failure kind and time) through renewal_facts(). The gateway accepts acme-tls/1 only in the issuer_config shape with an issuer's resolver, and the ingress closes an acme-tls/1 connection after the handshake without reading a request. No production self-signed fallback per plan B02. The development self-signed certificate (Go selfSignedCert) exists only with the dev-self-signed feature and an explicit setting; it is never a fallback. Live issuance: tests/gateway/acme_pebble.rs issued a certificate from the digest-pinned Pebble test CA over TLS-ALPN-01 (the issuer_config resolver negotiated acme-tls/1 with Pebble's validator), installed it, made no renewal while valid and reloaded it from the cache after restart, in a local Docker engine on 2026-11-18; the rust-validation msrv job runs it with --ignored. Pebble dials a test listener, not the gateway ingress (see the loopback gap). B02 binary wiring (2026-11-18): the runtime binary reads an optional tls object from its private inherited configuration (certificate/key, acme {domains, cache, email, directory, directory_root, check_interval_seconds}, dev_self_signed), selects exactly one source through tls::listener::prepare before custody opens, binds ServiceHost::bind_tls and starts AcmeIssuer::maintain beside the listener when ACME is selected. A tls request with no, ambiguous or unavailable source exits non-zero before custody (Go fell back to self-signed); ServiceHost refuses a tls request without a server configuration. tests/gateway/tls_startup.rs runs the real binary: refusals before custody, and a provisioned pair served over TLS/H1 on loopback (Unix).",
    "test_verification": {}
   },
   {
@@ -705,62 +727,77 @@
   },
   {
    "baseline_path": "cmd/server/acme_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/tls/certificate.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/tls/acme_tests.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs",
+    "crates/sdk/humanymous-runtime/tests/gateway/acme_pebble.rs"
    ],
    "go_test_map": {
     "TestSplitDomains": "gateway::tls::certificate::tests::issuer_domains_are_normalised_and_plain_hosts_only",
-    "TestBuildTLSConfigSelfSigned": null,
-    "TestBuildTLSConfigACME": "gateway::tls::certificate::tests::issuer_must_cover_exactly_the_selected_domains",
+    "TestBuildTLSConfigSelfSigned": "gateway::tls::certificate::tests::dev_self_signed_is_explicit_exclusive_and_local_only",
+    "TestBuildTLSConfigACME": "gateway::tls::acme::tests::gateway_accepts_the_acme_issuer_configuration_and_only_it",
     "TestBuildTLSConfigProvidedKeyPair": "gateway::tls::certificate::tests::provisioned_pair_builds_h2_then_http11_ingress",
     "TestBuildTLSConfigRejectsAmbiguousSources": "gateway::tls::certificate::tests::selection_refuses_absent_incomplete_and_ambiguous_sources"
    },
-   "gaps": [
-    "self-signed dev mode",
-    "live ACME issuance"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Mapped to B02 certificate source tests; self-signed is refused, not ported.",
+   "notes": "Mapped to B02 certificate source and ACME issuer tests. TestBuildTLSConfigSelfSigned maps to the dev-self-signed test: the self-signed certificate is ported behind the dev-self-signed feature and an explicit setting, and empty settings select NoSource instead of falling back to it (plan B02: no production self-signed fallback). TestBuildTLSConfigACME maps to the test that validates the issuer_config configuration (acme-tls/1 advertised, resolver set) with the gateway. Command/binary wiring is tracked on cmd/server/acme.go.",
    "test_verification": {}
   },
   {
    "baseline_path": "cmd/server/acme.go",
    "disposition": "partial",
    "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/main.rs",
     "crates/sdk/humanymous-runtime/src/gateway/tls.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/tls/acme.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/listener.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/tls/acme_tests.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/listener_tests.rs",
+    "crates/sdk/humanymous-runtime/tests/gateway/acme_pebble.rs",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs"
    ],
    "go_test_map": {},
    "gaps": [
-    "concrete ACME TLS-ALPN-01 issuer implementing CertificateIssuer (cache, email, directory, renewal)",
-    "self-signed dev mode (production fallback refused by B02)"
+    "Application::serve_tls_until and the gateway Configuration accept only a loopback listener and loopback peers, so the runtime cannot bind a public :443 itself; a TLS-ALPN-01 validator reaches it only through a same-host transport pass-through forwarder. Not widened: the gateway's admission, readiness (experimental-loopback-tls-h1, product_qualified false) and peer model are loopback-only, so a public bind needs its own reviewed change",
+    "divergence: Go defaulted -acme-cache to the working-directory path acme-cache; the runtime requires an explicit owner-only tls.acme.cache and refuses a configuration without it",
+    "divergence: Go autocert issued on demand inside the first matching handshake (GetCertificate); the runtime pre-issues through AcmeIssuer::maintain after the listener binds and re-checks on an interval, so handshakes before the first issuance find no certificate and fail"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "B02 slice 1: select() refuses absent/incomplete/ambiguous sources; provisioned pair loads bounded PEM with rustls key-match check; issuer contract (CertificateIssuer, issuer_config) adds challenge ALPN for exactly the selected domains. No production self-signed fallback per plan B02.",
+   "notes": "B02: select() refuses absent/incomplete/ambiguous sources; provisioned pair loads bounded PEM with key-match check. AcmeIssuer (feature acme) follows Go autocert: Let's Encrypt production default, operator directory (staging/private CA), AcceptTOS, optional contact, domains normalised by issuer_domains (lower-case plain DNS names, wildcards and IP literals refused), owner-only cache whose account and certificate entries are keyed by a directory hash, cached pairs refused when expired, not yet valid or not covering every domain (Go validCert), ECDSA P-256 CSR, TLS-ALPN-01 answered only for declared SNI, renewal at min(30 days, one third of the leaf lifetime) before NotAfter (the Go autocert 30 days for a 90-day leaf), exponential retry backoff in maintain(), issuance serialized per issuer, renewal facts (attempts, generation, last failure kind and time) through renewal_facts(). The gateway accepts acme-tls/1 only in the issuer_config shape with an issuer's resolver, and the ingress closes an acme-tls/1 connection after the handshake without reading a request. No production self-signed fallback per plan B02. The development self-signed certificate (Go selfSignedCert) exists only with the dev-self-signed feature and an explicit setting; it is never a fallback. Live issuance: tests/gateway/acme_pebble.rs issued a certificate from the digest-pinned Pebble test CA over TLS-ALPN-01 (the issuer_config resolver negotiated acme-tls/1 with Pebble's validator), installed it, made no renewal while valid and reloaded it from the cache after restart, in a local Docker engine on 2026-11-18; the rust-validation msrv job runs it with --ignored. Pebble dials a test listener, not the gateway ingress (see the loopback gap). B02 binary wiring (2026-11-18): the runtime binary reads an optional tls object from its private inherited configuration (certificate/key, acme {domains, cache, email, directory, directory_root, check_interval_seconds}, dev_self_signed), selects exactly one source through tls::listener::prepare before custody opens, binds ServiceHost::bind_tls and starts AcmeIssuer::maintain beside the listener when ACME is selected. A tls request with no, ambiguous or unavailable source exits non-zero before custody (Go fell back to self-signed); ServiceHost refuses a tls request without a server configuration. tests/gateway/tls_startup.rs runs the real binary: refusals before custody, and a provisioned pair served over TLS/H1 on loopback (Unix).",
    "test_verification": {}
   },
   {
    "baseline_path": "cmd/server/cert.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "in-process self-signed dev certificate generation"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/listener.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/tls/certificate_tests.rs::dev_self_signed_is_explicit_exclusive_and_local_only",
+    "crates/sdk/humanymous-runtime/src/gateway/tls/listener_tests.rs::dev_flag_selects_the_dev_certificate_only_in_dev_builds",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_the_dev_flag_without_the_build_feature"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "rcgen self-signed only appears in Rust tests (gateway/tests/tls.rs); plan B02 says no production self-signed fallback, but no retirement quote for the dev mode.",
-   "test_verification": {}
+   "notes": "dev_self_signed_config (feature dev-self-signed) matches Go selfSignedCert: ECDSA P-256, CN humanymous.local, SAN localhost/humanymous.local/127.0.0.1/::1, serverAuth, valid from one hour ago for 365 days. Unlike Go it is never an implicit default: select() needs the explicit setting and refuses it alongside another source. Wired 2026-11-18: the runtime binary selects it only from tls.dev_self_signed in the inherited configuration and refuses the flag in a build without the feature or beside another source.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/tls/listener_tests.rs::dev_flag_selects_the_dev_certificate_only_in_dev_builds": "passed",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_the_dev_flag_without_the_build_feature": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/collect_pipeline.go",
@@ -1265,26 +1302,35 @@
    "baseline_path": "cmd/server/main.go",
    "disposition": "partial",
    "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/capture/tls/transport.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application/tls.rs",
     "crates/sdk/humanymous-runtime/src/gateway/main.rs",
     "crates/sdk/humanymous-runtime/src/gateway/service.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/application/tls.rs",
-    "crates/sdk/humanymous-runtime/src/capture/tls/transport.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/tls/listener.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/tests/tls.rs::actual_tls_coalesced_request_is_refused_before_audit_or_origin"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/tls.rs::actual_tls_coalesced_request_is_refused_before_audit_or_origin",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_acme_it_cannot_run",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_the_dev_flag_without_the_build_feature",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_tls_requests_without_exactly_one_usable_source",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_serves_tls_from_a_provisioned_pair"
    ],
    "go_test_map": {},
    "gaps": [
-    "public TLS listener :8443/:443 (B01)",
+    "public TLS listener :8443/:443 (B01): the runtime binary now serves TLS from an explicit tls source, but only on a loopback listener",
     "flag/env surface incl. max-conns, ML, playground",
     "per-connection H1/H2 peek dispatch to net/http",
     "GC/timeouts settings"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust runtime main reads private stdin config and binds loopback only; Core demo role is plan B01/B05 missing.",
+   "notes": "Rust runtime main reads private stdin config and binds loopback only; Core demo role is plan B01/B05 missing. B02 binary wiring (2026-11-18): the runtime binary reads an optional tls object from its private inherited configuration (certificate/key, acme {domains, cache, email, directory, directory_root, check_interval_seconds}, dev_self_signed), selects exactly one source through tls::listener::prepare before custody opens, binds ServiceHost::bind_tls and starts AcmeIssuer::maintain beside the listener when ACME is selected. A tls request with no, ambiguous or unavailable source exits non-zero before custody (Go fell back to self-signed); ServiceHost refuses a tls request without a server configuration. tests/gateway/tls_startup.rs runs the real binary: refusals before custody, and a provisioned pair served over TLS/H1 on loopback (Unix).",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/tests/tls.rs::actual_tls_coalesced_request_is_refused_before_audit_or_origin": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/tls.rs::actual_tls_coalesced_request_is_refused_before_audit_or_origin": "passed",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_tls_requests_without_exactly_one_usable_source": "passed",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_the_dev_flag_without_the_build_feature": "passed",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_acme_it_cannot_run": "passed",
+    "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_serves_tls_from_a_provisioned_pair": "passed"
    }
   },
   {
