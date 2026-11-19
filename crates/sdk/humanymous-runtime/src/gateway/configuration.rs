@@ -28,6 +28,9 @@ pub struct Configuration {
     /// loopback-only listener. See [`exposure`].
     #[serde(default)]
     pub public_listen: bool,
+    /// Concurrent receive bounds of the public listener; ignored on loopback.
+    #[serde(default)]
+    pub public_receive: exposure::PublicReceive,
     /// Fixed owned loopback origin address, never taken from request headers.
     /// It stays loopback with a public edge: the origin hop is plaintext and
     /// a non-loopback upstream (Go `-upstream` URL) is plan B14.
@@ -164,6 +167,7 @@ impl Configuration {
             // A PROXY v2 header is trusted from every peer of the listener;
             // on a public listener any client could forge the client address.
             || self.public_listen && self.ip_reputation.is_some()
+            || !self.public_receive.valid()
             || self.admin.as_ref().is_some_and(|admin| {
                 admin.validate().is_err()
                     || admin.listen.port() != 0

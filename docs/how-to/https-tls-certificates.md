@@ -67,6 +67,13 @@ readiness line then reports the `experimental-public-tls` profile with
 `public_listen: true`; it remains an experimental profile, not product
 qualification.
 
+On a public address, each connection's TLS handshake and request read run
+concurrently, at most `public_receive.max_receiving` at once (default 64) and
+each within `public_receive.receive_ms` (default 5000 ms). A connection beyond
+that bound is closed immediately, and a silent connection is closed at its
+receive deadline. Requests are still decided one at a time, so size the bounds,
+`rate_per_second` and your network limits for the traffic you expect.
+
 The optional administration listener (`admin` object) is always a separate
 loopback address, even when the edge is public. Reach it from the same host or
 through your own authenticated tunnel.

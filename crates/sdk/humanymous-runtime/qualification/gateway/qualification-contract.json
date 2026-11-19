@@ -7,11 +7,14 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 933,
-      "macos": 933,
-      "windows": 899
+      "linux": 939,
+      "macos": 939,
+      "windows": 905
     },
     "common_test_names": [
+      "gateway::accept::tests::accept_serves_a_real_connection",
+      "gateway::accept::tests::exhaustion_and_aborted_connections_are_transient",
+      "gateway::accept::tests::transient_failures_are_retried_and_others_returned",
       "gateway::admin_approval::tests::approval_store_rules",
       "gateway::admin_approval::tests::bearer_authentication_denies_by_default",
       "gateway::admin_approval::tests::capabilities_follow_the_go_role_model",
@@ -768,6 +771,9 @@
       "gateway::tests::exposure::loopback_only_application_refuses_a_wide_listener",
       "gateway::tests::exposure::public_application_serves_a_non_loopback_peer_over_tls_only",
       "gateway::tests::exposure::public_edge_configuration_needs_the_key_and_tls",
+      "gateway::tests::exposure::public_receive_bounds_are_validated",
+      "gateway::tests::exposure::public_receive_overflow_closes_and_silent_peers_expire",
+      "gateway::tests::exposure::silent_public_peer_does_not_block_another_client",
       "gateway::tests::fresh_collector_provenance_gates_required_collector",
       "gateway::tests::gates::forged_agent_signature_is_denied_before_scoring",
       "gateway::tests::gates::gate_deny_fields_precede_the_acknowledgement",

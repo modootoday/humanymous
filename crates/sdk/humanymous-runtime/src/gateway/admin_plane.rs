@@ -1155,7 +1155,9 @@ impl AdminPlane {
                     changed.map_err(|_| io::Error::other("shutdown controller closed"))?;
                     continue;
                 }
-                accepted = listener.accept() => accepted?,
+                // Transient accept errors (EMFILE, aborted peers) are retried
+                // with backoff; any other error stops the service (fail closed).
+                accepted = crate::gateway::accept::accept(&listener) => accepted?,
             };
             if !peer.ip().is_loopback() {
                 continue;

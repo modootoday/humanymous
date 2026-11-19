@@ -228,7 +228,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/configuration/exposure.rs",
     "crates/sdk/humanymous-runtime/src/gateway/configuration/admin.rs",
     "crates/sdk/humanymous-runtime/src/gateway/service/admin.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/service/lifecycle.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/service/lifecycle.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/accept.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope",
@@ -245,12 +246,16 @@
     "crates/sdk/humanymous-runtime/src/gateway/tests/exposure.rs::public_application_serves_a_non_loopback_peer_over_tls_only",
     "crates/sdk/humanymous-runtime/src/gateway/tests/service/exposure.rs::unix_public_tls_edge_and_loopback_admin_listener",
     "crates/sdk/humanymous-runtime/tests/gateway/exposure.rs::runtime_binary_gate_refuses_exposure_before_custody",
-    "crates/sdk/humanymous-runtime/tests/gateway/exposure.rs::runtime_binary_serves_a_public_tls_edge_beside_a_loopback_admin_listener"
+    "crates/sdk/humanymous-runtime/tests/gateway/exposure.rs::runtime_binary_serves_a_public_tls_edge_beside_a_loopback_admin_listener",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/exposure.rs::silent_public_peer_does_not_block_another_client",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/exposure.rs::public_receive_overflow_closes_and_silent_peers_expire",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/exposure.rs::public_receive_bounds_are_validated",
+    "crates/sdk/humanymous-runtime/src/gateway/accept.rs::transient_failures_are_retried_and_others_returned"
    ],
    "go_test_map": {},
    "gaps": [
     "flag/env configuration surface: the remaining cmd/gate flags and HMN_* environment values (cmd/gate/main.go at 981d25c defines 35 flags and reads 17 HMN_* variables). Mapped so far: the six edge TLS flags -tls-cert/-tls-key/-acme-domain/-acme-cache/-acme-email/-acme-directory to the inherited configuration's tls object, the five operational logging flags -log-level/-log-console-format/-log-console-stream/-log-plain-file/-log-jsonl-file (with their HMN_LOG_* fallbacks) to its logging object, -addr to listen plus public_listen, -admin-addr to admin.listen and -settings-dir to admin.settings_dir",
-    "divergence: Go defaulted -addr :8444 on every interface and served the edge without a certificate source; the runtime defaults to loopback and a wider listen needs public_listen and a provisioned or ACME tls source",
+    "divergence: Go defaulted -addr :8444 on every interface and served TLS with a self-signed fallback; the runtime refuses that fallback, defaults to loopback, and a wider listen needs public_listen and a provisioned or ACME tls source",
     "divergence: Go served the admin listener with a self-signed certificate and allowed it off-host (warning without mTLS, -admin-mtls-ca optional); the runtime admin listener is plaintext loopback only and refuses any other address, -admin-mtls-ca is not ported",
     "admin operator provisioning beyond the static bearer table in the private configuration (lane H #2)",
     "origin reverse proxy to non-loopback upstream, origin-auth (B14)",
@@ -262,7 +267,7 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust runtime is a private-config loopback-only gateway (stdin config, loopback listen/origin); shipping plan B01-B27 lists the Gate edge composition as partial/missing. B02 binary wiring (2026-11-18): the runtime binary reads an optional tls object from its private inherited configuration (certificate/key, acme {domains, cache, email, directory, directory_root, check_interval_seconds}, dev_self_signed), selects exactly one source through tls::listener::prepare before custody opens, binds ServiceHost::bind_tls and starts AcmeIssuer::maintain beside the listener when ACME is selected. A tls request with no, ambiguous or unavailable source exits non-zero before custody (Go fell back to self-signed); ServiceHost refuses a tls request without a server configuration. tests/gateway/tls_startup.rs runs the real binary: refusals before custody, and a provisioned pair served over TLS/H1 on loopback (Unix). FM11 lane B: the five -log-* flags are the inherited configuration's logging object; the binary opens the Gate operational logger before custody and logs runtime.logging_configured and runtime.fatal (tests/gateway/tls_startup.rs runtime_binary_opens_gate_logging_before_custody). Owner decision B01 #1 (2026-11-19): a non-loopback listen needs the explicit public_listen key plus a provisioned or ACME tls source (never the development certificate); defaults stay loopback, there is no public plaintext listener, only a public listener admits non-loopback peers, and the owned origin stays loopback (gateway::configuration::exposure). The optional admin object opens a separate loopback-only HTTP/1.1 admin TCP listener composing admin_plane (bearer operator table, shared ban store and epoch, settings write plane with settings_dir) into gateway::service. `humanymous-runtime core` serves core_server with PassMount under the same listener rules (gateway::core_server::role). TLS readiness reports original_h2 from the served ALPN offer (#153).",
+   "notes": "Rust runtime is a private-config loopback-only gateway (stdin config, loopback listen/origin); shipping plan B01-B27 lists the Gate edge composition as partial/missing. B02 binary wiring (2026-11-18): the runtime binary reads an optional tls object from its private inherited configuration (certificate/key, acme {domains, cache, email, directory, directory_root, check_interval_seconds}, dev_self_signed), selects exactly one source through tls::listener::prepare before custody opens, binds ServiceHost::bind_tls and starts AcmeIssuer::maintain beside the listener when ACME is selected. A tls request with no, ambiguous or unavailable source exits non-zero before custody (Go fell back to self-signed); ServiceHost refuses a tls request without a server configuration. tests/gateway/tls_startup.rs runs the real binary: refusals before custody, and a provisioned pair served over TLS/H1 on loopback (Unix). FM11 lane B: the five -log-* flags are the inherited configuration's logging object; the binary opens the Gate operational logger before custody and logs runtime.logging_configured and runtime.fatal (tests/gateway/tls_startup.rs runtime_binary_opens_gate_logging_before_custody). Owner decision B01 #1 (2026-11-19): a non-loopback listen needs the explicit public_listen key plus a provisioned or ACME tls source (never the development certificate); defaults stay loopback, there is no public plaintext listener, only a public listener admits non-loopback peers, and the owned origin stays loopback (gateway::configuration::exposure). The optional admin object opens a separate loopback-only HTTP/1.1 admin TCP listener composing admin_plane (bearer operator table, shared ban store and epoch, settings write plane with settings_dir) into gateway::service. `humanymous-runtime core` serves core_server with PassMount under the same listener rules (gateway::core_server::role). TLS readiness reports original_h2 from the served ALPN offer (#153). PR #156 review: on a public listener the TLS handshake and request read run concurrently, bounded by public_receive (max_receiving, receive_ms; overflow closed, never queued) with decisions still serialized, as Go net/http served connections concurrently; edge and admin accepts retry transient errors with 5 ms to 1 s backoff (Go Server.Serve), other accept errors stop the service.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::configuration_and_readiness_are_honest": "passed",
@@ -278,7 +283,11 @@
     "crates/sdk/humanymous-runtime/src/gateway/tests/exposure.rs::public_application_serves_a_non_loopback_peer_over_tls_only": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests/service/exposure.rs::unix_public_tls_edge_and_loopback_admin_listener": "passed",
     "crates/sdk/humanymous-runtime/tests/gateway/exposure.rs::runtime_binary_gate_refuses_exposure_before_custody": "passed",
-    "crates/sdk/humanymous-runtime/tests/gateway/exposure.rs::runtime_binary_serves_a_public_tls_edge_beside_a_loopback_admin_listener": "passed"
+    "crates/sdk/humanymous-runtime/tests/gateway/exposure.rs::runtime_binary_serves_a_public_tls_edge_beside_a_loopback_admin_listener": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/exposure.rs::silent_public_peer_does_not_block_another_client": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/exposure.rs::public_receive_overflow_closes_and_silent_peers_expire": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/exposure.rs::public_receive_bounds_are_validated": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/accept.rs::transient_failures_are_retried_and_others_returned": "passed"
    }
   },
   {
@@ -2716,7 +2725,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain.rs",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/policy.rs",
     "crates/sdk/humanymous-runtime/src/gateway/configuration/admin.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/service/admin.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/service/admin.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/accept.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved",
@@ -2740,7 +2750,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/configuration/admin.rs::non_loopback_admin_listen_is_refused",
     "crates/sdk/humanymous-runtime/src/gateway/configuration/admin.rs::operator_table_and_ban_bounds_fail_closed",
     "crates/sdk/humanymous-runtime/src/gateway/tests/service/exposure.rs::unix_public_tls_edge_and_loopback_admin_listener",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service/exposure.rs::unix_admin_bans_need_an_enforceable_gate"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/service/exposure.rs::unix_admin_bans_need_an_enforceable_gate",
+    "crates/sdk/humanymous-runtime/src/gateway/accept.rs::exhaustion_and_aborted_connections_are_transient"
    ],
    "go_test_map": {},
    "gaps": [
@@ -2753,7 +2764,7 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Native observer/operator IPC, kill-status assessment and audit verification primitives exist. gateway::admin_plane serves the Go route table subset for ban list/add/bulk/lift, approvals list, whoami, erasure and kill-switch requests and the dual-control approve route on a separate loopback TCP listener, with Go 404 deny-by-default, 403 role refusals, meta-audit, JSON decoding and response shapes; permanent and broad ban commits also consume a retained signed permit. Erasure: gateway::admin_plane::erasure resolves the requested handle through the vault, schedules a DPO-approved erasure into the hold queue only with a staged ledger-issued ErasurePermit for that subject, serves GET erasures and POST erasures/{id}/cancel (Go adminWrapped) and executes due shreds (run_due_shreds, Go RunDueShreds), pinned against tests/fixtures/gateway/admin-erasure-go-golden.json. FM11 slice 19: gateway::admin_plane::policy serves the read-only GET policy route (adminPolicy, byte-identical to the Go capture with routes in prefix order, configVersion from settings::configsign::BootPolicy with the active overlay, no write verb) and the console page (adminConsole) as an authenticated GET read with X-Frame-Options DENY; Go served the console unauthenticated and could inject a dev bearer token, which is not ported. FM11 lane E (B1): gateway::admin_plane::settings serves the six settings routes in Go table order and the two settings approval commits when attached with AdminPlane::with_settings, pinned against tests/fixtures/gateway/settings-admin-go-golden.json. Owner decision B01 #1 (2026-11-19): gateway::service::admin composes the plane into the service from the private configuration's admin object: loopback-only listen distinct from the edge and origin, 1..=64 operators with role/id/token (Go weak-secret rules always refused), explicit ban store bounds, a random per-process audit key, and with settings_dir the settings write plane (OverlayFileStore, no route presets) swept every minute; a sweep audit failure stops the service. Tokens never reach readiness.",
+   "notes": "Native observer/operator IPC, kill-status assessment and audit verification primitives exist. gateway::admin_plane serves the Go route table subset for ban list/add/bulk/lift, approvals list, whoami, erasure and kill-switch requests and the dual-control approve route on a separate loopback TCP listener, with Go 404 deny-by-default, 403 role refusals, meta-audit, JSON decoding and response shapes; permanent and broad ban commits also consume a retained signed permit. Erasure: gateway::admin_plane::erasure resolves the requested handle through the vault, schedules a DPO-approved erasure into the hold queue only with a staged ledger-issued ErasurePermit for that subject, serves GET erasures and POST erasures/{id}/cancel (Go adminWrapped) and executes due shreds (run_due_shreds, Go RunDueShreds), pinned against tests/fixtures/gateway/admin-erasure-go-golden.json. FM11 slice 19: gateway::admin_plane::policy serves the read-only GET policy route (adminPolicy, byte-identical to the Go capture with routes in prefix order, configVersion from settings::configsign::BootPolicy with the active overlay, no write verb) and the console page (adminConsole) as an authenticated GET read with X-Frame-Options DENY; Go served the console unauthenticated and could inject a dev bearer token, which is not ported. FM11 lane E (B1): gateway::admin_plane::settings serves the six settings routes in Go table order and the two settings approval commits when attached with AdminPlane::with_settings, pinned against tests/fixtures/gateway/settings-admin-go-golden.json. Owner decision B01 #1 (2026-11-19): gateway::service::admin composes the plane into the service from the private configuration's admin object: loopback-only listen distinct from the edge and origin, 1..=64 operators with role/id/token (Go weak-secret rules always refused), explicit ban store bounds, a random per-process audit key, and with settings_dir the settings write plane (OverlayFileStore, no route presets) swept every minute; a sweep audit failure stops the service. Tokens never reach readiness. The admin accept loop retries transient accept errors (EMFILE, aborted connections) with backoff; any other accept error stops the service (fail closed).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/control/state.rs::spent_intent_without_covered_effect_cannot_become_healthy": "passed",
@@ -2776,7 +2787,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/configuration/admin.rs::non_loopback_admin_listen_is_refused": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/configuration/admin.rs::operator_table_and_ban_bounds_fail_closed": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests/service/exposure.rs::unix_public_tls_edge_and_loopback_admin_listener": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service/exposure.rs::unix_admin_bans_need_an_enforceable_gate": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/service/exposure.rs::unix_admin_bans_need_an_enforceable_gate": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/accept.rs::exhaustion_and_aborted_connections_are_transient": "passed"
    }
   },
   {

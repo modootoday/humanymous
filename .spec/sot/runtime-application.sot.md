@@ -3,7 +3,7 @@ id: sot:root/runtime-application
 title: Runtime application and session owner
 status: active
 created: 2026-11-07T00:20:25Z
-updated: 2026-11-19T18:50:00Z
+updated: 2026-11-19T20:00:00Z
 verify: [cargo test -p humanymous-runtime --locked, cargo clippy -p humanymous-runtime --all-targets --locked -- -D warnings]
 rel:
   governs: [crates/sdk/humanymous-runtime/**]
@@ -606,8 +606,10 @@ Decisions #9 and #10 are recorded in `sot:root/pass-protocol` and
 
 ### Public edge, admin listener and Core role (owner decision B01 #1, 2026-11-19)
 
-Go cmd/gate defaulted `-addr :8444` (every interface) and served the edge in
-plaintext without a certificate source; cmd/server likewise. The runtime keeps
+Go cmd/gate defaulted `-addr :8444` and cmd/server `-addr :8443` (every
+interface), and both served TLS with a self-signed fallback when no certificate
+source was given (cmd/gate `buildEdgeTLS`, cmd/server `buildTLSConfig`); the
+runtime refuses that fallback. The runtime keeps
 loopback as the default and makes a wider listener an explicit, fail-closed
 opt-in (`gateway::configuration::exposure` owns every predicate):
 
@@ -623,6 +625,20 @@ opt-in (`gateway::configuration::exposure` owns every predicate):
   spoof-header gate are unchanged. PROXY v2 client addresses are refused with
   a public listener, because any peer could then write the header (Go's
   `-trusted-proxies` ranges are not ported).
+- Public receive (PR #156 review): on a public listener each admitted peer's
+  TLS handshake and complete request read run concurrently in their own task,
+  at most `public_receive.max_receiving` (default 64, 1..=1024) at once, each
+  within `public_receive.receive_ms` (default 5000 ms, 100..=60000, never
+  beyond `timeout_ms`). A peer beyond the bound is closed at once, never
+  queued; a received request keeps its permit until answered, so the queue is
+  bounded. Decisions, audit and origin dispatch stay serialized in the one
+  application owner as on loopback, so a silent or slow peer holds one permit,
+  not the listener (Go `net/http` served each connection concurrently). The
+  loopback listener keeps its serial receive. Readiness reports the bounds as
+  `profile.public_receive`. Residual: throughput is still one decided request
+  at a time, and a flood of slow peers can occupy every permit for up to
+  `receive_ms`; global `rate_per_second` admission and the operator's network
+  limits remain the outer bounds.
 - Admin listener: the optional `admin` object (`listen`, 1..=64 `operators`
   of role/id/token, explicit `bans` store bounds, optional `settings_dir`)
   opens a separate plaintext HTTP/1.1 TCP listener that must be loopback and
@@ -634,7 +650,12 @@ opt-in (`gateway::configuration::exposure` owns every predicate):
   always refused, there is no demo mode), the shared ban store and epoch, and
   with `settings_dir` the settings write plane (`OverlayFileStore`, no route
   presets, swept every minute like Go `GC`). A sweep audit failure stops the
-  listener and the service (fail closed). Readiness adds `admin_listen` and
+  listener and the service (fail closed). Admin and public-edge accepts retry
+  transient errors (descriptor or buffer exhaustion, aborted or reset pending
+  connections, interrupted calls) with 5 ms to 1 s backoff, as Go `net/http`
+  `Server.Serve` did; any other accept error stops that listener and, through
+  the service lifecycle, every listener (fail-closed outage, visible in the
+  stop report). Readiness adds `admin_listen` and
   `profile.admin_listener` (address, operator count, settings flag; never a
   token). The admin plane is never served on the edge listener. Go's
   off-host admin with `-admin-mtls-ca` is not ported.
@@ -656,7 +677,8 @@ opt-in (`gateway::configuration::exposure` owns every predicate):
 
 No score, weight, threshold, hard-rule predicate, verdict band or signal ID
 changes. Pinned by `gateway::configuration::{exposure,admin}`,
-`gateway::tests::exposure`, `gateway::tests::service::exposure`,
+`gateway::accept`, `gateway::tests::exposure` (including a silent public peer
+that does not block a second client, overflow closure and receive expiry), `gateway::tests::service::exposure`,
 `gateway::core_server::role` and `gateway::service::readiness` tests and the
 real-binary `gateway-exposure` integration test (non-loopback peers reach the
 listener over the host's interface address). Plan:

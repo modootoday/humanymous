@@ -1,4 +1,5 @@
 //! Loopback application/session owner; component support is not product qualification.
+pub(crate) mod accept;
 pub mod admin_approval;
 pub mod admin_plane;
 pub mod application;

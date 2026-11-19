@@ -3,7 +3,7 @@ id: plan:root/20261119160000
 title: Owner B01 edge listener
 status: active
 created: 2026-11-19T16:00:00Z
-updated: 2026-11-19T16:00:00Z
+updated: 2026-11-19T20:00:00Z
 rel:
   governs: [crates/sdk/humanymous-runtime/src/gateway/configuration.rs, crates/sdk/humanymous-runtime/src/gateway/configuration/exposure.rs, crates/sdk/humanymous-runtime/src/gateway/configuration/admin.rs, crates/sdk/humanymous-runtime/src/gateway/service.rs, crates/sdk/humanymous-runtime/src/gateway/service/admin.rs, crates/sdk/humanymous-runtime/src/gateway/service/lifecycle.rs, crates/sdk/humanymous-runtime/src/gateway/service/readiness.rs, crates/sdk/humanymous-runtime/src/gateway/application/tls.rs, crates/sdk/humanymous-runtime/src/gateway/admin_plane.rs, crates/sdk/humanymous-runtime/src/gateway/core_server/serve.rs, crates/sdk/humanymous-runtime/src/gateway/core_server/role.rs, crates/sdk/humanymous-runtime/src/gateway/main.rs, crates/sdk/humanymous-runtime/tests/gateway/exposure.rs]
   depends_on: [sot:root/rust-migration, sot:root/runtime-application]
@@ -52,6 +52,15 @@ not edited.
   `sot:root/runtime-application`; FM11 rows `cmd/gate/tls.go` and
   `cmd/server/acme.go` move to `ported_unit` with `go_test_map`; the other
   four rows stay `partial` with exact gaps.
+- [x] PR #156 review: (1) the SoT and the `cmd/gate/main.go` ledger gap now
+  say Go served TLS with a self-signed fallback, which the runtime refuses;
+  every other Go claim was rechecked against 981d25c. (2) A public listener
+  receives (TLS handshake and request read) concurrently under
+  `public_receive` bounds with a per-connection deadline; overflow is closed,
+  decisions stay serialized; a silent peer no longer blocks a second client
+  (`gateway::tests::exposure`). (3) Edge and admin accepts retry transient
+  errors with backoff (`gateway::accept`); other accept errors stop the
+  service, documented in the SoT.
 
 ## Remaining (not in this lane)
 
