@@ -40,11 +40,16 @@ fn raw_body(response: &[u8]) -> Option<&[u8]> {
     response.get(end..)
 }
 
-/// Status and exact Gate body a sessionless forged-trust-header request must
-/// get under the configured spoof-header mode (`application/edge.rs`).
-fn spoof_expectation(mode: Mode) -> (u16, Option<&'static str>) {
+/// Status and exact Gate body bytes a sessionless forged-trust-header request
+/// must get under the configured spoof-header mode (`application/edge.rs`).
+/// The refusal is written in Go `http.Error` form: the static deny body plus
+/// one newline (`http::text_frame`).
+fn spoof_expectation(mode: Mode) -> (u16, Option<Vec<u8>>) {
     match mode {
-        Mode::Enforce => (403, Some(guard::SPOOF_DENY_BODY)),
+        Mode::Enforce => (
+            403,
+            Some(format!("{}\n", guard::SPOOF_DENY_BODY).into_bytes()),
+        ),
         Mode::Off | Mode::Monitor | Mode::Shadow => (401, None),
     }
 }
@@ -156,13 +161,24 @@ impl Driver {
         let origin_delta = records()?.len() - before;
         let observed = response.as_deref().ok().and_then(status);
         let local = response.as_deref().ok().and_then(raw_body);
-        let body_exact = deny_body.is_none_or(|want| local == Some(want.as_bytes()));
+        let body_exact = deny_body.as_deref().is_none_or(|want| local == Some(want));
         let pass = observed == Some(expected) && body_exact && origin_delta == 0;
-        self.cases.push(json!({"id":"forged_trust_headers_without_session",
+        // The deny body is a fixed public string, so the observed bytes are
+        // recorded as text; a JSON Gate body is recorded as JSON.
+        let observed_body = match deny_body {
+            Some(_) => local.map_or(Value::Null, |b| json!(String::from_utf8_lossy(b))),
+            None => response
+                .as_deref()
+                .ok()
+                .and_then(body)
+                .unwrap_or(Value::Null),
+        };
+        self.cases
+            .push(json!({"id":"forged_trust_headers_without_session",
             "spoof_header_mode":self.config.edge.readiness()["spoof_header"],
             "expected_status":expected,"observed_status":observed,
-            "expected_gate_body":deny_body,"gate_body_exact":body_exact,
-            "gate_local_body":if deny_body.is_some() { Value::Null } else { response.as_deref().ok().and_then(body).unwrap_or(Value::Null) },
+            "expected_gate_body":deny_body.map(|b| String::from_utf8_lossy(&b).into_owned()),
+            "gate_body_exact":body_exact,"gate_local_body":observed_body,
             "expected_origin_delta":0,"origin_delta":origin_delta,
             "transport_error":response.as_ref().err().map(|e|e.to_string()),"pass":pass}));
         Ok(())
@@ -509,7 +525,10 @@ mod tests {
     fn forged_header_expectation_follows_the_configured_spoof_mode() {
         assert_eq!(
             spoof_expectation(Mode::Enforce),
-            (403, Some(guard::SPOOF_DENY_BODY))
+            (
+                403,
+                Some(b"Request blocked by humanymous (automation detected).\n".to_vec())
+            )
         );
         for mode in [Mode::Off, Mode::Monitor, Mode::Shadow] {
             assert_eq!(spoof_expectation(mode), (401, None));
