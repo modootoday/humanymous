@@ -130,3 +130,18 @@ fn https_refuses_an_untrusted_server_and_needs_explicit_roots() {
     assert_eq!(requests.recv_timeout(Duration::from_secs(5)).unwrap(), None);
     sink.close().unwrap();
 }
+
+/// A caller that asked for TLS never gets a plain-HTTP sink: `with_tls`
+/// refuses an `http://` endpoint, so Basic auth cannot leave in clear text.
+#[test]
+fn with_tls_refuses_a_plain_http_endpoint() {
+    let (certificate, _) = certified();
+    let refused = ClickHouseSink::with_tls(
+        options("http://127.0.0.1:8123".into()),
+        client_trusting(certificate),
+    );
+    let error = refused
+        .err()
+        .expect("with_tls accepted an http:// endpoint");
+    assert_eq!(error.kind(), std::io::ErrorKind::InvalidInput);
+}

@@ -309,11 +309,18 @@
     },
     {
       "id": "audit-records",
-      "compares": "audit record wire shape, hashes, Merkle proofs, checkpoints and verifier precedence",
+      "compares": "audit record wire shape, hashes, Merkle proofs, checkpoints, verifier precedence, sealed chains and tamper detection, and ClickHouse projection wire format",
       "go_packages": [
         "internal/audit"
       ],
       "tests": [
+        {
+          "file": "crates/sdk/humanymous-runtime/tests/audit/chain_parity.rs",
+          "functions": [
+            "sealed_records_and_signed_heads_match_go",
+            "tamper_detection_matches_go"
+          ]
+        },
         {
           "file": "crates/sdk/humanymous-runtime/tests/audit/checkpoint_parity.rs",
           "functions": [
@@ -342,10 +349,22 @@
       ],
       "vectors": [
         {
+          "path": "crates/sdk/humanymous-runtime/tests/fixtures/audit/chain-go-golden.json",
+          "sha256": "56cb522ff50dd1fa2350c84c3387edbf8dd0c0a6dd59291698b545c7af787280",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261119002855"
+        },
+        {
           "path": "crates/sdk/humanymous-runtime/tests/fixtures/audit/checkpoints.json",
           "sha256": "a28b057c83ed946d407e05fa4c7766ede4700c737617d27d231d46f0180716ef",
           "provenance": "go-recorded-differential",
           "record": "plan:root/20261106194012"
+        },
+        {
+          "path": "crates/sdk/humanymous-runtime/tests/fixtures/audit/clickhouse-go-golden.json",
+          "sha256": "bb3a2ee3de5ddc37ce5262bc4876048b640871866293e8fd25cd5e2ae24ce44a",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261119002855"
         },
         {
           "path": "crates/sdk/humanymous-runtime/tests/fixtures/audit/merkle.json",

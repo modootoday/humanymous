@@ -1,4 +1,18 @@
 //! Durable per-node sealing. The WAL is the authority; projections are not.
+//!
+//! Go `internal/audit/chain.go` (oracle 981d25c) is matched record for record
+//! and head for head (`tests/audit/chain_parity.rs`). Deliberate differences
+//! from Go, each pinned by a test:
+//! - A checkpoint cadence of zero is refused when the log opens; Go silently
+//!   used its default of 16 (`zero_cadence_and_empty_heads_are_refused`).
+//! - A witness that fails to counter-sign poisons the writer and fails the
+//!   append or checkpoint; Go kept the head with an empty witness signature and
+//!   carried on (`witness_refusal_is_not_silently_downgraded_to_writer_only`).
+//! - [`Log::checkpoint`] on an empty log returns `None`; Go signed a size-0
+//!   head (`zero_cadence_and_empty_heads_are_refused`). A repeated call at an
+//!   unchanged size returns the existing head instead of signing a duplicate.
+//! - There is no WAL-less ephemeral log (owner decision 2026-11-16), and an
+//!   empty event type is refused (`empty_event_type_is_refused_before_the_action`).
 mod live;
 mod proofs;
 mod sealed;
@@ -426,6 +440,34 @@ mod tests {
     /// baseline 981d25c). Go panicked on the first Append; Rust refuses an
     /// empty HMAC key when the log opens, so no record or WAL entry can ever be
     /// sealed without the secondary MAC, and the MAC primitive refuses too.
+    /// Go `NewLog` replaced a zero `CheckpointEvery` with 16, and Go
+    /// `Checkpoint` signed a size-0 head on an empty log. Rust refuses the zero
+    /// cadence when the log opens and returns no head for an empty log.
+    #[test]
+    fn zero_cadence_and_empty_heads_are_refused() {
+        let dir = dir();
+        let mut zero = config();
+        zero.checkpoint_every = 0;
+        assert!(
+            Log::open(
+                Wal::open(&dir, WalOptions::default()).unwrap(),
+                zero,
+                None,
+                true
+            )
+            .is_err()
+        );
+        let mut log = Log::open(
+            Wal::open(&dir, WalOptions::default()).unwrap(),
+            config(),
+            None,
+            true,
+        )
+        .unwrap();
+        assert!(log.checkpoint().unwrap().is_none());
+        drop(log);
+        clean(&dir);
+    }
     #[test]
     fn empty_hmac_key_is_refused_before_any_append() {
         let dir = dir();

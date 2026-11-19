@@ -21,7 +21,10 @@
 //!   `audit-tls`) and its explicit rustls client configuration, which names
 //!   the trust roots. Go's `net/http` trusted the host's system roots; this
 //!   crate carries no system root store, so [`ClickHouseSink::new`] refuses
-//!   an `https://` endpoint instead of guessing one. An endpoint with a query,
+//!   an `https://` endpoint instead of guessing one, and
+//!   [`ClickHouseSink::with_tls`] refuses a plain `http://` endpoint so a
+//!   caller that asked for TLS never sends Basic auth in clear text (Go took
+//!   either scheme from one constructor). An endpoint with a query,
 //!   fragment or embedded credentials is refused when the sink is built.
 //!   Credentials go through [`ClickHouseSink::set_auth`] only, never the URL.
 //! - A record appended after close is counted as dropped instead of sitting
@@ -113,12 +116,20 @@ struct Target {
 }
 
 impl Target {
-    fn parse(endpoint: &str, table: &str, tls_allowed: bool) -> io::Result<Self> {
+    /// `tls_required` is set by [`ClickHouseSink::with_tls`]: the caller asked
+    /// for TLS, so a plain `http://` endpoint, which would send Basic auth in
+    /// clear text, is refused (fail-closed) instead of silently downgraded.
+    fn parse(endpoint: &str, table: &str, tls_required: bool) -> io::Result<Self> {
         let refuse = |why: &str| io::Error::new(io::ErrorKind::InvalidInput, why.to_owned());
         let (tls, rest) = if let Some(rest) = endpoint.strip_prefix("http://") {
+            if tls_required {
+                return Err(refuse(
+                    "ClickHouseSink::with_tls needs an https:// clickhouse endpoint",
+                ));
+            }
             (false, rest)
         } else if let Some(rest) = endpoint.strip_prefix("https://") {
-            if !tls_allowed {
+            if !tls_required {
                 return Err(refuse(
                     "an https:// clickhouse endpoint needs ClickHouseSink::with_tls and explicit trust roots",
                 ));
@@ -414,8 +425,10 @@ impl ClickHouseSink {
         Self::build(options, REQUEST_TIMEOUT, None)
     }
 
-    /// [`ClickHouseSink::new`] for an `http://` or `https://` endpoint. An
-    /// `https://` insert runs TLS under `config`, whose root store decides
+    /// [`ClickHouseSink::new`] for an `https://` endpoint only. A plain
+    /// `http://` endpoint is refused, since the caller asked for TLS and
+    /// [`ClickHouseSink::set_auth`] credentials would otherwise travel in
+    /// clear text. The insert runs TLS under `config`, whose root store decides
     /// which server certificates are trusted, with the endpoint host as the
     /// server name; the one total insert deadline covers the handshake too.
     #[cfg(feature = "audit-tls")]
