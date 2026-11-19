@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 687,
-      "macos": 687,
-      "windows": 669
+      "linux": 693,
+      "macos": 693,
+      "windows": 675
     },
     "common_test_names": [
       "gateway::admin_approval::tests::approval_store_rules",
@@ -283,6 +283,9 @@
       "gateway::gate_config::tests::empty_fields_resolve_to_the_go_defaults",
       "gateway::gate_config::tests::rate_settings_have_no_defaults",
       "gateway::gate_config::tests::set_fields_are_kept",
+      "gateway::guard::parity::origin_cloak_matches_go_capture",
+      "gateway::guard::parity::spoof_and_smuggle_records_match_go_capture",
+      "gateway::guard::parity::spoof_scan_and_strip_match_go_capture",
       "gateway::guard::tests::clean_request_has_no_spoof",
       "gateway::guard::tests::enforcing_spoof_gate_denies_each_forged_trust_header",
       "gateway::guard::tests::epoch_buckets_by_hour",
@@ -520,6 +523,9 @@
       "gateway::session::store::tests::store_gc_expiry",
       "gateway::session::store::tests::store_lifecycle",
       "gateway::session::store::tests::store_scored_replaces_report",
+      "gateway::settings::configsign::tests::config_version_matches_go_capture",
+      "gateway::settings::configsign::tests::config_version_signed_and_stable",
+      "gateway::settings::configsign::tests::rate_defaults_follow_legacy_helpers",
       "gateway::settings::overlay::tests::classify_challenge_at_big_raise_is_c",
       "gateway::settings::overlay::tests::classify_hr12_monitor_is_b",
       "gateway::settings::overlay::tests::classify_hr18_monitor_is_c",
