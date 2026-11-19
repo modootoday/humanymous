@@ -1,13 +1,21 @@
-//! Join both owned listeners; failure signals the sibling before custody release.
-use super::ShutdownRequest;
+//! Join every owned listener; failure signals the siblings before custody release.
+use super::{ShutdownRequest, admin::AdminService};
 use crate::gateway::{application::Application, management::Management};
 use std::io;
 use tokio::{net::TcpListener, sync::watch};
 
+/// Listeners served beside the application listener.
+pub(super) struct Siblings {
+    /// Native management IPC listener.
+    pub(super) management: Option<Management>,
+    /// Loopback admin TCP listener (owner decision B01 #1).
+    pub(super) admin: Option<AdminService>,
+}
+
 pub(super) async fn run(
     application: &mut Application,
     listener: TcpListener,
-    management: Management,
+    siblings: Siblings,
     mut external: watch::Receiver<Option<ShutdownRequest>>,
     tls: Option<std::sync::Arc<rustls::ServerConfig>>,
 ) -> io::Result<()> {
@@ -31,10 +39,25 @@ pub(super) async fn run(
     };
     let management_control = control.clone();
     let management_shutdown = internal.clone();
-    let admin = async move {
+    let management = async move {
+        let Some(management) = siblings.management else {
+            return Ok(());
+        };
         let result = management.run(management_shutdown).await;
         if management_control.borrow().is_none() {
             let _ = management_control.send(Some(fallback));
+        }
+        result
+    };
+    let admin_control = control.clone();
+    let admin_shutdown = internal.clone();
+    let admin = async move {
+        let Some(admin) = siblings.admin else {
+            return Ok(());
+        };
+        let result = admin.run(admin_shutdown).await;
+        if admin_control.borrow().is_none() {
+            let _ = admin_control.send(Some(fallback));
         }
         result
     };
@@ -57,8 +80,9 @@ pub(super) async fn run(
             }
         }
     };
-    let (app, admin, forward) = tokio::join!(app, admin, forward);
+    let (app, management, admin, forward) = tokio::join!(app, management, admin, forward);
     app?;
+    management?;
     admin?;
     forward
 }

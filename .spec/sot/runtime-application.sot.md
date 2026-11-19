@@ -3,7 +3,7 @@ id: sot:root/runtime-application
 title: Runtime application and session owner
 status: active
 created: 2026-11-07T00:20:25Z
-updated: 2026-11-19T00:00:00Z
+updated: 2026-11-19T16:00:00Z
 verify: [cargo test -p humanymous-runtime --locked, cargo clippy -p humanymous-runtime --all-targets --locked -- -D warnings]
 rel:
   governs: [crates/sdk/humanymous-runtime/**]
@@ -276,9 +276,11 @@ Verdict: accepted for implementation; full product qualification still blocked.
 
 Version 0.1 is an experimental native loopback HTTP/1.1 application owner, not
 full Core/Gate parity. Configuration arrives over private inherited stdin;
-readiness goes to private piped stdout. Bind only explicit loopback IP addresses
-for listener and owned origin. There is no public administration endpoint.
-Do not widen to public plaintext listeners before a separate TLS/capture contract.
+readiness goes to private piped stdout. By default bind only explicit loopback
+IP addresses for listener and owned origin. The only wider listener is the
+explicit public TLS edge of owner decision B01 #1 (see "Public edge, admin
+listener and Core role" below); there is no public plaintext listener and no
+public administration endpoint, and the owned origin stays loopback.
 
 One process owns installation/tenant/authority/revision, exact method/path route
 inventory, bounded volatile sessions, shared frozen Engine and durable audit Log.
@@ -446,9 +448,10 @@ changes; the gates enforce existing kernel decisions only.
   when enforcing; a ledger refusal or poisoned lock is 503 `ban_ledger`.
   A block answers 403 in Go `http.Error` form with `X-Hmn-Incident` and, for
   a temporary ban, `Retry-After`; the origin is never contacted. The service
-  binary does not yet provision a store (no rate-limit configuration
-  document) and the store's monotonic epoch is not shared with an admin
-  plane's serving epoch.
+  binary provisions a store only through the optional loopback `admin`
+  listener (B01 #1), whose explicit `bans` bounds build it; the store and
+  its monotonic epoch are shared with that admin plane. Startup is refused
+  when the edge gate is not `off` and no PROXY v2 client address exists.
 - Spoof-header gate: enforcing denies 403 with the incident pointer; other
   modes record mode `monitor` and continue with the forged trust headers
   stripped from the view that is scored and forwarded, as Go's
@@ -532,6 +535,64 @@ Deliberate differences: without the object nothing is logged (Go always logged
 at its defaults); `console_stream: "stdout"` is refused
 (`log_console_stream_reserved`) because standard output is the readiness pipe.
 Pinned by `gateway::logging` tests and the `gateway-tls-startup` process test.
+
+### Public edge, admin listener and Core role (owner decision B01 #1, 2026-11-19)
+
+Go cmd/gate defaulted `-addr :8444` (every interface) and served the edge in
+plaintext without a certificate source; cmd/server likewise. The runtime keeps
+loopback as the default and makes a wider listener an explicit, fail-closed
+opt-in (`gateway::configuration::exposure` owns every predicate):
+
+- Public edge: `listen` may be non-loopback only with `public_listen: true`
+  and a provisioned `tls` source (certificate pair or ACME, never the
+  development self-signed certificate). The key on a loopback address, a
+  non-loopback listen without it, and a public plaintext listener are all
+  configuration refusals before custody. Only a listener of a public
+  configuration accepts a non-loopback peer; a loopback configuration refuses
+  to serve a socket bound beyond loopback, and plaintext serving stays
+  loopback-only whatever the configuration says. The owned origin stays
+  loopback (non-loopback upstream remains B14). Trust-header stripping and the
+  spoof-header gate are unchanged. PROXY v2 client addresses are refused with
+  a public listener, because any peer could then write the header (Go's
+  `-trusted-proxies` ranges are not ported).
+- Admin listener: the optional `admin` object (`listen`, 1..=64 `operators`
+  of role/id/token, explicit `bans` store bounds, optional `settings_dir`)
+  opens a separate plaintext HTTP/1.1 TCP listener that must be loopback and
+  distinct from `listen` and the origin; a non-loopback admin listen is
+  refused even with a public edge. It composes `admin_plane::AdminPlane`
+  into `gateway::service` beside the application and management listeners:
+  a random per-process audit key, the bearer operator table (Go weak-secret
+  rules: `e2e-` prefix, placeholder markers or fewer than 16 characters are
+  always refused, there is no demo mode), the shared ban store and epoch, and
+  with `settings_dir` the settings write plane (`OverlayFileStore`, no route
+  presets, swept every minute like Go `GC`). A sweep audit failure stops the
+  listener and the service (fail closed). Readiness adds `admin_listen` and
+  `profile.admin_listener` (address, operator count, settings flag; never a
+  token). The admin plane is never served on the edge listener. Go's
+  off-host admin with `-admin-mtls-ca` is not ported.
+- Core role: `humanymous-runtime core` reads one private `CoreRole` document
+  (legacy cmd/server) and serves `core_server` with `PassMount` under the
+  same listener rules, reusing the B02 certificate sources and ACME
+  maintenance. It serves HTTP/1.1 only (ALPN `h2` is removed), takes a random
+  per-process master key, requires an explicit Pass token key of at least 32
+  bytes when one is given (Go accepted 16) and explicit limits. Readiness is
+  one line with `role: "core"` and `product_qualified: false`. ML, Redis,
+  playground and Core logging are not ported.
+- Readiness (#153): the TLS listener profile reports what is served:
+  `original_h2` is true exactly when ALPN offers `h2`, `alpn` lists the
+  offer, and a route is ready when its requirements are met by that offer.
+  The capability gate is unchanged (an H1 request to an `original_h2` route
+  still answers 422). The loopback profile keeps its name
+  `experimental-loopback-tls-h1`; a public edge reports
+  `experimental-public-tls`.
+
+No score, weight, threshold, hard-rule predicate, verdict band or signal ID
+changes. Pinned by `gateway::configuration::{exposure,admin}`,
+`gateway::tests::exposure`, `gateway::tests::service::exposure`,
+`gateway::core_server::role` and `gateway::service::readiness` tests and the
+real-binary `gateway-exposure` integration test (non-loopback peers reach the
+listener over the host's interface address). Plan:
+`.spec/plan/20261119160000-owner-b01-edge-listener.plan.md`.
 
 ### Review reflected
 
