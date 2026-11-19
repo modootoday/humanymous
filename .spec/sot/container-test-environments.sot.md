@@ -1481,7 +1481,25 @@ Profile `tls` of `deployments/lab/compose.product-e2e.yaml` runs the shipped
   foreign root or name, the `raw_tls` and `original_h2` capability gates over
   H1 and H2, signed decisions, raw parrots and malformed ClientHellos, and
   malformed H2 frames. A refused input passes only with no plaintext
-  fallback, no 2xx status and no origin record.
+  fallback, no 2xx status and no origin record. A signed decision passes
+  only as 200 with exactly one origin record, or as 403 whose body is
+  exactly `{"verdict":"CHALLENGE"}` or `{"verdict":"DENY"}` with no origin
+  record; an `error` body never passes. The driver rebuilds the frozen
+  engine inputs it sent (collector report, header list, its own ClientHello,
+  negotiated ALPN), scores them with `Engine::default()`, and the observed
+  verdict must equal that reconstruction. Certificate refusals pass only on
+  the typed rustls class: `UnknownIssuer` or `BadSignature` for a foreign
+  root, `NotValidForName` for a foreign name.
+- No forwarded TLS effect: rustls offers no GREASE
+  (`l5.tls.grease_absent`, +15) and classifies as JA4 engine `go`, while the
+  only genuine collector report is Firefox's, so the L6 cross-check
+  `x.ua_vs_ja4` (+50) is inconsistent; risk 57.5 is in the CHALLENGE band
+  (30 to 70). Over H2, hard rule HR-24 also wins on the `net.tls` residual
+  (`l5.tls.alps_absent`, `cert_compression_absent`, `ech_absent`). The
+  parrots cannot finish a handshake and the browser cannot reach the
+  loopback listener, so no honest lab client both completes TLS and matches
+  the report it presents. No case requires a TLS forward; the receipt
+  records the reconstructed causes under `tls_effect`.
 - Scope: the gateway accepts loopback listen addresses and peers only, so
   `torigin` and `tdriver` share `tgate`'s namespace. The ledger reports
   `gate` and `raw-tls-h2` under `scoped_cases` with scope

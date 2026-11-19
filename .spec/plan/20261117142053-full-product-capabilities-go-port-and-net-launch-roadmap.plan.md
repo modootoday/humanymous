@@ -242,3 +242,12 @@ pilot, and `delivery ready` on every axis. Summarise in #65 and update #22.
   one integration pull request with per-slice commits and per-slice
   independent review ("권고에 따라 정본화후 진행해줘", in reply to that
   recommendation; recorded in #75). See "Step 3 delivery mode".
+- 2026-11-19: Step 4 lab item "shipped-binary Gate over TLS + H2" (#153) is
+  shared-loopback-namespace component evidence only; `gate` and `raw-tls-h2`
+  stay `not_evaluated` behind B01 #1. No signed TLS request reaches the origin.
+  The frozen engine challenges every one: rustls has no GREASE
+  (`l5.tls.grease_absent`, +15) and JA4 engine `go`, while the genuine
+  collector report is Firefox's, so `x.ua_vs_ja4` (+50) gives risk 57.5 in the
+  CHALLENGE band; over H2, HR-24 also wins on the `net.tls` residual. No honest
+  lab client both completes TLS and matches its report, so no case requires a
+  TLS forward. Detection is unchanged.
