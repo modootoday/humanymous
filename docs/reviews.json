@@ -6835,9 +6835,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/Cargo.toml",
-      "sha256": "970143810331975f9012863f287c07b41281aa067c1d8aa30925038e262e0612",
-      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Manifest for the consolidated humanymous-runtime crate (description, readme README.md, publish = [\"crates-io\"] in the first crates.io wave, which performs no upload; autobins/autotests off, default feature gateway): feature-gated contexts gateway, authority, audit, capture, network and native-security plus hosted-pilot and credential-pilot, with pinned optional dependencies such as rustls 0.23.46 (ring, tls12), httlib-hpack 0.1.3, rcgen 0.14.10, interprocess 2.4.7, winsafe/keyring stores on Windows and rustix on Unix; the collector dev-dependency carries a registry version beside its path. It declares five binaries (humanymous-runtime, humanymous-h2-product-binding-measure, humanymous-authority, audit-witness, audit-control-retainer) and named gateway (now also gateway-witness-input, path tests/gateway/witness_input.rs, required feature gateway, beside gateway-deployment-manifests), authority, audit, capture and network parity integration tests. No dependency changed in this revision. The first [[bin]] table also repeats the package description line, which is not a Cargo target field. The manifest itself is not evidence that those binaries or tests ran. 2026-11-18: test-authority feature (D4), test-only.",
+      "sha256": "0813aae9aa1b7166b0562a3f7b529e5841fb9b6edaeb33b0ca87cf68d3a2e905",
+      "reviewer": "claude agent review 2026-11-19 (Claude Code session; owner sample pending)",
+      "notes": "Manifest for the consolidated humanymous-runtime crate (description, readme README.md, publish = [\"crates-io\"] in the first crates.io wave, which performs no upload; autobins/autotests off, default feature gateway): feature-gated contexts gateway, authority, audit, capture, network and native-security plus hosted-pilot and credential-pilot, with pinned optional dependencies such as rustls 0.23.46 (ring, tls12), httlib-hpack 0.1.3, rcgen 0.14.10, interprocess 2.4.7, winsafe/keyring stores on Windows and rustix on Unix; the collector dev-dependency carries a registry version beside its path. It declares five binaries (humanymous-runtime, humanymous-h2-product-binding-measure, humanymous-authority, audit-witness, audit-control-retainer) and named gateway (now also gateway-witness-input, path tests/gateway/witness_input.rs, required feature gateway, beside gateway-deployment-manifests), authority, audit, capture and network parity integration tests. No dependency changed in this revision. The first [[bin]] table also repeats the package description line, which is not a Cargo target field. The manifest itself is not evidence that those binaries or tests ran. 2026-11-18: test-authority feature (D4), test-only. Re-reviewed 2026-11-19 (FM11 residual 14): adds the audit-tls feature (audit plus the already-locked optional rustls; enabled by the default gateway feature) for the HTTPS ClickHouse projection, and two [[test]] targets with required feature audit: audit-chain-parity (tests/audit/chain_parity.rs) and audit-clickhouse-live (tests/audit/clickhouse_live.rs, ignored by default). No dependency or version changed; Cargo.lock is unchanged.",
       "pages": [
         "docs/reference/production-vs-reference.md",
         "docs/reference/supported-topologies.md",
@@ -7250,9 +7250,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/audit/log/stamp.rs",
-      "sha256": "b889172982ce21990e158a97ae144a0119a24ae9fdc2fb228c72d717e6e9cf91",
-      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Fills missing audit record metadata before sealing: mints a UUIDv7-layout event_id from the current millisecond and OS entropy (erroring if the clock is outside the 48-bit range or entropy is unavailable), sets an RFC 3339 ts and a default event_version, and keeps caller-set values. Re-reviewed 2026-11-18: the default version now comes from record::events::EVENT_SCHEMA_VERSION (still 1.0.0) instead of a literal. Tests check 10,000 mints never collide and caller fields are preserved.",
+      "sha256": "3b48ef28de9704d1c16505c6b893d70bebb13c0e5699bf27470ba72b79769957",
+      "reviewer": "claude agent review 2026-11-19 (Claude Code session; owner sample pending)",
+      "notes": "Fills missing audit record metadata before sealing: mints a UUIDv7-layout event_id from the current millisecond and OS entropy (erroring if the clock is outside the 48-bit range or entropy is unavailable), sets an RFC 3339 ts and a default event_version, and keeps caller-set values. Re-reviewed 2026-11-18: the default version now comes from record::events::EVENT_SCHEMA_VERSION (still 1.0.0) instead of a literal. Tests check 10,000 mints never collide and caller fields are preserved. Re-reviewed 2026-11-19 (FM11 residual 14): stamp now delegates to a private stamp_at(record, now) with the same behavior, so stamped_timestamp_and_event_id_prefix_match_go can feed fixed clock readings from tests/fixtures/audit/chain-go-golden.json and require Go's RFC3339Nano text (trailing fractional zeros trimmed) and UUIDv7 millisecond prefix exactly.",
       "pages": [
         "docs/reference/security-audit.md"
       ]
@@ -7311,9 +7311,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/audit/projection/mod.rs",
-      "sha256": "5bd39c8d5be63ec4a8a47085db529e67bd1e528d8565658cd6bf61aeed1ab829",
-      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Projection root ported from legacy internal/audit/sink_record.go (oracle 981d25c): the RecordSink trait (append_record, flush, close) for best-effort projections that must enqueue without blocking and count every accepted record they cannot deliver. The WAL authority inside Log is deliberately not pluggable through this trait. Module docs state that a projection is never evidence of audit coverage. Declarations only, plus the redis_stream and clickhouse submodules. Re-reviewed 2026-11-18 (PR #129 review follow-up): adds the shared DeadlineStream used by both sinks. Every read and write first sets the socket timeout to the time left before one absolute deadline and fails with TimedOut once none is left (a zero timeout is never set), so a trickling peer cannot stretch an operation. connect resolves and connects before the deadline: an IP literal needs no lookup; a host name is resolved by the system resolver on a helper thread that is waited on only until the deadline, and the doc comment states honestly that the lookup itself is not bounded, so a hung resolver can leave the abandoned thread behind. Each connect_timeout gets only the remaining time, and the deadline is checked again after resolution. No new dependency.",
+      "sha256": "45576549cd1e689b96e9cce2c7a534f606b49a4fd0160e04b4a7dd50393c0da4",
+      "reviewer": "claude agent review 2026-11-19 (Claude Code session; owner sample pending)",
+      "notes": "Projection root ported from legacy internal/audit/sink_record.go (oracle 981d25c): the RecordSink trait (append_record, flush, close) for best-effort projections that must enqueue without blocking and count every accepted record they cannot deliver. The WAL authority inside Log is deliberately not pluggable through this trait. Module docs state that a projection is never evidence of audit coverage. Declarations only, plus the redis_stream and clickhouse submodules. Re-reviewed 2026-11-18 (PR #129 review follow-up): adds the shared DeadlineStream used by both sinks. Every read and write first sets the socket timeout to the time left before one absolute deadline and fails with TimedOut once none is left (a zero timeout is never set), so a trickling peer cannot stretch an operation. connect resolves and connects before the deadline: an IP literal needs no lookup; a host name is resolved by the system resolver on a helper thread that is waited on only until the deadline, and the doc comment states honestly that the lookup itself is not bounded, so a hung resolver can leave the abandoned thread behind. Each connect_timeout gets only the remaining time, and the deadline is checked again after resolution. No new dependency. Re-reviewed 2026-11-19 (FM11 residual 14): adds go_json, the record's Go encoding/json bytes through a serde_json Formatter (GoJsonFormatter) that escapes <, >, &, U+2028 and U+2029 inside strings and writes floats as Go does (shortest digits, exponent form below 1e-6 and from 1e21 with e+ and e- spelling); it returns None when a confidence is NaN or infinite, which Go refused to encode. Control-character escapes already agree. Used by the ClickHouse projection; the Redis projection still uses serde_json.",
       "pages": [
         "docs/reference/security-audit.md"
       ]
@@ -7329,18 +7329,36 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/audit/projection/clickhouse.rs",
-      "sha256": "896c08f3b343af9853605ca63c554066c8a57ed2fafb825687c6dc7430d64f9b",
-      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "ClickHouse projection ported from legacy internal/audit/sink_clickhouse.go (oracle 981d25c): ClickHouseSink buffers rows (defaults 10000 rows, 1 s, 100000 backlog) and a condvar-driven flusher thread POSTs batches on max_rows, max_wait, flush() and close as INSERT INTO <table> FORMAT JSONEachRow with async_insert=1, wait_for_async_insert=1 and input_format_skip_unknown_fields=1 over a direct HTTP/1.1 Connection: close request with 10 s timeouts and bounded status and header parsing. valid_table_name mirrors ^[A-Za-z_][A-Za-z0-9_]*$ and an unsafe name falls back to audit_log. set_auth sends a zeroized Basic Authorization header kept out of the URL. A full backlog, transport failure or non-2xx status counts the rows as dropped, and the error quotes at most 512 body bytes. Deliberate differences: only http:// endpoints without query, fragment or embedded credentials are accepted (no TLS client in the audit feature; Go also spoke HTTPS), appends after close are dropped and counted, and only 2xx is success. Re-reviewed 2026-11-18 (PR #129 review follow-up): the 10 s REQUEST_TIMEOUT is now one total deadline per insert, matching Go http.Client.Timeout: lookup, connect, request write, status and header read and the quoted error body all run through DeadlineStream against one Instant, so a trickling server can no longer hold flush past it; a missed deadline fails the insert and counts its rows as dropped. The crate-private with_request_timeout constructor lets tests shrink the deadline. The 1xx case of the 2xx-only difference is now spelled out in the module docs.",
+      "sha256": "98dd981638ab81d5f5bbe1abbf5bca086107b751bf4b032901f90f6cd06b77c2",
+      "reviewer": "claude agent review 2026-11-19 (Claude Code session; owner sample pending)",
+      "notes": "ClickHouse projection ported from legacy internal/audit/sink_clickhouse.go (oracle 981d25c): ClickHouseSink buffers rows (defaults 10000 rows, 1 s, 100000 backlog) and a condvar-driven flusher thread POSTs batches on max_rows, max_wait, flush() and close as INSERT INTO <table> FORMAT JSONEachRow with async_insert=1, wait_for_async_insert=1 and input_format_skip_unknown_fields=1 over a direct HTTP/1.1 Connection: close request with 10 s timeouts and bounded status and header parsing. valid_table_name mirrors ^[A-Za-z_][A-Za-z0-9_]*$ and an unsafe name falls back to audit_log. set_auth sends a zeroized Basic Authorization header kept out of the URL. A full backlog, transport failure or non-2xx status counts the rows as dropped, and the error quotes at most 512 body bytes. Deliberate differences: only http:// endpoints without query, fragment or embedded credentials are accepted (no TLS client in the audit feature; Go also spoke HTTPS), appends after close are dropped and counted, and only 2xx is success. Re-reviewed 2026-11-18 (PR #129 review follow-up): the 10 s REQUEST_TIMEOUT is now one total deadline per insert, matching Go http.Client.Timeout: lookup, connect, request write, status and header read and the quoted error body all run through DeadlineStream against one Instant, so a trickling server can no longer hold flush past it; a missed deadline fails the insert and counts its rows as dropped. The crate-private with_request_timeout constructor lets tests shrink the deadline. The 1xx case of the 2xx-only difference is now spelled out in the module docs. Re-reviewed 2026-11-19 (FM11 residual 14): rows are now the record's Go encoding/json bytes through projection::go_json (<, >, &, U+2028 and U+2029 escaped; Go float spelling such as 1, 1e-7 and 1e+21), batch_body returns the body and the encoded row count, and a record Go could not encode (NaN or infinite confidence) is left out as in Go and counted as dropped, with an all-unencodable batch not posted. The quoted error body is no longer trimmed (Go kept a trailing newline). https:// endpoints are accepted only by ClickHouseSink::with_tls (feature audit-tls, part of the default gateway set) with a caller-supplied rustls ClientConfig whose roots decide trust and the endpoint host as server name; the request and response run over rustls::StreamOwned on the same DeadlineStream, so the one total insert deadline covers the handshake. ClickHouseSink::new still refuses https:// rather than pick a root store. The module docs list every remaining difference (explicit trust roots, refused endpoint forms, append after close, 2xx only, unencodable rows counted, no User-Agent or Accept-Encoding, Connection: close).",
       "pages": [
         "docs/reference/security-audit.md"
       ]
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs",
-      "sha256": "04070f020d75a68df808189a3741e9ce4e5e44b1fbbc35cd4c55e0cada460973",
-      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Unit tests for the projections: the five legacy sink_adapters_test.go cases (RESP encoding, XADD against an in-process RESP stand-in that answers with the real bulk id across two records on one connection, drop-when-full on an unstarted sink, JSONEachRow insert against an in-process HTTP stand-in, table-name validation and fallback) plus counted Redis outage and error replies, ClickHouse Basic auth and the max_rows trigger, refused-insert and backlog counting, and plain-http endpoint validation. Stand-ins bind 127.0.0.1 only. Re-reviewed 2026-11-18 (PR #129 review follow-up): four more cases pin the remaining differences. redis_transport_failures_are_counted_and_redial: a non-RESP reply and a connection closed before replying each count one drop, and the second record redials. redis_records_queued_at_close_are_counted: with one record in flight, three records queued at close are counted as dropped and never shipped, while the in-flight one completes. clickhouse_only_2xx_is_success: 103, 302 and 500 each fail flush with the status in the error and count both rows. clickhouse_trickled_response_misses_the_insert_deadline: a stand-in trickles response headers one byte per 20 ms against a 300 ms deadline; flush fails after at least the deadline and in under deadline + 1 s, and the row is counted. Re-reviewed 2026-11-18: adds clickhouse_close_flushes_the_partial_batch, carried over from the superseded PR #71 tests, which checks that a row-triggered batch ships first and that close() then inserts the remaining partial batch (Go CHSink.Close flushed before stopping) with no rows dropped.",
+      "sha256": "a65c6bd36a68b577706d143725f850b8bebb3b29b6f0fa2258fde83eec8117b6",
+      "reviewer": "claude agent review 2026-11-19 (Claude Code session; owner sample pending)",
+      "notes": "Unit tests for the projections: the five legacy sink_adapters_test.go cases (RESP encoding, XADD against an in-process RESP stand-in that answers with the real bulk id across two records on one connection, drop-when-full on an unstarted sink, JSONEachRow insert against an in-process HTTP stand-in, table-name validation and fallback) plus counted Redis outage and error replies, ClickHouse Basic auth and the max_rows trigger, refused-insert and backlog counting, and plain-http endpoint validation. Stand-ins bind 127.0.0.1 only. Re-reviewed 2026-11-18 (PR #129 review follow-up): four more cases pin the remaining differences. redis_transport_failures_are_counted_and_redial: a non-RESP reply and a connection closed before replying each count one drop, and the second record redials. redis_records_queued_at_close_are_counted: with one record in flight, three records queued at close are counted as dropped and never shipped, while the in-flight one completes. clickhouse_only_2xx_is_success: 103, 302 and 500 each fail flush with the status in the error and count both rows. clickhouse_trickled_response_misses_the_insert_deadline: a stand-in trickles response headers one byte per 20 ms against a 300 ms deadline; flush fails after at least the deadline and in under deadline + 1 s, and the row is counted. Re-reviewed 2026-11-18: adds clickhouse_close_flushes_the_partial_batch, carried over from the superseded PR #71 tests, which checks that a row-triggered batch ships first and that close() then inserts the remaining partial batch (Go CHSink.Close flushed before stopping) with no rows dropped. Re-reviewed 2026-11-19 (FM11 residual 14): declares the parity and (feature audit-tls) tls submodules and rewords the endpoint refusal doc for with_tls; the existing cases are unchanged.",
+      "pages": [
+        "docs/reference/security-audit.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/audit/projection/tests/parity.rs",
+      "sha256": "8fbb02c46e22e8a1b9e973b9164765611e0842d35c448b6a1b6b5d02d3fa37d2",
+      "reviewer": "claude agent review 2026-11-19 (Claude Code session; owner sample pending)",
+      "notes": "ClickHouse projection differential tests against the Go-captured golden (tests/fixtures/audit/clickhouse-go-golden.json): insert_targets_match_go rebuilds Go's insert URL for ten endpoint/table pairs (unsafe and non-ASCII table names fall back to audit_log, a base path is kept); batch_bodies_match_go_bytes compares six chBatchBody bodies byte for byte (HTML and line-separator escaping, control characters, null slices, optional objects, nineteen float spellings, and NaN/infinite rows left out with the encoded count); request_scenarios_match_go replays seven httptest scenarios against an in-process 127.0.0.1 stand-in and compares method, request URI, Content-Type, Content-Length, Authorization and body bytes, the per-call error texts and the dropped count, with the one documented difference (an append after close counts as dropped) applied explicitly. User-Agent and Accept-Encoding are not compared (Go client headers this sink does not send). Also exposes read_http_request to the TLS tests.",
+      "pages": [
+        "docs/reference/security-audit.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/src/audit/projection/tests/tls.rs",
+      "sha256": "275fa28524df73e6f151f0a6f7e7cfa1a3a3805841560c0817fae9474068cb3e",
+      "reviewer": "claude agent review 2026-11-19 (Claude Code session; owner sample pending)",
+      "notes": "HTTPS ClickHouse inserts (feature audit-tls) against an in-process rustls server on 127.0.0.1 with a throwaway rcgen self-signed certificate for the IP literal: with_tls and a client trusting that certificate delivers the same request line and Go-encoded body as plain HTTP with nothing dropped; a client trusting a different certificate fails the handshake, the server sees no request, flush errors and both rows are counted; new() refuses the https:// endpoint. No network access beyond loopback and no committed key material.",
       "pages": [
         "docs/reference/security-audit.md"
       ]
@@ -11056,6 +11074,44 @@
         "docs/reference/production-vs-reference.md",
         "docs/standards/draft-v0/validation/implementation-map.md",
         "docs/reference/data-processing-inventory.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/audit/chain_parity.rs",
+      "sha256": "c3077b2bdc8ec3f3ada7b5f04541aa26c34626ad21aa58e116894e86253b1afe",
+      "reviewer": "claude agent review 2026-11-19 (Claude Code session; owner sample pending)",
+      "notes": "Go chain.go differential parity against tests/fixtures/audit/chain-go-golden.json: sealed_records_and_signed_heads_match_go opens a WAL-backed Log in a private temp directory with the golden node id, HMAC key, writer seed, cadence and (for one chain) a seeded Witness, appends the same pre-stamped inputs and requires equal sealed records and checkpoints (forced head where Go forced one), equal writer and witness public keys, and the same SelfVerify report; tamper_detection_matches_go runs verify or verify_with_witness on twenty Go-tampered copies and requires Go's class, sequence and detail. The WAL-only Rust design (owner decision 2026-11-16) changes no sealed byte.",
+      "pages": [
+        "docs/how-to/verify-audit-log.md",
+        "docs/reference/security-audit.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/audit/clickhouse_live.rs",
+      "sha256": "851861534c5082bb4622cca23856fc0583ceae26e56892a6122385785863c873",
+      "reviewer": "claude agent review 2026-11-19 (Claude Code session; owner sample pending)",
+      "notes": "Ignored-by-default integration test against a real self-hosted ClickHouse (HUMANYMOUS_TEST_CLICKHOUSE, _USER, _PASSWORD; an unset variable fails rather than passes): creates a MergeTree table declaring a subset of record columns, inserts a row-triggered, a flushed and a close-flushed batch with Basic authentication, reads every row back with SELECT ... FORMAT JSONEachRow and compares text with HTML characters, U+2028, quotes and newline, a negative risk score, rule arrays, float confidences 1, 1e-7 and 1e21 and u32::MAX latency; a wrong password fails flush with the server status and counts the row; drops the table. Run for this review against clickhouse/clickhouse-server:25.8-alpine@sha256:87e0a5b72f5465b18eacca7c76850e7ff551c9795c50e451f5646299e5e24146 in a cloud session container's own Docker engine; not product e2e.",
+      "pages": [
+        "docs/reference/security-audit.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/audit/chain-go-golden.json",
+      "sha256": "56cb522ff50dd1fa2350c84c3387edbf8dd0c0a6dd59291698b545c7af787280",
+      "reviewer": "claude agent review 2026-11-19 (Claude Code session; owner sample pending)",
+      "notes": "Fixture data only: Go oracle outputs captured offline from 981d25c with go test in golang:1.26.3-alpine (sha256:91eda977...) under --network none, GOPROXY=off, GOFLAGS=-mod=readonly and GOTOOLCHAIN=local from an uncommitted in-package capture test whose SHA-256 the embedded provenance records with the raw output SHA-256. Holds three sealed chains with their inputs, keys (deterministic test seeds, no production material), checkpoints and SelfVerify, twenty tamper cases with Go Verify/SelfVerify results, and six fixed-clock stamping cases. Never regenerated to hide drift.",
+      "pages": [
+        "docs/how-to/verify-audit-log.md",
+        "docs/reference/security-audit.md"
+      ]
+    },
+    {
+      "source": "crates/sdk/humanymous-runtime/tests/fixtures/audit/clickhouse-go-golden.json",
+      "sha256": "bb3a2ee3de5ddc37ce5262bc4876048b640871866293e8fd25cd5e2ae24ce44a",
+      "reviewer": "claude agent review 2026-11-19 (Claude Code session; owner sample pending)",
+      "notes": "Fixture data only: Go CHSink outputs captured offline from 981d25c in the same pinned golang image under --network none (provenance embedded: command, uncommitted capture program SHA-256, raw output SHA-256, capture notes). Holds ten insert URLs, six chBatchBody bodies with their input records (non-finite confidences stored as 0 and flagged by nan_conf_at) and seven httptest scenarios with request fields, error texts and dropped counts. Contains no credential beyond a literal test user and password. Never regenerated to hide drift.",
+      "pages": [
+        "docs/reference/security-audit.md"
       ]
     }
   ],

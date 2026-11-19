@@ -7,21 +7,33 @@
 //! record field does not break an operator's existing table. A batch is sent
 //! when it reaches `max_rows`, every `max_wait`, on [`RecordSink::flush`] and
 //! on close. The HTTP/1.1 request is written directly over TCP with no client
-//! dependency, as Go used only its standard library.
+//! dependency, as Go used only its standard library. Each row is the record's
+//! Go `encoding/json` bytes (see `super::go_json`), so the body matches the
+//! oracle byte for byte; `tests/fixtures/audit/clickhouse-go-golden.json`
+//! pins the insert targets, bodies and request scenarios captured from Go.
 //!
 //! The operator creates the table, keyed on chain order so insert order does
 //! not matter, for example
 //! `ENGINE = MergeTree ORDER BY (node_id, seq) PARTITION BY toYYYYMMDD(ts)`.
 //!
 //! Deliberate differences from Go, each pinned by a test:
-//! - Only `http://` endpoints are accepted, and an endpoint with a query,
-//!   fragment or embedded credentials is refused when the sink is built. The
-//!   audit feature carries no TLS client; Go's `net/http` also spoke HTTPS.
+//! - `https://` endpoints need [`ClickHouseSink::with_tls`] (feature
+//!   `audit-tls`) and its explicit rustls client configuration, which names
+//!   the trust roots. Go's `net/http` trusted the host's system roots; this
+//!   crate carries no system root store, so [`ClickHouseSink::new`] refuses
+//!   an `https://` endpoint instead of guessing one. An endpoint with a query,
+//!   fragment or embedded credentials is refused when the sink is built.
 //!   Credentials go through [`ClickHouseSink::set_auth`] only, never the URL.
 //! - A record appended after close is counted as dropped instead of sitting
 //!   in a buffer nothing will flush.
 //! - Only a 2xx status is success (Go accepted any status below 300, so an
 //!   informational 1xx status line counted as a delivered insert).
+//! - A record Go could not encode (a NaN or infinite signal confidence) is
+//!   left out of the body as in Go, but counted as dropped; a batch left with
+//!   no rows is not posted (Go posted an empty body).
+//! - Go's client also sent `User-Agent: Go-http-client/1.1` and
+//!   `Accept-Encoding: gzip`; this request sends neither and closes the
+//!   connection after the response (`Connection: close`).
 //!
 //! Each insert has one total deadline, as Go's `http.Client.Timeout` did:
 //! resolving, connecting, writing the request and reading the response all end
@@ -93,14 +105,30 @@ struct Target {
     dial: String,
     /// Path and query of the insert request.
     request: String,
+    /// The endpoint is `https://`.
+    tls: bool,
+    /// Host without port or IPv6 brackets, the TLS server name.
+    #[cfg(feature = "audit-tls")]
+    host: String,
 }
 
 impl Target {
-    fn parse(endpoint: &str, table: &str) -> io::Result<Self> {
+    fn parse(endpoint: &str, table: &str, tls_allowed: bool) -> io::Result<Self> {
         let refuse = |why: &str| io::Error::new(io::ErrorKind::InvalidInput, why.to_owned());
-        let rest = endpoint
-            .strip_prefix("http://")
-            .ok_or_else(|| refuse("clickhouse endpoint must be an http:// URL"))?;
+        let (tls, rest) = if let Some(rest) = endpoint.strip_prefix("http://") {
+            (false, rest)
+        } else if let Some(rest) = endpoint.strip_prefix("https://") {
+            if !tls_allowed {
+                return Err(refuse(
+                    "an https:// clickhouse endpoint needs ClickHouseSink::with_tls and explicit trust roots",
+                ));
+            }
+            (true, rest)
+        } else {
+            return Err(refuse(
+                "clickhouse endpoint must be an http:// or https:// URL",
+            ));
+        };
         if rest.contains(['?', '#']) {
             return Err(refuse("clickhouse endpoint must not carry a query"));
         }
@@ -118,12 +146,23 @@ impl Target {
                 "clickhouse endpoint host is empty, malformed or carries credentials",
             ));
         }
-        let has_port = match authority.rfind(']') {
-            Some(close) => authority[close..].starts_with("]:"),
-            None => authority.contains(':'),
+        let (host, has_port) = match authority.rfind(']') {
+            Some(close) => (
+                authority[..close].trim_start_matches('['),
+                authority[close..].starts_with("]:"),
+            ),
+            None => (
+                authority.split(':').next().unwrap_or_default(),
+                authority.contains(':'),
+            ),
         };
+        if host.is_empty() {
+            return Err(refuse("clickhouse endpoint host is empty"));
+        }
         let dial = if has_port {
             authority.to_owned()
+        } else if tls {
+            format!("{authority}:443")
         } else {
             format!("{authority}:80")
         };
@@ -141,6 +180,9 @@ impl Target {
             authority: authority.to_owned(),
             dial,
             request,
+            tls,
+            #[cfg(feature = "audit-tls")]
+            host: host.to_owned(),
         })
     }
 }
@@ -161,6 +203,13 @@ fn query_escape(text: &str) -> String {
     out
 }
 
+/// TLS client configuration for an `https://` endpoint.
+#[cfg(feature = "audit-tls")]
+type TlsClient = Arc<rustls::ClientConfig>;
+/// Without `audit-tls` no TLS client can be supplied.
+#[cfg(not(feature = "audit-tls"))]
+type TlsClient = std::convert::Infallible;
+
 struct State {
     buffer: Vec<Record>,
     triggered: bool,
@@ -174,6 +223,9 @@ struct Shared {
     backlog: usize,
     /// Total deadline for one insert.
     request_timeout: Duration,
+    /// Client configuration for an `https://` endpoint.
+    #[cfg(feature = "audit-tls")]
+    tls: Option<TlsClient>,
     /// Complete `Authorization` header value, zeroized on replacement and drop.
     authorization: Mutex<Option<Zeroizing<String>>>,
     state: Mutex<State>,
@@ -200,9 +252,14 @@ impl Shared {
         if batch.is_empty() {
             return Ok(());
         }
-        let result = batch_body(&batch).and_then(|body| self.post(&body));
+        let (body, encoded) = batch_body(&batch);
+        self.drop_rows(batch.len() - encoded);
+        if encoded == 0 {
+            return Ok(());
+        }
+        let result = self.post(&body);
         if result.is_err() {
-            self.drop_rows(batch.len());
+            self.drop_rows(encoded);
         }
         result
     }
@@ -226,21 +283,30 @@ impl Shared {
         }
         head.push_str("\r\n");
         let deadline = Instant::now() + self.request_timeout;
-        let mut stream = DeadlineStream::connect(&self.target.dial, deadline)?;
-        stream.write_all(head.as_bytes())?;
-        stream.write_all(body)?;
-        stream.flush()?;
-        let mut reader = BufReader::new(stream);
-        let status = read_status(&mut reader)?;
-        if (200..300).contains(&status) {
-            return Ok(());
+        let stream = DeadlineStream::connect(&self.target.dial, deadline)?;
+        if self.target.tls {
+            return self.post_tls(stream, head.as_bytes(), body);
         }
-        let mut message = Vec::new();
-        let _ = reader.take(ERROR_BODY_LIMIT).read_to_end(&mut message);
-        Err(io::Error::other(format!(
-            "clickhouse insert status {status}: {}",
-            String::from_utf8_lossy(&message).trim_end()
-        )))
+        exchange(stream, head.as_bytes(), body)
+    }
+
+    #[cfg(feature = "audit-tls")]
+    fn post_tls(&self, stream: DeadlineStream, head: &[u8], body: &[u8]) -> io::Result<()> {
+        let config = self
+            .tls
+            .clone()
+            .ok_or_else(|| io::Error::other("clickhouse https endpoint without a TLS client"))?;
+        let name = rustls::pki_types::ServerName::try_from(self.target.host.clone())
+            .map_err(|error| io::Error::new(io::ErrorKind::InvalidInput, error))?;
+        let connection = rustls::ClientConnection::new(config, name).map_err(io::Error::other)?;
+        exchange(rustls::StreamOwned::new(connection, stream), head, body)
+    }
+
+    #[cfg(not(feature = "audit-tls"))]
+    fn post_tls(&self, _: DeadlineStream, _: &[u8], _: &[u8]) -> io::Result<()> {
+        Err(io::Error::other(
+            "clickhouse https endpoint without the audit-tls feature",
+        ))
     }
 
     fn run(&self) {
@@ -266,6 +332,26 @@ impl Shared {
             let _ = self.flush();
         }
     }
+}
+
+/// Write one insert request and read its status. A non-2xx status quotes at
+/// most [`ERROR_BODY_LIMIT`] body bytes as Go's `%s` of `io.LimitReader` did
+/// (invalid UTF-8 is replaced, as a Rust string requires).
+fn exchange(mut stream: impl Read + Write, head: &[u8], body: &[u8]) -> io::Result<()> {
+    stream.write_all(head)?;
+    stream.write_all(body)?;
+    stream.flush()?;
+    let mut reader = BufReader::new(stream);
+    let status = read_status(&mut reader)?;
+    if (200..300).contains(&status) {
+        return Ok(());
+    }
+    let mut message = Vec::new();
+    let _ = reader.take(ERROR_BODY_LIMIT).read_to_end(&mut message);
+    Err(io::Error::other(format!(
+        "clickhouse insert status {status}: {}",
+        String::from_utf8_lossy(&message)
+    )))
 }
 
 /// Read the status line and skip the headers, leaving the body unread.
@@ -301,14 +387,18 @@ fn read_header_line(reader: &mut impl BufRead) -> io::Result<String> {
         .map_err(|_| io::Error::new(io::ErrorKind::InvalidData, "clickhouse response not UTF-8"))
 }
 
-/// JSONEachRow body: one record object per line (Go `chBatchBody`).
-pub(super) fn batch_body(batch: &[Record]) -> io::Result<Vec<u8>> {
+/// JSONEachRow body: one Go `encoding/json` record object per line (Go
+/// `chBatchBody`), and how many records it holds. A record Go could not
+/// encode is left out, as Go's ignored `Encode` error left it out.
+pub(super) fn batch_body(batch: &[Record]) -> (Vec<u8>, usize) {
     let mut body = Vec::new();
-    for record in batch {
-        serde_json::to_writer(&mut body, record).map_err(io::Error::other)?;
+    let mut encoded = 0;
+    for line in batch.iter().filter_map(super::go_json) {
+        body.extend_from_slice(&line);
         body.push(b'\n');
+        encoded += 1;
     }
-    Ok(body)
+    (body, encoded)
 }
 
 /// Non-blocking batched ClickHouse projection with one background flusher.
@@ -317,19 +407,41 @@ pub struct ClickHouseSink {
 }
 
 impl ClickHouseSink {
-    /// Validate the endpoint and start the background flusher. An unsafe
-    /// table name falls back to [`DEFAULT_TABLE`], as in Go.
+    /// Validate an `http://` endpoint and start the background flusher. An
+    /// unsafe table name falls back to [`DEFAULT_TABLE`], as in Go. An
+    /// `https://` endpoint is refused here; see [`ClickHouseSink::with_tls`].
     pub fn new(options: ClickHouseOptions) -> io::Result<Self> {
-        Self::with_request_timeout(options, REQUEST_TIMEOUT)
+        Self::build(options, REQUEST_TIMEOUT, None)
+    }
+
+    /// [`ClickHouseSink::new`] for an `http://` or `https://` endpoint. An
+    /// `https://` insert runs TLS under `config`, whose root store decides
+    /// which server certificates are trusted, with the endpoint host as the
+    /// server name; the one total insert deadline covers the handshake too.
+    #[cfg(feature = "audit-tls")]
+    pub fn with_tls(
+        options: ClickHouseOptions,
+        config: Arc<rustls::ClientConfig>,
+    ) -> io::Result<Self> {
+        Self::build(options, REQUEST_TIMEOUT, Some(config))
     }
 
     /// [`ClickHouseSink::new`] with another total insert deadline, so tests
     /// can exercise a missed deadline quickly.
+    #[cfg(test)]
     pub(super) fn with_request_timeout(
         options: ClickHouseOptions,
         request_timeout: Duration,
     ) -> io::Result<Self> {
-        let target = Target::parse(&options.endpoint, &options.table)?;
+        Self::build(options, request_timeout, None)
+    }
+
+    fn build(
+        options: ClickHouseOptions,
+        request_timeout: Duration,
+        tls: Option<TlsClient>,
+    ) -> io::Result<Self> {
+        let target = Target::parse(&options.endpoint, &options.table, tls.is_some())?;
         let pick = |value: usize, default: usize| if value == 0 { default } else { value };
         let shared = Arc::new(Shared {
             target,
@@ -341,6 +453,8 @@ impl ClickHouseSink {
             },
             backlog: pick(options.backlog, DEFAULT_BACKLOG),
             request_timeout,
+            #[cfg(feature = "audit-tls")]
+            tls,
             authorization: Mutex::new(None),
             state: Mutex::new(State {
                 buffer: Vec::new(),

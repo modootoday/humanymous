@@ -15,8 +15,8 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 238,
-  "partial": 57,
+  "ported_unit": 240,
+  "partial": 55,
   "missing": 8,
   "not_applicable": 2,
   "oracle_only": 9
@@ -60,8 +60,7 @@
    "ported_unit": 2
   },
   "internal/audit": {
-   "partial": 2,
-   "ported_unit": 26
+   "ported_unit": 28
   },
   "internal/behavior": {
    "ported_unit": 2
@@ -5293,7 +5292,7 @@
   },
   {
    "baseline_path": "internal/audit/chain.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs",
     "crates/sdk/humanymous-runtime/src/audit/log/sealed.rs",
@@ -5301,7 +5300,9 @@
     "crates/sdk/humanymous-runtime/src/audit/checkpoint/mod.rs",
     "crates/sdk/humanymous-runtime/src/audit/storage/wal.rs",
     "crates/sdk/humanymous-runtime/src/audit/log/live.rs",
-    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs"
+    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs",
+    "crates/sdk/humanymous-runtime/tests/audit/chain_parity.rs",
+    "crates/sdk/humanymous-runtime/tests/fixtures/audit/chain-go-golden.json"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering",
@@ -5312,15 +5313,16 @@
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_hmac_key_is_refused_before_any_append",
     "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::ring_window_is_bounded_while_the_wal_keeps_the_full_chain",
     "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::restart_refills_the_window_from_the_authenticated_wal",
-    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::self_verify_replays_the_live_chain_and_never_passes_empty"
+    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::self_verify_replays_the_live_chain_and_never_passes_empty",
+    "crates/sdk/humanymous-runtime/tests/audit/chain_parity.rs::sealed_records_and_signed_heads_match_go",
+    "crates/sdk/humanymous-runtime/tests/audit/chain_parity.rs::tamper_detection_matches_go",
+    "crates/sdk/humanymous-runtime/src/audit/log/stamp.rs::stamped_timestamp_and_event_id_prefix_match_go"
    ],
    "go_test_map": {},
-   "gaps": [
-    "no in-memory-only Log without a WAL: the Rust Log always opens over the authenticated WAL authority (SoT-32 durability; adapter-authority 'never ephemeral replacement'), so Go's ephemeral unbounded mode is an intended design difference"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "medium",
-   "notes": "Append/seal, periodic checkpoint, witness counter-sign, WAL replay and fail-closed poisoning are ported. The bounded in-memory tail window (Go RingCap, default 4096, cut back to the newest cap past twice the cap), Recent(n) and Len are ported additively as Log::set_ring_capacity/recent/len in log/live.rs; the window is refilled from the authenticated WAL on open and never feeds recovery or proofs. Owner decision 2026-11-16 accepted the WAL-only fail-closed Rust design (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
+   "confidence": "high",
+   "notes": "Append/seal, periodic checkpoint, witness counter-sign, WAL replay and fail-closed poisoning are ported. The bounded in-memory tail window (Go RingCap, default 4096, cut back to the newest cap past twice the cap), Recent(n) and Len are ported additively as Log::set_ring_capacity/recent/len in log/live.rs; the window is refilled from the authenticated WAL on open and never feeds recovery or proofs. Owner decision 2026-11-16 accepted the WAL-only fail-closed Rust design (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged. Go-captured differential parity (FM11 residual 14): tests/fixtures/audit/chain-go-golden.json, captured offline from 981d25c in golang:1.26.3-alpine under --network none (provenance in the fixture), pins three chains (cadence 4 with a forced head, cadence 3 unforced, cadence 1 with a seeded witness): from the same pre-stamped inputs, node id, HMAC key and seeds the WAL-backed Rust Log seals identical records (seq, node_id, prev_hash, record_hash, HMAC, defaulted event_version and empty rule/signal lists) and identical signed heads (Merkle root, chained root, previous head, writer and witness signatures), and SelfVerify agrees; 20 tamper cases on that chain (altered content, forged HMAC, wrong key, deleted, relinked and reordered records, truncation with and without heads, dropped, swapped and rewritten heads, wrong writer key, rebuilt history under old heads, empty chain, missing, replaced and wrongly keyed witness signatures) yield Go's class, sequence and detail. Go stamping with a fixed clock (RFC3339Nano text, UUIDv7 millisecond prefix) matches through stamp_at. Remaining deliberate differences: no WAL-less ephemeral Log (owner decision 2026-11-16 DIFF; .agents/retirement/owner-decisions-2026-11-16.md); an empty event type is refused; a witnessed log seals its first record at once; a repeated checkpoint() at an unchanged size returns the existing head instead of signing a duplicate.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::checkpoint_disk_failure_prevents_action_and_poisons_writer": "passed",
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering": "passed",
@@ -5330,7 +5332,10 @@
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_hmac_key_is_refused_before_any_append": "passed",
     "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::ring_window_is_bounded_while_the_wal_keeps_the_full_chain": "passed",
     "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::restart_refills_the_window_from_the_authenticated_wal": "passed",
-    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::self_verify_replays_the_live_chain_and_never_passes_empty": "passed"
+    "crates/sdk/humanymous-runtime/src/audit/log/live/tests.rs::self_verify_replays_the_live_chain_and_never_passes_empty": "passed",
+    "crates/sdk/humanymous-runtime/tests/audit/chain_parity.rs::sealed_records_and_signed_heads_match_go": "passed",
+    "crates/sdk/humanymous-runtime/tests/audit/chain_parity.rs::tamper_detection_matches_go": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/log/stamp.rs::stamped_timestamp_and_event_id_prefix_match_go": "passed"
    }
   },
   {
@@ -5365,7 +5370,8 @@
     "crates/sdk/humanymous-runtime/src/audit/log/stamp.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering"
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering",
+    "crates/sdk/humanymous-runtime/src/audit/log/stamp.rs::stamped_timestamp_and_event_id_prefix_match_go"
    ],
    "go_test_map": {},
    "gaps": [],
@@ -5373,7 +5379,8 @@
    "confidence": "medium",
    "notes": "UUIDv7 mint (48-bit ms, version 7, variant 10) is in stamp.rs. Uniqueness is untested; see the id_test.go row.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering": "passed"
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/log/stamp.rs::stamped_timestamp_and_event_id_prefix_match_go": "passed"
    }
   },
   {
@@ -5699,11 +5706,15 @@
   },
   {
    "baseline_path": "internal/audit/sink_clickhouse.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/audit/projection/clickhouse.rs",
     "crates/sdk/humanymous-runtime/src/audit/projection/mod.rs",
-    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs"
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests/parity.rs",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests/tls.rs",
+    "crates/sdk/humanymous-runtime/tests/audit/clickhouse_live.rs",
+    "crates/sdk/humanymous-runtime/tests/fixtures/audit/clickhouse-go-golden.json"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_sink_insert",
@@ -5714,15 +5725,19 @@
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::projections_receive_only_fully_sealed_records",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_only_2xx_is_success",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_trickled_response_misses_the_insert_deadline",
-    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_close_flushes_the_partial_batch"
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_close_flushes_the_partial_batch",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests/parity.rs::insert_targets_match_go",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests/parity.rs::batch_bodies_match_go_bytes",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests/parity.rs::request_scenarios_match_go",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests/tls.rs::https_insert_uses_the_supplied_trust_roots",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests/tls.rs::https_refuses_an_untrusted_server_and_needs_explicit_roots",
+    "crates/sdk/humanymous-runtime/tests/audit/clickhouse_live.rs::live_clickhouse_stores_every_projected_row"
    ],
    "go_test_map": {},
-   "gaps": [
-    "https:// endpoints are refused at construction: the audit feature carries no TLS client, while Go net/http also spoke HTTPS"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "audit::projection::clickhouse::ClickHouseSink: buffered batches (defaults 10000 rows, 1 s, 100000 backlog) flushed on max_rows, every max_wait, on flush() and on close, each POSTed over a direct HTTP/1.1 request under one total 10 s deadline per insert (Go http.Client.Timeout; lookup, connect, write and response read all count against it, and a missed deadline drops the batch) as INSERT INTO <table> FORMAT JSONEachRow with async_insert=1, wait_for_async_insert=1 and input_format_skip_unknown_fields=1; set_auth sends HTTP Basic authentication kept out of the URL; an unsafe table name falls back to audit_log; a full backlog, a transport failure or a non-2xx status counts the rows as dropped and flush returns clickhouse insert status N: <up to 512 body bytes>. Deliberate differences: an endpoint with a query, fragment or embedded credentials is refused, an append after close is dropped and counted, and only 2xx is success (Go accepted any status below 300, including 1xx). Not yet composed into the gateway flag surface (cmd/gate/main.go row).",
+   "notes": "audit::projection::clickhouse::ClickHouseSink: buffered batches (defaults 10000 rows, 1 s, 100000 backlog) flushed on max_rows, every max_wait, on flush() and on close, each POSTed over a direct HTTP/1.1 request under one total 10 s deadline per insert (Go http.Client.Timeout; lookup, connect, write and response read all count against it, and a missed deadline drops the batch) as INSERT INTO <table> FORMAT JSONEachRow with async_insert=1, wait_for_async_insert=1 and input_format_skip_unknown_fields=1; set_auth sends HTTP Basic authentication kept out of the URL; an unsafe table name falls back to audit_log; a full backlog, a transport failure or a non-2xx status counts the rows as dropped and flush returns clickhouse insert status N: <up to 512 body bytes>. Not yet composed into the gateway flag surface (cmd/gate/main.go row). Wire format (FM11 residual 14): each row is now the record's Go encoding/json bytes (projection::go_json: <, >, &, U+2028 and U+2029 escaped, Go float spelling such as 1 and 1e+21), and tests/fixtures/audit/clickhouse-go-golden.json, captured offline from 981d25c in golang:1.26.3-alpine under --network none, pins byte-equal insert targets for ten endpoint/table pairs, six chBatchBody bodies and seven httptest request scenarios (backlog overflow, Basic auth set and cleared, 500 with a 512-byte quoted body, 400 whose body keeps its newline, row trigger then close, max_wait timer, server down) with their errors and dropped counts. HTTPS: ClickHouseSink::with_tls (feature audit-tls, in the default gateway feature set) inserts over rustls under one total deadline with caller-supplied trust roots; ClickHouseSink::new refuses https:// rather than guess a root store. Real server: audit-clickhouse-live (ignored by default; HUMANYMOUS_TEST_CLICKHOUSE) passed against clickhouse/clickhouse-server:25.8-alpine@sha256:87e0a5b72f5465b18eacca7c76850e7ff551c9795c50e451f5646299e5e24146 (25.8.33) in the cloud session container's own Docker Engine 29.9.2, with Basic auth, three batches, every stored value read back exactly and a wrong password counted. Deliberate differences: https:// needs explicit trust roots (Go used the system roots); an endpoint with a query, fragment or embedded credentials is refused; an append after close is dropped and counted; only 2xx is success (Go accepted any status below 300, including 1xx); a record Go could not encode (NaN or infinite confidence) is left out as in Go but counted, and an all-unencodable batch is not posted; no User-Agent or Accept-Encoding header and Connection: close.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_sink_insert": "passed",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_table_name_validation": "passed",
@@ -5732,7 +5747,13 @@
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::projections_receive_only_fully_sealed_records": "passed",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_only_2xx_is_success": "passed",
     "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_trickled_response_misses_the_insert_deadline": "passed",
-    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_close_flushes_the_partial_batch": "passed"
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests.rs::clickhouse_close_flushes_the_partial_batch": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests/parity.rs::insert_targets_match_go": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests/parity.rs::batch_bodies_match_go_bytes": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests/parity.rs::request_scenarios_match_go": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests/tls.rs::https_insert_uses_the_supplied_trust_roots": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/projection/tests/tls.rs::https_refuses_an_untrusted_server_and_needs_explicit_roots": "passed",
+    "crates/sdk/humanymous-runtime/tests/audit/clickhouse_live.rs::live_clickhouse_stores_every_projected_row": "passed"
    }
   },
   {
