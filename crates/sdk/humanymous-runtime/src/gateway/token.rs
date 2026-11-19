@@ -29,6 +29,12 @@ pub const RECEIPT_SKEW: u64 = 120;
 pub const MAX_NONCES: usize = 1 << 20;
 /// Minimum server key length.
 pub const MIN_KEY: usize = 32;
+/// Cookie carrying the verdict trust token (legacy `verdictCookie`).
+pub const VERDICT_COOKIE: &str = "hmn_vt";
+/// Cookie carrying the step-up proof (legacy `stepUpCookie`).
+pub const STEP_UP_COOKIE: &str = "hmn_su";
+/// Header presenting a step-up receipt (legacy `stepUpReceiptHeader`).
+pub const STEP_UP_RECEIPT_HEADER: &str = "X-Hmn-Stepup-Receipt";
 
 /// Why a token or receipt failed; static, never echoes token bytes.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

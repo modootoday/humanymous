@@ -35,6 +35,8 @@ HTTP/2 or TCP data.
 | `http2::Fingerprint` | Retains supplied SETTINGS/header/pseudo-header ordering; constructing a value does not prove a complete connection preface or header block was captured |
 | `http2::FrameMonitor` | Bounded passive frame accounting over supplied bytes, not an HTTP/2 server or complete stream validator |
 | `http::HeaderInfo` | Carries explicit order/casing reliability flags from the capture owner; a normalized header list must not be relabeled reliable raw evidence |
+| `http::project_request` and `http::client_ip` with its siblings | Legacy header projection and client-address transforms over a supplied header list. The projection always reports order and casing as unreliable. Forwarded headers count only from a peer in a caller-supplied CIDR allowlist, which is empty by default, so no peer is trusted unless the caller lists it. Even then the forwarded address is unvalidated text, not an authenticated client |
+| `http::peek_tcp` and `http::WireOrder` | Bounded HTTP/1 header-name peek (64 KiB, one 750 ms deadline) that replays every consumed byte. Any socket peek that saw at least one header name yields a `WireOrder`, including a partial peek, as the legacy server did; no runtime listener consumes it yet |
 | `report::Observation` and `report::build` | Assemble supplied observations and operator classifications into the compatibility report; absent TLS emits an explicit unobserved-plane marker |
 
 Record reassembly, strict completeness validation, trusted capture provenance and

@@ -7,6 +7,7 @@ use crate::authority::{
     transport::{Limits, Listener, LocalContext, LocalHandler, LocalRequest, LocalResponse},
 };
 use crate::gateway::{Rejection, configuration::Configuration, service::ShutdownRequest};
+use crate::network::intel::store::IntelStore;
 pub use operator::OperatorPolicy;
 pub(in crate::gateway) use operator::SettingsCommand;
 pub use policy::{ManagementPolicy, ManagementScope};
@@ -29,6 +30,7 @@ struct Handler {
     scope: ManagementScope,
     profile: SharedProfile,
     operator: Option<operator::Operator>,
+    intel: Option<Arc<IntelStore>>,
 }
 impl Management {
     pub(in crate::gateway) fn bind(
@@ -36,6 +38,7 @@ impl Management {
         configuration: &Configuration,
         profile: SharedProfile,
         operator: Option<(OperatorPolicy, mpsc::Sender<SettingsCommand>)>,
+        intel: Option<Arc<IntelStore>>,
     ) -> io::Result<Self> {
         let credential = Arc::new(policy.credential);
         let operator = operator
@@ -60,6 +63,7 @@ impl Management {
                 scope: ManagementScope::from_scope(&configuration.scope),
                 profile,
                 operator,
+                intel,
             },
             drain_ms: policy.stop_budget.request().drain_timeout().as_millis() as u64,
         })
@@ -120,6 +124,18 @@ impl LocalHandler for Handler {
             .read()
             .map_err(|_| Rejection::new(503, "management_profile_unavailable"))?
             .clone();
+        if request.target == "/management/v0.1/ip-reputation" {
+            // Live ops gauge: freshness, per-source state, counters and
+            // shadow-only hits. Contains no client addresses.
+            let status = self
+                .intel
+                .as_ref()
+                .map(|store| store.status(crate::gateway::service::intel_now_s()));
+            return LocalResponse::json(
+                200,
+                &serde_json::json!({"protocol":"humanymous.management/0.1","scope":self.scope,"configured":status.is_some(),"ip_reputation":status}),
+            );
+        }
         if request.target == "/management/v0.1/settings" {
             return LocalResponse::json(
                 200,

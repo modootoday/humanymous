@@ -42,6 +42,12 @@ impl ErasurePermit {
     pub fn operation_id(&self) -> &str {
         &self.operation
     }
+    /// Whether this permit binds exactly `subject` in `scope`, so a holder can
+    /// refuse a mismatched permit before scheduling it. A read-only check: it
+    /// neither mints nor widens authority, and `Vault::shred` still verifies.
+    pub fn binds(&self, subject: &str, scope: &crate::audit::control::Scope) -> bool {
+        self.matches(subject) && self.bound_to(scope)
+    }
     pub(in crate::audit::keys) fn bound_to(&self, scope: &crate::audit::control::Scope) -> bool {
         &self.scope == scope
     }

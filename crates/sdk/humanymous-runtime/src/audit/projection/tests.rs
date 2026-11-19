@@ -14,6 +14,10 @@ use std::{
     time::{Duration, Instant},
 };
 
+mod parity;
+#[cfg(feature = "audit-tls")]
+mod tls;
+
 /// Go `sampleRecord` from `audit_test.go`.
 fn sample_record(seq: u64) -> Record {
     Record {
@@ -441,8 +445,9 @@ fn clickhouse_failures_drop_and_count() {
     assert_eq!(down.dropped(), 2, "an append after close is dropped");
 }
 
-/// Deliberate difference: only plain `http://` endpoints without a query or
-/// embedded credentials are accepted (no TLS client in the audit feature).
+/// Deliberate difference: `new` accepts only plain `http://` endpoints
+/// without a query or embedded credentials; `https://` needs `with_tls` and
+/// explicit trust roots (see `tls.rs`).
 #[test]
 fn clickhouse_endpoint_is_refused_unless_plain_http() {
     for endpoint in [

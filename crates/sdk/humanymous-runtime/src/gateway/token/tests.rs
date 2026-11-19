@@ -319,4 +319,5 @@ fn lifted_step_up_proof_fails_binding() {
     );
 }
 
+mod golden;
 mod wargame;

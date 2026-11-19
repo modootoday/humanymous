@@ -15,6 +15,7 @@ use std::sync::{
 };
 use zeroize::Zeroizing;
 mod admission;
+pub mod pow;
 pub mod store;
 use admission::Window;
 

@@ -89,6 +89,34 @@ fn rejects_garbage_wrong_version_truncation_and_short_blocks() {
 }
 
 #[test]
+fn reserved_commands_are_refused_not_treated_as_proxy() {
+    // Version 2 with commands 0x2..=0xF, each carrying a well-formed IPv4
+    // address block that a PROXY command would accept.
+    for command in 0x02u8..=0x0F {
+        let mut header = v4_header([1, 2, 3, 4], 1, [5, 6, 7, 8], 2);
+        header[12] = 0x20 | command;
+        assert_eq!(
+            read_header(&mut Cursor::new(header)),
+            Err(Refusal::Command),
+            "{command:#x}"
+        );
+    }
+    // The two defined commands still decode.
+    let mut local = v4_header([1, 2, 3, 4], 1, [5, 6, 7, 8], 2);
+    local[12] = 0x20;
+    assert_eq!(read_header(&mut Cursor::new(local)), Ok(Header::Local));
+    assert!(matches!(
+        read_header(&mut Cursor::new(v4_header(
+            [1, 2, 3, 4],
+            1,
+            [5, 6, 7, 8],
+            2
+        ))),
+        Ok(Header::Source(_))
+    ));
+}
+
+#[test]
 fn trust_gate_over_real_tcp() {
     let listener = TcpListener::bind("127.0.0.1:0").unwrap();
     let address = listener.local_addr().unwrap();
@@ -159,4 +187,108 @@ fn cidr_masks_host_bits_and_separates_families() {
     let v4 = Cidr::parse("192.0.2.77/24").unwrap();
     assert_eq!(v4, Cidr::parse("192.0.2.0/24").unwrap());
     assert!(!v4.contains("2001:db8::1".parse().unwrap()));
+}
+
+/// The IPv4-mapped form of one IPv4 address, bare and as a socket peer.
+fn mapped(v4: &str) -> (IpAddr, SocketAddr) {
+    let ip: IpAddr = format!("::ffff:{v4}").parse().unwrap();
+    (ip, SocketAddr::new(ip, 443))
+}
+
+#[test]
+fn mapped_block_entry_is_refused_as_ipv4_slash_zero() {
+    // On the shared Floor alone `::ffff:0:0/96` passed the IPv6 floor of 8
+    // and then matched every dual-stack IPv4 peer: effectively 0.0.0.0/0.
+    for entry in [
+        "::ffff:0:0/96",
+        "::ffff:0.0.0.0/96",
+        "::ffff:0:0/100",
+        "::ffff:10.0.0.0/103",
+    ] {
+        assert_eq!(Allowlist::parse(entry), Err(Refusal::TooBroad), "{entry}");
+        assert_eq!(
+            Allowlist::parse(&format!("10.0.0.0/8, {entry}")),
+            Err(Refusal::TooBroad),
+            "{entry} refuses the whole list"
+        );
+    }
+}
+
+#[test]
+fn bare_mapped_entry_is_refused() {
+    for entry in ["::ffff:10.0.0.1", "::ffff:0.0.0.0", "::ffff:a00:1"] {
+        assert_eq!(Allowlist::parse(entry), Err(Refusal::Cidr), "{entry}");
+    }
+    // The explicit host route stays expressible.
+    let host = Cidr::parse("::ffff:10.0.0.1/128").unwrap();
+    assert_eq!(host, Cidr::parse("10.0.0.1").unwrap());
+}
+
+#[test]
+fn mapped_entry_with_prefix_is_its_ipv4_network() {
+    let mapped_entry = Cidr::parse("::ffff:10.0.0.0/104").unwrap();
+    assert_eq!(mapped_entry, Cidr::parse("10.0.0.0/8").unwrap());
+    assert_eq!(mapped_entry.network(), IpAddr::from([10, 0, 0, 0]));
+    assert_eq!(mapped_entry.prefix(), 8);
+    // Host bits are masked after mapping, as for a plain IPv4 entry.
+    assert_eq!(
+        Cidr::parse("::ffff:10.1.2.3/120").unwrap(),
+        Cidr::parse("10.1.2.0/24").unwrap()
+    );
+    let list = Allowlist::parse("::ffff:10.0.0.0/104").unwrap();
+    assert!(list.trusts("10.9.8.7".parse().unwrap()));
+    let (ip, socket) = mapped("10.9.8.7");
+    assert!(list.trusts(ip));
+    assert!(list.trusts_peer(socket));
+    assert!(!list.trusts("11.0.0.1".parse().unwrap()));
+    assert!(!list.trusts(mapped("11.0.0.1").0));
+}
+
+#[test]
+fn mapped_peer_is_never_trusted_through_an_ipv6_entry() {
+    // `::/8` .. `::/95` cover `::ffff:0:0/96` as IPv6 space and pass the
+    // floor; they must not trust a dual-stack IPv4 peer.
+    for entry in ["::/8", "::/64", "::/80", "::/95", "::ffff:0:0/95"] {
+        let list = Allowlist::parse(entry).unwrap_or_else(|e| panic!("{entry}: {e:?}"));
+        assert!(list.entries()[0].network().is_ipv6(), "{entry}");
+        for v4 in ["0.0.0.0", "10.0.0.1", "203.0.113.9", "255.255.255.255"] {
+            let (ip, socket) = mapped(v4);
+            assert!(!list.trusts(ip), "{entry} trusts {ip}");
+            assert!(!list.trusts_peer(socket), "{entry} trusts {socket}");
+            assert!(!list.trusts(v4.parse().unwrap()), "{entry} trusts {v4}");
+        }
+        // Ordinary IPv6 peers inside the entry are still trusted.
+        let inside = list.entries()[0].network();
+        assert!(list.trusts(inside), "{entry} {inside}");
+    }
+    // A trusted IPv4-mapped peer resolves through the IPv4 entry only, and
+    // the gate reads its header.
+    let list = Allowlist::parse("::/8, 192.0.2.0/24").unwrap();
+    let (_, socket) = mapped("192.0.2.10");
+    let header = v4_header([198, 51, 100, 7], 5555, [192, 0, 2, 1], 443);
+    assert_eq!(
+        resolve(&list, socket, &mut Cursor::new(header.clone())),
+        Ok(Peer::Declared(SocketAddr::from(([198, 51, 100, 7], 5555))))
+    );
+    let (_, outside) = mapped("198.18.0.1");
+    assert_eq!(
+        resolve(&list, outside, &mut Cursor::new(header)),
+        Ok(Peer::Socket(outside))
+    );
+}
+
+#[test]
+fn leading_zero_prefix_lengths_are_refused() {
+    for entry in [
+        "10.0.0.0/08",
+        "10.1.2.3/024",
+        "10.0.0.0/008",
+        "2001:db8::/032",
+        "::ffff:10.0.0.0/0104",
+        "10.0.0.0/00",
+    ] {
+        assert_eq!(Allowlist::parse(entry), Err(Refusal::Cidr), "{entry}");
+    }
+    // A single zero is a length, and is refused only for breadth.
+    assert_eq!(Allowlist::parse("10.0.0.0/0"), Err(Refusal::TooBroad));
 }

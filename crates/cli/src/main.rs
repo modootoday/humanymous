@@ -15,6 +15,16 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
             return Err("runtime-service feature is required".into());
         }
     }
+    if command == "ip-intel" {
+        #[cfg(feature = "ip-intel")]
+        {
+            return commands::ip_intel(args.collect());
+        }
+        #[cfg(not(feature = "ip-intel"))]
+        {
+            return Err("ip-intel feature is required".into());
+        }
+    }
     if command.starts_with("service-") {
         return commands::service(&command, args.collect());
     }

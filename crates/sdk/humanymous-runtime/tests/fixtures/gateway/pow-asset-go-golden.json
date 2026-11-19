@@ -1,0 +1,1970 @@
+{
+ "provenance": {
+  "oracle_commit": "981d25cf71a5a54855d7e2b4359e832a9d5998e5",
+  "oracle_packages": [
+   "cmd/server (helpers.go readFile/ja4Stable, powhandler.go issuePoWHeader/handlePoW/powSolvedSignal, resource_handlers.go filepath.Join asset resolution)",
+   "internal/collector (Store PoW state)",
+   "internal/pow (Issue/Solve/Window)",
+   "internal/network (ClientHello/JA4)",
+   "internal/scoring (NewEngine, for the re-score verdict and riskScore)"
+  ],
+  "image": "mirror.gcr.io/library/golang:1.25.3@sha256:6d4e5e74f47db00f7f24da5f53c1b4198ae46862a47395e30477365458347bf2",
+  "go_version": "go1.25.3 linux/amd64 (GOTOOLCHAIN=local)",
+  "command": "docker run --rm --network none -e GOTOOLCHAIN=local -e GOPROXY=off -e GOFLAGS=-mod=readonly -e GOMODCACHE=/modcache -e GOCACHE=/tmp/gocache -v <modcache>:/modcache:ro -v <git archive 981d25c go.mod go.sum cmd internal pkg, plus the scratch in-package capture test cmd/server/zz_fm11r15_capture_test.go>:/src:ro -v <out>:/out -w /src <image> go test -count=1 -run ^TestFM11R15Capture$ ./cmd/server/",
+  "capture_program_sha256": {
+   "cmd/server/zz_fm11r15_capture_test.go": "e6616358bfc5c7a56d6529a42232bc017eb370ad56af94c77c1cc8eea91503f5"
+  },
+  "capture_program_committed": false,
+  "output_sha256": {
+   "capture.json": "825e8f5354e65f80c405b87fbdac749bd658f1068b3975bb5adc048f3a9ae229"
+  },
+  "capture_notes": [
+   "decode[].decoded is a verbatim copy of the handlePoW decode step (json.NewDecoder over http.MaxBytesReader(4096)); decode[].response is the real handlePoW reply for the same body on a session with no issued challenge",
+   "decode[].pads expand, in order, each @PAD@ token of body to len copies of byte; body_hex carries bodies that are not valid UTF-8",
+   "decoded.nonce_hex is the hex of the decoded nonce bytes; nonces longer than 64 bytes are recorded as nonce_len plus nonce_sha256",
+   "issue_header and handle ran against one collector.Store at now_unix; the challenge bucket is now_unix / 120 (the capture retried until the bucket did not roll over)",
+   "handle[].after.last_signal is the last network signal stored by the handler; an l7.pow.too_fast value (elapsed wall-clock milliseconds) is replaced by <elapsed_ms>",
+   "handle verdict and riskScore come from the Go scoring engine on the stored report; the Rust test feeds them back as the injected scorer result and compares everything else",
+   "read_file ran in a fresh temporary directory: a.txt, empty.bin, directory sub, symlinks link.txt -> a.txt, linkdir -> sub, dangling -> missing; not_exist is errors.Is(err, os.ErrNotExist)",
+   "ja4_stable[].hello is the Go network.ClientHello value (null for no ClientHello)"
+  ]
+ },
+ "outputs": {
+  "asset_file": [
+   {
+    "root": "web",
+    "asset": "/",
+    "file": "web"
+   },
+   {
+    "root": "web",
+    "asset": "/a.png",
+    "file": "web/a.png"
+   },
+   {
+    "root": "web",
+    "asset": "/a//b/./c.js",
+    "file": "web/a/b/c.js"
+   },
+   {
+    "root": "web",
+    "asset": "/.hidden",
+    "file": "web/.hidden"
+   },
+   {
+    "root": "web",
+    "asset": "/dir/",
+    "file": "web/dir"
+   },
+   {
+    "root": "./web/",
+    "asset": "/",
+    "file": "web"
+   },
+   {
+    "root": "./web/",
+    "asset": "/a.png",
+    "file": "web/a.png"
+   },
+   {
+    "root": "./web/",
+    "asset": "/a//b/./c.js",
+    "file": "web/a/b/c.js"
+   },
+   {
+    "root": "./web/",
+    "asset": "/.hidden",
+    "file": "web/.hidden"
+   },
+   {
+    "root": "./web/",
+    "asset": "/dir/",
+    "file": "web/dir"
+   },
+   {
+    "root": "/srv/web",
+    "asset": "/",
+    "file": "/srv/web"
+   },
+   {
+    "root": "/srv/web",
+    "asset": "/a.png",
+    "file": "/srv/web/a.png"
+   },
+   {
+    "root": "/srv/web",
+    "asset": "/a//b/./c.js",
+    "file": "/srv/web/a/b/c.js"
+   },
+   {
+    "root": "/srv/web",
+    "asset": "/.hidden",
+    "file": "/srv/web/.hidden"
+   },
+   {
+    "root": "/srv/web",
+    "asset": "/dir/",
+    "file": "/srv/web/dir"
+   },
+   {
+    "root": "../web",
+    "asset": "/",
+    "file": "../web"
+   },
+   {
+    "root": "../web",
+    "asset": "/a.png",
+    "file": "../web/a.png"
+   },
+   {
+    "root": "../web",
+    "asset": "/a//b/./c.js",
+    "file": "../web/a/b/c.js"
+   },
+   {
+    "root": "../web",
+    "asset": "/.hidden",
+    "file": "../web/.hidden"
+   },
+   {
+    "root": "../web",
+    "asset": "/dir/",
+    "file": "../web/dir"
+   },
+   {
+    "root": "web//x/..",
+    "asset": "/",
+    "file": "web"
+   },
+   {
+    "root": "web//x/..",
+    "asset": "/a.png",
+    "file": "web/a.png"
+   },
+   {
+    "root": "web//x/..",
+    "asset": "/a//b/./c.js",
+    "file": "web/a/b/c.js"
+   },
+   {
+    "root": "web//x/..",
+    "asset": "/.hidden",
+    "file": "web/.hidden"
+   },
+   {
+    "root": "web//x/..",
+    "asset": "/dir/",
+    "file": "web/dir"
+   },
+   {
+    "root": "/",
+    "asset": "/",
+    "file": "/"
+   },
+   {
+    "root": "/",
+    "asset": "/a.png",
+    "file": "/a.png"
+   },
+   {
+    "root": "/",
+    "asset": "/a//b/./c.js",
+    "file": "/a/b/c.js"
+   },
+   {
+    "root": "/",
+    "asset": "/.hidden",
+    "file": "/.hidden"
+   },
+   {
+    "root": "/",
+    "asset": "/dir/",
+    "file": "/dir"
+   },
+   {
+    "root": ".",
+    "asset": "/",
+    "file": "."
+   },
+   {
+    "root": ".",
+    "asset": "/a.png",
+    "file": "a.png"
+   },
+   {
+    "root": ".",
+    "asset": "/a//b/./c.js",
+    "file": "a/b/c.js"
+   },
+   {
+    "root": ".",
+    "asset": "/.hidden",
+    "file": ".hidden"
+   },
+   {
+    "root": ".",
+    "asset": "/dir/",
+    "file": "dir"
+   }
+  ],
+  "bucket": 14958739,
+  "decode": [
+   {
+    "name": "plain",
+    "body": "{\"bucket\":123,\"nonce\":\"abc\"}",
+    "decoded": {
+     "err": false,
+     "bucket": 123,
+     "nonce_hex": "616263",
+     "nonce_len": 3
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "upper_keys",
+    "body": "{\"Bucket\":123,\"NONCE\":\"abc\"}",
+    "decoded": {
+     "err": false,
+     "bucket": 123,
+     "nonce_hex": "616263",
+     "nonce_len": 3
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "kelvin_sign_key",
+    "body": "{\"bucKet\":9,\"nonce\":\"k\"}",
+    "decoded": {
+     "err": false,
+     "bucket": 9,
+     "nonce_hex": "6b",
+     "nonce_len": 1
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "long_s_key_no_field",
+    "body": "{\"ſnonce\":\"x\",\"nonce\":\"y\"}",
+    "decoded": {
+     "err": false,
+     "bucket": 0,
+     "nonce_hex": "79",
+     "nonce_len": 1
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "duplicate_last_wins",
+    "body": "{\"nonce\":\"a\",\"nonce\":\"b\"}",
+    "decoded": {
+     "err": false,
+     "bucket": 0,
+     "nonce_hex": "62",
+     "nonce_len": 1
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "folded_then_exact",
+    "body": "{\"Nonce\":\"b\",\"nonce\":\"a\"}",
+    "decoded": {
+     "err": false,
+     "bucket": 0,
+     "nonce_hex": "61",
+     "nonce_len": 1
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "exact_then_folded",
+    "body": "{\"nonce\":\"a\",\"NoNcE\":\"b\"}",
+    "decoded": {
+     "err": false,
+     "bucket": 0,
+     "nonce_hex": "62",
+     "nonce_len": 1
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "top_null",
+    "body": "null",
+    "decoded": {
+     "err": false,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "top_null_trailing_garbage",
+    "body": "nullx",
+    "decoded": {
+     "err": false,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "truncated_null",
+    "body": "nul",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "null_fields",
+    "body": "{\"bucket\":null,\"nonce\":null}",
+    "decoded": {
+     "err": false,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "object_trailing_garbage",
+    "body": "{\"bucket\":5}garbage",
+    "decoded": {
+     "err": false,
+     "bucket": 5,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "two_values_first_wins",
+    "body": "{\"bucket\":1}{\"bucket\":2}",
+    "decoded": {
+     "err": false,
+     "bucket": 1,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "leading_whitespace",
+    "body": "\n\t\r {\"bucket\":7}",
+    "decoded": {
+     "err": false,
+     "bucket": 7,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "spaces_inside",
+    "body": "{ \"bucket\" : 5 , \"nonce\" : \"y\" }",
+    "decoded": {
+     "err": false,
+     "bucket": 5,
+     "nonce_hex": "79",
+     "nonce_len": 1
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "empty",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "whitespace_only",
+    "body": "  \n",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "truncated_object",
+    "body": "{\"bucket\":1",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "bucket_string",
+    "body": "{\"bucket\":\"1\"}",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "bucket_negative",
+    "body": "{\"bucket\":-1}",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "bucket_negative_zero",
+    "body": "{\"bucket\":-0}",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "bucket_fraction",
+    "body": "{\"bucket\":1.0}",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "bucket_exponent",
+    "body": "{\"bucket\":1e2}",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "bucket_max",
+    "body": "{\"bucket\":18446744073709551615}",
+    "decoded": {
+     "err": false,
+     "bucket": 18446744073709551615,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "bucket_overflow",
+    "body": "{\"bucket\":18446744073709551616}",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "bucket_bool",
+    "body": "{\"bucket\":true}",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "bucket_leading_zero",
+    "body": "{\"bucket\":01}",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "bucket_type_error_then_valid",
+    "body": "{\"bucket\":\"x\",\"bucket\":5}",
+    "decoded": {
+     "err": true,
+     "bucket": 5,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "nonce_number",
+    "body": "{\"nonce\":5}",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "nonce_array",
+    "body": "{\"nonce\":[\"x\"]}",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "nonce_object",
+    "body": "{\"nonce\":{\"a\":1}}",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "top_array",
+    "body": "[1]",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "top_string",
+    "body": "\"x\"",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "top_number",
+    "body": "5",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "top_true",
+    "body": "true",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "unknown_fields_skipped",
+    "body": "{\"bucket\":1,\"nonce\":\"x\",\"extra\":{\"deep\":[1,2,{\"a\":null}],\"s\":\"A\"},\"big\":1e400,\"t\":true,\"f\":false}",
+    "decoded": {
+     "err": false,
+     "bucket": 1,
+     "nonce_hex": "78",
+     "nonce_len": 1
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "trailing_comma",
+    "body": "{\"nonce\":\"x\",}",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "raw_control_char",
+    "body": "{\"nonce\":\"tab\there\"}",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "escapes",
+    "body": "{\"nonce\":\"\\/\\b\\f\\n\\r\\t\\\"\\\\é€\"}",
+    "decoded": {
+     "err": false,
+     "bucket": 0,
+     "nonce_hex": "2f080c0a0d09225cc3a9e282ac",
+     "nonce_len": 13
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "surrogate_pair",
+    "body": "{\"nonce\":\"😀\"}",
+    "decoded": {
+     "err": false,
+     "bucket": 0,
+     "nonce_hex": "f09f9880",
+     "nonce_len": 4
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "lone_high_surrogate",
+    "body": "{\"nonce\":\"a\\ud800b\"}",
+    "decoded": {
+     "err": false,
+     "bucket": 0,
+     "nonce_hex": "61efbfbd62",
+     "nonce_len": 5
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "lone_low_surrogate",
+    "body": "{\"nonce\":\"\\udc00\"}",
+    "decoded": {
+     "err": false,
+     "bucket": 0,
+     "nonce_hex": "efbfbd",
+     "nonce_len": 3
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "high_then_non_low",
+    "body": "{\"nonce\":\"\\ud800A\"}",
+    "decoded": {
+     "err": false,
+     "bucket": 0,
+     "nonce_hex": "efbfbd41",
+     "nonce_len": 4
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "bad_escape",
+    "body": "{\"nonce\":\"\\x\"}",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "short_unicode_escape",
+    "body": "{\"nonce\":\"\\u12\"}",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "invalid_utf8_in_nonce",
+    "body_hex": "7b226e6f6e6365223a2261ff62e28263eda080227d",
+    "decoded": {
+     "err": false,
+     "bucket": 0,
+     "nonce_hex": "61efbfbd62efbfbdefbfbd63efbfbdefbfbdefbfbd",
+     "nonce_len": 21
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "invalid_utf8_key",
+    "body_hex": "7b22ff223a312c226e6f6e6365223a227a227d",
+    "decoded": {
+     "err": false,
+     "bucket": 0,
+     "nonce_hex": "7a",
+     "nonce_len": 1
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "invalid_utf8_outside_string",
+    "body_hex": "7bff7d",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "bom_prefix",
+    "body_hex": "efbbbf7b7d",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "value_ends_before_limit_body_longer",
+    "body": "{\"nonce\":\"@PAD@\"}@PAD@",
+    "pads": [
+     {
+      "byte": "a",
+      "len": 4000
+     },
+     {
+      "byte": " ",
+      "len": 200
+     }
+    ],
+    "decoded": {
+     "err": false,
+     "bucket": 0,
+     "nonce_len": 4000,
+     "nonce_sha256": "82396ec9191a22922e88923ef14b5d225e26e7fc2d1571d0d6cd51920f83880b"
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "value_crosses_limit",
+    "body": "{\"nonce\":\"@PAD@\"}",
+    "pads": [
+     {
+      "byte": "a",
+      "len": 4090
+     }
+    ],
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "object_ends_exactly_at_limit_more_follows",
+    "body": "{\"nonce\":\"@PAD@\"}xyz",
+    "pads": [
+     {
+      "byte": "a",
+      "len": 4084
+     }
+    ],
+    "decoded": {
+     "err": false,
+     "bucket": 0,
+     "nonce_len": 4084,
+     "nonce_sha256": "3b785e96fe6adae267cafc30af8f2e37b00b9cd19bc4aa32e6f37cb7aacf5950"
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "object_exactly_limit",
+    "body": "{\"nonce\":\"@PAD@\"}",
+    "pads": [
+     {
+      "byte": "a",
+      "len": 4084
+     }
+    ],
+    "decoded": {
+     "err": false,
+     "bucket": 0,
+     "nonce_len": 4084,
+     "nonce_sha256": "3b785e96fe6adae267cafc30af8f2e37b00b9cd19bc4aa32e6f37cb7aacf5950"
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "null_ends_at_limit_more_follows",
+    "body": "@PAD@null ",
+    "pads": [
+     {
+      "byte": " ",
+      "len": 4092
+     }
+    ],
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "null_ends_at_limit_eof",
+    "body": "@PAD@null",
+    "pads": [
+     {
+      "byte": " ",
+      "len": 4092
+     }
+    ],
+    "decoded": {
+     "err": false,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "deep_nesting_unknown",
+    "body": "{\"x\":@PAD@@PAD@,\"nonce\":\"d\"}",
+    "pads": [
+     {
+      "byte": "[",
+      "len": 1000
+     },
+     {
+      "byte": "]",
+      "len": 1000
+     }
+    ],
+    "decoded": {
+     "err": false,
+     "bucket": 0,
+     "nonce_hex": "64",
+     "nonce_len": 1
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "key_not_string",
+    "body": "{bucket:1}",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "missing_colon",
+    "body": "{\"bucket\" 1}",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "number_forms_unknown",
+    "body": "{\"n\":[-0,0.5e-3,1E+2,-12.0e1],\"nonce\":\"n\"}",
+    "decoded": {
+     "err": false,
+     "bucket": 0,
+     "nonce_hex": "6e",
+     "nonce_len": 1
+    },
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    }
+   },
+   {
+    "name": "bad_number_unknown",
+    "body": "{\"n\":1.,\"nonce\":\"n\"}",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   },
+   {
+    "name": "literal_typo_unknown",
+    "body": "{\"n\":nul,\"nonce\":\"n\"}",
+    "decoded": {
+     "err": true,
+     "bucket": 0,
+     "nonce_len": 0
+    },
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    }
+   }
+  ],
+  "handle": [
+   {
+    "name": "get_rejected",
+    "method": "GET",
+    "cookie": "hsid=flow-a",
+    "body": "",
+    "setup": "",
+    "response": {
+     "status": 405,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "POST only\n"
+    },
+    "after": {
+     "difficulty": 0,
+     "issued_set": false,
+     "solved": false,
+     "too_fast": false,
+     "network_signals": 0
+    }
+   },
+   {
+    "name": "no_cookie",
+    "method": "POST",
+    "cookie": "",
+    "body": "{\"bucket\":14958739,\"nonce\":\"0\"}",
+    "setup": "",
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "no session\n"
+    },
+    "after": {
+     "difficulty": 0,
+     "issued_set": false,
+     "solved": false,
+     "too_fast": false,
+     "network_signals": 0
+    }
+   },
+   {
+    "name": "empty_cookie",
+    "method": "POST",
+    "cookie": "hsid=",
+    "body": "{\"bucket\":14958739,\"nonce\":\"0\"}",
+    "setup": "",
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "no session\n"
+    },
+    "after": {
+     "difficulty": 0,
+     "issued_set": false,
+     "solved": false,
+     "too_fast": false,
+     "network_signals": 0
+    }
+   },
+   {
+    "name": "other_cookie_only",
+    "method": "POST",
+    "cookie": "other=flow-a",
+    "body": "{\"bucket\":14958739,\"nonce\":\"0\"}",
+    "setup": "",
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "no session\n"
+    },
+    "after": {
+     "difficulty": 0,
+     "issued_set": false,
+     "solved": false,
+     "too_fast": false,
+     "network_signals": 0
+    }
+   },
+   {
+    "name": "bad_body",
+    "method": "POST",
+    "cookie": "hsid=flow-a",
+    "body": "{\"bucket\":\"x\"}",
+    "setup": "",
+    "response": {
+     "status": 400,
+     "headers": {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff"
+     },
+     "body": "bad body\n"
+    },
+    "after": {
+     "difficulty": 0,
+     "issued_set": false,
+     "solved": false,
+     "too_fast": false,
+     "network_signals": 0
+    }
+   },
+   {
+    "name": "unknown_session_nothing_issued",
+    "method": "POST",
+    "cookie": "hsid=flow-ghost",
+    "body": "{\"bucket\":14958739,\"nonce\":\"0\"}",
+    "setup": "",
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    },
+    "after": {
+     "difficulty": 0,
+     "issued_set": false,
+     "solved": false,
+     "too_fast": false,
+     "network_signals": 0
+    }
+   },
+   {
+    "name": "wrong_nonce",
+    "method": "POST",
+    "cookie": "hsid=flow-a",
+    "body": "{\"bucket\":14958739,\"nonce\":\"not-a-solution\"}",
+    "setup": "ensure; issued 1h ago d16",
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    },
+    "after": {
+     "difficulty": 16,
+     "issued_set": true,
+     "solved": false,
+     "too_fast": false,
+     "network_signals": 0
+    }
+   },
+   {
+    "name": "stale_bucket",
+    "method": "POST",
+    "cookie": "hsid=flow-a",
+    "body": "{\"bucket\":14958737,\"nonce\":\"149892\"}",
+    "setup": "",
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    },
+    "after": {
+     "difficulty": 16,
+     "issued_set": true,
+     "solved": false,
+     "too_fast": false,
+     "network_signals": 0
+    }
+   },
+   {
+    "name": "previous_bucket_solved",
+    "method": "POST",
+    "cookie": "hsid=flow-a",
+    "body": "{\"bucket\":14958738,\"nonce\":\"245477\"}",
+    "setup": "",
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":true,\"riskScore\":0,\"verdict\":\"CHALLENGE\"}\n"
+    },
+    "after": {
+     "difficulty": 0,
+     "issued_set": false,
+     "solved": true,
+     "too_fast": false,
+     "last_signal": {
+      "id": "l7.pow.solved",
+      "layer": "L7",
+      "value": true,
+      "verdict": "OK",
+      "weight": 0,
+      "score": 0,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "valid PoW solution"
+     },
+     "network_signals": 1
+    }
+   },
+   {
+    "name": "resubmit_after_solved",
+    "method": "POST",
+    "cookie": "hsid=flow-a",
+    "body": "{\"bucket\":14958739,\"nonce\":\"27486\"}",
+    "setup": "",
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false}\n"
+    },
+    "after": {
+     "difficulty": 0,
+     "issued_set": false,
+     "solved": true,
+     "too_fast": false,
+     "last_signal": {
+      "id": "l7.pow.solved",
+      "layer": "L7",
+      "value": true,
+      "verdict": "OK",
+      "weight": 0,
+      "score": 0,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "valid PoW solution"
+     },
+     "network_signals": 1
+    }
+   },
+   {
+    "name": "too_fast",
+    "method": "POST",
+    "cookie": "hsid=flow-b",
+    "body": "{\"bucket\":14958739,\"nonce\":\"15557\"}",
+    "setup": "ensure; issued now d16",
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false,\"reason\":\"solve too fast\",\"verdict\":\"CHALLENGE\"}\n"
+    },
+    "after": {
+     "difficulty": 16,
+     "issued_set": true,
+     "solved": false,
+     "too_fast": true,
+     "last_signal": {
+      "id": "l7.pow.too_fast",
+      "layer": "L7",
+      "value": "<elapsed_ms>",
+      "verdict": "BOT",
+      "weight": 30,
+      "score": 30,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "PoW solved faster than a browser could (native/GPU solver)"
+     },
+     "network_signals": 1
+    }
+   },
+   {
+    "name": "too_fast_sticky_same_nonce",
+    "method": "POST",
+    "cookie": "hsid=flow-b",
+    "body": "{\"bucket\":14958739,\"nonce\":\"15557\"}",
+    "setup": "",
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false,\"reason\":\"solve too fast\",\"verdict\":\"CHALLENGE\"}\n"
+    },
+    "after": {
+     "difficulty": 16,
+     "issued_set": true,
+     "solved": false,
+     "too_fast": true,
+     "last_signal": {
+      "id": "l7.pow.too_fast",
+      "layer": "L7",
+      "value": "<elapsed_ms>",
+      "verdict": "BOT",
+      "weight": 30,
+      "score": 30,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "PoW solved faster than a browser could (native/GPU solver)"
+     },
+     "network_signals": 2
+    }
+   },
+   {
+    "name": "sticky_flag_plausible_clock",
+    "method": "POST",
+    "cookie": "hsid=flow-c",
+    "body": "{\"bucket\":14958740,\"nonce\":\"130595\"}",
+    "setup": "ensure; issued 1h ago d17; too_fast set",
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":false,\"reason\":\"solve too fast\",\"verdict\":\"CHALLENGE\"}\n"
+    },
+    "after": {
+     "difficulty": 17,
+     "issued_set": true,
+     "solved": false,
+     "too_fast": true,
+     "last_signal": {
+      "id": "l7.pow.too_fast",
+      "layer": "L7",
+      "value": "<elapsed_ms>",
+      "verdict": "BOT",
+      "weight": 30,
+      "score": 30,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "PoW solved faster than a browser could (native/GPU solver)"
+     },
+     "network_signals": 1
+    }
+   },
+   {
+    "name": "folded_keys_solve",
+    "method": "POST",
+    "cookie": "Cookie-Ignored=1; hsid=flow-d",
+    "body": "{\"BUCKET\":14958739,\"Nonce\":\"7916\"}  trailing",
+    "setup": "ensure; issued 1h ago d14",
+    "response": {
+     "status": 200,
+     "headers": {
+      "Content-Type": "application/json"
+     },
+     "body": "{\"ok\":true,\"riskScore\":0,\"verdict\":\"CHALLENGE\"}\n"
+    },
+    "after": {
+     "difficulty": 0,
+     "issued_set": false,
+     "solved": true,
+     "too_fast": false,
+     "last_signal": {
+      "id": "l7.pow.solved",
+      "layer": "L7",
+      "value": true,
+      "verdict": "OK",
+      "weight": 0,
+      "score": 0,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "valid PoW solution"
+     },
+     "network_signals": 1
+    }
+   }
+  ],
+  "issue_header": [
+   {
+    "name": "allow_never_issues",
+    "session": "hdr-sid",
+    "known": true,
+    "verdict": "ALLOW",
+    "risk": 90,
+    "header": "",
+    "after": {
+     "difficulty": 0,
+     "issued_set": false,
+     "solved": false,
+     "too_fast": false,
+     "network_signals": 0
+    },
+    "pre_solved": false,
+    "pre_difficulty": 0
+   },
+   {
+    "name": "lowercase_challenge_never_issues",
+    "session": "hdr-sid",
+    "known": true,
+    "verdict": "challenge",
+    "risk": 90,
+    "header": "",
+    "after": {
+     "difficulty": 0,
+     "issued_set": false,
+     "solved": false,
+     "too_fast": false,
+     "network_signals": 0
+    },
+    "pre_solved": false,
+    "pre_difficulty": 0
+   },
+   {
+    "name": "challenge_low_risk_no_work",
+    "session": "hdr-sid",
+    "known": true,
+    "verdict": "CHALLENGE",
+    "risk": 29.999,
+    "header": "",
+    "after": {
+     "difficulty": 0,
+     "issued_set": false,
+     "solved": false,
+     "too_fast": false,
+     "network_signals": 0
+    },
+    "pre_solved": false,
+    "pre_difficulty": 0
+   },
+   {
+    "name": "challenge_band_14",
+    "session": "hdr-sid",
+    "known": true,
+    "verdict": "CHALLENGE",
+    "risk": 30,
+    "header": "4a56c930ec372a35313f4fd24b6bfb520f1820f11d09de281416bf8bd81e6f67:14:14958739",
+    "after": {
+     "difficulty": 14,
+     "issued_set": true,
+     "solved": false,
+     "too_fast": false,
+     "network_signals": 0
+    },
+    "pre_solved": false,
+    "pre_difficulty": 0
+   },
+   {
+    "name": "redeliver_first_issued_difficulty",
+    "session": "hdr-sid",
+    "known": true,
+    "verdict": "CHALLENGE",
+    "risk": 75,
+    "header": "4a56c930ec372a35313f4fd24b6bfb520f1820f11d09de281416bf8bd81e6f67:14:14958739",
+    "after": {
+     "difficulty": 14,
+     "issued_set": true,
+     "solved": false,
+     "too_fast": false,
+     "network_signals": 0
+    },
+    "pre_solved": false,
+    "pre_difficulty": 14
+   },
+   {
+    "name": "redeliver_after_risk_drop",
+    "session": "hdr-sid",
+    "known": true,
+    "verdict": "CHALLENGE",
+    "risk": 10,
+    "header": "4a56c930ec372a35313f4fd24b6bfb520f1820f11d09de281416bf8bd81e6f67:14:14958739",
+    "after": {
+     "difficulty": 14,
+     "issued_set": true,
+     "solved": false,
+     "too_fast": false,
+     "network_signals": 0
+    },
+    "pre_solved": false,
+    "pre_difficulty": 14
+   },
+   {
+    "name": "solved_never_reissues",
+    "session": "hdr-solved",
+    "known": true,
+    "verdict": "CHALLENGE",
+    "risk": 90,
+    "header": "",
+    "after": {
+     "difficulty": 0,
+     "issued_set": false,
+     "solved": true,
+     "too_fast": false,
+     "network_signals": 0
+    },
+    "pre_solved": true,
+    "pre_difficulty": 0
+   },
+   {
+    "name": "unknown_session_header_without_record",
+    "session": "hdr-ghost",
+    "known": false,
+    "verdict": "CHALLENGE",
+    "risk": 55,
+    "header": "f0ad716ab152d7ead560de08809a1154a31a21e106e82fd03e00b1baf8687f1d:16:14958739",
+    "after": {
+     "difficulty": 0,
+     "issued_set": false,
+     "solved": false,
+     "too_fast": false,
+     "network_signals": 0
+    },
+    "pre_solved": false,
+    "pre_difficulty": 0
+   },
+   {
+    "name": "deny_never_issues",
+    "session": "hdr-sid",
+    "known": true,
+    "verdict": "DENY",
+    "risk": 99,
+    "header": "",
+    "after": {
+     "difficulty": 14,
+     "issued_set": true,
+     "solved": false,
+     "too_fast": false,
+     "network_signals": 0
+    },
+    "pre_solved": false,
+    "pre_difficulty": 14
+   }
+  ],
+  "ja4_stable": [
+   {
+    "name": "nil",
+    "hello": null,
+    "ja4": "",
+    "stable": ""
+   },
+   {
+    "name": "tls13_h2",
+    "hello": {
+     "LegacyVersion": 771,
+     "SupportedVers": [
+      2570,
+      772,
+      771
+     ],
+     "CipherSuites": [
+      4865,
+      4866,
+      4867,
+      49195,
+      2570
+     ],
+     "Extensions": [
+      0,
+      16,
+      13,
+      43,
+      10,
+      11,
+      2570
+     ],
+     "Curves": [
+      29,
+      23
+     ],
+     "PointFormats": [
+      0
+     ],
+     "SigAlgs": [
+      1027,
+      2052
+     ],
+     "ALPN": [
+      "h2",
+      "http/1.1"
+     ],
+     "SNIPresent": true
+    },
+    "ja4": "t13d0406h2_39e807bd56df_fb71836bce29",
+    "stable": "t13d0406h2_39e807bd56df"
+   },
+   {
+    "name": "tls12_no_sni_http11",
+    "hello": {
+     "LegacyVersion": 771,
+     "SupportedVers": null,
+     "CipherSuites": [
+      49199,
+      156
+     ],
+     "Extensions": [
+      10,
+      11,
+      13,
+      16
+     ],
+     "Curves": null,
+     "PointFormats": null,
+     "SigAlgs": [
+      1025
+     ],
+     "ALPN": [
+      "http/1.1"
+     ],
+     "SNIPresent": false
+    },
+    "ja4": "t12i0204h1_08dfa304a768_379eb492da94",
+    "stable": "t12i0204h1_08dfa304a768"
+   },
+   {
+    "name": "empty_lists",
+    "hello": {
+     "LegacyVersion": 769,
+     "SupportedVers": null,
+     "CipherSuites": null,
+     "Extensions": null,
+     "Curves": null,
+     "PointFormats": null,
+     "SigAlgs": null,
+     "ALPN": null,
+     "SNIPresent": false
+    },
+    "ja4": "t10i000000_000000000000_000000000000",
+    "stable": "t10i000000_000000000000"
+   }
+  ],
+  "now_unix": 1795048747,
+  "read_file": [
+   {
+    "name": "a.txt",
+    "ok": true,
+    "content": "hello asset\n",
+    "not_exist": false,
+    "exact_err_not_exist": false
+   },
+   {
+    "name": "empty.bin",
+    "ok": true,
+    "content": "",
+    "not_exist": false,
+    "exact_err_not_exist": false
+   },
+   {
+    "name": "sub",
+    "ok": false,
+    "content": "",
+    "not_exist": true,
+    "exact_err_not_exist": true
+   },
+   {
+    "name": "link.txt",
+    "ok": true,
+    "content": "hello asset\n",
+    "not_exist": false,
+    "exact_err_not_exist": false
+   },
+   {
+    "name": "linkdir",
+    "ok": false,
+    "content": "",
+    "not_exist": true,
+    "exact_err_not_exist": true
+   },
+   {
+    "name": "dangling",
+    "ok": false,
+    "content": "",
+    "not_exist": true,
+    "exact_err_not_exist": false
+   },
+   {
+    "name": "nope",
+    "ok": false,
+    "content": "",
+    "not_exist": true,
+    "exact_err_not_exist": false
+   },
+   {
+    "name": "a.txt/child",
+    "ok": false,
+    "content": "",
+    "not_exist": false,
+    "exact_err_not_exist": false
+   }
+  ]
+ }
+}

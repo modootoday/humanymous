@@ -4,18 +4,20 @@ use crate::authority::{decision::DurableAudit, transport::Admission};
 use crate::gateway::{
     Rejection,
     browser::{self, Ack},
-    configuration::{Configuration, RitProfile},
+    configuration::{ClientAddressSource, Configuration, RitProfile},
     http::{self, Request},
     session::Sessions,
 };
 use crate::network::{
     http::HeaderInfo,
+    intel::IntelReader,
+    proxy,
     report::{Observation, build},
 };
 use humanymous_core::scoring::engine::Engine;
 use humanymous_core::signals::report::SessionReport;
 use sha2::{Digest, Sha256};
-use std::time::Duration;
+use std::{net::IpAddr, sync::Arc, time::Duration};
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
     net::{TcpListener, TcpStream},
@@ -79,6 +81,11 @@ pub struct Application {
     engine: Engine,
     audit: Box<dyn DurableAudit>,
     managed_settings: Option<settings::ManagedSettings>,
+    intel: Option<Arc<dyn IntelReader>>,
+    /// Original client of the connection being served, recovered from the
+    /// trusted edge's PROXY v2 header. Connection-scoped: the accept loop is
+    /// serialized and resets it for every accepted connection.
+    client: Option<IpAddr>,
 }
 impl Application {
     /// Compose existing services without changing policy or deriving new tells.
@@ -94,6 +101,32 @@ impl Application {
             engine,
             audit,
             managed_settings: None,
+            intel: None,
+            client: None,
+        })
+    }
+
+    /// Install the operator IP reputation reader (`sot:root/ip-reputation`).
+    /// Only its datacenter bit reaches the frozen `is_datacenter_ip` input.
+    pub fn install_intel(&mut self, reader: Arc<dyn IntelReader>) {
+        self.intel = Some(reader);
+    }
+
+    /// Datacenter bit for the current connection's recovered client address.
+    fn datacenter_client(&self, now_ms: u64) -> bool {
+        self.intel
+            .as_ref()
+            .is_some_and(|reader| reader.classify(self.client, now_ms / 1000).datacenter)
+    }
+
+    /// Trusted client-address source of this configuration and its header
+    /// deadline, if any.
+    fn edge_policy(&self) -> Option<(ClientAddressSource, Duration)> {
+        self.config.ip_reputation.as_ref().map(|policy| {
+            (
+                policy.client_address,
+                Duration::from_millis(policy.proxy_header_timeout_ms),
+            )
         })
     }
 
@@ -272,11 +305,13 @@ impl Application {
                 .split(';')
                 .filter_map(|pair| pair.trim().split_once('=').map(|(name, _)| name.to_owned()))
                 .collect();
+            let is_datacenter_ip = self.datacenter_client(now);
             let mut report = SessionReport {
                 client: self.sessions.report(id),
                 network: build(&Observation {
                     header,
                     hello: tls.and_then(|owner| owner.client_hello()).cloned(),
+                    is_datacenter_ip,
                     ..Default::default()
                 }),
                 ..Default::default()
@@ -493,6 +528,14 @@ impl Application {
                 }
                 continue;
             }
+            self.client = None;
+            match edge_client(self.edge_policy(), &mut stream, until, &mut shutdown).await? {
+                Edge::Client(client) => self.client = client,
+                // The trusted edge contract was violated; drop this connection only.
+                Edge::Drop => continue,
+                // No request was read yet, so there is nothing to drain.
+                Edge::Stop => return Ok(()),
+            }
             let mut response_started = false;
             let mut ack = None;
             let (result, stopping) = {
@@ -689,6 +732,85 @@ impl Application {
     }
 }
 
+/// Outcome of waiting for the trusted edge's PROXY v2 header.
+#[derive(Debug, PartialEq, Eq)]
+enum Edge {
+    /// Header read: the original client, or `None` for LOCAL/UNSPEC (and
+    /// when no client-address source is configured).
+    Client(Option<IpAddr>),
+    /// Edge contract violated (no, malformed, truncated or late header):
+    /// drop this connection only.
+    Drop,
+    /// Shutdown was requested while waiting; no request has been read.
+    Stop,
+}
+
+/// Wait for the edge header without holding up shutdown. The wait ends at the
+/// earlier of the request deadline and the configured header deadline.
+async fn edge_client(
+    policy: Option<(ClientAddressSource, Duration)>,
+    stream: &mut TcpStream,
+    until: Instant,
+    shutdown: &mut tokio::sync::watch::Receiver<Option<crate::gateway::service::ShutdownRequest>>,
+) -> std::io::Result<Edge> {
+    let Some((source, header_timeout)) = policy else {
+        return Ok(Edge::Client(None));
+    };
+    let deadline = until.min(Instant::now() + header_timeout);
+    let header = transport_client(source, stream, deadline);
+    tokio::pin!(header);
+    loop {
+        tokio::select! {
+            biased;
+            changed = shutdown.changed() => {
+                changed.map_err(|_| std::io::Error::other("shutdown controller closed"))?;
+                if shutdown.borrow().is_some() {
+                    return Ok(Edge::Stop);
+                }
+            }
+            result = &mut header => return Ok(result.map_or(Edge::Drop, Edge::Client)),
+        }
+    }
+}
+
+/// Recover the original client from the trusted loopback edge. `Err` means
+/// the connection must be dropped: the edge contract was violated.
+/// LOCAL/UNSPEC gives `None` (unattributed).
+async fn transport_client(
+    source: ClientAddressSource,
+    stream: &mut TcpStream,
+    deadline: Instant,
+) -> Result<Option<IpAddr>, Rejection> {
+    match source {
+        ClientAddressSource::ProxyV2 => {
+            let header = timeout_at(deadline, read_proxy_v2(stream))
+                .await
+                .map_err(|_| Rejection::new(408, "proxy_protocol"))??;
+            Ok(match header {
+                proxy::Header::Source(source) => Some(source.ip()),
+                proxy::Header::Local | proxy::Header::Unspecified => None,
+            })
+        }
+    }
+}
+
+/// Read exactly one PROXY v2 header (and nothing after it) and decode it with
+/// the network context's single parser.
+async fn read_proxy_v2(stream: &mut TcpStream) -> Result<proxy::Header, Rejection> {
+    let refused = |_| Rejection::new(400, "proxy_protocol");
+    let mut header = vec![0u8; 16];
+    stream.read_exact(&mut header).await.map_err(refused)?;
+    if header[..12] != proxy::SIGNATURE {
+        return Err(Rejection::new(400, "proxy_protocol"));
+    }
+    let length = usize::from(u16::from_be_bytes([header[14], header[15]]));
+    header.resize(16 + length, 0);
+    stream
+        .read_exact(&mut header[16..])
+        .await
+        .map_err(refused)?;
+    proxy::read_header(&mut header.as_slice()).map_err(|_| Rejection::new(400, "proxy_protocol"))
+}
 /// A local fallback can stop immediately. A consumed ACK does not undo an
 /// already dispatched origin effect. Partial response cancellation closes it.
 async fn write_or_stop(

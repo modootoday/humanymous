@@ -3,7 +3,14 @@ use std::io;
 use time::{OffsetDateTime, format_description::well_known::Rfc3339};
 
 pub(super) fn stamp(record: &mut Record) -> io::Result<()> {
-    let now = OffsetDateTime::now_utc();
+    stamp_at(record, OffsetDateTime::now_utc())
+}
+
+/// Go `Log.Append` stamping against the clock reading `now`: a UUIDv7 event
+/// id carrying its Unix milliseconds, an RFC 3339 UTC timestamp with trailing
+/// fractional zeros trimmed (Go `time.RFC3339Nano`) and the schema version,
+/// each only when the caller left it empty.
+fn stamp_at(record: &mut Record, now: OffsetDateTime) -> io::Result<()> {
     if record.event_id.is_empty() {
         let millis = now.unix_timestamp_nanos() / 1_000_000;
         if !(0..(1_i128 << 48)).contains(&millis) {
@@ -48,6 +55,35 @@ mod tests {
             let mut record = Record::default();
             stamp(&mut record).unwrap();
             assert!(seen.insert(record.event_id), "duplicate event id");
+        }
+    }
+
+    /// Go `Log.Append` stamping captured at 981d25c with a fixed clock
+    /// (`tests/fixtures/audit/chain-go-golden.json`, `stamps`): the timestamp
+    /// text and the millisecond prefix of the event id match exactly.
+    #[test]
+    fn stamped_timestamp_and_event_id_prefix_match_go() {
+        let golden: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../tests/fixtures/audit/chain-go-golden.json"
+        ))
+        .unwrap();
+        let stamps = golden["stamps"].as_array().unwrap();
+        assert_eq!(stamps.len(), 6);
+        for case in stamps {
+            let nanos = i128::from(case["unix_nanos"].as_i64().unwrap());
+            let mut record = Record::default();
+            stamp_at(
+                &mut record,
+                OffsetDateTime::from_unix_timestamp_nanos(nanos).unwrap(),
+            )
+            .unwrap();
+            assert_eq!(record.ts, case["ts"].as_str().unwrap(), "{nanos}");
+            assert_eq!(
+                &record.event_id[..13],
+                case["event_id_prefix"].as_str().unwrap(),
+                "{nanos}"
+            );
+            assert_eq!(record.event_version, "1.0.0");
         }
     }
 

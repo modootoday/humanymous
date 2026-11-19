@@ -8,9 +8,16 @@
 //!   one-hour wall-clock epoch, verified with a symmetric one-bucket grace. The
 //!   wire format matches Go byte for byte so a Go origin can verify it.
 //!
-//! `http::origin_request` drops internal headers before forwarding; attaching
-//! the origin-cloak header and the HR-27b audit record are not wired here. Deliberate fail-closed difference, pinned by tests: an
-//! origin key shorter than `MIN_ORIGIN_KEY` bytes is refused (Go accepted any).
+//! - Spoof-header gate: `spoof_gate` is the pure port of legacy gates.go
+//!   `spoofHeaderGate` (strip, HR-27b record, deny when enforcing).
+//!
+//! `http::origin_request` drops internal headers before forwarding; running
+//! `spoof_gate` and attaching the origin-cloak header are not wired into
+//! `Application` (owner decision 2026-11-16 leaves serving composition
+//! undecided). Deliberate fail-closed differences, pinned by tests: an origin
+//! key shorter than `MIN_ORIGIN_KEY` bytes is refused (Go accepted any), and
+//! `spoof_gate` strips internal headers even when none carried a value.
+use crate::audit::record::Record;
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
 use subtle::ConstantTimeEq;
@@ -55,6 +62,59 @@ pub fn spoof_scan(headers: &[(String, String)]) -> Vec<&'static str> {
 /// Remove every internal header, empty or not, case-insensitively.
 pub fn strip_inbound(headers: &mut Vec<(String, String)>) {
     headers.retain(|(name, _)| !is_internal(name));
+}
+
+/// Incident pointer header set on every gate deny (legacy `deny` and
+/// `enforceBan`); the detail lives only in the audit chain.
+pub const INCIDENT_HEADER: (&str, &str) = ("X-Hmn-Incident", "see-audit-log");
+
+/// Static body of a request the enforcing spoof gate denies (legacy `deny`).
+pub const SPOOF_DENY_BODY: &str = "Request blocked by humanymous (automation detected).";
+
+/// Spoof-gate finding: the HR-27b record to append before acting, and whether
+/// the request is denied (403, never forwarded) or only audited.
+#[derive(Debug, Clone, PartialEq)]
+pub struct Spoof {
+    /// HR-27b record; mode `monitor` when not enforcing.
+    pub record: Record,
+    /// Deny instead of forwarding.
+    pub deny: bool,
+}
+
+impl Spoof {
+    /// Response metadata of a deny: the incident pointer. Empty when the
+    /// request continues (monitor), since nothing is answered locally.
+    pub fn headers(&self) -> Vec<(&'static str, String)> {
+        if self.deny {
+            vec![(INCIDENT_HEADER.0, INCIDENT_HEADER.1.to_owned())]
+        } else {
+            Vec::new()
+        }
+    }
+}
+
+/// Legacy `spoofHeaderGate`: strip every internal header and, when any carried
+/// a value, return the HR-27b record. Monitor and shadow both record mode
+/// `monitor` and let the stripped request continue, as Go did.
+pub fn spoof_gate(
+    headers: &mut Vec<(String, String)>,
+    enforce: bool,
+    tenant: &str,
+    session_pseudonym: &str,
+) -> Option<Spoof> {
+    let found = spoof_scan(headers);
+    strip_inbound(headers);
+    if found.is_empty() {
+        return None;
+    }
+    let mut record = crate::gateway::smuggle::spoof_record(tenant, session_pseudonym, &found);
+    if !enforce {
+        record.enforcement_mode = "monitor".into();
+    }
+    Some(Spoof {
+        record,
+        deny: enforce,
+    })
 }
 
 /// Wall-clock origin epoch: `e` + unix seconds / 3600, truncating like Go.
@@ -112,5 +172,7 @@ impl OriginKey {
     }
 }
 
+#[cfg(test)]
+mod parity;
 #[cfg(test)]
 mod tests;

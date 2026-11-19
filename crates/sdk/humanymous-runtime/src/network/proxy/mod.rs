@@ -24,6 +24,13 @@
 //!   host instead would trust a peer Go did not, so the entry is refused and
 //!   the operator must write `a.b.c.d` or `::ffff:a.b.c.d/128`.
 //! - More than [`MAX_ENTRIES`] entries is a refusal.
+//! - A reserved command (0x2-0xF) is refused before its address block is read
+//!   (Go treated it as PROXY and used the declared source).
+//!
+//! An IPv6 entry shorter than `/96` that covers `::ffff:0:0/96` (for example
+//! `::/8`) never trusts an IPv4-mapped peer, because the peer is matched as the
+//! IPv4 address it maps; this agrees with Go's `IPNet.Contains`.
+use crate::network::intel::prefix_set::{Floor, Prefix};
 use std::io::Read;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
 
@@ -49,94 +56,69 @@ pub enum Refusal {
     Allowlist,
     /// Signature or version is not PROXY v2.
     NotProxyV2,
+    /// Command is neither LOCAL (0x0) nor PROXY (0x1); 0x2-0xF are reserved.
+    Command,
     /// The address block is shorter than its declared family needs.
     ShortAddress,
     /// The stream ended or failed before the complete header.
     Truncated,
 }
 
-/// One trusted network: masked address plus prefix length.
+/// One trusted network. Parsing and membership reuse the network context's
+/// single CIDR primitive ([`Prefix`]); this type adds only the allowlist's
+/// own rules, all inside this module so the shared primitive and every
+/// IP-intel lookup built on it keep their behaviour:
+/// - a bare IPv4-mapped entry is refused;
+/// - an IPv4-mapped entry with a prefix of at least 96 is normalised to the
+///   IPv4 network it names before the [`MIN_PREFIX`] floor is applied, so
+///   `::ffff:0:0/96` is IPv4 `/0` and refused as too broad;
+/// - a peer is canonicalised before matching, so an IPv4-mapped peer is the
+///   IPv4 peer it maps and never matches an IPv6 entry, including a short one
+///   such as `::/8` that covers `::ffff:0:0/96`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct Cidr {
-    network: IpAddr,
-    prefix: u8,
-}
+pub struct Cidr(Prefix);
 
 impl Cidr {
     /// Parse `a.b.c.d/n`, `v6/n` or a bare address (host route).
     pub fn parse(text: &str) -> Result<Self, Refusal> {
-        let (address, prefix) = match text.split_once('/') {
-            Some((address, prefix)) => (address, Some(prefix)),
-            None => (text, None),
-        };
-        let address: IpAddr = address.parse().map_err(|_| Refusal::Cidr)?;
-        // Go read a bare mapped address as `::/32`; neither that nor the
-        // IPv4 host it names is kept (see the module documentation).
-        if prefix.is_none() && matches!(address, IpAddr::V6(v6) if v6.to_ipv4_mapped().is_some()) {
-            return Err(Refusal::Cidr);
-        }
-        let width = if address.is_ipv4() { 32 } else { 128 };
-        let prefix = match prefix {
-            None => width,
-            Some(p)
-                if !p.is_empty()
-                    && p.len() <= 3
-                    && p.bytes().all(|b| b.is_ascii_digit())
-                    && (p.len() == 1 || !p.starts_with('0')) =>
-            {
-                p.parse::<u8>().map_err(|_| Refusal::Cidr)?
-            }
-            Some(_) => return Err(Refusal::Cidr),
-        };
-        if prefix > width {
-            return Err(Refusal::Cidr);
-        }
-        // An IPv4-mapped entry names IPv4 space, as Go matched it; its breadth
-        // is the IPv4 prefix length that remains after the 96-bit mapping.
-        let (address, prefix) = match address {
-            IpAddr::V6(v6) if prefix >= 96 => match v6.to_ipv4_mapped() {
-                Some(v4) => (IpAddr::V4(v4), prefix - 96),
-                None => (address, prefix),
+        // The shared parser refuses a malformed or leading-zero length.
+        let parsed = Prefix::parse_masked(text).map_err(|_| Refusal::Cidr)?;
+        let prefix = match parsed.network() {
+            IpAddr::V6(v6) if parsed.len() >= 96 => match v6.to_ipv4_mapped() {
+                // Go read a bare mapped address as `::/32`; neither that nor
+                // the IPv4 host it names is kept (see the module documentation).
+                Some(_) if !text.contains('/') => return Err(Refusal::Cidr),
+                // An IPv4-mapped entry names IPv4 space, as Go matched it; its
+                // breadth is the IPv4 length left after the 96-bit mapping.
+                Some(v4) => Prefix::parse_masked(&format!("{v4}/{}", parsed.len() - 96))
+                    .map_err(|_| Refusal::Cidr)?,
+                None => parsed,
             },
-            _ => (address, prefix),
+            _ => parsed,
         };
-        if prefix < MIN_PREFIX {
-            return Err(Refusal::TooBroad);
+        Floor {
+            v4: MIN_PREFIX,
+            v6: MIN_PREFIX,
         }
-        Ok(Self {
-            network: mask(address, prefix),
-            prefix,
-        })
+        .check(&prefix)
+        .map_err(|_| Refusal::TooBroad)?;
+        Ok(Self(prefix))
     }
 
     /// Membership. An IPv4-mapped IPv6 peer is the IPv4 peer it maps, so it
     /// matches IPv4 networks only, as Go's `IPNet.Contains` did.
     pub fn contains(&self, ip: IpAddr) -> bool {
-        let ip = ip.to_canonical();
-        ip.is_ipv4() == self.network.is_ipv4() && mask(ip, self.prefix) == self.network
+        self.0.contains(ip.to_canonical())
     }
 
     /// Masked network address.
     pub fn network(&self) -> IpAddr {
-        self.network
+        self.0.network()
     }
 
     /// Prefix length in the family of [`network`](Self::network).
     pub fn prefix(&self) -> u8 {
-        self.prefix
-    }
-}
-
-fn mask(ip: IpAddr, prefix: u8) -> IpAddr {
-    match ip {
-        IpAddr::V4(v4) => {
-            let bits = u32::from(v4) & u32::MAX.checked_shl(32 - u32::from(prefix)).unwrap_or(0);
-            IpAddr::V4(Ipv4Addr::from(bits))
-        }
-        IpAddr::V6(v6) => {
-            let bits = u128::from(v6) & u128::MAX.checked_shl(128 - u32::from(prefix)).unwrap_or(0);
-            IpAddr::V6(Ipv6Addr::from(bits))
-        }
+        self.0.len()
     }
 }
 
@@ -192,10 +174,15 @@ pub enum Header {
 }
 
 /// Validate the fixed 16-byte header and return the address block length
-/// that follows it.
+/// that follows it. Only LOCAL (0x0) and PROXY (0x1) are defined; a reserved
+/// command is refused here, before its address block is read, never treated
+/// as PROXY.
 pub fn block_len(fixed: &[u8; FIXED_LEN]) -> Result<usize, Refusal> {
     if fixed[..12] != SIGNATURE || fixed[12] & 0xF0 != 0x20 {
         return Err(Refusal::NotProxyV2);
+    }
+    if fixed[12] & 0x0F > 0x01 {
+        return Err(Refusal::Command);
     }
     Ok(usize::from(u16::from_be_bytes([fixed[14], fixed[15]])))
 }
@@ -204,6 +191,7 @@ pub fn block_len(fixed: &[u8; FIXED_LEN]) -> Result<usize, Refusal> {
 /// [`block_len`]) and its whole address block. An IPv4-mapped TCP6 source is
 /// the IPv4 source it maps, as Go rendered and keyed it.
 pub fn decode(fixed: &[u8; FIXED_LEN], block: &[u8]) -> Result<Header, Refusal> {
+    block_len(fixed)?;
     if fixed[12] & 0x0F == 0x00 {
         return Ok(Header::Local);
     }

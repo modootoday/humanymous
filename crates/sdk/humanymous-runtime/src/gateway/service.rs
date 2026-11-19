@@ -7,6 +7,7 @@ use crate::gateway::{
     settings::{SettingsPolicy, SettingsStore},
     startup::{ExternalWitness, SealedAudit},
 };
+use crate::network::intel::store::IntelStore;
 use serde::Serialize;
 use std::{
     io::{self, Read},
@@ -45,6 +46,28 @@ pub fn read_configuration(input: impl Read) -> io::Result<Configuration> {
     Ok(configuration)
 }
 
+/// How often the snapshot file is checked for an operator update.
+const INTEL_RELOAD_INTERVAL: std::time::Duration = std::time::Duration::from_secs(60);
+
+/// Wall clock in Unix seconds for the IP reputation store. An unavailable clock
+/// reads as zero, which refuses every snapshot visibly instead of trusting it.
+pub(in crate::gateway) fn intel_now_s() -> u64 {
+    crate::authority::now_ms().map_or(0, |ms| ms / 1000)
+}
+
+/// Pick up snapshots the operator updater replaced atomically. Parsing runs on
+/// the blocking pool; a refused file keeps the previous snapshot and is reported.
+async fn reload_intel(store: Arc<IntelStore>) {
+    let mut interval = tokio::time::interval(INTEL_RELOAD_INTERVAL);
+    interval.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
+    interval.tick().await;
+    loop {
+        interval.tick().await;
+        let store = store.clone();
+        let _ = tokio::task::spawn_blocking(move || store.reload_if_changed(intel_now_s())).await;
+    }
+}
+
 pub(in crate::gateway) struct SharedAudit(pub(in crate::gateway) Arc<Mutex<SealedAudit>>);
 impl DurableAudit for SharedAudit {
     fn append(&mut self, record: crate::audit::record::Record) -> io::Result<()> {
@@ -73,6 +96,7 @@ pub struct ServiceHost {
     readiness: Readiness,
     management: Option<Management>,
     tls: Option<Arc<rustls::ServerConfig>>,
+    intel: Option<Arc<IntelStore>>,
 }
 impl ServiceHost {
     /// Authenticate existing credentials before exposing a ready listener.
@@ -218,6 +242,11 @@ impl ServiceHost {
             .map_err(|_| io::Error::other("configuration invalid"))?;
         if let Some(tls) = &tls {
             crate::gateway::tls::validate_configuration(&configuration, tls)?;
+        } else if configuration.tls.is_some() {
+            // A requested TLS listener never degrades to plaintext.
+            return Err(io::Error::other(
+                "TLS listener requested without a certificate configuration",
+            ));
         }
         if operator.is_some()
             && (management_policy.is_none() || settings_policy.is_none() || witness.is_none())
@@ -271,6 +300,15 @@ impl ServiceHost {
         if tls.is_some() {
             readiness::tls_h1(&mut profile, &configuration);
         }
+        // A missing or refused snapshot never blocks startup; its state is
+        // reported here and live in the management status.
+        let intel = configuration
+            .ip_reputation
+            .as_ref()
+            .map(|policy| Arc::new(IntelStore::open(policy.store_policy(), intel_now_s())));
+        if let Some(store) = &intel {
+            readiness::ip_reputation(&mut profile, &store.status(intel_now_s()));
+        }
         profile["administration_writable"] = serde_json::json!(operator.is_some());
         let profile_shared = Arc::new(std::sync::RwLock::new(profile.clone()));
         let (operator, commands) = if let Some(operator) = operator {
@@ -281,7 +319,13 @@ impl ServiceHost {
         };
         let management = management_policy
             .map(|policy| {
-                Management::bind(policy, &configuration, profile_shared.clone(), operator)
+                Management::bind(
+                    policy,
+                    &configuration,
+                    profile_shared.clone(),
+                    operator,
+                    intel.clone(),
+                )
             })
             .transpose()?;
         let mut application = Application::new(
@@ -292,6 +336,9 @@ impl ServiceHost {
         .map_err(|_| io::Error::other("application startup"))?;
         if let Some(settings) = settings {
             application.install_settings(settings, audit.clone(), profile_shared, commands);
+        }
+        if let Some(store) = &intel {
+            application.install_intel(store.clone());
         }
         if let Some(tls) = &tls {
             application.validate_tls_h1(tls)?;
@@ -307,6 +354,7 @@ impl ServiceHost {
             readiness,
             management,
             tls,
+            intel,
         })
     }
     /// No raw credentials or audit material are included.
@@ -352,6 +400,10 @@ impl ServiceHost {
         mut self,
         shutdown: watch::Receiver<Option<ShutdownRequest>>,
     ) -> Result<ExitReport, ExitFailure> {
+        let reloader = self
+            .intel
+            .take()
+            .map(|store| tokio::spawn(reload_intel(store)));
         let drained = if let Some(management) = self.management {
             lifecycle::run(
                 &mut self.application,
@@ -368,6 +420,9 @@ impl ServiceHost {
         } else {
             self.application.serve_until(self.listener, shutdown).await
         };
+        if let Some(reloader) = reloader {
+            reloader.abort();
+        }
         let flushed = self
             .audit
             .lock()

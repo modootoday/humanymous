@@ -2,7 +2,8 @@
 //! 981d25c (see the fixture's `provenance`). Expectations are never
 //! regenerated to hide drift. Every captured header decision, remaining-byte
 //! position, allowlist parse and trust decision is compared exactly except the
-//! deliberate fail-closed differences listed in the module documentation;
+//! deliberate fail-closed differences listed in the module documentation
+//! (reserved commands, empty and leading-zero allowlists, IPv4-mapped entries);
 //! each of those asserts the captured Go value as well, so the difference
 //! stays measured.
 use super::*;
@@ -40,6 +41,7 @@ const GO_NOT_V2: &str = "gate: not a PROXY v2 header";
 fn read_header_matches_go_golden() {
     let rows = cases("read_header");
     assert_eq!(rows.len(), 34);
+    let mut differences = 0;
     for row in rows {
         let name = row["name"].as_str().unwrap();
         let input = unhex(row["input_hex"].as_str().unwrap());
@@ -47,6 +49,18 @@ fn read_header_matches_go_golden() {
         let got = read_header(&mut stream);
         let mut rest = Vec::new();
         stream.read_to_end(&mut rest).unwrap();
+        // Deliberate difference: Go treated a reserved command as PROXY and
+        // used the declared source; Rust refuses it before the address block.
+        if matches!(name, "command_2_is_proxy" | "command_f_is_proxy") {
+            differences += 1;
+            assert!(input[12] & 0x0F > 0x01, "{name}");
+            assert_eq!(row["addr"], "203.0.113.9:44321", "{name} Go side");
+            assert!(row["err"].is_null(), "{name} Go side");
+            assert_eq!(row["rest_hex"], "", "{name} Go side");
+            assert_eq!(got, Err(Refusal::Command), "{name}");
+            assert_eq!(rest, input[FIXED_LEN..], "{name}: block left unread");
+            continue;
+        }
         assert_eq!(hex(&rest), row["rest_hex"].as_str().unwrap(), "{name} rest");
         match (&row["addr"], &row["err"]) {
             (Value::String(addr), Value::Null) => match got {
@@ -80,6 +94,7 @@ fn read_header_matches_go_golden() {
             other => panic!("{name}: malformed golden row {other:?}"),
         }
     }
+    assert_eq!(differences, 2);
 }
 
 #[test]

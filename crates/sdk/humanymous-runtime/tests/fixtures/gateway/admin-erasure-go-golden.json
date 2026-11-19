@@ -1,0 +1,542 @@
+{
+ "provenance": {
+  "oracle_commit": "981d25cf71a5a54855d7e2b4359e832a9d5998e5",
+  "oracle_packages": [
+   "internal/gate (admin.go adminErasure/adminApprove erasure case/adminListErasures/adminCancelErasure and the adminWrapped erasures/{id}/cancel route; erasure.go ShredQueue; gate.go RunDueShreds/emitErasureCertificate; audit pseudonym.go Vault Pseudonymize/Link/Resolve/Shred; ban_integration_test.go banStack; adminhelpers_test.go seedAdmins/adminDo)"
+  ],
+  "image": "mirror.gcr.io/library/golang:1.25.3@sha256:6d4e5e74f47db00f7f24da5f53c1b4198ae46862a47395e30477365458347bf2",
+  "go_version": "go1.25.3 linux/amd64 (go.mod at 981d25c pins go 1.25.3; GOTOOLCHAIN=local)",
+  "command": "git archive 981d25c go.mod go.sum internal pkg | tar -x -C <oracle>; add scratch in-package capture test internal/gate/zz_fm11r18_capture_test.go; docker run --rm --network none -e GOTOOLCHAIN=local -e GOPROXY=off -e GOFLAGS=-mod=readonly -e GOCACHE=/tmp/gocache -e FM11R18_OUT=/out/capture.json -v <modcache>:/go/pkg/mod:ro -v <oracle>:/src:ro -v <out>:/out -w /src <image> go test -count=1 -run ^TestFM11R18Capture$ ./internal/gate/",
+  "capture_program_sha256": {
+   "internal/gate/zz_fm11r18_capture_test.go": "e74dd7f16fd88e27e82fee3c619345ba20b598889d5cd6cbe99e322b9e9091c3"
+  },
+  "capture_program_committed": false,
+  "output_sha256": "de0c4581901ebddef74c19b19f40e44ff6d5eed5a3117de980576969ef26fa1a",
+  "capture_notes": [
+   "two consecutive runs produced byte-identical output",
+   "random approval ids, shred ids and approval tickets are replaced by <approvalId>, <shredId> and <ticket12>; the first 12 hex digits of the latest checkpoint root by <root12>; bodies carrying them are reduced to response_keys plus the named fields",
+   "records lists hold the audit records appended by one exchange, reduced to event_type, actor_kind, tenant_id, route_class, verdict, action, mode, fail_reason and key_id",
+   "execute_at_minus_now_in is executeAtUnix minus the wall-clock Unix seconds read just after and just before the commit request",
+   "executesInSec is read by a list request issued immediately after the commit, so the elapsed time is a small fraction of a second",
+   "banStack seals a checkpoint every 8 records; the hold-window stack had 8 records (tree_size 8) when RunDueShreds ran and the no-subject stack had fewer (no checkpoint)"
+  ],
+  "scope": "Frozen oracle outputs for differential parity only; never regenerate to hide drift"
+ },
+ "cancel": {
+  "linkage_kept": true,
+  "run_due_after_cancel": 0,
+  "steps": [
+   {
+    "case": "approvals_params_raw",
+    "params": [
+     {
+      "legalBasis": "PIPA",
+      "subject": "subjY"
+     }
+    ]
+   },
+   {
+    "body": "",
+    "case": "cancel_auditor_refused",
+    "content_type": "text/plain; charset=utf-8",
+    "method": "POST",
+    "path": "/__hmn/admin/erasures/<shredId>/cancel",
+    "records": [
+     {
+      "action": "POST",
+      "actor_kind": "operator",
+      "event_type": "admin.access",
+      "fail_reason": "erasures/<shredId>/cancel (role=auditor)",
+      "key_id": "k1",
+      "mode": "",
+      "route_class": "control",
+      "tenant_id": "test",
+      "verdict": ""
+     }
+    ],
+    "response": "role auditor not permitted\n",
+    "response_keys": null,
+    "role": "auditor",
+    "status": 403
+   },
+   {
+    "body": "",
+    "case": "cancel_approver_refused",
+    "content_type": "text/plain; charset=utf-8",
+    "method": "POST",
+    "path": "/__hmn/admin/erasures/<shredId>/cancel",
+    "records": [
+     {
+      "action": "POST",
+      "actor_kind": "operator",
+      "event_type": "admin.access",
+      "fail_reason": "erasures/<shredId>/cancel (role=approver)",
+      "key_id": "k1",
+      "mode": "",
+      "route_class": "control",
+      "tenant_id": "test",
+      "verdict": ""
+     }
+    ],
+    "response": "role approver not permitted\n",
+    "response_keys": null,
+    "role": "approver",
+    "status": 403
+   },
+   {
+    "body": "",
+    "case": "cancel_unknown",
+    "content_type": "text/plain; charset=utf-8",
+    "method": "POST",
+    "path": "/__hmn/admin/erasures/nope/cancel",
+    "records": [
+     {
+      "action": "POST",
+      "actor_kind": "operator",
+      "event_type": "admin.access",
+      "fail_reason": "erasures/nope/cancel (role=operator)",
+      "key_id": "k1",
+      "mode": "",
+      "route_class": "control",
+      "tenant_id": "test",
+      "verdict": ""
+     }
+    ],
+    "response": "no such scheduled erasure\n",
+    "response_keys": null,
+    "role": "operator",
+    "status": 404
+   },
+   {
+    "body": "",
+    "case": "cancel_empty_id",
+    "content_type": "text/plain; charset=utf-8",
+    "method": "POST",
+    "path": "/__hmn/admin/erasures//cancel",
+    "records": [
+     {
+      "action": "POST",
+      "actor_kind": "operator",
+      "event_type": "admin.access",
+      "fail_reason": "erasures//cancel (role=operator)",
+      "key_id": "k1",
+      "mode": "",
+      "route_class": "control",
+      "tenant_id": "test",
+      "verdict": ""
+     }
+    ],
+    "response": "no such scheduled erasure\n",
+    "response_keys": null,
+    "role": "operator",
+    "status": 404
+   },
+   {
+    "body": "",
+    "case": "cancel_bare",
+    "content_type": "text/plain; charset=utf-8",
+    "method": "POST",
+    "path": "/__hmn/admin/erasures/cancel",
+    "records": [
+     {
+      "action": "POST",
+      "actor_kind": "operator",
+      "event_type": "admin.access",
+      "fail_reason": "erasures/cancel (role=operator)",
+      "key_id": "k1",
+      "mode": "",
+      "route_class": "control",
+      "tenant_id": "test",
+      "verdict": ""
+     }
+    ],
+    "response": "no such scheduled erasure\n",
+    "response_keys": null,
+    "role": "operator",
+    "status": 404
+   },
+   {
+    "body": "",
+    "case": "cancel_no_suffix",
+    "content_type": "text/plain; charset=utf-8",
+    "method": "POST",
+    "path": "/__hmn/admin/erasures/<shredId>",
+    "records": [
+     {
+      "action": "POST",
+      "actor_kind": "operator",
+      "event_type": "admin.access",
+      "fail_reason": "erasures/<shredId> (role=operator)",
+      "key_id": "k1",
+      "mode": "",
+      "route_class": "control",
+      "tenant_id": "test",
+      "verdict": ""
+     }
+    ],
+    "response": "404 page not found\n",
+    "response_keys": null,
+    "role": "operator",
+    "status": 404
+   },
+   {
+    "body": "",
+    "case": "cancel_by_dpo",
+    "content_type": "application/json",
+    "method": "POST",
+    "path": "/__hmn/admin/erasures/<shredId>/cancel",
+    "records": [
+     {
+      "action": "POST",
+      "actor_kind": "operator",
+      "event_type": "admin.access",
+      "fail_reason": "erasures/<shredId>/cancel (role=dpo)",
+      "key_id": "k1",
+      "mode": "",
+      "route_class": "control",
+      "tenant_id": "test",
+      "verdict": ""
+     },
+     {
+      "action": "",
+      "actor_kind": "operator",
+      "event_type": "erasure.cancelled",
+      "fail_reason": "erasure cancelled in hold window; id=<shredId>",
+      "key_id": "k1",
+      "mode": "enforce",
+      "route_class": "",
+      "tenant_id": "test",
+      "verdict": ""
+     }
+    ],
+    "response": "{\"cancelled\":\"<shredId>\",\"ok\":true}\n",
+    "response_keys": [
+     "cancelled",
+     "ok"
+    ],
+    "role": "dpo",
+    "status": 200
+   },
+   {
+    "body": "",
+    "case": "cancel_again",
+    "content_type": "text/plain; charset=utf-8",
+    "method": "POST",
+    "path": "/__hmn/admin/erasures/<shredId>/cancel",
+    "records": [
+     {
+      "action": "POST",
+      "actor_kind": "operator",
+      "event_type": "admin.access",
+      "fail_reason": "erasures/<shredId>/cancel (role=dpo)",
+      "key_id": "k1",
+      "mode": "",
+      "route_class": "control",
+      "tenant_id": "test",
+      "verdict": ""
+     }
+    ],
+    "response": "no such scheduled erasure\n",
+    "response_keys": null,
+    "role": "dpo",
+    "status": 404
+   },
+   {
+    "body": "",
+    "case": "cancel_get_method",
+    "content_type": "text/plain; charset=utf-8",
+    "method": "GET",
+    "path": "/__hmn/admin/erasures/x/cancel",
+    "records": [
+     {
+      "action": "GET",
+      "actor_kind": "operator",
+      "event_type": "admin.access",
+      "fail_reason": "erasures/x/cancel (role=operator)",
+      "key_id": "k1",
+      "mode": "",
+      "route_class": "control",
+      "tenant_id": "test",
+      "verdict": ""
+     }
+    ],
+    "response": "404 page not found\n",
+    "response_keys": null,
+    "role": "operator",
+    "status": 404
+   },
+   {
+    "body": "",
+    "case": "list_post_method",
+    "content_type": "text/plain; charset=utf-8",
+    "method": "POST",
+    "path": "/__hmn/admin/erasures",
+    "records": [
+     {
+      "action": "POST",
+      "actor_kind": "operator",
+      "event_type": "admin.access",
+      "fail_reason": "erasures (role=operator)",
+      "key_id": "k1",
+      "mode": "",
+      "route_class": "control",
+      "tenant_id": "test",
+      "verdict": ""
+     }
+    ],
+    "response": "404 page not found\n",
+    "response_keys": null,
+    "role": "operator",
+    "status": 404
+   }
+  ]
+ },
+ "hold_window": {
+  "checkpoint_root_len": 64,
+  "checkpoint_tree_size": 8,
+  "handle_resolvable_after": false,
+  "linkage_severed_after": true,
+  "pseudonym_stable_during_hold": true,
+  "run_due_after_window": 1,
+  "run_due_before_window": 0,
+  "shred_records": [
+   {
+    "action": "",
+    "actor_kind": "operator",
+    "event_type": "erasure.completed",
+    "fail_reason": "erasure-cert: sth_root=<root12> tree_size=8 legal_basis=GDPR Art.17 operator-1->dpo-1",
+    "key_id": "k1",
+    "mode": "enforce",
+    "route_class": "",
+    "tenant_id": "test",
+    "verdict": ""
+   }
+  ],
+  "steps": [
+   {
+    "body": "",
+    "case": "list_empty",
+    "content_type": "application/json",
+    "method": "GET",
+    "path": "/__hmn/admin/erasures",
+    "records": [
+     {
+      "action": "GET",
+      "actor_kind": "operator",
+      "event_type": "admin.access",
+      "fail_reason": "erasures (role=auditor)",
+      "key_id": "k1",
+      "mode": "",
+      "route_class": "control",
+      "tenant_id": "test",
+      "verdict": ""
+     }
+    ],
+    "response": "{\"count\":0,\"scheduled\":[]}\n",
+    "response_keys": [
+     "count",
+     "scheduled"
+    ],
+    "role": "auditor",
+    "status": 200
+   },
+   {
+    "approval_id_len": 24,
+    "body": "{\"Subject\":\"psn-handle-X\",\"LegalBasis\":\"GDPR Art.17\"}",
+    "case": "request_by_handle",
+    "content_type": "application/json",
+    "method": "POST",
+    "needs_role": "dpo",
+    "path": "/__hmn/admin/erasure",
+    "records": [
+     {
+      "action": "POST",
+      "actor_kind": "operator",
+      "event_type": "admin.access",
+      "fail_reason": "erasure (role=operator)",
+      "key_id": "k1",
+      "mode": "",
+      "route_class": "control",
+      "tenant_id": "test",
+      "verdict": ""
+     },
+     {
+      "action": "",
+      "actor_kind": "operator",
+      "event_type": "approval.requested",
+      "fail_reason": "erasure pending DPO approval; legal_basis=GDPR Art.17",
+      "key_id": "k1",
+      "mode": "enforce",
+      "route_class": "",
+      "tenant_id": "test",
+      "verdict": ""
+     }
+    ],
+    "response": "<redacted: approvalId random>",
+    "response_keys": [
+     "approvalId",
+     "needsRole",
+     "pending"
+    ],
+    "role": "operator",
+    "status": 200
+   },
+   {
+    "case": "approvals_params",
+    "params": [
+     {
+      "legalBasis": "GDPR Art.17",
+      "subject": "subjX"
+     }
+    ]
+   },
+   {
+    "body": "",
+    "case": "dpo_commit",
+    "committed": "erasure",
+    "content_type": "application/json",
+    "execute_at_minus_now_in": [
+     300,
+     300
+    ],
+    "method": "POST",
+    "ok": true,
+    "path": "/__hmn/admin/approvals/<approvalId>",
+    "records": [
+     {
+      "action": "POST",
+      "actor_kind": "operator",
+      "event_type": "admin.access",
+      "fail_reason": "approvals/<approvalId> (role=dpo)",
+      "key_id": "k1",
+      "mode": "",
+      "route_class": "control",
+      "tenant_id": "test",
+      "verdict": ""
+     },
+     {
+      "action": "",
+      "actor_kind": "operator",
+      "event_type": "approval.granted",
+      "fail_reason": "erasure approved by dpo-1 (requester operator-1); ticket=<ticket12>",
+      "key_id": "k1",
+      "mode": "enforce",
+      "route_class": "",
+      "tenant_id": "test",
+      "verdict": ""
+     },
+     {
+      "action": "",
+      "actor_kind": "operator",
+      "event_type": "approval.granted",
+      "fail_reason": "erasure scheduled (cancellable hold); id=<shredId> legal_basis=GDPR Art.17",
+      "key_id": "k1",
+      "mode": "enforce",
+      "route_class": "",
+      "tenant_id": "test",
+      "verdict": ""
+     }
+    ],
+    "response": "<redacted: shredId random, executeAtUnix wall clock>",
+    "response_keys": [
+     "committed",
+     "executeAtUnix",
+     "ok",
+     "scheduled",
+     "shredId"
+    ],
+    "role": "dpo",
+    "scheduled": true,
+    "shred_id_len": 20,
+    "status": 200
+   },
+   {
+    "body": "",
+    "case": "list_scheduled",
+    "content_type": "application/json",
+    "count": 1,
+    "method": "GET",
+    "path": "/__hmn/admin/erasures",
+    "records": [
+     {
+      "action": "GET",
+      "actor_kind": "operator",
+      "event_type": "admin.access",
+      "fail_reason": "erasures (role=auditor)",
+      "key_id": "k1",
+      "mode": "",
+      "route_class": "control",
+      "tenant_id": "test",
+      "verdict": ""
+     }
+    ],
+    "response": "<redacted: id random>",
+    "response_keys": [
+     "count",
+     "scheduled"
+    ],
+    "role": "auditor",
+    "scheduled": [
+     {
+      "_keys": [
+       "approver",
+       "executesInSec",
+       "id",
+       "legalBasis",
+       "requester"
+      ],
+      "approver": "dpo-1",
+      "executesInSec": 299,
+      "id": "<shredId>",
+      "legalBasis": "GDPR Art.17",
+      "requester": "operator-1"
+     }
+    ],
+    "status": 200
+   },
+   {
+    "body": "",
+    "case": "list_after_shred",
+    "content_type": "application/json",
+    "method": "GET",
+    "path": "/__hmn/admin/erasures",
+    "records": [
+     {
+      "action": "GET",
+      "actor_kind": "operator",
+      "event_type": "admin.access",
+      "fail_reason": "erasures (role=auditor)",
+      "key_id": "k1",
+      "mode": "",
+      "route_class": "control",
+      "tenant_id": "test",
+      "verdict": ""
+     }
+    ],
+    "response": "{\"count\":0,\"scheduled\":[]}\n",
+    "response_keys": [
+     "count",
+     "scheduled"
+    ],
+    "role": "auditor",
+    "status": 200
+   }
+  ]
+ },
+ "no_subject": {
+  "records": [
+   {
+    "action": "",
+    "actor_kind": "operator",
+    "event_type": "erasure.no_subject",
+    "fail_reason": "erasure-cert: sth_root= tree_size=0 legal_basis=art17 operator-1->dpo-1",
+    "key_id": "k1",
+    "mode": "enforce",
+    "route_class": "",
+    "tenant_id": "test",
+    "verdict": ""
+   }
+  ],
+  "run_due": 1
+ }
+}

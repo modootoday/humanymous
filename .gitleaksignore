@@ -1,0 +1,3 @@
+# Owner-approved false positives only (decision: issue #75 comment 6979694428).
+# Console tooltip prose, byte-identical to the Go oracle; not a credential.
+555da4a550d9fb458c72bd21b1a4a130b636e7c9:crates/sdk/humanymous-runtime/assets/console/console.html:generic-api-key:15

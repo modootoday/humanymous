@@ -16,13 +16,13 @@
 //!   plus one, with `control-plane flood: <endpoint>` as its reason.
 //! - The refusal is `429` with `Retry-After: 10` and the body
 //!   `control plane rate limited`.
+//! - The record verdict is Go `string(VerdictDeny)`, `deny`.
 //!
 //! Deliberate differences, each pinned by tests:
 //! - The guard is bounded by [`Limits`] (keys, hits per key, key bytes and
 //!   payload). Any limiter refusal (a full table, a source whose count exceeds
 //!   the per-key bound, or a clock regression) fails closed as a drop without a
 //!   record instead of growing without bound.
-//! - The record verdict uses the Rust gateway spelling `DENY`.
 //!
 //! The guard is a pure kernel: the caller supplies the socket peer address and
 //! a monotonic clock, appends the returned record and writes the refusal. It is
@@ -123,7 +123,7 @@ fn breach_record(endpoint: &str) -> Record {
         },
         tenant_id: "control".into(),
         route_class: "control".into(),
-        verdict: "DENY".into(),
+        verdict: "deny".into(),
         enforcement_action: "rate_limit".into(),
         enforcement_mode: "enforce".into(),
         fail_reason: format!("control-plane flood: {endpoint}"),
