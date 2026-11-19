@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 771,
-      "macos": 771,
-      "windows": 739
+      "linux": 776,
+      "macos": 776,
+      "windows": 744
     },
     "common_test_names": [
       "gateway::admin_approval::tests::approval_store_rules",
@@ -637,6 +637,11 @@
       "gateway::tests::ip_reputation::shutdown_is_observed_while_waiting_for_the_header",
       "gateway::tests::ip_reputation::silent_edge_is_bounded_by_the_header_deadline",
       "gateway::tests::ip_reputation::snapshot_store_classifies_proxy_v2_clients_end_to_end",
+      "gateway::tests::maintenance::accept_loop_sweeps_on_the_maintenance_tick",
+      "gateway::tests::maintenance::server_gc_never_moves_or_poisons_the_session_epoch",
+      "gateway::tests::maintenance::server_gc_reports_an_unavailable_ban_ledger",
+      "gateway::tests::maintenance::server_gc_sweeps_sessions_without_optional_kernels",
+      "gateway::tests::maintenance::server_gc_sweeps_the_installed_ban_store",
       "gateway::tests::missing_client_is_challenge_and_missing_planes_are_not_ready",
       "gateway::tests::real_tcp_audit_before_origin_and_negative_counter_zero",
       "gateway::tests::recovery_without_independent_head_never_opens_state_or_calls_witness",

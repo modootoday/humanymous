@@ -15,8 +15,8 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 267,
-  "partial": 34,
+  "ported_unit": 268,
+  "partial": 33,
   "missing": 2,
   "not_applicable": 2,
   "oracle_only": 9
@@ -75,10 +75,10 @@
    "ported_unit": 5
   },
   "internal/gate": {
-   "partial": 18,
+   "partial": 17,
    "missing": 1,
    "not_applicable": 1,
-   "ported_unit": 64,
+   "ported_unit": 65,
    "oracle_only": 1
   },
   "internal/httpx": {
@@ -3330,7 +3330,7 @@
   },
   {
    "baseline_path": "internal/gate/gc_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/ban.rs",
     "crates/sdk/humanymous-runtime/src/gateway/token.rs",
@@ -3338,7 +3338,8 @@
     "crates/sdk/humanymous-runtime/src/network/history/cohort/mod.rs",
     "crates/sdk/humanymous-runtime/src/network/history/interarrival/mod.rs",
     "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs",
-    "crates/sdk/humanymous-runtime/src/network/history/sweep/mod.rs"
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/mod.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application/maintenance.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::gc_sweeps_stale_strikes_and_expired_bans",
@@ -3348,20 +3349,23 @@
     "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r259_idle_cohort_is_evicted_strictly_after_ten_minutes",
     "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r266_gc_drops_last_seen_strictly_after_idle",
     "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::bounded_gc_cursor_progresses_and_ttl_equality_survives",
-    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed"
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::server_gc_sweeps_sessions_without_optional_kernels",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::server_gc_sweeps_the_installed_ban_store",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::server_gc_never_moves_or_poisons_the_session_epoch",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::server_gc_reports_an_unavailable_ban_ledger",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::accept_loop_sweeps_on_the_maintenance_tick"
    ],
    "go_test_map": {
     "TestVerdictStoreGC": "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::gc_sweeps_expired_sticky_verdicts",
     "TestBanStoreGCSweepsStrikesAndExpired": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::gc_sweeps_stale_strikes_and_expired_bans",
     "TestSweepDetectorGC": "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed",
-    "TestServerGCRunsWithoutPanic": null
+    "TestServerGCRunsWithoutPanic": "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::server_gc_sweeps_sessions_without_optional_kernels"
    },
-   "gaps": [
-    "No Runtime composite GC owner (Go Server.GC) sweeps every kernel"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Each kernel GC is tested on its own; an expired ban drops at once while its strike survives until STRIKE_DECAY.",
+   "notes": "Each kernel GC is tested on its own; an expired ban drops at once while its strike survives until STRIKE_DECAY. FM11 lane B: Application::gc (gateway::application::maintenance) is the composite owner of legacy Server.GC: it sweeps every kernel the serving owner composes, the session epoch (expired sessions) and the installed ban store (bans, strikes and rate windows), and both accept loops (plaintext and TLS) run it between requests on the legacy one-minute maintenance tick. The verdict store, sweep detector, anomaly shadow and credential fan-out are not composed on the served path (gates.go gaps), so no owner holds them yet; each keeps its tested kernel gc. Deliberate differences: a sweep never moves or poisons the session epoch (a clock behind the last request or past the safe integer range sweeps nothing), and a refused ban-store sweep or poisoned store lock reports 503 ban_ledger while serving continues because the ban gate refuses on the same ledger. Go oracle at 981d25c: go test -run ^(TestVerdictStoreGC|TestBanStoreGCSweepsStrikesAndExpired|TestSweepDetectorGC|TestServerGCRunsWithoutPanic)$ ./internal/gate PASS (go1.26.3, network none).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::gc_sweeps_stale_strikes_and_expired_bans": "passed",
     "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed": "passed",
@@ -3370,7 +3374,12 @@
     "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r266_gc_drops_last_seen_strictly_after_idle": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::nonce_cache_expires_and_saturates_closed": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::spent_nonce_expires_after_ttl": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::gc_sweeps_expired_sticky_verdicts": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::gc_sweeps_expired_sticky_verdicts": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::server_gc_sweeps_sessions_without_optional_kernels": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::server_gc_sweeps_the_installed_ban_store": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::server_gc_never_moves_or_poisons_the_session_epoch": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::server_gc_reports_an_unavailable_ban_ledger": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::accept_loop_sweeps_on_the_maintenance_tick": "passed"
    }
   },
   {

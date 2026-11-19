@@ -473,6 +473,16 @@ Pinned by `gateway::tests::edge` against the oracle captures
 `tests/fixtures/gateway/edge-gates-go-golden.json` and
 `tests/fixtures/gateway/edge-probe-methods-go-golden.json`.
 
+Composite sweep (FM11 lane B, 2026-11-19): `Application::gc` is legacy
+`Server.GC`. It sweeps every kernel the serving owner composes, expired
+sessions and the installed ban store (bans, strikes and rate windows at the
+store's own monotonic epoch), and both accept loops run it between requests
+on the legacy one-minute maintenance tick. A sweep never moves or poisons the
+session epoch: a clock behind the last request, or past the safe integer
+range, sweeps nothing. A refused store sweep or poisoned store lock reports
+503 `ban_ledger`; serving continues because the ban gate refuses on the same
+ledger. Pinned by `gateway::tests::maintenance`.
+
 ### Review reflected
 
 Blue: reuse one engine/integrity/network/audit implementation. Red P0: method,

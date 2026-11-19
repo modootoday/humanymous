@@ -416,6 +416,11 @@ impl<L: RateLimiter> Store<L> {
         Ok(())
     }
 
+    /// Entries held right now, swept or not: `(bans, strikes)`.
+    pub fn held(&self) -> (usize, usize) {
+        (self.bans.len(), self.strikes.len())
+    }
+
     /// Active bans in key order; expired entries are swept.
     pub fn list(&mut self, now: Duration) -> Vec<Entry> {
         self.bans.retain(|_, b| b.active(now));

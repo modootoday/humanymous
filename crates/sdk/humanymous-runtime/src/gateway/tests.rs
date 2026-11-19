@@ -2,6 +2,7 @@
 mod browser;
 mod edge;
 mod ip_reputation;
+mod maintenance;
 #[cfg(unix)]
 mod service;
 mod settings;
