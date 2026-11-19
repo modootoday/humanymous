@@ -1464,6 +1464,32 @@ cases show. The `product-e2e` ledger does the same. The delivery pilot computes
 venue is component evidence, not a clean-room engine. Hosted CI stays the
 qualifying venue.
 
+## Shared-namespace TLS Gate profile (2a, 2026-11-19)
+
+Profile `tls` of `deployments/lab/compose.product-e2e.yaml` runs the shipped
+`humanymous-runtime` binary with a `tls` section, so `main.rs` selects
+`ServiceHost::bind_tls` (ALPN `h2` then `http/1.1`, no witness input).
+
+- Certificate: `tgate` mints a per-run lab CA in its own container, issues one
+  `owned.test` leaf and drops the CA signing key. The leaf pair sits in an
+  owner-only tmpfs directory; the key file is removed after readiness. Only
+  the public root leaves, in the readiness line, and the runner relays it to
+  the driver. No key or root is committed or reused across runs.
+- Driver (`--product-driver-tls`): a rustls client trusting only that root,
+  the owned ClientHello parrots of `crates/attacker` `wire::clienthello` and
+  H2 frames from `wire::h2`. Cases cover ALPN selection, client refusal of a
+  foreign root or name, the `raw_tls` and `original_h2` capability gates over
+  H1 and H2, signed decisions, raw parrots and malformed ClientHellos, and
+  malformed H2 frames. A refused input passes only with no plaintext
+  fallback, no 2xx status and no origin record.
+- Scope: the gateway accepts loopback listen addresses and peers only, so
+  `torigin` and `tdriver` share `tgate`'s namespace. The ledger reports
+  `gate` and `raw-tls-h2` under `scoped_cases` with scope
+  `shared loopback namespace`. A failed scoped measurement fails the required
+  case. A passed one leaves it `not_evaluated`, because the required case
+  needs original-client TLS/H2 from a client in its own namespace (owner item
+  B01 #1, public edge listener).
+
 ## Official sources, checked 2026-11-07
 
 - D1 https://docs.docker.com/reference/compose-file/networks/
