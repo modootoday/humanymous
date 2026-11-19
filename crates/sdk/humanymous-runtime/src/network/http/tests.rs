@@ -36,6 +36,28 @@ fn pairs(list: &[(&str, &str)]) -> Vec<(String, String)> {
         .collect()
 }
 
+// An explicit allowlist covering Go's implicit isTrustedProxy set (IsLoopback,
+// IsPrivate, IsLinkLocalUnicast), so Go goldens compare for trusted peers.
+// fc00::/7 is split because a /7 entry is broader than proxy::MIN_PREFIX.
+const GO_PRIVATE_RANGES: [&str; 9] = [
+    "127.0.0.0/8",
+    "10.0.0.0/8",
+    "172.16.0.0/12",
+    "192.168.0.0/16",
+    "169.254.0.0/16",
+    "::1/128",
+    "fc00::/8",
+    "fd00::/8",
+    "fe80::/10",
+];
+
+fn allowlist(cidrs: &[&str]) -> Vec<Cidr> {
+    cidrs
+        .iter()
+        .map(|cidr| Cidr::parse(cidr).expect("cidr"))
+        .collect()
+}
+
 fn dataset(cidrs: &[&str]) -> impl Fn(IpAddr) -> bool {
     let nets: Vec<Cidr> = cidrs
         .iter()
@@ -75,10 +97,12 @@ fn datacenter_lookup_flags_only_wired_ranges() {
     assert!(!is_datacenter_ip("10.0.0.1", |_| true));
 }
 
-// TestIsTrustedProxy
+// TestIsTrustedProxy, with Go's implicit ranges passed as an explicit
+// allowlist (C1); the empty default allowlist trusts nothing.
 #[test]
-fn trusted_proxy_is_loopback_private_or_link_local() {
-    for ip in [
+fn trusted_proxy_is_only_an_explicit_allowlist_member() {
+    let go = allowlist(&GO_PRIVATE_RANGES);
+    let trusted = [
         "127.0.0.1",
         "::1",
         "10.0.0.1",
@@ -86,44 +110,75 @@ fn trusted_proxy_is_loopback_private_or_link_local() {
         "172.30.0.1",
         "169.254.0.1",
         "fc00::5",
-    ] {
-        assert!(is_trusted_proxy(ip), "{ip}");
+    ];
+    for ip in trusted {
+        assert!(is_trusted_proxy(ip, &go), "{ip}");
+        assert!(!is_trusted_proxy(ip, &[]), "{ip} default");
     }
     for ip in ["8.8.8.8", "1.2.3.4", "172.32.0.1", "garbage", ""] {
-        assert!(!is_trusted_proxy(ip), "{ip}");
+        assert!(!is_trusted_proxy(ip, &go), "{ip}");
+    }
+    // Only the listed network is trusted, not the rest of the private space.
+    let narrow = allowlist(&["172.30.0.0/16"]);
+    assert!(is_trusted_proxy("172.30.0.1", &narrow));
+    assert!(is_trusted_proxy("::ffff:172.30.0.1", &narrow));
+    for ip in ["127.0.0.1", "10.0.0.1", "192.168.1.1", "::1"] {
+        assert!(!is_trusted_proxy(ip, &narrow), "{ip}");
     }
 }
 
-// TestClientIP
+const CLIENT_CASES: [(&str, Fields<'static>, &str); 7] = [
+    ("8.8.8.8:44210", &[], "8.8.8.8"),
+    ("8.8.8.8:1000", &[("X-Forwarded-For", "1.2.3.4")], "8.8.8.8"),
+    (
+        "172.30.0.1:8443",
+        &[("X-Forwarded-For", "203.0.113.9, 172.30.0.1")],
+        "203.0.113.9",
+    ),
+    (
+        "172.18.0.1:8443",
+        &[("X-Real-IP", "203.0.113.7")],
+        "203.0.113.7",
+    ),
+    ("172.30.0.1:8443", &[], "172.30.0.1"),
+    (
+        "10.0.0.1:80",
+        &[
+            ("X-Forwarded-For", "203.0.113.1"),
+            ("X-Real-IP", "203.0.113.2"),
+        ],
+        "203.0.113.1",
+    ),
+    ("[::1]:5000", &[("X-Real-IP", "203.0.113.5")], "203.0.113.5"),
+];
+
+// TestClientIP, with Go's implicit ranges passed as an explicit allowlist.
 #[test]
 fn client_ip_honours_forwarding_only_from_trusted_peer() {
-    let cases: [(&str, Fields<'_>, &str); 7] = [
-        ("8.8.8.8:44210", &[], "8.8.8.8"),
-        ("8.8.8.8:1000", &[("X-Forwarded-For", "1.2.3.4")], "8.8.8.8"),
-        (
-            "172.30.0.1:8443",
-            &[("X-Forwarded-For", "203.0.113.9, 172.30.0.1")],
-            "203.0.113.9",
-        ),
-        (
-            "172.18.0.1:8443",
-            &[("X-Real-IP", "203.0.113.7")],
-            "203.0.113.7",
-        ),
-        ("172.30.0.1:8443", &[], "172.30.0.1"),
-        (
-            "10.0.0.1:80",
-            &[
-                ("X-Forwarded-For", "203.0.113.1"),
-                ("X-Real-IP", "203.0.113.2"),
-            ],
-            "203.0.113.1",
-        ),
-        ("[::1]:5000", &[("X-Real-IP", "203.0.113.5")], "203.0.113.5"),
-    ];
-    for (remote, headers, want) in cases {
-        assert_eq!(client_ip(remote, &pairs(headers)), want, "{remote}");
+    let go = allowlist(&GO_PRIVATE_RANGES);
+    for (remote, headers, want) in CLIENT_CASES {
+        assert_eq!(client_ip(remote, &pairs(headers), &go), want, "{remote}");
     }
+}
+
+// Deliberate difference from Go (C1): with the default empty allowlist a
+// private-range peer cannot set the client address or subnet.
+#[test]
+fn forwarded_headers_are_ignored_without_an_allowlist() {
+    for (remote, headers, _) in CLIENT_CASES {
+        let headers = pairs(headers);
+        let peer = direct_peer(remote);
+        assert_eq!(client_ip(remote, &headers, &[]), peer, "{remote}");
+        let subnet = client_subnet(remote, &headers, &[]);
+        assert_eq!(subnet, client_subnet(remote, &[], &[]), "{remote}");
+    }
+    let spoof = pairs(&[("X-Forwarded-For", "203.0.113.9")]);
+    assert_eq!(client_ip("10.0.0.1:80", &spoof, &[]), "10.0.0.1");
+    assert_eq!(client_subnet("10.0.0.1:80", &spoof, &[]), "10.0.0");
+    // A private peer outside a non-empty allowlist is not trusted either.
+    let narrow = allowlist(&["172.30.0.0/16"]);
+    assert_eq!(client_ip("10.0.0.1:80", &spoof, &narrow), "10.0.0.1");
+    assert_eq!(client_ip("172.30.0.9:80", &spoof, &narrow), "203.0.113.9");
 }
 
 // TestHeaderInfoOrderIsNotReliable
@@ -154,10 +209,16 @@ fn client_address_model_matches_go_golden() {
         .map(|cidr| cidr.as_str().expect("cidr"))
         .collect();
     let wired = dataset(&cidrs);
+    let go = allowlist(&GO_PRIVATE_RANGES);
     let addresses = golden["addresses"].as_array().expect("addresses");
     for case in addresses {
         let addr = case["addr"].as_str().expect("addr");
-        assert_eq!(is_trusted_proxy(addr), case["trusted_proxy"], "{addr:?}");
+        assert_eq!(
+            is_trusted_proxy(addr, &go),
+            case["trusted_proxy"],
+            "{addr:?}"
+        );
+        assert!(!is_trusted_proxy(addr, &[]), "{addr:?} default");
         assert_eq!(
             is_datacenter_ip(addr, |_| false),
             case["datacenter_without_dataset"],
@@ -171,10 +232,11 @@ fn client_address_model_matches_go_golden() {
         assert_eq!(direct_peer(addr), case["direct_peer"], "{addr:?}");
         let forwarded = pairs(&[("X-Forwarded-For", addr)]);
         assert_eq!(
-            client_subnet("10.0.0.1:1", &forwarded),
+            client_subnet("10.0.0.1:1", &forwarded, &go),
             case["client_subnet_of_trusted_xff"],
             "{addr:?}"
         );
+        assert_eq!(client_subnet("10.0.0.1:1", &forwarded, &[]), "10.0.0");
     }
     let remotes = golden["remote_addrs"].as_array().expect("remotes");
     for case in remotes {
@@ -185,11 +247,20 @@ fn client_address_model_matches_go_golden() {
     for case in clients {
         let remote = case["remote"].as_str().expect("remote");
         let headers = fields(&case["fields"]);
-        assert_eq!(client_ip(remote, &headers), case["client_ip"], "{case}");
+        assert_eq!(
+            client_ip(remote, &headers, &go),
+            case["client_ip"],
+            "{case}"
+        );
         assert_eq!(forwarded_ip(&headers), case["forwarded_ip"], "{case}");
         assert_eq!(
-            client_subnet(remote, &headers),
+            client_subnet(remote, &headers, &go),
             case["client_subnet"],
+            "{case}"
+        );
+        assert_eq!(
+            client_ip(remote, &headers, &[]),
+            direct_peer(remote),
             "{case}"
         );
     }
@@ -294,6 +365,13 @@ fn h1_peek_matches_go_golden() {
         assert_eq!(peek.names(), expected_names, "{name} socket");
         assert_eq!(error_label(peek.outcome()), case["error"], "{name} socket");
         assert_eq!(server.read_timeout().expect("timeout"), None, "{name}");
+        // Go mergeObservation: any non-empty peeked order, partial included,
+        // replaces Names and sets OrderReliable.
+        assert_eq!(
+            peek.wire_order().map(|order| order.names().to_vec()),
+            (!expected_names.is_empty()).then(|| expected_names.clone()),
+            "{name} order"
+        );
         let mut replay = Vec::new();
         peek.into_replay(&server)
             .read_to_end(&mut replay)
@@ -304,7 +382,7 @@ fn h1_peek_matches_go_golden() {
 }
 
 #[test]
-fn wire_order_is_minted_only_by_a_complete_socket_peek() {
+fn wire_order_is_minted_by_any_nonempty_socket_peek() {
     let request = b"GET / HTTP/1.1\r\nUser-Agent: UA\r\nAccept: */*\r\nHost: a\r\n\r\n";
     let (mut client, server) = socket_pair();
     client.write_all(request).expect("write");
@@ -323,7 +401,8 @@ fn wire_order_is_minted_only_by_a_complete_socket_peek() {
     assert!(header.order_reliable && !header.casing_reliable);
     assert_eq!(header.names, ["user-agent", "accept", "host"]);
 
-    // A partial socket peek keeps its names but never claims reliable order.
+    // A partial socket peek is reliable too, as Go mergeObservation marks
+    // any non-empty order (headers-then-eof golden case).
     let (mut client, server) = socket_pair();
     client
         .write_all(b"GET / HTTP/1.1\r\nUser-Agent: UA\r\n")
@@ -331,13 +410,20 @@ fn wire_order_is_minted_only_by_a_complete_socket_peek() {
     client.shutdown(Shutdown::Write).expect("shutdown");
     let peek = peek_tcp(&server);
     assert_eq!(peek.outcome(), Err(PeekError::Truncated));
-    assert_eq!(peek.names(), ["user-agent"]);
-    assert!(peek.wire_order().is_none());
+    let order = peek.wire_order().expect("partial socket peek");
+    assert_eq!(order.names(), ["user-agent"]);
+    let mut header = project_request("GET", 1, 1, &pairs(&[("User-Agent", "UA")]));
+    order.apply(&mut header);
+    assert!(header.order_reliable && !header.casing_reliable);
 
-    // An empty complete header section has no order to report.
+    // An empty header section has no order to report, complete or not.
     let (mut client, server) = socket_pair();
     client.write_all(b"GET / HTTP/1.1\r\n\r\n").expect("write");
     assert!(peek_tcp(&server).wire_order().is_none());
+
+    // A non-socket reader never mints order, even when complete.
+    let mut reader = request.as_slice();
+    assert!(peek_header_order(&mut reader).wire_order().is_none());
 }
 
 #[test]

@@ -6,7 +6,17 @@
 //! locality or a PROXY v2 recovered source (shipping-plan row B26 keeps the
 //! transport-level allowlist in `network::proxy`). A caller must not treat a
 //! forwarded value accepted here as an authenticated client identity.
+//!
+//! Deliberate difference from Go (owner decision C1, issue #75, 2026-11-18:
+//! trusted-proxy XFF only from an explicit CIDR allowlist, default off). Go
+//! trusted every loopback, private and link-local peer implicitly. Here the
+//! trust set is the caller-supplied `trusted` allowlist; an empty allowlist,
+//! the default, trusts nothing and [`client_ip`] always returns the direct
+//! peer. For a peer inside the allowlist, header choice, the leftmost
+//! nonblank X-Forwarded-For rule, the X-Real-IP fallback and the subnet
+//! derivation stay Go-identical.
 use super::{headers::trim_space, projection::first_value};
+use crate::network::proxy::Cidr;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 
 /// Go `net.ParseIP`: textual IPv4 or IPv6 without a zone. An IPv4-mapped IPv6
@@ -35,10 +45,12 @@ fn local(ip: IpAddr) -> bool {
     }
 }
 
-/// Legacy default proxy trust: loopback, private and link-local unicast.
-/// Unparseable text is never trusted.
-pub fn is_trusted_proxy(ip: &str) -> bool {
-    parse_ip(ip).is_some_and(local)
+/// Legacy `isTrustedProxy` against an explicit allowlist (C1): `ip` is
+/// trusted only when it parses and a `trusted` entry contains it. Go's
+/// implicit loopback, private and link-local trust is removed, so an empty
+/// allowlist trusts nothing. Unparseable text is never trusted.
+pub fn is_trusted_proxy(ip: &str, trusted: &[Cidr]) -> bool {
+    parse_ip(ip).is_some_and(|ip| trusted.iter().any(|net| net.contains(ip)))
 }
 
 /// Legacy `isDatacenterIP`. `member` is the operator-supplied datacenter range
@@ -81,12 +93,13 @@ pub fn direct_peer(remote_addr: &str) -> String {
         .to_owned()
 }
 
-/// Legacy `clientIP`: from a trusted peer, the first nonblank X-Forwarded-For
-/// member, else a nonblank X-Real-IP, else the peer. From any other peer, the
-/// peer. The value is unvalidated text.
-pub fn client_ip(remote_addr: &str, fields: &[(String, String)]) -> String {
+/// Legacy `clientIP`: from a peer inside the `trusted` allowlist, the first
+/// nonblank X-Forwarded-For member, else a nonblank X-Real-IP, else the peer.
+/// From any other peer, and always with an empty allowlist, the peer. The
+/// value is unvalidated text.
+pub fn client_ip(remote_addr: &str, fields: &[(String, String)], trusted: &[Cidr]) -> String {
     let peer = direct_peer(remote_addr);
-    if !is_trusted_proxy(&peer) {
+    if !is_trusted_proxy(&peer, trusted) {
         return peer;
     }
     let chain = first_value(fields, "X-Forwarded-For");
@@ -116,9 +129,10 @@ pub fn forwarded_ip(fields: &[(String, String)]) -> String {
 }
 
 /// Legacy `clientSubnet`: the first three dot-separated labels of
-/// [`client_ip`] when it has exactly three dots, else the whole value.
-pub fn client_subnet(remote_addr: &str, fields: &[(String, String)]) -> String {
-    let ip = client_ip(remote_addr, fields);
+/// [`client_ip`] (same `trusted` allowlist) when it has exactly three dots,
+/// else the whole value.
+pub fn client_subnet(remote_addr: &str, fields: &[(String, String)], trusted: &[Cidr]) -> String {
+    let ip = client_ip(remote_addr, fields, trusted);
     if ip.matches('.').count() == 3 {
         return ip.splitn(4, '.').take(3).collect::<Vec<_>>().join(".");
     }

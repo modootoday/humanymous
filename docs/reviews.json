@@ -9899,9 +9899,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/network/http/peek.rs",
-      "sha256": "22456f2818dcacabcbf60ad1d4d0b7ab1d45f2336622ab40af3ed145be8f92cf",
-      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Port of h1capture.go peekH1HeaderOrder (Go oracle 981d25c): 64 KiB cap, request line skipped, CR/LF right-trim, blank line ends the section, names lowercased with Go TrimSpace and per-byte U+FFFD for invalid UTF-8, duplicates kept, every consumed byte replayed before the live stream. peek_tcp applies one absolute 750 ms deadline and restores the previous read timeout. Only a complete, non-empty socket peek mints a WireOrder, whose apply sets names and order_reliable (legacy mergeObservation); this refuses Go partial-order reliability. Not wired into any listener.",
+      "sha256": "518801a1904f973906514d278819e457d66465f09bda0cb96a282c5d56f86b66",
+      "reviewer": "claude agent review 2026-11-19 (Claude Code session; owner sample pending)",
+      "notes": "Port of h1capture.go peekH1HeaderOrder (Go oracle 981d25c): 64 KiB cap, request line skipped, CR/LF right-trim, blank line ends the section, names lowercased with Go TrimSpace and per-byte U+FFFD for invalid UTF-8, duplicates kept, every consumed byte replayed before the live stream. peek_tcp applies one absolute 750 ms deadline and restores the previous read timeout. Any non-empty socket peek, partial included, mints a WireOrder, whose apply sets names and order_reliable, Go-identical to mergeObservation under B1 (2026-11-19 review fix); restoring the previous read timeout where Go clears it is the only difference. Not wired into any listener.",
       "pages": [
         "docs/reference/supported-topologies.md",
         "docs/concepts/how-gate-sees-a-request.md"
@@ -9919,9 +9919,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/network/http/client.rs",
-      "sha256": "5f5649e1ca5369764cb72f2ec3e40e8c9c3410bc5d3d48e6a406373f4f085c2c",
-      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Port of headerinfo.go clientIP/forwardedIP/clientSubnet/directPeer/isTrustedProxy and server.go isDatacenterIP with Go net.SplitHostPort, net.ParseIP and TrimSpace semantics; the datacenter set is a caller membership function that fails open when empty. Module doc states these are legacy scoring-input text transforms that never authenticate a peer (B26 keeps transport identity in network::proxy).",
+      "sha256": "a72e2de903fec0141bbcb2ef345b5007ef5565c78bf1ae598aa374cd078cd544",
+      "reviewer": "claude agent review 2026-11-19 (Claude Code session; owner sample pending)",
+      "notes": "Port of headerinfo.go clientIP/forwardedIP/clientSubnet/directPeer/isTrustedProxy and server.go isDatacenterIP with Go net.SplitHostPort, net.ParseIP and TrimSpace semantics; the datacenter set is a caller membership function that fails open when empty. Module doc states these are legacy scoring-input text transforms that never authenticate a peer (B26 keeps transport identity in network::proxy). 2026-11-19 review fix: forwarded-header trust now comes only from a caller-supplied proxy::Cidr allowlist, empty by default (trusts nothing), per owner decision C1 and plan B26; Go's implicit private-range trust is removed and the module doc states the difference.",
       "pages": [
         "docs/reference/supported-topologies.md",
         "docs/concepts/how-gate-sees-a-request.md"
@@ -9929,9 +9929,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/network/http/tests.rs",
-      "sha256": "cb32ae4c056d78bcff24a4a467e82a3c3d16aa55db98895fd3887775846196a7",
-      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "One-to-one ports of the five headerinfo_test.go cases, differential checks against headerinfo-go-golden.json (59 addresses, 23 remote addresses, 29 forwarding cases, 21 projections, 15 loopback TCP peeks with byte-exact replay), WireOrder minting limits and an absolute-deadline slow-drip socket test. Three deliberate source mutations each failed the golden tests.",
+      "sha256": "9bc71a589b0e62a10a0e786b354820b95cf94521b54e712b8993193551f23487",
+      "reviewer": "claude agent review 2026-11-19 (Claude Code session; owner sample pending)",
+      "notes": "One-to-one ports of the five headerinfo_test.go cases, differential checks against headerinfo-go-golden.json (59 addresses, 23 remote addresses, 29 forwarding cases, 21 projections, 15 loopback TCP peeks with byte-exact replay), WireOrder minting (any non-empty socket peek, Go mergeObservation reliability pinned per golden peek), an absolute-deadline slow-drip socket test, and C1 allowlist tests: Go goldens compared under an allowlist covering Go's implicit ranges, and the empty default pinned to the direct peer (2026-11-19 review fix). Three deliberate source mutations each failed the golden tests.",
       "pages": [
         "docs/reference/supported-topologies.md",
         "docs/concepts/how-gate-sees-a-request.md"

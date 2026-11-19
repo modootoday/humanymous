@@ -31,8 +31,9 @@ pub enum PeekError {
     Io(ErrorKind),
 }
 
-/// Header names observed in wire order by a complete socket peek. Only
-/// [`peek_tcp`] can mint one, so a caller-supplied list cannot claim order.
+/// Header names observed in wire order by a socket peek. Only [`peek_tcp`]
+/// can mint one, so a caller-supplied list cannot claim order (Go peeked only
+/// the accepted connection, so this adds no Go-observable difference).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WireOrder(Vec<String>);
 
@@ -72,11 +73,13 @@ impl Peek {
     pub fn outcome(&self) -> Result<(), PeekError> {
         self.outcome
     }
-    /// Wire order for the observation, only from a complete, non-empty socket
-    /// peek. Go also marked a partial order reliable; this refuses it.
+    /// Wire order for the observation from any non-empty socket peek,
+    /// including a partial one that stopped on EOF, the byte cap, the
+    /// deadline or a read error. Go-identical (scoring-freeze row, B1): the
+    /// Go server recorded the names whatever the peek error and
+    /// `mergeObservation` marked any non-empty order reliable.
     pub fn wire_order(&self) -> Option<WireOrder> {
-        (self.socket && self.outcome.is_ok() && !self.names.is_empty())
-            .then(|| WireOrder(self.names.clone()))
+        (self.socket && !self.names.is_empty()).then(|| WireOrder(self.names.clone()))
     }
     /// The consumed bytes followed by the rest of the stream.
     pub fn into_replay<R: Read>(self, rest: R) -> Chain<Cursor<Vec<u8>>, R> {
@@ -170,8 +173,10 @@ pub fn peek_header_order(stream: &mut impl Read) -> Peek {
     peek_with(false, |buffer| stream.read(buffer))
 }
 
-/// Peek an accepted socket under one absolute [`PEEK_DEADLINE`]; a slow sender
-/// cannot extend it byte by byte. The previous read timeout is restored.
+/// Peek an accepted socket under one absolute [`PEEK_DEADLINE`], as Go's
+/// `SetReadDeadline(now + 750 ms)`; a slow sender cannot extend it byte by
+/// byte. The previous read timeout is restored afterwards, where Go cleared
+/// the deadline.
 pub fn peek_tcp(stream: &TcpStream) -> Peek {
     let previous = match stream.read_timeout() {
         Ok(previous) => previous,
