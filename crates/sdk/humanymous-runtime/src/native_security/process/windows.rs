@@ -86,3 +86,38 @@ pub fn current_identity() -> io::Result<WindowsIdentity> {
         enabled_administrator,
     })
 }
+
+/// Whether owner-assigning privileges are ENABLED in the actual process token.
+/// Present-but-disabled privileges report `false`. Read-only: no adjustment.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct OwnerPrivileges {
+    /// `SeRestorePrivilege` enabled: any owner may be assigned.
+    pub restore: bool,
+    /// `SeTakeOwnershipPrivilege` enabled.
+    pub take_ownership: bool,
+}
+
+/// Query `TokenPrivileges` of the current process token (D5-N4 option (a)
+/// fixture, issue #75 comment 6999924070). Never adjusts any privilege.
+pub fn current_owner_privileges() -> io::Result<OwnerPrivileges> {
+    let token = HACCESSTOKEN::GetCurrentProcessToken();
+    let TokenInfo::Privileges(privileges) = token
+        .GetTokenInformation(co::TOKEN_INFORMATION_CLASS::Privileges)
+        .map_err(error)?
+    else {
+        return Err(io::Error::other("native token privileges unavailable"));
+    };
+    let restore = winsafe::LookupPrivilegeValue(None, co::SE_PRIV::RESTORE_NAME).map_err(error)?;
+    let take =
+        winsafe::LookupPrivilegeValue(None, co::SE_PRIV::TAKE_OWNERSHIP_NAME).map_err(error)?;
+    let enabled = |luid| {
+        privileges
+            .Privileges()
+            .iter()
+            .any(|p| p.Luid == luid && p.Attributes.has(co::SE_PRIV_ATTR::ENABLED))
+    };
+    Ok(OwnerPrivileges {
+        restore: enabled(restore),
+        take_ownership: enabled(take),
+    })
+}

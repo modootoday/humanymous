@@ -404,7 +404,7 @@ jobs:
   dotnet:
     needs: [policy]
     if: ${{ !cancelled() && needs.policy.result == 'success' }}
-    runs-on: ubuntu-24.04
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 45
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -415,9 +415,23 @@ jobs:
       with:
         toolchain: 1.99.1
     - name: Fetch the SHA-512-pinned .NET SDK and execute the hosted provider in a transient systemd scope
+      if: runner.os == 'Linux'
       run: cargo run --locked -p humanymous-delivery -- component dotnet-host
     - name: Fetch the SHA-512-pinned .NET SDK and execute the .NET package matrix (JIT and NativeAOT, source and packed) in a transient systemd scope
+      if: runner.os == 'Linux'
       run: cargo run --locked -p humanymous-delivery -- component dotnet-package
+    - name: Prove secondary-logon std-handle delivery to the NoProfile standard-user actor (SoT N1)
+      if: runner.os == 'Windows'
+      run: cargo run --locked -p humanymous-delivery -- component dotnet-stdio
+    - name: Fetch the SHA-512-pinned win-x64 .NET SDK and execute the hosted provider through the NoProfile standard-user actor runner child (SoT N3/N4)
+      if: runner.os == 'Windows'
+      run: cargo run --locked -p humanymous-delivery -- component dotnet-host
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+        - ubuntu-24.04
+        - windows-2025
   advisories:
     needs: [policy, node]
     if: ${{ !cancelled() && needs.policy.result == 'success' }}

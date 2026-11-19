@@ -1,5 +1,10 @@
 //! Opt-in CI actor metadata carrier, not product authority or host attestation.
-//! Exact cross-process producer-handle/provider association remains Unsupported.
+//! The publisher never associates a producer. The inspector associates one only
+//! after [`InspectedActorContext::bind_creator_channel`] (SoT
+//! dotnet-protected-host-launch N3, owner decision D5(a)): the exact envelope
+//! this process read from the creator pipe it inherited must equal the
+//! inspected file bytes and nonce. Path reopening or hash equality alone never
+//! does.
 use std::{
     fs::{self, File, OpenOptions},
     io::{self, Read, Write},
@@ -106,7 +111,7 @@ fn inspect(file: &File, actor: &str, directory: bool) -> io::Result<()> {
     let actor: LocalBox<Sid> = actor.parse()?;
     descriptor(&sd, &actor, directory)
 }
-fn set_new_acl(file: &mut File, actor: &str, directory: bool) -> io::Result<()> {
+fn owner_supported(file: &File) -> io::Result<()> {
     // Never repair/change an owner. An unsupported default token owner fails.
     let sd = wrappers::GetSecurityInfo(
         file,
@@ -118,12 +123,18 @@ fn set_new_acl(file: &mut File, actor: &str, directory: bool) -> io::Result<()> 
     if sd.owner() != Some(&*admin) && sd.owner() != Some(&*system) {
         return Err(denied());
     }
-    let sddl = if directory {
+    Ok(())
+}
+fn dacl_sddl(actor: &str, directory: bool) -> String {
+    if directory {
         format!("D:P(A;OICI;FA;;;BA)(A;OICI;FA;;;SY)(A;;0x1200a9;;;{actor})")
     } else {
         format!("D:P(A;;FA;;;BA)(A;;FA;;;SY)(A;;0x120089;;;{actor})")
-    };
-    let sd: LocalBox<SecurityDescriptor> = sddl.parse()?;
+    }
+}
+fn set_new_acl(file: &mut File, actor: &str, directory: bool) -> io::Result<()> {
+    owner_supported(file)?;
+    let sd: LocalBox<SecurityDescriptor> = dacl_sddl(actor, directory).parse()?;
     wrappers::SetSecurityInfo(
         file,
         SeObjectType::SE_FILE_OBJECT,
@@ -144,6 +155,25 @@ fn opened(path: &Path, directory: bool, access: u32) -> io::Result<File> {
         .open(path)
 }
 
+/// Descriptor-at-create carrier step (SoT dotnet-protected-host-launch N4,
+/// D5-N4 option (a), issue #75 comment 6999924070). The publisher passes the
+/// exact SDDL, owner `O:BA` included. An implementation applies it in the
+/// creating call (`CreateDirectoryW`/`CreateFileW` `SECURITY_ATTRIBUTES`),
+/// refuses an existing object, and never changes the owner of any object. The
+/// publisher re-verifies owner and DACL with its unchanged checks afterwards.
+pub trait CarrierCreator {
+    /// Create a NEW directory at exactly `path` with `sddl` applied at creation.
+    fn create_directory(&self, path: &Path, sddl: &str) -> io::Result<()>;
+    /// Create a NEW file at exactly `path` (`CREATE_NEW`, share 0, no
+    /// reparse-point follow) with `sddl` applied at creation; return its owner.
+    fn create_file(&self, path: &Path, sddl: &str) -> io::Result<Box<dyn CreatedCarrierFile>>;
+}
+/// Retained creation owner. Dropping closes the handle; it never deletes.
+pub trait CreatedCarrierFile {
+    /// Borrow the created open file, read/write with `READ_CONTROL`.
+    fn file(&self) -> &File;
+}
+
 /// Real owned files/pins. This is metadata publication, not trusted launch proof.
 /// No Debug/Serialize, inner File getter, implicit cleanup or authority upgrade.
 pub struct PublishedActorContext {
@@ -155,6 +185,7 @@ pub struct PublishedActorContext {
     created_context: bool,
     created_binding: bool,
     file_pins: Vec<File>,
+    created_files: Vec<Box<dyn CreatedCarrierFile>>,
     root_pin: Option<File>,
 }
 /// A publication/cleanup failure retains actual owned files and handles.
@@ -185,6 +216,39 @@ impl PublishedActorContext {
             io::ErrorKind::Unsupported,
             "producer handle association unqualified",
         ))
+    }
+    fn write_new_created(
+        &mut self,
+        creator: &dyn CarrierCreator,
+        name: &str,
+        bytes: &[u8],
+    ) -> io::Result<()> {
+        if name != CONTEXT && name != BINDING {
+            return Err(denied());
+        }
+        let path = self.root.join(name);
+        let sddl = format!("O:BA{}", dacl_sddl(&self.actor, false));
+        let created = creator.create_file(&path, &sddl)?;
+        match name {
+            CONTEXT => self.created_context = true,
+            _ => self.created_binding = true,
+        }
+        // Retain the creation owner through validation; cleanup closes it first.
+        self.created_files.push(created);
+        let file = self.created_files.last().ok_or_else(denied)?.file();
+        owner_supported(file)?;
+        inspect(file, &self.actor, false)?;
+        let mut writer = file;
+        writer.write_all(bytes)?;
+        file.sync_all()?;
+        drop(self.created_files.pop());
+        let pin = opened(&path, false, READ)?;
+        inspect(&pin, &self.actor, false)?;
+        if pin.metadata()?.len() != bytes.len() as u64 {
+            return Err(denied());
+        }
+        self.file_pins.push(pin);
+        Ok(())
     }
     fn write_new(&mut self, name: &str, bytes: &[u8]) -> io::Result<()> {
         let path = self.root.join(name);
@@ -221,6 +285,7 @@ impl PublishedActorContext {
             return Err(denied());
         }
         self.file_pins.clear();
+        self.created_files.clear();
         if self.created_context {
             fs::remove_file(self.root.join(CONTEXT))?;
             self.created_context = false;
@@ -260,6 +325,29 @@ pub fn publish_actor_context(
     context: &[u8],
     binding: &[u8],
 ) -> Result<PublishedActorContext, ContextPublishError> {
+    publish(None, run_nonce, actor_sid, context, binding)
+}
+
+/// [`publish_actor_context`] with the carrier directory and files created by
+/// `creator` with owner Administrators set at creation (D5-N4 option (a)).
+/// Every publisher check is unchanged and runs again after creation.
+pub fn publish_actor_context_created_with(
+    creator: &dyn CarrierCreator,
+    run_nonce: &str,
+    actor_sid: &str,
+    context: &[u8],
+    binding: &[u8],
+) -> Result<PublishedActorContext, ContextPublishError> {
+    publish(Some(creator), run_nonce, actor_sid, context, binding)
+}
+
+fn publish(
+    creator: Option<&dyn CarrierCreator>,
+    run_nonce: &str,
+    actor_sid: &str,
+    context: &[u8],
+    binding: &[u8],
+) -> Result<PublishedActorContext, ContextPublishError> {
     let prepare = || -> io::Result<PublishedActorContext> {
         nonce(run_nonce)?;
         if context.is_empty()
@@ -289,18 +377,33 @@ pub fn publish_actor_context(
             created_context: false,
             created_binding: false,
             file_pins: Vec::new(),
+            created_files: Vec::new(),
             root_pin: None,
         })
     };
     let mut owner = prepare().map_err(ContextPublishError::BeforeCreation)?;
-    fs::create_dir(&owner.root).map_err(ContextPublishError::BeforeCreation)?;
+    match creator {
+        Some(creator) => {
+            creator.create_directory(&owner.root, &format!("O:BA{}", dacl_sddl(actor_sid, true)))
+        }
+        None => fs::create_dir(&owner.root),
+    }
+    .map_err(ContextPublishError::BeforeCreation)?;
     owner.created_root = true;
     let result = (|| -> io::Result<()> {
         let mut root = opened(&owner.root, true, 0x60000)?;
         set_new_acl(&mut root, actor_sid, true)?;
         owner.root_pin = Some(root);
-        owner.write_new(CONTEXT, context)?;
-        owner.write_new(BINDING, binding)?;
+        match creator {
+            Some(creator) => {
+                owner.write_new_created(creator, CONTEXT, context)?;
+                owner.write_new_created(creator, BINDING, binding)?;
+            }
+            None => {
+                owner.write_new(CONTEXT, context)?;
+                owner.write_new(BINDING, binding)?;
+            }
+        }
         drop(owner.root_pin.take());
         let root = opened(&owner.root, true, READ)?;
         inspect(&root, actor_sid, true)?;
@@ -325,6 +428,40 @@ pub struct InspectedActorContext {
     binding: Vec<u8>,
     actor: String,
     nonce: String,
+    bound: bool,
+}
+/// One creator-channel frame as this process received it (SoT 3.1.4). The
+/// caller reads it from its own inherited stdin, after its native
+/// `GetFileType` query (N2), and passes the observed fact unchanged.
+pub struct CreatorChannelFrame<'a> {
+    /// The N2 observation: standard input is an anonymous pipe object.
+    pub stdin_pipe: bool,
+    /// Exactly one envelope followed by EOF was read inside the run budget.
+    pub single_frame_eof: bool,
+    /// Envelope run nonce.
+    pub run_nonce: &'a str,
+    /// Exact envelope context bytes.
+    pub context: &'a [u8],
+    /// Exact envelope binding bytes.
+    pub binding: &'a [u8],
+}
+/// Pure N3 rule: every byte and the nonce must equal the inspected carrier.
+fn creator_channel_matches(
+    nonce: &str,
+    context: &[u8],
+    binding: &[u8],
+    frame: &CreatorChannelFrame<'_>,
+) -> io::Result<()> {
+    if !frame.stdin_pipe || !frame.single_frame_eof {
+        return Err(io::Error::new(
+            io::ErrorKind::Unsupported,
+            "creator channel is not one piped frame",
+        ));
+    }
+    if frame.run_nonce != nonce || frame.context != context || frame.binding != binding {
+        return Err(denied());
+    }
+    Ok(())
 }
 impl InspectedActorContext {
     /// Claimed codec bytes from the actual pinned regular file; still unverified.
@@ -343,12 +480,27 @@ impl InspectedActorContext {
     pub fn run_nonce(&self) -> &str {
         &self.nonce
     }
-    /// Mandatory unresolved gate before any trusted-profile/HostIO upgrade.
+    /// Bind this inspection to the creator-channel envelope (N3). Allowed
+    /// once; a mismatch leaves the carrier unbound and fails closed.
+    pub fn bind_creator_channel(&mut self, frame: &CreatorChannelFrame<'_>) -> io::Result<()> {
+        if self.bound {
+            return Err(denied());
+        }
+        creator_channel_matches(&self.nonce, &self.context, &self.binding, frame)?;
+        self.bound = true;
+        Ok(())
+    }
+    /// Producer association gate: Ok only after a successful
+    /// [`Self::bind_creator_channel`] on this exact inspected carrier.
     pub fn require_exact_producer_identity(&self) -> io::Result<()> {
-        Err(io::Error::new(
-            io::ErrorKind::Unsupported,
-            "producer handle association unqualified",
-        ))
+        if self.bound {
+            Ok(())
+        } else {
+            Err(io::Error::new(
+                io::ErrorKind::Unsupported,
+                "producer handle association unqualified",
+            ))
+        }
     }
 }
 fn bounded_read(file: &mut File, limit: usize) -> io::Result<Vec<u8>> {
@@ -399,6 +551,7 @@ pub fn inspect_actor_context(path: &Path) -> io::Result<InspectedActorContext> {
         binding: binding_bytes,
         actor: identity.sid().into(),
         nonce: run_nonce.into(),
+        bound: false,
     })
 }
 
@@ -406,6 +559,60 @@ pub fn inspect_actor_context(path: &Path) -> io::Result<InspectedActorContext> {
 mod tests {
     use super::*;
     const ACTOR: &str = "S-1-5-21-1-2-3-1001";
+    #[test]
+    fn creator_channel_binding_requires_one_piped_frame_and_exact_bytes() {
+        let nonce = "a".repeat(32);
+        let frame = |pipe: bool, eof: bool, n: &'static str, c: &'static [u8], b: &'static [u8]| {
+            (pipe, eof, n, c, b)
+        };
+        let check = |(pipe, eof, n, c, b): (bool, bool, &str, &[u8], &[u8])| {
+            creator_channel_matches(
+                &nonce,
+                b"context",
+                b"binding",
+                &CreatorChannelFrame {
+                    stdin_pipe: pipe,
+                    single_frame_eof: eof,
+                    run_nonce: n,
+                    context: c,
+                    binding: b,
+                },
+            )
+            .map_err(|error| error.kind())
+        };
+        let same: &'static str = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        assert!(check(frame(true, true, same, b"context", b"binding")).is_ok());
+        for (input, kind) in [
+            (
+                frame(false, true, same, b"context", b"binding"),
+                io::ErrorKind::Unsupported,
+            ),
+            (
+                frame(true, false, same, b"context", b"binding"),
+                io::ErrorKind::Unsupported,
+            ),
+            (
+                frame(
+                    true,
+                    true,
+                    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                    b"context",
+                    b"binding",
+                ),
+                io::ErrorKind::PermissionDenied,
+            ),
+            (
+                frame(true, true, same, b"context ", b"binding"),
+                io::ErrorKind::PermissionDenied,
+            ),
+            (
+                frame(true, true, same, b"context", b"binding\n"),
+                io::ErrorKind::PermissionDenied,
+            ),
+        ] {
+            assert_eq!(check(input), Err(kind));
+        }
+    }
     #[test]
     fn nonce_and_exact_role_descriptors_reject_owner_or_write_fallbacks() {
         assert!(nonce(&"a".repeat(32)).is_ok());

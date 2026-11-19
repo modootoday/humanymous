@@ -3646,9 +3646,9 @@
     },
     {
       "source": "crates/integrations/humanymous-platform/Cargo.toml",
-      "sha256": "ac1b0fb0d6ce9324cba12c3965b427e2f99d53a5c92658aa194ce8f0a813b880",
-      "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Manifest for humanymous-platform (readme README.md, publish = [\"crates-io\"] because core, runtime and CLI packaged tests need it as a versioned dev-dependency in the first crates.io wave; no upload is performed) with empty defaults and two independent opt-in features: testing (serde, serde_json) and windows-object (Windows-only windows-sys =0.61.2 filesystem/security features and windows-permissions =0.2.4). It declares the linux_tree_inventory example behind testing and local lints deny unsafe_code with a comment preserving six function-local Windows bridge exceptions.",
+      "sha256": "761b74358db363c57dd2bc17530d5f43a36af38cd2d04b88ae6539d740eb30da",
+      "reviewer": "claude agent first-pass review 2026-11-19 (Claude Code author session; independent agent review pending)",
+      "notes": "Manifest for humanymous-platform (readme README.md, publish = [\"crates-io\"] because core, runtime and CLI packaged tests need it as a versioned dev-dependency in the first crates.io wave; no upload is performed) with empty defaults and two independent opt-in features: testing (serde, serde_json) and windows-object (Windows-only windows-sys =0.61.2 filesystem/security features and windows-permissions =0.2.4). It declares the linux_tree_inventory example behind testing and local lints deny unsafe_code with a comment preserving six function-local Windows bridge exceptions. Adds the default-off windows-file-create feature (implies windows-object) for the Root-accepted B1 create_file primitive; no dependency or lockfile change.",
       "pages": [
         "docs/reference/production-vs-reference.md"
       ]
@@ -3898,9 +3898,9 @@
     },
     {
       "source": "crates/integrations/humanymous-platform/src/windows_object/mod.rs",
-      "sha256": "eb27376e362a10a4acbcd353dcf2ae4df5265bb115388e6931c2b8a1c24d69fb",
-      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Windows-only module API: redacted BridgeError, OpenedObjectObservation (24-byte volume+file identity, volume GUID prefix, directory flag) that external code cannot construct (compile_fail doctest), a freely forgeable UnverifiedIdentityClaim wire type whose equality grants nothing, inspect_opened on the same live File, and create_directory_with_descriptor returning a must_use CreatedDirectory with no Drop deletion. Docs state it does not authenticate producers, processes or hosted environments and that queries may block in the kernel. 2026-11-18: exports stdin_is_pipe (SoT N2, D3).",
+      "sha256": "4dd62cb8fc4a2c2f142349aa14bfcff88438e5a2fd929745e9659f90f3df2756",
+      "reviewer": "claude agent first-pass review 2026-11-19 (Claude Code author session; independent agent review pending)",
+      "notes": "Windows-only module API: redacted BridgeError, OpenedObjectObservation (24-byte volume+file identity, volume GUID prefix, directory flag) that external code cannot construct (compile_fail doctest), a freely forgeable UnverifiedIdentityClaim wire type whose equality grants nothing, inspect_opened on the same live File, and create_directory_with_descriptor returning a must_use CreatedDirectory with no Drop deletion. Docs state it does not authenticate producers, processes or hosted environments and that queries may block in the kernel. 2026-11-18: exports stdin_is_pipe (SoT N2, D3). With the default-off windows-file-create feature it also exposes the B1 create_file module.",
       "pages": [
         "docs/reference/production-vs-reference.md"
       ]
@@ -7522,7 +7522,7 @@
     {
       "source": "crates/sdk/humanymous-runtime/src/audit/storage/mod.rs",
       "sha256": "94ba932d45b00ea941ca2fa0d9c5e34cd2c0ce5fad4e536bafecccd21a17d905",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
+      "reviewer": "claude agent first-pass review 2026-11-19 (Claude Code author session; independent agent review pending)",
       "notes": "Audit local storage module root: wires the exclusive lock, framing, private state, trusted snapshot, Windows permissions, history verification, witness recovery and WAL, and provides recover_segment, which reads a regular-file JSONL segment and, only for the terminal segment, truncates and syncs an incomplete final frame. A test shows the repair persists and a reopen is clean. Parsing does not authenticate the chain and hostile directory owners are out of scope.",
       "pages": [
         "docs/reference/security-audit.md"
@@ -9853,18 +9853,18 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/native_security/process/mod.rs",
-      "sha256": "b657be7b5d55a6a21644306a9419cae59925fddbb8eaffbd411c955b99591fc6",
-      "reviewer": "claude agent first-pass review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Process identity helpers: re-exports Windows WindowsIdentity/current_identity, validates owned service names as humanymous-lab- plus 1..48 lowercase alphanumerics or hyphens, returns the Unix effective UID via rustix, and defines installer_token_allowed (neither elevated nor enabled Administrators) and enabled_admin_group (S-1-5-32-544 with the enabled bit). Tests check deny-only admin groups do not count and installation requires both conditions. 2026-11-18: current_uids returns real and effective uid (Unix) for the admission actor check.",
+      "sha256": "367525a91ccbbd81dda1341b290752d9d90a7d437928723788abe85579d38ef9",
+      "reviewer": "claude agent first-pass review 2026-11-19 (Claude Code author session; independent agent review pending)",
+      "notes": "Process identity helpers: re-exports Windows WindowsIdentity/current_identity, validates owned service names as humanymous-lab- plus 1..48 lowercase alphanumerics or hyphens, returns the Unix effective UID via rustix, and defines installer_token_allowed (neither elevated nor enabled Administrators) and enabled_admin_group (S-1-5-32-544 with the enabled bit). Tests check deny-only admin groups do not count and installation requires both conditions. 2026-11-18: current_uids returns real and effective uid (Unix) for the admission actor check. Also re-exports OwnerPrivileges and current_owner_privileges on Windows.",
       "pages": [
         "docs/reference/install-requirements.md"
       ]
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/native_security/process/windows.rs",
-      "sha256": "28caa04853dd4fe6d24ad28a5dc75ee6ef3003d5c2e3557063f85d0c2606cc3b",
-      "reviewer": "Codex native-abi chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
-      "notes": "WindowsIdentity fields cannot be caller-constructed; reads actual process TokenUser, elevation and enabled group attributes. Rejects any thread impersonation or unexpected token response. Queries do not change a token, prove a binary signature, authenticate a request or establish hosted provenance. Pages reviewed the delegated peer source report, not a native/API execution or external certification. Carried unchanged from crates/native-security/src/process/windows.rs: identical SHA-256 after the crate consolidation, so the reviewed bytes are the same.",
+      "sha256": "23a5061728151e93dc97166fd33846e6afedaffb3473b715c906a1bec1258bf4",
+      "reviewer": "claude agent first-pass review 2026-11-19 (Claude Code author session; independent agent review pending)",
+      "notes": "WindowsIdentity fields cannot be caller-constructed; reads actual process TokenUser, elevation and enabled group attributes. Rejects any thread impersonation or unexpected token response. Queries do not change a token, prove a binary signature, authenticate a request or establish hosted provenance. Pages reviewed the delegated peer source report, not a native/API execution or external certification. Carried unchanged from crates/native-security/src/process/windows.rs: identical SHA-256 after the crate consolidation, so the reviewed bytes are the same. current_owner_privileges reads TokenPrivileges of the current process token through winsafe and reports whether SeRestorePrivilege and SeTakeOwnershipPrivilege are ENABLED (present-but-disabled is false); it never adjusts a privilege. Used by the D5-N4 carrier-owner fixture.",
       "pages": [
         "docs/reference/install-requirements.md"
       ]
@@ -9908,9 +9908,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/native_security/storage/actor_context.rs",
-      "sha256": "e9aa1055999d6fbed95f89ed8d45858fc9aba5bf3cfa45a3089aadd60a1d96d1",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Windows CI actor metadata carrier: publish_actor_context requires an elevated, admin-enabled publisher, a 32-hex nonce whose hmrun account resolves to the given actor SID, and writes create-new context.json (64 KiB) and binding.json (16 KiB) under ProgramData hmctx-nonce with protected DACLs (Administrators and SYSTEM full, actor read or read/execute) and pins; finish deletes only those files and the empty directory. inspect_actor_context lets the ordinary actor verify owner, exact three-ACE DACL and bounded bytes. Both require_exact_producer_identity calls always return Unsupported; the test checks nonce and descriptor rules. Reader page coverage is indirect.",
+      "sha256": "6472f233c109c2057ddd20861523f7075c6ce713de802ccc37c39af50e22ea9d",
+      "reviewer": "claude agent first-pass review 2026-11-19 (Claude Code author session; independent agent review pending)",
+      "notes": "Windows CI actor metadata carrier: publish_actor_context requires an elevated, admin-enabled publisher, a 32-hex nonce whose hmrun account resolves to the given actor SID, and an Administrators or SYSTEM owner, and writes create-new context.json (64 KiB) and binding.json (16 KiB) under ProgramData hmctx-nonce with protected DACLs (Administrators and SYSTEM full, actor read or read/execute) and pins; finish deletes only those files and the empty directory. inspect_actor_context lets the ordinary actor verify owner, exact three-ACE DACL and bounded bytes. bind_creator_channel (SoT N3, D5(a)) binds once: a non-pipe stdin or a frame not followed by EOF is Unsupported, and a nonce or context/binding byte mismatch against the carrier is PermissionDenied; require_exact_producer_identity returns Ok only after that binding. publish_actor_context_created_with (D5-N4 option (a), issue #75 comment 6999924070) takes a CarrierCreator that must apply the publisher's exact O:BA SDDL at creation; the publisher retains the created file owner, then re-runs the unchanged owner check and exact-DACL inspect before writing, and the plain publish path is unchanged. The unit test is cfg(windows) and runs on windows-2025 through the delivery dotnet-stdio component. Reader page coverage is indirect.",
       "pages": [
         "docs/reference/install-requirements.md",
         "docs/reference/cli-config-policy.md"
@@ -9918,9 +9918,9 @@
     },
     {
       "source": "crates/sdk/humanymous-runtime/src/native_security/storage/mod.rs",
-      "sha256": "9ee30f1a1dfb291b1d88b5ce20f3d306c2f9e2039a309e0a525f0bd308f97701",
-      "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Storage module root for native file-handle privacy policies shared by audit, authority and installer: on Windows it exposes actor-context publish/inspect, WindowsPrivacy/InstallationObject verification, private directory creators and SCM service-role grant/verify/revoke/resolve; the user_root_journal_model is compiled only under test.",
+      "sha256": "29c0f1a0dd28cd1bee65818a15f3528511fe854bbd1a985f71dd61cdfa898b92",
+      "reviewer": "claude agent first-pass review 2026-11-19 (Claude Code author session; independent agent review pending)",
+      "notes": "Storage module root for native file-handle privacy policies shared by audit, authority and installer: on Windows it exposes actor-context publish/inspect the N3 CreatorChannelFrame and the D5-N4 CarrierCreator hook, WindowsPrivacy/InstallationObject verification, private directory creators and SCM service-role grant/verify/revoke/resolve; the user_root_journal_model is compiled only under test.",
       "pages": [
         "docs/reference/install-requirements.md",
         "docs/reference/security-audit.md"
@@ -12071,6 +12071,24 @@
       "notes": "Fixture data only: Go CHSink outputs captured offline from 981d25c in the same pinned golang image under --network none (provenance embedded: command, uncommitted capture program SHA-256, raw output SHA-256, capture notes). Holds ten insert URLs, six chBatchBody bodies with their input records (non-finite confidences stored as 0 and flagged by nan_conf_at) and seven httptest scenarios with request fields, error texts and dropped counts. Contains no credential beyond a literal test user and password. Never regenerated to hide drift.",
       "pages": [
         "docs/reference/security-audit.md"
+      ]
+    },
+    {
+      "source": "crates/integrations/humanymous-platform/src/windows_object/create_file.rs",
+      "sha256": "c007935b96d2ffba06e6921e712d445e99dc691f9d7d80d014109666cea89892",
+      "reviewer": "claude agent first-pass review 2026-11-19 (Claude Code author session; independent agent review pending)",
+      "notes": "Root-accepted B1 descriptor-at-create FILE primitive (structural-development SoT), adopted from the reviewed candidate under .spec/evidence/20261106223747-cross-os-runner-research/b1-file-create-candidate and compiled only with the default-off windows-file-create feature. create_new_file_with_descriptor validates a drive-absolute UTF-16 locator (no UNC, device, verbatim, stream, traversal, reserved or trailing-dot names), preallocates the locator, obligation and attributes, then makes the one CreateFileW call (CREATE_NEW, 0xc0020000, share 0, FILE_FLAG_OPEN_REPARSE_POINT, borrowed descriptor, no inheritance) and adopts the handle once into a must-use CreatedFile that only lends its File. No open-existing, truncate, retry, owner repair or delete fallback. Two pure locator tests.",
+      "pages": [
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/integrations/humanymous-platform/src/windows_object/create_file/native_tests.rs",
+      "sha256": "546d1accf5bfe9dcc9be58ba6910c8141ae0c398a195037a3947cd4f664960fb",
+      "reviewer": "claude agent first-pass review 2026-11-19 (Claude Code author session; independent agent review pending)",
+      "notes": "Ignored native fixtures for B1. The four Root-listed ordinary-actor fixtures keep their HUMANYMOUS_B1_FIXTURE_PARENT gate and stay unrun. The D5-N4 option (a) fixture actual_elevated_administrators_owner_at_creation (issue #75 comment 6999924070) runs alone with --exact --ignored from delivery component dotnet-host under the elevated windows-2025 parent: directory and file created with owner Administrators at creation and a protected two-ACE DACL, CREATE_NEW refusing the existing file; it removes only what it created. Each step carries a step label (and the last OS error for a refused creation) so a CI failure names the step. The foreign-owner case moved to the runner carrier-owner-fixture, which measures token privileges first (decision (ii) strengthened).",
+      "pages": [
+        "docs/reference/production-vs-reference.md"
       ]
     }
   ],

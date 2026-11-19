@@ -48,15 +48,27 @@ pub fn validate(value: &Value) -> Result<()> {
         let tests = strings(&pilot["tests"])?;
         let helpers = strings(&pilot["helpers"])?;
         require(!tests.is_empty(), "pilot declares no tests")?;
+        // One test may be declared once per harness and OS: per-OS rows of
+        // the same harness (dotnet-hosted-linux/-windows) stay disjoint.
         for name in tests.iter().chain(&helpers) {
             require(
                 !name.is_empty()
                     && name
                         .bytes()
-                        .all(|b| b.is_ascii_alphanumeric() || b == b'_' || b == b':')
-                    && names.insert(format!("{}#{}#{name}", pilot["package"], pilot["target"])),
+                        .all(|b| b.is_ascii_alphanumeric() || b == b'_' || b == b':'),
                 "pilot test name invalid or duplicated",
             )?;
+            for os in os {
+                require(
+                    names.insert(format!(
+                        "{}#{}#{}#{name}",
+                        pilot["package"],
+                        pilot["target"],
+                        os.as_str().unwrap_or_default()
+                    )),
+                    "pilot test name invalid or duplicated",
+                )?;
+            }
         }
         match pilot["executor"].as_str() {
             Some("native-pilots") => {
@@ -78,15 +90,26 @@ pub fn validate(value: &Value) -> Result<()> {
                     "outer-grant pilots run unprivileged with an explicit true flag",
                 )?;
             }
-            Some("job") => require(
-                pilot["job"]["workflow"]
-                    .as_str()
-                    .is_some_and(|w| w.starts_with(".github/workflows/") && w.ends_with(".yml"))
-                    && pilot["job"]["name"].as_str().is_some_and(|n| !n.is_empty())
-                    && pilot["job"]["run"].as_str().is_some_and(|r| !r.is_empty())
-                    && helpers.is_empty(),
-                "job-executed pilot must name an exact workflow job step",
-            )?,
+            Some("job") => {
+                require(
+                    pilot["job"]["workflow"].as_str().is_some_and(|w| {
+                        w.starts_with(".github/workflows/") && w.ends_with(".yml")
+                    }) && pilot["job"]["name"].as_str().is_some_and(|n| !n.is_empty())
+                        && pilot["job"]["run"].as_str().is_some_and(|r| !r.is_empty())
+                        && helpers.is_empty(),
+                    "job-executed pilot must name an exact workflow job step",
+                )?;
+                if let Some(runner) = pilot["job"].get("runner") {
+                    // A bound runner names exactly one OS: the pilot's only OS.
+                    require(
+                        runner
+                            .as_str()
+                            .and_then(runner_os)
+                            .is_some_and(|family| os.len() == 1 && os[0] == family),
+                        "job runner must be a known image of the pilot's single OS",
+                    )?;
+                }
+            }
             _ => return Err("unknown pilot executor".into()),
         }
     }
@@ -185,6 +208,49 @@ pub fn applies(pilot: &Value, os: &str, arch: &str) -> bool {
         && pilot["arch"].as_str().is_none_or(|a| a == arch)
 }
 
+/// OS family of a pinned GitHub-hosted runner image label.
+fn runner_os(runner: &str) -> Option<&'static str> {
+    let (family, version) = runner.split_once('-')?;
+    if version.is_empty() || !version.bytes().all(|b| b.is_ascii_digit() || b == b'.') {
+        return None;
+    }
+    match family {
+        "ubuntu" => Some("linux"),
+        "windows" => Some("windows"),
+        "macos" => Some("macos"),
+        _ => None,
+    }
+}
+
+/// `job.runner` check: the job runs on that image (literal `runs-on`, or
+/// `${{ matrix.os }}` with the image in `matrix.os`) and the named step is not
+/// excluded there (no `if`, or exactly `runner.os == '<that OS>'`).
+fn step_runs_on(job: &yaml_rust2::Yaml, run: &str, runner: &str) -> bool {
+    let Some(family) = runner_os(runner) else {
+        return false;
+    };
+    let on_image = match job["runs-on"].as_str() {
+        Some("${{ matrix.os }}") => job["strategy"]["matrix"]["os"]
+            .as_vec()
+            .is_some_and(|list| list.iter().any(|os| os.as_str() == Some(runner))),
+        Some(literal) => literal == runner,
+        None => false,
+    };
+    let label = match family {
+        "linux" => "Linux",
+        "windows" => "Windows",
+        _ => "macOS",
+    };
+    let guard = format!("runner.os == '{label}'");
+    on_image
+        && job["steps"].as_vec().is_some_and(|steps| {
+            steps.iter().any(|step| {
+                step["run"].as_str() == Some(run)
+                    && (step["if"].is_badvalue() || step["if"].as_str() == Some(guard.as_str()))
+            })
+        })
+}
+
 /// Every job-executed pilot must name a step that exists in that job.
 pub fn verify_job_executors(root: &Path, declarations: &Value) -> Result<()> {
     for pilot in declarations["pilots"]
@@ -207,6 +273,18 @@ pub fn verify_job_executors(root: &Path, declarations: &Value) -> Result<()> {
             found,
             "declared pilot job step is absent from its workflow job",
         )?;
+        if let Some(runner) = pilot["job"].get("runner") {
+            require(
+                runner.as_str().is_some_and(|runner| {
+                    step_runs_on(
+                        job,
+                        pilot["job"]["run"].as_str().unwrap_or_default(),
+                        runner,
+                    )
+                }),
+                "declared pilot job step does not run on its declared runner",
+            )?;
+        }
     }
     Ok(())
 }
@@ -711,6 +789,67 @@ mod tests {
             }
         }
         assert!(verify_job_executors(&root, &value).is_err());
+    }
+    #[test]
+    fn job_runner_binds_the_step_to_the_declared_image() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let value = declarations().unwrap();
+        let windows = value["pilots"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|p| p["id"] == "dotnet-hosted-windows")
+            .unwrap()
+            .clone();
+        assert_eq!(windows["job"]["runner"], "windows-2025");
+        assert_eq!(windows["os"], json!(["windows"]));
+        for (runner, os, ok) in [
+            ("windows-2025", "windows", true),
+            ("ubuntu-24.04", "windows", false),
+            ("windows-2025", "linux", false),
+            ("windows", "windows", false),
+            ("plan9-1", "windows", false),
+        ] {
+            let mut pilot = windows.clone();
+            pilot["job"]["runner"] = json!(runner);
+            pilot["os"] = json!([os]);
+            let mut changed = value.clone();
+            for entry in changed["pilots"].as_array_mut().unwrap() {
+                if entry["id"] == "dotnet-hosted-windows" {
+                    *entry = pilot.clone();
+                }
+            }
+            assert_eq!(validate(&changed).is_ok(), ok, "{runner} {os}");
+        }
+        // A runner the job matrix lacks, or a step guarded for another OS.
+        let mut absent = value.clone();
+        let mut on_linux = value.clone();
+        for (changed, runner, run) in [
+            (&mut absent, "windows-2022", None),
+            (
+                &mut on_linux,
+                "windows-2025",
+                Some("cargo run --locked -p humanymous-delivery -- component dotnet-package"),
+            ),
+        ] {
+            for entry in changed["pilots"].as_array_mut().unwrap() {
+                if entry["id"] == "dotnet-hosted-windows" {
+                    entry["job"]["runner"] = json!(runner);
+                    if let Some(run) = run {
+                        entry["job"]["run"] = json!(run);
+                    }
+                }
+            }
+            assert!(verify_job_executors(&root, changed).is_err());
+        }
+        // A second declaration of a test for the same harness and OS stays refused.
+        let mut duplicate = value.clone();
+        duplicate["pilots"].as_array_mut().unwrap().push({
+            let mut copy = windows.clone();
+            copy["id"] = json!("dotnet-hosted-windows-copy");
+            copy
+        });
+        assert!(validate(&duplicate).is_err());
     }
     #[test]
     fn dotnet_macos_is_declared_unsupported_and_linux_windows_stay_accounted() {

@@ -19,18 +19,47 @@ use std::{
 
 /// The SDK version `adapters/dotnet/global.json` pins.
 pub const VERSION: &str = "10.0.403";
-/// Microsoft's official download URL for the pinned linux-x64 tarball.
-pub const URL: &str =
-    "https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.403/dotnet-sdk-10.0.403-linux-x64.tar.gz";
-/// Microsoft's official release metadata that publishes the digest below:
-/// `releases[].sdks[version == "10.0.403"].files[rid == "linux-x64",
-/// name ends ".tar.gz"].hash` (release 10.0.14, 2026-10-25), read 2026-11-18.
+/// Microsoft's official release metadata that publishes both digests below:
+/// `releases[].sdks[version == "10.0.403"].files[rid].hash` (release
+/// 10.0.14, 2026-10-25). linux-x64 `.tar.gz` read 2026-11-18; win-x64 `.zip`
+/// read 2026-11-19.
 pub const METADATA_URL: &str =
     "https://builds.dotnet.microsoft.com/dotnet/release-metadata/10.0/releases.json";
-/// SHA-512 of the tarball at [`URL`], copied from [`METADATA_URL`].
-pub const SHA512: &str = "b7b3d8461cf98b07d2552ce9199702fa3ad010ac2671a5f8cd5136f7534e50f6855ba7bbb02b11494563f1d04156276a31cda1103b900e5eecd0d9473dc7b9c5";
-/// Exact tarball size observed for [`URL`]; a different length never verifies.
-pub const SIZE: u64 = 240_199_984;
+
+/// One official SDK archive: URL, SHA-512 copied from [`METADATA_URL`], and
+/// the exact observed length (a different length never verifies).
+pub struct Pin {
+    pub rid: &'static str,
+    pub url: &'static str,
+    pub sha512: &'static str,
+    pub size: u64,
+    /// Archive file name inside the private directory.
+    pub archive: &'static str,
+    /// Muxer path relative to the extracted root.
+    pub muxer: &'static str,
+}
+pub const LINUX_X64: Pin = Pin {
+    rid: "linux-x64",
+    url: "https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.403/dotnet-sdk-10.0.403-linux-x64.tar.gz",
+    sha512: "b7b3d8461cf98b07d2552ce9199702fa3ad010ac2671a5f8cd5136f7534e50f6855ba7bbb02b11494563f1d04156276a31cda1103b900e5eecd0d9473dc7b9c5",
+    size: 240_199_984,
+    archive: "dotnet-sdk.tar.gz",
+    muxer: "dotnet",
+};
+pub const WIN_X64: Pin = Pin {
+    rid: "win-x64",
+    url: "https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.403/dotnet-sdk-10.0.403-win-x64.zip",
+    sha512: "7a114c318fa7f1d9822991b534b2814d0e78386ceda816b371f5141acefe741d87ccb606ede06cadac8f9ac5070e32b708a67bbd1619ff5e5a7858a27874ef48",
+    size: 300_745_255,
+    archive: "dotnet-sdk.zip",
+    muxer: "dotnet.exe",
+};
+/// The archive this host's provider acquires.
+pub const PIN: Pin = if cfg!(windows) { WIN_X64 } else { LINUX_X64 };
+/// Kept for the declared pilot and existing callers: this host's archive URL.
+pub const URL: &str = PIN.url;
+pub const SHA512: &str = PIN.sha512;
+pub const SIZE: u64 = PIN.size;
 const DOWNLOAD_BUDGET: Duration = Duration::from_secs(600);
 
 /// A verified, extracted private SDK root.
@@ -78,6 +107,7 @@ pub fn copy_verified(
     Ok(digest)
 }
 
+#[cfg_attr(windows, allow(dead_code, reason = "Windows unpacks the pinned zip"))]
 /// Extract a verified gzip tarball into the empty `destination`. Only plain
 /// relative regular files and directories are accepted: the pinned SDK has no
 /// links, devices or absolute members.
@@ -132,17 +162,46 @@ fn owner_only_file(path: &Path) -> Result<std::fs::File> {
         .open(path)
         .map_err(|e| format!(".NET SDK tarball: {e}"))
 }
-#[cfg(not(unix))]
+/// Windows: a new file in the administrator's private provider directory. The
+/// runner re-verifies every staged runtime byte against its own pin.
+#[cfg(windows)]
+fn owner_only_file(path: &Path) -> Result<std::fs::File> {
+    std::fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(path)
+        .map_err(|e| format!(".NET SDK archive: {e}"))
+}
+#[cfg(not(any(unix, windows)))]
 fn owner_only_file(_path: &Path) -> Result<std::fs::File> {
     super::unsupported()
+}
+#[cfg(windows)]
+fn sdk_root(root: &Path) -> Result<()> {
+    std::fs::create_dir(root).map_err(|e| format!(".NET SDK root: {e}"))
+}
+#[cfg(not(windows))]
+fn sdk_root(root: &Path) -> Result<()> {
+    super::private_dir(root)
+}
+#[cfg(windows)]
+fn unpack(archive: &Path, root: &Path) -> Result<u64> {
+    super::zip::extract(archive, root)
+}
+#[cfg(not(windows))]
+fn unpack(archive: &Path, root: &Path) -> Result<u64> {
+    extract(
+        std::fs::File::open(archive).map_err(|e| e.to_string())?,
+        root,
+    )
 }
 
 /// Download, verify and extract the pinned SDK into `private`, which must be
 /// a fresh owner-only directory. Records the custody facts in `report`.
 pub fn acquire(private: &Path, report: &mut Value) -> Result<Sdk> {
-    let tarball = private.join("dotnet-sdk.tar.gz");
+    let tarball = private.join(PIN.archive);
     let root = private.join("sdk");
-    super::private_dir(&root)?;
+    sdk_root(&root)?;
     let agent: ureq::Agent = ureq::Agent::config_builder()
         .https_only(true)
         .timeout_global(Some(DOWNLOAD_BUDGET))
@@ -166,15 +225,13 @@ pub fn acquire(private: &Path, report: &mut Value) -> Result<Sdk> {
             return Err(error);
         }
     };
-    let files = extract(
-        std::fs::File::open(&tarball).map_err(|e| e.to_string())?,
-        &root,
-    )?;
+    let files = unpack(&tarball, &root)?;
     std::fs::remove_file(&tarball).map_err(|e| e.to_string())?;
-    let muxer = root.join("dotnet");
+    let muxer = root.join(PIN.muxer);
     require(muxer.is_file(), ".NET SDK muxer absent after extraction")?;
     report["dotnet_sdk"] = json!({
         "version_pinned": VERSION,
+        "rid": PIN.rid,
         "source_url": URL,
         "metadata_url": METADATA_URL,
         "tarball_size": SIZE,
@@ -200,20 +257,32 @@ impl Sdk {
     ) -> Result<()> {
         report["stage"] = json!(stage);
         let muxer = super::text(&self.muxer)?;
-        let mut fixed = vec!["--signal=TERM", "--kill-after=15s", budget, &muxer];
-        fixed.extend_from_slice(args);
-        let fixed = crate::metrics::arguments("timeout", &fixed);
+        // Windows has no coreutils `timeout`; the job's own limit bounds it.
+        let (program, fixed) = if cfg!(windows) {
+            let _ = budget;
+            (
+                muxer.clone(),
+                args.iter().map(|arg| (*arg).to_owned()).collect::<Vec<_>>(),
+            )
+        } else {
+            let mut fixed = vec!["--signal=TERM", "--kill-after=15s", budget, &muxer];
+            fixed.extend_from_slice(args);
+            (
+                "timeout".to_owned(),
+                crate::metrics::arguments("timeout", &fixed),
+            )
+        };
         let log = dir.join(format!("{stage}.log"));
         let output = std::fs::File::create(&log).map_err(|e| e.to_string())?;
         let error =
             std::fs::File::create(log.with_extension("stderr.log")).map_err(|e| e.to_string())?;
         let mut path = OsString::from(self.root.as_os_str());
         if let Some(inherited) = std::env::var_os("PATH") {
-            path.push(":");
+            path.push(if cfg!(windows) { ";" } else { ":" });
             path.push(inherited);
         }
-        let measurement = crate::metrics::Measurement::start(root, "timeout", &fixed);
-        let status = Command::new("timeout")
+        let measurement = crate::metrics::Measurement::start(root, &program, &fixed);
+        let status = Command::new(&program)
             .args(&fixed)
             .current_dir(root.join("adapters/dotnet"))
             .env_remove("DOTNET_ROOT_X64")
@@ -259,16 +328,31 @@ mod tests {
             .collect()
     }
     #[test]
-    fn pins_name_one_official_tarball_and_digest() {
-        assert!(URL.starts_with("https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.403/"));
-        assert!(URL.ends_with(&format!("dotnet-sdk-{VERSION}-linux-x64.tar.gz")));
-        assert!(METADATA_URL.starts_with("https://builds.dotnet.microsoft.com/"));
-        assert_eq!(SHA512.len(), 128);
-        assert!(
-            SHA512
-                .bytes()
-                .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+    fn pins_name_one_official_archive_and_digest_per_rid() {
+        for (pin, suffix) in [(&LINUX_X64, "linux-x64.tar.gz"), (&WIN_X64, "win-x64.zip")] {
+            assert!(
+                pin.url
+                    .starts_with("https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.403/")
+            );
+            assert!(pin.url.ends_with(&format!("dotnet-sdk-{VERSION}-{suffix}")));
+            assert!(pin.url.contains(pin.rid));
+            assert_eq!(pin.sha512.len(), 128);
+            assert!(
+                pin.sha512
+                    .bytes()
+                    .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+            );
+        }
+        assert_ne!(LINUX_X64.sha512, WIN_X64.sha512);
+        assert_eq!(
+            URL,
+            if cfg!(windows) {
+                WIN_X64.url
+            } else {
+                LINUX_X64.url
+            }
         );
+        assert!(METADATA_URL.starts_with("https://builds.dotnet.microsoft.com/"));
         let global: Value = serde_json::from_str(include_str!(
             "../../../../../../adapters/dotnet/global.json"
         ))
