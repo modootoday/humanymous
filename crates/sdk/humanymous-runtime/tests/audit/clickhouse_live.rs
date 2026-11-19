@@ -1,12 +1,12 @@
-//! The ClickHouse projection against a real self-hosted ClickHouse server
-//! (for example the `clickhouse/clickhouse-server` image), reached at
-//! `HUMANYMOUS_TEST_CLICKHOUSE` (`http://host:port`) with the credential in
-//! `HUMANYMOUS_TEST_CLICKHOUSE_USER` and `HUMANYMOUS_TEST_CLICKHOUSE_PASSWORD`.
-//! It needs that server, and an unset variable fails the test instead of
-//! passing it. No CI job provides a server, so the target is `test = false`
-//! (left out of `cargo test` and the native runner's workspace harnesses) and
-//! the test is also `#[ignore]`. Run it by hand:
-//! `cargo test -p humanymous-runtime --test audit-clickhouse-live -- --ignored`.
+//! The ClickHouse projection against a real self-hosted ClickHouse server in
+//! Docker: the test starts the digest-pinned `clickhouse/clickhouse-server`
+//! image itself, with a random password and a loopback-only port, and removes
+//! the container when it ends, pass or fail. The target is `test = false`, so
+//! `cargo test` and the native runner's workspace harnesses do not collect a
+//! harness they cannot run; the required `msrv` job runs it explicitly on a
+//! Docker engine and the `quality` job lints it:
+//! `cargo test --locked -p humanymous-runtime --features audit --test
+//! audit-clickhouse-live -- --ignored`.
 use humanymous_runtime::audit::{
     projection::{
         RecordSink,
@@ -16,25 +16,107 @@ use humanymous_runtime::audit::{
 };
 use serde_json::Value;
 use std::{
-    env,
     io::{Read, Write},
     net::TcpStream,
-    time::Duration,
+    process::{Command, Stdio},
+    thread,
+    time::{Duration, Instant},
 };
+
+/// clickhouse/clickhouse-server:25.8-alpine (25.8.33), pinned by digest.
+const CLICKHOUSE: &str = "clickhouse/clickhouse-server@sha256:87e0a5b72f5465b18eacca7c76850e7ff551c9795c50e451f5646299e5e24146";
 
 struct Server {
     endpoint: String,
     user: String,
     password: String,
+    container: String,
+}
+
+/// Removes the container when the test ends, pass or fail.
+impl Drop for Server {
+    fn drop(&mut self) {
+        let _ = Command::new("docker")
+            .args(["rm", "--force", &self.container])
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .status();
+    }
+}
+
+fn docker(args: &[&str]) -> String {
+    let output = Command::new("docker").args(args).output().unwrap();
+    assert!(
+        output.status.success(),
+        "docker {args:?}: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    String::from_utf8(output.stdout).unwrap()
+}
+
+fn random_hex() -> String {
+    let mut bytes = [0u8; 16];
+    getrandom::fill(&mut bytes).unwrap();
+    bytes.iter().map(|byte| format!("{byte:02x}")).collect()
 }
 
 fn server() -> Server {
-    let variable = |name: &str| env::var(name).unwrap_or_else(|_| panic!("{name} is not set"));
-    Server {
-        endpoint: variable("HUMANYMOUS_TEST_CLICKHOUSE"),
-        user: variable("HUMANYMOUS_TEST_CLICKHOUSE_USER"),
-        password: variable("HUMANYMOUS_TEST_CLICKHOUSE_PASSWORD"),
+    let container = format!("hmn-clickhouse-{}", random_hex());
+    let password = random_hex();
+    let mut server = Server {
+        endpoint: String::new(),
+        user: "humanymous".into(),
+        password,
+        container,
+    };
+    docker(&[
+        "run",
+        "--detach",
+        "--name",
+        &server.container,
+        "--publish",
+        "127.0.0.1::8123",
+        "--env",
+        "CLICKHOUSE_USER=humanymous",
+        "--env",
+        &format!("CLICKHOUSE_PASSWORD={}", server.password),
+        "--env",
+        "CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=0",
+        CLICKHOUSE,
+    ]);
+    let port = docker(&["port", &server.container, "8123/tcp"]);
+    let address = port
+        .lines()
+        .find(|line| line.starts_with("127.0.0.1:"))
+        .unwrap_or_else(|| panic!("no loopback port: {port}"))
+        .to_owned();
+    server.endpoint = format!("http://{address}");
+    let deadline = Instant::now() + Duration::from_secs(120);
+    while Instant::now() < deadline {
+        if ping(&address) {
+            return server;
+        }
+        thread::sleep(Duration::from_millis(500));
     }
+    panic!("ClickHouse did not answer /ping");
+}
+
+fn ping(address: &str) -> bool {
+    let Ok(mut stream) = TcpStream::connect(address) else {
+        return false;
+    };
+    let _ = stream.set_read_timeout(Some(Duration::from_secs(5)));
+    if write!(
+        stream,
+        "GET /ping HTTP/1.1\r\nHost: {address}\r\nConnection: close\r\n\r\n"
+    )
+    .is_err()
+    {
+        return false;
+    }
+    let mut response = String::new();
+    let _ = stream.read_to_string(&mut response);
+    response.starts_with("HTTP/1.1 200") && response.contains("Ok.\n")
 }
 
 /// Run one SQL statement through the HTTP interface and return the body.
@@ -127,7 +209,7 @@ fn record(seq: u64) -> Record {
 /// the HTML-escaped and line-separator text and Go-spelled floats. A wrong
 /// password is refused with the server's status and its rows are counted.
 #[test]
-#[ignore = "needs a live ClickHouse server; set HUMANYMOUS_TEST_CLICKHOUSE"]
+#[ignore = "needs a Docker engine; run by the msrv job"]
 fn live_clickhouse_stores_every_projected_row() {
     let server = server();
     query(&server, "DROP TABLE IF EXISTS humanymous_audit_parity");

@@ -143,10 +143,10 @@ required-features = ["audit"]
 name = "audit-clickhouse-live"
 path = "tests/audit/clickhouse_live.rs"
 required-features = ["audit"]
-# Manual live check against a real ClickHouse server; no CI job provides one.
-# Excluded from `cargo test`/`--all-targets` discovery, so no workspace harness
-# claims coverage it never ran. Run it explicitly:
-# `cargo test -p humanymous-runtime --test audit-clickhouse-live -- --ignored`.
+# Live check against a real ClickHouse server the test starts in Docker. Left
+# out of `cargo test`/`--all-targets` discovery (no Docker on every native
+# runner); the required msrv job runs it and the quality job lints it:
+# `cargo test --locked -p humanymous-runtime --features audit --test audit-clickhouse-live -- --ignored`.
 test = false
 
 [[test]]
