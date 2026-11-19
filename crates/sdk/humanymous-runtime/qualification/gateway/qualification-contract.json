@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 844,
-      "macos": 844,
-      "windows": 812
+      "linux": 853,
+      "macos": 853,
+      "windows": 821
     },
     "common_test_names": [
       "gateway::admin_approval::tests::approval_store_rules",
@@ -339,6 +339,15 @@
       "gateway::gate_config::tests::empty_fields_resolve_to_the_go_defaults",
       "gateway::gate_config::tests::rate_settings_have_no_defaults",
       "gateway::gate_config::tests::set_fields_are_kept",
+      "gateway::gates::tests::agent_auth_gate_matches_go_with_named_differences",
+      "gateway::gates::tests::attestation_floor_audit_matches_go",
+      "gateway::gates::tests::gates_skip_their_kernels_where_go_did",
+      "gateway::gates::tests::pat_gate_matches_go",
+      "gateway::gates::tests::sweep_detector_refusal_fails_closed_only_when_enforcing",
+      "gateway::gates::tests::sweep_gate_matches_go",
+      "gateway::gates::tests::upgrade_gate_matches_go",
+      "gateway::gates::tests::verdict_token_gate_matches_go",
+      "gateway::gates::tests::webauthn_gate_and_fanout_cap_match_go",
       "gateway::guard::parity::origin_cloak_matches_go_capture",
       "gateway::guard::parity::spoof_and_smuggle_records_match_go_capture",
       "gateway::guard::parity::spoof_scan_and_strip_match_go_capture",

@@ -372,4 +372,4 @@ fn parse_signature_value(value: &str, label: &str) -> Option<Vec<u8>> {
 }
 
 #[cfg(test)]
-pub(super) mod tests;
+pub(in crate::gateway) mod tests;

@@ -36,7 +36,7 @@ const ISSUER_A_KEY: &str = concat!(
     "Y/3+GHwXiIaSMUZbmP2dWEIQRN1sjbXHI+XqvmizlWHj0eZp4jZDaMVUhO2cqw1qcX2f",
 );
 /// Issuer A SubjectPublicKeyInfo DER (rsaEncryption).
-pub(in crate::gateway::credential) const ISSUER_A_SPKI: &str = concat!(
+pub(in crate::gateway) const ISSUER_A_SPKI: &str = concat!(
     "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAygRNNevNuJl1InL7cX/r4cGCoe7uGCIT",
     "mcPR9fno/+Q666KGPXh1Yyxx1pfsxkhvsuUDg961XmqajQKJa0PNnZIDthOb8NPCjbVFmmOjKo27",
     "NJwTlQy6AlfLrHP54eARWVai+8Rd2jGYujgHsjppDE2gKc5R2xcT7VDkzyq21UZzXMOkuPan3pDR",
@@ -53,7 +53,7 @@ const ISSUER_B_SPKI: &str = concat!(
     "hnYLd2/2Ee4Nq+bLZ4nrsf+egkMcMleYcAWAAceuoZe2CrJF7uuUtF9Cp47rT0N2xxKmVzUu6Yx2",
     "kxdnqwIDAQAB",
 );
-pub(in crate::gateway::credential) const NOW: Duration = Duration::from_secs(1_700_000_000);
+pub(in crate::gateway) const NOW: Duration = Duration::from_secs(1_700_000_000);
 const PREFIX_HEADER: &str = "PrivateToken token=\"";
 
 /// Go `pubPEM`.
@@ -93,10 +93,10 @@ fn header(raw: &[u8]) -> String {
     format!("{PREFIX_HEADER}{}\"", STANDARD.encode(raw))
 }
 /// Go `mintPAT`: zero nonce and challenge digest.
-pub(in crate::gateway::credential) fn mint() -> String {
+pub(in crate::gateway) fn mint() -> String {
     header(&mint_raw(0, [0; 32], SignatureScheme::RSA_PSS_SHA384))
 }
-pub(in crate::gateway::credential) fn verifier(spki_b64: &str) -> Verifier {
+pub(in crate::gateway) fn verifier(spki_b64: &str) -> Verifier {
     Verifier::from_pem(&pem(spki_b64)).unwrap()
 }
 fn issuer_a() -> String {
