@@ -40,7 +40,8 @@ fn control_plane_flood_metered() {
     assert_eq!(record.actor.kind, "system");
     assert_eq!(record.tenant_id, "control");
     assert_eq!(record.route_class, "control");
-    assert_eq!(record.verdict, "DENY");
+    // Go `string(VerdictDeny)`.
+    assert_eq!(record.verdict, "deny");
     assert_eq!(record.enforcement_action, "rate_limit");
     assert_eq!(record.enforcement_mode, "enforce");
     assert_eq!(record.fail_reason, "control-plane flood: collect");

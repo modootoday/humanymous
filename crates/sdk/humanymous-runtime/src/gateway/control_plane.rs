@@ -6,10 +6,12 @@
 //! `control_collect.go`) at baseline 981d25c. The handler is a pure kernel:
 //! the composition root parses the request into [`Request`], supplies the
 //! clocks in [`Now`], writes the returned [`Response`] and appends its audit
-//! [`Response::records`] in order. Scoring, header-derived network
-//! observation, session id randomness and subject pseudonyms come from the
-//! caller's [`Backend`]; this module never changes a score, weight, threshold
-//! or signal ID (detection freeze).
+//! [`Response::records`] in order. Scoring, session id randomness and subject
+//! pseudonyms come from the caller's [`Backend`]. The L5 network observation
+//! is built here as Go built it: the gate header projection ([`headers`],
+//! Go `headerInfo`/`protoVer`) fed to `network::report::build` with no TLS,
+//! HTTP/2 or TCP capture and no datacenter classification. This module never
+//! changes a score, weight, threshold or signal ID (detection freeze).
 //!
 //! Kept from Go, and pinned against the oracle golden
 //! `tests/fixtures/gateway/control-plane-go-golden.json`:
@@ -26,6 +28,9 @@
 //!   session-bound receipt (`403` plus one `token.binding_mismatch` record with
 //!   the Go reason text); it then mints `hmn_su` for 30 minutes bound to the
 //!   header fingerprint and socket subnet and records `token.issued`.
+//! - The collect beacon's network report is `network::report::build` over
+//!   the gate header projection of the request's own header multimap,
+//!   method and protocol version.
 //! - JSON bodies are Go `encoding/json` output: sorted keys, HTML escaping and
 //!   a trailing newline; `http.Error` bodies end in a newline and carry
 //!   `X-Content-Type-Options: nosniff`.
@@ -42,8 +47,6 @@
 //! - A scoring failure, a wall clock before 1970 or an unusable session id
 //!   source answers `503` without a sticky verdict or token (fail-closed,
 //!   AGENTS.md hard constraint 2); Go could not fail there.
-//! - The flood breach record keeps the `gateway::control_flood` spelling
-//!   `DENY`; every other record uses the Go verdict text.
 //! - The Go engine overlay hook (`WithEngineConfigurator`, SoT-39) is not
 //!   carried; the backend owns its frozen engine.
 use crate::audit::record::events::{EVENT_TOKEN_BINDING_MISMATCH, EVENT_TOKEN_ISSUED};
@@ -54,12 +57,13 @@ use crate::gateway::token::{self, Epochs, Nonces, Reason, TokenKey};
 use crate::gateway::verdict_store::VerdictStore;
 use crate::network::history::Unavailable;
 use crate::network::history::cohort::{Cohort, Observer};
-use humanymous_core::signals::report::{NetworkReport, ScoreResult, SessionReport, Timestamp};
+use humanymous_core::signals::report::{ScoreResult, SessionReport, Timestamp};
 use humanymous_core::signals::wire::quote_json_go;
 use std::net::IpAddr;
 use std::time::Duration;
 
 mod collect;
+mod headers;
 
 /// Session id cookie shared with the edge (Go `sessionCookie`).
 pub const SESSION_COOKIE: &str = "hsid";
@@ -88,6 +92,8 @@ pub const KEY_ID: &str = "k1";
 pub struct Request<'a> {
     /// HTTP method.
     pub method: &'a str,
+    /// HTTP major version (Go `Request.ProtoMajor`): `2` for HTTP/2.
+    pub proto_major: u8,
     /// Path below the control-plane prefix, for example `/collect`.
     pub path: &'a str,
     /// First `label` query value, when present.
@@ -96,18 +102,21 @@ pub struct Request<'a> {
     pub peer: IpAddr,
     /// First `hsid` cookie value; empty means none.
     pub session: Option<&'a str>,
-    /// `User-Agent`.
-    pub user_agent: &'a str,
-    /// `Accept-Language`.
-    pub accept_language: &'a str,
-    /// `Sec-CH-UA`.
-    pub sec_ch_ua: &'a str,
-    /// [`NONCE_HEADER`]; empty means none.
-    pub nonce: &'a str,
-    /// [`STEP_UP_RECEIPT_HEADER`]; empty means none.
-    pub receipt: &'a str,
+    /// Handler-visible request header fields in receive order, as Go
+    /// `Request.Header` holds them: any name casing, repeated names kept.
+    /// Every header the kernel reads comes from here with Go `Header.Get`
+    /// semantics, including the L5 projection ([`headers`]).
+    pub headers: &'a [(String, String)],
     /// Request body, read up to [`MAX_BEACON`] plus one byte.
     pub body: &'a [u8],
+}
+
+impl<'a> Request<'a> {
+    /// Go `r.Header.Get(name)`: first value under the canonical name; empty
+    /// when absent.
+    pub fn header(&self, name: &str) -> &'a str {
+        headers::first_value(self.headers, name)
+    }
 }
 
 /// Caller clocks: wall time for the session store and token expiry, a
@@ -179,13 +188,10 @@ impl Response {
     }
 }
 
-/// Caller-owned collaborators: randomness, observation, scoring, pseudonyms.
+/// Caller-owned collaborators: randomness, scoring, pseudonyms.
 pub trait Backend {
     /// Sixteen fresh random bytes as lowercase hex. An error fails closed.
     fn new_session_id(&mut self) -> Result<String, Unavailable>;
-    /// Header-derived network observation for this request (Go
-    /// `network.Build(Observation{Header: headerInfo(r)})`).
-    fn network(&mut self, request: &Request<'_>) -> NetworkReport;
     /// Score a merged report with the frozen engine; `None` fails closed.
     fn score(&mut self, report: &mut SessionReport) -> Option<ScoreResult>;
     /// Keyed subject pseudonym (Go `Vault.Pseudonymize`); empty without a vault.
@@ -345,7 +351,7 @@ impl<B: Backend> ControlPlane<B> {
             return Response::error(503, "clock unavailable");
         };
         let key = self.token_key.as_ref().expect("checked above");
-        if let Err(reason) = key.verify_receipt(request.receipt, sid, unix) {
+        if let Err(reason) = key.verify_receipt(request.header(STEP_UP_RECEIPT_HEADER), sid, unix) {
             let fail_reason = match reason {
                 Reason::BindingMismatch => "step-up receipt sid mismatch — Core Pass likely not co-served in the Gate cookie jar (hsid diverged); real human may loop on the attested route".to_owned(),
                 Reason::Expired => "step-up receipt expired (check Core↔Gate clock skew / NTP; the client can re-solve for a fresh receipt)".to_owned(),
@@ -449,9 +455,9 @@ fn session_id<'a>(request: &Request<'a>) -> Option<&'a str> {
 /// Go `tokenBind(r)`: header fingerprint plus socket subnet.
 fn token_bind(request: &Request<'_>) -> String {
     let key = token::bind_key(
-        request.user_agent,
-        request.accept_language,
-        request.sec_ch_ua,
+        request.header("User-Agent"),
+        request.header("Accept-Language"),
+        request.header("Sec-CH-UA"),
     );
     token::token_bind(key.as_deref(), &token::client_subnet(request.peer))
 }

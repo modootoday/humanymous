@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 622,
-      "macos": 622,
-      "windows": 604
+      "linux": 624,
+      "macos": 624,
+      "windows": 606
     },
     "common_test_names": [
       "gateway::admin_approval::tests::approval_store_rules",
@@ -146,8 +146,10 @@
       "gateway::control_plane::tests::body_decoding_is_strict_where_go_was_lenient",
       "gateway::control_plane::tests::clock_and_session_source_failures_fail_closed",
       "gateway::control_plane::tests::cohort_shadow_is_measured_but_never_changes_the_answer",
+      "gateway::control_plane::tests::golden::collect_scores_the_projection_go_built",
       "gateway::control_plane::tests::golden::control_plane_exchanges_match_go",
       "gateway::control_plane::tests::golden::gate_config_defaults_match_go",
+      "gateway::control_plane::tests::golden::gate_header_projection_matches_go",
       "gateway::control_plane::tests::golden::network_residual_and_scoring_records_match_go",
       "gateway::control_plane::tests::golden::verdict_body_and_sticky_match_go",
       "gateway::control_plane::tests::golden::verdict_token_issuance_matches_go",

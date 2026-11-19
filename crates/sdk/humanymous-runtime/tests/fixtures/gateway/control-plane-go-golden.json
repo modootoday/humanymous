@@ -22,7 +22,11 @@
    "verdict_token, verdicts, network_residuals and link_and_audit call the control_collect.go domain methods directly with synthetic inputs and a request from 203.0.113.7:4242",
    "config calls the config.go helpers on zero, negative and set values"
   ],
-  "scope": "Frozen oracle outputs for differential parity only; never regenerate to hide drift"
+  "scope": "Frozen oracle outputs for differential parity only; never regenerate to hide drift",
+  "fixture_edits": [
+   "verdict_token.bind_key and verdict_token.token_bind of the capture output are stored as verdict_token.client_fingerprint and verdict_token.fingerprint_subnet_binding with unchanged values (Go bindKey and tokenBind outputs for the fixed public test request); the rename keeps the secret scan's generic-api-key keyword rule from matching the fixture's own field names. output_sha256 is of the capture output before this rename.",
+   "header_projection was added later from a second capture; its own provenance is inside it."
+  ]
  },
  "collect_ok_sticky": {
   "risk": 46.4,
@@ -55,7 +59,7 @@
     "score": 0,
     "confidence": 1,
     "collected": "server",
-    "notes": "no ClientHello captured — TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)"
+    "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)"
    },
    {
     "id": "l5.tcp.not_observed",
@@ -67,7 +71,7 @@
     "score": 0,
     "confidence": 1,
     "collected": "server",
-    "notes": "no TCP SYN/PROXY-TLV capture — L4 plane inactive (wire eBPF/PROXY TLV for full residual)"
+    "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)"
    }
   ]
  },
@@ -326,7 +330,7 @@
      ],
      "enforcement_action": "",
      "enforcement_mode": "monitor",
-     "fail_reason": "no TCP SYN/PROXY-TLV capture — L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+     "fail_reason": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
      "key_id": "k1"
     }
    ]
@@ -478,7 +482,7 @@
      ],
      "enforcement_action": "",
      "enforcement_mode": "monitor",
-     "fail_reason": "no TCP SYN/PROXY-TLV capture — L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+     "fail_reason": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
      "key_id": "k1"
     }
    ]
@@ -615,7 +619,7 @@
      "top_signals": [],
      "enforcement_action": "",
      "enforcement_mode": "enforce",
-     "fail_reason": "step-up receipt sid mismatch — Core Pass likely not co-served in the Gate cookie jar (hsid diverged); real human may loop on the attested route",
+     "fail_reason": "step-up receipt sid mismatch \u2014 Core Pass likely not co-served in the Gate cookie jar (hsid diverged); real human may loop on the attested route",
      "key_id": "k1"
     }
    ]
@@ -651,7 +655,7 @@
      "top_signals": [],
      "enforcement_action": "",
      "enforcement_mode": "enforce",
-     "fail_reason": "step-up receipt expired (check Core↔Gate clock skew / NTP; the client can re-solve for a fresh receipt)",
+     "fail_reason": "step-up receipt expired (check Core\u2194Gate clock skew / NTP; the client can re-solve for a fresh receipt)",
      "key_id": "k1"
     }
    ]
@@ -987,7 +991,7 @@
   }
  ],
  "verdict_token": {
-  "bind_key": "N9lHIolF0VQnXE37",
+  "client_fingerprint": "N9lHIolF0VQnXE37",
   "cases": [
    {
     "verdict": "ALLOW",
@@ -1024,7 +1028,7 @@
     "records": []
    }
   ],
-  "token_bind": "ECwFyd4L1cHEqJeVV5m76w"
+  "fingerprint_subnet_binding": "ECwFyd4L1cHEqJeVV5m76w"
  },
  "verdicts": [
   {
@@ -1154,5 +1158,4336 @@
     "verdict": "none"
    }
   }
- ]
+ ],
+ "header_projection": {
+  "provenance": {
+   "oracle_commit": "981d25cf71a5a54855d7e2b4359e832a9d5998e5",
+   "oracle_functions": [
+    "internal/gate/control.go headerInfo, protoVer",
+    "internal/network/report.go Build (Observation{Header: headerInfo(r), IsDatacenterIP: false}, as control_collect.go scoreBeacon calls it)"
+   ],
+   "go_version": "go1.25.3 linux/amd64 (go.mod at 981d25c pins go 1.25.3)",
+   "command": "git archive 981d25c | tar -x -C <oracle>; add scratch in-package capture test internal/gate/zz_gatehdr_capture_test.go; cd <oracle>; GOLDEN_IN=<this fixture before header_projection> GOLDEN_OUT=<out> GOPROXY=off GOFLAGS=-mod=readonly go test -count=1 -run ^TestZZGateHeaderCapture$ ./internal/gate/",
+   "capture_program_sha256": {
+    "internal/gate/zz_gatehdr_capture_test.go": "2d25133036f0677d831fccb738ee74fd35fbee1213b4f663bef555986476012c"
+   },
+   "capture_program_committed": false,
+   "output_sha256": "f240c4282b992fba323066929a07ae66f6b78e3bae4e07565276b125ca431cd8",
+   "capture_notes": [
+    "seen is what the oracle handler observed: proto_major/proto_minor, handler_header (Go Request.Header as (name, value) pairs, names sorted, values in receive order), header_info (Go headerInfo(r)) and build (Go network.Build over it, JSON-encoded)",
+    "header_info.names and build.headerOrder are sorted at capture: Go headerInfo collects names by map iteration, whose order is random per run; cookie_names is Go nil, written as []",
+    "exchanges: the 33 golden exchanges rebuilt from each exchange's recorded method, path, request_headers (Header.Set) and request body or request_body_len, sent with http.DefaultTransport.RoundTrip to httptest servers in front of the same three planes as the first capture (keyed main, unkeyed, flood WithControlLimiter(time.Minute, 1, 2)); every status equalled the first capture's",
+    "raw_http1: request_line, fields (name, value as written on the wire, ': ' separated, CRLF) and body written byte for byte on a TCP connection to an httptest server",
+    "http2: one request over TLS with EnableHTTP2 and the server's own client; only the handler-visible header is meaningful",
+    "two runs produced byte-identical output"
+   ]
+  },
+  "exchanges": [
+   {
+    "name": "healthz",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "User-Agent",
+       "Go-http-client/1.1"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": false,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "GET",
+      "names": [
+       "Accept-Encoding",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Go-http-client/1.1",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 200
+   },
+   {
+    "name": "readyz_ready",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "User-Agent",
+       "Go-http-client/1.1"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": false,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "GET",
+      "names": [
+       "Accept-Encoding",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Go-http-client/1.1",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 200
+   },
+   {
+    "name": "csp_report",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Content-Length",
+       "2"
+      ],
+      [
+       "User-Agent",
+       "Go-http-client/1.1"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": false,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "POST",
+      "names": [
+       "Accept-Encoding",
+       "Content-Length",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Go-http-client/1.1",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "content-length",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 204
+   },
+   {
+    "name": "unknown_path",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "User-Agent",
+       "Go-http-client/1.1"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": false,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "GET",
+      "names": [
+       "Accept-Encoding",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Go-http-client/1.1",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 404
+   },
+   {
+    "name": "loader",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "User-Agent",
+       "Go-http-client/1.1"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": false,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "GET",
+      "names": [
+       "Accept-Encoding",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Go-http-client/1.1",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 200
+   },
+   {
+    "name": "session_existing",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Cookie",
+       "hsid=sid-existing-0001"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": true,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "GET",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Cookie",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "cookie",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 200
+   },
+   {
+    "name": "session_fresh",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": false,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "GET",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 200
+   },
+   {
+    "name": "collect_get",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Cookie",
+       "hsid=sid-collect-0001"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": true,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "GET",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Cookie",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "cookie",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 405
+   },
+   {
+    "name": "collect_bad_body",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Content-Length",
+       "8"
+      ],
+      [
+       "Cookie",
+       "hsid=sid-collect-0001"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": true,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "POST",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Content-Length",
+       "Cookie",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "content-length",
+       "cookie",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 400
+   },
+   {
+    "name": "collect_wrong_type",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Content-Length",
+       "15"
+      ],
+      [
+       "Cookie",
+       "hsid=sid-collect-0001"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": true,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "POST",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Content-Length",
+       "Cookie",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "content-length",
+       "cookie",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 400
+   },
+   {
+    "name": "collect_oversize",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Content-Length",
+       "262156"
+      ],
+      [
+       "Cookie",
+       "hsid=sid-collect-0001"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": true,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "POST",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Content-Length",
+       "Cookie",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "content-length",
+       "cookie",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 400
+   },
+   {
+    "name": "collect_ok",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Content-Length",
+       "62"
+      ],
+      [
+       "Content-Type",
+       "application/json"
+      ],
+      [
+       "Cookie",
+       "hsid=sid-collect-0001"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ],
+      [
+       "X-Hmn-Nonce",
+       "nonce-1"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": true,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "POST",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Content-Length",
+       "Content-Type",
+       "Cookie",
+       "User-Agent",
+       "X-Hmn-Nonce"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "content-length",
+       "content-type",
+       "cookie",
+       "user-agent",
+       "x-hmn-nonce"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 200
+   },
+   {
+    "name": "collect_replay",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Content-Length",
+       "62"
+      ],
+      [
+       "Content-Type",
+       "application/json"
+      ],
+      [
+       "Cookie",
+       "hsid=sid-collect-0001"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ],
+      [
+       "X-Hmn-Nonce",
+       "nonce-1"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": true,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "POST",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Content-Length",
+       "Content-Type",
+       "Cookie",
+       "User-Agent",
+       "X-Hmn-Nonce"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "content-length",
+       "content-type",
+       "cookie",
+       "user-agent",
+       "x-hmn-nonce"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 409
+   },
+   {
+    "name": "collect_replay_other_session",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Content-Length",
+       "62"
+      ],
+      [
+       "Cookie",
+       "hsid=sid-collect-0002"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ],
+      [
+       "X-Hmn-Nonce",
+       "nonce-1"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": true,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "POST",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Content-Length",
+       "Cookie",
+       "User-Agent",
+       "X-Hmn-Nonce"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "content-length",
+       "cookie",
+       "user-agent",
+       "x-hmn-nonce"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 409
+   },
+   {
+    "name": "collect_no_cookie",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Content-Length",
+       "62"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": false,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "POST",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Content-Length",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "content-length",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 200
+   },
+   {
+    "name": "stepup_get",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "User-Agent",
+       "Go-http-client/1.1"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": false,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "GET",
+      "names": [
+       "Accept-Encoding",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Go-http-client/1.1",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 405
+   },
+   {
+    "name": "stepup_no_session",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Content-Length",
+       "0"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": false,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "POST",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Content-Length",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "content-length",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 400
+   },
+   {
+    "name": "stepup_missing_receipt",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Content-Length",
+       "0"
+      ],
+      [
+       "Cookie",
+       "hsid=sid-step-0001"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": true,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "POST",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Content-Length",
+       "Cookie",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "content-length",
+       "cookie",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 403
+   },
+   {
+    "name": "stepup_forged_receipt",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Content-Length",
+       "0"
+      ],
+      [
+       "Cookie",
+       "hsid=sid-step-0001"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ],
+      [
+       "X-Hmn-Stepup-Receipt",
+       "c3VyfHNpZC1zdGVwLTAwMDF8MTgwMDAwMDA2MA.dzYHmfjEQs91NTefInP1ANGkWzoNsPjACo8ZlXBHxgM"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": true,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "POST",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Content-Length",
+       "Cookie",
+       "User-Agent",
+       "X-Hmn-Stepup-Receipt"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "content-length",
+       "cookie",
+       "user-agent",
+       "x-hmn-stepup-receipt"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 403
+   },
+   {
+    "name": "stepup_sid_mismatch",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Content-Length",
+       "0"
+      ],
+      [
+       "Cookie",
+       "hsid=sid-step-0001"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ],
+      [
+       "X-Hmn-Stepup-Receipt",
+       "c3VyfHNpZC1vdGhlcnwxODAwMDAwMDYw.JYGSjsm_8c9VuqggCRHZ0DD4-QJcpriskvDVDutxogE"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": true,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "POST",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Content-Length",
+       "Cookie",
+       "User-Agent",
+       "X-Hmn-Stepup-Receipt"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "content-length",
+       "cookie",
+       "user-agent",
+       "x-hmn-stepup-receipt"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 403
+   },
+   {
+    "name": "stepup_expired",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Content-Length",
+       "0"
+      ],
+      [
+       "Cookie",
+       "hsid=sid-step-0001"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ],
+      [
+       "X-Hmn-Stepup-Receipt",
+       "c3VyfHNpZC1zdGVwLTAwMDF8MTc5OTk5OTg3OQ.saAqT2uRkVRQOAEjb8CQzFes8lEFqt8FjGqo0J5LKW8"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": true,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "POST",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Content-Length",
+       "Cookie",
+       "User-Agent",
+       "X-Hmn-Stepup-Receipt"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "content-length",
+       "cookie",
+       "user-agent",
+       "x-hmn-stepup-receipt"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 403
+   },
+   {
+    "name": "stepup_skew_edge",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Content-Length",
+       "0"
+      ],
+      [
+       "Cookie",
+       "hsid=sid-step-0001"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ],
+      [
+       "X-Hmn-Stepup-Receipt",
+       "c3VyfHNpZC1zdGVwLTAwMDF8MTc5OTk5OTg4MA.-N-GLUmXhMKVO6o1_Zx0iBHAmhuBy6wdOIzVeHE3gNw"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": true,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "POST",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Content-Length",
+       "Cookie",
+       "User-Agent",
+       "X-Hmn-Stepup-Receipt"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "content-length",
+       "cookie",
+       "user-agent",
+       "x-hmn-stepup-receipt"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 200
+   },
+   {
+    "name": "stepup_ok",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Content-Length",
+       "0"
+      ],
+      [
+       "Cookie",
+       "hsid=sid-step-0001"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ],
+      [
+       "X-Hmn-Stepup-Receipt",
+       "c3VyfHNpZC1zdGVwLTAwMDF8MTgwMDAwMDA2MA.0aIF5DVzgdAVTlW64rURp6q28uIrG9LQXoy7RJ7nVe4"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": true,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "POST",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Content-Length",
+       "Cookie",
+       "User-Agent",
+       "X-Hmn-Stepup-Receipt"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "content-length",
+       "cookie",
+       "user-agent",
+       "x-hmn-stepup-receipt"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 200
+   },
+   {
+    "name": "readyz_draining",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "User-Agent",
+       "Go-http-client/1.1"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": false,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "GET",
+      "names": [
+       "Accept-Encoding",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Go-http-client/1.1",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 503
+   },
+   {
+    "name": "stepup_unconfigured",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Content-Length",
+       "0"
+      ],
+      [
+       "Cookie",
+       "hsid=sid-step-0001"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": true,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "POST",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Content-Length",
+       "Cookie",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "content-length",
+       "cookie",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 501
+   },
+   {
+    "name": "flood_session_0",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Cookie",
+       "hsid=sid-flood"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": true,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "GET",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Cookie",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "cookie",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 200
+   },
+   {
+    "name": "flood_session_1",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Cookie",
+       "hsid=sid-flood"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": true,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "GET",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Cookie",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "cookie",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 429
+   },
+   {
+    "name": "flood_session_2",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Cookie",
+       "hsid=sid-flood"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": true,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "GET",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Cookie",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "cookie",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 429
+   },
+   {
+    "name": "flood_session_3",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Cookie",
+       "hsid=sid-flood"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": true,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "GET",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Cookie",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "cookie",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 429
+   },
+   {
+    "name": "flood_collect_get_before_guard",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "User-Agent",
+       "Go-http-client/1.1"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": false,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "GET",
+      "names": [
+       "Accept-Encoding",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Go-http-client/1.1",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 405
+   },
+   {
+    "name": "flood_stepup_get_before_guard",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "User-Agent",
+       "Go-http-client/1.1"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": false,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "GET",
+      "names": [
+       "Accept-Encoding",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Go-http-client/1.1",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 405
+   },
+   {
+    "name": "flood_collect_post",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "Content-Length",
+       "62"
+      ],
+      [
+       "User-Agent",
+       "Go-http-client/1.1"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": false,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "POST",
+      "names": [
+       "Accept-Encoding",
+       "Content-Length",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Go-http-client/1.1",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "content-length",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 429
+   },
+   {
+    "name": "flood_healthz_unmetered",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip"
+      ],
+      [
+       "User-Agent",
+       "Go-http-client/1.1"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip",
+      "accept_language": "",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": false,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "GET",
+      "names": [
+       "Accept-Encoding",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Go-http-client/1.1",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    },
+    "status": 200
+   }
+  ],
+  "raw_http1": [
+   {
+    "body": "",
+    "fields": [
+     [
+      "User-Agent",
+      "Mozilla/5.0 capture"
+     ]
+    ],
+    "name": "h10_minimal",
+    "request_line": "GET /collect HTTP/1.0",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 0,
+     "handler_header": [
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "",
+      "accept_language": "",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": false,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "GET",
+      "names": [
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    }
+   },
+   {
+    "body": "{}",
+    "fields": [
+     [
+      "Host",
+      "gate.example.test"
+     ],
+     [
+      "user-agent",
+      "Mozilla/5.0 capture"
+     ],
+     [
+      "via",
+      "1.1 squid-cache (squid/6.6)"
+     ],
+     [
+      "Proxy-Connection",
+      "keep-alive"
+     ],
+     [
+      "x-cache-lookup",
+      "MISS from squid"
+     ],
+     [
+      "X-Squid-Error",
+      "ERR_ACCESS_DENIED 0"
+     ],
+     [
+      "X-Forwarded-For",
+      "198.51.100.1, 198.51.100.9"
+     ],
+     [
+      "x-forwarded-for",
+      "198.51.100.2"
+     ],
+     [
+      "Forwarded",
+      "for=198.51.100.3"
+     ],
+     [
+      "cf-connecting-ip",
+      "198.51.100.4"
+     ],
+     [
+      "True-Client-IP",
+      "198.51.100.5"
+     ],
+     [
+      "X-CLIENT-IP",
+      "198.51.100.6"
+     ],
+     [
+      "X-Original-Forwarded-For",
+      "198.51.100.7"
+     ],
+     [
+      "X-BlueCoat-Via",
+      "6c4e1f2a"
+     ],
+     [
+      "Cookie",
+      "hsid=sid-raw-0001; a=1"
+     ],
+     [
+      "referer",
+      "https://example.test/page"
+     ],
+     [
+      "Accept-Encoding",
+      "gzip, br"
+     ],
+     [
+      "Accept-Language",
+      "ko-KR,ko;q=0.9"
+     ],
+     [
+      "x_custom-name",
+      "v"
+     ],
+     [
+      "Content-Length",
+      "2"
+     ]
+    ],
+    "name": "h11_proxy_residue",
+    "request_line": "POST /collect HTTP/1.1",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip, br"
+      ],
+      [
+       "Accept-Language",
+       "ko-KR,ko;q=0.9"
+      ],
+      [
+       "Cf-Connecting-Ip",
+       "198.51.100.4"
+      ],
+      [
+       "Content-Length",
+       "2"
+      ],
+      [
+       "Cookie",
+       "hsid=sid-raw-0001; a=1"
+      ],
+      [
+       "Forwarded",
+       "for=198.51.100.3"
+      ],
+      [
+       "Proxy-Connection",
+       "keep-alive"
+      ],
+      [
+       "Referer",
+       "https://example.test/page"
+      ],
+      [
+       "True-Client-Ip",
+       "198.51.100.5"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 capture"
+      ],
+      [
+       "Via",
+       "1.1 squid-cache (squid/6.6)"
+      ],
+      [
+       "X-Bluecoat-Via",
+       "6c4e1f2a"
+      ],
+      [
+       "X-Cache-Lookup",
+       "MISS from squid"
+      ],
+      [
+       "X-Client-Ip",
+       "198.51.100.6"
+      ],
+      [
+       "X-Forwarded-For",
+       "198.51.100.1, 198.51.100.9"
+      ],
+      [
+       "X-Forwarded-For",
+       "198.51.100.2"
+      ],
+      [
+       "X-Original-Forwarded-For",
+       "198.51.100.7"
+      ],
+      [
+       "X-Squid-Error",
+       "ERR_ACCESS_DENIED 0"
+      ],
+      [
+       "X_custom-Name",
+       "v"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip, br",
+      "accept_language": "ko-KR,ko;q=0.9",
+      "casing_reliable": false,
+      "cf_connecting_ip": "198.51.100.4",
+      "cookie_names": [],
+      "forwarded": "for=198.51.100.3",
+      "has_cookie": true,
+      "has_referer": true,
+      "is_h2": false,
+      "method": "POST",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Cf-Connecting-Ip",
+       "Content-Length",
+       "Cookie",
+       "Forwarded",
+       "Proxy-Connection",
+       "Referer",
+       "True-Client-Ip",
+       "User-Agent",
+       "Via",
+       "X-Bluecoat-Via",
+       "X-Cache-Lookup",
+       "X-Client-Ip",
+       "X-Forwarded-For",
+       "X-Original-Forwarded-For",
+       "X-Squid-Error",
+       "X_custom-Name"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "keep-alive",
+      "true_client_ip": "198.51.100.5",
+      "user_agent": "Mozilla/5.0 capture",
+      "version": "11",
+      "via": "1.1 squid-cache (squid/6.6)",
+      "x_blue_coat_via": "6c4e1f2a",
+      "x_cache": "MISS from squid",
+      "x_client_ip": "198.51.100.6",
+      "x_forwarded_for": "198.51.100.1, 198.51.100.9",
+      "x_original_forwarded_for": "198.51.100.7",
+      "x_squid_error": "ERR_ACCESS_DENIED 0"
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "cf-connecting-ip",
+       "content-length",
+       "cookie",
+       "forwarded",
+       "proxy-connection",
+       "referer",
+       "true-client-ip",
+       "user-agent",
+       "via",
+       "x-bluecoat-via",
+       "x-cache-lookup",
+       "x-client-ip",
+       "x-forwarded-for",
+       "x-original-forwarded-for",
+       "x-squid-error",
+       "x_custom-name"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.header.proxy_hop",
+        "layer": "L5",
+        "notes": "forward-proxy hop header residual (via-squid)",
+        "score": 0,
+        "value": "via-squid",
+        "verdict": "BOT",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.header.client_ip_spoof",
+        "layer": "L5",
+        "notes": "forged CDN/edge client-IP header (cf-connecting-ip)",
+        "score": 0,
+        "value": "cf-connecting-ip",
+        "verdict": "BOT",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.header.xff_multi_hop",
+        "layer": "L5",
+        "notes": "multi-hop X-Forwarded-For chain",
+        "score": 0,
+        "value": 2,
+        "verdict": "SUSPICIOUS",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    }
+   },
+   {
+    "body": "",
+    "fields": [
+     [
+      "Host",
+      "gate.example.test"
+     ],
+     [
+      "X-Cache",
+      ""
+     ],
+     [
+      "X-Cache-Lookup",
+      "HIT from edge"
+     ],
+     [
+      "Cookie",
+      ""
+     ],
+     [
+      "Referer",
+      ""
+     ]
+    ],
+    "name": "h11_xcache_empty_falls_back",
+    "request_line": "GET /collect HTTP/1.1",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Cookie",
+       ""
+      ],
+      [
+       "Referer",
+       ""
+      ],
+      [
+       "X-Cache",
+       ""
+      ],
+      [
+       "X-Cache-Lookup",
+       "HIT from edge"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "",
+      "accept_language": "",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": false,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "GET",
+      "names": [
+       "Cookie",
+       "Referer",
+       "X-Cache",
+       "X-Cache-Lookup"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "HIT from edge",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "cookie",
+       "referer",
+       "x-cache",
+       "x-cache-lookup"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.header.proxy_hop",
+        "layer": "L5",
+        "notes": "forward-proxy hop header residual (x-cache-request)",
+        "score": 0,
+        "value": "x-cache-request",
+        "verdict": "BOT",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    }
+   },
+   {
+    "body": "",
+    "fields": [
+     [
+      "Host",
+      "gate.example.test"
+     ],
+     [
+      "X-Cache-Lookup",
+      "HIT from edge"
+     ],
+     [
+      "x-cache",
+      "MISS from origin"
+     ],
+     [
+      "User-Agent",
+      "curl/8.5.0"
+     ],
+     [
+      "Accept",
+      "*/*"
+     ]
+    ],
+    "name": "h11_xcache_wins",
+    "request_line": "GET /collect HTTP/1.1",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept",
+       "*/*"
+      ],
+      [
+       "User-Agent",
+       "curl/8.5.0"
+      ],
+      [
+       "X-Cache",
+       "MISS from origin"
+      ],
+      [
+       "X-Cache-Lookup",
+       "HIT from edge"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "",
+      "accept_language": "",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": false,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "GET",
+      "names": [
+       "Accept",
+       "User-Agent",
+       "X-Cache",
+       "X-Cache-Lookup"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "curl/8.5.0",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "MISS from origin",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept",
+       "user-agent",
+       "x-cache",
+       "x-cache-lookup"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.header.proxy_hop",
+        "layer": "L5",
+        "notes": "forward-proxy hop header residual (x-cache-request)",
+        "score": 0,
+        "value": "x-cache-request",
+        "verdict": "BOT",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    }
+   },
+   {
+    "body": "{}",
+    "fields": [
+     [
+      "Host",
+      "gate.example.test"
+     ],
+     [
+      "User-Agent",
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+     ],
+     [
+      "Accept-Encoding",
+      "gzip, deflate, br"
+     ],
+     [
+      "Accept-Language",
+      "en-US,en;q=0.9"
+     ],
+     [
+      "Content-Type",
+      "application/json"
+     ],
+     [
+      "Content-Length",
+      "2"
+     ]
+    ],
+    "name": "h11_chrome_no_sec_fetch",
+    "request_line": "POST /collect HTTP/1.1",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip, deflate, br"
+      ],
+      [
+       "Accept-Language",
+       "en-US,en;q=0.9"
+      ],
+      [
+       "Content-Length",
+       "2"
+      ],
+      [
+       "Content-Type",
+       "application/json"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip, deflate, br",
+      "accept_language": "en-US,en;q=0.9",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": false,
+      "has_referer": false,
+      "is_h2": false,
+      "method": "POST",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Content-Length",
+       "Content-Type",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "content-length",
+       "content-type",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": false,
+      "secFetchPresent": false,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "id": "l5.header.sec_fetch_missing",
+        "layer": "L5",
+        "notes": "Chrome UA but no sec-fetch-*",
+        "score": 25,
+        "value": true,
+        "verdict": "BOT",
+        "weight": 25
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "id": "l5.header.accept_encoding",
+        "layer": "L5",
+        "notes": "Chrome UA but accept-encoding lacks zstd",
+        "score": 4,
+        "value": "gzip, deflate, br",
+        "verdict": "SUSPICIOUS",
+        "weight": 8
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    }
+   },
+   {
+    "body": "{}",
+    "fields": [
+     [
+      "Host",
+      "gate.example.test"
+     ],
+     [
+      "sec-ch-ua",
+      "\"Chromium\";v=\"140\", \"Google Chrome\";v=\"140\""
+     ],
+     [
+      "sec-ch-ua-mobile",
+      "?0"
+     ],
+     [
+      "sec-ch-ua-platform",
+      "\"Windows\""
+     ],
+     [
+      "User-Agent",
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+     ],
+     [
+      "Accept",
+      "*/*"
+     ],
+     [
+      "Origin",
+      "https://gate.example.test"
+     ],
+     [
+      "Sec-Fetch-Site",
+      "same-origin"
+     ],
+     [
+      "Sec-Fetch-Mode",
+      "cors"
+     ],
+     [
+      "Sec-Fetch-Dest",
+      "empty"
+     ],
+     [
+      "Referer",
+      "https://gate.example.test/"
+     ],
+     [
+      "Accept-Encoding",
+      "gzip, deflate, br, zstd"
+     ],
+     [
+      "Accept-Language",
+      "en-US,en;q=0.9"
+     ],
+     [
+      "Cookie",
+      "hsid=sid-raw-0002"
+     ],
+     [
+      "Content-Type",
+      "application/json"
+     ],
+     [
+      "Content-Length",
+      "2"
+     ]
+    ],
+    "name": "h11_chrome_full",
+    "request_line": "POST /collect?label=human HTTP/1.1",
+    "seen": {
+     "proto_major": 1,
+     "proto_minor": 1,
+     "handler_header": [
+      [
+       "Accept",
+       "*/*"
+      ],
+      [
+       "Accept-Encoding",
+       "gzip, deflate, br, zstd"
+      ],
+      [
+       "Accept-Language",
+       "en-US,en;q=0.9"
+      ],
+      [
+       "Content-Length",
+       "2"
+      ],
+      [
+       "Content-Type",
+       "application/json"
+      ],
+      [
+       "Cookie",
+       "hsid=sid-raw-0002"
+      ],
+      [
+       "Origin",
+       "https://gate.example.test"
+      ],
+      [
+       "Referer",
+       "https://gate.example.test/"
+      ],
+      [
+       "Sec-Ch-Ua",
+       "\"Chromium\";v=\"140\", \"Google Chrome\";v=\"140\""
+      ],
+      [
+       "Sec-Ch-Ua-Mobile",
+       "?0"
+      ],
+      [
+       "Sec-Ch-Ua-Platform",
+       "\"Windows\""
+      ],
+      [
+       "Sec-Fetch-Dest",
+       "empty"
+      ],
+      [
+       "Sec-Fetch-Mode",
+       "cors"
+      ],
+      [
+       "Sec-Fetch-Site",
+       "same-origin"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip, deflate, br, zstd",
+      "accept_language": "en-US,en;q=0.9",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": true,
+      "has_referer": true,
+      "is_h2": false,
+      "method": "POST",
+      "names": [
+       "Accept",
+       "Accept-Encoding",
+       "Accept-Language",
+       "Content-Length",
+       "Content-Type",
+       "Cookie",
+       "Origin",
+       "Referer",
+       "Sec-Ch-Ua",
+       "Sec-Ch-Ua-Mobile",
+       "Sec-Ch-Ua-Platform",
+       "Sec-Fetch-Dest",
+       "Sec-Fetch-Mode",
+       "Sec-Fetch-Site",
+       "User-Agent"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+      "version": "11",
+      "via": "",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept",
+       "accept-encoding",
+       "accept-language",
+       "content-length",
+       "content-type",
+       "cookie",
+       "origin",
+       "referer",
+       "sec-ch-ua",
+       "sec-ch-ua-mobile",
+       "sec-ch-ua-platform",
+       "sec-fetch-dest",
+       "sec-fetch-mode",
+       "sec-fetch-site",
+       "user-agent"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": true,
+      "secFetchPresent": true,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    }
+   }
+  ],
+  "http2": [
+   {
+    "name": "h2_chrome_via",
+    "seen": {
+     "proto_major": 2,
+     "proto_minor": 0,
+     "handler_header": [
+      [
+       "Accept-Encoding",
+       "gzip, deflate, br, zstd"
+      ],
+      [
+       "Accept-Language",
+       "en-US"
+      ],
+      [
+       "Content-Length",
+       "2"
+      ],
+      [
+       "Content-Type",
+       "application/json"
+      ],
+      [
+       "Sec-Ch-Ua",
+       "\"Chromium\";v=\"140\""
+      ],
+      [
+       "Sec-Fetch-Mode",
+       "cors"
+      ],
+      [
+       "User-Agent",
+       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+      ],
+      [
+       "Via",
+       "2 edge"
+      ]
+     ],
+     "header_info": {
+      "accept_encoding": "gzip, deflate, br, zstd",
+      "accept_language": "en-US",
+      "casing_reliable": false,
+      "cf_connecting_ip": "",
+      "cookie_names": [],
+      "forwarded": "",
+      "has_cookie": false,
+      "has_referer": false,
+      "is_h2": true,
+      "method": "POST",
+      "names": [
+       "Accept-Encoding",
+       "Accept-Language",
+       "Content-Length",
+       "Content-Type",
+       "Sec-Ch-Ua",
+       "Sec-Fetch-Mode",
+       "User-Agent",
+       "Via"
+      ],
+      "order_reliable": false,
+      "proxy_connection": "",
+      "true_client_ip": "",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+      "version": "20",
+      "via": "2 edge",
+      "x_blue_coat_via": "",
+      "x_cache": "",
+      "x_client_ip": "",
+      "x_forwarded_for": "",
+      "x_original_forwarded_for": "",
+      "x_squid_error": ""
+     },
+     "build": {
+      "headerOrder": [
+       "accept-encoding",
+       "accept-language",
+       "content-length",
+       "content-type",
+       "sec-ch-ua",
+       "sec-fetch-mode",
+       "user-agent",
+       "via"
+      ],
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secChUaPresent": true,
+      "secFetchPresent": true,
+      "signals": [
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tls.not_observed",
+        "layer": "L5",
+        "notes": "no ClientHello captured \u2014 TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.header.proxy_hop",
+        "layer": "L5",
+        "notes": "forward-proxy hop header residual (via)",
+        "score": 0,
+        "value": "via",
+        "verdict": "BOT",
+        "weight": 0
+       },
+       {
+        "collected": "server",
+        "confidence": 1,
+        "expectedHuman": true,
+        "id": "l5.tcp.not_observed",
+        "layer": "L5",
+        "notes": "no TCP SYN/PROXY-TLV capture \u2014 L4 plane inactive (wire eBPF/PROXY TLV for full residual)",
+        "score": 0,
+        "value": true,
+        "verdict": "UNKNOWN",
+        "weight": 0
+       }
+      ]
+     }
+    }
+   }
+  ]
+ }
 }

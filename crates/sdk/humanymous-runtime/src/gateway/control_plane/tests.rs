@@ -3,6 +3,7 @@
 use super::*;
 use crate::gateway::verdict_store::Verdict;
 use humanymous_core::signals::report::Contributor;
+use std::sync::LazyLock;
 
 mod golden;
 
@@ -27,7 +28,6 @@ pub(super) fn now_at(unix: u64, mono_ms: u64) -> Now {
 #[derive(Default)]
 pub(super) struct Fake {
     pub sids: Vec<String>,
-    pub network: NetworkReport,
     pub result: Option<ScoreResult>,
     pub scored: usize,
     pub links: Vec<(String, String)>,
@@ -36,9 +36,6 @@ pub(super) struct Fake {
 impl Backend for Fake {
     fn new_session_id(&mut self) -> Result<String, Unavailable> {
         self.sids.pop().ok_or(Unavailable::Budget)
-    }
-    fn network(&mut self, _request: &Request<'_>) -> NetworkReport {
-        self.network.clone()
     }
     fn score(&mut self, _report: &mut SessionReport) -> Option<ScoreResult> {
         self.scored += 1;
@@ -65,18 +62,30 @@ pub(super) fn keyed(fake: Fake) -> ControlPlane<Fake> {
     plane(fake).with_token_key(TokenKey::new(KEY.to_vec()).unwrap())
 }
 
+/// Owned header fields, as a composition root would hand them over.
+pub(super) fn fields(pairs: &[(&str, &str)]) -> Vec<(String, String)> {
+    pairs
+        .iter()
+        .map(|(name, value)| ((*name).to_owned(), (*value).to_owned()))
+        .collect()
+}
+
+static CAPTURE_HEADERS: LazyLock<Vec<(String, String)>> = LazyLock::new(|| {
+    fields(&[
+        ("User-Agent", "Mozilla/5.0 capture"),
+        ("Accept-Language", "en-US"),
+    ])
+});
+
 pub(super) fn request<'a>(method: &'a str, path: &'a str) -> Request<'a> {
     Request {
         method,
+        proto_major: 1,
         path,
         label: None,
         peer: "127.0.0.1".parse().unwrap(),
         session: None,
-        user_agent: "Mozilla/5.0 capture",
-        accept_language: "en-US",
-        sec_ch_ua: "",
-        nonce: "",
-        receipt: "",
+        headers: &CAPTURE_HEADERS,
         body: b"",
     }
 }
@@ -332,9 +341,14 @@ fn step_up_proof_binds_to_the_presenting_client() {
     let key = TokenKey::new(KEY.to_vec()).unwrap();
     let receipt = key.issue_receipt("sid-a", UNIX + 60).unwrap();
     let mut cp = keyed(Fake::default());
+    let headers = fields(&[
+        ("User-Agent", "Mozilla/5.0 capture"),
+        ("Accept-Language", "en-US"),
+        ("x-hmn-stepup-receipt", &receipt),
+    ]);
     let presented = Request {
         session: Some("sid-a"),
-        receipt: &receipt,
+        headers: &headers,
         peer: "198.51.100.20".parse().unwrap(),
         ..request("POST", "/stepup")
     };

@@ -13,8 +13,8 @@
 //! - A verdict token whose fields cannot be sealed (for example a session id
 //!   containing `|`) is not issued; Go minted it anyway.
 use super::{
-    Backend, ControlPlane, MAX_BEACON, Now, Request, Response, VERDICT_COOKIE, control_record,
-    cookie, token_bind, unix_seconds,
+    Backend, ControlPlane, MAX_BEACON, NONCE_HEADER, Now, Request, Response, VERDICT_COOKIE,
+    control_record, cookie, headers, token_bind, unix_seconds,
 };
 use crate::audit::record::events::{
     EVENT_BEACON_REPLAY, EVENT_SCORING_EVALUATED, EVENT_TOKEN_ISSUED,
@@ -22,6 +22,7 @@ use crate::audit::record::events::{
 use crate::audit::record::{Actor, Record, Signal};
 use crate::gateway::verdict_store::{Sticky, Verdict};
 use crate::network::history::cohort::Cohort;
+use crate::network::report::{self, Observation};
 use crate::network::residual;
 use humanymous_core::signals::report::{ClientReport, ScoreResult};
 use humanymous_core::signals::wire::{json_float_go, quote_json_go};
@@ -139,7 +140,8 @@ impl<B: Backend> ControlPlane<B> {
         sid: &str,
         now: Now,
     ) -> Option<Response> {
-        if request.nonce.is_empty() || self.nonces.use_once(request.nonce, now.mono) {
+        let nonce = request.header(NONCE_HEADER);
+        if nonce.is_empty() || self.nonces.use_once(nonce, now.mono) {
             return None;
         }
         let mut response = Response::error(409, "replay rejected");
@@ -165,7 +167,11 @@ impl<B: Backend> ControlPlane<B> {
         client: ClientReport,
         now: Now,
     ) -> Option<(ScoreResult, Option<Cohort>)> {
-        let network = self.backend.network(request);
+        // Go: network.Build(Observation{Header: headerInfo(r), IsDatacenterIP: false}).
+        let network = report::build(&Observation {
+            header: headers::header_info(request),
+            ..Observation::default()
+        });
         self.store.merge_network(sid, network, now.wall);
         let cohort = match &mut self.cohort {
             // Log-only measurement; an observer refusal never affects the verdict.

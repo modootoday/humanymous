@@ -1,17 +1,25 @@
 //! Differential parity against outputs captured from the frozen Go oracle at
 //! 981d25c (see the fixture's `provenance`). Expectations are never
 //! regenerated to hide drift. Every captured value is compared exactly except
-//! the reported differences: the loader body (Go inline script, not carried),
-//! the flood breach verdict spelling (`DENY`, as `gateway::control_flood`) and
-//! the Go rate defaults (refused, owner decision 2026-11-16).
+//! the reported differences: the loader body (Go inline script, not carried)
+//! and the Go rate defaults (refused, owner decision 2026-11-16).
+//!
+//! The network report the kernel stores is computed by the kernel from the
+//! request's own header multimap, so the stored signals and the
+//! `header_projection` captures are Go outputs checked against Rust work,
+//! never values the test feeds in.
 use super::*;
 use crate::gateway::control_flood;
+use crate::gateway::control_plane::headers;
 use crate::gateway::gate_config::{self, GateConfig};
 use crate::network::history::rate::Limits;
+use crate::network::http::HeaderInfo;
+use crate::network::report::{self, Observation};
 use humanymous_core::signals::observation::Signal as Observed;
+use humanymous_core::signals::report::NetworkReport;
 use serde_json::{Value, json};
 use std::collections::BTreeMap;
-use std::sync::OnceLock;
+use std::sync::{LazyLock, OnceLock};
 
 fn golden() -> &'static Value {
     static GOLDEN: OnceLock<Value> = OnceLock::new();
@@ -59,11 +67,6 @@ fn expected_records(records: &Value) -> Vec<Value> {
             for signal in record["top_signals"].as_array_mut().unwrap() {
                 signal["conf"] = json!(signal["conf"].as_f64().unwrap());
             }
-            // The flood breach keeps the gateway::control_flood spelling.
-            if record["event_type"] == control_flood::EVENT {
-                assert_eq!(record["verdict"], "deny");
-                record["verdict"] = json!("DENY");
-            }
             record
         })
         .collect()
@@ -106,10 +109,6 @@ fn captured_score() -> ScoreResult {
 fn fake(sids: Vec<String>) -> Fake {
     Fake {
         sids,
-        network: NetworkReport {
-            signals: Some(stored_signals()),
-            ..NetworkReport::default()
-        },
         result: Some(captured_score()),
         ..Fake::default()
     }
@@ -131,10 +130,36 @@ fn minted() -> Vec<String> {
 
 struct Exchange {
     method: String,
+    proto_major: u8,
     path: String,
     label: Option<String>,
-    headers: BTreeMap<String, String>,
+    headers: Vec<(String, String)>,
     body: Vec<u8>,
+}
+
+/// `(name, value)` pairs as the fixture stores them.
+fn pairs(value: &Value) -> Vec<(String, String)> {
+    value
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|pair| (text(&pair[0]).to_owned(), text(&pair[1]).to_owned()))
+        .collect()
+}
+
+fn proto_major(seen: &Value) -> u8 {
+    u8::try_from(seen["proto_major"].as_u64().unwrap()).unwrap()
+}
+
+/// What the oracle handler saw for golden exchange `name`.
+fn seen(name: &str) -> &'static Value {
+    let found = golden()["header_projection"]["exchanges"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|e| e["name"] == name)
+        .unwrap();
+    &found["seen"]
 }
 
 fn exchange(e: &Value) -> Exchange {
@@ -143,49 +168,33 @@ fn exchange(e: &Value) -> Exchange {
         Some((path, label)) => (path.to_owned(), Some(label.to_owned())),
         None => (raw.to_owned(), None),
     };
-    let headers = e["request_headers"]
-        .as_object()
-        .map(|h| {
-            h.iter()
-                .map(|(k, v)| (k.to_ascii_lowercase(), text(v).to_owned()))
-                .collect()
-        })
-        .unwrap_or_default();
+    // The handler-visible header Go's transport and server produced for the
+    // recorded request (default User-Agent, Accept-Encoding, Content-Length).
+    let seen = seen(text(&e["name"]));
     let body = match e["request_body_len"].as_u64() {
         Some(len) => vec![b'a'; usize::try_from(len).unwrap()],
         None => text(&e["request_body"]).as_bytes().to_vec(),
     };
     Exchange {
         method: text(&e["method"]).into(),
+        proto_major: proto_major(seen),
         path,
         label,
-        headers,
+        headers: pairs(&seen["handler_header"]),
         body,
     }
 }
 
 impl Exchange {
-    fn header(&self, name: &str) -> &str {
-        self.headers.get(name).map_or("", String::as_str)
-    }
     fn request(&self) -> Request<'_> {
-        let ua = self.header("user-agent");
         Request {
             method: &self.method,
+            proto_major: self.proto_major,
             path: &self.path,
             label: self.label.as_deref(),
             peer: "127.0.0.1".parse().unwrap(),
-            session: self.header("cookie").strip_prefix("hsid="),
-            // Go's transport sends its default User-Agent when none is set.
-            user_agent: if ua.is_empty() {
-                "Go-http-client/1.1"
-            } else {
-                ua
-            },
-            accept_language: self.header("accept-language"),
-            sec_ch_ua: "",
-            nonce: self.header("x-hmn-nonce"),
-            receipt: self.header("x-hmn-stepup-receipt"),
+            session: headers::first_value(&self.headers, "Cookie").strip_prefix("hsid="),
+            headers: &self.headers,
             body: &self.body,
         }
     }
@@ -206,6 +215,9 @@ fn control_plane_exchanges_match_go() {
     let mut checked = 0;
     for (tick, e) in golden()["exchanges"].as_array().unwrap().iter().enumerate() {
         let name = text(&e["name"]);
+        // The rebuilt request is the same exchange: the oracle answered it
+        // with the same status.
+        assert_eq!(seen_status(name), &e["status"], "{name}");
         let cp = if name == "stepup_unconfigured" {
             &mut unkeyed
         } else if name.starts_with("flood_") {
@@ -265,6 +277,8 @@ fn control_plane_exchanges_match_go() {
     let want = &golden()["collect_ok_stored"];
     assert_eq!(stored.label, text(&want["label"]));
     assert_eq!(stored.client.session_id, text(&want["client_session_id"]));
+    // Computed by the kernel from the request headers, checked against the
+    // first capture's stored signals.
     assert_eq!(stored.network.signals.unwrap_or_default(), stored_signals());
     let sticky = main.verdicts().get("sid-collect-0001", Duration::ZERO);
     let want = &golden()["collect_ok_sticky"];
@@ -280,11 +294,19 @@ fn control_plane_exchanges_match_go() {
     assert_eq!(sticky.top, top);
 }
 
+static DOMAIN_HEADERS: LazyLock<Vec<(String, String)>> = LazyLock::new(|| {
+    fields(&[
+        ("User-Agent", "Mozilla/5.0 capture"),
+        ("Accept-Language", "en-US"),
+        ("Sec-CH-UA", r#""Chromium";v="140""#),
+    ])
+});
+
 fn domain_request(sid: &str) -> Request<'_> {
     Request {
         peer: "203.0.113.7".parse().unwrap(),
         session: Some(sid),
-        sec_ch_ua: r#""Chromium";v="140""#,
+        headers: &DOMAIN_HEADERS,
         body: b"{}",
         ..request("POST", "/collect")
     }
@@ -295,10 +317,18 @@ fn verdict_token_issuance_matches_go() {
     let want = &golden()["verdict_token"];
     let probe = domain_request("sid-token-0001");
     assert_eq!(
-        token::bind_key(probe.user_agent, probe.accept_language, probe.sec_ch_ua).as_deref(),
-        Some(text(&want["bind_key"]))
+        token::bind_key(
+            probe.header("User-Agent"),
+            probe.header("Accept-Language"),
+            probe.header("Sec-CH-UA")
+        )
+        .as_deref(),
+        Some(text(&want["client_fingerprint"]))
     );
-    assert_eq!(token_bind(&probe), text(&want["token_bind"]));
+    assert_eq!(
+        token_bind(&probe),
+        text(&want["fingerprint_subnet_binding"])
+    );
     for case in want["cases"].as_array().unwrap() {
         let verdict = text(&case["verdict"]);
         let mut cp = keyed(Fake {
@@ -324,11 +354,26 @@ fn verdict_token_issuance_matches_go() {
             .map(reduce)
             .collect();
         assert_eq!(issued, expected_records(&case["records"]), "{verdict}");
-        assert_eq!(
-            response.records.last().unwrap().event_type,
-            "scoring.evaluated"
-        );
+        let events: Vec<&str> = scoring_records(&response)
+            .iter()
+            .map(|r| r.event_type.as_str())
+            .collect();
+        assert_eq!(events.last(), Some(&"scoring.evaluated"), "{verdict}");
     }
+}
+
+/// Records up to `scoring.evaluated`; the kernel-built network residuals that
+/// follow it (Go `emitNetworkResidualAudit`) are pinned by
+/// `network_residual_and_scoring_records_match_go`.
+fn scoring_records(response: &Response) -> &[Record] {
+    let end = response
+        .records
+        .iter()
+        .position(|r| r.event_type == "scoring.evaluated")
+        .map_or(0, |at| at + 1);
+    let (scoring, residuals) = response.records.split_at(end);
+    assert!(residuals.iter().all(|r| r.event_type.starts_with("net.")));
+    scoring
 }
 
 #[test]
@@ -397,8 +442,22 @@ fn network_residual_and_scoring_records_match_go() {
         ..Fake::default()
     });
     let response = cp.handle(&domain_request("sid-link"), now(0));
-    let records: Vec<Value> = response.records.iter().map(reduce).collect();
+    let records: Vec<Value> = scoring_records(&response).iter().map(reduce).collect();
     assert_eq!(records, expected_records(&golden()["link_and_audit"]));
+    // The residuals after it are those of the network report the kernel built.
+    let stored = cp.store().get("sid-link").unwrap();
+    let signals = stored.network.signals.unwrap_or_default();
+    let residuals: Vec<Value> = cp
+        .network_residual_records("sid-link", "psn:sid-link:sid-link", &signals)
+        .iter()
+        .map(reduce)
+        .collect();
+    let emitted: Vec<Value> = response.records[records.len()..]
+        .iter()
+        .map(reduce)
+        .collect();
+    assert_eq!(emitted, residuals);
+    assert!(!emitted.is_empty());
 }
 
 #[test]
@@ -435,4 +494,170 @@ fn gate_config_defaults_match_go() {
     // ... but Rust refuses a zero setting (owner decision 2026-11-16).
     assert!(zero.rate(limits()).is_err());
     let _: Limits = limits();
+}
+
+fn seen_status(name: &str) -> &'static Value {
+    &golden()["header_projection"]["exchanges"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|e| e["name"] == name)
+        .unwrap()["status"]
+}
+
+/// One request the oracle handler observed, with the input Rust receives.
+struct Case {
+    name: String,
+    method: String,
+    proto_major: u8,
+    headers: Vec<(String, String)>,
+    seen: &'static Value,
+}
+
+fn cases() -> Vec<Case> {
+    let projection = &golden()["header_projection"];
+    let mut cases = Vec::new();
+    for e in golden()["exchanges"].as_array().unwrap() {
+        let seen = seen(text(&e["name"]));
+        cases.push(Case {
+            name: text(&e["name"]).into(),
+            method: text(&e["method"]).into(),
+            proto_major: proto_major(seen),
+            headers: pairs(&seen["handler_header"]),
+            seen,
+        });
+    }
+    for raw in projection["raw_http1"].as_array().unwrap() {
+        let line = text(&raw["request_line"]);
+        let seen = &raw["seen"];
+        let version = line.rsplit(' ').next().unwrap();
+        assert_eq!(
+            format!("HTTP/{}.{}", seen["proto_major"], seen["proto_minor"]),
+            version
+        );
+        // The wire fields exactly as written (any casing, repeats, Host) ...
+        cases.push(Case {
+            name: format!("{}:wire", text(&raw["name"])),
+            method: line.split(' ').next().unwrap().into(),
+            proto_major: proto_major(seen),
+            headers: pairs(&raw["fields"]),
+            seen,
+        });
+        // ... and the handler-visible header Go's server made of them.
+        cases.push(Case {
+            name: format!("{}:handler", text(&raw["name"])),
+            method: line.split(' ').next().unwrap().into(),
+            proto_major: proto_major(seen),
+            headers: pairs(&seen["handler_header"]),
+            seen,
+        });
+    }
+    for h2 in projection["http2"].as_array().unwrap() {
+        let seen = &h2["seen"];
+        cases.push(Case {
+            name: text(&h2["name"]).into(),
+            method: "POST".into(),
+            proto_major: proto_major(seen),
+            headers: pairs(&seen["handler_header"]),
+            seen,
+        });
+    }
+    cases
+}
+
+impl Case {
+    fn request(&self) -> Request<'_> {
+        Request {
+            method: &self.method,
+            proto_major: self.proto_major,
+            headers: &self.headers,
+            ..request("POST", "/collect")
+        }
+    }
+}
+
+/// Go `network.Build` output; header order is sorted in both (Go's was map
+/// iteration order).
+fn go_build(seen: &Value) -> NetworkReport {
+    serde_json::from_value(seen["build"].clone()).unwrap()
+}
+
+/// Go compares JSON numbers as float64: `2` and `2.0` are one wire value.
+fn go_numbers(value: Value) -> Value {
+    match value {
+        Value::Number(n) => json!(n.as_f64().unwrap()),
+        Value::Array(items) => Value::Array(items.into_iter().map(go_numbers).collect()),
+        Value::Object(map) => {
+            Value::Object(map.into_iter().map(|(k, v)| (k, go_numbers(v))).collect())
+        }
+        other => other,
+    }
+}
+
+fn wire<T: serde::Serialize>(value: &T) -> Value {
+    go_numbers(serde_json::to_value(value).unwrap())
+}
+
+#[test]
+fn gate_header_projection_matches_go() {
+    let cases = cases();
+    // 33 exchanges, 6 raw HTTP/1.x requests twice, one HTTP/2 request.
+    assert_eq!(cases.len(), 33 + 12 + 1);
+    let mut versions = BTreeMap::new();
+    for case in &cases {
+        let name = &case.name;
+        let want: HeaderInfo = serde_json::from_value(case.seen["header_info"].clone()).unwrap();
+        let got = headers::header_info(&case.request());
+        assert_eq!(got, want, "{name}");
+        *versions.entry(got.version.clone()).or_insert(0) += 1;
+        let built = report::build(&Observation {
+            header: got,
+            ..Observation::default()
+        });
+        assert_eq!(wire(&built), wire(&go_build(case.seen)), "{name}");
+    }
+    // HTTP/1.0 reports "11" in the gate (the Core adapter said "10").
+    let h10 = cases.iter().find(|c| c.name == "h10_minimal:wire").unwrap();
+    assert_eq!(h10.seen["proto_minor"], 0);
+    assert_eq!(headers::header_info(&h10.request()).version, "11");
+    assert_eq!(versions.get("20"), Some(&1));
+    assert_eq!(headers::proto_ver(3), "11");
+}
+
+#[test]
+fn collect_scores_the_projection_go_built() {
+    // The proxy-residue request through the kernel: the stored network report
+    // equals the one the oracle built from the same wire fields.
+    let raw = golden()["header_projection"]["raw_http1"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|r| r["name"] == "h11_proxy_residue")
+        .unwrap();
+    let wire_fields = pairs(&raw["fields"]);
+    let mut cp = plane(Fake {
+        result: Some(captured_score()),
+        ..Fake::default()
+    });
+    let response = cp.handle(
+        &Request {
+            session: Some("sid-raw-0001"),
+            headers: &wire_fields,
+            body: b"{}",
+            ..request("POST", "/collect")
+        },
+        now(0),
+    );
+    assert_eq!(response.status, 200);
+    let stored = cp.store().get("sid-raw-0001").unwrap();
+    let want = go_build(&raw["seen"]);
+    assert_eq!(wire(&stored.network.signals), wire(&want.signals));
+    let ids: Vec<&str> = want
+        .signals
+        .iter()
+        .flatten()
+        .map(|s| s.id.as_str())
+        .collect();
+    assert!(ids.contains(&"l5.header.proxy_hop"), "{ids:?}");
+    assert!(ids.contains(&"l5.header.client_ip_spoof"), "{ids:?}");
 }

@@ -22,6 +22,15 @@
 //! (`.agents/retirement/owner-decisions-2026-11-16.md`, rate configuration)
 //! keeps the fail-closed Rust behavior: [`GateConfig::rate`] refuses a zero
 //! setting instead. Negative Go values have no Rust representation.
+//!
+//! Second deliberate difference, not covered by that owner decision: Go
+//! `config.go` accepted a boot soft cutpoint above the hard one, while the
+//! oracle's own settings contract (`internal/gate/settings_runtime.go`
+//! `validateSettingsRuntime` at 981d25c) refuses `RateHard < RateSoft` for
+//! every effective setting it applies. [`GateConfig::rate`] applies that one
+//! contract to the boot value too (`rate::Config::new`), so hard below soft
+//! is refused instead of producing an inverted limiter (fail-closed,
+//! AGENTS.md hard constraint 2).
 use crate::gateway::operations::erasure_hold;
 use crate::gateway::route_policy::{RoutePolicy, RouteTable};
 use crate::network::history::Unavailable;
@@ -106,7 +115,8 @@ impl GateConfig {
         NonZeroU64::new(self.max_body_bytes)
     }
     /// Rate-limit configuration. Unlike Go there are no defaults: a zero
-    /// window or cutpoint, or hard below soft, is refused.
+    /// window or cutpoint is refused (owner decision 2026-11-16), and hard
+    /// below soft is refused as Go `validateSettingsRuntime` refused it.
     pub fn rate(&self, limits: Limits) -> Result<RateConfig, Unavailable> {
         RateConfig::new(self.rate_window, self.rate_soft, self.rate_hard, limits)
     }
