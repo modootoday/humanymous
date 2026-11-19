@@ -7,6 +7,8 @@
 //! present; `redisFallbackTotal` is the monotonic count of fleet observations
 //! that degraded to per-node correlation.
 //!
+//! `fireThreshold` keeps Go's float32 number text.
+//!
 //! Deliberate difference: the Go-runtime fields `goroutines`, `heapAllocBytes`
 //! and `numGC` have no Rust runtime equivalent and are not emitted.
 use humanymous_core::model::correction::Controller;
@@ -40,7 +42,7 @@ pub fn rollup(inputs: &Inputs<'_>) -> Value {
         }
         ml.insert(
             "fireThreshold".into(),
-            json!(controller.proposed_fire_threshold()),
+            go_float32(controller.proposed_fire_threshold()),
         );
         if let Some(bundle) = inputs.active_bundle {
             ml.insert("activeBundle".into(), json!(bundle));
@@ -53,6 +55,19 @@ pub fn rollup(inputs: &Inputs<'_>) -> Value {
         "ml": Value::Object(ml),
         "fleet": { "redisFallbackTotal": inputs.fleet_fallbacks },
     })
+}
+
+/// Go encodes the float32 threshold with 32-bit shortest digits (`0.8999963`);
+/// widening the bits to f64 would print `0.8999962806701660`. The shortest
+/// float32 decimal is carried as the f64 nearest to it, whose shortest text is
+/// the same digits. A non-finite value (which Go refuses to encode) is `null`.
+fn go_float32(value: f32) -> Value {
+    value
+        .to_string()
+        .parse::<f64>()
+        .ok()
+        .and_then(serde_json::Number::from_f64)
+        .map_or(Value::Null, Value::Number)
 }
 
 #[cfg(test)]

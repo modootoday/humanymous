@@ -15,8 +15,8 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 239,
-  "partial": 56,
+  "ported_unit": 241,
+  "partial": 54,
   "missing": 8,
   "not_applicable": 2,
   "oracle_only": 9
@@ -40,8 +40,8 @@
   },
   "cmd/server": {
    "missing": 3,
-   "partial": 20,
-   "ported_unit": 16,
+   "partial": 18,
+   "ported_unit": 18,
    "oracle_only": 3
   },
   "cmd/tlsparrot": {
@@ -1455,50 +1455,86 @@
   },
   {
    "baseline_path": "cmd/server/ops_test.go",
-   "disposition": "partial",
-   "rust_paths": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs"
+   ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::healthz_always_on",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_endpoints_absent_without_token",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_endpoints_gated",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_exchanges_match_go_golden",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::explain_scores_a_copy",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::explain_fails_closed_on_non_finite_policy",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::configure_ops_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::can_read_session_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_token_and_admin_bearers_are_separate",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::public_listener_never_serves_ops_routes",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_routes_served_on_admin_loopback_listener"
    ],
    "go_test_map": {
-    "TestHealthzAlwaysOn": null,
-    "TestOpsEndpointsAbsentWithoutToken": null,
-    "TestOpsEndpointsGated": "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope"
+    "TestHealthzAlwaysOn": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::healthz_always_on",
+    "TestOpsEndpointsAbsentWithoutToken": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_endpoints_absent_without_token",
+    "TestOpsEndpointsGated": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_endpoints_gated"
    },
-   "gaps": [
-    "public /healthz",
-    "explain/counters absent without operator token"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "low",
-   "notes": "Only analog: Rust management observer requires a native peer plus independent credential; it serves status/settings, not explain/counters.",
+   "confidence": "high",
+   "notes": "The three Go tests drove a.routes() on the public Core server. They map to the same assertions on the admin plane ops routes (/_humanymous/ops/healthz, explain/{id}, counters) - documented deviation per sot:root/adapter-ecosystem management isolation and plan B09 - and public_listener_never_serves_ops_routes pins that the public application listener refuses both the reserved ops paths (403 reserved_route) and the Go public paths (409 route_inventory) even with the operator bearer. ops_exchanges_match_go_golden replays all 25 oracle exchanges byte for byte.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::healthz_always_on": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_endpoints_absent_without_token": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_endpoints_gated": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_exchanges_match_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::explain_scores_a_copy": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::explain_fails_closed_on_non_finite_policy": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::configure_ops_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::can_read_session_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_token_and_admin_bearers_are_separate": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::public_listener_never_serves_ops_routes": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_routes_served_on_admin_loopback_listener": "passed"
    }
   },
   {
    "baseline_path": "cmd/server/ops.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/management/mod.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/management/policy.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/service/readiness.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/counters.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/operations/mlcorrect.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/resource.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::healthz_always_on",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_endpoints_absent_without_token",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_endpoints_gated",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_exchanges_match_go_golden",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::explain_scores_a_copy",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::explain_fails_closed_on_non_finite_policy",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::configure_ops_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::can_read_session_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_token_and_admin_bearers_are_separate",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::public_listener_never_serves_ops_routes",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_routes_served_on_admin_loopback_listener"
    ],
    "go_test_map": {},
-   "gaps": [
-    "HTTP /healthz",
-    "operator-token explain (score trace) endpoint",
-    "counters endpoint",
-    "per-session read authorization"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "medium",
-   "notes": "Rust has private UDS/pipe management status/settings and readiness via pipe; plan B09 marks operator explain/counters as M.",
+   "confidence": "high",
+   "notes": "gateway::admin_plane::ops ports configureOps (resolve_token, HMN_OPS_TOKEN fallback), handleHealthz, handleExplain (re-scores a copy through humanymous_core Engine::score_with_trace; frozen weights, thresholds and rules reported unchanged) and handleCounters (operations::counters rollup). Deviation per sot:root/adapter-ecosystem (public data-plane listeners never register management handlers) and plan B09 (separate operator route/auth): the routes are served under /_humanymous/ops/ on the admin plane loopback listener, not on the public listener, which refuses them (public_listener_never_serves_ops_routes). Status, Content-Type and body bytes match a go1.25.3 oracle capture (tests/fixtures/gateway/ops-go-golden.json) for healthz, explain over the six frozen reports, counters with and without a lab controller, and every 404 path; counters omits Go-runtime goroutines/heapAllocBytes/numGC, and fireThreshold now keeps Go float32 text. Uptime counts from the admin plane epoch; a non-finite policy answers 500. operatorAuthorized is the shared operations::mlcorrect::operator_authorized and canReadSession the shared resource::can_read_session (both from PR #133); can_read_session_matches_go_golden pins the latter against the oracle. Composition into gateway::service is a runtime-owner step; unit-level only.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs::observer_requires_native_peer_independent_credential_exact_scope": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::healthz_always_on": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_endpoints_absent_without_token": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_endpoints_gated": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_exchanges_match_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::explain_scores_a_copy": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::explain_fails_closed_on_non_finite_policy": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::configure_ops_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::can_read_session_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_token_and_admin_bearers_are_separate": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::public_listener_never_serves_ops_routes": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/ops/tests.rs::ops_routes_served_on_admin_loopback_listener": "passed"
    }
   },
   {
