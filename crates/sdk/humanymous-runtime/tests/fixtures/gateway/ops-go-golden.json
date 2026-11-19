@@ -1,0 +1,1455 @@
+{
+ "provenance": {
+  "oracle_commit": "981d25cf71a5a54855d7e2b4359e832a9d5998e5",
+  "oracle_packages": [
+   "cmd/server (ops.go configureOps/operatorAuthorized/canReadSession/handleHealthz/handleExplain/handleCounters through app.routes(), store.StoreScored, mlcorrect.Controller)"
+  ],
+  "go_version": "go1.25.3 linux/amd64 (go.mod at 981d25c pins go 1.25.3)",
+  "command": "git archive 981d25c | tar -x -C <oracle>; add scratch in-package capture test cmd/server/zz_ops_capture_test.go; cd <oracle>; GOLDEN_OUT=<out> FROZEN_DIR=<repo>/crates/sdk/humanymous-core/tests/scoring/fixtures/frozen GOPROXY=off GOFLAGS=-mod=readonly go test -count=1 -run ^TestZZOpsCapture$ ./cmd/server/",
+  "capture_program_sha256": {
+   "cmd/server/zz_ops_capture_test.go": "4bf84a7c6d82240df2a4e1187c45f591c6bebcd21caee5769c894aa49959559d"
+  },
+  "capture_program_committed": false,
+  "output_sha256": "fc6166b24543bdfd3d1b45827d11a42ac70eb7e5004358caa44d2a129430ff08",
+  "capture_notes": [
+   "exchanges go through newTestApp(t, false).routes() (or handleCounters directly for the controller cases) with httptest; status, Content-Type and body bytes are recorded, other headers are not",
+   "stored_reports are the six humanymous-core frozen scoring fixtures, decoded into signals.SessionReport, stored with store.StoreScored under the fixture id and read back with store.Get (Go JSON of the stored value)",
+   "a.started is set immediately before the requests, so uptimeSec is 0; version is the unstamped dev build value",
+   "goroutines, heapAllocBytes and numGC are Go runtime values that vary per run",
+   "counters_tripped_canary repeats the counters_test.go setup (NewController(0.005, 0.5, 0.0), canary MaxHumanFP 0.10 / ProbationHumans 100000, 400 PassSolved outcomes at 0.9); counters_armed_canary uses NewController(0.005, 0.5, 0.05) with 37 PassSolved outcomes at 0.3",
+   "configure_ops sets HMN_OPS_TOKEN with t.Setenv before each configureOps call; can_read_session calls canReadSession with an hsid cookie and Authorization header on GET /api/report/<session>"
+  ],
+  "scope": "Frozen oracle outputs for differential parity only; never regenerate to hide drift"
+ },
+ "can_read_session": [
+  {
+   "ops_token": "",
+   "hsid_cookie": "abc",
+   "session": "abc",
+   "allowed": true,
+   "status": 200,
+   "body": ""
+  },
+  {
+   "ops_token": "",
+   "hsid_cookie": "abc",
+   "session": "xyz",
+   "allowed": false,
+   "status": 404,
+   "body": "404 page not found\n"
+  },
+  {
+   "ops_token": "",
+   "session": "",
+   "allowed": false,
+   "status": 404,
+   "body": "404 page not found\n"
+  },
+  {
+   "ops_token": "",
+   "session": "",
+   "authorization": "Bearer ",
+   "allowed": false,
+   "status": 404,
+   "body": "404 page not found\n"
+  },
+  {
+   "ops_token": "",
+   "hsid_cookie": "abc",
+   "session": "xyz",
+   "authorization": "Bearer anything",
+   "allowed": false,
+   "status": 404,
+   "body": "404 page not found\n"
+  },
+  {
+   "ops_token": "s3cret",
+   "session": "abc",
+   "authorization": "Bearer s3cret",
+   "allowed": true,
+   "status": 200,
+   "body": ""
+  },
+  {
+   "ops_token": "s3cret",
+   "session": "abc",
+   "authorization": "s3cret",
+   "allowed": true,
+   "status": 200,
+   "body": ""
+  },
+  {
+   "ops_token": "s3cret",
+   "session": "abc",
+   "authorization": "Bearer wrong",
+   "allowed": false,
+   "status": 404,
+   "body": "404 page not found\n"
+  },
+  {
+   "ops_token": "s3cret",
+   "hsid_cookie": "abc",
+   "session": "abc",
+   "authorization": "Bearer wrong",
+   "allowed": true,
+   "status": 200,
+   "body": ""
+  },
+  {
+   "ops_token": "s3cret",
+   "session": "",
+   "authorization": "Bearer s3cret",
+   "allowed": true,
+   "status": 200,
+   "body": ""
+  },
+  {
+   "ops_token": "s3cret",
+   "session": "",
+   "allowed": false,
+   "status": 404,
+   "body": "404 page not found\n"
+  }
+ ],
+ "configure_ops": [
+  {
+   "flag": " tok ",
+   "env": "",
+   "token": "tok"
+  },
+  {
+   "flag": "",
+   "env": " envtok\t",
+   "token": "envtok"
+  },
+  {
+   "flag": "flag",
+   "env": "env",
+   "token": "flag"
+  },
+  {
+   "flag": "  ",
+   "env": "env",
+   "token": "env"
+  },
+  {
+   "flag": "",
+   "env": "",
+   "token": ""
+  },
+  {
+   "flag": "",
+   "env": "   ",
+   "token": ""
+  }
+ ],
+ "exchanges": [
+  {
+   "name": "healthz_without_token",
+   "ops_token_configured": false,
+   "method": "GET",
+   "path": "/healthz",
+   "status": 200,
+   "content_type": "application/json",
+   "body": "{\"status\":\"ok\",\"uptimeSec\":0,\"version\":\"dev\"}\n"
+  },
+  {
+   "name": "explain_unregistered",
+   "ops_token_configured": false,
+   "method": "GET",
+   "path": "/api/explain/abc",
+   "status": 404,
+   "content_type": "text/plain; charset=utf-8",
+   "body": "404 page not found\n"
+  },
+  {
+   "name": "counters_unregistered",
+   "ops_token_configured": false,
+   "method": "GET",
+   "path": "/api/counters",
+   "status": 404,
+   "content_type": "text/plain; charset=utf-8",
+   "body": "404 page not found\n"
+  },
+  {
+   "name": "healthz_with_token",
+   "ops_token_configured": true,
+   "method": "GET",
+   "path": "/healthz",
+   "status": 200,
+   "content_type": "application/json",
+   "body": "{\"status\":\"ok\",\"uptimeSec\":0,\"version\":\"dev\"}\n"
+  },
+  {
+   "name": "healthz_post",
+   "ops_token_configured": true,
+   "method": "POST",
+   "path": "/healthz",
+   "status": 200,
+   "content_type": "application/json",
+   "body": "{\"status\":\"ok\",\"uptimeSec\":0,\"version\":\"dev\"}\n"
+  },
+  {
+   "name": "counters_missing_token",
+   "ops_token_configured": true,
+   "method": "GET",
+   "path": "/api/counters",
+   "status": 404,
+   "content_type": "text/plain; charset=utf-8",
+   "body": "404 page not found\n"
+  },
+  {
+   "name": "counters_wrong_token",
+   "ops_token_configured": true,
+   "method": "GET",
+   "path": "/api/counters",
+   "authorization": "Bearer wrong",
+   "status": 404,
+   "content_type": "text/plain; charset=utf-8",
+   "body": "404 page not found\n"
+  },
+  {
+   "name": "counters_lowercase_scheme",
+   "ops_token_configured": true,
+   "method": "GET",
+   "path": "/api/counters",
+   "authorization": "bearer s3cret",
+   "status": 404,
+   "content_type": "text/plain; charset=utf-8",
+   "body": "404 page not found\n"
+  },
+  {
+   "name": "counters_double_space",
+   "ops_token_configured": true,
+   "method": "GET",
+   "path": "/api/counters",
+   "authorization": "Bearer  s3cret",
+   "status": 404,
+   "content_type": "text/plain; charset=utf-8",
+   "body": "404 page not found\n"
+  },
+  {
+   "name": "counters_bare_token",
+   "ops_token_configured": true,
+   "method": "GET",
+   "path": "/api/counters",
+   "authorization": "s3cret",
+   "status": 200,
+   "content_type": "application/json",
+   "body": "{\"fleet\":{\"redisFallbackTotal\":0},\"goroutines\":2,\"heapAllocBytes\":745320,\"ml\":{\"enabled\":false,\"oracleTraces\":0},\"numGC\":0,\"uptimeSec\":0,\"version\":\"dev\"}\n"
+  },
+  {
+   "name": "counters_post",
+   "ops_token_configured": true,
+   "method": "POST",
+   "path": "/api/counters",
+   "authorization": "Bearer s3cret",
+   "status": 200,
+   "content_type": "application/json",
+   "body": "{\"fleet\":{\"redisFallbackTotal\":0},\"goroutines\":2,\"heapAllocBytes\":757064,\"ml\":{\"enabled\":false,\"oracleTraces\":0},\"numGC\":0,\"uptimeSec\":0,\"version\":\"dev\"}\n"
+  },
+  {
+   "name": "counters",
+   "ops_token_configured": true,
+   "method": "GET",
+   "path": "/api/counters",
+   "authorization": "Bearer s3cret",
+   "status": 200,
+   "content_type": "application/json",
+   "body": "{\"fleet\":{\"redisFallbackTotal\":0},\"goroutines\":2,\"heapAllocBytes\":765960,\"ml\":{\"enabled\":false,\"oracleTraces\":0},\"numGC\":0,\"uptimeSec\":0,\"version\":\"dev\"}\n"
+  },
+  {
+   "name": "explain_missing_token",
+   "ops_token_configured": true,
+   "method": "GET",
+   "path": "/api/explain/bot-webdriver-cdp-hr9",
+   "status": 404,
+   "content_type": "text/plain; charset=utf-8",
+   "body": "404 page not found\n"
+  },
+  {
+   "name": "explain_wrong_token",
+   "ops_token_configured": true,
+   "method": "GET",
+   "path": "/api/explain/bot-webdriver-cdp-hr9",
+   "authorization": "Bearer nope",
+   "status": 404,
+   "content_type": "text/plain; charset=utf-8",
+   "body": "404 page not found\n"
+  },
+  {
+   "name": "explain_unknown_session",
+   "ops_token_configured": true,
+   "method": "GET",
+   "path": "/api/explain/unknown",
+   "authorization": "Bearer s3cret",
+   "status": 404,
+   "content_type": "text/plain; charset=utf-8",
+   "body": "404 page not found\n"
+  },
+  {
+   "name": "explain_empty_session",
+   "ops_token_configured": true,
+   "method": "GET",
+   "path": "/api/explain/",
+   "authorization": "Bearer s3cret",
+   "status": 404,
+   "content_type": "text/plain; charset=utf-8",
+   "body": "404 page not found\n"
+  },
+  {
+   "name": "explain_bot-webdriver-cdp-hr9",
+   "ops_token_configured": true,
+   "method": "GET",
+   "path": "/api/explain/bot-webdriver-cdp-hr9",
+   "authorization": "Bearer s3cret",
+   "status": 200,
+   "content_type": "application/json",
+   "body": "{\"contributions\":[{\"id\":\"l1.navigator.webdriver\",\"layer\":\"L1\",\"group\":\"webdriver\",\"score\":40},{\"id\":\"l1.cdp.proxy_leak\",\"layer\":\"L1\",\"group\":\"cdp\",\"score\":40},{\"id\":\"l2.env.probe_dead\",\"layer\":\"L2\",\"group\":\"env\",\"score\":2.5},{\"id\":\"x.uach_present\",\"layer\":\"L6\",\"group\":\"\",\"score\":40},{\"id\":\"x.ua_vs_header\",\"layer\":\"L6\",\"group\":\"\",\"score\":35}],\"dedupDropped\":null,\"perLayer\":[{\"layer\":\"L1\",\"rawProb\":0.64,\"cappedProb\":0.6,\"capHit\":true},{\"layer\":\"L2\",\"rawProb\":0.025,\"cappedProb\":0.025,\"capHit\":false},{\"layer\":\"L6\",\"rawProb\":0.61,\"cappedProb\":0.6,\"capHit\":true}],\"hardRuleEval\":[{\"rule\":\"HR-1\",\"verdict\":\"DENY\",\"why\":\"hard automation artifact (Selenium/Puppeteer/Playwright)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-2\",\"verdict\":\"DENY\",\"why\":\"UA claims a browser but TLS + HTTP/2 both resolve to a different engine\",\"matched\":false,\"won\":false},{\"rule\":\"HR-3\",\"verdict\":\"DENY\",\"why\":\"synthetic (untrusted) events plus a webdriver/CDP tell\",\"matched\":false,\"won\":false},{\"rule\":\"HR-4\",\"verdict\":\"DENY\",\"why\":\"webdriver flag plus a patched native getter hiding it\",\"matched\":false,\"won\":false},{\"rule\":\"HR-5\",\"verdict\":\"DENY\",\"why\":\"RIT tamper/invalid HMAC together with a TLS engine mismatch\",\"matched\":false,\"won\":false},{\"rule\":\"HR-6\",\"verdict\":\"DENY\",\"why\":\"runtime hooking / prototype pollution plus a webdriver/CDP tell\",\"matched\":false,\"won\":false},{\"rule\":\"HR-7\",\"verdict\":\"DENY\",\"why\":\"headless browser plus a second automation indicator\",\"matched\":false,\"won\":false},{\"rule\":\"HR-8\",\"verdict\":\"DENY\",\"why\":\"patched native getter in a chromeless/headless window (stealth tool)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-9\",\"verdict\":\"DENY\",\"why\":\"a CDP leak together with any automation hint\",\"matched\":true,\"won\":true},{\"rule\":\"HR-13\",\"verdict\":\"DENY\",\"why\":\"a disabled Console API (Patchright) plus a chromeless/automation tell\",\"matched\":false,\"won\":false},{\"rule\":\"HR-10\",\"verdict\":\"CHALLENGE\",\"why\":\"no client-side (WASM/JS) signals at all\",\"matched\":false,\"won\":false},{\"rule\":\"HR-16\",\"verdict\":\"DENY\",\"why\":\"a RIT token that fails the body HMAC (request-body tamper)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-14\",\"verdict\":\"DENY\",\"why\":\"the TLS fingerprint rotated within one session\",\"matched\":false,\"won\":false},{\"rule\":\"HR-18\",\"verdict\":\"DENY\",\"why\":\"a browser UA that delivered zero client-side JS evidence (HTTP parrot)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-20\",\"verdict\":\"DENY\",\"why\":\"AI browser-agent signature (teleport click + a second agent/CDP tell)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-19\",\"verdict\":\"DENY\",\"why\":\"NET-POLICY: proxy rotation / fp-churn (audit+admin; score-exempt residual)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-21\",\"verdict\":\"DENY\",\"why\":\"HTTP-2 DoS (Rapid Reset / CONTINUATION flood)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-15\",\"verdict\":\"DENY\",\"why\":\"multi-axis rotation (UA changed together with TLS/IP rotation)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-17\",\"verdict\":\"CHALLENGE\",\"why\":\"a replayed or absent RIT token on an API call\",\"matched\":false,\"won\":false},{\"rule\":\"HR-12\",\"verdict\":\"CHALLENGE\",\"why\":\"zero interaction over the observation window (heuristic — can catch some humans)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-11\",\"verdict\":\"CHALLENGE\",\"why\":\"a consistent browser from a datacenter ASN\",\"matched\":false,\"won\":false},{\"rule\":\"HR-22\",\"verdict\":\"CHALLENGE\",\"why\":\"near-ceiling advanced residual (audio 24k / GPU mismatch / mobile-desktop profile)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-23\",\"verdict\":\"CHALLENGE\",\"why\":\"Chrome UA with Chromium-container residual (no Widevine/media/voices)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-24\",\"verdict\":\"CHALLENGE\",\"why\":\"NET-POLICY: network residual (proxy/VPN/Tor) — audit+admin; score-exempt\",\"matched\":false,\"won\":false}],\"score\":84.4,\"verdict\":\"DENY\",\"hardRuleFired\":\"HR-9\",\"policy\":{\"version\":\"1.0.0\",\"layerCap\":60,\"challengeAt\":30,\"denyAt\":70}}\n"
+  },
+  {
+   "name": "explain_go-http-client",
+   "ops_token_configured": true,
+   "method": "GET",
+   "path": "/api/explain/go-http-client",
+   "authorization": "Bearer s3cret",
+   "status": 200,
+   "content_type": "application/json",
+   "body": "{\"contributions\":[{\"id\":\"l2.env.probe_dead\",\"layer\":\"L2\",\"group\":\"env\",\"score\":2.5},{\"id\":\"x.non_browser_ua\",\"layer\":\"L6\",\"group\":\"\",\"score\":45}],\"dedupDropped\":null,\"perLayer\":[{\"layer\":\"L2\",\"rawProb\":0.025,\"cappedProb\":0.025,\"capHit\":false},{\"layer\":\"L6\",\"rawProb\":0.45,\"cappedProb\":0.45,\"capHit\":false}],\"hardRuleEval\":[{\"rule\":\"HR-1\",\"verdict\":\"DENY\",\"why\":\"hard automation artifact (Selenium/Puppeteer/Playwright)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-2\",\"verdict\":\"DENY\",\"why\":\"UA claims a browser but TLS + HTTP/2 both resolve to a different engine\",\"matched\":false,\"won\":false},{\"rule\":\"HR-3\",\"verdict\":\"DENY\",\"why\":\"synthetic (untrusted) events plus a webdriver/CDP tell\",\"matched\":false,\"won\":false},{\"rule\":\"HR-4\",\"verdict\":\"DENY\",\"why\":\"webdriver flag plus a patched native getter hiding it\",\"matched\":false,\"won\":false},{\"rule\":\"HR-5\",\"verdict\":\"DENY\",\"why\":\"RIT tamper/invalid HMAC together with a TLS engine mismatch\",\"matched\":false,\"won\":false},{\"rule\":\"HR-6\",\"verdict\":\"DENY\",\"why\":\"runtime hooking / prototype pollution plus a webdriver/CDP tell\",\"matched\":false,\"won\":false},{\"rule\":\"HR-7\",\"verdict\":\"DENY\",\"why\":\"headless browser plus a second automation indicator\",\"matched\":false,\"won\":false},{\"rule\":\"HR-8\",\"verdict\":\"DENY\",\"why\":\"patched native getter in a chromeless/headless window (stealth tool)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-9\",\"verdict\":\"DENY\",\"why\":\"a CDP leak together with any automation hint\",\"matched\":false,\"won\":false},{\"rule\":\"HR-13\",\"verdict\":\"DENY\",\"why\":\"a disabled Console API (Patchright) plus a chromeless/automation tell\",\"matched\":false,\"won\":false},{\"rule\":\"HR-10\",\"verdict\":\"CHALLENGE\",\"why\":\"no client-side (WASM/JS) signals at all\",\"matched\":false,\"won\":false},{\"rule\":\"HR-16\",\"verdict\":\"DENY\",\"why\":\"a RIT token that fails the body HMAC (request-body tamper)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-14\",\"verdict\":\"DENY\",\"why\":\"the TLS fingerprint rotated within one session\",\"matched\":false,\"won\":false},{\"rule\":\"HR-18\",\"verdict\":\"DENY\",\"why\":\"a browser UA that delivered zero client-side JS evidence (HTTP parrot)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-20\",\"verdict\":\"DENY\",\"why\":\"AI browser-agent signature (teleport click + a second agent/CDP tell)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-19\",\"verdict\":\"DENY\",\"why\":\"NET-POLICY: proxy rotation / fp-churn (audit+admin; score-exempt residual)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-21\",\"verdict\":\"DENY\",\"why\":\"HTTP-2 DoS (Rapid Reset / CONTINUATION flood)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-15\",\"verdict\":\"DENY\",\"why\":\"multi-axis rotation (UA changed together with TLS/IP rotation)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-17\",\"verdict\":\"CHALLENGE\",\"why\":\"a replayed or absent RIT token on an API call\",\"matched\":false,\"won\":false},{\"rule\":\"HR-12\",\"verdict\":\"CHALLENGE\",\"why\":\"zero interaction over the observation window (heuristic — can catch some humans)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-11\",\"verdict\":\"CHALLENGE\",\"why\":\"a consistent browser from a datacenter ASN\",\"matched\":false,\"won\":false},{\"rule\":\"HR-22\",\"verdict\":\"CHALLENGE\",\"why\":\"near-ceiling advanced residual (audio 24k / GPU mismatch / mobile-desktop profile)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-23\",\"verdict\":\"CHALLENGE\",\"why\":\"Chrome UA with Chromium-container residual (no Widevine/media/voices)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-24\",\"verdict\":\"CHALLENGE\",\"why\":\"NET-POLICY: network residual (proxy/VPN/Tor) — audit+admin; score-exempt\",\"matched\":false,\"won\":false}],\"score\":46.4,\"verdict\":\"CHALLENGE\",\"hardRuleFired\":\"\",\"policy\":{\"version\":\"1.0.0\",\"layerCap\":60,\"challengeAt\":30,\"denyAt\":70}}\n"
+  },
+  {
+   "name": "explain_human-chrome-allow",
+   "ops_token_configured": true,
+   "method": "GET",
+   "path": "/api/explain/human-chrome-allow",
+   "authorization": "Bearer s3cret",
+   "status": 200,
+   "content_type": "application/json",
+   "body": "{\"contributions\":[],\"dedupDropped\":null,\"perLayer\":[{\"layer\":\"L1\",\"rawProb\":0,\"cappedProb\":0,\"capHit\":false},{\"layer\":\"L2\",\"rawProb\":0,\"cappedProb\":0,\"capHit\":false}],\"hardRuleEval\":[{\"rule\":\"HR-1\",\"verdict\":\"DENY\",\"why\":\"hard automation artifact (Selenium/Puppeteer/Playwright)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-2\",\"verdict\":\"DENY\",\"why\":\"UA claims a browser but TLS + HTTP/2 both resolve to a different engine\",\"matched\":false,\"won\":false},{\"rule\":\"HR-3\",\"verdict\":\"DENY\",\"why\":\"synthetic (untrusted) events plus a webdriver/CDP tell\",\"matched\":false,\"won\":false},{\"rule\":\"HR-4\",\"verdict\":\"DENY\",\"why\":\"webdriver flag plus a patched native getter hiding it\",\"matched\":false,\"won\":false},{\"rule\":\"HR-5\",\"verdict\":\"DENY\",\"why\":\"RIT tamper/invalid HMAC together with a TLS engine mismatch\",\"matched\":false,\"won\":false},{\"rule\":\"HR-6\",\"verdict\":\"DENY\",\"why\":\"runtime hooking / prototype pollution plus a webdriver/CDP tell\",\"matched\":false,\"won\":false},{\"rule\":\"HR-7\",\"verdict\":\"DENY\",\"why\":\"headless browser plus a second automation indicator\",\"matched\":false,\"won\":false},{\"rule\":\"HR-8\",\"verdict\":\"DENY\",\"why\":\"patched native getter in a chromeless/headless window (stealth tool)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-9\",\"verdict\":\"DENY\",\"why\":\"a CDP leak together with any automation hint\",\"matched\":false,\"won\":false},{\"rule\":\"HR-13\",\"verdict\":\"DENY\",\"why\":\"a disabled Console API (Patchright) plus a chromeless/automation tell\",\"matched\":false,\"won\":false},{\"rule\":\"HR-10\",\"verdict\":\"CHALLENGE\",\"why\":\"no client-side (WASM/JS) signals at all\",\"matched\":false,\"won\":false},{\"rule\":\"HR-16\",\"verdict\":\"DENY\",\"why\":\"a RIT token that fails the body HMAC (request-body tamper)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-14\",\"verdict\":\"DENY\",\"why\":\"the TLS fingerprint rotated within one session\",\"matched\":false,\"won\":false},{\"rule\":\"HR-18\",\"verdict\":\"DENY\",\"why\":\"a browser UA that delivered zero client-side JS evidence (HTTP parrot)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-20\",\"verdict\":\"DENY\",\"why\":\"AI browser-agent signature (teleport click + a second agent/CDP tell)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-19\",\"verdict\":\"DENY\",\"why\":\"NET-POLICY: proxy rotation / fp-churn (audit+admin; score-exempt residual)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-21\",\"verdict\":\"DENY\",\"why\":\"HTTP-2 DoS (Rapid Reset / CONTINUATION flood)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-15\",\"verdict\":\"DENY\",\"why\":\"multi-axis rotation (UA changed together with TLS/IP rotation)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-17\",\"verdict\":\"CHALLENGE\",\"why\":\"a replayed or absent RIT token on an API call\",\"matched\":false,\"won\":false},{\"rule\":\"HR-12\",\"verdict\":\"CHALLENGE\",\"why\":\"zero interaction over the observation window (heuristic — can catch some humans)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-11\",\"verdict\":\"CHALLENGE\",\"why\":\"a consistent browser from a datacenter ASN\",\"matched\":false,\"won\":false},{\"rule\":\"HR-22\",\"verdict\":\"CHALLENGE\",\"why\":\"near-ceiling advanced residual (audio 24k / GPU mismatch / mobile-desktop profile)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-23\",\"verdict\":\"CHALLENGE\",\"why\":\"Chrome UA with Chromium-container residual (no Widevine/media/voices)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-24\",\"verdict\":\"CHALLENGE\",\"why\":\"NET-POLICY: network residual (proxy/VPN/Tor) — audit+admin; score-exempt\",\"matched\":false,\"won\":false}],\"score\":0,\"verdict\":\"ALLOW\",\"hardRuleFired\":\"\",\"policy\":{\"version\":\"1.0.0\",\"layerCap\":60,\"challengeAt\":30,\"denyAt\":70}}\n"
+  },
+  {
+   "name": "explain_no-client-hr10",
+   "ops_token_configured": true,
+   "method": "GET",
+   "path": "/api/explain/no-client-hr10",
+   "authorization": "Bearer s3cret",
+   "status": 200,
+   "content_type": "application/json",
+   "body": "{\"contributions\":[],\"dedupDropped\":null,\"perLayer\":null,\"hardRuleEval\":[{\"rule\":\"HR-1\",\"verdict\":\"DENY\",\"why\":\"hard automation artifact (Selenium/Puppeteer/Playwright)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-2\",\"verdict\":\"DENY\",\"why\":\"UA claims a browser but TLS + HTTP/2 both resolve to a different engine\",\"matched\":false,\"won\":false},{\"rule\":\"HR-3\",\"verdict\":\"DENY\",\"why\":\"synthetic (untrusted) events plus a webdriver/CDP tell\",\"matched\":false,\"won\":false},{\"rule\":\"HR-4\",\"verdict\":\"DENY\",\"why\":\"webdriver flag plus a patched native getter hiding it\",\"matched\":false,\"won\":false},{\"rule\":\"HR-5\",\"verdict\":\"DENY\",\"why\":\"RIT tamper/invalid HMAC together with a TLS engine mismatch\",\"matched\":false,\"won\":false},{\"rule\":\"HR-6\",\"verdict\":\"DENY\",\"why\":\"runtime hooking / prototype pollution plus a webdriver/CDP tell\",\"matched\":false,\"won\":false},{\"rule\":\"HR-7\",\"verdict\":\"DENY\",\"why\":\"headless browser plus a second automation indicator\",\"matched\":false,\"won\":false},{\"rule\":\"HR-8\",\"verdict\":\"DENY\",\"why\":\"patched native getter in a chromeless/headless window (stealth tool)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-9\",\"verdict\":\"DENY\",\"why\":\"a CDP leak together with any automation hint\",\"matched\":false,\"won\":false},{\"rule\":\"HR-13\",\"verdict\":\"DENY\",\"why\":\"a disabled Console API (Patchright) plus a chromeless/automation tell\",\"matched\":false,\"won\":false},{\"rule\":\"HR-10\",\"verdict\":\"CHALLENGE\",\"why\":\"no client-side (WASM/JS) signals at all\",\"matched\":true,\"won\":true},{\"rule\":\"HR-16\",\"verdict\":\"DENY\",\"why\":\"a RIT token that fails the body HMAC (request-body tamper)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-14\",\"verdict\":\"DENY\",\"why\":\"the TLS fingerprint rotated within one session\",\"matched\":false,\"won\":false},{\"rule\":\"HR-18\",\"verdict\":\"DENY\",\"why\":\"a browser UA that delivered zero client-side JS evidence (HTTP parrot)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-20\",\"verdict\":\"DENY\",\"why\":\"AI browser-agent signature (teleport click + a second agent/CDP tell)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-19\",\"verdict\":\"DENY\",\"why\":\"NET-POLICY: proxy rotation / fp-churn (audit+admin; score-exempt residual)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-21\",\"verdict\":\"DENY\",\"why\":\"HTTP-2 DoS (Rapid Reset / CONTINUATION flood)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-15\",\"verdict\":\"DENY\",\"why\":\"multi-axis rotation (UA changed together with TLS/IP rotation)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-17\",\"verdict\":\"CHALLENGE\",\"why\":\"a replayed or absent RIT token on an API call\",\"matched\":false,\"won\":false},{\"rule\":\"HR-12\",\"verdict\":\"CHALLENGE\",\"why\":\"zero interaction over the observation window (heuristic — can catch some humans)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-11\",\"verdict\":\"CHALLENGE\",\"why\":\"a consistent browser from a datacenter ASN\",\"matched\":false,\"won\":false},{\"rule\":\"HR-22\",\"verdict\":\"CHALLENGE\",\"why\":\"near-ceiling advanced residual (audio 24k / GPU mismatch / mobile-desktop profile)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-23\",\"verdict\":\"CHALLENGE\",\"why\":\"Chrome UA with Chromium-container residual (no Widevine/media/voices)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-24\",\"verdict\":\"CHALLENGE\",\"why\":\"NET-POLICY: network residual (proxy/VPN/Tor) — audit+admin; score-exempt\",\"matched\":false,\"won\":false}],\"score\":0,\"verdict\":\"CHALLENGE\",\"hardRuleFired\":\"HR-10\",\"policy\":{\"version\":\"1.0.0\",\"layerCap\":60,\"challengeAt\":30,\"denyAt\":70}}\n"
+  },
+  {
+   "name": "explain_selenium-hr1",
+   "ops_token_configured": true,
+   "method": "GET",
+   "path": "/api/explain/selenium-hr1",
+   "authorization": "Bearer s3cret",
+   "status": 200,
+   "content_type": "application/json",
+   "body": "{\"contributions\":[{\"id\":\"l1.artifact.selenium\",\"layer\":\"L1\",\"group\":\"artifact\",\"score\":40},{\"id\":\"l1.navigator.webdriver\",\"layer\":\"L1\",\"group\":\"webdriver\",\"score\":15},{\"id\":\"l2.env.probe_dead\",\"layer\":\"L2\",\"group\":\"env\",\"score\":2.5}],\"dedupDropped\":null,\"perLayer\":[{\"layer\":\"L1\",\"rawProb\":0.49000000000000005,\"cappedProb\":0.49000000000000005,\"capHit\":false},{\"layer\":\"L2\",\"rawProb\":0.025,\"cappedProb\":0.025,\"capHit\":false}],\"hardRuleEval\":[{\"rule\":\"HR-1\",\"verdict\":\"DENY\",\"why\":\"hard automation artifact (Selenium/Puppeteer/Playwright)\",\"matched\":true,\"won\":true},{\"rule\":\"HR-2\",\"verdict\":\"DENY\",\"why\":\"UA claims a browser but TLS + HTTP/2 both resolve to a different engine\",\"matched\":false,\"won\":false},{\"rule\":\"HR-3\",\"verdict\":\"DENY\",\"why\":\"synthetic (untrusted) events plus a webdriver/CDP tell\",\"matched\":false,\"won\":false},{\"rule\":\"HR-4\",\"verdict\":\"DENY\",\"why\":\"webdriver flag plus a patched native getter hiding it\",\"matched\":false,\"won\":false},{\"rule\":\"HR-5\",\"verdict\":\"DENY\",\"why\":\"RIT tamper/invalid HMAC together with a TLS engine mismatch\",\"matched\":false,\"won\":false},{\"rule\":\"HR-6\",\"verdict\":\"DENY\",\"why\":\"runtime hooking / prototype pollution plus a webdriver/CDP tell\",\"matched\":false,\"won\":false},{\"rule\":\"HR-7\",\"verdict\":\"DENY\",\"why\":\"headless browser plus a second automation indicator\",\"matched\":false,\"won\":false},{\"rule\":\"HR-8\",\"verdict\":\"DENY\",\"why\":\"patched native getter in a chromeless/headless window (stealth tool)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-9\",\"verdict\":\"DENY\",\"why\":\"a CDP leak together with any automation hint\",\"matched\":false,\"won\":false},{\"rule\":\"HR-13\",\"verdict\":\"DENY\",\"why\":\"a disabled Console API (Patchright) plus a chromeless/automation tell\",\"matched\":false,\"won\":false},{\"rule\":\"HR-10\",\"verdict\":\"CHALLENGE\",\"why\":\"no client-side (WASM/JS) signals at all\",\"matched\":false,\"won\":false},{\"rule\":\"HR-16\",\"verdict\":\"DENY\",\"why\":\"a RIT token that fails the body HMAC (request-body tamper)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-14\",\"verdict\":\"DENY\",\"why\":\"the TLS fingerprint rotated within one session\",\"matched\":false,\"won\":false},{\"rule\":\"HR-18\",\"verdict\":\"DENY\",\"why\":\"a browser UA that delivered zero client-side JS evidence (HTTP parrot)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-20\",\"verdict\":\"DENY\",\"why\":\"AI browser-agent signature (teleport click + a second agent/CDP tell)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-19\",\"verdict\":\"DENY\",\"why\":\"NET-POLICY: proxy rotation / fp-churn (audit+admin; score-exempt residual)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-21\",\"verdict\":\"DENY\",\"why\":\"HTTP-2 DoS (Rapid Reset / CONTINUATION flood)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-15\",\"verdict\":\"DENY\",\"why\":\"multi-axis rotation (UA changed together with TLS/IP rotation)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-17\",\"verdict\":\"CHALLENGE\",\"why\":\"a replayed or absent RIT token on an API call\",\"matched\":false,\"won\":false},{\"rule\":\"HR-12\",\"verdict\":\"CHALLENGE\",\"why\":\"zero interaction over the observation window (heuristic — can catch some humans)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-11\",\"verdict\":\"CHALLENGE\",\"why\":\"a consistent browser from a datacenter ASN\",\"matched\":false,\"won\":false},{\"rule\":\"HR-22\",\"verdict\":\"CHALLENGE\",\"why\":\"near-ceiling advanced residual (audio 24k / GPU mismatch / mobile-desktop profile)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-23\",\"verdict\":\"CHALLENGE\",\"why\":\"Chrome UA with Chromium-container residual (no Widevine/media/voices)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-24\",\"verdict\":\"CHALLENGE\",\"why\":\"NET-POLICY: network residual (proxy/VPN/Tor) — audit+admin; score-exempt\",\"matched\":false,\"won\":false}],\"score\":50.3,\"verdict\":\"DENY\",\"hardRuleFired\":\"HR-1\",\"policy\":{\"version\":\"1.0.0\",\"layerCap\":60,\"challengeAt\":30,\"denyAt\":70}}\n"
+  },
+  {
+   "name": "explain_ua-tls-h2-hr2",
+   "ops_token_configured": true,
+   "method": "GET",
+   "path": "/api/explain/ua-tls-h2-hr2",
+   "authorization": "Bearer s3cret",
+   "status": 200,
+   "content_type": "application/json",
+   "body": "{\"contributions\":[{\"id\":\"l2.env.probe_dead\",\"layer\":\"L2\",\"group\":\"env\",\"score\":2.5},{\"id\":\"x.browser_no_js\",\"layer\":\"L6\",\"group\":\"\",\"score\":45},{\"id\":\"x.ua_vs_ja4\",\"layer\":\"L6\",\"group\":\"\",\"score\":50},{\"id\":\"x.ua_vs_h2\",\"layer\":\"L6\",\"group\":\"\",\"score\":45},{\"id\":\"x.uach_present\",\"layer\":\"L6\",\"group\":\"\",\"score\":40},{\"id\":\"x.ua_vs_header\",\"layer\":\"L6\",\"group\":\"\",\"score\":35}],\"dedupDropped\":null,\"perLayer\":[{\"layer\":\"L2\",\"rawProb\":0.025,\"cappedProb\":0.025,\"capHit\":false},{\"layer\":\"L6\",\"rawProb\":0.9410125000000003,\"cappedProb\":0.6,\"capHit\":true}],\"hardRuleEval\":[{\"rule\":\"HR-1\",\"verdict\":\"DENY\",\"why\":\"hard automation artifact (Selenium/Puppeteer/Playwright)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-2\",\"verdict\":\"DENY\",\"why\":\"UA claims a browser but TLS + HTTP/2 both resolve to a different engine\",\"matched\":true,\"won\":true},{\"rule\":\"HR-3\",\"verdict\":\"DENY\",\"why\":\"synthetic (untrusted) events plus a webdriver/CDP tell\",\"matched\":false,\"won\":false},{\"rule\":\"HR-4\",\"verdict\":\"DENY\",\"why\":\"webdriver flag plus a patched native getter hiding it\",\"matched\":false,\"won\":false},{\"rule\":\"HR-5\",\"verdict\":\"DENY\",\"why\":\"RIT tamper/invalid HMAC together with a TLS engine mismatch\",\"matched\":false,\"won\":false},{\"rule\":\"HR-6\",\"verdict\":\"DENY\",\"why\":\"runtime hooking / prototype pollution plus a webdriver/CDP tell\",\"matched\":false,\"won\":false},{\"rule\":\"HR-7\",\"verdict\":\"DENY\",\"why\":\"headless browser plus a second automation indicator\",\"matched\":false,\"won\":false},{\"rule\":\"HR-8\",\"verdict\":\"DENY\",\"why\":\"patched native getter in a chromeless/headless window (stealth tool)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-9\",\"verdict\":\"DENY\",\"why\":\"a CDP leak together with any automation hint\",\"matched\":false,\"won\":false},{\"rule\":\"HR-13\",\"verdict\":\"DENY\",\"why\":\"a disabled Console API (Patchright) plus a chromeless/automation tell\",\"matched\":false,\"won\":false},{\"rule\":\"HR-10\",\"verdict\":\"CHALLENGE\",\"why\":\"no client-side (WASM/JS) signals at all\",\"matched\":false,\"won\":false},{\"rule\":\"HR-16\",\"verdict\":\"DENY\",\"why\":\"a RIT token that fails the body HMAC (request-body tamper)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-14\",\"verdict\":\"DENY\",\"why\":\"the TLS fingerprint rotated within one session\",\"matched\":false,\"won\":false},{\"rule\":\"HR-18\",\"verdict\":\"DENY\",\"why\":\"a browser UA that delivered zero client-side JS evidence (HTTP parrot)\",\"matched\":true,\"won\":false},{\"rule\":\"HR-20\",\"verdict\":\"DENY\",\"why\":\"AI browser-agent signature (teleport click + a second agent/CDP tell)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-19\",\"verdict\":\"DENY\",\"why\":\"NET-POLICY: proxy rotation / fp-churn (audit+admin; score-exempt residual)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-21\",\"verdict\":\"DENY\",\"why\":\"HTTP-2 DoS (Rapid Reset / CONTINUATION flood)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-15\",\"verdict\":\"DENY\",\"why\":\"multi-axis rotation (UA changed together with TLS/IP rotation)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-17\",\"verdict\":\"CHALLENGE\",\"why\":\"a replayed or absent RIT token on an API call\",\"matched\":false,\"won\":false},{\"rule\":\"HR-12\",\"verdict\":\"CHALLENGE\",\"why\":\"zero interaction over the observation window (heuristic — can catch some humans)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-11\",\"verdict\":\"CHALLENGE\",\"why\":\"a consistent browser from a datacenter ASN\",\"matched\":false,\"won\":false},{\"rule\":\"HR-22\",\"verdict\":\"CHALLENGE\",\"why\":\"near-ceiling advanced residual (audio 24k / GPU mismatch / mobile-desktop profile)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-23\",\"verdict\":\"CHALLENGE\",\"why\":\"Chrome UA with Chromium-container residual (no Widevine/media/voices)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-24\",\"verdict\":\"CHALLENGE\",\"why\":\"NET-POLICY: network residual (proxy/VPN/Tor) — audit+admin; score-exempt\",\"matched\":false,\"won\":false}],\"score\":61,\"verdict\":\"DENY\",\"hardRuleFired\":\"HR-2\",\"policy\":{\"version\":\"1.0.0\",\"layerCap\":60,\"challengeAt\":30,\"denyAt\":70}}\n"
+  },
+  {
+   "name": "explain_again",
+   "ops_token_configured": true,
+   "method": "GET",
+   "path": "/api/explain/bot-webdriver-cdp-hr9",
+   "authorization": "Bearer s3cret",
+   "status": 200,
+   "content_type": "application/json",
+   "body": "{\"contributions\":[{\"id\":\"l1.navigator.webdriver\",\"layer\":\"L1\",\"group\":\"webdriver\",\"score\":40},{\"id\":\"l1.cdp.proxy_leak\",\"layer\":\"L1\",\"group\":\"cdp\",\"score\":40},{\"id\":\"l2.env.probe_dead\",\"layer\":\"L2\",\"group\":\"env\",\"score\":2.5},{\"id\":\"x.uach_present\",\"layer\":\"L6\",\"group\":\"\",\"score\":40},{\"id\":\"x.ua_vs_header\",\"layer\":\"L6\",\"group\":\"\",\"score\":35}],\"dedupDropped\":null,\"perLayer\":[{\"layer\":\"L1\",\"rawProb\":0.64,\"cappedProb\":0.6,\"capHit\":true},{\"layer\":\"L2\",\"rawProb\":0.025,\"cappedProb\":0.025,\"capHit\":false},{\"layer\":\"L6\",\"rawProb\":0.61,\"cappedProb\":0.6,\"capHit\":true}],\"hardRuleEval\":[{\"rule\":\"HR-1\",\"verdict\":\"DENY\",\"why\":\"hard automation artifact (Selenium/Puppeteer/Playwright)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-2\",\"verdict\":\"DENY\",\"why\":\"UA claims a browser but TLS + HTTP/2 both resolve to a different engine\",\"matched\":false,\"won\":false},{\"rule\":\"HR-3\",\"verdict\":\"DENY\",\"why\":\"synthetic (untrusted) events plus a webdriver/CDP tell\",\"matched\":false,\"won\":false},{\"rule\":\"HR-4\",\"verdict\":\"DENY\",\"why\":\"webdriver flag plus a patched native getter hiding it\",\"matched\":false,\"won\":false},{\"rule\":\"HR-5\",\"verdict\":\"DENY\",\"why\":\"RIT tamper/invalid HMAC together with a TLS engine mismatch\",\"matched\":false,\"won\":false},{\"rule\":\"HR-6\",\"verdict\":\"DENY\",\"why\":\"runtime hooking / prototype pollution plus a webdriver/CDP tell\",\"matched\":false,\"won\":false},{\"rule\":\"HR-7\",\"verdict\":\"DENY\",\"why\":\"headless browser plus a second automation indicator\",\"matched\":false,\"won\":false},{\"rule\":\"HR-8\",\"verdict\":\"DENY\",\"why\":\"patched native getter in a chromeless/headless window (stealth tool)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-9\",\"verdict\":\"DENY\",\"why\":\"a CDP leak together with any automation hint\",\"matched\":true,\"won\":true},{\"rule\":\"HR-13\",\"verdict\":\"DENY\",\"why\":\"a disabled Console API (Patchright) plus a chromeless/automation tell\",\"matched\":false,\"won\":false},{\"rule\":\"HR-10\",\"verdict\":\"CHALLENGE\",\"why\":\"no client-side (WASM/JS) signals at all\",\"matched\":false,\"won\":false},{\"rule\":\"HR-16\",\"verdict\":\"DENY\",\"why\":\"a RIT token that fails the body HMAC (request-body tamper)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-14\",\"verdict\":\"DENY\",\"why\":\"the TLS fingerprint rotated within one session\",\"matched\":false,\"won\":false},{\"rule\":\"HR-18\",\"verdict\":\"DENY\",\"why\":\"a browser UA that delivered zero client-side JS evidence (HTTP parrot)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-20\",\"verdict\":\"DENY\",\"why\":\"AI browser-agent signature (teleport click + a second agent/CDP tell)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-19\",\"verdict\":\"DENY\",\"why\":\"NET-POLICY: proxy rotation / fp-churn (audit+admin; score-exempt residual)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-21\",\"verdict\":\"DENY\",\"why\":\"HTTP-2 DoS (Rapid Reset / CONTINUATION flood)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-15\",\"verdict\":\"DENY\",\"why\":\"multi-axis rotation (UA changed together with TLS/IP rotation)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-17\",\"verdict\":\"CHALLENGE\",\"why\":\"a replayed or absent RIT token on an API call\",\"matched\":false,\"won\":false},{\"rule\":\"HR-12\",\"verdict\":\"CHALLENGE\",\"why\":\"zero interaction over the observation window (heuristic — can catch some humans)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-11\",\"verdict\":\"CHALLENGE\",\"why\":\"a consistent browser from a datacenter ASN\",\"matched\":false,\"won\":false},{\"rule\":\"HR-22\",\"verdict\":\"CHALLENGE\",\"why\":\"near-ceiling advanced residual (audio 24k / GPU mismatch / mobile-desktop profile)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-23\",\"verdict\":\"CHALLENGE\",\"why\":\"Chrome UA with Chromium-container residual (no Widevine/media/voices)\",\"matched\":false,\"won\":false},{\"rule\":\"HR-24\",\"verdict\":\"CHALLENGE\",\"why\":\"NET-POLICY: network residual (proxy/VPN/Tor) — audit+admin; score-exempt\",\"matched\":false,\"won\":false}],\"score\":84.4,\"verdict\":\"DENY\",\"hardRuleFired\":\"HR-9\",\"policy\":{\"version\":\"1.0.0\",\"layerCap\":60,\"challengeAt\":30,\"denyAt\":70}}\n"
+  },
+  {
+   "name": "counters_tripped_canary",
+   "ops_token_configured": true,
+   "method": "GET",
+   "path": "/api/counters",
+   "authorization": "Bearer s3cret",
+   "status": 200,
+   "content_type": "application/json",
+   "body": "{\"fleet\":{\"redisFallbackTotal\":0},\"goroutines\":2,\"heapAllocBytes\":993280,\"ml\":{\"canaryReason\":\"human-FP 0.3357 over canary budget 0.1000\",\"canaryState\":\"tripped\",\"enabled\":true,\"fireThreshold\":0.8999963,\"oracleTraces\":0},\"numGC\":0,\"uptimeSec\":0,\"version\":\"dev\"}\n"
+  },
+  {
+   "name": "counters_armed_canary",
+   "ops_token_configured": true,
+   "method": "GET",
+   "path": "/api/counters",
+   "authorization": "Bearer s3cret",
+   "status": 200,
+   "content_type": "application/json",
+   "body": "{\"fleet\":{\"redisFallbackTotal\":0},\"goroutines\":2,\"heapAllocBytes\":1004496,\"ml\":{\"canaryState\":\"armed\",\"enabled\":true,\"fireThreshold\":0.5,\"oracleTraces\":0},\"numGC\":0,\"uptimeSec\":0,\"version\":\"dev\"}\n"
+  }
+ ],
+ "stored_reports": {
+  "bot-webdriver-cdp-hr9": {
+   "sessionId": "",
+   "ts": "0001-01-01T00:00:00Z",
+   "client": {
+    "sessionId": "",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/126.0.0.0 Safari/537.36",
+    "uaClientHints": {
+     "mobile": false
+    },
+    "signals": [
+     {
+      "id": "l1.navigator.webdriver",
+      "layer": "L1",
+      "value": null,
+      "verdict": "BOT",
+      "weight": 40,
+      "score": 40,
+      "confidence": 0.95,
+      "collected": "js"
+     },
+     {
+      "id": "l1.cdp.proxy_leak",
+      "layer": "L1",
+      "value": null,
+      "verdict": "BOT",
+      "weight": 40,
+      "score": 40,
+      "confidence": 0.95,
+      "collected": "wasm"
+     }
+    ],
+    "behavior": {
+     "mouse": {
+      "samples": 0,
+      "meanCurvature": 0,
+      "velocityStdDev": 0,
+      "accelEntropy": 0,
+      "straightLineFrac": 0,
+      "pauseCount": 0,
+      "maxTeleportPx": 0,
+      "meanJerk": 0,
+      "coalescedRatio": 0
+     },
+     "key": {
+      "keystrokes": 0,
+      "meanDwellMs": 0,
+      "dwellStdDevMs": 0,
+      "meanFlightMs": 0,
+      "flightStdDevMs": 0,
+      "pasteEvents": 0,
+      "zeroDwellFrac": 0
+     },
+     "events": {
+      "totalEvents": 0,
+      "untrustedFrac": 0,
+      "noMoveClicks": 0,
+      "syntheticFlags": 0,
+      "clickCount": 0,
+      "longGapCount": 0,
+      "burstVarMs": 0,
+      "minReactionMs": 0
+     },
+     "durationS": 0
+    },
+    "environment": {
+     "probed": false,
+     "adBlock": false,
+     "trackingProtection": false,
+     "doNotTrack": "",
+     "gpc": false,
+     "collectorBlocked": false,
+     "braveShields": false
+    },
+    "guard": {
+     "reported": false,
+     "evalUsed": 0,
+     "funcCtor": 0,
+     "scriptInjected": 0,
+     "protoPolluted": false,
+     "nativeHooked": false,
+     "consoleDisabled": false
+    },
+    "advanced": {
+     "probed": false,
+     "mediaDeviceCount": 0,
+     "hasAudioInput": false,
+     "hasVideoInput": false,
+     "voiceCount": 0,
+     "widevineSupported": false,
+     "webgpuPresent": false,
+     "webgpuVendor": "",
+     "webgpuFallback": false,
+     "webglVendor": "",
+     "audioSampleRate": 0,
+     "connectionPresent": false,
+     "connectionRtt": 0,
+     "batteryPresent": false,
+     "batteryLevel": 0,
+     "batteryCharging": false,
+     "timezoneIana": "",
+     "timezoneOffsetMin": 0,
+     "language": "",
+     "colorGamut": "",
+     "dynamicRange": "",
+     "pointerCoarse": false,
+     "maxTouchPoints": 0,
+     "perfMemoryPresent": false,
+     "measureMemThrows": false,
+     "mobileUA": false
+    },
+    "fingerprintId": "",
+    "engineVersion": ""
+   },
+   "network": {
+    "ja3": "",
+    "ja3Text": "",
+    "ja4": "",
+    "secFetchPresent": false,
+    "secChUaPresent": false,
+    "signals": null
+   },
+   "crosschecks": [
+    {
+     "id": "x.browser_no_js",
+     "inputs": [
+      "client.userAgent",
+      "client.signals",
+      "client.advanced",
+      "client.behavior"
+     ],
+     "claim": "browser UA implies JS/WASM execution",
+     "observed": "no client-side execution evidence delivered",
+     "consistent": true,
+     "weight": 45,
+     "score": 0,
+     "notes": "browser UA but zero JS/WASM execution evidence (HTTP parrot)"
+    },
+    {
+     "id": "x.uach_present",
+     "inputs": [
+      "client.userAgent",
+      "network.secChUa"
+     ],
+     "claim": "Chromium always sends Sec-CH-UA",
+     "observed": "Sec-CH-UA present",
+     "consistent": false,
+     "weight": 40,
+     "score": 40,
+     "notes": "UA-CH presence"
+    },
+    {
+     "id": "x.ua_vs_header",
+     "inputs": [
+      "client.userAgent",
+      "network.secFetch"
+     ],
+     "claim": "Chromium sends sec-fetch-*",
+     "observed": "sec-fetch present",
+     "consistent": false,
+     "weight": 35,
+     "score": 35,
+     "notes": "sec-fetch presence"
+    }
+   ],
+   "scoring": {
+    "riskScore": 84.4,
+    "verdict": "DENY",
+    "hardRuleFired": "HR-9",
+    "topContributors": [
+     {
+      "id": "l1.navigator.webdriver",
+      "score": 40
+     },
+     {
+      "id": "l1.cdp.proxy_leak",
+      "score": 40
+     },
+     {
+      "id": "x.uach_present",
+      "score": 40
+     },
+     {
+      "id": "x.ua_vs_header",
+      "score": 35
+     },
+     {
+      "id": "l2.env.probe_dead",
+      "score": 2.5
+     }
+    ],
+    "policyVersion": "1.0.0"
+   }
+  },
+  "go-http-client": {
+   "sessionId": "",
+   "ts": "0001-01-01T00:00:00Z",
+   "client": {
+    "sessionId": "",
+    "userAgent": "Go-http-client/2.0",
+    "uaClientHints": {
+     "mobile": false
+    },
+    "signals": null,
+    "behavior": {
+     "mouse": {
+      "samples": 0,
+      "meanCurvature": 0,
+      "velocityStdDev": 0,
+      "accelEntropy": 0,
+      "straightLineFrac": 0,
+      "pauseCount": 0,
+      "maxTeleportPx": 0,
+      "meanJerk": 0,
+      "coalescedRatio": 0
+     },
+     "key": {
+      "keystrokes": 0,
+      "meanDwellMs": 0,
+      "dwellStdDevMs": 0,
+      "meanFlightMs": 0,
+      "flightStdDevMs": 0,
+      "pasteEvents": 0,
+      "zeroDwellFrac": 0
+     },
+     "events": {
+      "totalEvents": 0,
+      "untrustedFrac": 0,
+      "noMoveClicks": 0,
+      "syntheticFlags": 0,
+      "clickCount": 0,
+      "longGapCount": 0,
+      "burstVarMs": 0,
+      "minReactionMs": 0
+     },
+     "durationS": 0
+    },
+    "environment": {
+     "probed": false,
+     "adBlock": false,
+     "trackingProtection": false,
+     "doNotTrack": "",
+     "gpc": false,
+     "collectorBlocked": false,
+     "braveShields": false
+    },
+    "guard": {
+     "reported": false,
+     "evalUsed": 0,
+     "funcCtor": 0,
+     "scriptInjected": 0,
+     "protoPolluted": false,
+     "nativeHooked": false,
+     "consoleDisabled": false
+    },
+    "advanced": {
+     "probed": false,
+     "mediaDeviceCount": 0,
+     "hasAudioInput": false,
+     "hasVideoInput": false,
+     "voiceCount": 0,
+     "widevineSupported": false,
+     "webgpuPresent": false,
+     "webgpuVendor": "",
+     "webgpuFallback": false,
+     "webglVendor": "",
+     "audioSampleRate": 0,
+     "connectionPresent": false,
+     "connectionRtt": 0,
+     "batteryPresent": false,
+     "batteryLevel": 0,
+     "batteryCharging": false,
+     "timezoneIana": "",
+     "timezoneOffsetMin": 0,
+     "language": "",
+     "colorGamut": "",
+     "dynamicRange": "",
+     "pointerCoarse": false,
+     "maxTouchPoints": 0,
+     "perfMemoryPresent": false,
+     "measureMemThrows": false,
+     "mobileUA": false
+    },
+    "fingerprintId": "",
+    "engineVersion": ""
+   },
+   "network": {
+    "ja3": "",
+    "ja3Text": "",
+    "ja4": "",
+    "ja4Engine": "go",
+    "h2Engine": "go",
+    "secFetchPresent": false,
+    "secChUaPresent": false,
+    "signals": null
+   },
+   "crosschecks": [
+    {
+     "id": "x.non_browser_ua",
+     "inputs": [
+      "client.userAgent"
+     ],
+     "claim": "UA looks like a browser",
+     "observed": "UA matches a known HTTP library",
+     "consistent": false,
+     "weight": 45,
+     "score": 45,
+     "notes": "UA=\"Go-http-client/2.0\" not a browser"
+    }
+   ],
+   "scoring": {
+    "riskScore": 46.4,
+    "verdict": "CHALLENGE",
+    "topContributors": [
+     {
+      "id": "x.non_browser_ua",
+      "score": 45
+     },
+     {
+      "id": "l2.env.probe_dead",
+      "score": 2.5
+     }
+    ],
+    "policyVersion": "1.0.0"
+   }
+  },
+  "human-chrome-allow": {
+   "sessionId": "",
+   "ts": "0001-01-01T00:00:00Z",
+   "client": {
+    "sessionId": "",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36",
+    "uaClientHints": {
+     "brands": [
+      {
+       "brand": "Chromium",
+       "version": "126"
+      }
+     ],
+     "mobile": false,
+     "platform": "Windows"
+    },
+    "signals": [
+     {
+      "id": "l1.navigator.webdriver",
+      "layer": "L1",
+      "value": false,
+      "expectedHuman": false,
+      "verdict": "OK",
+      "weight": 15,
+      "score": 0,
+      "confidence": 1,
+      "collected": "wasm"
+     }
+    ],
+    "behavior": {
+     "mouse": {
+      "samples": 0,
+      "meanCurvature": 0,
+      "velocityStdDev": 0,
+      "accelEntropy": 0,
+      "straightLineFrac": 0,
+      "pauseCount": 0,
+      "maxTeleportPx": 0,
+      "meanJerk": 0,
+      "coalescedRatio": 0
+     },
+     "key": {
+      "keystrokes": 0,
+      "meanDwellMs": 0,
+      "dwellStdDevMs": 0,
+      "meanFlightMs": 0,
+      "flightStdDevMs": 0,
+      "pasteEvents": 0,
+      "zeroDwellFrac": 0
+     },
+     "events": {
+      "totalEvents": 0,
+      "untrustedFrac": 0,
+      "noMoveClicks": 0,
+      "syntheticFlags": 0,
+      "clickCount": 0,
+      "longGapCount": 0,
+      "burstVarMs": 0,
+      "minReactionMs": 0
+     },
+     "durationS": 0
+    },
+    "environment": {
+     "probed": true,
+     "adBlock": true,
+     "trackingProtection": false,
+     "doNotTrack": "",
+     "gpc": false,
+     "collectorBlocked": false,
+     "braveShields": false
+    },
+    "guard": {
+     "reported": false,
+     "evalUsed": 0,
+     "funcCtor": 0,
+     "scriptInjected": 0,
+     "protoPolluted": false,
+     "nativeHooked": false,
+     "consoleDisabled": false
+    },
+    "advanced": {
+     "probed": false,
+     "mediaDeviceCount": 0,
+     "hasAudioInput": false,
+     "hasVideoInput": false,
+     "voiceCount": 0,
+     "widevineSupported": false,
+     "webgpuPresent": false,
+     "webgpuVendor": "",
+     "webgpuFallback": false,
+     "webglVendor": "",
+     "audioSampleRate": 0,
+     "connectionPresent": false,
+     "connectionRtt": 0,
+     "batteryPresent": false,
+     "batteryLevel": 0,
+     "batteryCharging": false,
+     "timezoneIana": "",
+     "timezoneOffsetMin": 0,
+     "language": "",
+     "colorGamut": "",
+     "dynamicRange": "",
+     "pointerCoarse": false,
+     "maxTouchPoints": 0,
+     "perfMemoryPresent": false,
+     "measureMemThrows": false,
+     "mobileUA": false
+    },
+    "fingerprintId": "",
+    "engineVersion": ""
+   },
+   "network": {
+    "ja3": "",
+    "ja3Text": "",
+    "ja4": "",
+    "ja4Engine": "chrome",
+    "h2Engine": "chrome",
+    "secFetchPresent": true,
+    "secChUaPresent": true,
+    "signals": null
+   },
+   "crosschecks": [
+    {
+     "id": "x.browser_no_js",
+     "inputs": [
+      "client.userAgent",
+      "client.signals",
+      "client.advanced",
+      "client.behavior"
+     ],
+     "claim": "browser UA implies JS/WASM execution",
+     "observed": "no client-side execution evidence delivered",
+     "consistent": true,
+     "weight": 45,
+     "score": 0,
+     "notes": "browser UA but zero JS/WASM execution evidence (HTTP parrot)"
+    },
+    {
+     "id": "x.ua_vs_ja4",
+     "inputs": [
+      "client.userAgent",
+      "network.ja4"
+     ],
+     "claim": "UA=chrome",
+     "observed": "JA4 engine=chrome",
+     "consistent": true,
+     "weight": 50,
+     "score": 0,
+     "notes": "TLS stack vs claimed browser"
+    },
+    {
+     "id": "x.ua_vs_h2",
+     "inputs": [
+      "client.userAgent",
+      "network.akamaiH2"
+     ],
+     "claim": "UA=chrome",
+     "observed": "H2 engine=chrome",
+     "consistent": true,
+     "weight": 45,
+     "score": 0,
+     "notes": "HTTP/2 profile vs claimed browser"
+    },
+    {
+     "id": "x.uach_present",
+     "inputs": [
+      "client.userAgent",
+      "network.secChUa"
+     ],
+     "claim": "Chromium always sends Sec-CH-UA",
+     "observed": "Sec-CH-UA present",
+     "consistent": true,
+     "weight": 40,
+     "score": 0,
+     "notes": "UA-CH presence"
+    },
+    {
+     "id": "x.ua_vs_header",
+     "inputs": [
+      "client.userAgent",
+      "network.secFetch"
+     ],
+     "claim": "Chromium sends sec-fetch-*",
+     "observed": "sec-fetch present",
+     "consistent": true,
+     "weight": 35,
+     "score": 0,
+     "notes": "sec-fetch presence"
+    },
+    {
+     "id": "x.uach_vs_js",
+     "inputs": [
+      "network.secChUa",
+      "client.uaClientHints"
+     ],
+     "claim": "header UA-CH",
+     "observed": "JS userAgentData",
+     "consistent": true,
+     "weight": 35,
+     "score": 0,
+     "notes": "UA-CH header vs JS"
+    }
+   ],
+   "scoring": {
+    "riskScore": 0,
+    "verdict": "ALLOW",
+    "topContributors": [],
+    "policyVersion": "1.0.0"
+   }
+  },
+  "no-client-hr10": {
+   "sessionId": "",
+   "ts": "0001-01-01T00:00:00Z",
+   "client": {
+    "sessionId": "",
+    "userAgent": "",
+    "uaClientHints": {
+     "mobile": false
+    },
+    "signals": null,
+    "behavior": {
+     "mouse": {
+      "samples": 0,
+      "meanCurvature": 0,
+      "velocityStdDev": 0,
+      "accelEntropy": 0,
+      "straightLineFrac": 0,
+      "pauseCount": 0,
+      "maxTeleportPx": 0,
+      "meanJerk": 0,
+      "coalescedRatio": 0
+     },
+     "key": {
+      "keystrokes": 0,
+      "meanDwellMs": 0,
+      "dwellStdDevMs": 0,
+      "meanFlightMs": 0,
+      "flightStdDevMs": 0,
+      "pasteEvents": 0,
+      "zeroDwellFrac": 0
+     },
+     "events": {
+      "totalEvents": 0,
+      "untrustedFrac": 0,
+      "noMoveClicks": 0,
+      "syntheticFlags": 0,
+      "clickCount": 0,
+      "longGapCount": 0,
+      "burstVarMs": 0,
+      "minReactionMs": 0
+     },
+     "durationS": 0
+    },
+    "environment": {
+     "probed": false,
+     "adBlock": false,
+     "trackingProtection": false,
+     "doNotTrack": "",
+     "gpc": false,
+     "collectorBlocked": false,
+     "braveShields": false
+    },
+    "guard": {
+     "reported": false,
+     "evalUsed": 0,
+     "funcCtor": 0,
+     "scriptInjected": 0,
+     "protoPolluted": false,
+     "nativeHooked": false,
+     "consoleDisabled": false
+    },
+    "advanced": {
+     "probed": false,
+     "mediaDeviceCount": 0,
+     "hasAudioInput": false,
+     "hasVideoInput": false,
+     "voiceCount": 0,
+     "widevineSupported": false,
+     "webgpuPresent": false,
+     "webgpuVendor": "",
+     "webgpuFallback": false,
+     "webglVendor": "",
+     "audioSampleRate": 0,
+     "connectionPresent": false,
+     "connectionRtt": 0,
+     "batteryPresent": false,
+     "batteryLevel": 0,
+     "batteryCharging": false,
+     "timezoneIana": "",
+     "timezoneOffsetMin": 0,
+     "language": "",
+     "colorGamut": "",
+     "dynamicRange": "",
+     "pointerCoarse": false,
+     "maxTouchPoints": 0,
+     "perfMemoryPresent": false,
+     "measureMemThrows": false,
+     "mobileUA": false
+    },
+    "fingerprintId": "",
+    "engineVersion": ""
+   },
+   "network": {
+    "ja3": "",
+    "ja3Text": "",
+    "ja4": "",
+    "ja4Engine": "chrome",
+    "h2Engine": "chrome",
+    "secFetchPresent": false,
+    "secChUaPresent": false,
+    "signals": null
+   },
+   "crosschecks": null,
+   "scoring": {
+    "riskScore": 0,
+    "verdict": "CHALLENGE",
+    "hardRuleFired": "HR-10",
+    "topContributors": [],
+    "policyVersion": "1.0.0"
+   }
+  },
+  "selenium-hr1": {
+   "sessionId": "",
+   "ts": "0001-01-01T00:00:00Z",
+   "client": {
+    "sessionId": "",
+    "userAgent": "Mozilla/5.0 Chrome/126.0",
+    "uaClientHints": {
+     "mobile": false
+    },
+    "signals": [
+     {
+      "id": "l1.artifact.selenium",
+      "layer": "L1",
+      "value": true,
+      "expectedHuman": false,
+      "verdict": "BOT",
+      "weight": 40,
+      "score": 40,
+      "confidence": 1,
+      "collected": "wasm"
+     },
+     {
+      "id": "l1.navigator.webdriver",
+      "layer": "L1",
+      "value": true,
+      "expectedHuman": false,
+      "verdict": "BOT",
+      "weight": 15,
+      "score": 15,
+      "confidence": 1,
+      "collected": "wasm"
+     }
+    ],
+    "behavior": {
+     "mouse": {
+      "samples": 0,
+      "meanCurvature": 0,
+      "velocityStdDev": 0,
+      "accelEntropy": 0,
+      "straightLineFrac": 0,
+      "pauseCount": 0,
+      "maxTeleportPx": 0,
+      "meanJerk": 0,
+      "coalescedRatio": 0
+     },
+     "key": {
+      "keystrokes": 0,
+      "meanDwellMs": 0,
+      "dwellStdDevMs": 0,
+      "meanFlightMs": 0,
+      "flightStdDevMs": 0,
+      "pasteEvents": 0,
+      "zeroDwellFrac": 0
+     },
+     "events": {
+      "totalEvents": 0,
+      "untrustedFrac": 0,
+      "noMoveClicks": 0,
+      "syntheticFlags": 0,
+      "clickCount": 0,
+      "longGapCount": 0,
+      "burstVarMs": 0,
+      "minReactionMs": 0
+     },
+     "durationS": 0
+    },
+    "environment": {
+     "probed": false,
+     "adBlock": false,
+     "trackingProtection": false,
+     "doNotTrack": "",
+     "gpc": false,
+     "collectorBlocked": false,
+     "braveShields": false
+    },
+    "guard": {
+     "reported": false,
+     "evalUsed": 0,
+     "funcCtor": 0,
+     "scriptInjected": 0,
+     "protoPolluted": false,
+     "nativeHooked": false,
+     "consoleDisabled": false
+    },
+    "advanced": {
+     "probed": false,
+     "mediaDeviceCount": 0,
+     "hasAudioInput": false,
+     "hasVideoInput": false,
+     "voiceCount": 0,
+     "widevineSupported": false,
+     "webgpuPresent": false,
+     "webgpuVendor": "",
+     "webgpuFallback": false,
+     "webglVendor": "",
+     "audioSampleRate": 0,
+     "connectionPresent": false,
+     "connectionRtt": 0,
+     "batteryPresent": false,
+     "batteryLevel": 0,
+     "batteryCharging": false,
+     "timezoneIana": "",
+     "timezoneOffsetMin": 0,
+     "language": "",
+     "colorGamut": "",
+     "dynamicRange": "",
+     "pointerCoarse": false,
+     "maxTouchPoints": 0,
+     "perfMemoryPresent": false,
+     "measureMemThrows": false,
+     "mobileUA": false
+    },
+    "fingerprintId": "",
+    "engineVersion": ""
+   },
+   "network": {
+    "ja3": "",
+    "ja3Text": "",
+    "ja4": "",
+    "ja4Engine": "chrome",
+    "h2Engine": "chrome",
+    "secFetchPresent": true,
+    "secChUaPresent": true,
+    "signals": null
+   },
+   "crosschecks": [
+    {
+     "id": "x.browser_no_js",
+     "inputs": [
+      "client.userAgent",
+      "client.signals",
+      "client.advanced",
+      "client.behavior"
+     ],
+     "claim": "browser UA implies JS/WASM execution",
+     "observed": "no client-side execution evidence delivered",
+     "consistent": true,
+     "weight": 45,
+     "score": 0,
+     "notes": "browser UA but zero JS/WASM execution evidence (HTTP parrot)"
+    },
+    {
+     "id": "x.ua_vs_ja4",
+     "inputs": [
+      "client.userAgent",
+      "network.ja4"
+     ],
+     "claim": "UA=chrome",
+     "observed": "JA4 engine=chrome",
+     "consistent": true,
+     "weight": 50,
+     "score": 0,
+     "notes": "TLS stack vs claimed browser"
+    },
+    {
+     "id": "x.ua_vs_h2",
+     "inputs": [
+      "client.userAgent",
+      "network.akamaiH2"
+     ],
+     "claim": "UA=chrome",
+     "observed": "H2 engine=chrome",
+     "consistent": true,
+     "weight": 45,
+     "score": 0,
+     "notes": "HTTP/2 profile vs claimed browser"
+    },
+    {
+     "id": "x.uach_present",
+     "inputs": [
+      "client.userAgent",
+      "network.secChUa"
+     ],
+     "claim": "Chromium always sends Sec-CH-UA",
+     "observed": "Sec-CH-UA present",
+     "consistent": true,
+     "weight": 40,
+     "score": 0,
+     "notes": "UA-CH presence"
+    },
+    {
+     "id": "x.ua_vs_header",
+     "inputs": [
+      "client.userAgent",
+      "network.secFetch"
+     ],
+     "claim": "Chromium sends sec-fetch-*",
+     "observed": "sec-fetch present",
+     "consistent": true,
+     "weight": 35,
+     "score": 0,
+     "notes": "sec-fetch presence"
+    }
+   ],
+   "scoring": {
+    "riskScore": 50.3,
+    "verdict": "DENY",
+    "hardRuleFired": "HR-1",
+    "topContributors": [
+     {
+      "id": "l1.artifact.selenium",
+      "score": 40
+     },
+     {
+      "id": "l1.navigator.webdriver",
+      "score": 15
+     },
+     {
+      "id": "l2.env.probe_dead",
+      "score": 2.5
+     }
+    ],
+    "policyVersion": "1.0.0"
+   }
+  },
+  "ua-tls-h2-hr2": {
+   "sessionId": "",
+   "ts": "0001-01-01T00:00:00Z",
+   "client": {
+    "sessionId": "",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0) Chrome/126.0 Safari/537.36",
+    "uaClientHints": {
+     "mobile": false
+    },
+    "signals": [],
+    "behavior": {
+     "mouse": {
+      "samples": 0,
+      "meanCurvature": 0,
+      "velocityStdDev": 0,
+      "accelEntropy": 0,
+      "straightLineFrac": 0,
+      "pauseCount": 0,
+      "maxTeleportPx": 0,
+      "meanJerk": 0,
+      "coalescedRatio": 0
+     },
+     "key": {
+      "keystrokes": 0,
+      "meanDwellMs": 0,
+      "dwellStdDevMs": 0,
+      "meanFlightMs": 0,
+      "flightStdDevMs": 0,
+      "pasteEvents": 0,
+      "zeroDwellFrac": 0
+     },
+     "events": {
+      "totalEvents": 0,
+      "untrustedFrac": 0,
+      "noMoveClicks": 0,
+      "syntheticFlags": 0,
+      "clickCount": 0,
+      "longGapCount": 0,
+      "burstVarMs": 0,
+      "minReactionMs": 0
+     },
+     "durationS": 0
+    },
+    "environment": {
+     "probed": false,
+     "adBlock": false,
+     "trackingProtection": false,
+     "doNotTrack": "",
+     "gpc": false,
+     "collectorBlocked": false,
+     "braveShields": false
+    },
+    "guard": {
+     "reported": false,
+     "evalUsed": 0,
+     "funcCtor": 0,
+     "scriptInjected": 0,
+     "protoPolluted": false,
+     "nativeHooked": false,
+     "consoleDisabled": false
+    },
+    "advanced": {
+     "probed": false,
+     "mediaDeviceCount": 0,
+     "hasAudioInput": false,
+     "hasVideoInput": false,
+     "voiceCount": 0,
+     "widevineSupported": false,
+     "webgpuPresent": false,
+     "webgpuVendor": "",
+     "webgpuFallback": false,
+     "webglVendor": "",
+     "audioSampleRate": 0,
+     "connectionPresent": false,
+     "connectionRtt": 0,
+     "batteryPresent": false,
+     "batteryLevel": 0,
+     "batteryCharging": false,
+     "timezoneIana": "",
+     "timezoneOffsetMin": 0,
+     "language": "",
+     "colorGamut": "",
+     "dynamicRange": "",
+     "pointerCoarse": false,
+     "maxTouchPoints": 0,
+     "perfMemoryPresent": false,
+     "measureMemThrows": false,
+     "mobileUA": false
+    },
+    "fingerprintId": "",
+    "engineVersion": ""
+   },
+   "network": {
+    "ja3": "",
+    "ja3Text": "",
+    "ja4": "",
+    "ja4Engine": "go",
+    "h2Engine": "go",
+    "secFetchPresent": false,
+    "secChUaPresent": false,
+    "signals": null
+   },
+   "crosschecks": [
+    {
+     "id": "x.browser_no_js",
+     "inputs": [
+      "client.userAgent",
+      "client.signals",
+      "client.advanced",
+      "client.behavior"
+     ],
+     "claim": "browser UA implies JS/WASM execution",
+     "observed": "no client-side execution evidence delivered",
+     "consistent": false,
+     "weight": 45,
+     "score": 45,
+     "notes": "browser UA but zero JS/WASM execution evidence (HTTP parrot)"
+    },
+    {
+     "id": "x.ua_vs_ja4",
+     "inputs": [
+      "client.userAgent",
+      "network.ja4"
+     ],
+     "claim": "UA=chrome",
+     "observed": "JA4 engine=go",
+     "consistent": false,
+     "weight": 50,
+     "score": 50,
+     "notes": "TLS stack vs claimed browser"
+    },
+    {
+     "id": "x.ua_vs_h2",
+     "inputs": [
+      "client.userAgent",
+      "network.akamaiH2"
+     ],
+     "claim": "UA=chrome",
+     "observed": "H2 engine=go",
+     "consistent": false,
+     "weight": 45,
+     "score": 45,
+     "notes": "HTTP/2 profile vs claimed browser"
+    },
+    {
+     "id": "x.uach_present",
+     "inputs": [
+      "client.userAgent",
+      "network.secChUa"
+     ],
+     "claim": "Chromium always sends Sec-CH-UA",
+     "observed": "Sec-CH-UA present",
+     "consistent": false,
+     "weight": 40,
+     "score": 40,
+     "notes": "UA-CH presence"
+    },
+    {
+     "id": "x.ua_vs_header",
+     "inputs": [
+      "client.userAgent",
+      "network.secFetch"
+     ],
+     "claim": "Chromium sends sec-fetch-*",
+     "observed": "sec-fetch present",
+     "consistent": false,
+     "weight": 35,
+     "score": 35,
+     "notes": "sec-fetch presence"
+    }
+   ],
+   "scoring": {
+    "riskScore": 61,
+    "verdict": "DENY",
+    "hardRuleFired": "HR-2",
+    "topContributors": [
+     {
+      "id": "x.ua_vs_ja4",
+      "score": 50
+     },
+     {
+      "id": "x.browser_no_js",
+      "score": 45
+     },
+     {
+      "id": "x.ua_vs_h2",
+      "score": 45
+     },
+     {
+      "id": "x.uach_present",
+      "score": 40
+     },
+     {
+      "id": "x.ua_vs_header",
+      "score": 35
+     }
+    ],
+    "policyVersion": "1.0.0"
+   }
+  }
+ },
+ "version": "dev"
+}
