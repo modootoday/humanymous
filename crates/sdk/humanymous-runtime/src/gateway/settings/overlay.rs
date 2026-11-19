@@ -6,7 +6,9 @@
 //! catalogs equal the oracle exactly and must not be tuned. An empty overlay
 //! resolves to the built-in policy, so freeze goldens stay behavior-identical.
 //! It is a pure library owner; the operational CAS snapshot in the parent module
-//! remains the only settings path wired into the hosted gateway.
+//! remains the only settings path wired into the hosted gateway. The admin
+//! write plane over it (propose, dry-run, rollback, approval-backed commit and
+//! expiry) is `gateway::admin_plane::settings`, served only when attached.
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
 use std::collections::BTreeMap;
@@ -174,6 +176,51 @@ pub struct RateLimitPatch {
     pub hard: Option<i64>,
 }
 
+/// Admin propose and dry-run body (the oracle's `settingsProposeBody` in
+/// internal/gate/admin_settings.go): allow-listed overlay content, the CAS
+/// parent, the class C confirmation phrase and the requested lifetime. A
+/// client-supplied mutation class or overlay identity is never read.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct ProposeBody {
+    /// `parentConfigVersion`: the configuration version the change is based on.
+    pub parent_config_version: String,
+    /// `hardRules`.
+    pub hard_rules: BTreeMap<String, Mode>,
+    /// `gates`.
+    pub gates: BTreeMap<String, Mode>,
+    /// `scoring`.
+    pub scoring: Option<ScoringPatch>,
+    /// `weightMultipliers`.
+    pub weight_multipliers: BTreeMap<String, f64>,
+    /// `netPolicy`.
+    pub net_policy: BTreeMap<String, Mode>,
+    /// `routes`.
+    pub routes: BTreeMap<String, String>,
+    /// `rateLimit`.
+    pub rate_limit: Option<RateLimitPatch>,
+    /// `globalMonitor`.
+    pub global_monitor: Option<bool>,
+    /// `integrityConfirm`: must be `DISABLE-INTEGRITY` for class C.
+    pub integrity_confirm: String,
+    /// `expiresInSec`: requested lifetime; zero or negative asks for the
+    /// class default.
+    pub expires_in_sec: i64,
+}
+
+impl ProposeBody {
+    /// Decode the first JSON value of a request body with the oracle's
+    /// `json.Decoder.Decode` semantics for this struct.
+    pub fn from_json(bytes: &[u8]) -> Result<Self, OverlayDecodeError> {
+        wire::decode_propose(bytes)
+    }
+}
+
+/// Decode the first JSON value of a rollback body (the oracle's anonymous
+/// `struct{ ParentConfigVersion string }`) and return the parent version.
+pub fn decode_rollback_parent(bytes: &[u8]) -> Result<String, OverlayDecodeError> {
+    wire::decode_parent(bytes)
+}
+
 /// Code defaults `(challengeAt, denyAt, layerCap)` of policy version 1.0.0.
 pub const fn scoring_defaults() -> (f64, f64, f64) {
     (30.0, 70.0, 60.0)
@@ -227,6 +274,11 @@ impl Overlay {
     /// Go `json.MarshalIndent(overlay, "", "  ")` bytes, the persisted file form.
     pub fn to_json_indent(&self) -> Result<Vec<u8>, OverlayEncodeError> {
         wire::indented(self).map(String::into_bytes)
+    }
+    /// Go `json.Marshal(overlay)` bytes (the pending approval body and the
+    /// admin overlay list).
+    pub fn to_json(&self) -> Result<Vec<u8>, OverlayEncodeError> {
+        wire::compact(self).map(String::into_bytes)
     }
     /// Decode with Go `encoding/json` semantics for this struct: case-insensitive
     /// keys, merged duplicates, ignored unknown fields and top-level `null`.

@@ -15,8 +15,8 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 283,
-  "partial": 20,
+  "ported_unit": 285,
+  "partial": 18,
   "missing": 0,
   "not_applicable": 2,
   "oracle_only": 9
@@ -74,9 +74,9 @@
    "ported_unit": 5
   },
   "internal/gate": {
-   "partial": 12,
+   "partial": 10,
    "not_applicable": 1,
-   "ported_unit": 71,
+   "ported_unit": 73,
    "oracle_only": 1
   },
   "internal/httpx": {
@@ -1045,7 +1045,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/core_server.rs",
     "crates/sdk/humanymous-runtime/src/gateway/core_server/collect.rs",
     "crates/sdk/humanymous-runtime/src/gateway/core_server/routes.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/session.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/session.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::cookie_value_follows_go_read_cookies",
@@ -1058,13 +1059,16 @@
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::sessions_capacity_expiry_restart_and_rollback",
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::static_local_name_refuses_os_path_syntax",
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::static_file_server_refuses_backslash_and_drive_targets",
-    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::redirect_location_escapes_like_go_url_string"
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::redirect_location_escapes_like_go_url_string",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::golden_pass_transcripts_replay_through_the_core_http_path",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::with_pass_flow_serves_the_go_mounted_kpi_and_unmounted_is_404",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::page_serves_pass_html_and_ensures_the_core_session"
    ],
    "go_test_map": {},
    "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Gateway serves /_humanymous/session and /_humanymous/collect; page/report/CSP handlers are missing (plan B05/B07). Lane A (2026-11-19): responsibility and Rust tests exist; runtime proof pending. gateway::core_server serves page/demo (index.html), /static/ (FileServer redirects, index.html, no listing), /api/session with Accept-CH, report single/list views (owner or operator token), /api/csp-report (204 + csp_violation), and ensureSession (hsid cookie, Go readCookies). Go capture: tests/fixtures/gateway/core-server-go-golden.json (go1.26.3 in mirror.gcr.io/library/golang, --network none, oracle 981d25c; 50 HTTP cases through a.routes(), RIT/fp-churn/WebRTC kernels, stored sessions, traffic records, 85-request rate run). Deliberate differences: no Last-Modified/Range/conditional serving, unknown extensions are application/octet-stream (Go sniffed text/plain), serde ClientReport decoding is case-sensitive, Pass routes are a PassRoutes mount point; mounting gateway::pass_flow into gateway::core_server through a PassRoutes adapter is an open follow-up that neither lane owns yet (lane A and lane C plans). PR #150 review (lane A): /static/ refuses a cleaned name containing a backslash, a colon or NUL, a Windows device name on Windows, or any path component other than Normal, with Go's Linux answer 404 on every OS, so neither %5C nor a drive prefix can leave the web root (Go http.Dir refused these only on Windows, through filepath.Localize, as 500); the mux sees Go's URL.EscapedPath and writes each redirect Location as Go's url.URL{Path}.String(), so a literal backslash leaves as %255C, never as a protocol-relative /\\host.",
+   "notes": "Gateway serves /_humanymous/session and /_humanymous/collect; page/report/CSP handlers are missing (plan B05/B07). Lane A (2026-11-19): responsibility and Rust tests exist; runtime proof pending. gateway::core_server serves page/demo (index.html), /static/ (FileServer redirects, index.html, no listing), /api/session with Accept-CH, report single/list views (owner or operator token), /api/csp-report (204 + csp_violation), and ensureSession (hsid cookie, Go readCookies). Go capture: tests/fixtures/gateway/core-server-go-golden.json (go1.26.3 in mirror.gcr.io/library/golang, --network none, oracle 981d25c; 50 HTTP cases through a.routes(), RIT/fp-churn/WebRTC kernels, stored sessions, traffic records, 85-request rate run). Deliberate differences: no Last-Modified/Range/conditional serving, unknown extensions are application/octet-stream (Go sniffed text/plain), serde ClientReport decoding is case-sensitive, Pass routes are served by gateway::pass_flow through the PassRoutes adapter gateway::core_server::pass::PassMount, mounted by CoreServer::with_pass_flow (lane F); 404 only while nothing is mounted. PR #150 review (lane A): /static/ refuses a cleaned name containing a backslash, a colon or NUL, a Windows device name on Windows, or any path component other than Normal, with Go's Linux answer 404 on every OS, so neither %5C nor a drive prefix can leave the web root (Go http.Dir refused these only on Windows, through filepath.Localize, as 500); the mux sees Go's URL.EscapedPath and writes each redirect Location as Go's url.URL{Path}.String(), so a literal backslash leaves as %255C, never as a protocol-relative /\\host. Lane F (2026-11-19): gateway::core_server::pass::PassMount implements PassRoutes over gateway::pass_flow (own lock; the Core hands it the Go cookieValue session, the legacy passFP from the connection's own ClientHello and the trust-gated client subnet, the request time read under the Core state lock and a StoreBackend over the Core collector store, frozen engine and live feed) and CoreServer::with_pass_flow mounts it with the Core master key and web root, MotorEvidence::Off only (PassMount::new refuses GoParity) and an optional step-up TokenKey (Go HMN_TOKEN_KEY; the env read belongs to the unbuilt Core binary role). Every recorded Go Pass request in tests/fixtures/gateway/pass-flow-go-golden.json (not regenerated) is replayed as a wire request through read_request, CoreServer::handle and encode: status, content type, Set-Cookie presence, security headers and exact body bytes equal Go except seven steps Go answered from realEventOK or the behavior tells, which are pinned to the accessible answer; final stored signals and frozen-engine scores equal Go outside those motor sessions. Fail closed: limiter refusal, unavailable Core history and a poisoned Pass lock answer 503; a panicking Pass handler is caught before the Core state guard drops, so the Core state is not poisoned. feedPassOutcome has no consumer on the Core plane (B09).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::missing_client_is_challenge_and_missing_planes_are_not_ready": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::sessions_capacity_expiry_restart_and_rollback": "passed",
@@ -1076,7 +1080,10 @@
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::cookie_value_follows_go_read_cookies": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::static_local_name_refuses_os_path_syntax": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::static_file_server_refuses_backslash_and_drive_targets": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::redirect_location_escapes_like_go_url_string": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::redirect_location_escapes_like_go_url_string": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::golden_pass_transcripts_replay_through_the_core_http_path": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::with_pass_flow_serves_the_go_mounted_kpi_and_unmounted_is_404": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::page_serves_pass_html_and_ensures_the_core_session": "passed"
    }
   },
   {
@@ -1357,7 +1364,8 @@
     "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_the_dev_flag_without_the_build_feature",
     "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_tls_requests_without_exactly_one_usable_source",
     "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_serves_tls_from_a_provisioned_pair",
-    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::plaintext_budget_is_one_deadline_for_a_trickling_peer"
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::plaintext_budget_is_one_deadline_for_a_trickling_peer",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::loopback_socket_serves_the_mounted_pass_flow"
    ],
    "go_test_map": {},
    "gaps": [
@@ -1368,7 +1376,7 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust runtime main reads private stdin config and binds loopback only; Core demo role is plan B01/B05 missing. B02 binary wiring (2026-11-18): the runtime binary reads an optional tls object from its private inherited configuration (certificate/key, acme {domains, cache, email, directory, directory_root, check_interval_seconds}, dev_self_signed), selects exactly one source through tls::listener::prepare before custody opens, binds ServiceHost::bind_tls and starts AcmeIssuer::maintain beside the listener when ACME is selected. A tls request with no, ambiguous or unavailable source exits non-zero before custody (Go fell back to self-signed); ServiceHost refuses a tls request without a server configuration. tests/gateway/tls_startup.rs runs the real binary: refusals before custody, and a provisioned pair served over TLS/H1 on loopback (Unix). Lane A (2026-11-19): gateway::core_server::serve is the Core accept loop: a ConnectionCap permit before each accept, one blocking worker per connection, plaintext wire-order peek or capture::tls, Content-Length-only framing (Transfer-Encoding 400, 64 KiB head 431), Date and Connection: close on every reply. PR #150 review (lane A): a plaintext Core connection reads and writes under one absolute deadline (Options::budget), as the TLS capture transport does, and the post-response drain has its own absolute deadline, so a peer trickling bytes cannot hold a ConnectionCap permit past the budget.",
+   "notes": "Rust runtime main reads private stdin config and binds loopback only; Core demo role is plan B01/B05 missing. B02 binary wiring (2026-11-18): the runtime binary reads an optional tls object from its private inherited configuration (certificate/key, acme {domains, cache, email, directory, directory_root, check_interval_seconds}, dev_self_signed), selects exactly one source through tls::listener::prepare before custody opens, binds ServiceHost::bind_tls and starts AcmeIssuer::maintain beside the listener when ACME is selected. A tls request with no, ambiguous or unavailable source exits non-zero before custody (Go fell back to self-signed); ServiceHost refuses a tls request without a server configuration. tests/gateway/tls_startup.rs runs the real binary: refusals before custody, and a provisioned pair served over TLS/H1 on loopback (Unix). Lane A (2026-11-19): gateway::core_server::serve is the Core accept loop: a ConnectionCap permit before each accept, one blocking worker per connection, plaintext wire-order peek or capture::tls, Content-Length-only framing (Transfer-Encoding 400, 64 KiB head 431), Date and Connection: close on every reply. PR #150 review (lane A): a plaintext Core connection reads and writes under one absolute deadline (Options::budget), as the TLS capture transport does, and the post-response drain has its own absolute deadline, so a peer trickling bytes cannot hold a ConnectionCap permit past the budget. Lane F (2026-11-19): the Pass handlers are mounted by CoreServer::with_pass_flow, which takes the shared step-up key (Go HMN_TOKEN_KEY) as an optional TokenKey constructor input; reading HMN_TOKEN_KEY belongs to the Core binary role (flag/env gap).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/tests/tls.rs::actual_tls_coalesced_request_is_refused_before_audit_or_origin": "passed",
     "crates/sdk/humanymous-runtime/tests/gateway/tls_startup.rs::runtime_binary_refuses_tls_requests_without_exactly_one_usable_source": "passed",
@@ -1379,7 +1387,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::loopback_socket_serves_one_request_with_wire_order": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::connection_cap_holds_the_next_peer_in_the_backlog": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::tls_connection_owns_its_client_hello": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::plaintext_budget_is_one_deadline_for_a_trickling_peer": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::plaintext_budget_is_one_deadline_for_a_trickling_peer": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::loopback_socket_serves_the_mounted_pass_flow": "passed"
    }
   },
   {
@@ -1721,7 +1730,8 @@
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs",
     "crates/sdk/humanymous-core/src/challenge/attestation/mod.rs",
     "crates/sdk/humanymous-runtime/src/gateway/pass_flow.rs",
-    "web/pass.html"
+    "web/pass.html",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/challenge/pass/tests.rs::canonical_solutions_verify",
@@ -1739,13 +1749,18 @@
     "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::saturated_store_fails_closed",
     "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::limiter_failure_fails_closed",
     "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::scoring_failure_on_solve_fails_closed_and_keeps_the_trace",
-    "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::scoring_failure_on_velocity_fails_closed_and_keeps_the_escalation"
+    "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::scoring_failure_on_velocity_fails_closed_and_keeps_the_escalation",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::golden_pass_transcripts_replay_through_the_core_http_path",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::page_serves_pass_html_and_ensures_the_core_session",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::served_mount_never_gates_pass_on_motor_evidence",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::pass_failures_fail_closed_and_leave_the_core_serving",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::loopback_socket_serves_the_mounted_pass_flow"
    ],
    "go_test_map": {},
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Pure pass/pow/attestation kernels are core's. gateway::pass_flow ports the page, new, pow, attest, solve and KPI handlers with single-use instance state, Go handler order and a mount function; the full Go transcripts (status, content type, Set-Cookie, JSON bytes after key normalization, challenges, PoW seeds, attestation tokens, step-up receipts and the final stored signals and frozen-engine scores) replay exactly. Owner decision B1 (#75 comment 6979694428) exact-parity port checked against the Go-captured golden tests/fixtures/gateway/pass-flow-go-golden.json (go1.26.3, --network none). Accessibility conflict recorded for the owner: realEventOK and the applyPassBehavior tells gate or penalise Pass on motor richness and timing; they are ported exactly but gateway::pass_flow keeps them off (MotorEvidence::Off) unless the owner enables MotorEvidence::GoParity. Deliberate differences pinned by tests: exact JSON field names (Go also matched case-insensitively and let a later duplicate key win); invalid red-team labels and session ids over 128 bytes get 400; store saturation, limiter refusal and scoring failure each fail closed with 503 (saturated_store_fails_closed, limiter_failure_fails_closed, scoring_failure_on_solve_fails_closed_and_keeps_the_trace, scoring_failure_on_velocity_fails_closed_and_keeps_the_escalation), and a 503 neither commits the velocity level nor spends the interaction trace (Go's order committed the level first and Go's scoring could not fail); a trace sample outside int64 is rejected as unusable; the step-up receipt is omitted when it cannot be sealed; a KPI counter overflow drops the count; limiters are bounded. feedPassOutcome and hub publishing are Backend hooks (the mlcorrect consumer is not part of this row). gateway::pass_flow::mount is not yet mounted on the served path: mounting gateway::pass_flow into gateway::core_server through a PassRoutes adapter is an open follow-up that neither lane owns yet (lane A and lane C plans).",
+   "notes": "Pure pass/pow/attestation kernels are core's. gateway::pass_flow ports the page, new, pow, attest, solve and KPI handlers with single-use instance state, Go handler order and a mount function; the full Go transcripts (status, content type, Set-Cookie, JSON bytes after key normalization, challenges, PoW seeds, attestation tokens, step-up receipts and the final stored signals and frozen-engine scores) replay exactly. Owner decision B1 (#75 comment 6979694428) exact-parity port checked against the Go-captured golden tests/fixtures/gateway/pass-flow-go-golden.json (go1.26.3, --network none). Accessibility conflict recorded for the owner: realEventOK and the applyPassBehavior tells gate or penalise Pass on motor richness and timing; they are ported exactly but gateway::pass_flow keeps them off (MotorEvidence::Off) unless the owner enables MotorEvidence::GoParity. Deliberate differences pinned by tests: exact JSON field names (Go also matched case-insensitively and let a later duplicate key win); invalid red-team labels and session ids over 128 bytes get 400; store saturation, limiter refusal and scoring failure each fail closed with 503 (saturated_store_fails_closed, limiter_failure_fails_closed, scoring_failure_on_solve_fails_closed_and_keeps_the_trace, scoring_failure_on_velocity_fails_closed_and_keeps_the_escalation), and a 503 neither commits the velocity level nor spends the interaction trace (Go's order committed the level first and Go's scoring could not fail); a trace sample outside int64 is rejected as unusable; the step-up receipt is omitted when it cannot be sealed; a KPI counter overflow drops the count; limiters are bounded. feedPassOutcome and hub publishing are Backend hooks (the mlcorrect consumer is not part of this row). Lane F (2026-11-19): gateway::core_server::pass::PassMount implements PassRoutes over gateway::pass_flow (own lock; the Core hands it the Go cookieValue session, the legacy passFP from the connection's own ClientHello and the trust-gated client subnet, the request time read under the Core state lock and a StoreBackend over the Core collector store, frozen engine and live feed) and CoreServer::with_pass_flow mounts it with the Core master key and web root, MotorEvidence::Off only (PassMount::new refuses GoParity) and an optional step-up TokenKey (Go HMN_TOKEN_KEY; the env read belongs to the unbuilt Core binary role). Every recorded Go Pass request in tests/fixtures/gateway/pass-flow-go-golden.json (not regenerated) is replayed as a wire request through read_request, CoreServer::handle and encode: status, content type, Set-Cookie presence, security headers and exact body bytes equal Go except seven steps Go answered from realEventOK or the behavior tells, which are pinned to the accessible answer; final stored signals and frozen-engine scores equal Go outside those motor sessions. Fail closed: limiter refusal, unavailable Core history and a poisoned Pass lock answer 503; a panicking Pass handler is caught before the Core state guard drops, so the Core state is not poisoned. feedPassOutcome has no consumer on the Core plane (B09). Lane F also makes the flow's JSON bodies Go encoding/json bytes (go_json: an integral float is 0, not 0.0; the /api/pass/new challenge and PoW objects keep Go struct field order), so the served bodies match the golden byte for byte.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/challenge/pass/tests.rs::canonical_solutions_verify": "passed",
     "crates/sdk/humanymous-core/src/challenge/pass/tests.rs::r325_fixed_cross_instance_solution_fails": "passed",
@@ -1762,7 +1777,12 @@
     "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::saturated_store_fails_closed": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::limiter_failure_fails_closed": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::scoring_failure_on_solve_fails_closed_and_keeps_the_trace": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::scoring_failure_on_velocity_fails_closed_and_keeps_the_escalation": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/pass_flow/tests.rs::scoring_failure_on_velocity_fails_closed_and_keeps_the_escalation": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::golden_pass_transcripts_replay_through_the_core_http_path": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::page_serves_pass_html_and_ensures_the_core_session": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::served_mount_never_gates_pass_on_motor_evidence": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::pass_failures_fail_closed_and_leave_the_core_serving": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::loopback_socket_serves_the_mounted_pass_flow": "passed"
    }
   },
   {
@@ -2193,7 +2213,8 @@
     "crates/sdk/humanymous-runtime/src/network/correlation/registry.rs",
     "crates/sdk/humanymous-runtime/src/network/report/assembly.rs",
     "crates/sdk/humanymous-runtime/src/network/residual/mod.rs",
-    "crates/sdk/humanymous-runtime/src/network/traffic/log.rs"
+    "crates/sdk/humanymous-runtime/src/network/traffic/log.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::clock_regression_is_absorbed_by_monotone_ticks",
@@ -2211,7 +2232,10 @@
     "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::all_report_signals_and_admin_observations_match_go",
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::static_local_name_refuses_os_path_syntax",
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::static_file_server_refuses_backslash_and_drive_targets",
-    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::redirect_location_escapes_like_go_url_string"
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::redirect_location_escapes_like_go_url_string",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::with_pass_flow_serves_the_go_mounted_kpi_and_unmounted_is_404",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::pass_failures_fail_closed_and_leave_the_core_serving",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::loopback_socket_serves_the_mounted_pass_flow"
    ],
    "go_test_map": {},
    "gaps": [
@@ -2219,7 +2243,7 @@
    ],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Network signal kernels exist; HTTP app composition (routes, headers, CIDR sets) is missing. Lane A (2026-11-19): gateway::core_server composes the Go app: route mux with Go 1.22 pattern semantics (subtree 307, unclean-path 307 with the HTML body for GET, unescaped segment matching), the three security headers with Set semantics, traffic-log middleware (TLS record from the connection's own ClientHello, HTTP record with cookie), GC sweep each minute, fingerprintChurn (bounded per-session map expiring with the session TTL) and vpnWebRTCLeak wired into collect. Go capture: tests/fixtures/gateway/core-server-go-golden.json (go1.26.3 in mirror.gcr.io/library/golang, --network none, oracle 981d25c; 50 HTTP cases through a.routes(), RIT/fp-churn/WebRTC kernels, stored sessions, traffic records, 85-request rate run). Deliberate differences: explain/counters/mlcorrect/playground are not mounted on the Core (B09), Pass routes 404 until a PassRoutes adapter is mounted (mounting gateway::pass_flow into gateway::core_server through a PassRoutes adapter is an open follow-up that neither lane owns yet (lane A and lane C plans)), trusted proxies come from an explicit CIDR allowlist (C1) instead of Go's implicit private peers, bounded histories fail closed (503 history unavailable). PR #150 review (lane A): /static/ refuses a cleaned name containing a backslash, a colon or NUL, a Windows device name on Windows, or any path component other than Normal, with Go's Linux answer 404 on every OS, so neither %5C nor a drive prefix can leave the web root (Go http.Dir refused these only on Windows, through filepath.Localize, as 500); the mux sees Go's URL.EscapedPath and writes each redirect Location as Go's url.URL{Path}.String(), so a literal backslash leaves as %255C, never as a protocol-relative /\\host.",
+   "notes": "Network signal kernels exist; HTTP app composition (routes, headers, CIDR sets) is missing. Lane A (2026-11-19): gateway::core_server composes the Go app: route mux with Go 1.22 pattern semantics (subtree 307, unclean-path 307 with the HTML body for GET, unescaped segment matching), the three security headers with Set semantics, traffic-log middleware (TLS record from the connection's own ClientHello, HTTP record with cookie), GC sweep each minute, fingerprintChurn (bounded per-session map expiring with the session TTL) and vpnWebRTCLeak wired into collect. Go capture: tests/fixtures/gateway/core-server-go-golden.json (go1.26.3 in mirror.gcr.io/library/golang, --network none, oracle 981d25c; 50 HTTP cases through a.routes(), RIT/fp-churn/WebRTC kernels, stored sessions, traffic records, 85-request rate run). Deliberate differences: explain/counters/mlcorrect/playground are not mounted on the Core (B09), Pass routes are mounted by CoreServer::with_pass_flow through the PassRoutes adapter gateway::core_server::pass::PassMount (lane F; 404 only while nothing is mounted), trusted proxies come from an explicit CIDR allowlist (C1) instead of Go's implicit private peers, bounded histories fail closed (503 history unavailable). PR #150 review (lane A): /static/ refuses a cleaned name containing a backslash, a colon or NUL, a Windows device name on Windows, or any path component other than Normal, with Go's Linux answer 404 on every OS, so neither %5C nor a drive prefix can leave the web root (Go http.Dir refused these only on Windows, through filepath.Localize, as 500); the mux sees Go's URL.EscapedPath and writes each redirect Location as Go's url.URL{Path}.String(), so a literal backslash leaves as %255C, never as a protocol-relative /\\host. Lane F (2026-11-19): gateway::core_server::pass::PassMount implements PassRoutes over gateway::pass_flow (own lock; the Core hands it the Go cookieValue session, the legacy passFP from the connection's own ClientHello and the trust-gated client subnet, the request time read under the Core state lock and a StoreBackend over the Core collector store, frozen engine and live feed) and CoreServer::with_pass_flow mounts it with the Core master key and web root, MotorEvidence::Off only (PassMount::new refuses GoParity) and an optional step-up TokenKey (Go HMN_TOKEN_KEY; the env read belongs to the unbuilt Core binary role). Every recorded Go Pass request in tests/fixtures/gateway/pass-flow-go-golden.json (not regenerated) is replayed as a wire request through read_request, CoreServer::handle and encode: status, content type, Set-Cookie presence, security headers and exact body bytes equal Go except seven steps Go answered from realEventOK or the behavior tells, which are pinned to the accessible answer; final stored signals and frozen-engine scores equal Go outside those motor sessions. Fail closed: limiter refusal, unavailable Core history and a poisoned Pass lock answer 503; a panicking Pass handler is caught before the Core state guard drops, so the Core state is not poisoned. feedPassOutcome has no consumer on the Core plane (B09).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs::oracle_proxy_rotation_at_three_not_two_subnets": "passed",
     "crates/sdk/humanymous-runtime/src/network/residual/mod.rs::observations_are_audited_without_becoming_actionable_or_scored": "passed",
@@ -2236,7 +2260,10 @@
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::ops_views_are_absent_and_operator_views_need_the_token": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::static_local_name_refuses_os_path_syntax": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::static_file_server_refuses_backslash_and_drive_targets": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::redirect_location_escapes_like_go_url_string": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/tests.rs::redirect_location_escapes_like_go_url_string": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::with_pass_flow_serves_the_go_mounted_kpi_and_unmounted_is_404": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::pass_failures_fail_closed_and_leave_the_core_serving": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/core_server/pass/tests.rs::loopback_socket_serves_the_mounted_pass_flow": "passed"
    }
   },
   {
@@ -2414,79 +2441,110 @@
   },
   {
    "baseline_path": "internal/gate/admin_settings_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/settings.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/management/operator.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings.rs",
+    "crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-admin-go-golden.json"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::operational_candidate_freezes_exact_parent_scope_and_serialized_bytes",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs::native_operator_commit_is_witnessed_cas_and_invalidates_sessions",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_a_apply",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_b_dual_control",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_c",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_dry_run",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_net_routes_rate",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_rollback_dual_control",
     "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::configure_engine_from_effective_net_policy"
    ],
    "go_test_map": {
-    "TestSettingsProposeClassAApplies": "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs::native_operator_commit_is_witnessed_cas_and_invalidates_sessions",
-    "TestSettingsProposeClassBPending": null,
-    "TestSettingsCASStale": "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::operational_candidate_freezes_exact_parent_scope_and_serialized_bytes",
-    "TestSettingsClassCRequiresConfirm": null,
-    "TestSettingsDryRunLowNUnusable": null,
-    "TestSettingsRollbackClearBClassOverlayIsA": null,
-    "TestSettingsRollbackDemotionIsImmediate": null,
-    "TestSettingsProposeNetPolicyAndRoutes": null,
-    "TestSettingsProposeRateLoosenIsB": null,
+    "TestSettingsProposeClassAApplies": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_a_apply",
+    "TestSettingsProposeClassBPending": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_b_dual_control",
+    "TestSettingsCASStale": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_rollback_dual_control",
+    "TestSettingsClassCRequiresConfirm": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_c",
+    "TestSettingsDryRunLowNUnusable": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_dry_run",
+    "TestSettingsRollbackClearBClassOverlayIsA": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_rollback_dual_control",
+    "TestSettingsRollbackDemotionIsImmediate": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_b_dual_control",
+    "TestSettingsProposeNetPolicyAndRoutes": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_net_routes_rate",
+    "TestSettingsProposeRateLoosenIsB": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_net_routes_rate",
     "TestConfigureEngineFromEffectiveNetPolicy": "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::configure_engine_from_effective_net_policy"
    },
-   "gaps": [
-    "A/B/C/D mutation classes and pending approval for B",
-    "Class C confirm requirement",
-    "dry-run with low-N usability",
-    "rollback of overlays and immediate demotion",
-    "net-policy and route overlays",
-    "rate-loosen as class B"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "medium",
-   "notes": "Rust has resource-only CAS commits via native operator; scoring/route/net overlays and class workflow are absent. B1: TestConfigureEngineFromEffectiveNetPolicy ported in the settings overlay context; the admin HTTP surface remains unported.",
+   "confidence": "high",
+   "notes": "Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning, no new defaults. FM11 lane E (2026-11-19): gateway::admin_plane::settings serves the SoT-39 settings write plane on the admin listener when attached with AdminPlane::with_settings, pinned by a request-by-request replay of the Go AdminHandler capture crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-admin-go-golden.json (Go 1.26.3 Docker capture, provenance inside; overlay ids injected, approval ids mapped, wall-clock createdAt/expiresAt masked). All 10 Go tests mapped: each Go scenario (class A apply and stale CAS, class B pending with distinct-approver commit, class C confirmation, low-N dry-run, rollback of a class A overlay needing an approver, immediate demotion rollback, net-policy and route overlays, rate loosening as class B) is a step of the captured scenarios replayed byte-for-byte (status, content type, body and the settings/config/approval audit records). TestConfigureEngineFromEffectiveNetPolicy stays in the settings overlay tests. Earlier approximate mappings to the operational settings tests replaced.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs::native_operator_commit_is_witnessed_cas_and_invalidates_sessions": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::operational_candidate_freezes_exact_parent_scope_and_serialized_bytes": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_a_apply": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_b_dual_control": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_c": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_dry_run": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_net_routes_rate": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_rollback_dual_control": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::configure_engine_from_effective_net_policy": "passed"
    }
   },
   {
    "baseline_path": "internal/gate/admin_settings.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/settings.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store/journal.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/management/operator.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/wire.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_approval.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::operational_candidate_freezes_exact_parent_scope_and_serialized_bytes",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs::native_operator_commit_is_witnessed_cas_and_invalidates_sessions",
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs::crash_selection_applies_only_the_journal_committed_candidate"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_a_apply",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_b_dual_control",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_c",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_refusals",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_decoding",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_net_routes_rate",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_rollback_dual_control",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_kill_switch",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_dry_run",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_expiry",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_future_expiry",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_expiry_for_class",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::class_b_lifetime_defaults_to_seven_days",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::commit_after_expiry_is_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::sweep_expires_the_active_overlay",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::unrepresentable_lifetime_is_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::apply_audit_failure_changes_nothing",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::pending_audit_failure_withdraws_the_action",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::proposal_audit_failure_refuses",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::sweep_audit_failure_keeps_the_overlay",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::unattached_settings_routes_are_not_found",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::propose_and_rollback_bodies_decode_like_go",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::timestamp_from_unix_round_trips_and_bounds_the_year"
    ],
    "go_test_map": {},
-   "gaps": [
-    "propose with mutation class and expiry",
-    "overlay list",
-    "dry-run",
-    "rollback / clear overlay CAS",
-    "approval-backed commit",
-    "overlay expiry",
-    "scoring/route/net-policy overlay content"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "medium",
-   "notes": "Only parent-revision CAS of operational resource settings is ported (B20 P).",
+   "confidence": "high",
+   "notes": "Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning, no new defaults. FM11 lane E (2026-11-19): gateway::admin_plane::settings serves the SoT-39 settings write plane on the admin listener when attached with AdminPlane::with_settings, pinned by a request-by-request replay of the Go AdminHandler capture crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-admin-go-golden.json (Go 1.26.3 Docker capture, provenance inside; overlay ids injected, approval ids mapped, wall-clock createdAt/expiresAt masked). Ported: propose (server-computed class A/B/C/D, Go lifetime caps and defaults, class C DISABLE-INTEGRITY confirmation, kill switch blocking B/C/D), overlay list, effective and schema reads, dry-run (newest 1000 scoring/enforcement records of the attached chain, usable only at n >= 50), rollback and clear-overlay CAS (dual-control when undoing a stored class A), approval-backed commit (distinct approver, ticket-bound overlay JSON, CAS, class and expiry re-checked), expiry on read/write and on sweep_settings. Fail-closed differences (pinned): mutations serialized under one lock; records before effect with 503 and no change on audit failure (Go wrote after and ignored the sink); a pending action whose record fails is withdrawn; the ban-store limiter can refuse a Go-valid rate (rejected with its own message); whole-second timestamps; an unrepresentable lifetime is a 400; no store answers 404 (Go 503). Not composed into gateway::service (see the internal/gate/admin.go row).",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs::crash_selection_applies_only_the_journal_committed_candidate": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs::native_operator_commit_is_witnessed_cas_and_invalidates_sessions": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::operational_candidate_freezes_exact_parent_scope_and_serialized_bytes": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_a_apply": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_b_dual_control": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_class_c": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_refusals": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_decoding": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_net_routes_rate": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_rollback_dual_control": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_kill_switch": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_dry_run": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_expiry": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_future_expiry": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_expiry_for_class": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::class_b_lifetime_defaults_to_seven_days": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::commit_after_expiry_is_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::sweep_expires_the_active_overlay": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::unrepresentable_lifetime_is_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::apply_audit_failure_changes_nothing": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::pending_audit_failure_withdraws_the_action": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::proposal_audit_failure_refuses": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::sweep_audit_failure_keeps_the_overlay": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::unattached_settings_routes_are_not_found": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::propose_and_rollback_bodies_decode_like_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/tests.rs::timestamp_from_unix_round_trips_and_bounds_the_year": "passed"
    }
   },
   {
@@ -2628,14 +2686,14 @@
    "go_test_map": {},
    "gaps": [
     "composition of gateway::admin_plane into gateway::service (listener address and admin bearer-token provisioning)",
-    "settings (effective, schema, overlays, dry-run, rollback), metrics and virtual-usb routes (integrity, proof, audit, incidents, keys and checkpoints are served by gateway::admin_plane::chain; policy and the console page by gateway::admin_plane::policy)",
+    "metrics and virtual-usb routes (integrity, proof, audit, incidents, keys and checkpoints are served by gateway::admin_plane::chain; policy and the console page by gateway::admin_plane::policy; the settings routes and the settings.overlay and settings.overlay.rollback approval commits by gateway::admin_plane::settings)",
     "kill-switch commit (signed node kill)",
     "intake path that stages retained PermanentBan permits into the plane",
     "intake path that stages ledger-issued ErasurePermits into the plane and the periodic RunDueShreds caller with the attached chain's latest checkpoint"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Native observer/operator IPC, kill-status assessment and audit verification primitives exist. gateway::admin_plane serves the Go route table subset for ban list/add/bulk/lift, approvals list, whoami, erasure and kill-switch requests and the dual-control approve route on a separate loopback TCP listener, with Go 404 deny-by-default, 403 role refusals, meta-audit, JSON decoding and response shapes; permanent and broad ban commits also consume a retained signed permit. Erasure: gateway::admin_plane::erasure resolves the requested handle through the vault, schedules a DPO-approved erasure into the hold queue only with a staged ledger-issued ErasurePermit for that subject, serves GET erasures and POST erasures/{id}/cancel (Go adminWrapped) and executes due shreds (run_due_shreds, Go RunDueShreds), pinned against tests/fixtures/gateway/admin-erasure-go-golden.json. FM11 slice 19: gateway::admin_plane::policy serves the read-only GET policy route (adminPolicy, byte-identical to the Go capture with routes in prefix order, configVersion from settings::configsign::BootPolicy with the active overlay, no write verb) and the console page (adminConsole) as an authenticated GET read with X-Frame-Options DENY; Go served the console unauthenticated and could inject a dev bearer token, which is not ported.",
+   "notes": "Native observer/operator IPC, kill-status assessment and audit verification primitives exist. gateway::admin_plane serves the Go route table subset for ban list/add/bulk/lift, approvals list, whoami, erasure and kill-switch requests and the dual-control approve route on a separate loopback TCP listener, with Go 404 deny-by-default, 403 role refusals, meta-audit, JSON decoding and response shapes; permanent and broad ban commits also consume a retained signed permit. Erasure: gateway::admin_plane::erasure resolves the requested handle through the vault, schedules a DPO-approved erasure into the hold queue only with a staged ledger-issued ErasurePermit for that subject, serves GET erasures and POST erasures/{id}/cancel (Go adminWrapped) and executes due shreds (run_due_shreds, Go RunDueShreds), pinned against tests/fixtures/gateway/admin-erasure-go-golden.json. FM11 slice 19: gateway::admin_plane::policy serves the read-only GET policy route (adminPolicy, byte-identical to the Go capture with routes in prefix order, configVersion from settings::configsign::BootPolicy with the active overlay, no write verb) and the console page (adminConsole) as an authenticated GET read with X-Frame-Options DENY; Go served the console unauthenticated and could inject a dev bearer token, which is not ported. FM11 lane E (B1): gateway::admin_plane::settings serves the six settings routes in Go table order and the two settings approval commits when attached with AdminPlane::with_settings, pinned against tests/fixtures/gateway/settings-admin-go-golden.json.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/control/state.rs::spent_intent_without_covered_effect_cannot_become_healthy": "passed",
@@ -3439,14 +3497,16 @@
     "crates/sdk/humanymous-runtime/src/gateway/application.rs",
     "crates/sdk/humanymous-runtime/src/gateway/service.rs",
     "crates/sdk/humanymous-runtime/src/gateway/http.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/application/maintenance.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/application/maintenance.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application/gates.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::real_tcp_audit_before_origin_and_negative_counter_zero",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::client_abort_during_audit_never_dispatches_origin",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::signed_method_target_body_scope_policy_and_deadline_cannot_change",
     "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::accept_loop_sweeps_on_the_maintenance_tick",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::maintenance_sweeps_installed_gate_kernels"
    ],
    "go_test_map": {},
    "gaps": [
@@ -3459,13 +3519,14 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust application gives an audited loopback forwarder, not the Gate server composition (B13/B14). FM11 lane B (2026-11-19): the Go gcLoop composite (verdict sessions plus the installed ban store, 60 s) now runs on both accept loops (gateway::application::maintenance); the integration flow (bot beacon denied at the edge, human page untouched, sealed chain verifies) is pinned by tests/integration.rs.",
+   "notes": "Rust application gives an audited loopback forwarder, not the Gate server composition (B13/B14). FM11 lane B (2026-11-19): the Go gcLoop composite (verdict sessions plus the installed ban store, 60 s) now runs on both accept loops (gateway::application::maintenance); the integration flow (bot beacon denied at the edge, human page untouched, sealed chain verifies) is pinned by tests/integration.rs. FM11 lane D (2026-11-19): the optional NewServer capabilities AgentKeys, PATIssuers, WebAuthnCreds (with credCorr) and the sweep detector are Application::install_* on the served path, and Server.GC sweeps the installed sweep detector and fan-out tracker; the service binary installs none of them.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::client_abort_during_audit_never_dispatches_origin": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::real_tcp_audit_before_origin_and_negative_counter_zero": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::signed_method_target_body_scope_policy_and_deadline_cannot_change": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs::accept_loop_sweeps_on_the_maintenance_tick": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::maintenance_sweeps_installed_gate_kernels": "passed"
    }
   },
   {
@@ -3476,7 +3537,9 @@
     "crates/sdk/humanymous-runtime/src/gateway/http.rs",
     "crates/sdk/humanymous-runtime/src/gateway/session.rs",
     "crates/sdk/humanymous-runtime/src/gateway/application/edge.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/configuration/edge.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/configuration/edge.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/gates.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application/gates.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization",
@@ -3488,20 +3551,46 @@
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::ip_rotating_flood_is_banned_by_fingerprint_on_the_served_path",
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::ban_gate_requires_a_trusted_client_address",
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::unaudited_gate_effect_is_refused_and_poisons_the_epoch",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoof_gate_monitor_strips_forged_headers_before_scoring"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoof_gate_monitor_strips_forged_headers_before_scoring",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::verdict_token_gate_matches_go",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::attestation_floor_audit_matches_go",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::upgrade_gate_matches_go",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::agent_auth_gate_matches_go_with_named_differences",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::pat_gate_matches_go",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::webauthn_gate_and_fanout_cap_match_go",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::sweep_gate_matches_go",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::sweep_detector_refusal_fails_closed_only_when_enforcing",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::gates_skip_their_kernels_where_go_did",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::verified_agent_signature_forwards_without_scoring",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::forged_agent_signature_is_denied_before_scoring",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::unknown_agent_key_is_recorded_and_scored",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::uninstalled_gates_leave_the_served_path_unchanged",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::upgrade_without_verdict_token_is_denied",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::sweep_gate_denies_the_ninth_session_and_monitor_only_records",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::unaudited_trust_upgrade_fails_closed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::webauthn_needs_the_trusted_client_address",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::webauthn_assertion_upgrades_only_with_an_attributed_client",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::pat_is_not_presentable_under_the_native_profile",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::pat_upgrades_once_under_the_browser_profile",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::maintenance_sweeps_installed_gate_kernels",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::gate_deny_fields_precede_the_acknowledgement"
    ],
-   "go_test_map": {},
+   "go_test_map": {
+    "TestSettingsVerdictTokenMonitorDoesNotFastPath": "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::verdict_token_gate_matches_go",
+    "TestSettingsReconMonitorAuditsWithoutBlocking": "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::sweep_gate_matches_go",
+    "TestSettingsAttestationFloorMonitorAuditsWithoutChallenging": "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::attestation_floor_audit_matches_go",
+    "TestSettingsAttestationFloorMonitorAllowsVerdictTokenFastPath": "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::verdict_token_gate_matches_go"
+   },
    "gaps": [
-    "verdict-token gate",
-    "upgrade gate",
-    "agent-auth, PAT and WebAuthn gates",
-    "sweep gate",
-    "attestation floor audit",
+    "verdict-token gate: the decision is ported (gateway::gates::verdict_token, Go-golden parity) but not composed on the served path: nothing there mints hmn_vt (the gate control plane that issued it is not composed), so the upgrade gate always sees no valid token, as Go did without a token key",
+    "attestation floor audit: the record is ported (gateway::gates::attestation_floor_audit, Go-golden parity) but the served path has no route presets, so no route carries the attestation floor and the record is never written there",
+    "credential gates replace scoring only after request integrity: Go let a verified credential stand in for the hsid cookie session before any scoring; the served path runs them after RIT authorization and admission (owner question)",
+    "credential and sweep gate provisioning: Application::install_agent_keys, install_pat_issuers, install_webauthn and install_sweep compose the gates on the served path, but the service binary installs none (no configuration document for key directories, issuers, credentials or the gate.recon_sweep mode; gate default modes open in issue #75)",
     "ban gate provisioning: Application runs gateway::ban::gate once a store is installed (Application::install_bans), but the service binary (gateway::service) provisions no store because no rate-limit configuration document exists, and the store's monotonic epoch is not shared with an admin plane's serving epoch"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Only framing and RIT/verdict application were present (B13 M). FM11 slice 18: the served path now runs the legacy ServeHTTP gate order for proxied requests (gateway::application::edge): after the reserved control routes, the ban gate (ban::gate::evaluate, HR-21) and then the spoof-header gate (guard::spoof_gate, HR-27b), before route inventory, authorization and scoring. Modes come from the startup edge section (default enforce, Go's default without a settings store). Responses and records match the Go capture tests/fixtures/gateway/edge-gates-go-golden.json (Go 1.25.3 at 981d25c, network none). Named deviations: the ban gate needs the trusted PROXY v2 client address and refuses an unattributed connection when enforcing (503 ban_client_address); a ledger refusal is 503 ban_ledger; records carry no subject pseudonym and verdict DENY; an append failure poisons the epoch. Owner decision 2026-11-16 left serving composition undecided; this wiring needs owner review. Signal IDs and scoring are unchanged. Review follow-up (FM11 slice 18): a non-enforcing spoof gate now strips the forged trust headers from the scored and forwarded view, as Go's spoofHeaderGate called stripInbound(r) before the mode check; request integrity and the commitment still cover the sent bytes. A refusal to a HEAD request keeps the head and Content-Length without the body, as Go's server did. FM11 lane B (2026-11-19): the installed ban store is now swept by the Application maintenance tick (Server.gc parity); ban-store provisioning, the shared ban clock, metrics and default modes remain owner questions in issue #75.",
+   "notes": "Only framing and RIT/verdict application were present (B13 M). FM11 slice 18: the served path now runs the legacy ServeHTTP gate order for proxied requests (gateway::application::edge): after the reserved control routes, the ban gate (ban::gate::evaluate, HR-21) and then the spoof-header gate (guard::spoof_gate, HR-27b), before route inventory, authorization and scoring. Modes come from the startup edge section (default enforce, Go's default without a settings store). Responses and records match the Go capture tests/fixtures/gateway/edge-gates-go-golden.json (Go 1.25.3 at 981d25c, network none). Named deviations: the ban gate needs the trusted PROXY v2 client address and refuses an unattributed connection when enforcing (503 ban_client_address); a ledger refusal is 503 ban_ledger; records carry no subject pseudonym and verdict DENY; an append failure poisons the epoch. Owner decision 2026-11-16 left serving composition undecided; this wiring needs owner review. Signal IDs and scoring are unchanged. Review follow-up (FM11 slice 18): a non-enforcing spoof gate now strips the forged trust headers from the scored and forwarded view, as Go's spoofHeaderGate called stripInbound(r) before the mode check; request integrity and the commitment still cover the sent bytes. A refusal to a HEAD request keeps the head and Content-Length without the body, as Go's server did. FM11 lane B (2026-11-19): the installed ban store is now swept by the Application maintenance tick (Server.gc parity); ban-store provisioning, the shared ban clock, metrics and default modes remain owner questions in issue #75. FM11 lane D slice 1 (2026-11-19): the remaining ServeHTTP gates (verdict token with the attestation floor, upgrade, agent auth, PAT, WebAuthn with the fan-out cap, sweep) and the attestation floor audit record are a pure kernel, gateway::gates, replayed against the Go capture tests/fixtures/gateway/gates-go-golden.json (981d25c, Go 1.26.3, network none; plan:root/20261119134717). Named differences, each pinned: uppercase verdicts, a neutral Web Bot Auth record names a keyid only when the credential kernel reports one (unknown and expired signatures record it empty, where Go echoed the presented keyid) and a half signature is neutral and recorded where Go ignored it, a fan-out observation the registry cannot admit withholds the upgrade without a record, and an enforcing sweep detector that cannot count is an error (fail closed). The settings_runtime monitor-mode cases are mapped at kernel level; the settings overlay that sets the modes is not composed. FM11 lane D slice 2 (2026-11-19): gateway::application::gates composes agent auth, PAT, WebAuthn (with the fan-out cap), upgrade and sweep in Go order on the served path, after session authorization and admission and before scoring; a trust upgrade forwards without scoring and its record carries the request id and commitment; a deny answers Go 403 with the incident pointer (plus the counter acknowledgement after authorization); every record is appended before its effect. All routes enforce and none is attested (no presets); WebAuthn needs the PROXY v2 client address; an enforcing sweep detector that cannot count answers 503 sweep_unavailable. Pinned by gateway::tests::gates.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::missing_client_is_challenge_and_missing_planes_are_not_ready": "passed",
@@ -3512,7 +3601,29 @@
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::ip_rotating_flood_is_banned_by_fingerprint_on_the_served_path": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::ban_gate_requires_a_trusted_client_address": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::unaudited_gate_effect_is_refused_and_poisons_the_epoch": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoof_gate_monitor_strips_forged_headers_before_scoring": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::spoof_gate_monitor_strips_forged_headers_before_scoring": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::verdict_token_gate_matches_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::attestation_floor_audit_matches_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::upgrade_gate_matches_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::agent_auth_gate_matches_go_with_named_differences": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::pat_gate_matches_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::webauthn_gate_and_fanout_cap_match_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::sweep_gate_matches_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::sweep_detector_refusal_fails_closed_only_when_enforcing": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::gates_skip_their_kernels_where_go_did": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::verified_agent_signature_forwards_without_scoring": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::forged_agent_signature_is_denied_before_scoring": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::unknown_agent_key_is_recorded_and_scored": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::uninstalled_gates_leave_the_served_path_unchanged": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::upgrade_without_verdict_token_is_denied": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::sweep_gate_denies_the_ninth_session_and_monitor_only_records": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::unaudited_trust_upgrade_fails_closed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::webauthn_needs_the_trusted_client_address": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::webauthn_assertion_upgrades_only_with_an_attributed_client": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::pat_is_not_presentable_under_the_native_profile": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::pat_upgrades_once_under_the_browser_profile": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::maintenance_sweeps_installed_gate_kernels": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::gate_deny_fields_precede_the_acknowledgement": "passed"
    }
   },
   {
@@ -3851,7 +3962,7 @@
    "go_test_map": {},
    "gaps": [
     "Challenge binding is off by default until Runtime issues PrivateToken challenges",
-    "Not wired into request routing; Runtime composition owns that"
+    "Wired into the served path by Application::install_agent_keys, install_pat_issuers or install_webauthn (FM11 lane D, gateway::application::gates), but the service binary installs no key directory, issuer or credential registry"
    ],
    "retire_basis": null,
    "confidence": "high",
@@ -4264,59 +4375,82 @@
    "baseline_path": "internal/gate/settings_runtime_test.go",
    "disposition": "partial",
    "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings.rs",
     "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/settings.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/gates.rs"
    ],
    "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_hot_apply_preserves_counters",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_level_is_hard_after_hot_apply",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::stats_reflect_apply_and_rejection",
     "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_configure_preserves_rolling_hits_and_applies_cutpoints",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs::native_operator_commit_is_witnessed_cas_and_invalidates_sessions"
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::verdict_token_gate_matches_go",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::sweep_gate_matches_go",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::attestation_floor_audit_matches_go"
    ],
    "go_test_map": {
-    "TestSettingsRateHotApplyPreservesCounters": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_configure_preserves_rolling_hits_and_applies_cutpoints",
+    "TestSettingsRateHotApplyPreservesCounters": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_hot_apply_preserves_counters",
     "TestSettingsGateBanMonitorIsAuditOnly": null,
-    "TestSettingsVerdictTokenMonitorDoesNotFastPath": null,
-    "TestSettingsReconMonitorAuditsWithoutBlocking": null,
+    "TestSettingsVerdictTokenMonitorDoesNotFastPath": "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::verdict_token_gate_matches_go",
+    "TestSettingsReconMonitorAuditsWithoutBlocking": "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::sweep_gate_matches_go",
     "TestSettingsInjectMonitorLeavesHTMLUntouched": null,
-    "TestSettingsAttestationFloorMonitorAuditsWithoutChallenging": null,
-    "TestSettingsAttestationFloorMonitorAllowsVerdictTokenFastPath": null,
+    "TestSettingsAttestationFloorMonitorAuditsWithoutChallenging": "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::attestation_floor_audit_matches_go",
+    "TestSettingsAttestationFloorMonitorAllowsVerdictTokenFastPath": "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::verdict_token_gate_matches_go",
     "TestSettingsMetricsReflectApply": null
    },
    "gaps": [
-    "per-gate monitor modes",
-    "settings apply metrics"
+    "per-gate monitor modes on the request path (gate.ban audit-only, verdict_token fast path, recon_sweep, inject, attest_floor): settings-driven module modes are open in issue #75 and the hosted gateway does not consume the effective overlay; the gate kernels take a mode (gateway::gates, FM11 lane D), but no settings overlay supplies gate.verdict_token, gate.recon_sweep or gate.attest_floor at run time",
+    "settings metrics exposition (TestSettingsMetricsReflectApply): Prometheus metrics and labels are owner-pending; the counters it reads are pinned by stats_reflect_apply_and_rejection"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Only rate reconfiguration preserving counters has a primitive counterpart.",
+   "notes": "Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning, no new defaults. FM11 lane E (2026-11-19): gateway::admin_plane::settings serves the SoT-39 settings write plane on the admin listener when attached with AdminPlane::with_settings, pinned by a request-by-request replay of the Go AdminHandler capture crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-admin-go-golden.json (Go 1.26.3 Docker capture, provenance inside; overlay ids injected, approval ids mapped, wall-clock createdAt/expiresAt masked). TestSettingsRateHotApplyPreservesCounters is ported end to end: four hits under 60s/5/10, a class A propose of hard 5 through the admin handler, and the fifth hit auto-bans at the hard level. Lane E left the six per-gate monitor tests and the metrics test unmapped; lane D (below) maps four monitor tests at kernel level, and TestSettingsGateBanMonitorIsAuditOnly, TestSettingsInjectMonitorLeavesHTMLUntouched and TestSettingsMetricsReflectApply stay unmapped (gaps). FM11 lane D (2026-11-19): the verdict-token, recon-sweep and attestation-floor monitor cases are mapped to the gate kernel replay against the Go capture gates-go-golden.json (vt_monitor_valid, sw_monitor_ninth, af_scoring_monitor, vt_attest_floor_monitor): would_fast_path, would_block and would_challenge records, request outcome unchanged. They are kernel-level, not the settings overlay HTTP flow.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs::native_operator_commit_is_witnessed_cas_and_invalidates_sessions": "passed",
-    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_configure_preserves_rolling_hits_and_applies_cutpoints": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_hot_apply_preserves_counters": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_level_is_hard_after_hot_apply": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::stats_reflect_apply_and_rejection": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_configure_preserves_rolling_hits_and_applies_cutpoints": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::verdict_token_gate_matches_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::sweep_gate_matches_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::attestation_floor_audit_matches_go": "passed"
    }
   },
   {
    "baseline_path": "internal/gate/settings_runtime.go",
    "disposition": "partial",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/settings.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/service.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_approval.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs::native_operator_commit_is_witnessed_cas_and_invalidates_sessions",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service.rs::hosted_only_witnessed_settings_commit_invalidates_sessions_and_restores"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_runtime_refused_attach",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_invalid_active_file",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_refusals",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_hot_apply_preserves_counters",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_level_is_hard_after_hot_apply",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_limiter_refusal_rejects_the_change",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::stats_reflect_apply_and_rejection",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::class_b_commit_rejected_when_stale_counts_rejection",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::class_b_lifetime_defaults_to_seven_days"
    ],
    "go_test_map": {},
    "gaps": [
-    "runtime validation of effective overlay",
-    "store error and pending-age metrics",
-    "Prometheus labels"
+    "Prometheus exposition of the settings counters (hmn_gate_settings_apply_total, store_errors_total), overlay_active and pending_age_seconds gauges and the config_version label (prometheusLabel): metrics and labels are owner-pending in issue #75; Settings::stats and AdminPlane::settings_pending_age hold the values"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust applies witnessed operational commits and invalidates sessions; metrics are absent.",
+   "notes": "Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning, no new defaults. FM11 lane E (2026-11-19): gateway::admin_plane::settings serves the SoT-39 settings write plane on the admin listener when attached with AdminPlane::with_settings, pinned by a request-by-request replay of the Go AdminHandler capture crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-admin-go-golden.json (Go 1.26.3 Docker capture, provenance inside; overlay ids injected, approval ids mapped, wall-clock createdAt/expiresAt masked). Ported: validateSettingsRuntime (Go message, on propose candidates, commits, rollback and attach), syncSettingsRuntime as a hot reconfigure of the shared ban store's limiter that keeps rolling hits, recordSettingsStoreError (settings.store.degraded), settingsApplyError/settingsApplyRejected (settings.overlay.rejected) and the applied/rolled-back/rejected/error/store-error counters, settingsPendingAgeSeconds. The rate is restored if the change's records fail.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service.rs::hosted_only_witnessed_settings_commit_invalidates_sessions_and_restores": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs::native_operator_commit_is_witnessed_cas_and_invalidates_sessions": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_runtime_refused_attach": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_invalid_active_file": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::golden_refusals": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_hot_apply_preserves_counters": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_level_is_hard_after_hot_apply": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_limiter_refusal_rejects_the_change": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::stats_reflect_apply_and_rejection": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::class_b_commit_rejected_when_stale_counts_rejection": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::class_b_lifetime_defaults_to_seven_days": "passed"
    }
   },
   {
@@ -5607,7 +5741,7 @@
    "go_test_map": {},
    "gaps": [
     "No server-issued challenge; replay relies on the signature counter, as in Go",
-    "Not wired into request routing; Runtime composition owns that"
+    "Wired into the served path by Application::install_agent_keys, install_pat_issuers or install_webauthn (FM11 lane D, gateway::application::gates), but the service binary installs no key directory, issuer or credential registry"
    ],
    "retire_basis": null,
    "confidence": "high",
@@ -5700,7 +5834,7 @@
    "go_test_map": {},
    "gaps": [
     "Live JWKS key-directory fetch remains a future seam, as in Go",
-    "Not wired into request routing; Runtime composition owns that"
+    "Wired into the served path by Application::install_agent_keys, install_pat_issuers or install_webauthn (FM11 lane D, gateway::application::gates), but the service binary installs no key directory, issuer or credential registry"
    ],
    "retire_basis": null,
    "confidence": "high",

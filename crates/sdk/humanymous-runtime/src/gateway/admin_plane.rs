@@ -64,8 +64,14 @@
 //!   token into it); see [`policy`].
 //! - Every response carries `Cache-Control: no-store`,
 //!   `X-Content-Type-Options: nosniff` and `X-Frame-Options: DENY`.
-//! - The settings, metrics and virtual-USB routes are not served here; they
-//!   answer 404 after authentication.
+//! - The settings routes (`settings/effective`, `settings/schema`,
+//!   `settings/overlays`, `settings/dry-run`, `settings/rollback`) and the
+//!   `settings.overlay` and `settings.overlay.rollback` approval commits are
+//!   served only when a [`settings::Settings`] engine is attached with
+//!   [`AdminPlane::with_settings`] (see [`settings`]); otherwise they answer
+//!   404 after authentication (Go answered 503 without a store).
+//! - The metrics and virtual-USB routes are not served here; they answer 404
+//!   after authentication.
 //! - JSON numbers use Go `encoding/json` text (`1`, not `1.0`).
 //!
 //! The operator ops routes of legacy cmd/server/ops.go (liveness, score
@@ -79,6 +85,7 @@ pub mod chain;
 pub mod erasure;
 pub mod ops;
 pub mod policy;
+pub mod settings;
 
 use crate::audit::control::{Action, RetainedActionPermit, Scope};
 use crate::audit::record::{Actor, Record};
@@ -292,6 +299,12 @@ enum Handler {
     Checkpoints,
     Policy,
     Console,
+    SettingsEffective,
+    SettingsSchema,
+    SettingsOverlays,
+    SettingsPropose,
+    SettingsDryRun,
+    SettingsRollback,
     ListApprovals,
     ListErasures,
     Whoami,
@@ -305,7 +318,7 @@ enum Handler {
 }
 
 /// Ordered dispatch and capability table (Go `adminRoutes`, served subset).
-const ROUTES: [(&str, Matcher, Capability, Handler); 20] = [
+const ROUTES: [(&str, Matcher, Capability, Handler); 26] = [
     (
         "GET",
         Matcher::Exact("bans"),
@@ -353,6 +366,42 @@ const ROUTES: [(&str, Matcher, Capability, Handler); 20] = [
         Matcher::Exact("console"),
         Capability::Read,
         Handler::Console,
+    ),
+    (
+        "GET",
+        Matcher::Exact("settings/effective"),
+        Capability::Read,
+        Handler::SettingsEffective,
+    ),
+    (
+        "GET",
+        Matcher::Exact("settings/schema"),
+        Capability::Read,
+        Handler::SettingsSchema,
+    ),
+    (
+        "GET",
+        Matcher::Exact("settings/overlays"),
+        Capability::Read,
+        Handler::SettingsOverlays,
+    ),
+    (
+        "POST",
+        Matcher::Exact("settings/overlays"),
+        Capability::Operate,
+        Handler::SettingsPropose,
+    ),
+    (
+        "POST",
+        Matcher::Exact("settings/dry-run"),
+        Capability::Operate,
+        Handler::SettingsDryRun,
+    ),
+    (
+        "POST",
+        Matcher::Exact("settings/rollback"),
+        Capability::Operate,
+        Handler::SettingsRollback,
     ),
     (
         "GET",
@@ -464,6 +513,7 @@ pub struct AdminPlane {
     chain: Option<chain::Chain>,
     erasure: Option<erasure::Erasure>,
     policy: Option<policy::Policy>,
+    settings: Option<settings::Settings>,
 }
 
 impl AdminPlane {
@@ -491,6 +541,7 @@ impl AdminPlane {
             chain: None,
             erasure: None,
             policy: None,
+            settings: None,
         }
     }
 
@@ -584,6 +635,14 @@ impl AdminPlane {
                 Handler::Checkpoints => self.checkpoints(),
                 Handler::Policy => self.policy_view(),
                 Handler::Console => Self::console_page(),
+                Handler::SettingsEffective => self.settings_effective(clock),
+                Handler::SettingsSchema => self.settings_schema(),
+                Handler::SettingsOverlays => self.settings_overlays(clock),
+                Handler::SettingsPropose => self.settings_propose(&request.body, &operator, clock),
+                Handler::SettingsDryRun => self.settings_dry_run(&request.body, &operator, clock),
+                Handler::SettingsRollback => {
+                    self.settings_rollback(&request.body, &operator, clock)
+                }
                 Handler::ListApprovals => self.list_approvals(clock),
                 Handler::ListErasures => self.list_erasures(clock.monotonic),
                 Handler::Whoami => {
@@ -896,6 +955,8 @@ impl AdminPlane {
                 409,
                 "kill switch commit needs the signed node kill control; not served here",
             ),
+            settings::KIND_OVERLAY => self.commit_settings(&action, operator, clock),
+            settings::KIND_ROLLBACK => self.commit_settings_rollback(&action, operator, clock),
             _ => Response::text(500, "unknown action kind"),
         }
     }

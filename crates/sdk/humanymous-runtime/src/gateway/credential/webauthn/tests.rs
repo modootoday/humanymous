@@ -4,11 +4,11 @@ use super::*;
 use rcgen::{KeyPair, PKCS_ECDSA_P256_SHA256, PKCS_ECDSA_P384_SHA384, PublicKeyData, SigningKey};
 use serde_json::json;
 
-pub(in crate::gateway::credential) const CRED: &str = "cred-abc";
+pub(in crate::gateway) const CRED: &str = "cred-abc";
 const CLIENT_DATA: &str =
     r#"{"type":"webauthn.get","challenge":"Y2g","origin":"https://example.com"}"#;
 
-pub(in crate::gateway::credential) fn key() -> KeyPair {
+pub(in crate::gateway) fn key() -> KeyPair {
     KeyPair::generate_for(&PKCS_ECDSA_P256_SHA256).unwrap()
 }
 /// Go `makeAuthData`: zero rpIdHash, flags UP|UV, big-endian counter.
@@ -31,15 +31,11 @@ fn assertion_with(key: &KeyPair, id: &str, data: &[u8], client: &str) -> String 
     STANDARD.encode(body.to_string())
 }
 /// Go `signAssertion`.
-pub(in crate::gateway::credential) fn sign_assertion(
-    key: &KeyPair,
-    id: &str,
-    counter: u32,
-) -> String {
+pub(in crate::gateway) fn sign_assertion(key: &KeyPair, id: &str, counter: u32) -> String {
     assertion_with(key, id, &auth_data(counter, 0x05), CLIENT_DATA)
 }
 /// Go `webauthnDir`.
-pub(in crate::gateway::credential) fn registry(id: &str, key: &KeyPair) -> Registry {
+pub(in crate::gateway) fn registry(id: &str, key: &KeyPair) -> Registry {
     let spki = URL_SAFE_NO_PAD.encode(key.subject_public_key_info());
     Registry::parse(&format!("{id} {spki}")).unwrap()
 }

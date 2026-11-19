@@ -272,4 +272,4 @@ fn token_bytes(header: &str) -> Option<Vec<u8>> {
 }
 
 #[cfg(test)]
-pub(super) mod tests;
+pub(in crate::gateway) mod tests;

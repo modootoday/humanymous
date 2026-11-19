@@ -253,7 +253,8 @@ impl Application {
             }
             Decision::Gate(gate) => {
                 let head = request.method == "HEAD";
-                return http::text_frame(gate.status, gate.body, &gate.fields, head)
+                let fields = gate.with_ack(ack.as_ref())?;
+                return http::text_frame(gate.status, gate.body, &fields, head)
                     .map_err(|_| Rejection::new(503, "serialization"));
             }
             Decision::Probe(status, body) => {

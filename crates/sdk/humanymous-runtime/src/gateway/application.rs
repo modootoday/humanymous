@@ -24,6 +24,7 @@ use tokio::{
     time::{Instant, timeout_at},
 };
 mod edge;
+mod gates;
 mod maintenance;
 mod settings;
 mod tls;
@@ -31,6 +32,7 @@ mod tls;
 #[cfg(test)]
 mod temporal;
 pub use edge::{GateResponse, HEALTHZ, READYZ, ReadySwitch};
+pub use gates::AGENT_NONCE_TTL;
 
 /// Internal result: ALLOW is a one-use origin dispatch, never a reusable ticket.
 pub enum Decision {
@@ -97,6 +99,8 @@ pub struct Application {
     bans: Option<edge::Bans>,
     /// Origin-cloak key from the private configuration, when enabled.
     origin_key: Option<crate::gateway::guard::OriginKey>,
+    /// Credential, upgrade and sweep gate capabilities, once installed.
+    installed: gates::Installed,
     /// Readiness gate of the `/_humanymous/readyz` probe.
     ready: ReadySwitch,
     /// Period of the composite in-memory sweep (legacy maintenance ticker).
@@ -121,6 +125,7 @@ impl Application {
             client: None,
             bans: None,
             origin_key,
+            installed: gates::Installed::default(),
             ready: ReadySwitch::default(),
             sweep_interval: maintenance::INTERVAL,
         })
@@ -290,6 +295,30 @@ impl Application {
             return Err(Rejection::new(429, "session_admission"));
         }
         let deadline = authorized.deadline;
+        let request_id = hex::encode(Sha256::digest(
+            format!("{id}:{}", authorized.counter).as_bytes(),
+        ));
+        let correlation_id = commitment(req);
+        if !collect {
+            // Legacy ServeHTTP gates between route resolution and the verdict.
+            match self.run_gates(req, id, now, (&request_id, &correlation_id))? {
+                gates::Gated::Continue => {}
+                gates::Gated::Answer(decision) => return Ok(decision),
+                gates::Gated::Forward => {
+                    self.check_deadline(deadline, clock())?;
+                    let route_class = crate::gateway::request::route_class(&req.headers);
+                    return Ok(Decision::Origin {
+                        deadline,
+                        upstream: Upstream {
+                            request_id,
+                            correlation_id,
+                            route_class: route_class.as_str().into(),
+                            started_ms: now,
+                        },
+                    });
+                }
+            }
+        }
         let (verdict, risk, rule) = if collect {
             match authorized.profile {
                 RitProfile::NativeFull => {
@@ -385,24 +414,6 @@ impl Application {
             (score.verdict, score.risk_score, score.hard_rule_fired)
         };
         self.check_deadline(deadline, clock())?;
-        // Commitment binds all observed body/header bytes, including unsigned fields,
-        // without writing those values or a usable capability to the WAL.
-        let mut hash = Sha256::new();
-        for value in [&req.method, &req.target] {
-            hash.update((value.len() as u64).to_be_bytes());
-            hash.update(value.as_bytes());
-        }
-        for (name, value) in &req.headers {
-            for field in [name, value] {
-                hash.update((field.len() as u64).to_be_bytes());
-                hash.update(field.as_bytes());
-            }
-        }
-        hash.update(&req.body);
-        let request_id = hex::encode(Sha256::digest(
-            format!("{id}:{}", authorized.counter).as_bytes(),
-        ));
-        let correlation_id = hex::encode(hash.finalize());
         let route_class: String = crate::gateway::request::route_class(&req.headers)
             .as_str()
             .into();
@@ -696,9 +707,10 @@ impl Application {
                     .map_err(|_| Rejection::new(503, "response_write"))
             }
             Decision::Gate(gate) => {
+                let fields = gate.with_ack(ack.as_ref())?;
                 *response_started = true;
                 let head = request.method == "HEAD";
-                http::write_text(stream, gate.status, gate.body, &gate.fields, head)
+                http::write_text(stream, gate.status, gate.body, &fields, head)
                     .await
                     .map_err(|_| Rejection::new(503, "response_write"))
             }
@@ -911,6 +923,24 @@ async fn write_or_stop(
             _ = &mut pending => return Ok(false),
         }
     }
+}
+
+/// Commitment over all observed body and header bytes, including unsigned
+/// fields, without writing those values or a usable capability to the WAL.
+fn commitment(req: &Request) -> String {
+    let mut hash = Sha256::new();
+    for value in [&req.method, &req.target] {
+        hash.update((value.len() as u64).to_be_bytes());
+        hash.update(value.as_bytes());
+    }
+    for (name, value) in &req.headers {
+        for field in [name, value] {
+            hash.update((field.len() as u64).to_be_bytes());
+            hash.update(field.as_bytes());
+        }
+    }
+    hash.update(&req.body);
+    hex::encode(hash.finalize())
 }
 
 /// R14 same-owner observation for `required.original_h2` (fail-closed).

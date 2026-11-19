@@ -1,0 +1,2208 @@
+{
+ "provenance": {
+  "oracle_commit": "981d25cf71a5a54855d7e2b4359e832a9d5998e5",
+  "oracle_packages": [
+   "internal/gate (gate.go ServeHTTP/deny/hasValidToken/hasValidStepUp/applyVerdict; gates.go agentAuthGate/patGate/webauthnGate/trustUpgrade/verdictTokenGate/upgradeGate/sweepGate/auditAttestationFloor; webbotauth_test.go signWebBotAuth/testDir; privacypass_test.go mintPAT/pubPEM/x509HexKeyID; webauthn_test.go signAssertion/webauthnDir; attestfloor_test.go aReq; settings_runtime_test.go attachSettingsOverlay)"
+  ],
+  "image": "mirror.gcr.io/library/golang@sha256:91eda9776261207ea25fd06b5b7fed8d397dd2c0a283e77f2ab6e91bfa71079d",
+  "go_version": "go1.26.3 linux/amd64 (go.mod at 981d25c declares go 1.25.3; GOTOOLCHAIN=local)",
+  "command": "git archive 981d25c go.mod go.sum internal pkg | tar -x -C <oracle>; add scratch in-package capture test internal/gate/zz_fm11ld_capture_test.go; docker run --rm --network none -e GOTOOLCHAIN=local -e GOPROXY=off -e GOFLAGS=-mod=readonly -e GOCACHE=/tmp/gocache -e ZZ_OUT=/out/capture.json -v <modcache>:/go/pkg/mod:ro -v <oracle>:/src:ro -v <out>:/out -w /src <image> go test -count=1 -run ^TestFM11LDCapture$ ./internal/gate/",
+  "capture_program_sha256": {
+   "internal/gate/zz_fm11ld_capture_test.go": "77893a1daf5c5ffc96e27b45c60f6666e95fe5442f1259a51eea9c152fdccb89"
+  },
+  "capture_program_committed": false,
+  "output_sha256": "b70136fae3d153131ae08cad3edf7631cc1639353d93c03f468eba897f91c8e7",
+  "capture_notes": [
+   "two consecutive container runs produced byte-identical output",
+   "every request goes through the real Server.ServeHTTP of the oracle with an in-memory audit log; records lists every record the request appended, in order, reduced to the semantic fields (pseudonyms as presence flags)",
+   "Ed25519, RSA and P-256 keys are generated per run; the PAT issuer key id prefix in fail reasons is redacted as <redacted>",
+   "meta is written by the capture program and names the inputs the Rust replay feeds the kernel; it is not oracle output",
+   "never regenerate this fixture to hide drift"
+  ]
+ },
+ "cases": [
+  {
+   "body": "ORIGIN-OK",
+   "case": "vt_valid_balanced",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "verdict_token": "enforce"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/",
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "balanced",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": "allow"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "Request blocked by humanymous (automation detected).\n",
+   "case": "vt_bad_sig",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "see-audit-log",
+   "meta": {
+    "token": "bad_sig",
+    "verdict_token": "enforce"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 0,
+   "path": "/",
+   "records": [
+    {
+     "action": "",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "token.binding_mismatch",
+     "fail_reason": "verdict token bad_sig — cleared, re-scoring",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": ""
+    },
+    {
+     "action": "block",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.deny",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "deny"
+    }
+   ],
+   "set_cookie": [
+    "hmn_vt=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax"
+   ],
+   "status": 403
+  },
+  {
+   "body": "Request blocked by humanymous (automation detected).\n",
+   "case": "vt_binding_mismatch",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "see-audit-log",
+   "meta": {
+    "token": "binding_mismatch",
+    "verdict_token": "enforce"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 0,
+   "path": "/",
+   "records": [
+    {
+     "action": "",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "token.binding_mismatch",
+     "fail_reason": "verdict token binding_mismatch — cleared, re-scoring",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": ""
+    },
+    {
+     "action": "block",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.deny",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "deny"
+    }
+   ],
+   "set_cookie": [
+    "hmn_vt=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax"
+   ],
+   "status": 403
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "vt_wrong_session",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "token": "binding_mismatch",
+    "verdict_token": "enforce"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/",
+   "records": [
+    {
+     "action": "",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "token.binding_mismatch",
+     "fail_reason": "verdict token binding_mismatch — cleared, re-scoring",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": ""
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "set_cookie": [
+    "hmn_vt=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax"
+   ],
+   "status": 200
+  },
+  {
+   "body": "Request blocked by humanymous (automation detected).\n",
+   "case": "vt_expired",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "see-audit-log",
+   "meta": {
+    "token": "expired",
+    "verdict_token": "enforce"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 0,
+   "path": "/",
+   "records": [
+    {
+     "action": "",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "token.binding_mismatch",
+     "fail_reason": "verdict token expired — cleared, re-scoring",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": ""
+    },
+    {
+     "action": "block",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.deny",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "deny"
+    }
+   ],
+   "set_cookie": [
+    "hmn_vt=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax"
+   ],
+   "status": 403
+  },
+  {
+   "body": "Request blocked by humanymous (automation detected).\n",
+   "case": "vt_malformed",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "see-audit-log",
+   "meta": {
+    "token": "malformed",
+    "verdict_token": "enforce"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 0,
+   "path": "/",
+   "records": [
+    {
+     "action": "",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "token.binding_mismatch",
+     "fail_reason": "verdict token malformed — cleared, re-scoring",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": ""
+    },
+    {
+     "action": "block",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.deny",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "deny"
+    }
+   ],
+   "set_cookie": [
+    "hmn_vt=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax"
+   ],
+   "status": 403
+  },
+  {
+   "body": "Request blocked by humanymous (automation detected).\n",
+   "case": "vt_no_cookie",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "see-audit-log",
+   "meta": {
+    "token": "absent",
+    "verdict_token": "enforce"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 0,
+   "path": "/",
+   "records": [
+    {
+     "action": "block",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.deny",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "deny"
+    }
+   ],
+   "set_cookie": null,
+   "status": 403
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "vt_monitor_route",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "route": "monitor",
+    "verdict_token": "enforce"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/mon",
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "monitor",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "allow"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Verification required</title></head><body><h1>Verification required</h1><p>Please complete a quick check to continue.</p><script src=\"/__hmn/loader.js\" defer></script></body></html>",
+   "case": "vt_attest_floor_enforce",
+   "content_type": "text/html; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "attest_floor": "enforce",
+    "route": "attested",
+    "verdict_token": "enforce"
+   },
+   "method": "GET",
+   "nosniff": "",
+   "origin_hits": 0,
+   "path": "/transfer",
+   "records": [
+    {
+     "action": "challenge_pow",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.challenge.issued",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "allow"
+    }
+   ],
+   "set_cookie": null,
+   "status": 401
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "vt_attest_floor_step_up",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "attest_floor": "enforce",
+    "route": "attested",
+    "step_up": true,
+    "verdict_token": "enforce"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/transfer",
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "attested",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": "allow"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "Request blocked by humanymous (automation detected).\n",
+   "case": "vt_monitor_valid",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "see-audit-log",
+   "meta": {
+    "verdict_token": "monitor"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 0,
+   "path": "/",
+   "records": [
+    {
+     "action": "would_fast_path",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "",
+     "key_id": "k1",
+     "mode": "monitor",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": "allow"
+    },
+    {
+     "action": "block",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-c1229583e368",
+     "event_type": "enforcement.deny",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "deny"
+    }
+   ],
+   "set_cookie": null,
+   "status": 403
+  },
+  {
+   "body": "Request blocked by humanymous (automation detected).\n",
+   "case": "vt_monitor_invalid",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "see-audit-log",
+   "meta": {
+    "token": "malformed",
+    "verdict_token": "monitor"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 0,
+   "path": "/",
+   "records": [
+    {
+     "action": "would_clear_and_rescore",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "token.binding_mismatch",
+     "fail_reason": "verdict token malformed (audit only)",
+     "host": "",
+     "key_id": "k1",
+     "mode": "monitor",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": ""
+    },
+    {
+     "action": "block",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-c1229583e368",
+     "event_type": "enforcement.deny",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "deny"
+    }
+   ],
+   "set_cookie": null,
+   "status": 403
+  },
+  {
+   "body": "Request blocked by humanymous (automation detected).\n",
+   "case": "vt_shadow_valid",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "see-audit-log",
+   "meta": {
+    "verdict_token": "shadow"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 0,
+   "path": "/",
+   "records": [
+    {
+     "action": "would_fast_path",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "",
+     "key_id": "k1",
+     "mode": "shadow",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": "allow"
+    },
+    {
+     "action": "block",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-f87d5982c94f",
+     "event_type": "enforcement.deny",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "deny"
+    }
+   ],
+   "set_cookie": null,
+   "status": 403
+  },
+  {
+   "body": "Request blocked by humanymous (automation detected).\n",
+   "case": "vt_shadow_invalid",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "see-audit-log",
+   "meta": {
+    "token": "malformed",
+    "verdict_token": "shadow"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 0,
+   "path": "/",
+   "records": [
+    {
+     "action": "would_clear_and_rescore",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "token.binding_mismatch",
+     "fail_reason": "verdict token malformed (audit only)",
+     "host": "",
+     "key_id": "k1",
+     "mode": "shadow",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": ""
+    },
+    {
+     "action": "block",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-f87d5982c94f",
+     "event_type": "enforcement.deny",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "deny"
+    }
+   ],
+   "set_cookie": null,
+   "status": 403
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "vt_attest_floor_monitor",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "attest_floor": "monitor",
+    "route": "attested",
+    "verdict_token": "enforce"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/transfer",
+   "records": [
+    {
+     "action": "would_challenge",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-4a8491ea1d6a",
+     "event_type": "enforcement.challenge.issued",
+     "fail_reason": "verdict-token fast path would require step-up (audit only)",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "monitor",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "allow"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "attested",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": "allow"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "af_scoring_monitor",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "attest_floor": "monitor",
+    "gate": "apply_verdict",
+    "route": "attested"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/transfer",
+   "records": [
+    {
+     "action": "would_challenge",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-4a8491ea1d6a",
+     "event_type": "enforcement.challenge.issued",
+     "fail_reason": "scoring allow would require step-up (audit only)",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "monitor",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "allow"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-4a8491ea1d6a",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "allow"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "vt_attest_floor_shadow",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "attest_floor": "shadow",
+    "route": "attested",
+    "verdict_token": "enforce"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/transfer",
+   "records": [
+    {
+     "action": "would_challenge",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-a4609a5db39e",
+     "event_type": "enforcement.challenge.issued",
+     "fail_reason": "verdict-token fast path would require step-up (audit only)",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "shadow",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "allow"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "attested",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": "allow"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "af_scoring_shadow",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "attest_floor": "shadow",
+    "gate": "apply_verdict",
+    "route": "attested"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/transfer",
+   "records": [
+    {
+     "action": "would_challenge",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-a4609a5db39e",
+     "event_type": "enforcement.challenge.issued",
+     "fail_reason": "scoring allow would require step-up (audit only)",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "shadow",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "allow"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-a4609a5db39e",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "allow"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "Request blocked by humanymous (automation detected).\n",
+   "case": "up_no_token",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "see-audit-log",
+   "meta": {
+    "gate": "upgrade",
+    "token": "absent"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 0,
+   "path": "/",
+   "records": [
+    {
+     "action": "block",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "upgrade.no_prior_verdict",
+     "fail_reason": "upgrade with no prior fingerprint-bound verdict",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "upgrade",
+     "rules": [
+      "HR-26"
+     ],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": "deny"
+    }
+   ],
+   "set_cookie": null,
+   "status": 403
+  },
+  {
+   "body": "Request blocked by humanymous (automation detected).\n",
+   "case": "up_bad_token",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "see-audit-log",
+   "meta": {
+    "gate": "upgrade",
+    "token": "malformed"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 0,
+   "path": "/",
+   "records": [
+    {
+     "action": "",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "token.binding_mismatch",
+     "fail_reason": "verdict token malformed — cleared, re-scoring",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "upgrade",
+     "rules": [],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": ""
+    },
+    {
+     "action": "block",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "upgrade.no_prior_verdict",
+     "fail_reason": "upgrade with no prior fingerprint-bound verdict",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "upgrade",
+     "rules": [
+      "HR-26"
+     ],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": "deny"
+    }
+   ],
+   "set_cookie": [
+    "hmn_vt=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax"
+   ],
+   "status": 403
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "up_monitor_route",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "gate": "upgrade",
+    "route": "monitor"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/mon",
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "monitor",
+     "risk_score": 0,
+     "route_class": "upgrade",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "Request blocked by humanymous (automation detected).\n",
+   "case": "up_key_only",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "see-audit-log",
+   "meta": {
+    "gate": "upgrade",
+    "token": "absent"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 0,
+   "path": "/",
+   "records": [
+    {
+     "action": "block",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "upgrade.no_prior_verdict",
+     "fail_reason": "upgrade with no prior fingerprint-bound verdict",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "upgrade",
+     "rules": [
+      "HR-26"
+     ],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": "deny"
+    }
+   ],
+   "set_cookie": null,
+   "status": 403
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "up_valid_token_monitor_vt",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "gate": "upgrade",
+    "token": "valid",
+    "verdict_token": "monitor"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/",
+   "records": [
+    {
+     "action": "would_fast_path",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "",
+     "key_id": "k1",
+     "mode": "monitor",
+     "risk_score": 0,
+     "route_class": "upgrade",
+     "rules": [],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": "allow"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-c1229583e368",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "upgrade",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "allow"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "ag_trusted",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "agent": "trusted",
+    "gate": "agent"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/",
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "agent.signature.verified",
+     "fail_reason": "verified Web Bot Auth agent lane-d-agent-key",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [
+      "web-bot-auth"
+     ],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": "allow"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "ag_replay",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "agent": "replay",
+    "gate": "agent"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/",
+   "records": [
+    {
+     "action": "",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "agent.signature.unknown",
+     "fail_reason": "unknown/unsupported agent signature keyid lane-d-agent-key",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": ""
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "Request blocked by humanymous (automation detected).\n",
+   "case": "ag_forged",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "see-audit-log",
+   "meta": {
+    "agent": "forged",
+    "gate": "agent"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 0,
+   "path": "/",
+   "records": [
+    {
+     "action": "block",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "agent.signature.forged",
+     "fail_reason": "forged Web Bot Auth signature for allowlisted keyid lane-d-agent-key",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [
+      "web-bot-auth"
+     ],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": "deny"
+    }
+   ],
+   "set_cookie": null,
+   "status": 403
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "ag_forged_monitor_route",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "agent": "forged",
+    "gate": "agent",
+    "route": "monitor"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/mon",
+   "records": [
+    {
+     "action": "",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "agent.signature.forged",
+     "fail_reason": "forged Web Bot Auth signature for allowlisted keyid lane-d-agent-key (monitor: not blocked)",
+     "host": "",
+     "key_id": "k1",
+     "mode": "monitor",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": ""
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "monitor",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "ag_trusted_monitor_route",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "agent": "trusted",
+    "gate": "agent",
+    "route": "monitor"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/mon",
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "monitor",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "ag_unknown_key",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "agent": "unknown",
+    "gate": "agent"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/",
+   "records": [
+    {
+     "action": "",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "agent.signature.unknown",
+     "fail_reason": "unknown/unsupported agent signature keyid not-allowlisted",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": ""
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "ag_expired",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "agent": "stale",
+    "gate": "agent"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/",
+   "records": [
+    {
+     "action": "",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "agent.signature.unknown",
+     "fail_reason": "unknown/unsupported agent signature keyid lane-d-agent-key",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": ""
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "ag_half_present",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "agent": "half",
+    "gate": "agent"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/",
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "pat_verified",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "gate": "pat",
+    "pat": "verified"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/",
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "privacypass.token.verified",
+     "fail_reason": "verified Private Access Token, issuer <redacted>",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [
+      "privacy-pass"
+     ],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": "allow"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "pat_double_spend",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "gate": "pat",
+    "pat": "invalid"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/",
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "pat_monitor_route",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "gate": "pat",
+    "pat": "verified",
+    "route": "monitor"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/mon",
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "monitor",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "pat_garbage",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "gate": "pat",
+    "pat": "invalid"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/",
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "wa_verified",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "gate": "webauthn",
+    "webauthn": "verified"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/",
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "webauthn.assertion.verified",
+     "fail_reason": "verified WebAuthn assertion, credential lane-d-credentia",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [
+      "webauthn"
+     ],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": "allow"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "wa_replay",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "gate": "webauthn",
+    "webauthn": "invalid"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/",
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "wa_second_subnet_public",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "gate": "webauthn",
+    "subnets": 2,
+    "webauthn": "verified"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/",
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "webauthn.assertion.verified",
+     "fail_reason": "verified WebAuthn assertion, credential lane-d-credentia",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [
+      "webauthn"
+     ],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": "allow"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Verification required</title></head><body><h1>Verification required</h1><p>Please complete a quick check to continue.</p><script src=\"/__hmn/loader.js\" defer></script></body></html>",
+   "case": "wa_fanout_withheld_attested",
+   "content_type": "text/html; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "gate": "webauthn",
+    "route": "attested",
+    "subnets": 3,
+    "webauthn": "verified"
+   },
+   "method": "GET",
+   "nosniff": "",
+   "origin_hits": 0,
+   "path": "/transfer",
+   "records": [
+    {
+     "action": "",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "webauthn.assertion.verified",
+     "fail_reason": "webauthn credential lane-d-credentia fan-out 3 subnets > cap 1 — trust-upgrade withheld on attested route, routed to Pass",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": ""
+    },
+    {
+     "action": "challenge_pow",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.challenge.issued",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "allow"
+    }
+   ],
+   "set_cookie": null,
+   "status": 401
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "wa_monitor_route",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "gate": "webauthn",
+    "route": "monitor",
+    "webauthn": "verified"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/mon",
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "monitor",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "allow"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "Request blocked by humanymous (automation detected).\n",
+   "case": "sw_enforce_ninth",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "see-audit-log",
+   "meta": {
+    "gate": "sweep",
+    "recon_sweep": "enforce",
+    "sessions": 9
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 0,
+   "path": "/",
+   "prior_statuses": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200
+   ],
+   "records": [
+    {
+     "action": "block",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "recon.decision_probing",
+     "fail_reason": "decision-probing sweep (many sessions, one fingerprint)",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [
+      "HR-30"
+     ],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": "deny"
+    }
+   ],
+   "set_cookie": null,
+   "status": 403
+  },
+  {
+   "body": "Request blocked by humanymous (automation detected).\n",
+   "case": "sw_enforce_repeat_known_session",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "see-audit-log",
+   "meta": {
+    "gate": "sweep",
+    "recon_sweep": "enforce",
+    "sessions": 9
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 0,
+   "path": "/",
+   "records": [
+    {
+     "action": "block",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "recon.decision_probing",
+     "fail_reason": "decision-probing sweep (many sessions, one fingerprint)",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [
+      "HR-30"
+     ],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": "deny"
+    }
+   ],
+   "set_cookie": null,
+   "status": 403
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "sw_monitor_ninth",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "gate": "sweep",
+    "recon_sweep": "monitor",
+    "sessions": 9
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/",
+   "prior_statuses": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200
+   ],
+   "records": [
+    {
+     "action": "would_block",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "recon.decision_probing",
+     "fail_reason": "decision-probing sweep (many sessions, one fingerprint) (audit only)",
+     "host": "",
+     "key_id": "k1",
+     "mode": "monitor",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [
+      "HR-30"
+     ],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": "deny"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-2a44dca41b72",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "sw_monitor_repeat_known_session",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "gate": "sweep",
+    "recon_sweep": "monitor",
+    "sessions": 9
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/",
+   "records": [
+    {
+     "action": "would_block",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "recon.decision_probing",
+     "fail_reason": "decision-probing sweep (many sessions, one fingerprint) (audit only)",
+     "host": "",
+     "key_id": "k1",
+     "mode": "monitor",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [
+      "HR-30"
+     ],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": "deny"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-2a44dca41b72",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "sw_shadow_ninth",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "gate": "sweep",
+    "recon_sweep": "shadow",
+    "sessions": 9
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/",
+   "prior_statuses": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200
+   ],
+   "records": [
+    {
+     "action": "would_block",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "recon.decision_probing",
+     "fail_reason": "decision-probing sweep (many sessions, one fingerprint) (audit only)",
+     "host": "",
+     "key_id": "k1",
+     "mode": "shadow",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [
+      "HR-30"
+     ],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": "deny"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-b0b4d06fc1ae",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "sw_shadow_repeat_known_session",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "gate": "sweep",
+    "recon_sweep": "shadow",
+    "sessions": 9
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/",
+   "records": [
+    {
+     "action": "would_block",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "",
+     "event_type": "recon.decision_probing",
+     "fail_reason": "decision-probing sweep (many sessions, one fingerprint) (audit only)",
+     "host": "",
+     "key_id": "k1",
+     "mode": "shadow",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [
+      "HR-30"
+     ],
+     "session_psn_set": false,
+     "tenant_id": "test",
+     "verdict": "deny"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-b0b4d06fc1ae",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "sw_enforce_monitor_route_tenth",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "gate": "sweep",
+    "recon_sweep": "enforce",
+    "route": "monitor"
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/mon",
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "monitor",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  },
+  {
+   "body": "ORIGIN-OK",
+   "case": "sw_enforce_after_monitor_route",
+   "content_type": "text/plain; charset=utf-8",
+   "incident": "",
+   "meta": {
+    "gate": "sweep",
+    "recon_sweep": "enforce",
+    "sessions": 1
+   },
+   "method": "GET",
+   "nosniff": "nosniff",
+   "origin_hits": 1,
+   "path": "/",
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_psn_set": true,
+     "config_ver": "cfg-14a4db5bcf8c",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "risk_score": 0,
+     "route_class": "static",
+     "rules": [],
+     "session_psn_set": true,
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "set_cookie": null,
+   "status": 200
+  }
+ ],
+ "constants": {
+  "fanout_default": 8,
+  "step_up_cookie": "hmn_su",
+  "verdict_cookie": "hmn_vt"
+ }
+}
