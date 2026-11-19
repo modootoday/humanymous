@@ -13,7 +13,7 @@ reviews and pilots; they do not supply an operational installation procedure.
 
 | Task | Guide |
 | --- | --- |
-| Deployment | [Policy readiness](deployment-policy-operations.md), [TLS](https-tls-certificates.md), [request integrity](configure-attested-routes.md), [credentials](configure-credential-verifiers.md) |
+| Deployment | [Policy readiness](deployment-policy-operations.md), [TLS](https-tls-certificates.md), [request integrity](configure-attested-routes.md), [credentials](configure-credential-verifiers.md), [IP reputation feed](update-ip-reputation-feed.md) |
 | Artifact lifecycle | [Image review](verify-the-image.md), [release readiness](cut-a-release.md), [migration](upgrade-migration.md) |
 | Audit and privacy | [Keys](key-management.md), [audit continuity](verify-audit-log.md), [telemetry export](observability-siem.md), [console review](audit-console-tour.md) |
 | Evaluation | [Owned lab](self-validation-red-team.md), [detector integration](run-detection-engine.md), [device scope](run-virtual-usb-lab.md), [human tester lab](run-human-test-lab.md), [regression cases](write-a-red-profile.md) |

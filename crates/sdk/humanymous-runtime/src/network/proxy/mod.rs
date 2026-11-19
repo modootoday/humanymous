@@ -6,6 +6,7 @@
 //! client provenance (network-capture N01) and never reads HTTP forwarding fields.
 //! An untrusted peer's bytes are not inspected at all, so a spoofed header stays
 //! ordinary payload for the next layer.
+use crate::network::intel::prefix_set::{Floor, Prefix};
 use std::io::Read;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
 
@@ -29,75 +30,35 @@ pub enum Refusal {
     Allowlist,
     /// Signature or version is not PROXY v2.
     NotProxyV2,
+    /// Command is neither LOCAL (0x0) nor PROXY (0x1); 0x2-0xF are reserved.
+    Command,
     /// The address block is shorter than its declared family needs.
     ShortAddress,
     /// The stream ended or failed before the complete header.
     Truncated,
 }
 
-/// One trusted network: masked address plus prefix length.
+/// One trusted network. Parsing and membership reuse the network context's
+/// single CIDR primitive; this type only adds the allowlist breadth limit.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct Cidr {
-    network: IpAddr,
-    prefix: u8,
-}
+pub struct Cidr(Prefix);
 
 impl Cidr {
     /// Parse `a.b.c.d/n`, `v6/n` or a bare address (host route).
     pub fn parse(text: &str) -> Result<Self, Refusal> {
-        let (address, prefix) = match text.split_once('/') {
-            Some((address, prefix)) => (address, Some(prefix)),
-            None => (text, None),
-        };
-        let address: IpAddr = address.parse().map_err(|_| Refusal::Cidr)?;
-        let width = if address.is_ipv4() { 32 } else { 128 };
-        let prefix = match prefix {
-            None => width,
-            Some(p)
-                if !p.is_empty()
-                    && p.len() <= 3
-                    && p.bytes().all(|b| b.is_ascii_digit())
-                    && (p.len() == 1 || !p.starts_with('0')) =>
-            {
-                p.parse::<u8>().map_err(|_| Refusal::Cidr)?
-            }
-            Some(_) => return Err(Refusal::Cidr),
-        };
-        if prefix > width {
-            return Err(Refusal::Cidr);
+        let prefix = Prefix::parse_masked(text).map_err(|_| Refusal::Cidr)?;
+        Floor {
+            v4: MIN_PREFIX,
+            v6: MIN_PREFIX,
         }
-        if prefix < MIN_PREFIX {
-            return Err(Refusal::TooBroad);
-        }
-        Ok(Self {
-            network: mask(address, prefix),
-            prefix,
-        })
+        .check(&prefix)
+        .map_err(|_| Refusal::TooBroad)?;
+        Ok(Self(prefix))
     }
 
     /// Membership; an IPv4-mapped IPv6 peer matches IPv4 networks.
     pub fn contains(&self, ip: IpAddr) -> bool {
-        let ip = match ip {
-            IpAddr::V6(v6) if self.network.is_ipv4() => match v6.to_ipv4_mapped() {
-                Some(v4) => IpAddr::V4(v4),
-                None => return false,
-            },
-            other => other,
-        };
-        ip.is_ipv4() == self.network.is_ipv4() && mask(ip, self.prefix) == self.network
-    }
-}
-
-fn mask(ip: IpAddr, prefix: u8) -> IpAddr {
-    match ip {
-        IpAddr::V4(v4) => {
-            let bits = u32::from(v4) & u32::MAX.checked_shl(32 - u32::from(prefix)).unwrap_or(0);
-            IpAddr::V4(Ipv4Addr::from(bits))
-        }
-        IpAddr::V6(v6) => {
-            let bits = u128::from(v6) & u128::MAX.checked_shl(128 - u32::from(prefix)).unwrap_or(0);
-            IpAddr::V6(Ipv6Addr::from(bits))
-        }
+        self.0.contains(ip)
     }
 }
 
@@ -152,11 +113,17 @@ pub fn read_header(stream: &mut impl Read) -> Result<Header, Refusal> {
     if fixed[..12] != SIGNATURE || fixed[12] & 0xF0 != 0x20 {
         return Err(Refusal::NotProxyV2);
     }
+    // Only LOCAL (0x0) and PROXY (0x1) are defined; a reserved command is
+    // refused before its address block is read, never treated as PROXY.
+    let command = fixed[12] & 0x0F;
+    if command > 0x01 {
+        return Err(Refusal::Command);
+    }
     let mut block = vec![0u8; usize::from(u16::from_be_bytes([fixed[14], fixed[15]]))];
     stream
         .read_exact(&mut block)
         .map_err(|_| Refusal::Truncated)?;
-    if fixed[12] & 0x0F == 0x00 {
+    if command == 0x00 {
         return Ok(Header::Local);
     }
     let port = |at: usize| u16::from_be_bytes([block[at], block[at + 1]]);

@@ -195,6 +195,11 @@ path = "tests/network/h2_parity.rs"
 required-features = ["network"]
 
 [[test]]
+name = "network_ip_intel"
+path = "tests/network/ip_intel.rs"
+required-features = ["network"]
+
+[[test]]
 name = "network_monitor_parity"
 path = "tests/network/monitor_parity.rs"
 required-features = ["network"]
