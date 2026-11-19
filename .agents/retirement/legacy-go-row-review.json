@@ -15,8 +15,8 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 248,
-  "partial": 51,
+  "ported_unit": 251,
+  "partial": 48,
   "missing": 4,
   "not_applicable": 2,
   "oracle_only": 9
@@ -40,8 +40,8 @@
   },
   "cmd/server": {
    "missing": 2,
-   "partial": 18,
-   "ported_unit": 19,
+   "partial": 15,
+   "ported_unit": 22,
    "oracle_only": 3
   },
   "cmd/tlsparrot": {
@@ -906,23 +906,26 @@
   },
   {
    "baseline_path": "cmd/server/h1capture.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/network/http/peek.rs",
     "crates/sdk/humanymous-runtime/src/gateway/http.rs"
    ],
    "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::h1_peek_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::wire_order_is_minted_by_any_nonempty_socket_peek",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::slow_drip_cannot_extend_the_peek_deadline",
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::header_wire_order_and_casing_are_retained"
    ],
    "go_test_map": {},
-   "gaps": [
-    "peek-and-replay into a normalized HTTP server",
-    "wire header order fed into HeaderInfo.order_reliable",
-    "750ms peek deadline"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "low",
-   "notes": "Rust gateway parses raw HTTP/1.1 itself and retains original header name/order/casing in Request.headers, pinned by a wire-order test; HeaderInfo.order_reliable wiring is not ported.",
+   "confidence": "medium",
+   "notes": "peekH1HeaderOrder is network::http::peek_tcp (socket, one absolute 750 ms deadline, previous read timeout restored) over the shared peek_header_order kernel: 64 KiB cap, request line skipped, CR/LF right-trim, blank line ends, name = Unicode TrimSpace then simple lowercase of the bytes before the first colon at index > 0 with each invalid UTF-8 byte as U+FFFD, duplicates kept; Peek::into_replay chains every consumed byte before the live stream (replayReadConn). The mergeObservation step that feeds the order into HeaderInfo is WireOrder::apply (names = wire order, order_reliable = true, casing stays false). Differential golden headerinfo-go-golden.json: 15 peeks over loopback TCP including EOF, partial line, 64 KiB cap overrun and exact fit, and two held-open 750 ms timeouts, with byte-exact replay; every socket case also pins Go mergeObservation reliability (any non-empty order, partial included, is reliable; empty is not). Go-identical under B1 (h1capture/headerinfo are scoring-freeze rows, owner comments 6965642252 and 6968092014). Differences that change no Go-observable output: only peek_tcp mints a WireOrder (Go peeked only the accepted connection), and Rust restores the previous read timeout where Go cleared the deadline with SetReadDeadline(time.Time{}); the 750 ms deadline is absolute in both. Serving composition (B03 public H1 listener) remains with the runtime owner.",
    "test_verification": {
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::h1_peek_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::wire_order_is_minted_by_any_nonempty_socket_peek": "passed",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::slow_drip_cannot_extend_the_peek_deadline": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::header_wire_order_and_casing_are_retained": "passed"
    }
   },
@@ -1005,55 +1008,73 @@
   },
   {
    "baseline_path": "cmd/server/headerinfo_test.go",
-   "disposition": "partial",
-   "rust_paths": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs"
+   ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/network/http/headers.rs::normalized_maps_cannot_supply_casing_evidence_or_trusted_identity"
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::datacenter_lookup_fails_open_without_dataset",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::datacenter_lookup_flags_only_wired_ranges",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::trusted_proxy_is_only_an_explicit_allowlist_member",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::client_ip_honours_forwarding_only_from_trusted_peer",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::projection_reports_sorted_set_not_wire_order",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::client_address_model_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::request_projection_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/network/http/headers.rs::normalized_maps_cannot_supply_casing_evidence_or_trusted_identity",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::forwarded_headers_are_ignored_without_an_allowlist"
    ],
    "go_test_map": {
-    "TestIsDatacenterIP_FailsOpenByDefault": null,
-    "TestIsDatacenterIP_WithDataset": null,
-    "TestIsTrustedProxy": null,
-    "TestClientIP": null,
-    "TestHeaderInfoOrderIsNotReliable": "crates/sdk/humanymous-runtime/src/network/http/headers.rs::normalized_maps_cannot_supply_casing_evidence_or_trusted_identity"
+    "TestIsDatacenterIP_FailsOpenByDefault": "crates/sdk/humanymous-runtime/src/network/http/tests.rs::datacenter_lookup_fails_open_without_dataset",
+    "TestIsDatacenterIP_WithDataset": "crates/sdk/humanymous-runtime/src/network/http/tests.rs::datacenter_lookup_flags_only_wired_ranges",
+    "TestIsTrustedProxy": "crates/sdk/humanymous-runtime/src/network/http/tests.rs::trusted_proxy_is_only_an_explicit_allowlist_member",
+    "TestClientIP": "crates/sdk/humanymous-runtime/src/network/http/tests.rs::client_ip_honours_forwarding_only_from_trusted_peer",
+    "TestHeaderInfoOrderIsNotReliable": "crates/sdk/humanymous-runtime/src/network/http/tests.rs::projection_reports_sorted_set_not_wire_order"
    },
-   "gaps": [
-    "datacenter CIDR dataset lookup",
-    "trusted proxy peer check",
-    "client IP derivation"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "medium",
-   "notes": "Rust only takes an operator-supplied is_datacenter_ip boolean and never derives identity from forwarded headers.",
+   "confidence": "high",
+   "notes": "All five legacy cases have one-to-one Rust counterparts with the same inputs and expectations, plus differential checks against headerinfo-go-golden.json. TestIsTrustedProxy and TestClientIP run with Go's implicit loopback/private/link-local ranges passed as an explicit allowlist, because owner decision C1 (issue #75 comment 6968092014) removes implicit trust; forwarded_headers_are_ignored_without_an_allowlist pins that the empty default allowlist returns the direct peer. isDatacenterIP takes the operator range set as a membership function (network::http::is_datacenter_ip); an empty set fails open exactly as Go, and the dataset feed itself is the ip-reputation work, not this row. Go oracle at 981d25c: go test ./cmd/server -run TestIsDatacenterIP|TestIsTrustedProxy|TestClientIP|TestHeaderInfoOrderIsNotReliable PASS (go1.25.3).",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/network/http/headers.rs::normalized_maps_cannot_supply_casing_evidence_or_trusted_identity": "passed"
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::datacenter_lookup_fails_open_without_dataset": "passed",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::datacenter_lookup_flags_only_wired_ranges": "passed",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::trusted_proxy_is_only_an_explicit_allowlist_member": "passed",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::client_ip_honours_forwarding_only_from_trusted_peer": "passed",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::projection_reports_sorted_set_not_wire_order": "passed",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::client_address_model_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::request_projection_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/network/http/headers.rs::normalized_maps_cannot_supply_casing_evidence_or_trusted_identity": "passed",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::forwarded_headers_are_ignored_without_an_allowlist": "passed"
    }
   },
   {
    "baseline_path": "cmd/server/headerinfo.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/network/http/projection.rs",
+    "crates/sdk/humanymous-runtime/src/network/http/client.rs",
     "crates/sdk/humanymous-runtime/src/network/http/headers.rs",
     "crates/sdk/humanymous-runtime/src/network/ingress/mod.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/network/http/headers.rs::normalized_maps_cannot_supply_casing_evidence_or_trusted_identity",
-    "crates/sdk/humanymous-runtime/src/network/http/headers.rs::proxy_precedence_and_empty_chain_members_are_preserved",
-    "crates/sdk/humanymous-runtime/src/network/ingress/tests.rs::decoded_data_never_claims_raw_or_native_provenance"
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::projection_reports_sorted_set_not_wire_order",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::request_projection_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::client_ip_honours_forwarding_only_from_trusted_peer",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::trusted_proxy_is_only_an_explicit_allowlist_member",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::client_address_model_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::forwarded_headers_are_ignored_without_an_allowlist"
    ],
    "go_test_map": {},
-   "gaps": [
-    "net/http request -> HeaderInfo projection for H1",
-    "clientIP/forwardedIP/clientSubnet from trusted proxy",
-    "isTrustedProxy"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "medium",
-   "notes": "HeaderInfo struct and H2 projection exist; trusted-proxy client identity derivation is not ported (plan B26 makes it a transport-level allowlist).",
+   "confidence": "high",
+   "notes": "reqToHeaderInfo is network::http::project_request over the handler-visible (name, value) multimap with Go http.Header semantics: CanonicalMIMEHeaderKey names (non-token names unchanged), Get = first value, sorted canonical name SET, version 20/10/11 mapping, X-Cache then X-Cache-Lookup, Request.Cookies name parsing (TextProto trim, token names, parseCookieValue with quotes, 3000-cookie ceiling) and both reliability flags false. clientIP/forwardedIP/clientSubnet/directPeer/isTrustedProxy are network::http::{client_ip, forwarded_ip, client_subnet, direct_peer, is_trusted_proxy} with Go net.SplitHostPort, net.ParseIP (no zone, IPv4-mapped as IPv4) and Unicode TrimSpace semantics. Deliberate difference from Go per owner decision C1 (issue #75 comment 6968092014: trusted-proxy XFF only from an explicit CIDR allowlist, default off) and plan row B26: Go trusted every loopback/private/link-local peer implicitly; Rust is_trusted_proxy/client_ip/client_subnet take a caller-supplied proxy::Cidr allowlist, and the empty default trusts nothing so client_ip returns the direct peer. Header choice, leftmost nonblank X-Forwarded-For, X-Real-IP fallback and subnet derivation stay Go-identical for allowlisted peers; the goldens are compared with an allowlist covering Go's implicit ranges and also pinned to the direct peer with the empty allowlist (forwarded_headers_are_ignored_without_an_allowlist). Differential golden tests/fixtures/network/headerinfo-go-golden.json (Go 1.25.3 at 981d25c, provenance inside): 59 addresses, 23 remote addresses, 29 forwarding cases, 21 projections; three deliberate source mutations each failed it. Scope: handler-level parity; net/http framing rewrites (Host, Transfer-Encoding, Content-Length, Trailer, Pragma) belong to the serving parser. These are pure legacy scoring-input transforms, never peer authentication: B26 keeps transport identity in network::proxy, and no listener or report builder calls them yet. Detection freeze: no signal ID, weight or threshold touched.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/network/http/headers.rs::normalized_maps_cannot_supply_casing_evidence_or_trusted_identity": "passed",
-    "crates/sdk/humanymous-runtime/src/network/http/headers.rs::proxy_precedence_and_empty_chain_members_are_preserved": "passed",
-    "crates/sdk/humanymous-runtime/src/network/ingress/tests.rs::decoded_data_never_claims_raw_or_native_provenance": "passed"
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::projection_reports_sorted_set_not_wire_order": "passed",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::request_projection_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::client_ip_honours_forwarding_only_from_trusted_peer": "passed",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::trusted_proxy_is_only_an_explicit_allowlist_member": "passed",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::client_address_model_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/network/http/tests.rs::forwarded_headers_are_ignored_without_an_allowlist": "passed"
    }
   },
   {
