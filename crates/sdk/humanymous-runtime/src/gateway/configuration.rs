@@ -4,8 +4,10 @@ use crate::gateway::Rejection;
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 mod audit;
+mod ip_reputation;
 mod operational;
 pub use audit::{Audit, MAX_WITNESS_PROOF, SealedKeys, WitnessInput, WitnessInputDurability};
+pub use ip_reputation::{ClientAddressSource, IpReputation};
 pub use operational::OperationalSettings;
 
 /// Private inherited startup document; intentionally not Debug or Serialize.
@@ -38,6 +40,9 @@ pub struct Configuration {
     /// Explicit browser contract; absent preserves native-only configuration.
     #[serde(default)]
     pub browser: Option<BrowserPolicy>,
+    /// Optional operator IP reputation feed; absent means no classification.
+    #[serde(default)]
+    pub ip_reputation: Option<IpReputation>,
 }
 
 /// Distinct integrity contracts. A browser subset never claims full wire binding.
@@ -132,6 +137,10 @@ impl Configuration {
             || self.routes.is_empty()
             || self.routes.len() > 4096
             || !self.audit.witness_input_valid()
+            || self
+                .ip_reputation
+                .as_ref()
+                .is_some_and(|policy| policy.validate().is_err())
         {
             return Err(bad);
         }
@@ -204,6 +213,7 @@ impl Configuration {
             "client_asserted_report_ingestion":true,"browser_collector":false,
             "browser_session":self.browser.is_some(),"browser_cookie_credentials":false,
             "browser_recovery":false,"administration":false,"product_qualified":false,
-            "revision":self.scope.revision,"routes":routes})
+            "revision":self.scope.revision,"routes":routes,
+            "ip_reputation":self.ip_reputation.as_ref().map(IpReputation::readiness)})
     }
 }
