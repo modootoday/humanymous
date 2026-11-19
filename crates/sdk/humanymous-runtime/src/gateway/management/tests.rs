@@ -12,6 +12,7 @@ fn handler() -> Handler {
         },
         profile: Arc::new(RwLock::new(serde_json::json!({"product_qualified":false}))),
         operator: None,
+        intel: None,
     }
 }
 fn request(handler: &Handler) -> LocalRequest {

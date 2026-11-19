@@ -1,6 +1,6 @@
 //! Signed immutable generations and reversible, explicitly activated OS services.
 mod backend;
-mod storage;
+pub(crate) mod storage;
 use crate::{
     installation::permissions::plain,
     release::{Descriptor, SignedRelease, digest, error},

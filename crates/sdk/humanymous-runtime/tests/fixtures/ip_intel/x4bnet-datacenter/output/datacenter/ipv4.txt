@@ -1,0 +1,4 @@
+# synthetic X4BNet-layout fixture: not upstream data
+3.0.0.0/8
+192.0.2.0/24
+198.51.100.0/24
