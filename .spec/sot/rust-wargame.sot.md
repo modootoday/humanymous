@@ -3,7 +3,7 @@ id: sot:root/rust-wargame
 title: Rust wargame
 status: active
 created: 2026-11-06T22:24:18Z
-updated: 2026-11-19T18:11:20Z
+updated: 2026-11-19T18:46:12Z
 verify:
   - cargo test --locked -j1 -p humanymous-attacker -p humanymous-defender -- --test-threads=1
 rel:
@@ -336,14 +336,18 @@ stack" as "no IPv6 routes", only when the absence is observed directly and
 recorded. `crates/defender/src/lab/isolation.rs` applies it as follows.
 
 - A readable `/proc/self/net/ipv6_route` must parse as the kernel's ten-field
-  lines, and every route must use `lo`. The evidence is
+  lines, every route must use `lo`, and `/proc/self/net/if_inet6` and
+  `/proc/sys/net/ipv6` must both exist. The evidence is
   `loopback_routes_only`.
 - A not-found `/proc/self/net/ipv6_route` counts as no IPv6 stack only when
   `/proc/self/net/if_inet6` and `/proc/sys/net/ipv6` are also not found. The
   evidence is `stack_absent`.
 - Everything else fails closed: a permission error or other read error on any
   of the three paths, non-UTF-8 or malformed route lines, a non-loopback route,
-  or a missing route table while the address table or the sysctl tree exists.
+  a missing route table while the address table or the sysctl tree exists, or
+  a readable route table while either of them is missing. The kernel exposes
+  the three together when it has an IPv6 stack and none of them when it has
+  not, so any other shape is a partial stack and is refused.
 
 The interface check and the IPv4 route check are unchanged and still run
 first. `ProcessReceipt` carries the result as a required `ipv6` field, so

@@ -3,7 +3,7 @@ id: sot:root/container-test-environments
 title: Canonical Compose lab and Cloudflare test environment profiles
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-19T18:11:20Z
+updated: 2026-11-19T18:46:12Z
 verify: manual
 rel:
   governs: [deployments/lab/**, build/rust/**, test/lab/**]
@@ -1412,12 +1412,12 @@ baseline, an allocated Desktop CLI proxy or genuine GitHub-hosted Linux.
 **Selection.** The venue exists only when the operator names it:
 `humanymous-lab-runner run ... --venue cloud-container --engine-id ID`,
 `engine-preflight --evidence BUNDLE --venue cloud-container --engine-id ID`,
+`cleanup --venue cloud-container --engine-id ID` (expired owned resources),
 or `humanymous-delivery pilot docker --venue cloud-container --engine-id ID`,
 which forwards both flags to the lab `run`. The two flags come together or not
-at all, and no other venue name is accepted. Nothing infers the venue from the
-daemon the CLI selects, from `DOCKER_HOST` or from the absence of a Desktop
-baseline. The `product-e2e` profile was already cloud-container only; it now
-also takes an optional `--engine-id ID` with the same binding.
+at all, each at most once (a repeated flag is refused, never last-wins), and no
+other venue name is accepted. Nothing infers the venue from the daemon the CLI
+selects, from `DOCKER_HOST` or from the absence of a Desktop baseline.
 
 **Binding.** The operator observes the engine ID before the run and supplies
 it. Every Docker command for the venue passes `--host unix:///var/run/docker.sock`
@@ -1428,6 +1428,21 @@ It then requires the observed engine ID to equal the supplied one and the OS
 type to be `linux`, and it rechecks that identity at each mutation boundary
 and before cleanup, as for the other venues. A different ID stops the run
 before workload mutation.
+
+**`product-e2e`.** This profile is cloud-container only and has its own
+runner, with the same binding. It refuses the same environment overrides,
+passes the same explicit `--host` on every Docker command and never consults
+the selected context. It observes the engine at start, and an optional
+`--engine-id ID` must equal it. Before every Docker command that is not a
+read-only observation (`version`, `info`, `inspect`, `logs`, `ps`, image or
+network `inspect`, Compose `config`, `ps` or `logs`) it rechecks the engine ID,
+including before teardown and before attaching to the witness. A changed or
+unreadable engine refuses that command and every later mutation, skips
+teardown so nothing is deleted through another daemon, and still writes the
+receipt with status `engine_identity_changed`, `venue.engine_identity_change`
+(expected, observed and refused command), `venue.engine_id_after` and
+`venue.engine_rechecks_before_mutation`. Any other measurement error also
+writes a receipt, with status `measurement_error`.
 
 **Receipt.** The engine observation records `venue: "cloud-container"`, the
 explicit endpoint, the observed and expected engine IDs and

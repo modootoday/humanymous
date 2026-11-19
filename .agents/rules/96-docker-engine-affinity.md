@@ -72,7 +72,9 @@ runner and never stands in for one. Rule 97 covers coordination there.
 
 The lab accepts this venue only when it is named explicitly (owner decision
 #152-1): `--venue cloud-container --engine-id ID` on the lab `run` and
-`engine-preflight`, or on `humanymous-delivery pilot docker`. Observe the engine
+`engine-preflight` and standalone `cleanup`, or on `humanymous-delivery pilot
+docker`; `product-e2e` is cloud-container only and binds the same way. Each
+flag is given at most once. Observe the engine
 ID first (`docker --host unix:///var/run/docker.sock info --format '{{.ID}}'`)
 and pass it; never let a tool infer the venue from the selected daemon. Every
 command uses that explicit Unix socket, and the run stops before mutation when

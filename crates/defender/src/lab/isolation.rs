@@ -57,11 +57,13 @@ fn routes(v4: &str) -> Result<(), LabError> {
     Ok(())
 }
 
-/// Judge the IPv6 evidence. A present route table must parse as the kernel's
-/// ten-field format with only `lo` routes. Only a not-found route table counts
-/// as "no IPv6 stack", and only when the address table and the IPv6 sysctl
-/// tree are also not found; any other read error or a mixed observation fails
-/// closed.
+/// Judge the IPv6 evidence. The three observations must agree: a kernel with
+/// an IPv6 stack exposes the route table, the address table and the sysctl
+/// tree together, and one without it exposes none of them. A present route
+/// table must parse as the kernel's ten-field format with only `lo` routes,
+/// and its companions must be present too. A not-found route table counts as
+/// "no IPv6 stack" only when both companions are also not found. Any other
+/// read error or a mixed observation fails closed.
 #[cfg(any(target_os = "linux", test))]
 fn ipv6(
     route: io::Result<String>,
@@ -79,6 +81,11 @@ fn ipv6(
     let sysctl_absent = absent(&sysctl)?;
     match route {
         Ok(text) => {
+            // A readable route table beside a missing address table or sysctl
+            // tree is a partial stack, not evidence of loopback-only routing.
+            if addresses_absent || sysctl_absent {
+                return Err(LabError("IPv6 stack evidence inconsistent"));
+            }
             for line in text.lines().filter(|line| !line.trim().is_empty()) {
                 let fields: Vec<_> = line.split_whitespace().collect();
                 if fields.len() != 10 {
@@ -207,6 +214,12 @@ mod tests {
             // A present route table with a non-loopback route.
             ipv6(Ok(external.clone()), Ok(()), Ok(())),
             ipv6(Ok(external), Err(missing()), Err(missing())),
+            // Route table readable with only lo routes, but the stack is
+            // otherwise absent or partial: never loopback_routes_only.
+            ipv6(Ok(LO_ROUTE.into()), Err(missing()), Err(missing())),
+            ipv6(Ok(LO_ROUTE.into()), Err(missing()), Ok(())),
+            ipv6(Ok(LO_ROUTE.into()), Ok(()), Err(missing())),
+            ipv6(Ok(String::new()), Err(missing()), Err(missing())),
             // Truncated or otherwise malformed route lines.
             ipv6(Ok("0000 0000 lo\n".into()), Ok(()), Ok(())),
             ipv6(Ok(format!("{LO_ROUTE} extra")), Ok(()), Ok(())),

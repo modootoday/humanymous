@@ -118,10 +118,33 @@ impl Venue {
         }
     }
 }
+/// Store one flag value; a missing value or a repeated flag is refused, so
+/// the last of several `--venue` or `--engine-id` flags never wins silently.
+pub fn set_once(slot: &mut Option<String>, value: Option<&String>, flag: &str) -> Result<()> {
+    let value = value.ok_or_else(|| format!("{flag} value missing"))?;
+    if slot.is_some() {
+        return Err(format!("{flag} repeated").into());
+    }
+    *slot = Some(value.clone());
+    Ok(())
+}
+/// Parse a command line that takes only the venue flags (standalone cleanup).
+pub fn venue_args(args: &[String]) -> Result<Venue> {
+    let (mut venue, mut engine_id) = (None, None);
+    let mut rest = args.iter();
+    while let Some(flag) = rest.next() {
+        match flag.as_str() {
+            "--venue" => set_once(&mut venue, rest.next(), "--venue")?,
+            "--engine-id" => set_once(&mut engine_id, rest.next(), "--engine-id")?,
+            _ => return Err("only --venue cloud-container --engine-id ID is accepted".into()),
+        }
+    }
+    Venue::parse(venue.as_deref(), engine_id.as_deref())
+}
 /// The cloud-container venue runs only where it was named: not on Windows, not
 /// on genuine GitHub-hosted Linux, and with no engine or Desktop override in
 /// the environment that could point the CLI at another daemon.
-fn cloud_container_environment(
+pub(crate) fn cloud_container_environment(
     windows: bool,
     hosted: bool,
     variable: &dyn Fn(&str) -> Option<String>,
@@ -393,14 +416,9 @@ pub fn engine_preflight(args: &[String]) -> Result<i32> {
             "--engine-id" => &mut engine_id,
             _ => return Err("engine-preflight --evidence FRESH_PRIVATE_BUNDLE [--venue cloud-container --engine-id ID] required".into()),
         };
-        if slot
-            .replace(rest.next().ok_or("flag value missing")?)
-            .is_some()
-        {
-            return Err("engine-preflight flag repeated".into());
-        }
+        set_once(slot, rest.next(), flag)?;
     }
-    let venue = Venue::parse(venue.map(String::as_str), engine_id.map(String::as_str))?;
+    let venue = Venue::parse(venue.as_deref(), engine_id.as_deref())?;
     let root = crate::snapshot::root()?;
     let evidence =
         PathBuf::from(evidence.ok_or("engine-preflight --evidence required")?).canonicalize()?;
@@ -450,6 +468,40 @@ mod venue_tests {
         ] {
             assert!(Venue::parse(name, id).is_err(), "{name:?} {id:?}");
         }
+    }
+    #[test]
+    fn repeated_or_valueless_venue_flags_are_refused() {
+        let args = |items: &[&str]| items.iter().map(|s| (*s).to_owned()).collect::<Vec<_>>();
+        assert_eq!(super::venue_args(&[]).unwrap(), Venue::Affinity);
+        let bound = super::venue_args(&args(&["--venue", "cloud-container", "--engine-id", "a"]));
+        assert!(matches!(bound.unwrap(), Venue::CloudContainer { engine_id } if engine_id == "a"));
+        for wrong in [
+            args(&[
+                "--venue",
+                "cloud-container",
+                "--engine-id",
+                "a",
+                "--engine-id",
+                "b",
+            ]),
+            args(&[
+                "--venue",
+                "cloud-container",
+                "--venue",
+                "cloud-container",
+                "--engine-id",
+                "a",
+            ]),
+            args(&["--venue", "cloud-container", "--engine-id"]),
+            args(&["--venue"]),
+            args(&["--evidence", "x"]),
+        ] {
+            assert!(super::venue_args(&wrong).is_err(), "{wrong:?}");
+        }
+        let mut slot = None;
+        assert!(super::set_once(&mut slot, Some(&"a".to_owned()), "--venue").is_ok());
+        assert!(super::set_once(&mut slot, Some(&"b".to_owned()), "--venue").is_err());
+        assert_eq!(slot.as_deref(), Some("a"));
     }
     #[test]
     fn cloud_container_venue_refuses_other_engines_and_hosted_runs() {

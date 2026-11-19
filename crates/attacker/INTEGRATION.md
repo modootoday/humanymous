@@ -65,7 +65,8 @@ effects?{origin_effects,audit[{seq,event_type,verdict,risk_score,rules,record_ha
 expectation_matches?, reason?. Status: evaluated/error/skipped/unsupported.
 Only evaluated has expectation_matches; unsupported has no actual effects.
 Receipts must retain the same source/scope; audit sequences cannot overlap.
-A receipt's ipv6 is loopback_routes_only (route table read, only lo routes) or
+A receipt's ipv6 is loopback_routes_only (route table read, only lo routes,
+if_inet6 and the IPv6 sysctl tree present) or
 stack_absent (route table, if_inet6 and the IPv6 sysctl tree all not found;
 owner decision #152-2). Any other observation fails closed before spawn.
 

@@ -51,6 +51,10 @@ pub fn validate(report: &Value, kind: &str, head: &str, review: &str) -> Result<
         report["status"] == "passed" && report["qualification"] == "full-product",
         "component/blocked pilot cannot qualify full product",
     )?;
+    // A missing `engine_venue` is Null, not false, so it still validates: pilot
+    // reports written before decision #152-1 carry no such field, and their
+    // engine was the rule 96 affinity venue. This pilot always writes the
+    // field now, with `qualifying_venue: false` for the cloud-container venue.
     require(
         report["engine_venue"]["qualifying_venue"] != false,
         "an explicit cloud-container venue cannot qualify full product",

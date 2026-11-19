@@ -3,7 +3,7 @@ id: plan:root/20261119181120
 title: Lane I owner decisions #152-1 cloud-container venue and #152-2 IPv6 stack absence
 status: active
 created: 2026-11-19T18:11:20Z
-updated: 2026-11-19T19:00:00Z
+updated: 2026-11-19T18:46:12Z
 rel:
   governs: [crates/defender/src/lab/isolation.rs, crates/defender/src/lab/process.rs, crates/attacker/src/verification.rs, test/lab/runner/src/docker.rs, test/lab/runner/src/docker/affinity.rs, test/lab/runner/src/orchestration.rs, test/lab/runner/src/orchestration/qualification.rs, test/lab/runner/src/product_e2e.rs, test/lab/runner/src/product_e2e/ledger.rs, scripts/ci/delivery/src/pilot.rs, .agents/rules/96-docker-engine-affinity.md]
   depends_on: [sot:root/container-test-environments, sot:root/rust-wargame]
@@ -51,6 +51,14 @@ change the same lab files.
 - [ ] Lab `run` and `pilot docker` with the venue end to end. Only
   `engine-preflight` was exercised here (accepted with the right ID, refused
   with a wrong ID and without a venue); the full lab topology was not run.
+- [x] PR #154 review fixes: a readable IPv6 route table beside a missing
+  `if_inet6` or IPv6 sysctl tree is refused; `product-e2e` gets the real
+  binding (environment refusals, explicit `--host` with no context lookup,
+  an engine recheck before every mutation, teardown skipped and a receipt
+  still written with `engine_identity_changed` on a change); repeated
+  `--venue` or `--engine-id` flags are refused on `run`; standalone `cleanup`
+  takes the venue with the same binding; the pilot explains why a missing
+  `engine_venue` validates.
 
 ## Evidence
 

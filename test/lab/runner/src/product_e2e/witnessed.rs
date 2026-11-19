@@ -150,6 +150,7 @@ pub(super) fn relay(
 }
 
 pub(super) fn attach(lab: &mut Lab, name: &str) -> Result<(ManagedChild, ChildStdin, ChildStdout)> {
+    lab.recheck_engine(&["start", "--attach", "--interactive", name])?;
     let mut command = Command::new("docker");
     command
         .args([

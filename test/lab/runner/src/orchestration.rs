@@ -900,11 +900,11 @@ pub fn run(args: &[String]) -> Result<i32> {
             "--require-go-component" => require_go_component = true,
             "--venue" => {
                 index += 1;
-                venue = Some(args.get(index).ok_or("venue name missing")?.clone());
+                docker::set_once(&mut venue, args.get(index), "--venue")?;
             }
             "--engine-id" => {
                 index += 1;
-                engine_id = Some(args.get(index).ok_or("engine ID missing")?.clone());
+                docker::set_once(&mut engine_id, args.get(index), "--engine-id")?;
             }
             _ => return Err("unknown runner argument".into()),
         }
@@ -1737,8 +1737,11 @@ pub fn owned_expired(labels: &Value, now: u64) -> bool {
             .and_then(|s| s.parse::<u64>().ok())
             .is_some_and(|n| n > 0 && n <= now)
 }
-pub fn cleanup_expired() -> Result<()> {
-    let mut docker = Docker::new(&snapshot::root()?);
+/// Expired owned-resource cleanup. With `--venue cloud-container --engine-id ID`
+/// it uses the same explicit binding as `run`; without it, rule 96 affinity.
+pub fn cleanup_expired(args: &[String]) -> Result<()> {
+    let venue = docker::venue_args(args)?;
+    let mut docker = Docker::with_venue(&snapshot::root()?, venue);
     let now = SystemTime::now().duration_since(UNIX_EPOCH)?.as_secs();
     let mut projects = std::collections::BTreeSet::new();
     for args in [
