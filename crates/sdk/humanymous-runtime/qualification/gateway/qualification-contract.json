@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 679,
-      "macos": 679,
-      "windows": 661
+      "linux": 687,
+      "macos": 687,
+      "windows": 669
     },
     "common_test_names": [
       "gateway::admin_approval::tests::approval_store_rules",
@@ -437,10 +437,12 @@
       "gateway::recon::tests::remaining_is_the_unelapsed_part_of_the_floor",
       "gateway::request::tests::correlation_ids_are_sixteen_hex_and_fresh",
       "gateway::request::tests::day_bucket_matches_go_and_clamps_pre_epoch",
+      "gateway::request::tests::ja4_stable_matches_go_golden",
       "gateway::request::tests::latency_saturates_and_never_goes_negative",
       "gateway::request::tests::route_class_follows_legacy_priority",
       "gateway::request::tests::traffic_ip_hash_matches_go_golden_and_needs_a_key",
       "gateway::request::tests::upstream_errors_map_to_stable_classes_without_raw_text",
+      "gateway::resource::tests::asset_file_matches_go_join_golden",
       "gateway::resource::tests::asset_path_cleans_and_rejects_parent_segments",
       "gateway::resource::tests::channel_label_follows_legacy_names",
       "gateway::resource::tests::external_referer_is_a_host_substring_check",
@@ -448,6 +450,7 @@
       "gateway::resource::tests::gate_header_and_withheld_responses_match_legacy",
       "gateway::resource::tests::issue_commits_the_ledger_before_returning_marked_bytes",
       "gateway::resource::tests::mime_type_uses_the_go_builtin_table",
+      "gateway::resource::tests::read_asset_matches_go_read_file_golden",
       "gateway::resource::tests::resource_signals_cover_embed_and_media_tiers_only",
       "gateway::resource::tests::session_verdict_and_liveness_follow_legacy_lookup",
       "gateway::resource::tests::trace_gates_before_reading_and_bounds_the_body",
@@ -501,6 +504,11 @@
       "gateway::service::shutdown::tests::manager_budget_has_strict_slack_and_rejects_overflow",
       "gateway::session::admission::tests::quota_is_bounded_and_reopens_only_at_monotonic_window_boundary",
       "gateway::session::admission::tests::rollback_cannot_restore_an_exhausted_or_poisoned_window",
+      "gateway::session::pow::tests::handle_matches_go_golden",
+      "gateway::session::pow::tests::issue_header_matches_go_golden",
+      "gateway::session::pow::tests::non_finite_risk_score_writes_no_json",
+      "gateway::session::pow::tests::submission_decode_matches_go_golden",
+      "gateway::session::pow::tests::too_fast_cannot_be_laundered_by_delayed_resubmit",
       "gateway::session::store::tests::list_is_bounded",
       "gateway::session::store::tests::merge_client_and_label",
       "gateway::session::store::tests::merge_client_drops_server_provenance_claims",
