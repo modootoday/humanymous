@@ -5,7 +5,7 @@ status: active
 created: 2026-11-19T11:28:43Z
 updated: 2026-11-19T11:28:43Z
 rel:
-  governs: [crates/sdk/humanymous-runtime/src/gateway/application/maintenance.rs, crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs]
+  governs: [crates/sdk/humanymous-runtime/src/gateway/application/maintenance.rs, crates/sdk/humanymous-runtime/src/gateway/tests/maintenance.rs, crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs]
   depends_on: [sot:root/rust-migration, sot:root/runtime-application]
 ---
 
@@ -29,6 +29,11 @@ loosened.
   kernel the serving owner composes, run by both accept loops on the legacy
   one-minute maintenance tick. Row `internal/gate/gc_test.go` to
   `ported_unit`.
+- [x] Integration flow: the Go `TestProxyEnforcementAndAudit` bot beacon,
+  edge block without origin contact and sealed-chain verification through
+  `Application::serve` (`gateway::tests::integration`). Row
+  `internal/gate/integration_test.go` stays `partial`: HTML injection is not
+  composed on the served path (owner/SoT decision).
 
 ## Open owner questions (not decided here)
 

@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 776,
-      "macos": 776,
-      "windows": 744
+      "linux": 777,
+      "macos": 777,
+      "windows": 745
     },
     "common_test_names": [
       "gateway::admin_approval::tests::approval_store_rules",
@@ -629,6 +629,7 @@
       "gateway::tests::edge::spoofed_trust_headers_are_denied_before_origin",
       "gateway::tests::edge::unaudited_gate_effect_is_refused_and_poisons_the_epoch",
       "gateway::tests::fresh_collector_provenance_gates_required_collector",
+      "gateway::tests::integration::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies",
       "gateway::tests::ip_reputation::datacenter_classification_challenges_and_shadow_categories_change_nothing",
       "gateway::tests::ip_reputation::ip_reputation_configuration_is_optional_and_reported",
       "gateway::tests::ip_reputation::local_unspec_and_ipv6_headers_reach_the_reader_as_declared",

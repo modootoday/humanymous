@@ -3551,26 +3551,27 @@
    "baseline_path": "internal/gate/integration_test.go",
    "disposition": "partial",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/application.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/application.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::real_tcp_audit_before_origin_and_negative_counter_zero",
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies"
    ],
    "go_test_map": {
-    "TestProxyEnforcementAndAudit": "crates/sdk/humanymous-runtime/src/gateway/tests.rs::real_tcp_audit_before_origin_and_negative_counter_zero"
+    "TestProxyEnforcementAndAudit": "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies"
    },
    "gaps": [
-    "HTML injection step",
-    "edge block of scored bot without origin contact via beacon",
-    "audit chain verification at end"
+    "HTML injection step: gateway::inject::Injector is not composed on the served path. Go injected <script src=/__hmn/loader.js> into every 200 text/html response of an inject route; the runtime-application SoT defines no served response mutation and the served path has no loader route (the browser profile bootstraps through /_humanymous/browser/session), so composing it needs an owner/SoT decision"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust covers audit-before-origin over real TCP, not the inject/score/block flow.",
+   "notes": "Rust covers audit-before-origin over real TCP. FM11 lane B: tests/integration.rs runs the Go flow end to end through Application::serve on real loopback listeners with a counting origin and a real sealed log (node test, HMAC key k, a head every four records over a write-ahead log): a bot beacon (webdriver and headless token, no motor data) is collected, the same session's next protected request is scored DENY and answered 403 with the origin never contacted, a human session's HTML passes through byte for byte, and Log::self_verify reports ok with the DENY and ALLOW runtime.decision records in the chain. Deliberate differences: the beacon answers COLLECTED, not DENY with a sticky verdict cookie (the verdict is scored on the next request of the request-integrity session; the initial profile refuses cookies); the block is a runtime.decision DENY record with a JSON 403 body, not enforcement.deny with http.Error text. Go oracle at 981d25c: go test -run ^TestProxyEnforcementAndAudit$ ./internal/gate PASS (go1.26.3, network none).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::real_tcp_audit_before_origin_and_negative_counter_zero": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies": "passed"
    }
   },
   {
