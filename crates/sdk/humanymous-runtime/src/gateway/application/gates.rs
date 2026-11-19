@@ -66,6 +66,11 @@ pub(super) struct Installed {
 }
 
 impl Installed {
+    /// Boot mode the sweep detector was installed with.
+    pub(super) fn sweep_mode(&self) -> Option<Mode> {
+        self.sweep.as_ref().map(|(_, mode)| *mode)
+    }
+
     fn epoch(&mut self) -> Instant {
         *self.epoch.get_or_insert_with(Instant::now)
     }
@@ -249,9 +254,10 @@ impl Application {
             req.header("sec-ch-ua").unwrap_or(""),
         )
         .unwrap_or_default();
+        let sweep_mode = self.gate_mode(super::Gate::ReconSweep);
         let sweep = match (self.installed.sweep.as_mut(), monotonic) {
-            (Some((detector, mode)), Some(now)) => Some(
-                gates::sweep(&subject, &route, *mode, || {
+            (Some((detector, _)), Some(now)) => Some(
+                gates::sweep(&subject, &route, sweep_mode, || {
                     detector
                         .observe(&binding, sid, now)
                         .map(|counted| matches!(counted, Sweep::Counted { sweeping: true, .. }))

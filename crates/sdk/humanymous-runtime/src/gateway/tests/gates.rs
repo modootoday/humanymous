@@ -21,9 +21,9 @@ use humanymous_collector::session::Session as ClientSession;
 use std::time::Duration;
 
 /// Wall clock of every served request here (ms); Web Bot Auth sees 10 s.
-const NOW_MS: u64 = 10_000;
+pub(super) const NOW_MS: u64 = 10_000;
 
-fn records(audit: &Audit, event: &str) -> Vec<Record> {
+pub(super) fn records(audit: &Audit, event: &str) -> Vec<Record> {
     audit
         .records
         .lock()
@@ -34,13 +34,13 @@ fn records(audit: &Audit, event: &str) -> Vec<Record> {
         .collect()
 }
 
-fn app_with(cfg: Configuration, audit: &Audit) -> Application {
+pub(super) fn app_with(cfg: Configuration, audit: &Audit) -> Application {
     Application::new(cfg, Default::default(), Box::new(audit.clone())).unwrap()
 }
 
 /// A signed protected request of a freshly issued session, with `extra`
 /// fields added before signing (integrity covers them).
-fn signed_request(app: &mut Application, extra: &[(String, String)]) -> Request {
+pub(super) fn signed_request(app: &mut Application, extra: &[(String, String)]) -> Request {
     let cfg = config();
     let issued = issue(app, NOW_MS);
     let mut req = request("POST", "/effect?exact=1", b"original bytes".to_vec());
@@ -67,7 +67,7 @@ fn wba_fields(kid: &str, key: &ed25519_dalek::SigningKey, nonce: &str) -> Vec<(S
     ]
 }
 
-fn assert_denied(decision: Decision) {
+pub(super) fn assert_denied(decision: Decision) {
     let Decision::Gate(gate) = decision else {
         panic!("expected a gate deny");
     };

@@ -1,0 +1,1727 @@
+{
+ "empty_store_modes": {
+  "gate.attest_floor": "enforce",
+  "gate.ban": "enforce",
+  "gate.inject": "enforce",
+  "gate.recon_sweep": "enforce",
+  "gate.smuggle": "enforce",
+  "gate.spoof_header": "enforce",
+  "gate.unknown": "enforce",
+  "gate.verdict_token": "enforce"
+ },
+ "gate_mode_name": {
+  "enforce": "monitor",
+  "monitor": "monitor",
+  "off": "monitor",
+  "shadow": "shadow"
+ },
+ "gate_mode_unknown_id": "enforce",
+ "inactive_overlay_modes": {
+  "gate.attest_floor": "enforce",
+  "gate.ban": "monitor",
+  "gate.inject": "off",
+  "gate.recon_sweep": "shadow",
+  "gate.smuggle": "enforce",
+  "gate.spoof_header": "enforce",
+  "gate.verdict_token": "enforce"
+ },
+ "inject": {
+  "html_404": {
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "response": {
+    "body": "<html><head><title>x</title></head><body>ORIGIN</body></html>",
+    "headers": {
+     "Content-Length": [
+      "61"
+     ],
+     "Content-Type": [
+      "text/html"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Frame-Options": [
+      "SAMEORIGIN"
+     ],
+     "X-Seen-Accept-Encoding": [
+      "identity"
+     ]
+    },
+    "status": 404
+   }
+  },
+  "html_body_only": {
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "response": {
+    "body": "<!--hmn-injected--><script src=\"/__hmn/loader.js\" defer></script><body>x</body>",
+    "headers": {
+     "Cache-Control": [
+      "no-store"
+     ],
+     "Content-Security-Policy-Report-Only": [
+      "connect-src 'self'; report-uri /__hmn/csp-report"
+     ],
+     "Content-Type": [
+      "text/html"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Frame-Options": [
+      "SAMEORIGIN"
+     ],
+     "X-Seen-Accept-Encoding": [
+      "identity"
+     ]
+    },
+    "status": 200
+   }
+  },
+  "html_cache_control": {
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "response": {
+    "body": "<html><head><!--hmn-injected--><script src=\"/__hmn/loader.js\" defer></script><title>x</title></head><body>ORIGIN</body></html>",
+    "headers": {
+     "Cache-Control": [
+      "no-store"
+     ],
+     "Content-Security-Policy-Report-Only": [
+      "connect-src 'self'; report-uri /__hmn/csp-report"
+     ],
+     "Content-Type": [
+      "text/html"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Frame-Options": [
+      "SAMEORIGIN"
+     ],
+     "X-Seen-Accept-Encoding": [
+      "identity"
+     ]
+    },
+    "status": 200
+   }
+  },
+  "html_charset_upper": {
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "response": {
+    "body": "<html><head><!--hmn-injected--><script src=\"/__hmn/loader.js\" defer></script><title>x</title></head><body>ORIGIN</body></html>",
+    "headers": {
+     "Cache-Control": [
+      "no-store"
+     ],
+     "Content-Security-Policy-Report-Only": [
+      "connect-src 'self'; report-uri /__hmn/csp-report"
+     ],
+     "Content-Type": [
+      "TEXT/HTML; charset=utf-8"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Frame-Options": [
+      "SAMEORIGIN"
+     ],
+     "X-Seen-Accept-Encoding": [
+      "identity"
+     ]
+    },
+    "status": 200
+   }
+  },
+  "html_gzip": {
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "",
+     "actor_kind": "system",
+     "actor_pseudonym_present": false,
+     "config_version": "",
+     "event_type": "html.injection.skipped",
+     "fail_reason": "decomp_bomb_guard",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "html",
+     "rules": [
+      "HR-27a"
+     ],
+     "tenant_id": "test",
+     "verdict": ""
+    }
+   ],
+   "response": {
+    "body": "<html><head><title>x</title></head><body>ORIGIN</body></html>",
+    "headers": {
+     "Content-Encoding": [
+      "gzip"
+     ],
+     "Content-Length": [
+      "61"
+     ],
+     "Content-Type": [
+      "text/html"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Frame-Options": [
+      "SAMEORIGIN"
+     ],
+     "X-Seen-Accept-Encoding": [
+      "identity"
+     ]
+    },
+    "status": 200
+   }
+  },
+  "html_marker": {
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "response": {
+    "body": "<html><head><!--hmn-injected--><script src=\"/__hmn/loader.js\" defer></script><!--hmn-injected--></head><body>x</body></html>",
+    "headers": {
+     "Cache-Control": [
+      "no-store"
+     ],
+     "Content-Security-Policy-Report-Only": [
+      "connect-src 'self'; report-uri /__hmn/csp-report"
+     ],
+     "Content-Type": [
+      "text/html"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Frame-Options": [
+      "SAMEORIGIN"
+     ],
+     "X-Seen-Accept-Encoding": [
+      "identity"
+     ]
+    },
+    "status": 200
+   }
+  },
+  "html_monitor_route": {
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "monitor",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "response": {
+    "body": "<html><head><!--hmn-injected--><script src=\"/__hmn/loader.js\" defer></script><title>x</title></head><body>ORIGIN</body></html>",
+    "headers": {
+     "Cache-Control": [
+      "no-store"
+     ],
+     "Content-Security-Policy-Report-Only": [
+      "connect-src 'self'; report-uri /__hmn/csp-report"
+     ],
+     "Content-Type": [
+      "text/html"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Frame-Options": [
+      "SAMEORIGIN"
+     ],
+     "X-Seen-Accept-Encoding": [
+      "identity"
+     ]
+    },
+    "status": 200
+   }
+  },
+  "html_no_point": {
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "response": {
+    "body": "plain text no tags",
+    "headers": {
+     "Cache-Control": [
+      "no-store"
+     ],
+     "Content-Security-Policy-Report-Only": [
+      "connect-src 'self'; report-uri /__hmn/csp-report"
+     ],
+     "Content-Type": [
+      "text/html"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Frame-Options": [
+      "SAMEORIGIN"
+     ],
+     "X-Seen-Accept-Encoding": [
+      "identity"
+     ]
+    },
+    "status": 200
+   }
+  },
+  "html_off_route": {
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "monitor",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "response": {
+    "body": "<html><head><title>x</title></head><body>ORIGIN</body></html>",
+    "headers": {
+     "Content-Length": [
+      "61"
+     ],
+     "Content-Type": [
+      "text/html"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Frame-Options": [
+      "SAMEORIGIN"
+     ],
+     "X-Seen-Accept-Encoding": [
+      "identity"
+     ]
+    },
+    "status": 200
+   }
+  },
+  "html_origin_csp": {
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "response": {
+    "body": "<html><head><!--hmn-injected--><script src=\"/__hmn/loader.js\" defer></script><title>x</title></head><body>ORIGIN</body></html>",
+    "headers": {
+     "Cache-Control": [
+      "no-store"
+     ],
+     "Content-Security-Policy": [
+      "default-src 'self'"
+     ],
+     "Content-Type": [
+      "text/html"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Frame-Options": [
+      "SAMEORIGIN"
+     ],
+     "X-Seen-Accept-Encoding": [
+      "identity"
+     ]
+    },
+    "status": 200
+   }
+  },
+  "html_origin_csp_ro": {
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "response": {
+    "body": "<html><head><!--hmn-injected--><script src=\"/__hmn/loader.js\" defer></script><title>x</title></head><body>ORIGIN</body></html>",
+    "headers": {
+     "Cache-Control": [
+      "no-store"
+     ],
+     "Content-Security-Policy-Report-Only": [
+      "connect-src 'self'; report-uri /__hmn/csp-report"
+     ],
+     "Content-Type": [
+      "text/html"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Frame-Options": [
+      "SAMEORIGIN"
+     ],
+     "X-Seen-Accept-Encoding": [
+      "identity"
+     ]
+    },
+    "status": 200
+   }
+  },
+  "html_plain": {
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "response": {
+    "body": "<html><head><!--hmn-injected--><script src=\"/__hmn/loader.js\" defer></script><title>x</title></head><body>ORIGIN</body></html>",
+    "headers": {
+     "Cache-Control": [
+      "no-store"
+     ],
+     "Content-Security-Policy-Report-Only": [
+      "connect-src 'self'; report-uri /__hmn/csp-report"
+     ],
+     "Content-Type": [
+      "text/html"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Frame-Options": [
+      "SAMEORIGIN"
+     ],
+     "X-Seen-Accept-Encoding": [
+      "identity"
+     ]
+    },
+    "status": 200
+   }
+  },
+  "html_strict_route": {
+   "records": [
+    {
+     "action": "challenge_pow",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.challenge.issued",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "response": {
+    "body": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Verification required</title></head><body><h1>Verification required</h1><p>Please complete a quick check to continue.</p><script src=\"/__hmn/loader.js\" defer></script></body></html>",
+    "headers": {
+     "Cache-Control": [
+      "no-store"
+     ],
+     "Content-Type": [
+      "text/html; charset=utf-8"
+     ]
+    },
+    "status": 401
+   }
+  },
+  "html_too_large": {
+   "body_len": 8388609,
+   "content_length": "8388609",
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "",
+     "actor_kind": "system",
+     "actor_pseudonym_present": false,
+     "config_version": "",
+     "event_type": "html.injection.skipped",
+     "fail_reason": "too_large",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "html",
+     "rules": [
+      "HR-27a"
+     ],
+     "tenant_id": "test",
+     "verdict": ""
+    }
+   ],
+   "status": 200
+  },
+  "json": {
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "response": {
+    "body": "{}",
+    "headers": {
+     "Content-Length": [
+      "2"
+     ],
+     "Content-Type": [
+      "application/json"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Frame-Options": [
+      "SAMEORIGIN"
+     ],
+     "X-Seen-Accept-Encoding": [
+      "identity"
+     ]
+    },
+    "status": 200
+   }
+  }
+ },
+ "inject_snippet": "<!--hmn-injected--><script src=\"/__hmn/loader.js\" defer></script>",
+ "known_gates": [
+  "gate.smuggle",
+  "gate.spoof_header",
+  "gate.ban",
+  "gate.verdict_token",
+  "gate.recon_sweep",
+  "gate.inject",
+  "gate.attest_floor"
+ ],
+ "max_inject_body": 8388608,
+ "monitor_cases": {
+  "attest_floor_enforce_scoring": {
+   "origin_hits": 0,
+   "records": [
+    {
+     "action": "challenge_pow",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.challenge.issued",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "allow"
+    }
+   ],
+   "response": {
+    "body": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Verification required</title></head><body><h1>Verification required</h1><p>Please complete a quick check to continue.</p><script src=\"/__hmn/loader.js\" defer></script></body></html>",
+    "headers": {
+     "Cache-Control": [
+      "no-store"
+     ],
+     "Content-Type": [
+      "text/html; charset=utf-8"
+     ]
+    },
+    "status": 401
+   }
+  },
+  "attest_floor_monitor_scoring": {
+   "origin_hits": 1,
+   "records": [
+    {
+     "action": "would_challenge",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.challenge.issued",
+     "fail_reason": "scoring allow would require step-up (audit only)",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "monitor",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "allow"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "allow"
+    }
+   ],
+   "status": 200
+  },
+  "attest_floor_monitor_token": {
+   "origin_hits": 1,
+   "records": [
+    {
+     "action": "would_challenge",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.challenge.issued",
+     "fail_reason": "verdict-token fast path would require step-up (audit only)",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "monitor",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "allow"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "attested",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "allow"
+    }
+   ],
+   "status": 200
+  },
+  "ban_monitor": {
+   "bans": 0,
+   "codes": [
+    200,
+    200,
+    200,
+    200
+   ],
+   "records": [
+    {
+     "action": "would_rate_limit",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "",
+     "event_type": "ratelimit.soft_exceeded",
+     "fail_reason": "",
+     "host": "",
+     "key_id": "k1",
+     "mode": "monitor",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": ""
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "would_auto_ban",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "",
+     "event_type": "ratelimit.hard_exceeded",
+     "fail_reason": "",
+     "host": "",
+     "key_id": "k1",
+     "mode": "monitor",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": ""
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "would_auto_ban",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "",
+     "event_type": "ratelimit.hard_exceeded",
+     "fail_reason": "",
+     "host": "",
+     "key_id": "k1",
+     "mode": "monitor",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": ""
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "would_auto_ban",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "",
+     "event_type": "ratelimit.hard_exceeded",
+     "fail_reason": "",
+     "host": "",
+     "key_id": "k1",
+     "mode": "monitor",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": ""
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ]
+  },
+  "ban_shadow": {
+   "bans": 0,
+   "codes": [
+    200,
+    200,
+    200,
+    200
+   ],
+   "records": [
+    {
+     "action": "would_rate_limit",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "",
+     "event_type": "ratelimit.soft_exceeded",
+     "fail_reason": "",
+     "host": "",
+     "key_id": "k1",
+     "mode": "shadow",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": ""
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "would_auto_ban",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "",
+     "event_type": "ratelimit.hard_exceeded",
+     "fail_reason": "",
+     "host": "",
+     "key_id": "k1",
+     "mode": "shadow",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": ""
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "would_auto_ban",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "",
+     "event_type": "ratelimit.hard_exceeded",
+     "fail_reason": "",
+     "host": "",
+     "key_id": "k1",
+     "mode": "shadow",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": ""
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "would_auto_ban",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "",
+     "event_type": "ratelimit.hard_exceeded",
+     "fail_reason": "",
+     "host": "",
+     "key_id": "k1",
+     "mode": "shadow",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": ""
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ]
+  },
+  "inject_monitor": {
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "",
+     "actor_kind": "system",
+     "actor_pseudonym_present": false,
+     "config_version": "",
+     "event_type": "html.injection.skipped",
+     "fail_reason": "gate.inject monitor (would inject)",
+     "host": "",
+     "key_id": "k1",
+     "mode": "monitor",
+     "route_class": "html",
+     "rules": [
+      "HR-27a"
+     ],
+     "tenant_id": "test",
+     "verdict": ""
+    }
+   ],
+   "response": {
+    "body": "<html><head></head><body>ORIGIN</body></html>",
+    "headers": {
+     "Content-Length": [
+      "45"
+     ],
+     "Content-Type": [
+      "text/html"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Frame-Options": [
+      "SAMEORIGIN"
+     ]
+    },
+    "status": 200
+   }
+  },
+  "inject_off": {
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ],
+   "response": {
+    "body": "<html><head></head><body>ORIGIN</body></html>",
+    "headers": {
+     "Content-Length": [
+      "45"
+     ],
+     "Content-Type": [
+      "text/html"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Frame-Options": [
+      "SAMEORIGIN"
+     ]
+    },
+    "status": 200
+   }
+  },
+  "inject_shadow": {
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": false,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "",
+     "actor_kind": "system",
+     "actor_pseudonym_present": false,
+     "config_version": "",
+     "event_type": "html.injection.skipped",
+     "fail_reason": "gate.inject shadow (would inject)",
+     "host": "",
+     "key_id": "k1",
+     "mode": "shadow",
+     "route_class": "html",
+     "rules": [
+      "HR-27a"
+     ],
+     "tenant_id": "test",
+     "verdict": ""
+    }
+   ],
+   "response": {
+    "body": "<html><head></head><body>ORIGIN</body></html>",
+    "headers": {
+     "Content-Length": [
+      "45"
+     ],
+     "Content-Type": [
+      "text/html"
+     ],
+     "Referrer-Policy": [
+      "strict-origin-when-cross-origin"
+     ],
+     "X-Content-Type-Options": [
+      "nosniff"
+     ],
+     "X-Frame-Options": [
+      "SAMEORIGIN"
+     ]
+    },
+    "status": 200
+   }
+  },
+  "recon_monitor": {
+   "codes": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200
+   ],
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "would_block",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "",
+     "event_type": "recon.decision_probing",
+     "fail_reason": "decision-probing sweep (many sessions, one fingerprint) (audit only)",
+     "host": "",
+     "key_id": "k1",
+     "mode": "monitor",
+     "route_class": "static",
+     "rules": [
+      "HR-30"
+     ],
+     "tenant_id": "test",
+     "verdict": "deny"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "would_block",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "",
+     "event_type": "recon.decision_probing",
+     "fail_reason": "decision-probing sweep (many sessions, one fingerprint) (audit only)",
+     "host": "",
+     "key_id": "k1",
+     "mode": "monitor",
+     "route_class": "static",
+     "rules": [
+      "HR-30"
+     ],
+     "tenant_id": "test",
+     "verdict": "deny"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    }
+   ]
+  },
+  "recon_no_store_enforce": {
+   "codes": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    403,
+    403
+   ],
+   "records": [
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "pass",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "none"
+    },
+    {
+     "action": "block",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "",
+     "event_type": "recon.decision_probing",
+     "fail_reason": "decision-probing sweep (many sessions, one fingerprint)",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [
+      "HR-30"
+     ],
+     "tenant_id": "test",
+     "verdict": "deny"
+    },
+    {
+     "action": "block",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "",
+     "event_type": "recon.decision_probing",
+     "fail_reason": "decision-probing sweep (many sessions, one fingerprint)",
+     "host": "",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [
+      "HR-30"
+     ],
+     "tenant_id": "test",
+     "verdict": "deny"
+    }
+   ]
+  },
+  "verdict_token_monitor": {
+   "records": [
+    {
+     "action": "would_fast_path",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "",
+     "event_type": "enforcement.allow",
+     "fail_reason": "",
+     "host": "",
+     "key_id": "k1",
+     "mode": "monitor",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "allow"
+    },
+    {
+     "action": "block",
+     "actor_kind": "subject",
+     "actor_pseudonym_present": true,
+     "config_version": "cfg-*",
+     "event_type": "enforcement.deny",
+     "fail_reason": "",
+     "host": "proxy",
+     "key_id": "k1",
+     "mode": "enforce",
+     "route_class": "static",
+     "rules": [],
+     "tenant_id": "test",
+     "verdict": "deny"
+    }
+   ],
+   "status": 403
+  }
+ },
+ "no_store_modes": {
+  "gate.attest_floor": "enforce",
+  "gate.ban": "enforce",
+  "gate.inject": "enforce",
+  "gate.recon_sweep": "enforce",
+  "gate.smuggle": "enforce",
+  "gate.spoof_header": "enforce",
+  "gate.unknown": "enforce",
+  "gate.verdict_token": "enforce"
+ },
+ "partial_overlay_modes": {
+  "gate.attest_floor": "enforce",
+  "gate.ban": "monitor",
+  "gate.inject": "off",
+  "gate.recon_sweep": "shadow",
+  "gate.smuggle": "enforce",
+  "gate.spoof_header": "enforce",
+  "gate.unknown": "enforce",
+  "gate.verdict_token": "enforce"
+ },
+ "provenance": {
+  "capture_notes": [
+   "two consecutive container runs produced identical output once the wall-clock Date response header is removed (jq -S, Date deleted); the stored body is that masked output",
+   "records are reduced to semantic fields; pseudonyms are presence flags and a cfg- configuration version is shown as cfg-*",
+   "every request goes through the real Server.ServeHTTP or ControlPlane method of the oracle with an in-memory audit log",
+   "never regenerate this fixture to hide drift"
+  ],
+  "capture_program_committed": false,
+  "capture_program_sha256": {
+   "internal/gate/zz_fm11lh_capture_test.go": "d96cc579f635afdfea9417482e9cb3db64864e7ff7dd438dab11d7e968286688"
+  },
+  "command": "git archive 981d25c go.mod go.sum internal pkg | tar -x -C <oracle>; add scratch in-package capture test internal/gate/zz_fm11lh_capture_test.go; docker run --rm --network none -e GOTOOLCHAIN=local -e GOPROXY=off -e GOFLAGS=-mod=readonly -e GOMODCACHE=/gomod -e GOCACHE=/gocache -e LH_OUT=/out/capture.json -v <modcache>:/gomod:ro -v <oracle>:/src -v <out>:/out -w /src <image> go test -count=1 -run ^TestFM11LHCapture$ ./internal/gate/",
+  "go_version": "go1.26.3 linux/amd64 (go.mod at 981d25c declares go 1.25.3; GOTOOLCHAIN=local)",
+  "image": "mirror.gcr.io/library/golang@sha256:91eda9776261207ea25fd06b5b7fed8d397dd2c0a283e77f2ab6e91bfa71079d",
+  "oracle_commit": "981d25cf71a5a54855d7e2b4359e832a9d5998e5",
+  "oracle_packages": [
+   "internal/gate (gate.go gateModuleMode/gateModeName/modifyResponse/auditInjectSkipMode/applyVerdict; gates.go banGate/verdictTokenGate/sweepGate/auditAttestationFloor; control_collect.go issueVerdictTokenOnAllow; token.go issueVerdictToken/tokenBind; settings_runtime_test.go attachSettingsOverlay; prodhardening_test.go buildStackWith/htmlUpstream; attestfloor_test.go buildAttestStack/aReq/serve)",
+   "internal/gate/settings (resolve.go Resolve/GateMode, overlay.go KnownGates)"
+  ],
+  "output_sha256_date_masked": "b71c8803bc13726c33119b26ae94bcf94262e367b592588ac869f70ca4187b02"
+ },
+ "resolve_nil_gates": {
+  "gate.attest_floor": "enforce",
+  "gate.ban": "enforce",
+  "gate.inject": "enforce",
+  "gate.recon_sweep": "enforce",
+  "gate.smuggle": "enforce",
+  "gate.spoof_header": "enforce",
+  "gate.verdict_token": "enforce"
+ },
+ "token_issue": {
+  "allow_set_cookie": [
+   "hmn_vt=c2lkLWlzc3VlfExMME5mVkx1QnowbUJBd0VzbmF5VlF8MTgwMDAwMTgwMHxlMQ.eSjpSRdNy7-_bcCUR1LgxP6vnLObIJV14wcAxcLG29Q; Path=/; HttpOnly; Secure; SameSite=Lax"
+  ],
+  "bind_key": "jrAAahSADT9e5AqB",
+  "challenge_headers": 0,
+  "client_subnet": "203.0.113.0/24",
+  "epoch": "e1",
+  "exp_unix": 1800001800,
+  "key_ascii": "0123456789abcdef0123456789abcdef",
+  "no_key_set_cookie": null,
+  "now_unix": 1800000000,
+  "records": [
+   {
+    "action": "",
+    "actor_kind": "subject",
+    "actor_pseudonym_present": true,
+    "config_version": "",
+    "event_type": "token.issued",
+    "fail_reason": "",
+    "host": "",
+    "key_id": "k1",
+    "mode": "enforce",
+    "route_class": "control",
+    "rules": [],
+    "tenant_id": "control",
+    "verdict": "allow"
+   }
+  ],
+  "sid": "sid-issue",
+  "token_bind": "LL0NfVLuBz0mBAwEsnayVQ",
+  "token_fixed_epoch": "c2lkLWlzc3VlfExMME5mVkx1QnowbUJBd0VzbmF5VlF8MTgwMDAwMTgwMHxlMQ.eSjpSRdNy7-_bcCUR1LgxP6vnLObIJV14wcAxcLG29Q"
+ }
+}

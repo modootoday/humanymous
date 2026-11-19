@@ -616,6 +616,28 @@ real-binary `gateway-exposure` integration test (non-loopback peers reach the
 listener over the host's interface address). Plan:
 `.spec/plan/20261119160000-owner-b01-edge-listener.plan.md`.
 
+### Gate modes, provisioning, verdict token and injection (owner decisions #2, #3, #4 and #7, 2026-11-19)
+
+Owner-delegated decisions of issue #75 comment 7017558784 (lane H), built on
+the B01 #1 admin listener. This section supersedes the statements above that
+gate modes come only from the startup `edge` section and that the service
+binary installs no gate capability. Modes are not weights or thresholds; no
+score, weight, threshold, hard-rule predicate, verdict band or signal ID
+changes. Plan: `.spec/plan/20261119230000-owner-gate-provisioning-modes.plan.md`.
+
+- Modes (#3): the served path reads `gate.ban`, `gate.spoof_header`,
+  `gate.recon_sweep`, `gate.verdict_token`, `gate.attest_floor` and
+  `gate.inject` per request from the active settings overlay that the
+  admin listener's settings write plane publishes (`admin.settings_dir`),
+  as Go `gateModuleMode` read `SettingsEffective`
+  (`gateway::application::modes`). Every known gate defaults to `enforce`
+  with or without a store (Go capture
+  `tests/fixtures/gateway/gate-modes-go-golden.json`). The startup `edge`
+  modes and the installed sweep mode are boot modes an active overlay entry
+  overrides; Go had no startup mode, so a non-default startup mode survives
+  an overlay that does not name the gate (named difference). A committed,
+  rolled back or expired overlay takes effect on the next request.
+
 ### Review reflected
 
 Blue: reuse one engine/integrity/network/audit implementation. Red P0: method,

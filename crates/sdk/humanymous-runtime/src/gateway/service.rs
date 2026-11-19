@@ -372,6 +372,11 @@ impl ServiceHost {
             application
                 .install_bans(bans, epoch)
                 .map_err(|_| io::Error::other("admin ban store needs a client address source"))?;
+            // Owner decision #3: per-gate modes follow the effective settings
+            // overlay on the request path, as Go `gateModuleMode` did.
+            if let Some(active) = admin.active_overlay() {
+                application.install_gate_modes(active);
+            }
         }
         if let Some(tls) = &tls {
             application.validate_tls_h1(tls)?;

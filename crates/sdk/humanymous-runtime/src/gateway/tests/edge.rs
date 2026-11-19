@@ -129,7 +129,7 @@ impl Drop for Origin {
     }
 }
 
-fn plain(target: &str, extra: &[(&str, &str)]) -> Request {
+pub(super) fn plain(target: &str, extra: &[(&str, &str)]) -> Request {
     let mut headers = vec![
         ("Host".to_owned(), "owned.test".to_owned()),
         ("Content-Length".to_owned(), "0".to_owned()),

@@ -79,8 +79,9 @@
 //! Not ported here (recorded ledger gaps): Prometheus exposition of the
 //! settings counters, the pending-approval age gauge and the configuration
 //! version label (owner pending); [`Settings::stats`] and
-//! [`AdminPlane::settings_pending_age`] keep the values. Per-gate monitor
-//! modes on the request path are not consumed by the hosted gateway.
+//! [`AdminPlane::settings_pending_age`] keep the values. The served path
+//! reads per-gate modes from the overlay this plane publishes through
+//! [`Settings::with_active_slot`] (`application::modes`, owner decision #3).
 use super::{AdminPlane, Clock, JSON, Response, audit_unavailable, go_escape, system};
 use crate::audit::record::{Actor, Record};
 use crate::gateway::admin_approval::{Operator, PendingAction, Role};

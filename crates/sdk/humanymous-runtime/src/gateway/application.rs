@@ -26,6 +26,7 @@ use tokio::{
 mod edge;
 mod gates;
 mod maintenance;
+mod modes;
 mod settings;
 mod tls;
 // L1 consumer adapter only; no serving observation point is accepted yet.
@@ -33,6 +34,7 @@ mod tls;
 mod temporal;
 pub use edge::{GateResponse, HEALTHZ, READYZ, ReadySwitch};
 pub use gates::AGENT_NONCE_TTL;
+pub use modes::{ActiveOverlay, Gate, overlay_mode};
 
 /// Internal result: ALLOW is a one-use origin dispatch, never a reusable ticket.
 pub enum Decision {
@@ -101,6 +103,8 @@ pub struct Application {
     origin_key: Option<crate::gateway::guard::OriginKey>,
     /// Credential, upgrade and sweep gate capabilities, once installed.
     installed: gates::Installed,
+    /// Source of the per-gate module modes (settings overlay, when installed).
+    modes: modes::Modes,
     /// Readiness gate of the `/_humanymous/readyz` probe.
     ready: ReadySwitch,
     /// Period of the composite in-memory sweep (legacy maintenance ticker).
@@ -126,6 +130,7 @@ impl Application {
             bans: None,
             origin_key,
             installed: gates::Installed::default(),
+            modes: modes::Modes::default(),
             ready: ReadySwitch::default(),
             sweep_interval: maintenance::INTERVAL,
         })

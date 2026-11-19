@@ -32,7 +32,8 @@ pub const BLOCK_BODY: &str = "Source temporarily blocked (rate limit / abuse pro
 pub use crate::gateway::guard::INCIDENT_HEADER;
 
 /// Settings-driven module mode of `gate.ban` (SoT-39). The served path reads
-/// it, and the spoof-header gate's mode, from `configuration::Edge`.
+/// it per request from the active settings overlay over the boot mode of
+/// `configuration::Edge` (`application::modes`, owner decision #3).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Mode {

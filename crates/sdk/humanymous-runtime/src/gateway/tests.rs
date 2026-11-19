@@ -6,6 +6,7 @@ mod gates;
 mod integration;
 mod ip_reputation;
 mod maintenance;
+mod modes;
 #[cfg(unix)]
 mod service;
 mod settings;

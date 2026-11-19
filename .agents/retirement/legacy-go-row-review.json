@@ -4464,7 +4464,8 @@
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings.rs",
     "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/gates.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/gates.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application/modes.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_hot_apply_preserves_counters",
@@ -4473,25 +4474,28 @@
     "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_configure_preserves_rolling_hits_and_applies_cutpoints",
     "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::verdict_token_gate_matches_go",
     "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::sweep_gate_matches_go",
-    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::attestation_floor_audit_matches_go"
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::attestation_floor_audit_matches_go",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/modes.rs::gate_modes_follow_go_defaults_and_the_active_overlay",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/modes.rs::ban_gate_overlay_monitor_is_audit_only",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/modes.rs::recon_sweep_overlay_monitor_audits_without_blocking"
    ],
    "go_test_map": {
     "TestSettingsRateHotApplyPreservesCounters": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_hot_apply_preserves_counters",
-    "TestSettingsGateBanMonitorIsAuditOnly": null,
+    "TestSettingsGateBanMonitorIsAuditOnly": "crates/sdk/humanymous-runtime/src/gateway/tests/modes.rs::ban_gate_overlay_monitor_is_audit_only",
     "TestSettingsVerdictTokenMonitorDoesNotFastPath": "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::verdict_token_gate_matches_go",
-    "TestSettingsReconMonitorAuditsWithoutBlocking": "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::sweep_gate_matches_go",
+    "TestSettingsReconMonitorAuditsWithoutBlocking": "crates/sdk/humanymous-runtime/src/gateway/tests/modes.rs::recon_sweep_overlay_monitor_audits_without_blocking",
     "TestSettingsInjectMonitorLeavesHTMLUntouched": null,
     "TestSettingsAttestationFloorMonitorAuditsWithoutChallenging": "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::attestation_floor_audit_matches_go",
     "TestSettingsAttestationFloorMonitorAllowsVerdictTokenFastPath": "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::verdict_token_gate_matches_go",
     "TestSettingsMetricsReflectApply": null
    },
    "gaps": [
-    "per-gate monitor modes on the request path (gate.ban audit-only, verdict_token fast path, recon_sweep, inject, attest_floor): settings-driven module modes are open in issue #75 and the hosted gateway does not consume the effective overlay; the gate kernels take a mode (gateway::gates, FM11 lane D), but no settings overlay supplies gate.verdict_token, gate.recon_sweep or gate.attest_floor at run time",
+    "per-gate monitor modes on the request path for gate.verdict_token, gate.attest_floor and gate.inject: since owner decision #3 the served path reads every gate mode from the admin settings overlay (gateway::application::modes), and gate.ban, gate.spoof_header and gate.recon_sweep consume it, but the verdict-token gate, the attestation floor and the HTML injector are not yet composed (lane H #4 and #7)",
     "settings metrics exposition (TestSettingsMetricsReflectApply): Prometheus metrics and labels are owner-pending; the counters it reads are pinned by stats_reflect_apply_and_rejection"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning, no new defaults. FM11 lane E (2026-11-19): gateway::admin_plane::settings serves the SoT-39 settings write plane on the admin listener when attached with AdminPlane::with_settings, pinned by a request-by-request replay of the Go AdminHandler capture crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-admin-go-golden.json (Go 1.26.3 Docker capture, provenance inside; overlay ids injected, approval ids mapped, wall-clock createdAt/expiresAt masked). TestSettingsRateHotApplyPreservesCounters is ported end to end: four hits under 60s/5/10, a class A propose of hard 5 through the admin handler, and the fifth hit auto-bans at the hard level. Lane E left the six per-gate monitor tests and the metrics test unmapped; lane D (below) maps four monitor tests at kernel level, and TestSettingsGateBanMonitorIsAuditOnly, TestSettingsInjectMonitorLeavesHTMLUntouched and TestSettingsMetricsReflectApply stay unmapped (gaps). FM11 lane D (2026-11-19): the verdict-token, recon-sweep and attestation-floor monitor cases are mapped to the gate kernel replay against the Go capture gates-go-golden.json (vt_monitor_valid, sw_monitor_ninth, af_scoring_monitor, vt_attest_floor_monitor): would_fast_path, would_block and would_challenge records, request outcome unchanged. They are kernel-level, not the settings overlay HTTP flow.",
+   "notes": "Owner decision B1 (issue #75 comment 6979694428): exact-parity port of the 981d25c oracle; no tuning, no new defaults. FM11 lane E (2026-11-19): gateway::admin_plane::settings serves the SoT-39 settings write plane on the admin listener when attached with AdminPlane::with_settings, pinned by a request-by-request replay of the Go AdminHandler capture crates/sdk/humanymous-runtime/tests/fixtures/gateway/settings-admin-go-golden.json (Go 1.26.3 Docker capture, provenance inside; overlay ids injected, approval ids mapped, wall-clock createdAt/expiresAt masked). TestSettingsRateHotApplyPreservesCounters is ported end to end: four hits under 60s/5/10, a class A propose of hard 5 through the admin handler, and the fifth hit auto-bans at the hard level. Lane E left the six per-gate monitor tests and the metrics test unmapped; lane D (below) maps four monitor tests at kernel level, and TestSettingsGateBanMonitorIsAuditOnly, TestSettingsInjectMonitorLeavesHTMLUntouched and TestSettingsMetricsReflectApply stay unmapped (gaps). FM11 lane D (2026-11-19): the verdict-token, recon-sweep and attestation-floor monitor cases are mapped to the gate kernel replay against the Go capture gates-go-golden.json (vt_monitor_valid, sw_monitor_ninth, af_scoring_monitor, vt_attest_floor_monitor): would_fast_path, would_block and would_challenge records, request outcome unchanged. They are kernel-level, not the settings overlay HTTP flow. Owner decision #3 (lane H, 2026-11-19): gateway::application::modes reads each gate mode per request from the active overlay the admin settings write plane publishes (Settings::with_active_slot), Go gateModuleMode; defaults (enforce for every known gate, with or without a store) are pinned against the Go capture tests/fixtures/gateway/gate-modes-go-golden.json (go1.26.3, network none, oracle 981d25c). TestSettingsGateBanMonitorIsAuditOnly and TestSettingsReconMonitorAuditsWithoutBlocking are replayed on the served path (Application::decide) against that capture; gateway::tests::service::exposure::unix_edge_gate_modes_follow_the_admin_settings_overlay composes it in ServiceHost.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_hot_apply_preserves_counters": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_level_is_hard_after_hot_apply": "passed",
@@ -4499,7 +4503,10 @@
     "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_configure_preserves_rolling_hits_and_applies_cutpoints": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::verdict_token_gate_matches_go": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::sweep_gate_matches_go": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::attestation_floor_audit_matches_go": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::attestation_floor_audit_matches_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/modes.rs::gate_modes_follow_go_defaults_and_the_active_overlay": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/modes.rs::ban_gate_overlay_monitor_is_audit_only": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/modes.rs::recon_sweep_overlay_monitor_audits_without_blocking": "passed"
    }
   },
   {

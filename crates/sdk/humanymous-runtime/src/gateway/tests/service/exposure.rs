@@ -220,3 +220,99 @@ async fn unix_admin_bans_need_an_enforceable_gate() {
         .unwrap();
     assert!(report.stopped && report.drained && report.audit_flushed);
 }
+
+fn admin_post(address: SocketAddr, target: &str, body: &str) -> String {
+    let mut socket = NativeStream::connect_timeout(&address, BUDGET).unwrap();
+    socket.set_read_timeout(Some(BUDGET)).unwrap();
+    let request = format!(
+        "POST {target} HTTP/1.1\r\nHost: admin\r\nAuthorization: Bearer {TOKEN}\r\nContent-Type: application/json\r\nContent-Length: {}\r\n\r\n{body}",
+        body.len()
+    );
+    socket.write_all(request.as_bytes()).unwrap();
+    let mut response = String::new();
+    let _ = socket.read_to_string(&mut response);
+    response
+}
+
+/// Owner decision #3 composed in the service: the edge reads `gate.*` modes
+/// from the admin listener's settings overlay. A stored overlay that demotes
+/// `gate.spoof_header` to monitor lets a forged trust header through to the
+/// route inventory; rolling the overlay back through the admin listener
+/// restores the Go default (enforce) on the next request.
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn unix_edge_gate_modes_follow_the_admin_settings_overlay() {
+    use crate::gateway::settings::overlay::{Mode as OverlayMode, Overlay, OverlayFileStore};
+    let fixture = PrivateFixture::new();
+    let settings = fixture.0.join("settings");
+    let mut overlay = Overlay {
+        schema_version: "1.0.0".into(),
+        overlay_id: "ovl_spoof_monitor".into(),
+        gates: [("gate.spoof_header".to_owned(), OverlayMode::Monitor)].into(),
+        ..Overlay::default()
+    };
+    OverlayFileStore::open(&settings)
+        .unwrap()
+        .set_active(Some(&mut overlay))
+        .unwrap();
+    let mut config = fixture.configuration();
+    config.admin = Some(admin(&settings));
+    config.edge.ban = Mode::Off;
+    let host = ServiceHost::bind(config).await.unwrap();
+    let edge = host.readiness().listen;
+    let admin_address = host.readiness().admin_listen.unwrap();
+    let (sender, receiver) = tokio::sync::watch::channel(None);
+    let running = tokio::spawn(host.run(receiver));
+    let forged = move || {
+        let mut socket = NativeStream::connect_timeout(&edge, BUDGET).unwrap();
+        socket.set_read_timeout(Some(BUDGET)).unwrap();
+        socket
+            .write_all(b"GET /data HTTP/1.1\r\nHost: owned.test\r\nX-Real-Ip: 10.0.0.1\r\nContent-Length: 0\r\n\r\n")
+            .unwrap();
+        let mut response = String::new();
+        let _ = socket.read_to_string(&mut response);
+        response
+    };
+    let demoted = tokio::task::spawn_blocking(forged).await.unwrap();
+    assert!(!demoted.starts_with("HTTP/1.1 403"), "{demoted}");
+    let effective = tokio::task::spawn_blocking(move || {
+        admin_get(
+            admin_address,
+            "/_humanymous/admin/settings/effective",
+            Some(TOKEN),
+        )
+    })
+    .await
+    .unwrap();
+    assert!(
+        effective.contains("\"gate.spoof_header\":\"monitor\""),
+        "{effective}"
+    );
+    let body: Value =
+        serde_json::from_str(&effective[effective.find("\r\n\r\n").unwrap() + 4..]).unwrap();
+    let rollback = format!(
+        "{{\"parentConfigVersion\":{}}}",
+        body["effective"]["configVersion"]
+    );
+    let rolled = tokio::task::spawn_blocking(move || {
+        admin_post(
+            admin_address,
+            "/_humanymous/admin/settings/rollback",
+            &rollback,
+        )
+    })
+    .await
+    .unwrap();
+    assert!(rolled.starts_with("HTTP/1.1 200"), "{rolled}");
+    let enforced = tokio::task::spawn_blocking(forged).await.unwrap();
+    assert!(enforced.starts_with("HTTP/1.1 403"), "{enforced}");
+    assert!(enforced.contains("X-Hmn-Incident"), "{enforced}");
+    sender
+        .send(Some(StopBudget::new(1000, 1000, 5000).unwrap().request()))
+        .unwrap();
+    let report = tokio::time::timeout(BUDGET, running)
+        .await
+        .unwrap()
+        .unwrap()
+        .unwrap();
+    assert!(report.stopped && report.drained && report.audit_flushed);
+}

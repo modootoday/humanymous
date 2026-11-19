@@ -10,17 +10,21 @@
 //!   gate through `Application::install_bans` under one monotonic epoch;
 //! - the durable audit sink of the serving process (the same sealed log);
 //! - with `admin.settings_dir`, the settings engine over that overlay store,
-//!   swept on Go's one-minute GC cadence.
+//!   swept on Go's one-minute GC cadence, whose active overlay is mirrored
+//!   into the slot the served path reads per-gate modes from (owner decision
+//!   #3, `application::modes`).
 //!
 //! The approval and operator-pseudonym key is random per process, as Go's was
 //! without `HMN_TOKEN_KEY`: pending approvals and pseudonyms do not survive a
 //! restart. The settings boot posture has no route presets (the runtime
 //! serves an exact route inventory, not Go presets), global monitor and kill
-//! switch off; the stored overlay is served and validated, and only its rate
-//! window reaches the shared ban store. Nothing here feeds scoring.
+//! switch off; the stored overlay is served and validated, its rate window
+//! reaches the shared ban store and its gate modes reach the served path.
+//! Nothing here feeds scoring.
 use crate::authority::decision::DurableAudit;
 use crate::gateway::admin_approval::Role;
 use crate::gateway::admin_plane::{AdminPlane, Clock, settings::Settings};
+use crate::gateway::application::ActiveOverlay;
 use crate::gateway::ban::Store;
 use crate::gateway::configuration::{AdminListener as AdminConfig, Configuration};
 use crate::gateway::service::ShutdownRequest;
@@ -29,7 +33,7 @@ use std::collections::BTreeMap;
 use std::io;
 use std::net::SocketAddr;
 use std::sync::atomic::AtomicBool;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, RwLock};
 use std::time::{Duration, Instant};
 use tokio::net::TcpListener;
 use tokio::sync::watch;
@@ -44,7 +48,7 @@ pub(in crate::gateway) struct AdminService {
     listener: TcpListener,
     epoch: Instant,
     bans: Arc<Mutex<Store>>,
-    settings: bool,
+    settings: Option<ActiveOverlay>,
     operators: usize,
 }
 
@@ -96,6 +100,7 @@ impl AdminService {
                 .map_err(|_| io::Error::other("admin operator refused"))?;
         }
         let epoch = Instant::now();
+        let mut active = None;
         if let Some(directory) = &admin.settings_dir {
             let store = OverlayFileStore::open(directory)
                 .map_err(|_| io::Error::other("admin settings store unavailable"))?;
@@ -111,7 +116,10 @@ impl AdminService {
                     .map_err(|_| io::Error::other("admin rate cutpoint"))?,
                 hmac_key: key.to_vec(),
             };
-            let settings = Settings::new(boot, Arc::new(AtomicBool::new(false)), store);
+            let slot: ActiveOverlay = Arc::new(RwLock::new(None));
+            let settings = Settings::new(boot, Arc::new(AtomicBool::new(false)), store)
+                .with_active_slot(slot.clone());
+            active = Some(slot);
             plane = plane
                 .with_settings(settings, clock(epoch)?)
                 .map_err(|_| io::Error::other("admin settings refused"))?;
@@ -122,7 +130,7 @@ impl AdminService {
             listener,
             epoch,
             bans,
-            settings: admin.settings_dir.is_some(),
+            settings: active,
             operators: admin.operators.len(),
         })
     }
@@ -137,12 +145,18 @@ impl AdminService {
         (self.bans.clone(), self.epoch)
     }
 
+    /// The active-overlay slot the settings write plane publishes, when a
+    /// settings directory is configured.
+    pub(in crate::gateway) fn active_overlay(&self) -> Option<ActiveOverlay> {
+        self.settings.clone()
+    }
+
     /// Readiness facts; no tokens, ids or keys.
     pub(in crate::gateway) fn readiness(&self) -> io::Result<serde_json::Value> {
         Ok(serde_json::json!({
             "listen": self.local_addr()?,
             "operators": self.operators,
-            "settings": self.settings,
+            "settings": self.settings.is_some(),
             "transport": "loopback-http1",
         }))
     }

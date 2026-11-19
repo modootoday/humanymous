@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 927,
-      "macos": 927,
-      "windows": 893
+      "linux": 933,
+      "macos": 933,
+      "windows": 898
     },
     "common_test_names": [
       "gateway::accept::tests::accept_serves_a_real_connection",
@@ -792,6 +792,11 @@
       "gateway::tests::maintenance::server_gc_sweeps_sessions_without_optional_kernels",
       "gateway::tests::maintenance::server_gc_sweeps_the_installed_ban_store",
       "gateway::tests::missing_client_is_challenge_and_missing_planes_are_not_ready",
+      "gateway::tests::modes::ban_gate_overlay_monitor_is_audit_only",
+      "gateway::tests::modes::gate_modes_follow_go_defaults_and_the_active_overlay",
+      "gateway::tests::modes::recon_sweep_overlay_monitor_audits_without_blocking",
+      "gateway::tests::modes::spoof_gate_reads_the_overlay_per_request",
+      "gateway::tests::modes::startup_edge_modes_are_boot_modes_under_the_overlay",
       "gateway::tests::real_tcp_audit_before_origin_and_negative_counter_zero",
       "gateway::tests::recovery_without_independent_head_never_opens_state_or_calls_witness",
       "gateway::tests::replay_and_collect_cross_session_cannot_gain_origin_ticket",
@@ -931,6 +936,7 @@
       "gateway::logging::tests::file_sink_rejects_symlink",
       "gateway::tests::edge::dual_control::ledger::r162_commit_then_edge_denies",
       "gateway::tests::service::exposure::unix_admin_bans_need_an_enforceable_gate",
+      "gateway::tests::service::exposure::unix_edge_gate_modes_follow_the_admin_settings_overlay",
       "gateway::tests::service::exposure::unix_public_tls_edge_and_loopback_admin_listener",
       "gateway::tests::service::hosted_only_witnessed_settings_commit_invalidates_sessions_and_restores",
       "gateway::tests::service::settings_operator::native_operator_commit_is_witnessed_cas_and_invalidates_sessions",

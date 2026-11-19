@@ -10,7 +10,9 @@ use zeroize::Zeroizing;
 
 /// Edge gate section of the private startup document. Absent, both gates
 /// enforce (Go's default without a settings store), HSTS is off and no
-/// origin-cloak header is attached. Not Debug: it carries the origin key.
+/// origin-cloak header is attached. The two modes are boot modes: an active
+/// settings overlay entry for the gate overrides them per request
+/// (`application::modes`). Not Debug: it carries the origin key.
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Edge {

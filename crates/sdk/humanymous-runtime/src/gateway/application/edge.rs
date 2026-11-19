@@ -191,7 +191,7 @@ impl Application {
         }
         let mut headers = req.headers.clone();
         let tenant = self.config.scope.tenant.clone();
-        let enforce = self.config.edge.spoof_header == Mode::Enforce;
+        let enforce = self.gate_mode(super::Gate::SpoofHeader) == Mode::Enforce;
         let Some(spoof) = guard::spoof_gate(&mut headers, enforce, &tenant, "") else {
             // Go strips only when a forged value was found: empty-valued
             // internal fields stay in the scored view (the forwarder still
@@ -216,7 +216,7 @@ impl Application {
         req: &Request,
         route_class: &str,
     ) -> Result<Option<Decision>, Rejection> {
-        let mode = self.config.edge.ban;
+        let mode = self.gate_mode(super::Gate::Ban);
         let Some(bans) = self.bans.as_ref().filter(|_| mode != Mode::Off) else {
             return Ok(None);
         };
