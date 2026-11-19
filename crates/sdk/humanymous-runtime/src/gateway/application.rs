@@ -29,12 +29,14 @@ mod maintenance;
 mod modes;
 mod settings;
 mod tls;
+mod verdict;
 // L1 consumer adapter only; no serving observation point is accepted yet.
 #[cfg(test)]
 mod temporal;
 pub use edge::{GateResponse, HEALTHZ, READYZ, ReadySwitch};
 pub use gates::AGENT_NONCE_TTL;
 pub use modes::{ActiveOverlay, Gate, overlay_mode};
+pub use verdict::{VERDICT_TTL_SECS, verdict_cookie};
 
 /// Internal result: ALLOW is a one-use origin dispatch, never a reusable ticket.
 pub enum Decision {
@@ -61,6 +63,17 @@ pub struct Upstream {
     correlation_id: String,
     route_class: String,
     started_ms: u64,
+    /// `Set-Cookie` values for the origin response (minted or cleared
+    /// verdict token).
+    cookies: Vec<String>,
+}
+
+#[cfg(test)]
+impl Upstream {
+    /// `Set-Cookie` values the origin response will carry.
+    pub(in crate::gateway) fn cookies(&self) -> &[String] {
+        &self.cookies
+    }
 }
 
 /// Origin-side refusal plus the transport error class when one was observed.
@@ -105,6 +118,7 @@ pub struct Application {
     installed: gates::Installed,
     /// Source of the per-gate module modes (settings overlay, when installed).
     modes: modes::Modes,
+    verdicts: verdict::Verdicts,
     /// Readiness gate of the `/_humanymous/readyz` probe.
     ready: ReadySwitch,
     /// Period of the composite in-memory sweep (legacy maintenance ticker).
@@ -131,6 +145,7 @@ impl Application {
             origin_key,
             installed: gates::Installed::default(),
             modes: modes::Modes::default(),
+            verdicts: verdict::Verdicts::default(),
             ready: ReadySwitch::default(),
             sweep_interval: maintenance::INTERVAL,
         })
@@ -304,9 +319,10 @@ impl Application {
             format!("{id}:{}", authorized.counter).as_bytes(),
         ));
         let correlation_id = commitment(req);
+        let mut cookies = Vec::new();
         if !collect {
             // Legacy ServeHTTP gates between route resolution and the verdict.
-            match self.run_gates(req, id, now, (&request_id, &correlation_id))? {
+            match self.run_gates(req, id, now, (&request_id, &correlation_id), &mut cookies)? {
                 gates::Gated::Continue => {}
                 gates::Gated::Answer(decision) => return Ok(decision),
                 gates::Gated::Forward => {
@@ -319,6 +335,7 @@ impl Application {
                             correlation_id,
                             route_class: route_class.as_str().into(),
                             started_ms: now,
+                            cookies,
                         },
                     });
                 }
@@ -422,11 +439,12 @@ impl Application {
         let route_class: String = crate::gateway::request::route_class(&req.headers)
             .as_str()
             .into();
-        let upstream = Upstream {
+        let mut upstream = Upstream {
             request_id: request_id.clone(),
             correlation_id: correlation_id.clone(),
             route_class: route_class.clone(),
             started_ms: now,
+            cookies,
         };
         let record = Record {
             event_type: if collect {
@@ -453,6 +471,26 @@ impl Application {
             return Err(Rejection::new(503, "durable_audit"));
         }
         self.check_deadline(deadline, clock())?;
+        if verdict == "ALLOW" && !collect {
+            // Owner decision #4: the attestation floor, then `hmn_vt`
+            // issuance, each recorded before the effect.
+            match self.allowed(req, id, now / 1000, &upstream.route_class)? {
+                verdict::Allowed::StepUp => {
+                    return Ok(Decision::Local(
+                        401,
+                        serde_json::to_vec(&serde_json::json!({"verdict":"CHALLENGE"}))
+                            .map_err(|_| Rejection::new(503, "serialization"))?,
+                    ));
+                }
+                verdict::Allowed::Forward(minted) => {
+                    if !minted.is_empty() {
+                        // A minted token replaces one the gate cleared.
+                        upstream.cookies = minted;
+                    }
+                }
+            }
+            self.check_deadline(deadline, clock())?;
+        }
         if verdict == "ALLOW" {
             Ok(Decision::Origin { deadline, upstream })
         } else {
@@ -804,6 +842,9 @@ impl Application {
                 };
                 // Plaintext listener: HSTS is never added here (owner decision C10).
                 response.secure(false);
+                for cookie in &upstream.cookies {
+                    response.set_cookie(cookie)?;
+                }
                 let extra = ack
                     .as_ref()
                     .map(|ack| ack.headers(response.status))

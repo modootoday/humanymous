@@ -90,7 +90,8 @@ fn absent_gates_section_installs_nothing() {
     let provisioned = configuration.gates.load(false).unwrap();
     assert_eq!(
         provisioned.readiness(),
-        json!({"bans":false,"agent_keys":false,"pat_issuers":false,"webauthn":false,"sweep":false})
+        json!({"bans":false,"agent_keys":false,"pat_issuers":false,"webauthn":false,"sweep":false,
+            "verdict_token":false,"route_presets":null})
     );
     let provisioned = gates(json!({})).load(true).unwrap();
     assert!(provisioned.bans.is_none() && provisioned.sweep.is_none());
@@ -122,7 +123,8 @@ fn configured_sources_load_go_formats_and_serve() {
     let provisioned = configured.load(false).unwrap();
     assert_eq!(
         provisioned.readiness(),
-        json!({"bans":true,"agent_keys":true,"pat_issuers":true,"webauthn":true,"sweep":true})
+        json!({"bans":true,"agent_keys":true,"pat_issuers":true,"webauthn":true,"sweep":true,
+            "verdict_token":false,"route_presets":null})
     );
     let (_, tracker) = provisioned.webauthn.as_ref().unwrap();
     assert_eq!(
@@ -178,6 +180,26 @@ fn configured_but_invalid_sources_fail_closed() {
     refused.push(
         json!({"bans": {"capacity":0,"max_keys":64,"max_hits_per_key":256,
         "max_key_bytes":128,"max_payload_bytes":1048576,"gc_scan_budget":64}}),
+    );
+    // Owner #4: a short or non-hex token key; the attestation floor without a
+    // configured token key (Go validateAttestedRoutes); the floor on root.
+    let key = json!({"key_hex": "30".repeat(32)});
+    refused.push(json!({"verdict_token": {"key_hex": "30".repeat(31)}}));
+    refused.push(json!({"verdict_token": {"key_hex": "zz".repeat(32)}}));
+    let attested = dir.file("routes", b"/checkout attested\n/health off\n");
+    refused.push(json!({"routes": path(&attested)}));
+    let root = dir.file("routes-root", b"/ attested\n");
+    refused.push(json!({"routes": path(&root), "verdict_token": key}));
+    refused.push(json!({"routes": path(&missing), "verdict_token": key}));
+    let loaded = gates(json!({"routes": path(&attested), "verdict_token": key}))
+        .load(false)
+        .unwrap();
+    assert_eq!(
+        (
+            loaded.readiness()["verdict_token"].clone(),
+            loaded.readiness()["route_presets"].clone()
+        ),
+        (json!(true), json!(2))
     );
     for value in refused {
         assert!(gates(value.clone()).load(false).is_err(), "{value}");

@@ -145,7 +145,7 @@ impl Application {
         self.client = client;
     }
 
-    fn append_all(&mut self, records: Vec<Record>) -> Result<(), Rejection> {
+    pub(super) fn append_all(&mut self, records: Vec<Record>) -> Result<(), Rejection> {
         for record in records {
             if self.audit.append(record).is_err() {
                 self.sessions.poison();
@@ -161,10 +161,14 @@ impl Application {
         &mut self,
         outcome: Option<Outcome>,
         linkage: (&str, &str),
+        cookies: &mut Vec<String>,
     ) -> Result<Option<Gated>, Rejection> {
         let Some(mut outcome) = outcome else {
             return Ok(None);
         };
+        if outcome.clear_verdict_cookie {
+            cookies.push(gates::CLEAR_VERDICT_COOKIE.into());
+        }
         if outcome.effect == Effect::Forward {
             for record in &mut outcome.records {
                 record.request_id = linkage.0.into();
@@ -192,6 +196,7 @@ impl Application {
         sid: &str,
         now_ms: u64,
         linkage: (&str, &str),
+        cookies: &mut Vec<String>,
     ) -> Result<Gated, Rejection> {
         let tenant = self.config.scope.tenant.clone();
         let class = crate::gateway::request::route_class(&req.headers);
@@ -200,13 +205,14 @@ impl Application {
             pseudonym: "",
             route_class: class.as_str(),
         };
+        let path = req.target.split('?').next().unwrap_or("");
+        let (enforcing, attest_floor, name) = self.gate_route(path);
         let route = Route {
-            enforcing: true,
-            attest_floor: false,
-            name: "",
+            enforcing,
+            attest_floor,
+            name,
         };
         let wall = Duration::from_millis(now_ms);
-        let path = req.target.split('?').next().unwrap_or("");
         let agent = self.installed.agent.as_mut().map(|(directory, nonces)| {
             let presented = web_bot_auth::Request {
                 authority: req.header("host").unwrap_or(""),
@@ -218,14 +224,14 @@ impl Application {
             let verdict = web_bot_auth::verify(&presented, Some(directory), nonces, wall);
             gates::agent_auth(&subject, &route, &verdict)
         });
-        if let Some(gated) = self.settle(agent, linkage)? {
+        if let Some(gated) = self.settle(agent, linkage, cookies)? {
             return Ok(gated);
         }
         let pat = self.installed.pat.as_mut().map(|verifier| {
             let header = req.header("authorization");
             gates::pat(&subject, &route, || verifier.verify(header, wall))
         });
-        if let Some(gated) = self.settle(pat, linkage)? {
+        if let Some(gated) = self.settle(pat, linkage, cookies)? {
             return Ok(gated);
         }
         let monotonic = self.installed.epoch.map(|epoch| epoch.elapsed());
@@ -243,11 +249,17 @@ impl Application {
             )),
             _ => None,
         };
-        if let Some(gated) = self.settle(webauthn, linkage)? {
+        if let Some(gated) = self.settle(webauthn, linkage, cookies)? {
             return Ok(gated);
         }
-        let upgrade = Some(gates::upgrade(&subject, &route, false));
-        if let Some(gated) = self.settle(upgrade, linkage)? {
+        let now_s = now_ms / 1000;
+        let verdict_token = self.verdict_token_gate(req, sid, now_s, &subject, &route);
+        if let Some(gated) = self.settle(verdict_token, linkage, cookies)? {
+            return Ok(gated);
+        }
+        let valid_token = self.token_state(req, sid, now_s) == Some(gates::Token::Valid);
+        let upgrade = Some(gates::upgrade(&subject, &route, valid_token));
+        if let Some(gated) = self.settle(upgrade, linkage, cookies)? {
             return Ok(gated);
         }
         let binding = token::bind_key(
@@ -268,7 +280,7 @@ impl Application {
             ),
             _ => None,
         };
-        if let Some(gated) = self.settle(sweep, linkage)? {
+        if let Some(gated) = self.settle(sweep, linkage, cookies)? {
             return Ok(gated);
         }
         Ok(Gated::Continue)

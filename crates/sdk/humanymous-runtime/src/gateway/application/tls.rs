@@ -368,6 +368,7 @@ impl Application {
             ack,
             h1_idle,
         } = args;
+        let cookies: Vec<String>;
         let response = match decision {
             Decision::Local(status, body) => {
                 let body = zeroize::Zeroizing::new(body);
@@ -438,12 +439,18 @@ impl Application {
                 .await
                 .unwrap_or_else(|_| Err(Rejection::new(503, "origin_timeout").into()));
                 // No TLS response byte precedes this encoded frame.
-                outcome.map_err(|error| self.upstream_failure(&upstream, error, false))?
+                let response =
+                    outcome.map_err(|error| self.upstream_failure(&upstream, error, false))?;
+                cookies = upstream.cookies;
+                response
             }
         };
         let mut response = response;
         // TLS listener: HSTS only when configured (owner decision C10).
         response.secure(self.config.edge.hsts);
+        for cookie in &cookies {
+            response.set_cookie(cookie)?;
+        }
         let headers = ack
             .as_ref()
             .map(|value| value.headers(response.status))

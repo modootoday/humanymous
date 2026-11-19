@@ -13,6 +13,7 @@ mod service;
 mod settings;
 mod stream;
 mod tls;
+mod verdict;
 use crate::audit::record::Record;
 use crate::authority::decision::DurableAudit;
 use crate::gateway::{

@@ -26,6 +26,8 @@ use crate::gateway::attest_floor::fanout::{self, CredentialFanout};
 use crate::gateway::ban::gate::Mode;
 use crate::gateway::configuration::admin::BanStoreBounds;
 use crate::gateway::credential::{MAX_CONFIG, privacy_pass, web_bot_auth, webauthn};
+use crate::gateway::route_policy::{RouteTable, parse_routes, validate_attested_routes};
+use crate::gateway::token::TokenKey;
 use crate::network::correlation;
 use crate::network::history::anomaly;
 use crate::network::history::sweep::{Config as SweepConfig, Detector};
@@ -33,6 +35,7 @@ use serde::Deserialize;
 use std::io::Read;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
+use zeroize::Zeroizing;
 
 /// Gate provisioning section of the private startup document.
 #[derive(Default, Deserialize)]
@@ -54,6 +57,22 @@ pub struct Gates {
     /// Decision-probing sweep detector (HR-30).
     #[serde(default)]
     pub sweep: Option<Sweep>,
+    /// `hmn_vt` verdict-token key (owner decision #4). Absent: no token is
+    /// issued and upgrades on enforcing routes stay denied (HR-26).
+    #[serde(default)]
+    pub verdict_token: Option<VerdictToken>,
+    /// Route preset file, `<prefix> <preset>` per line (Go `-routes`).
+    /// Absent: every route enforces and none carries the attestation floor.
+    #[serde(default)]
+    pub routes: Option<PathBuf>,
+}
+
+/// Verdict-token key section. Not Debug: it carries the key.
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct VerdictToken {
+    /// HMAC key as hex, at least `token::MIN_KEY` bytes.
+    pub key_hex: Zeroizing<String>,
 }
 
 /// WebAuthn credentials, binding and the credential fan-out tracker bounds.
@@ -139,6 +158,10 @@ pub struct Provisioned {
     pub webauthn: Option<(webauthn::Registry, CredentialFanout)>,
     /// Sweep detector and its boot mode.
     pub sweep: Option<(Detector, Mode)>,
+    /// Verdict-token key.
+    pub verdict_token: Option<TokenKey>,
+    /// Route presets.
+    pub routes: Option<RouteTable>,
 }
 
 impl Provisioned {
@@ -146,7 +169,8 @@ impl Provisioned {
     pub fn readiness(&self) -> serde_json::Value {
         serde_json::json!({"bans":self.bans.is_some(),"agent_keys":self.agent_keys.is_some(),
             "pat_issuers":self.pat_issuers.is_some(),"webauthn":self.webauthn.is_some(),
-            "sweep":self.sweep.is_some()})
+            "sweep":self.sweep.is_some(),"verdict_token":self.verdict_token.is_some(),
+            "route_presets":self.routes.as_ref().map(|routes| routes.routes.len())})
     }
 }
 
@@ -231,7 +255,34 @@ impl Gates {
             }
             None => None,
         };
+        let verdict_token = match &self.verdict_token {
+            Some(config) => {
+                let bytes =
+                    Zeroizing::new(hex::decode(config.key_hex.as_bytes()).map_err(|_| bad())?);
+                Some(TokenKey::new(bytes.to_vec()).map_err(|_| bad())?)
+            }
+            None => None,
+        };
+        let routes = match &self.routes {
+            Some(path) => {
+                let text = read(path)?;
+                let routes = parse_routes(&path.display().to_string(), text.as_bytes())
+                    .map_err(|_| bad())?;
+                // Go `validateAttestedRoutes`: the floor needs a configured
+                // (shared) token key; the no-verifier warning is not fatal.
+                let verifier = agent_keys.is_some() || pat_issuers.is_some() || webauthn.is_some();
+                validate_attested_routes(&routes, verdict_token.is_some(), verifier)
+                    .map_err(|_| bad())?;
+                Some(RouteTable {
+                    routes,
+                    global_monitor: false,
+                })
+            }
+            None => None,
+        };
         Ok(Provisioned {
+            verdict_token,
+            routes,
             bans,
             agent_keys,
             pat_issuers,

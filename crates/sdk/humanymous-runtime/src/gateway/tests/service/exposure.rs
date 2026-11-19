@@ -347,6 +347,17 @@ async fn unix_gate_provisioning_loads_or_refuses_startup() {
         "ban store needs a client address source"
     );
 
+    // Owner #4: a verdict-token key binds to the client subnet, so it needs
+    // a trusted client address source.
+    let mut config = fixture.configuration();
+    config.gates =
+        serde_json::from_value(json!({"verdict_token": {"key_hex": "30".repeat(32)}})).unwrap();
+    let refused = ServiceHost::bind(config).await.err().unwrap();
+    assert_eq!(
+        refused.to_string(),
+        "verdict token needs a client address source"
+    );
+
     let key = crate::gateway::credential::web_bot_auth::tests::signer(7);
     let keys = fixture.0.join("agent-keys");
     std::fs::write(
@@ -369,7 +380,8 @@ async fn unix_gate_provisioning_loads_or_refuses_startup() {
     let ready = serde_json::to_value(host.readiness()).unwrap();
     assert_eq!(
         ready["profile"]["gates"],
-        json!({"bans":false,"agent_keys":true,"pat_issuers":false,"webauthn":false,"sweep":true})
+        json!({"bans":false,"agent_keys":true,"pat_issuers":false,"webauthn":false,"sweep":true,
+            "verdict_token":false,"route_presets":null})
     );
     let (sender, receiver) = tokio::sync::watch::channel(None);
     let running = tokio::spawn(host.run(receiver));

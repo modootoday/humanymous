@@ -181,6 +181,18 @@ impl Response {
         }
     }
 
+    /// Append one `Set-Cookie` field minted or cleared by the gateway (the
+    /// `hmn_vt` verdict token); origin fields, including its own
+    /// `Set-Cookie`, are kept.
+    pub(in crate::gateway) fn set_cookie(&mut self, value: &str) -> Result<(), Rejection> {
+        if value.bytes().any(|b| !(32..127).contains(&b)) {
+            return Err(Rejection::new(503, "response_metadata"));
+        }
+        self.headers
+            .push(("Set-Cookie".into(), format!(" {value}")));
+        Ok(())
+    }
+
     /// Reframe one already-validated entity, preserving duplicate end-to-end fields
     /// while preventing an origin from forging gateway counter acknowledgements.
     pub(in crate::gateway) fn encode(

@@ -95,6 +95,16 @@ fn install_provisioned(
     if let Some((detector, mode)) = provisioned.sweep {
         application.install_sweep(detector, mode);
     }
+    if let Some(key) = provisioned.verdict_token {
+        application
+            .install_verdict_token_key(key)
+            .map_err(|_| io::Error::other("verdict token needs a client address source"))?;
+    }
+    if let Some(routes) = provisioned.routes {
+        application
+            .install_route_presets(routes)
+            .map_err(|_| io::Error::other("route presets refused"))?;
+    }
     Ok(())
 }
 
@@ -374,7 +384,7 @@ impl ServiceHost {
         let gates_readiness = provisioned.readiness();
         if gates_readiness
             .as_object()
-            .is_some_and(|gates| gates.values().any(|on| on == true))
+            .is_some_and(|gates| gates.values().any(|on| on == true || on.is_number()))
         {
             profile["gates"] = gates_readiness;
         }
