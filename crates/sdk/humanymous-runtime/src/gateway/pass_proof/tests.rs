@@ -99,3 +99,84 @@ fn wire_model_uses_legacy_field_names() {
     let missing: PassProof = serde_json::from_str("{}").unwrap();
     assert_eq!(missing, PassProof::default());
 }
+
+fn golden() -> serde_json::Value {
+    serde_json::from_str(include_str!(
+        "../../../tests/fixtures/gateway/pass-flow-go-golden.json"
+    ))
+    .unwrap()
+}
+
+fn bits(value: &serde_json::Value) -> f64 {
+    f64::from_bits(u64::from_str_radix(value.as_str().unwrap(), 16).unwrap())
+}
+
+/// B1 differential: `meanFloats`, `stddev` and `allIntegerMs` are bit-exact
+/// against the Go oracle, including empty, overflowing and near-integer input.
+#[test]
+fn statistics_match_go_golden_bit_for_bit() {
+    let golden = golden();
+    let cases = golden["outputs"]["stats"].as_array().unwrap();
+    assert!(cases.len() >= 18);
+    for case in cases {
+        let input: Vec<f64> = case["input"].as_array().unwrap().iter().map(bits).collect();
+        assert_eq!(
+            mean(&input).to_bits(),
+            bits(&case["mean"]).to_bits(),
+            "{input:?}"
+        );
+        assert_eq!(
+            stddev(&input).to_bits(),
+            bits(&case["stddev"]).to_bits(),
+            "{input:?}"
+        );
+        assert_eq!(
+            all_integer_ms(&input),
+            case["allIntegerMs"].as_bool().unwrap(),
+            "{input:?}"
+        );
+    }
+}
+
+/// B1 differential: `realEventOK` accepts and rejects with Go's reason for
+/// every branch of the oracle, decoding the exact bytes Go decoded.
+#[test]
+fn real_event_filter_matches_go_golden() {
+    let golden = golden();
+    let cases = golden["outputs"]["realEvent"].as_array().unwrap();
+    assert!(cases.len() >= 21);
+    for case in cases {
+        let text = case["proof"].as_str().unwrap();
+        let proof: PassProof = serde_json::from_str(text).unwrap();
+        let expected = if case["ok"].as_bool().unwrap() {
+            Ok(())
+        } else {
+            Err(case["reason"].as_str().unwrap())
+        };
+        assert_eq!(real_event_ok(&proof), expected, "{text}");
+    }
+}
+
+/// Legacy TestBehaviorTimingTells: fractional human timing is not integer,
+/// is slower than 15 ms and varies; integer machine timing is the opposite.
+#[test]
+fn behavior_timing_statistics_separate_human_and_machine() {
+    let human = [137.3, 89.7, 211.4, 123.8];
+    let machine = [7.0, 5.0, 9.0, 6.0];
+    assert!(!all_integer_ms(&human));
+    assert!(all_integer_ms(&machine));
+    assert!(mean(&human) >= 15.0);
+    assert!(mean(&machine) < 15.0);
+    assert!(stddev(&human) >= 6.0);
+    assert!(stddev(&machine) < 6.0);
+}
+
+/// Go `int` fields accept negative counts; a negative move count is simply
+/// not a pointer channel.
+#[test]
+fn negative_counts_decode_and_are_not_interaction() {
+    let proof: PassProof =
+        serde_json::from_str(r#"{"trusted":true,"moves":-5,"pathLen":20,"keys":-1}"#).unwrap();
+    assert_eq!(proof.moves, -5);
+    assert_eq!(real_event_ok(&proof), Err("insufficient interaction"));
+}
