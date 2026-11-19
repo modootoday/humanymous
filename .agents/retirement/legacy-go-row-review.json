@@ -16,8 +16,8 @@
  },
  "totals": {
   "ported_unit": 264,
-  "partial": 37,
-  "missing": 2,
+  "partial": 38,
+  "missing": 1,
   "not_applicable": 2,
   "oracle_only": 9
  },
@@ -39,8 +39,7 @@
    "ported_unit": 1
   },
   "cmd/server": {
-   "missing": 1,
-   "partial": 13,
+   "partial": 14,
    "ported_unit": 25,
    "oracle_only": 3
   },
@@ -1693,39 +1692,59 @@
     "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_matches_go_golden",
     "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_ignores_instance_fields_and_collides_on_sub_quantum_replay",
     "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::non_finite_samples_refuse",
-    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::wire_model_uses_legacy_field_names"
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::wire_model_uses_legacy_field_names",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::statistics_match_go_golden_bit_for_bit",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::real_event_filter_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::behavior_timing_statistics_separate_human_and_machine",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::negative_counts_decode_and_are_not_interaction"
    ],
    "go_test_map": {},
    "gaps": [
-    "realEventOK (the real-event pre-filter on pointer/keyboard timing microstructure) and its statistics helpers are not ported: gating Pass on motor timing is an accessibility decision reserved for the owner",
-    "No Rust Pass handler consumes the digest yet; PassStore::reserve_trace takes it"
+    "No Rust Pass handler consumes realEventOK or the digest yet; PassStore::reserve_trace takes the digest"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "PassProof wire model and trace_digest are ported; the digest is byte-identical to Go (golden vectors from Go 1.25.3). Deliberate difference: a non-finite or out-of-range sample returns None instead of an implementation-defined integer.",
+   "notes": "PassProof wire model and trace_digest are ported; the digest is byte-identical to Go (golden vectors from Go 1.25.3). Deliberate difference: a non-finite or out-of-range sample returns None instead of an implementation-defined integer. realEventOK, meanFloats, stddev and allIntegerMs are exact ports under owner decision B1, checked bit for bit against the Go-captured golden tests/fixtures/gateway/pass-flow-go-golden.json; the counts are i64 like Go int. Accessibility conflict recorded for the owner: realEventOK rejects on interaction richness and timing regularity.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_matches_go_golden": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_ignores_instance_fields_and_collides_on_sub_quantum_replay": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::non_finite_samples_refuse": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::wire_model_uses_legacy_field_names": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::wire_model_uses_legacy_field_names": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::statistics_match_go_golden_bit_for_bit": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::real_event_filter_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::behavior_timing_statistics_separate_human_and_machine": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::negative_counts_decode_and_are_not_interaction": "passed"
    }
   },
   {
    "baseline_path": "cmd/server/pass_scoring.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/pass_scoring.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/pass_scoring/tests.rs::pass_signals_are_registered_with_go_weights",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_scoring/tests.rs::behavior_tells_and_scores_match_go_golden",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_scoring/tests.rs::difficulty_and_label_match_go_golden",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_scoring/tests.rs::velocity_escalation_folds_each_level_once",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_scoring/tests.rs::pow_cost_scales_with_difficulty_and_velocity_up_to_twenty",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_scoring/tests.rs::solved_signal_is_an_ok_server_upgrade"
+   ],
    "go_test_map": {},
    "gaps": [
-    "applyPassVelocity",
-    "applyPassBehavior timing/mobile tells",
-    "passDifficulty from risk",
-    "passLabel/isBotLabel KPI labels"
+    "applyPassVelocity metering (per-session and per-fingerprint 30 s limiter observation, velLevel dedupe, store re-score) is not wired; only the velocity_escalation kernel is ported"
    ],
    "retire_basis": null,
-   "confidence": "medium",
-   "notes": "Signal ids are registered and consumed by the frozen engine, but no Rust code emits them from a pass flow.",
-   "test_verification": {}
+   "confidence": "high",
+   "notes": "Owner decision B1 (#75 comment 6979694428) exact-parity port: passDifficulty (including Go amd64 int conversion of NaN, infinities and int64 overflow to the minimum int64, clamped to 0), passLabel, isBotLabel, the applyPassBehavior tells and the velocity escalation kernel, checked against the Go-captured golden tests/fixtures/gateway/pass-flow-go-golden.json (go1.26.3, --network none). Signals come from the frozen registry and the frozen engine scores them to Go's risk, verdict and hard rule. Accessibility conflict recorded for the owner: the behavior tells raise the risk of fast, regular input and can hold a solved Pass short of ALLOW.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/pass_scoring/tests.rs::pass_signals_are_registered_with_go_weights": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_scoring/tests.rs::behavior_tells_and_scores_match_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_scoring/tests.rs::difficulty_and_label_match_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_scoring/tests.rs::velocity_escalation_folds_each_level_once": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_scoring/tests.rs::pow_cost_scales_with_difficulty_and_velocity_up_to_twenty": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_scoring/tests.rs::solved_signal_is_an_ok_server_upgrade": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/pass_store.go",

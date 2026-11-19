@@ -1,0 +1,4227 @@
+{
+ "provenance": {
+  "oracle_commit": "981d25cf71a5a54855d7e2b4359e832a9d5998e5",
+  "oracle_packages": [
+   "cmd/server (pass_scoring.go applyPassVelocity/applyPassBehavior/passDifficulty/passLabel/isBotLabel/passFP, pass_proof.go realEventOK/meanFloats/stddev/allIntegerMs, pass_handler.go handlePassNew/handlePassPoW/handlePassAttest/handlePassSolve/handlePassKPI through app.routes, pass_store.go)",
+   "internal/pass",
+   "internal/pow",
+   "internal/attestation",
+   "internal/abuse",
+   "internal/collector",
+   "internal/scoring (NewEngine: the stored riskScore, verdict and hardRuleFired)",
+   "internal/gate (IssueStepUpReceipt)"
+  ],
+  "image": "mirror.gcr.io/library/golang:1.26.3-alpine@sha256:91eda9776261207ea25fd06b5b7fed8d397dd2c0a283e77f2ab6e91bfa71079d",
+  "go_version": "go1.26.3 linux/amd64 (GOTOOLCHAIN=local)",
+  "command": "docker run --rm --network none -e GOTOOLCHAIN=local -e GOPROXY=off -e GOFLAGS=-mod=readonly -e GOMODCACHE=/modcache -e GOCACHE=/tmp/gocache -v <modcache>:/modcache:ro -v <git archive 981d25c go.mod go.sum cmd internal pkg, plus the scratch in-package capture test cmd/server/zz_lanec_capture_test.go>:/src:ro -v <out>:/out -w /src <image> go test -count=1 -run ^TestLaneCCapture$ ./cmd/server/",
+  "capture_program_sha256": {
+   "cmd/server/zz_lanec_capture_test.go": "a16cbcab01d8c890a2d4d3df84fc858d1938868c4cef9742f481e636d5b6636a"
+  },
+  "capture_program_committed": false,
+  "output_sha256": {
+   "capture.json": "281491ecc149cf5dc1c0e1ae497af0efdbcabd310e55d3104247b47cee886a29"
+  },
+  "capture_notes": [
+   "floats are IEEE-754 bit patterns in lowercase hex (Go math.Float64bits); risk inputs include NaN (Go math.NaN 0x7ff8000000000001), the infinities and values whose (risk-20)/15 overflows int64",
+   "realEvent[].proof, behavior[].proof and the scenario request bodies are the exact JSON bytes decoded by Go; outputs bind the inputs",
+   "behavior[] ran applyPassBehavior on a fresh app per proof; signals are the appended network signals and scoring is the stored engine result",
+   "velocity[] ran applyPassVelocity on one app at base+offsetMs; velLevel -1 means the pass session was never created (level 0 returns before passStore.get)",
+   "scenarios[] drove the real app.routes() handlers through httptest on newApp; nonces lists the /api/pass/new challenge nonces in issue order (crypto/rand), which the Rust replay injects; every request ran within one wall-clock second recorded as nowUnix (the capture retried a scenario that crossed a second boundary)",
+   "scenarios with stepUp true set app.stepUpKey to constants.stepUpKey; the receipt expiry is nowUnix+120",
+   "the PoW solutions inside recorded /api/pass/pow bodies came from internal/pow Solve; the Rust replay sends the recorded bytes"
+  ],
+  "scope": "Frozen oracle outputs for differential parity only; never regenerate to hide drift",
+  "committed_transform": "The committed outputs equal capture.json except that scenarios[].steps[].json is removed: it was a parsed copy of the same step response bytes (fromjson of response for every application/json step, null otherwise), so nothing recorded is lost. It was removed because the parsed copy placed derived attestation tokens next to a \"token\" key, which the repository secret scan reports as generic API keys; the tokens are HMAC outputs under the readable test master key in outputs.constants, not credentials. The replay decides JSON comparison from contentType."
+ },
+ "outputs": {
+  "behavior": [
+   {
+    "proof": "{\"keyDurs\":[7,5,9,6]}",
+    "scoring": {
+     "riskScore": 19,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "signals": [
+     {
+      "id": "l4.key.machine_speed",
+      "layer": "L4",
+      "value": null,
+      "verdict": "BOT",
+      "weight": 18,
+      "score": 12.6,
+      "confidence": 0.7,
+      "collected": "server",
+      "notes": "machine-speed inter-key latency (<15ms)"
+     },
+     {
+      "id": "l4.key.flight_std",
+      "layer": "L4",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 8,
+      "score": 2,
+      "confidence": 0.5,
+      "collected": "server",
+      "notes": "near-zero keystroke flight variance"
+     },
+     {
+      "id": "l4.event.perfect_timing",
+      "layer": "L4",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 18,
+      "score": 5.3999999999999995,
+      "confidence": 0.6,
+      "collected": "server",
+      "notes": "zero sub-ms jitter (synthetic timing)"
+     }
+    ],
+    "stored": true
+   },
+   {
+    "proof": "{\"keyDurs\":[137.3,89.7,211.4,123.8]}",
+    "scoring": {
+     "riskScore": 0,
+     "verdict": "",
+     "hardRuleFired": ""
+    },
+    "signals": [],
+    "stored": false
+   },
+   {
+    "proof": "{\"keyDurs\":[7,5]}",
+    "scoring": {
+     "riskScore": 0,
+     "verdict": "",
+     "hardRuleFired": ""
+    },
+    "signals": [],
+    "stored": false
+   },
+   {
+    "proof": "{\"durations\":[16,17,15,16,18]}",
+    "scoring": {
+     "riskScore": 5.4,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "signals": [
+     {
+      "id": "l4.event.perfect_timing",
+      "layer": "L4",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 18,
+      "score": 5.3999999999999995,
+      "confidence": 0.6,
+      "collected": "server",
+      "notes": "zero sub-ms jitter (synthetic pointer timing)"
+     }
+    ],
+    "stored": true
+   },
+   {
+    "proof": "{\"durations\":[16,17,15,16]}",
+    "scoring": {
+     "riskScore": 0,
+     "verdict": "",
+     "hardRuleFired": ""
+    },
+    "signals": [],
+    "stored": false
+   },
+   {
+    "proof": "{\"keyDurs\":[100,140,90],\"durations\":[16,17,15,16,18]}",
+    "scoring": {
+     "riskScore": 5.4,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "signals": [
+     {
+      "id": "l4.event.perfect_timing",
+      "layer": "L4",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 18,
+      "score": 5.3999999999999995,
+      "confidence": 0.6,
+      "collected": "server",
+      "notes": "zero sub-ms jitter (synthetic timing)"
+     }
+    ],
+    "stored": true
+   },
+   {
+    "proof": "{\"pointerType\":\"touch\"}",
+    "scoring": {
+     "riskScore": 5,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "signals": [
+     {
+      "id": "l2.adv.mobile_inconsistent",
+      "layer": "L2",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 20,
+      "score": 5,
+      "confidence": 0.5,
+      "collected": "server",
+      "notes": "touch/mobile claim without device-motion micro-jitter"
+     }
+    ],
+    "stored": true
+   },
+   {
+    "proof": "{\"pointerType\":\"touch\",\"motion\":[0.1,0.25,0.31]}",
+    "scoring": {
+     "riskScore": 0,
+     "verdict": "",
+     "hardRuleFired": ""
+    },
+    "signals": [],
+    "stored": false
+   },
+   {
+    "proof": "{\"pressures\":[0.5],\"motion\":[0.1,0.2,0.3]}",
+    "scoring": {
+     "riskScore": 0,
+     "verdict": "",
+     "hardRuleFired": ""
+    },
+    "signals": [],
+    "stored": false
+   },
+   {
+    "proof": "{\"pressures\":[0.5],\"motion\":[1,1,1]}",
+    "scoring": {
+     "riskScore": 5,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "signals": [
+     {
+      "id": "l2.adv.mobile_inconsistent",
+      "layer": "L2",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 20,
+      "score": 5,
+      "confidence": 0.5,
+      "collected": "server",
+      "notes": "touch/mobile claim without device-motion micro-jitter"
+     }
+    ],
+    "stored": true
+   },
+   {
+    "proof": "{\"pointerType\":\"touch\",\"motion\":[1,1.005,1.01]}",
+    "scoring": {
+     "riskScore": 5,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "signals": [
+     {
+      "id": "l2.adv.mobile_inconsistent",
+      "layer": "L2",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 20,
+      "score": 5,
+      "confidence": 0.5,
+      "collected": "server",
+      "notes": "touch/mobile claim without device-motion micro-jitter"
+     }
+    ],
+    "stored": true
+   },
+   {
+    "proof": "{\"pointerType\":\"mouse\"}",
+    "scoring": {
+     "riskScore": 0,
+     "verdict": "",
+     "hardRuleFired": ""
+    },
+    "signals": [],
+    "stored": false
+   },
+   {
+    "proof": "{\"pointerType\":\"pen\",\"pressures\":[]}",
+    "scoring": {
+     "riskScore": 0,
+     "verdict": "",
+     "hardRuleFired": ""
+    },
+    "signals": [],
+    "stored": false
+   },
+   {
+    "proof": "{\"keyDurs\":[20.5,20.5,20.5]}",
+    "scoring": {
+     "riskScore": 2,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "signals": [
+     {
+      "id": "l4.key.flight_std",
+      "layer": "L4",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 8,
+      "score": 2,
+      "confidence": 0.5,
+      "collected": "server",
+      "notes": "near-zero keystroke flight variance"
+     }
+    ],
+    "stored": true
+   },
+   {
+    "proof": "{\"keyDurs\":[14.5,14.9,15.2]}",
+    "scoring": {
+     "riskScore": 14.3,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "signals": [
+     {
+      "id": "l4.key.machine_speed",
+      "layer": "L4",
+      "value": null,
+      "verdict": "BOT",
+      "weight": 18,
+      "score": 12.6,
+      "confidence": 0.7,
+      "collected": "server",
+      "notes": "machine-speed inter-key latency (<15ms)"
+     },
+     {
+      "id": "l4.key.flight_std",
+      "layer": "L4",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 8,
+      "score": 2,
+      "confidence": 0.5,
+      "collected": "server",
+      "notes": "near-zero keystroke flight variance"
+     }
+    ],
+    "stored": true
+   },
+   {
+    "proof": "{\"keyDurs\":[3,4,5],\"durations\":[1,2,3,4,5],\"pointerType\":\"touch\",\"motion\":[2]}",
+    "scoring": {
+     "riskScore": 23,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "signals": [
+     {
+      "id": "l4.key.machine_speed",
+      "layer": "L4",
+      "value": null,
+      "verdict": "BOT",
+      "weight": 18,
+      "score": 12.6,
+      "confidence": 0.7,
+      "collected": "server",
+      "notes": "machine-speed inter-key latency (<15ms)"
+     },
+     {
+      "id": "l4.key.flight_std",
+      "layer": "L4",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 8,
+      "score": 2,
+      "confidence": 0.5,
+      "collected": "server",
+      "notes": "near-zero keystroke flight variance"
+     },
+     {
+      "id": "l4.event.perfect_timing",
+      "layer": "L4",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 18,
+      "score": 5.3999999999999995,
+      "confidence": 0.6,
+      "collected": "server",
+      "notes": "zero sub-ms jitter (synthetic timing)"
+     },
+     {
+      "id": "l2.adv.mobile_inconsistent",
+      "layer": "L2",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 20,
+      "score": 5,
+      "confidence": 0.5,
+      "collected": "server",
+      "notes": "touch/mobile claim without device-motion micro-jitter"
+     }
+    ],
+    "stored": true
+   },
+   {
+    "proof": "{\"keyDurs\":[1e-7,2,3]}",
+    "scoring": {
+     "riskScore": 19,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "signals": [
+     {
+      "id": "l4.key.machine_speed",
+      "layer": "L4",
+      "value": null,
+      "verdict": "BOT",
+      "weight": 18,
+      "score": 12.6,
+      "confidence": 0.7,
+      "collected": "server",
+      "notes": "machine-speed inter-key latency (<15ms)"
+     },
+     {
+      "id": "l4.key.flight_std",
+      "layer": "L4",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 8,
+      "score": 2,
+      "confidence": 0.5,
+      "collected": "server",
+      "notes": "near-zero keystroke flight variance"
+     },
+     {
+      "id": "l4.event.perfect_timing",
+      "layer": "L4",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 18,
+      "score": 5.3999999999999995,
+      "confidence": 0.6,
+      "collected": "server",
+      "notes": "zero sub-ms jitter (synthetic timing)"
+     }
+    ],
+    "stored": true
+   },
+   {
+    "proof": "{}",
+    "scoring": {
+     "riskScore": 0,
+     "verdict": "",
+     "hardRuleFired": ""
+    },
+    "signals": [],
+    "stored": false
+   }
+  ],
+  "constants": {
+   "masterKey": "fm11-lane-c-pass-master-key-0001",
+   "passMaxTries": 4,
+   "passWindow": 30,
+   "powWindow": 120,
+   "stepUpKey": "fm11-lane-c-shared-step-up-token-key-0001"
+  },
+  "difficulty": {
+   "difficulty": [
+    {
+     "difficulty": 0,
+     "redteam": "",
+     "risk": "c059000000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "c059000000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "c059000000000000"
+    },
+    {
+     "difficulty": 0,
+     "redteam": "",
+     "risk": "bfe0000000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "bfe0000000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "bfe0000000000000"
+    },
+    {
+     "difficulty": 0,
+     "redteam": "",
+     "risk": "0"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "0"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "0"
+    },
+    {
+     "difficulty": 0,
+     "redteam": "",
+     "risk": "4033fd70a3d70a3d"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "4033fd70a3d70a3d"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "4033fd70a3d70a3d"
+    },
+    {
+     "difficulty": 0,
+     "redteam": "",
+     "risk": "4034000000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "4034000000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "4034000000000000"
+    },
+    {
+     "difficulty": 0,
+     "redteam": "",
+     "risk": "403dffbe76c8b439"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "403dffbe76c8b439"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "403dffbe76c8b439"
+    },
+    {
+     "difficulty": 0,
+     "redteam": "",
+     "risk": "403e000000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "403e000000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "403e000000000000"
+    },
+    {
+     "difficulty": 0,
+     "redteam": "",
+     "risk": "40417eb851eb851f"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "40417eb851eb851f"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "40417eb851eb851f"
+    },
+    {
+     "difficulty": 1,
+     "redteam": "",
+     "risk": "4041800000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "4041800000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "4041800000000000"
+    },
+    {
+     "difficulty": 1,
+     "redteam": "",
+     "risk": "4046733333333333"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "4046733333333333"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "4046733333333333"
+    },
+    {
+     "difficulty": 1,
+     "redteam": "",
+     "risk": "4048f33333333333"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "4048f33333333333"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "4048f33333333333"
+    },
+    {
+     "difficulty": 2,
+     "redteam": "",
+     "risk": "4049000000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "4049000000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "4049000000000000"
+    },
+    {
+     "difficulty": 2,
+     "redteam": "",
+     "risk": "40503f5c28f5c28f"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "40503f5c28f5c28f"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "40503f5c28f5c28f"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "",
+     "risk": "4050400000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "4050400000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "4050400000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "",
+     "risk": "40517f5c28f5c28f"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "40517f5c28f5c28f"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "40517f5c28f5c28f"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "",
+     "risk": "4051800000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "4051800000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "4051800000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "",
+     "risk": "4053f9999999999a"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "4053f9999999999a"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "4053f9999999999a"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "",
+     "risk": "4054000000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "4054000000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "4054000000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "",
+     "risk": "408f400000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "408f400000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "408f400000000000"
+    },
+    {
+     "difficulty": 0,
+     "redteam": "",
+     "risk": "7e37e43c8800759c"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "7e37e43c8800759c"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "7e37e43c8800759c"
+    },
+    {
+     "difficulty": 0,
+     "redteam": "",
+     "risk": "fe37e43c8800759c"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "fe37e43c8800759c"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "fe37e43c8800759c"
+    },
+    {
+     "difficulty": 0,
+     "redteam": "",
+     "risk": "7ff8000000000001"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "7ff8000000000001"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "7ff8000000000001"
+    },
+    {
+     "difficulty": 0,
+     "redteam": "",
+     "risk": "7ff0000000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "7ff0000000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "7ff0000000000000"
+    },
+    {
+     "difficulty": 0,
+     "redteam": "",
+     "risk": "fff0000000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "fff0000000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "fff0000000000000"
+    },
+    {
+     "difficulty": 0,
+     "redteam": "",
+     "risk": "441e000000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "441e000000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "441e000000000000"
+    },
+    {
+     "difficulty": 0,
+     "redteam": "",
+     "risk": "c41e000000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "replay-bot",
+     "risk": "c41e000000000000"
+    },
+    {
+     "difficulty": 3,
+     "redteam": "Human",
+     "risk": "c41e000000000000"
+    }
+   ],
+   "isBotLabel": [
+    {
+     "isBot": false,
+     "label": "human"
+    },
+    {
+     "isBot": false,
+     "label": "unknown"
+    },
+    {
+     "isBot": true,
+     "label": "bot"
+    },
+    {
+     "isBot": true,
+     "label": "replay-bot"
+    },
+    {
+     "isBot": true,
+     "label": ""
+    },
+    {
+     "isBot": true,
+     "label": "Human"
+    },
+    {
+     "isBot": true,
+     "label": "UNKNOWN"
+    }
+   ],
+   "label": [
+    {
+     "label": "human",
+     "redteam": "",
+     "risk": "c059000000000000"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "c059000000000000"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "c059000000000000"
+    },
+    {
+     "label": "human",
+     "redteam": "",
+     "risk": "bfe0000000000000"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "bfe0000000000000"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "bfe0000000000000"
+    },
+    {
+     "label": "human",
+     "redteam": "",
+     "risk": "0"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "0"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "0"
+    },
+    {
+     "label": "human",
+     "redteam": "",
+     "risk": "4033fd70a3d70a3d"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "4033fd70a3d70a3d"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "4033fd70a3d70a3d"
+    },
+    {
+     "label": "human",
+     "redteam": "",
+     "risk": "4034000000000000"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "4034000000000000"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "4034000000000000"
+    },
+    {
+     "label": "human",
+     "redteam": "",
+     "risk": "403dffbe76c8b439"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "403dffbe76c8b439"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "403dffbe76c8b439"
+    },
+    {
+     "label": "unknown",
+     "redteam": "",
+     "risk": "403e000000000000"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "403e000000000000"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "403e000000000000"
+    },
+    {
+     "label": "unknown",
+     "redteam": "",
+     "risk": "40417eb851eb851f"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "40417eb851eb851f"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "40417eb851eb851f"
+    },
+    {
+     "label": "unknown",
+     "redteam": "",
+     "risk": "4041800000000000"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "4041800000000000"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "4041800000000000"
+    },
+    {
+     "label": "unknown",
+     "redteam": "",
+     "risk": "4046733333333333"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "4046733333333333"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "4046733333333333"
+    },
+    {
+     "label": "unknown",
+     "redteam": "",
+     "risk": "4048f33333333333"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "4048f33333333333"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "4048f33333333333"
+    },
+    {
+     "label": "unknown",
+     "redteam": "",
+     "risk": "4049000000000000"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "4049000000000000"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "4049000000000000"
+    },
+    {
+     "label": "unknown",
+     "redteam": "",
+     "risk": "40503f5c28f5c28f"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "40503f5c28f5c28f"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "40503f5c28f5c28f"
+    },
+    {
+     "label": "unknown",
+     "redteam": "",
+     "risk": "4050400000000000"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "4050400000000000"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "4050400000000000"
+    },
+    {
+     "label": "unknown",
+     "redteam": "",
+     "risk": "40517f5c28f5c28f"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "40517f5c28f5c28f"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "40517f5c28f5c28f"
+    },
+    {
+     "label": "bot",
+     "redteam": "",
+     "risk": "4051800000000000"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "4051800000000000"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "4051800000000000"
+    },
+    {
+     "label": "bot",
+     "redteam": "",
+     "risk": "4053f9999999999a"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "4053f9999999999a"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "4053f9999999999a"
+    },
+    {
+     "label": "bot",
+     "redteam": "",
+     "risk": "4054000000000000"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "4054000000000000"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "4054000000000000"
+    },
+    {
+     "label": "bot",
+     "redteam": "",
+     "risk": "408f400000000000"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "408f400000000000"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "408f400000000000"
+    },
+    {
+     "label": "bot",
+     "redteam": "",
+     "risk": "7e37e43c8800759c"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "7e37e43c8800759c"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "7e37e43c8800759c"
+    },
+    {
+     "label": "human",
+     "redteam": "",
+     "risk": "fe37e43c8800759c"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "fe37e43c8800759c"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "fe37e43c8800759c"
+    },
+    {
+     "label": "unknown",
+     "redteam": "",
+     "risk": "7ff8000000000001"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "7ff8000000000001"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "7ff8000000000001"
+    },
+    {
+     "label": "bot",
+     "redteam": "",
+     "risk": "7ff0000000000000"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "7ff0000000000000"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "7ff0000000000000"
+    },
+    {
+     "label": "human",
+     "redteam": "",
+     "risk": "fff0000000000000"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "fff0000000000000"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "fff0000000000000"
+    },
+    {
+     "label": "bot",
+     "redteam": "",
+     "risk": "441e000000000000"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "441e000000000000"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "441e000000000000"
+    },
+    {
+     "label": "human",
+     "redteam": "",
+     "risk": "c41e000000000000"
+    },
+    {
+     "label": "replay-bot",
+     "redteam": "replay-bot",
+     "risk": "c41e000000000000"
+    },
+    {
+     "label": "Human",
+     "redteam": "Human",
+     "risk": "c41e000000000000"
+    }
+   ]
+  },
+  "fingerprint": [
+   {
+    "fingerprint": "|203.0.113",
+    "remote": "203.0.113.7:5555"
+   },
+   {
+    "fingerprint": "|2001:db8::1",
+    "remote": "[2001:db8::1]:443"
+   },
+   {
+    "fingerprint": "|198.51.100",
+    "remote": "198.51.100.9:7000"
+   }
+  ],
+  "realEvent": [
+   {
+    "ok": false,
+    "proof": "{}",
+    "reason": "untrusted events"
+   },
+   {
+    "ok": false,
+    "proof": "{\"trusted\":true}",
+    "reason": "insufficient interaction"
+   },
+   {
+    "ok": true,
+    "proof": "{\"trusted\":true,\"keys\":3,\"keyDurs\":[100.2,140.7,90.1,200.3]}",
+    "reason": ""
+   },
+   {
+    "ok": false,
+    "proof": "{\"trusted\":true,\"keys\":4,\"keyDurs\":[100,100,100,100.5]}",
+    "reason": "uniform key timing"
+   },
+   {
+    "ok": true,
+    "proof": "{\"trusted\":true,\"keys\":3,\"keyDurs\":[100,100,100]}",
+    "reason": ""
+   },
+   {
+    "ok": false,
+    "proof": "{\"trusted\":true,\"keys\":3,\"keyDurs\":[100,100.3,100.6,100.9]}",
+    "reason": "uniform key timing"
+   },
+   {
+    "ok": false,
+    "proof": "{\"trusted\":true,\"moves\":5,\"pathLen\":20,\"durations\":[16,16,16,16,16]}",
+    "reason": "uniform event timing"
+   },
+   {
+    "ok": false,
+    "proof": "{\"trusted\":true,\"moves\":5,\"pathLen\":20,\"coalesced\":5,\"durations\":[16,12,19,22,9]}",
+    "reason": "no coalesced sub-samples"
+   },
+   {
+    "ok": false,
+    "proof": "{\"trusted\":true,\"moves\":5,\"pathLen\":20,\"coalesced\":4,\"durations\":[16,12,19,22,9],\"rawT\":[1,2]}",
+    "reason": "no coalesced sub-samples"
+   },
+   {
+    "ok": false,
+    "proof": "{\"trusted\":true,\"moves\":5,\"pathLen\":20,\"durations\":[16,12,19,22,9],\"rawT\":[1,3,4,8,9,15,16,20,21]}",
+    "reason": "missing raw input stream"
+   },
+   {
+    "ok": false,
+    "proof": "{\"trusted\":true,\"moves\":5,\"pathLen\":20,\"coalesced\":40,\"durations\":[16,12,19,22,9],\"rawT\":[1,3,4,8,9,15,16,20,19,30]}",
+    "reason": "non-monotonic raw timestamps"
+   },
+   {
+    "ok": false,
+    "proof": "{\"trusted\":true,\"moves\":5,\"pathLen\":20,\"coalesced\":40,\"durations\":[16,12,19,22,9],\"rawT\":[0,4,8,12,16,20,24,28,32,36]}",
+    "reason": "uniform raw sample spacing"
+   },
+   {
+    "ok": true,
+    "proof": "{\"trusted\":true,\"moves\":5,\"pathLen\":20,\"coalesced\":40,\"durations\":[16,12,19,22,9],\"rawT\":[0,4.1,8,12.3,16,20.2,24,28.4,32,36.7]}",
+    "reason": ""
+   },
+   {
+    "ok": true,
+    "proof": "{\"trusted\":true,\"moves\":9,\"pathLen\":300,\"keys\":3,\"durations\":[16,16,16,16,16],\"rawT\":[1]}",
+    "reason": ""
+   },
+   {
+    "ok": false,
+    "proof": "{\"trusted\":true,\"moves\":5,\"pathLen\":19.9,\"keys\":2}",
+    "reason": "insufficient interaction"
+   },
+   {
+    "ok": false,
+    "proof": "{\"trusted\":true,\"moves\":-5,\"pathLen\":20}",
+    "reason": "insufficient interaction"
+   },
+   {
+    "ok": true,
+    "proof": "{\"trusted\":true,\"moves\":5,\"pathLen\":20,\"durations\":[16,16,16,16],\"rawT\":[0,4.1,8,12.3,16,20.2,24,28.4,32,36.7]}",
+    "reason": ""
+   },
+   {
+    "ok": false,
+    "proof": "{\"trusted\":true,\"moves\":5,\"pathLen\":20,\"coalesced\":-1,\"durations\":[16,12,19,22,9],\"rawT\":[0,4.1,8,12.3,16,20.2,24,28.4,32,36.7]}",
+    "reason": "no coalesced sub-samples"
+   },
+   {
+    "ok": true,
+    "proof": "{\"trusted\":true,\"moves\":5,\"pathLen\":20,\"durations\":[16,12,19,22,9],\"rawT\":[0,0,0,0,0,0,0,0,0,0.5]}",
+    "reason": ""
+   },
+   {
+    "ok": false,
+    "proof": "{\"trusted\":true,\"keys\":4,\"keyDurs\":[1,1.2,1.4,1.6]}",
+    "reason": "uniform key timing"
+   },
+   {
+    "ok": false,
+    "proof": "{\"trusted\":true,\"keys\":4,\"keyDurs\":[1,1.2,1.4,1.7]}",
+    "reason": "uniform key timing"
+   }
+  ],
+  "scenarios": [
+   {
+    "finals": {
+     "hum-1": {
+      "scoring": {
+       "riskScore": 0,
+       "verdict": "CHALLENGE",
+       "hardRuleFired": "HR-10"
+      },
+      "signals": [
+       {
+        "id": "l7.pass.solved",
+        "layer": "L7",
+        "value": true,
+        "verdict": "OK",
+        "weight": 0,
+        "score": 0,
+        "confidence": 1,
+        "collected": "server",
+        "notes": "humanymous Pass cleared"
+       }
+      ],
+      "stored": true
+     }
+    },
+    "name": "keyboard_human_solves",
+    "nonces": [
+     "194dc62f7d629e4539135407c6932e26930f"
+    ],
+    "stepUp": true,
+    "steps": [
+     {
+      "step": {
+       "kind": "new",
+       "sid": "hum-1",
+       "remote": "203.0.113.7:5555"
+      },
+      "method": "GET",
+      "path": "/api/pass/new",
+      "cookie": "hsid=hum-1",
+      "body": "",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"bucket\":59836255,\"challenge\":{\"n\":9,\"center\":4,\"rows\":[{\"chars\":[\"G\",\"3\",\"V\",\"Y\",\"J\",\"L\",\"2\",\"J\",\"X\"],\"keyIndex\":1},{\"chars\":[\"D\",\"S\",\"P\",\"W\",\"7\",\"D\",\"E\",\"Z\",\"7\"],\"keyIndex\":0},{\"chars\":[\"3\",\"4\",\"T\",\"N\",\"Q\",\"9\",\"B\",\"S\",\"H\"],\"keyIndex\":7}]},\"challengeNonce\":\"194dc62f7d629e4539135407c6932e26930f\",\"difficulty\":0,\"expiresInS\":60,\"ok\":true,\"preflight\":{\"attestRequired\":false,\"pow\":{\"seed\":\"7b4b5575e47b95fbadf4e19c88df97fd85454804a5eb41d8851e725c2e69f092\",\"difficulty\":14,\"bucket\":14959063}},\"triesLeft\":4}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "hum-1",
+       "remote": "203.0.113.7:5555",
+       "proof": {
+        "keyDurs": [
+         131.4,
+         88.2,
+         210.7,
+         123.9
+        ],
+        "keys": 4,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": true
+       }
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=hum-1",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"194dc62f7d629e4539135407c6932e26930f\",\"keyDurs\":[131.4,88.2,210.7,123.9],\"keys\":4,\"offsets\":[3,4,6],\"pointerType\":\"\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false,\"reason\":\"no cryptographic preflight\",\"triesLeft\":3}\n"
+     },
+     {
+      "step": {
+       "kind": "pow",
+       "sid": "hum-1",
+       "remote": "203.0.113.7:5555"
+      },
+      "method": "POST",
+      "path": "/api/pass/pow",
+      "cookie": "hsid=hum-1",
+      "body": "{\"bucket\":14959063,\"challengeNonce\":\"194dc62f7d629e4539135407c6932e26930f\",\"nonce\":\"47162\"}",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":true}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "hum-1",
+       "remote": "203.0.113.7:5555",
+       "proof": {
+        "keyDurs": [
+         131.4,
+         88.2,
+         210.7,
+         123.9
+        ],
+        "keys": 4,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": true
+       }
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=hum-1",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"194dc62f7d629e4539135407c6932e26930f\",\"keyDurs\":[131.4,88.2,210.7,123.9],\"keys\":4,\"offsets\":[3,4,6],\"pointerType\":\"\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":true,\"riskScore\":0,\"stepUpReceipt\":\"c3VyfGh1bS0xfDE3OTUwODc3NzI.rDMGhsfwYqOYkSQcuQ0tR62XlZUziAiQg8TzeVhD0FQ\",\"verdict\":\"CHALLENGE\"}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "hum-1",
+       "remote": "203.0.113.7:5555",
+       "proof": {
+        "keyDurs": [
+         131.4,
+         88.2,
+         210.7,
+         123.9
+        ],
+        "keys": 4,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": true
+       }
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=hum-1",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"194dc62f7d629e4539135407c6932e26930f\",\"keyDurs\":[131.4,88.2,210.7,123.9],\"keys\":4,\"offsets\":[3,4,6],\"pointerType\":\"\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"alreadySolved\":true,\"ok\":true,\"stepUpReceipt\":\"c3VyfGh1bS0xfDE3OTUwODc3NzI.rDMGhsfwYqOYkSQcuQ0tR62XlZUziAiQg8TzeVhD0FQ\"}\n"
+     },
+     {
+      "step": {
+       "kind": "pow",
+       "sid": "hum-1",
+       "remote": "203.0.113.7:5555"
+      },
+      "method": "POST",
+      "path": "/api/pass/pow",
+      "cookie": "hsid=hum-1",
+      "body": "{\"bucket\":14959063,\"challengeNonce\":\"194dc62f7d629e4539135407c6932e26930f\",\"nonce\":\"47162\"}",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false}\n"
+     },
+     {
+      "step": {
+       "kind": "kpi"
+      },
+      "method": "GET",
+      "path": "/api/pass/kpi",
+      "cookie": "",
+      "body": "",
+      "fingerprint": "|192.0.2",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"botAttempts\":0,\"bypassRate\":0,\"humanAttempts\":2,\"humanPassRate\":0.5,\"perDifficulty\":{\"d0\":0.5},\"perStrategy\":{},\"raw\":{\"human|fail|d0\":1,\"human|pass|d0\":1},\"unknownPassRate\":0}\n"
+     }
+    ]
+   },
+   {
+    "finals": {
+     "std-1": {
+      "scoring": {
+       "riskScore": 0,
+       "verdict": "CHALLENGE",
+       "hardRuleFired": "HR-10"
+      },
+      "signals": [
+       {
+        "id": "l7.pass.solved",
+        "layer": "L7",
+        "value": true,
+        "verdict": "OK",
+        "weight": 0,
+        "score": 0,
+        "confidence": 1,
+        "collected": "server",
+        "notes": "humanymous Pass cleared"
+       }
+      ],
+      "stored": true
+     }
+    },
+    "name": "standalone_no_receipt",
+    "nonces": [
+     "a56e825a5374c0aa773c14a4978cad6ed659"
+    ],
+    "stepUp": false,
+    "steps": [
+     {
+      "step": {
+       "kind": "new",
+       "sid": "std-1",
+       "remote": "198.51.100.20:1"
+      },
+      "method": "GET",
+      "path": "/api/pass/new",
+      "cookie": "hsid=std-1",
+      "body": "",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"bucket\":59836255,\"challenge\":{\"n\":9,\"center\":4,\"rows\":[{\"chars\":[\"L\",\"K\",\"B\",\"W\",\"C\",\"5\",\"Q\",\"2\",\"H\"],\"keyIndex\":0},{\"chars\":[\"F\",\"9\",\"M\",\"F\",\"D\",\"V\",\"7\",\"T\",\"F\"],\"keyIndex\":2},{\"chars\":[\"6\",\"W\",\"V\",\"U\",\"C\",\"7\",\"A\",\"B\",\"S\"],\"keyIndex\":0}]},\"challengeNonce\":\"a56e825a5374c0aa773c14a4978cad6ed659\",\"difficulty\":0,\"expiresInS\":60,\"ok\":true,\"preflight\":{\"attestRequired\":false,\"pow\":{\"seed\":\"88f321a425c4213a52ad70494952371d77e286fc9eb7dc5a2a73c9eb2b8386f7\",\"difficulty\":14,\"bucket\":14959063}},\"triesLeft\":4}\n"
+     },
+     {
+      "step": {
+       "kind": "pow",
+       "sid": "std-1",
+       "remote": "198.51.100.20:1"
+      },
+      "method": "POST",
+      "path": "/api/pass/pow",
+      "cookie": "hsid=std-1",
+      "body": "{\"bucket\":14959063,\"challengeNonce\":\"a56e825a5374c0aa773c14a4978cad6ed659\",\"nonce\":\"7064\"}",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":true}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "std-1",
+       "remote": "198.51.100.20:1",
+       "proof": {
+        "keyDurs": [
+         140.1,
+         92.6,
+         205.3,
+         119.8
+        ],
+        "keys": 4,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": true
+       }
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=std-1",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"a56e825a5374c0aa773c14a4978cad6ed659\",\"keyDurs\":[140.1,92.6,205.3,119.8],\"keys\":4,\"offsets\":[4,2,4],\"pointerType\":\"\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":true,\"riskScore\":0,\"verdict\":\"CHALLENGE\"}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "std-1",
+       "remote": "198.51.100.20:1",
+       "proof": {
+        "keyDurs": [
+         131.4,
+         88.2,
+         210.7,
+         123.9
+        ],
+        "keys": 4,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": true
+       }
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=std-1",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"a56e825a5374c0aa773c14a4978cad6ed659\",\"keyDurs\":[131.4,88.2,210.7,123.9],\"keys\":4,\"offsets\":[4,2,4],\"pointerType\":\"\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"alreadySolved\":true,\"ok\":true}\n"
+     }
+    ]
+   },
+   {
+    "finals": {},
+    "name": "transport_errors",
+    "nonces": [],
+    "stepUp": true,
+    "steps": [
+     {
+      "step": {
+       "kind": "raw",
+       "sid": "err-1",
+       "method": "GET",
+       "path": "/api/pass/solve"
+      },
+      "method": "GET",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=err-1",
+      "body": "",
+      "fingerprint": "|192.0.2",
+      "nowUnix": 1795087652,
+      "status": 405,
+      "contentType": "text/plain; charset=utf-8",
+      "setCookie": false,
+      "response": "POST only\n"
+     },
+     {
+      "step": {
+       "kind": "raw",
+       "sid": "err-1",
+       "method": "GET",
+       "path": "/api/pass/pow"
+      },
+      "method": "GET",
+      "path": "/api/pass/pow",
+      "cookie": "hsid=err-1",
+      "body": "",
+      "fingerprint": "|192.0.2",
+      "nowUnix": 1795087652,
+      "status": 405,
+      "contentType": "text/plain; charset=utf-8",
+      "setCookie": false,
+      "response": "POST only\n"
+     },
+     {
+      "step": {
+       "kind": "raw",
+       "sid": "err-1",
+       "method": "GET",
+       "path": "/api/pass/attest"
+      },
+      "method": "GET",
+      "path": "/api/pass/attest",
+      "cookie": "hsid=err-1",
+      "body": "",
+      "fingerprint": "|192.0.2",
+      "nowUnix": 1795087652,
+      "status": 405,
+      "contentType": "text/plain; charset=utf-8",
+      "setCookie": false,
+      "response": "POST only\n"
+     },
+     {
+      "step": {
+       "kind": "raw",
+       "method": "POST",
+       "path": "/api/pass/solve",
+       "body": "{}",
+       "noCookie": true
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "",
+      "body": "{}",
+      "fingerprint": "|192.0.2",
+      "nowUnix": 1795087652,
+      "status": 400,
+      "contentType": "text/plain; charset=utf-8",
+      "setCookie": false,
+      "response": "no session\n"
+     },
+     {
+      "step": {
+       "kind": "raw",
+       "method": "POST",
+       "path": "/api/pass/pow",
+       "body": "{}",
+       "noCookie": true
+      },
+      "method": "POST",
+      "path": "/api/pass/pow",
+      "cookie": "",
+      "body": "{}",
+      "fingerprint": "|192.0.2",
+      "nowUnix": 1795087652,
+      "status": 400,
+      "contentType": "text/plain; charset=utf-8",
+      "setCookie": false,
+      "response": "no session\n"
+     },
+     {
+      "step": {
+       "kind": "raw",
+       "method": "POST",
+       "path": "/api/pass/attest",
+       "body": "{}",
+       "noCookie": true
+      },
+      "method": "POST",
+      "path": "/api/pass/attest",
+      "cookie": "",
+      "body": "{}",
+      "fingerprint": "|192.0.2",
+      "nowUnix": 1795087652,
+      "status": 400,
+      "contentType": "text/plain; charset=utf-8",
+      "setCookie": false,
+      "response": "no session\n"
+     },
+     {
+      "step": {
+       "kind": "raw",
+       "sid": "err-1",
+       "method": "POST",
+       "path": "/api/pass/solve",
+       "body": "not json"
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=err-1",
+      "body": "not json",
+      "fingerprint": "|192.0.2",
+      "nowUnix": 1795087652,
+      "status": 400,
+      "contentType": "text/plain; charset=utf-8",
+      "setCookie": false,
+      "response": "bad body\n"
+     },
+     {
+      "step": {
+       "kind": "raw",
+       "sid": "err-1",
+       "method": "POST",
+       "path": "/api/pass/pow",
+       "body": "[1]"
+      },
+      "method": "POST",
+      "path": "/api/pass/pow",
+      "cookie": "hsid=err-1",
+      "body": "[1]",
+      "fingerprint": "|192.0.2",
+      "nowUnix": 1795087652,
+      "status": 400,
+      "contentType": "text/plain; charset=utf-8",
+      "setCookie": false,
+      "response": "bad body\n"
+     },
+     {
+      "step": {
+       "kind": "raw",
+       "sid": "err-1",
+       "method": "POST",
+       "path": "/api/pass/attest",
+       "body": "{\"challengeNonce\":5}"
+      },
+      "method": "POST",
+      "path": "/api/pass/attest",
+      "cookie": "hsid=err-1",
+      "body": "{\"challengeNonce\":5}",
+      "fingerprint": "|192.0.2",
+      "nowUnix": 1795087652,
+      "status": 400,
+      "contentType": "text/plain; charset=utf-8",
+      "setCookie": false,
+      "response": "bad body\n"
+     },
+     {
+      "step": {
+       "kind": "raw",
+       "sid": "err-1",
+       "method": "POST",
+       "path": "/api/pass/attest",
+       "body": "{\"challengeNonce\":\"\"}"
+      },
+      "method": "POST",
+      "path": "/api/pass/attest",
+      "cookie": "hsid=err-1",
+      "body": "{\"challengeNonce\":\"\"}",
+      "fingerprint": "|192.0.2",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false,\"reason\":\"stale challenge\"}\n"
+     },
+     {
+      "step": {
+       "kind": "raw",
+       "sid": "err-1",
+       "method": "POST",
+       "path": "/api/pass/pow",
+       "body": "{\"bucket\":1,\"nonce\":\"x\",\"challengeNonce\":\"\"}"
+      },
+      "method": "POST",
+      "path": "/api/pass/pow",
+      "cookie": "hsid=err-1",
+      "body": "{\"bucket\":1,\"nonce\":\"x\",\"challengeNonce\":\"\"}",
+      "fingerprint": "|192.0.2",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false}\n"
+     },
+     {
+      "step": {
+       "kind": "raw",
+       "sid": "err-1",
+       "method": "POST",
+       "path": "/api/pass/solve",
+       "body": "{\"offsets\":[0,0,0]}"
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=err-1",
+      "body": "{\"offsets\":[0,0,0]}",
+      "fingerprint": "|192.0.2",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false,\"reason\":\"stale or missing challenge\",\"triesLeft\":3}\n"
+     },
+     {
+      "step": {
+       "kind": "kpi"
+      },
+      "method": "GET",
+      "path": "/api/pass/kpi",
+      "cookie": "",
+      "body": "",
+      "fingerprint": "|192.0.2",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"botAttempts\":0,\"bypassRate\":0,\"humanAttempts\":1,\"humanPassRate\":0,\"perDifficulty\":{\"d0\":0},\"perStrategy\":{},\"raw\":{\"human|fail|d0\":1},\"unknownPassRate\":0}\n"
+     }
+    ]
+   },
+   {
+    "finals": {
+     "rej-1": {
+      "scoring": {
+       "riskScore": 12.5,
+       "verdict": "CHALLENGE",
+       "hardRuleFired": "HR-10"
+      },
+      "signals": [
+       {
+        "id": "l7.pass.velocity",
+        "layer": "L7",
+        "value": null,
+        "verdict": "SUSPICIOUS",
+        "weight": 25,
+        "score": 12.5,
+        "confidence": 1,
+        "collected": "server",
+        "notes": "Pass velocity (automation cadence)"
+       }
+      ],
+      "stored": true
+     }
+    },
+    "name": "solve_rejections_and_retry_cap",
+    "nonces": [
+     "80fe7a87344697359bbe252c67c1b5b8291a",
+     "3142f0f400b70d99a1263ed0e3ce59856fe8"
+    ],
+    "stepUp": true,
+    "steps": [
+     {
+      "step": {
+       "kind": "new",
+       "sid": "rej-1",
+       "remote": "203.0.113.7:5555"
+      },
+      "method": "GET",
+      "path": "/api/pass/new",
+      "cookie": "hsid=rej-1",
+      "body": "",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"bucket\":59836255,\"challenge\":{\"n\":9,\"center\":4,\"rows\":[{\"chars\":[\"F\",\"K\",\"8\",\"F\",\"C\",\"S\",\"2\",\"J\",\"4\"],\"keyIndex\":6},{\"chars\":[\"V\",\"A\",\"S\",\"G\",\"5\",\"B\",\"K\",\"U\",\"8\"],\"keyIndex\":7},{\"chars\":[\"M\",\"D\",\"S\",\"W\",\"X\",\"Y\",\"L\",\"3\",\"X\"],\"keyIndex\":3}]},\"challengeNonce\":\"80fe7a87344697359bbe252c67c1b5b8291a\",\"difficulty\":0,\"expiresInS\":60,\"ok\":true,\"preflight\":{\"attestRequired\":false,\"pow\":{\"seed\":\"44dc2eb14015cdecfb3f05a5cad30b84c008f75fbce6ae53b75211b16ac78fdb\",\"difficulty\":14,\"bucket\":14959063}},\"triesLeft\":4}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "rej-1",
+       "remote": "203.0.113.7:5555",
+       "proof": {
+        "keyDurs": [
+         131.4,
+         88.2,
+         210.7,
+         123.9
+        ],
+        "keys": 4,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": true
+       },
+       "variant": "stale_nonce"
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=rej-1",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"stale-nonce\",\"keyDurs\":[131.4,88.2,210.7,123.9],\"keys\":4,\"offsets\":[7,6,1],\"pointerType\":\"\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false,\"reason\":\"stale or missing challenge\",\"triesLeft\":3}\n"
+     },
+     {
+      "step": {
+       "kind": "pow",
+       "sid": "rej-1",
+       "remote": "203.0.113.7:5555",
+       "variant": "wrong_nonce"
+      },
+      "method": "POST",
+      "path": "/api/pass/pow",
+      "cookie": "hsid=rej-1",
+      "body": "{\"bucket\":14959063,\"challengeNonce\":\"80fe7a87344697359bbe252c67c1b5b8291a\",\"nonce\":\"not-a-solution\"}",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false}\n"
+     },
+     {
+      "step": {
+       "kind": "pow",
+       "sid": "rej-1",
+       "remote": "203.0.113.7:5555",
+       "variant": "wrong_challenge"
+      },
+      "method": "POST",
+      "path": "/api/pass/pow",
+      "cookie": "hsid=rej-1",
+      "body": "{\"bucket\":14959063,\"challengeNonce\":\"80fe7a87344697359bbe252c67c1b5b8291a00\",\"nonce\":\"18791\"}",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "rej-1",
+       "remote": "203.0.113.7:5555",
+       "proof": {
+        "keyDurs": [
+         131.4,
+         88.2,
+         210.7,
+         123.9
+        ],
+        "keys": 4,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": true
+       }
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=rej-1",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"80fe7a87344697359bbe252c67c1b5b8291a\",\"keyDurs\":[131.4,88.2,210.7,123.9],\"keys\":4,\"offsets\":[7,6,1],\"pointerType\":\"\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false,\"reason\":\"no cryptographic preflight\",\"triesLeft\":2}\n"
+     },
+     {
+      "step": {
+       "kind": "pow",
+       "sid": "rej-1",
+       "remote": "203.0.113.7:5555"
+      },
+      "method": "POST",
+      "path": "/api/pass/pow",
+      "cookie": "hsid=rej-1",
+      "body": "{\"bucket\":14959063,\"challengeNonce\":\"80fe7a87344697359bbe252c67c1b5b8291a\",\"nonce\":\"18791\"}",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":true}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "rej-1",
+       "remote": "203.0.113.7:5555",
+       "proof": {
+        "keyDurs": [
+         131.4,
+         88.2,
+         210.7,
+         123.9
+        ],
+        "keys": 4,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": true
+       },
+       "variant": "misaligned"
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=rej-1",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"80fe7a87344697359bbe252c67c1b5b8291a\",\"keyDurs\":[131.4,88.2,210.7,123.9],\"keys\":4,\"offsets\":[8,6,1],\"pointerType\":\"\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false,\"reason\":\"the keys are not all in the slot\",\"triesLeft\":1}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "rej-1",
+       "remote": "203.0.113.7:5555",
+       "proof": {
+        "keyDurs": [
+         131.4,
+         88.2,
+         210.7,
+         123.9
+        ],
+        "keys": 4,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": true
+       },
+       "variant": "short_offsets"
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=rej-1",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"80fe7a87344697359bbe252c67c1b5b8291a\",\"keyDurs\":[131.4,88.2,210.7,123.9],\"keys\":4,\"offsets\":[7,6],\"pointerType\":\"\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false,\"reason\":\"the keys are not all in the slot\",\"triesLeft\":0}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "rej-1",
+       "remote": "203.0.113.7:5555",
+       "proof": {
+        "keyDurs": [
+         131.4,
+         88.2,
+         210.7,
+         123.9
+        ],
+        "keys": 4,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": true
+       }
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=rej-1",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"80fe7a87344697359bbe252c67c1b5b8291a\",\"keyDurs\":[131.4,88.2,210.7,123.9],\"keys\":4,\"offsets\":[7,6,1],\"pointerType\":\"\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false,\"reason\":\"retry cap reached\",\"triesLeft\":0}\n"
+     },
+     {
+      "step": {
+       "kind": "new",
+       "sid": "rej-1",
+       "remote": "203.0.113.7:5555"
+      },
+      "method": "GET",
+      "path": "/api/pass/new",
+      "cookie": "hsid=rej-1",
+      "body": "",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"bucket\":59836255,\"challenge\":{\"n\":9,\"center\":4,\"rows\":[{\"chars\":[\"4\",\"8\",\"J\",\"X\",\"U\",\"R\",\"6\",\"J\",\"2\"],\"keyIndex\":5},{\"chars\":[\"5\",\"B\",\"7\",\"2\",\"P\",\"T\",\"C\",\"R\",\"7\"],\"keyIndex\":7},{\"chars\":[\"W\",\"W\",\"G\",\"Q\",\"P\",\"2\",\"8\",\"C\",\"R\"],\"keyIndex\":1}]},\"challengeNonce\":\"3142f0f400b70d99a1263ed0e3ce59856fe8\",\"difficulty\":0,\"expiresInS\":60,\"ok\":true,\"preflight\":{\"attestRequired\":true,\"pow\":{\"seed\":\"1598030e1ded84009a3ba007b7f269969475ab2c3786ea10aa5e4d03df38126e\",\"difficulty\":16,\"bucket\":14959063}},\"triesLeft\":4}\n"
+     },
+     {
+      "step": {
+       "kind": "kpi"
+      },
+      "method": "GET",
+      "path": "/api/pass/kpi",
+      "cookie": "",
+      "body": "",
+      "fingerprint": "|192.0.2",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"botAttempts\":0,\"bypassRate\":0,\"humanAttempts\":4,\"humanPassRate\":0,\"perDifficulty\":{\"d0\":0},\"perStrategy\":{},\"raw\":{\"human|fail|d0\":4},\"unknownPassRate\":0}\n"
+     }
+    ]
+   },
+   {
+    "finals": {
+     "flood-1": {
+      "scoring": {
+       "riskScore": 45,
+       "verdict": "CHALLENGE",
+       "hardRuleFired": "HR-10"
+      },
+      "signals": [
+       {
+        "id": "l7.pass.velocity",
+        "layer": "L7",
+        "value": null,
+        "verdict": "SUSPICIOUS",
+        "weight": 25,
+        "score": 12.5,
+        "confidence": 1,
+        "collected": "server",
+        "notes": "Pass velocity (automation cadence)"
+       },
+       {
+        "id": "l7.pass.solved",
+        "layer": "L7",
+        "value": true,
+        "verdict": "OK",
+        "weight": 0,
+        "score": 0,
+        "confidence": 1,
+        "collected": "server",
+        "notes": "humanymous Pass cleared"
+       },
+       {
+        "id": "l7.pass.flood",
+        "layer": "L7",
+        "value": null,
+        "verdict": "BOT",
+        "weight": 45,
+        "score": 45,
+        "confidence": 1,
+        "collected": "server",
+        "notes": "Pass velocity (automation cadence)"
+       }
+      ],
+      "stored": true
+     }
+    },
+    "name": "velocity_flood_requires_attestation",
+    "nonces": [
+     "59ce542e0eb48845a09c90105939edd84a7f",
+     "4f04f8ed76588a641f097350d15e64069222",
+     "1a6d365953c7303ac762bbaccb70bd4c560a",
+     "00b9dfe446234ca443218468f99eb7a4a2eb",
+     "aac2fc297a22e8d9c23ca89b45dd6a06495c",
+     "22f27760e2cabc49c66c97f2c341c28ec23e",
+     "262b068487eb8a73ac69b23f724b0706e789",
+     "42e86141dd1fa76d1c1b8b2c76f71e765544"
+    ],
+    "stepUp": true,
+    "steps": [
+     {
+      "step": {
+       "kind": "new",
+       "sid": "flood-1",
+       "remote": "203.0.113.7:5555"
+      },
+      "method": "GET",
+      "path": "/api/pass/new",
+      "cookie": "hsid=flood-1",
+      "body": "",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"bucket\":59836255,\"challenge\":{\"n\":9,\"center\":4,\"rows\":[{\"chars\":[\"5\",\"K\",\"M\",\"J\",\"H\",\"S\",\"F\",\"L\",\"K\"],\"keyIndex\":4},{\"chars\":[\"5\",\"W\",\"G\",\"C\",\"4\",\"N\",\"U\",\"7\",\"V\"],\"keyIndex\":1},{\"chars\":[\"5\",\"J\",\"3\",\"R\",\"9\",\"L\",\"C\",\"3\",\"P\"],\"keyIndex\":7}]},\"challengeNonce\":\"59ce542e0eb48845a09c90105939edd84a7f\",\"difficulty\":0,\"expiresInS\":60,\"ok\":true,\"preflight\":{\"attestRequired\":false,\"pow\":{\"seed\":\"1eda6996995179205dfc68d63305be1d2942c3e0774e495b67b3384de800ec06\",\"difficulty\":14,\"bucket\":14959063}},\"triesLeft\":4}\n"
+     },
+     {
+      "step": {
+       "kind": "new",
+       "sid": "flood-1",
+       "remote": "203.0.113.7:5555"
+      },
+      "method": "GET",
+      "path": "/api/pass/new",
+      "cookie": "hsid=flood-1",
+      "body": "",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"bucket\":59836255,\"challenge\":{\"n\":9,\"center\":4,\"rows\":[{\"chars\":[\"U\",\"H\",\"5\",\"U\",\"D\",\"D\",\"B\",\"M\",\"4\"],\"keyIndex\":2},{\"chars\":[\"B\",\"Y\",\"N\",\"3\",\"A\",\"N\",\"7\",\"S\",\"W\"],\"keyIndex\":2},{\"chars\":[\"Z\",\"Z\",\"U\",\"2\",\"U\",\"5\",\"M\",\"Z\",\"E\"],\"keyIndex\":8}]},\"challengeNonce\":\"4f04f8ed76588a641f097350d15e64069222\",\"difficulty\":0,\"expiresInS\":60,\"ok\":true,\"preflight\":{\"attestRequired\":false,\"pow\":{\"seed\":\"6b7765555151690057d080291276a750378135e930829b11feeb8e027e31f048\",\"difficulty\":14,\"bucket\":14959063}},\"triesLeft\":4}\n"
+     },
+     {
+      "step": {
+       "kind": "new",
+       "sid": "flood-1",
+       "remote": "203.0.113.7:5555"
+      },
+      "method": "GET",
+      "path": "/api/pass/new",
+      "cookie": "hsid=flood-1",
+      "body": "",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"bucket\":59836255,\"challenge\":{\"n\":9,\"center\":4,\"rows\":[{\"chars\":[\"8\",\"5\",\"T\",\"E\",\"H\",\"V\",\"M\",\"4\",\"S\"],\"keyIndex\":3},{\"chars\":[\"T\",\"E\",\"2\",\"M\",\"X\",\"4\",\"X\",\"9\",\"Z\"],\"keyIndex\":1},{\"chars\":[\"N\",\"7\",\"E\",\"E\",\"V\",\"E\",\"5\",\"S\",\"F\"],\"keyIndex\":0}]},\"challengeNonce\":\"1a6d365953c7303ac762bbaccb70bd4c560a\",\"difficulty\":0,\"expiresInS\":60,\"ok\":true,\"preflight\":{\"attestRequired\":false,\"pow\":{\"seed\":\"9380af81ca01f7adc40e42ffc940f01685b49ec44e35c7c126f308933578285c\",\"difficulty\":14,\"bucket\":14959063}},\"triesLeft\":4}\n"
+     },
+     {
+      "step": {
+       "kind": "new",
+       "sid": "flood-1",
+       "remote": "203.0.113.7:5555"
+      },
+      "method": "GET",
+      "path": "/api/pass/new",
+      "cookie": "hsid=flood-1",
+      "body": "",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"bucket\":59836255,\"challenge\":{\"n\":9,\"center\":4,\"rows\":[{\"chars\":[\"G\",\"R\",\"L\",\"K\",\"8\",\"R\",\"8\",\"F\",\"E\"],\"keyIndex\":1},{\"chars\":[\"V\",\"6\",\"U\",\"C\",\"3\",\"7\",\"F\",\"H\",\"T\"],\"keyIndex\":4},{\"chars\":[\"U\",\"U\",\"W\",\"D\",\"K\",\"H\",\"N\",\"J\",\"S\"],\"keyIndex\":0}]},\"challengeNonce\":\"00b9dfe446234ca443218468f99eb7a4a2eb\",\"difficulty\":0,\"expiresInS\":60,\"ok\":true,\"preflight\":{\"attestRequired\":true,\"pow\":{\"seed\":\"b6d4429be46f7ef60301ee4d885977c89bed4042c2cdc2a1d499c9cbddd6d69c\",\"difficulty\":16,\"bucket\":14959063}},\"triesLeft\":4}\n"
+     },
+     {
+      "step": {
+       "kind": "pow",
+       "sid": "flood-1",
+       "remote": "203.0.113.7:5555"
+      },
+      "method": "POST",
+      "path": "/api/pass/pow",
+      "cookie": "hsid=flood-1",
+      "body": "{\"bucket\":14959063,\"challengeNonce\":\"00b9dfe446234ca443218468f99eb7a4a2eb\",\"nonce\":\"1180\"}",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":true}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "flood-1",
+       "remote": "203.0.113.7:5555",
+       "proof": {
+        "keyDurs": [
+         131.4,
+         88.2,
+         210.7,
+         123.9
+        ],
+        "keys": 4,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": true
+       }
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=flood-1",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"00b9dfe446234ca443218468f99eb7a4a2eb\",\"keyDurs\":[131.4,88.2,210.7,123.9],\"keys\":4,\"offsets\":[3,0,4],\"pointerType\":\"\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false,\"reason\":\"attestation required\",\"triesLeft\":3}\n"
+     },
+     {
+      "step": {
+       "kind": "attest",
+       "sid": "flood-1",
+       "remote": "203.0.113.7:5555",
+       "variant": "stale"
+      },
+      "method": "POST",
+      "path": "/api/pass/attest",
+      "cookie": "hsid=flood-1",
+      "body": "{\"challengeNonce\":\"1a6d365953c7303ac762bbaccb70bd4c560a\"}",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false,\"reason\":\"stale challenge\"}\n"
+     },
+     {
+      "step": {
+       "kind": "attest",
+       "sid": "flood-1",
+       "remote": "203.0.113.7:5555"
+      },
+      "method": "POST",
+      "path": "/api/pass/attest",
+      "cookie": "hsid=flood-1",
+      "body": "{\"challengeNonce\":\"00b9dfe446234ca443218468f99eb7a4a2eb\"}",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":true,\"token\":\"9b230863bb606542a82b5f63bf6b674101b22469239a6963fa79e5d0ec5884b8\"}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "flood-1",
+       "remote": "203.0.113.7:5555",
+       "proof": {
+        "keyDurs": [
+         150.2,
+         99.4,
+         180.3,
+         111.1
+        ],
+        "keys": 4,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": true
+       }
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=flood-1",
+      "body": "{\"attestToken\":\"9b230863bb606542a82b5f63bf6b674101b22469239a6963fa79e5d0ec5884b8\",\"bucket\":59836255,\"challengeNonce\":\"00b9dfe446234ca443218468f99eb7a4a2eb\",\"keyDurs\":[150.2,99.4,180.3,111.1],\"keys\":4,\"offsets\":[3,0,4],\"pointerType\":\"\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":true,\"riskScore\":12.5,\"stepUpReceipt\":\"c3VyfGZsb29kLTF8MTc5NTA4Nzc3Mg.jlXgEzetiInCW4SMXa2Pzzjy098rKzzCDfFu3TH6Gsk\",\"verdict\":\"CHALLENGE\"}\n"
+     },
+     {
+      "step": {
+       "kind": "new",
+       "sid": "flood-1",
+       "remote": "203.0.113.7:5555"
+      },
+      "method": "GET",
+      "path": "/api/pass/new",
+      "cookie": "hsid=flood-1",
+      "body": "",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"bucket\":59836255,\"challenge\":{\"n\":9,\"center\":4,\"rows\":[{\"chars\":[\"Z\",\"E\",\"X\",\"P\",\"2\",\"G\",\"M\",\"5\",\"K\"],\"keyIndex\":6},{\"chars\":[\"7\",\"W\",\"A\",\"A\",\"L\",\"5\",\"Y\",\"K\",\"B\"],\"keyIndex\":7},{\"chars\":[\"J\",\"2\",\"N\",\"D\",\"V\",\"P\",\"L\",\"P\",\"9\"],\"keyIndex\":0}]},\"challengeNonce\":\"aac2fc297a22e8d9c23ca89b45dd6a06495c\",\"difficulty\":0,\"expiresInS\":60,\"ok\":true,\"preflight\":{\"attestRequired\":true,\"pow\":{\"seed\":\"31782bfed3c47315868eb51fe3bdfcbdfa714bdb5fccec2a2fb048d2ecc717f0\",\"difficulty\":16,\"bucket\":14959063}},\"triesLeft\":4}\n"
+     },
+     {
+      "step": {
+       "kind": "new",
+       "sid": "flood-1",
+       "remote": "203.0.113.7:5555"
+      },
+      "method": "GET",
+      "path": "/api/pass/new",
+      "cookie": "hsid=flood-1",
+      "body": "",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"bucket\":59836255,\"challenge\":{\"n\":11,\"center\":5,\"rows\":[{\"chars\":[\"M\",\"3\",\"S\",\"X\",\"6\",\"Y\",\"S\",\"9\",\"X\",\"U\",\"9\"],\"keyIndex\":10},{\"chars\":[\"K\",\"C\",\"G\",\"6\",\"P\",\"7\",\"C\",\"Y\",\"T\",\"Y\",\"L\"],\"keyIndex\":4},{\"chars\":[\"Y\",\"2\",\"X\",\"2\",\"N\",\"9\",\"Y\",\"B\",\"8\",\"3\",\"M\"],\"keyIndex\":10}]},\"challengeNonce\":\"22f27760e2cabc49c66c97f2c341c28ec23e\",\"difficulty\":1,\"expiresInS\":60,\"ok\":true,\"preflight\":{\"attestRequired\":true,\"pow\":{\"seed\":\"367c7721e3c198b61ba9451594b602dc0e0c1290b93edc8f18d0583916ed8409\",\"difficulty\":19,\"bucket\":14959063}},\"triesLeft\":4}\n"
+     },
+     {
+      "step": {
+       "kind": "new",
+       "sid": "flood-1",
+       "remote": "203.0.113.7:5555"
+      },
+      "method": "GET",
+      "path": "/api/pass/new",
+      "cookie": "hsid=flood-1",
+      "body": "",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"bucket\":59836255,\"challenge\":{\"n\":11,\"center\":5,\"rows\":[{\"chars\":[\"P\",\"V\",\"J\",\"B\",\"S\",\"5\",\"W\",\"P\",\"B\",\"J\",\"X\"],\"keyIndex\":8},{\"chars\":[\"H\",\"X\",\"R\",\"Y\",\"R\",\"3\",\"D\",\"C\",\"G\",\"X\",\"H\"],\"keyIndex\":8},{\"chars\":[\"F\",\"Q\",\"U\",\"P\",\"9\",\"V\",\"H\",\"3\",\"Q\",\"A\",\"A\"],\"keyIndex\":9}]},\"challengeNonce\":\"262b068487eb8a73ac69b23f724b0706e789\",\"difficulty\":1,\"expiresInS\":60,\"ok\":true,\"preflight\":{\"attestRequired\":true,\"pow\":{\"seed\":\"f9f6338c2151fd6c0d0514772a2051bc94367aae4a61ef8825577b37b4c4228b\",\"difficulty\":19,\"bucket\":14959063}},\"triesLeft\":4}\n"
+     },
+     {
+      "step": {
+       "kind": "new",
+       "sid": "flood-1",
+       "remote": "203.0.113.7:5555"
+      },
+      "method": "GET",
+      "path": "/api/pass/new",
+      "cookie": "hsid=flood-1",
+      "body": "",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"bucket\":59836255,\"challenge\":{\"n\":11,\"center\":5,\"rows\":[{\"chars\":[\"5\",\"X\",\"W\",\"M\",\"L\",\"X\",\"F\",\"4\",\"B\",\"A\",\"G\"],\"keyIndex\":1},{\"chars\":[\"Y\",\"V\",\"T\",\"7\",\"U\",\"F\",\"T\",\"L\",\"T\",\"6\",\"6\"],\"keyIndex\":9},{\"chars\":[\"9\",\"7\",\"2\",\"J\",\"K\",\"L\",\"T\",\"6\",\"A\",\"8\",\"G\"],\"keyIndex\":1}]},\"challengeNonce\":\"42e86141dd1fa76d1c1b8b2c76f71e765544\",\"difficulty\":1,\"expiresInS\":60,\"ok\":true,\"preflight\":{\"attestRequired\":true,\"pow\":{\"seed\":\"4824bcf823d87aaa8c749a9f9c1963a0c0fb7043760fba7e7ebd69cf1a799ae3\",\"difficulty\":19,\"bucket\":14959063}},\"triesLeft\":4}\n"
+     },
+     {
+      "step": {
+       "kind": "attest",
+       "sid": "flood-1",
+       "remote": "203.0.113.7:5555"
+      },
+      "method": "POST",
+      "path": "/api/pass/attest",
+      "cookie": "hsid=flood-1",
+      "body": "{\"challengeNonce\":\"42e86141dd1fa76d1c1b8b2c76f71e765544\"}",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":true,\"token\":\"210bf194703b7385154654a85338e0663a3370612868443a9c9b1cbf129d443a\"}\n"
+     },
+     {
+      "step": {
+       "kind": "attest",
+       "sid": "flood-1",
+       "remote": "203.0.113.7:5555"
+      },
+      "method": "POST",
+      "path": "/api/pass/attest",
+      "cookie": "hsid=flood-1",
+      "body": "{\"challengeNonce\":\"42e86141dd1fa76d1c1b8b2c76f71e765544\"}",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false,\"reason\":\"attestation budget exhausted — retry shortly\"}\n"
+     },
+     {
+      "step": {
+       "kind": "attest",
+       "sid": "flood-1",
+       "remote": "203.0.113.7:5555"
+      },
+      "method": "POST",
+      "path": "/api/pass/attest",
+      "cookie": "hsid=flood-1",
+      "body": "{\"challengeNonce\":\"42e86141dd1fa76d1c1b8b2c76f71e765544\"}",
+      "fingerprint": "|203.0.113",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false,\"reason\":\"attestation budget exhausted — retry shortly\"}\n"
+     },
+     {
+      "step": {
+       "kind": "kpi"
+      },
+      "method": "GET",
+      "path": "/api/pass/kpi",
+      "cookie": "",
+      "body": "",
+      "fingerprint": "|192.0.2",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"botAttempts\":0,\"bypassRate\":0,\"humanAttempts\":2,\"humanPassRate\":0.5,\"perDifficulty\":{\"d0\":0.5},\"perStrategy\":{},\"raw\":{\"human|fail|d0\":1,\"human|pass|d0\":1},\"unknownPassRate\":0}\n"
+     }
+    ]
+   },
+   {
+    "finals": {
+     "red-1": {
+      "scoring": {
+       "riskScore": 0,
+       "verdict": "CHALLENGE",
+       "hardRuleFired": "HR-10"
+      },
+      "signals": [
+       {
+        "id": "l7.pass.solved",
+        "layer": "L7",
+        "value": true,
+        "verdict": "OK",
+        "weight": 0,
+        "score": 0,
+        "confidence": 1,
+        "collected": "server",
+        "notes": "humanymous Pass cleared"
+       }
+      ],
+      "stored": true
+     },
+     "red-2": {
+      "scoring": {
+       "riskScore": 12.5,
+       "verdict": "CHALLENGE",
+       "hardRuleFired": "HR-10"
+      },
+      "signals": [
+       {
+        "id": "l7.pass.velocity",
+        "layer": "L7",
+        "value": null,
+        "verdict": "SUSPICIOUS",
+        "weight": 25,
+        "score": 12.5,
+        "confidence": 1,
+        "collected": "server",
+        "notes": "Pass velocity (automation cadence)"
+       }
+      ],
+      "stored": true
+     }
+    },
+    "name": "red_team_label_and_kpi",
+    "nonces": [
+     "9dcce806333ca8089e61071e2cdc978933b9",
+     "51ce3a7bc92ae3a13753a28b1bc67c5bbc55"
+    ],
+    "stepUp": true,
+    "steps": [
+     {
+      "step": {
+       "kind": "new",
+       "sid": "red-1",
+       "remote": "198.51.100.30:1",
+       "redteam": "replay-bot"
+      },
+      "method": "GET",
+      "path": "/api/pass/new",
+      "cookie": "hsid=red-1",
+      "body": "",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"bucket\":59836255,\"challenge\":{\"n\":15,\"center\":7,\"rows\":[{\"chars\":[\"N\",\"9\",\"Z\",\"Y\",\"F\",\"Q\",\"S\",\"5\",\"A\",\"B\",\"9\",\"7\",\"T\",\"J\",\"X\"],\"keyIndex\":7},{\"chars\":[\"V\",\"6\",\"Q\",\"A\",\"K\",\"F\",\"R\",\"9\",\"Q\",\"U\",\"R\",\"Q\",\"3\",\"7\",\"E\"],\"keyIndex\":3},{\"chars\":[\"C\",\"Y\",\"B\",\"M\",\"K\",\"U\",\"7\",\"5\",\"9\",\"3\",\"X\",\"A\",\"A\",\"T\",\"T\"],\"keyIndex\":13}]},\"challengeNonce\":\"9dcce806333ca8089e61071e2cdc978933b9\",\"difficulty\":3,\"expiresInS\":60,\"ok\":true,\"preflight\":{\"attestRequired\":false,\"pow\":{\"seed\":\"48a2979b97921d561fde34a4dd374b723a206a6324aaf8ea1f02eae2dc75b2bb\",\"difficulty\":17,\"bucket\":14959063}},\"triesLeft\":4}\n"
+     },
+     {
+      "step": {
+       "kind": "pow",
+       "sid": "red-1",
+       "remote": "198.51.100.30:1"
+      },
+      "method": "POST",
+      "path": "/api/pass/pow",
+      "cookie": "hsid=red-1",
+      "body": "{\"bucket\":14959063,\"challengeNonce\":\"9dcce806333ca8089e61071e2cdc978933b9\",\"nonce\":\"41599\"}",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":true}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "red-1",
+       "remote": "198.51.100.30:1",
+       "redteam": "replay-bot",
+       "proof": {
+        "keyDurs": [
+         131.4,
+         88.2,
+         210.7,
+         123.9
+        ],
+        "keys": 4,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": true
+       },
+       "variant": "misaligned"
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=red-1",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"9dcce806333ca8089e61071e2cdc978933b9\",\"keyDurs\":[131.4,88.2,210.7,123.9],\"keys\":4,\"offsets\":[1,4,9],\"pointerType\":\"\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false,\"reason\":\"the keys are not all in the slot\",\"triesLeft\":3}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "red-1",
+       "remote": "198.51.100.30:1",
+       "redteam": "replay-bot",
+       "proof": {
+        "keyDurs": [
+         171.1,
+         64.4,
+         150.9,
+         133.3
+        ],
+        "keys": 4,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": true
+       }
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=red-1",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"9dcce806333ca8089e61071e2cdc978933b9\",\"keyDurs\":[171.1,64.4,150.9,133.3],\"keys\":4,\"offsets\":[0,4,9],\"pointerType\":\"\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":true,\"riskScore\":0,\"stepUpReceipt\":\"c3VyfHJlZC0xfDE3OTUwODc3NzI.w0L1rREBa3r5E1tzH35NLi8Zqo_Opv3ZSwZQ-qe-hoU\",\"verdict\":\"CHALLENGE\"}\n"
+     },
+     {
+      "step": {
+       "kind": "new",
+       "sid": "red-2",
+       "remote": "198.51.100.31:1",
+       "redteam": "replay-bot"
+      },
+      "method": "GET",
+      "path": "/api/pass/new",
+      "cookie": "hsid=red-2",
+      "body": "",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"bucket\":59836255,\"challenge\":{\"n\":15,\"center\":7,\"rows\":[{\"chars\":[\"V\",\"L\",\"4\",\"4\",\"J\",\"R\",\"A\",\"Q\",\"K\",\"2\",\"D\",\"S\",\"H\",\"B\",\"U\"],\"keyIndex\":1},{\"chars\":[\"G\",\"M\",\"T\",\"D\",\"8\",\"Q\",\"J\",\"F\",\"K\",\"G\",\"V\",\"8\",\"3\",\"N\",\"5\"],\"keyIndex\":7},{\"chars\":[\"A\",\"Q\",\"L\",\"5\",\"2\",\"J\",\"D\",\"L\",\"T\",\"L\",\"M\",\"W\",\"H\",\"D\",\"3\"],\"keyIndex\":4}]},\"challengeNonce\":\"51ce3a7bc92ae3a13753a28b1bc67c5bbc55\",\"difficulty\":3,\"expiresInS\":60,\"ok\":true,\"preflight\":{\"attestRequired\":false,\"pow\":{\"seed\":\"959dac010303f7f9f84d9697bd781a01ca255d3159c2ad3487daee5bf64b256a\",\"difficulty\":19,\"bucket\":14959063}},\"triesLeft\":4}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "red-2",
+       "remote": "198.51.100.31:1",
+       "redteam": "replay-bot",
+       "proof": {
+        "keyDurs": [
+         131.4,
+         88.2,
+         210.7,
+         123.9
+        ],
+        "keys": 4,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": true
+       }
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=red-2",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"51ce3a7bc92ae3a13753a28b1bc67c5bbc55\",\"keyDurs\":[131.4,88.2,210.7,123.9],\"keys\":4,\"offsets\":[6,0,3],\"pointerType\":\"\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false,\"reason\":\"no cryptographic preflight\",\"triesLeft\":3}\n"
+     },
+     {
+      "step": {
+       "kind": "kpi"
+      },
+      "method": "GET",
+      "path": "/api/pass/kpi",
+      "cookie": "",
+      "body": "",
+      "fingerprint": "|192.0.2",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"botAttempts\":3,\"bypassRate\":0.3333333333333333,\"humanAttempts\":0,\"humanPassRate\":0,\"perDifficulty\":{\"d3\":0.3333333333333333},\"perStrategy\":{\"replay-bot\":0.3333333333333333},\"raw\":{\"replay-bot|fail|d3\":2,\"replay-bot|pass|d3\":1},\"unknownPassRate\":0}\n"
+     }
+    ]
+   },
+   {
+    "finals": {
+     "dup-1": {
+      "scoring": {
+       "riskScore": 0,
+       "verdict": "CHALLENGE",
+       "hardRuleFired": "HR-10"
+      },
+      "signals": [
+       {
+        "id": "l7.pass.solved",
+        "layer": "L7",
+        "value": true,
+        "verdict": "OK",
+        "weight": 0,
+        "score": 0,
+        "confidence": 1,
+        "collected": "server",
+        "notes": "humanymous Pass cleared"
+       }
+      ],
+      "stored": true
+     },
+     "dup-2": {
+      "scoring": {
+       "riskScore": 12.5,
+       "verdict": "CHALLENGE",
+       "hardRuleFired": "HR-10"
+      },
+      "signals": [
+       {
+        "id": "l7.pass.velocity",
+        "layer": "L7",
+        "value": null,
+        "verdict": "SUSPICIOUS",
+        "weight": 25,
+        "score": 12.5,
+        "confidence": 1,
+        "collected": "server",
+        "notes": "Pass velocity (automation cadence)"
+       }
+      ],
+      "stored": true
+     },
+     "dup-3": {
+      "scoring": {
+       "riskScore": 55.4,
+       "verdict": "CHALLENGE",
+       "hardRuleFired": "HR-10"
+      },
+      "signals": [
+       {
+        "id": "l7.pass.velocity",
+        "layer": "L7",
+        "value": null,
+        "verdict": "SUSPICIOUS",
+        "weight": 25,
+        "score": 12.5,
+        "confidence": 1,
+        "collected": "server",
+        "notes": "Pass velocity (automation cadence)"
+       },
+       {
+        "id": "l7.pass.flood",
+        "layer": "L7",
+        "value": null,
+        "verdict": "BOT",
+        "weight": 45,
+        "score": 45,
+        "confidence": 1,
+        "collected": "server",
+        "notes": "Pass velocity (automation cadence)"
+       },
+       {
+        "id": "l4.key.machine_speed",
+        "layer": "L4",
+        "value": null,
+        "verdict": "BOT",
+        "weight": 18,
+        "score": 12.6,
+        "confidence": 0.7,
+        "collected": "server",
+        "notes": "machine-speed inter-key latency (<15ms)"
+       },
+       {
+        "id": "l4.key.flight_std",
+        "layer": "L4",
+        "value": null,
+        "verdict": "SUSPICIOUS",
+        "weight": 8,
+        "score": 2,
+        "confidence": 0.5,
+        "collected": "server",
+        "notes": "near-zero keystroke flight variance"
+       },
+       {
+        "id": "l4.event.perfect_timing",
+        "layer": "L4",
+        "value": null,
+        "verdict": "SUSPICIOUS",
+        "weight": 18,
+        "score": 5.3999999999999995,
+        "confidence": 0.6,
+        "collected": "server",
+        "notes": "zero sub-ms jitter (synthetic timing)"
+       },
+       {
+        "id": "l7.pass.solved",
+        "layer": "L7",
+        "value": true,
+        "verdict": "OK",
+        "weight": 0,
+        "score": 0,
+        "confidence": 1,
+        "collected": "server",
+        "notes": "humanymous Pass cleared"
+       }
+      ],
+      "stored": true
+     }
+    },
+    "name": "duplicate_trace_and_real_event",
+    "nonces": [
+     "1c44dfe2d81d3daee7a09e8edaf5419af4eb",
+     "50bc536e70771c760910dd2e6e150e2bb3d1",
+     "38a2d94839b5577709c43f9fbd702108a0bd"
+    ],
+    "stepUp": true,
+    "steps": [
+     {
+      "step": {
+       "kind": "new",
+       "sid": "dup-1",
+       "remote": "198.51.100.40:1"
+      },
+      "method": "GET",
+      "path": "/api/pass/new",
+      "cookie": "hsid=dup-1",
+      "body": "",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"bucket\":59836255,\"challenge\":{\"n\":9,\"center\":4,\"rows\":[{\"chars\":[\"7\",\"2\",\"8\",\"N\",\"3\",\"X\",\"W\",\"Y\",\"X\"],\"keyIndex\":0},{\"chars\":[\"2\",\"G\",\"4\",\"E\",\"Q\",\"5\",\"4\",\"W\",\"H\"],\"keyIndex\":6},{\"chars\":[\"W\",\"6\",\"E\",\"F\",\"A\",\"P\",\"R\",\"U\",\"J\"],\"keyIndex\":0}]},\"challengeNonce\":\"1c44dfe2d81d3daee7a09e8edaf5419af4eb\",\"difficulty\":0,\"expiresInS\":60,\"ok\":true,\"preflight\":{\"attestRequired\":false,\"pow\":{\"seed\":\"c8d68d369656a3833e1aa7c1ce0126836ca444b44de4d1278c244eccd581e446\",\"difficulty\":14,\"bucket\":14959063}},\"triesLeft\":4}\n"
+     },
+     {
+      "step": {
+       "kind": "pow",
+       "sid": "dup-1",
+       "remote": "198.51.100.40:1"
+      },
+      "method": "POST",
+      "path": "/api/pass/pow",
+      "cookie": "hsid=dup-1",
+      "body": "{\"bucket\":14959063,\"challengeNonce\":\"1c44dfe2d81d3daee7a09e8edaf5419af4eb\",\"nonce\":\"4971\"}",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":true}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "dup-1",
+       "remote": "198.51.100.40:1",
+       "proof": {
+        "keyDurs": [
+         111.1,
+         122.2,
+         133.3,
+         144.4
+        ],
+        "keys": 4,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": true
+       }
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=dup-1",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"1c44dfe2d81d3daee7a09e8edaf5419af4eb\",\"keyDurs\":[111.1,122.2,133.3,144.4],\"keys\":4,\"offsets\":[4,7,4],\"pointerType\":\"\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":true,\"riskScore\":0,\"stepUpReceipt\":\"c3VyfGR1cC0xfDE3OTUwODc3NzI.-civDQJ31kA3QdnHe3JrcAlYvr-4XUmbZUpfmivoQ_k\",\"verdict\":\"CHALLENGE\"}\n"
+     },
+     {
+      "step": {
+       "kind": "new",
+       "sid": "dup-2",
+       "remote": "198.51.100.41:1"
+      },
+      "method": "GET",
+      "path": "/api/pass/new",
+      "cookie": "hsid=dup-2",
+      "body": "",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"bucket\":59836255,\"challenge\":{\"n\":9,\"center\":4,\"rows\":[{\"chars\":[\"B\",\"9\",\"C\",\"J\",\"Y\",\"Z\",\"B\",\"4\",\"X\"],\"keyIndex\":1},{\"chars\":[\"8\",\"4\",\"3\",\"P\",\"E\",\"E\",\"2\",\"M\",\"G\"],\"keyIndex\":7},{\"chars\":[\"K\",\"L\",\"Q\",\"T\",\"Y\",\"2\",\"J\",\"K\",\"X\"],\"keyIndex\":5}]},\"challengeNonce\":\"50bc536e70771c760910dd2e6e150e2bb3d1\",\"difficulty\":0,\"expiresInS\":60,\"ok\":true,\"preflight\":{\"attestRequired\":false,\"pow\":{\"seed\":\"d70b91c9b6fe39458ba4b84bf99dc227ecda849da3144f7f4f94d962dc650e0a\",\"difficulty\":14,\"bucket\":14959063}},\"triesLeft\":4}\n"
+     },
+     {
+      "step": {
+       "kind": "pow",
+       "sid": "dup-2",
+       "remote": "198.51.100.41:1"
+      },
+      "method": "POST",
+      "path": "/api/pass/pow",
+      "cookie": "hsid=dup-2",
+      "body": "{\"bucket\":14959063,\"challengeNonce\":\"50bc536e70771c760910dd2e6e150e2bb3d1\",\"nonce\":\"22573\"}",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":true}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "dup-2",
+       "remote": "198.51.100.41:1",
+       "proof": {
+        "keyDurs": [
+         111.1,
+         122.2,
+         133.3,
+         144.4
+        ],
+        "keys": 4,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": true
+       }
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=dup-2",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"50bc536e70771c760910dd2e6e150e2bb3d1\",\"keyDurs\":[111.1,122.2,133.3,144.4],\"keys\":4,\"offsets\":[3,6,8],\"pointerType\":\"\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false,\"reason\":\"duplicate interaction trace\",\"triesLeft\":3}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "dup-2",
+       "remote": "198.51.100.41:1",
+       "proof": {
+        "keyDurs": [
+         131.4,
+         88.2,
+         210.7,
+         123.9
+        ],
+        "keys": 4,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": false
+       }
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=dup-2",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"50bc536e70771c760910dd2e6e150e2bb3d1\",\"keyDurs\":[131.4,88.2,210.7,123.9],\"keys\":4,\"offsets\":[3,6,8],\"pointerType\":\"\",\"rawT\":[],\"trusted\":false}",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false,\"reason\":\"untrusted events\",\"triesLeft\":2}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "dup-2",
+       "remote": "198.51.100.41:1",
+       "proof": {
+        "keyDurs": [
+         131.4,
+         88.2,
+         210.7,
+         123.9
+        ],
+        "keys": 1,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": true
+       }
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=dup-2",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"50bc536e70771c760910dd2e6e150e2bb3d1\",\"keyDurs\":[131.4,88.2,210.7,123.9],\"keys\":1,\"offsets\":[3,6,8],\"pointerType\":\"\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false,\"reason\":\"insufficient interaction\",\"triesLeft\":1}\n"
+     },
+     {
+      "step": {
+       "kind": "new",
+       "sid": "dup-3",
+       "remote": "198.51.100.42:1"
+      },
+      "method": "GET",
+      "path": "/api/pass/new",
+      "cookie": "hsid=dup-3",
+      "body": "",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"bucket\":59836255,\"challenge\":{\"n\":9,\"center\":4,\"rows\":[{\"chars\":[\"L\",\"4\",\"G\",\"Y\",\"4\",\"Q\",\"H\",\"U\",\"S\"],\"keyIndex\":8},{\"chars\":[\"7\",\"E\",\"Y\",\"U\",\"T\",\"Y\",\"B\",\"L\",\"B\"],\"keyIndex\":2},{\"chars\":[\"6\",\"P\",\"6\",\"6\",\"6\",\"X\",\"D\",\"G\",\"K\"],\"keyIndex\":4}]},\"challengeNonce\":\"38a2d94839b5577709c43f9fbd702108a0bd\",\"difficulty\":0,\"expiresInS\":60,\"ok\":true,\"preflight\":{\"attestRequired\":false,\"pow\":{\"seed\":\"3350ad4bb9978afcef8030c0c69815b041f96764789b8d6beac5b68baf22a5da\",\"difficulty\":16,\"bucket\":14959063}},\"triesLeft\":4}\n"
+     },
+     {
+      "step": {
+       "kind": "pow",
+       "sid": "dup-3",
+       "remote": "198.51.100.42:1"
+      },
+      "method": "POST",
+      "path": "/api/pass/pow",
+      "cookie": "hsid=dup-3",
+      "body": "{\"bucket\":14959063,\"challengeNonce\":\"38a2d94839b5577709c43f9fbd702108a0bd\",\"nonce\":\"136738\"}",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":true}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "dup-3",
+       "remote": "198.51.100.42:1",
+       "proof": {
+        "keyDurs": [
+         100,
+         100,
+         100,
+         100.2
+        ],
+        "keys": 4,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": true
+       }
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=dup-3",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"38a2d94839b5577709c43f9fbd702108a0bd\",\"keyDurs\":[100,100,100,100.2],\"keys\":4,\"offsets\":[5,2,0],\"pointerType\":\"\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":false,\"reason\":\"uniform key timing\",\"triesLeft\":3}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "dup-3",
+       "remote": "198.51.100.42:1",
+       "proof": {
+        "keyDurs": [
+         7,
+         5,
+         9,
+         6
+        ],
+        "keys": 4,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": true
+       }
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=dup-3",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"38a2d94839b5577709c43f9fbd702108a0bd\",\"keyDurs\":[7,5,9,6],\"keys\":4,\"offsets\":[5,2,0],\"pointerType\":\"\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":true,\"riskScore\":55.4,\"stepUpReceipt\":\"c3VyfGR1cC0zfDE3OTUwODc3NzI.wunpyh75Z_l8PwGd7IHUKijDNTd5oBbPA4kbmPi8Kjg\",\"verdict\":\"CHALLENGE\"}\n"
+     },
+     {
+      "step": {
+       "kind": "kpi"
+      },
+      "method": "GET",
+      "path": "/api/pass/kpi",
+      "cookie": "",
+      "body": "",
+      "fingerprint": "|192.0.2",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"botAttempts\":0,\"bypassRate\":0,\"humanAttempts\":4,\"humanPassRate\":0.25,\"perDifficulty\":{\"d0\":0.3333333333333333},\"perStrategy\":{},\"raw\":{\"human|fail|d0\":3,\"human|pass|d0\":1,\"unknown|fail|d0\":1,\"unknown|pass|d0\":1},\"unknownPassRate\":0.5}\n"
+     }
+    ]
+   },
+   {
+    "finals": {
+     "beh-1": {
+      "scoring": {
+       "riskScore": 23,
+       "verdict": "CHALLENGE",
+       "hardRuleFired": "HR-10"
+      },
+      "signals": [
+       {
+        "id": "l4.key.machine_speed",
+        "layer": "L4",
+        "value": null,
+        "verdict": "BOT",
+        "weight": 18,
+        "score": 12.6,
+        "confidence": 0.7,
+        "collected": "server",
+        "notes": "machine-speed inter-key latency (<15ms)"
+       },
+       {
+        "id": "l4.key.flight_std",
+        "layer": "L4",
+        "value": null,
+        "verdict": "SUSPICIOUS",
+        "weight": 8,
+        "score": 2,
+        "confidence": 0.5,
+        "collected": "server",
+        "notes": "near-zero keystroke flight variance"
+       },
+       {
+        "id": "l4.event.perfect_timing",
+        "layer": "L4",
+        "value": null,
+        "verdict": "SUSPICIOUS",
+        "weight": 18,
+        "score": 5.3999999999999995,
+        "confidence": 0.6,
+        "collected": "server",
+        "notes": "zero sub-ms jitter (synthetic timing)"
+       },
+       {
+        "id": "l2.adv.mobile_inconsistent",
+        "layer": "L2",
+        "value": null,
+        "verdict": "SUSPICIOUS",
+        "weight": 20,
+        "score": 5,
+        "confidence": 0.5,
+        "collected": "server",
+        "notes": "touch/mobile claim without device-motion micro-jitter"
+       },
+       {
+        "id": "l7.pass.solved",
+        "layer": "L7",
+        "value": true,
+        "verdict": "OK",
+        "weight": 0,
+        "score": 0,
+        "confidence": 1,
+        "collected": "server",
+        "notes": "humanymous Pass cleared"
+       }
+      ],
+      "stored": true
+     },
+     "beh-2": {
+      "scoring": {
+       "riskScore": 25.1,
+       "verdict": "CHALLENGE",
+       "hardRuleFired": "HR-10"
+      },
+      "signals": [
+       {
+        "id": "l7.pass.velocity",
+        "layer": "L7",
+        "value": null,
+        "verdict": "SUSPICIOUS",
+        "weight": 25,
+        "score": 12.5,
+        "confidence": 1,
+        "collected": "server",
+        "notes": "Pass velocity (automation cadence)"
+       },
+       {
+        "id": "l4.key.machine_speed",
+        "layer": "L4",
+        "value": null,
+        "verdict": "BOT",
+        "weight": 18,
+        "score": 12.6,
+        "confidence": 0.7,
+        "collected": "server",
+        "notes": "machine-speed inter-key latency (<15ms)"
+       },
+       {
+        "id": "l4.key.flight_std",
+        "layer": "L4",
+        "value": null,
+        "verdict": "SUSPICIOUS",
+        "weight": 8,
+        "score": 2,
+        "confidence": 0.5,
+        "collected": "server",
+        "notes": "near-zero keystroke flight variance"
+       },
+       {
+        "id": "l7.pass.solved",
+        "layer": "L7",
+        "value": true,
+        "verdict": "OK",
+        "weight": 0,
+        "score": 0,
+        "confidence": 1,
+        "collected": "server",
+        "notes": "humanymous Pass cleared"
+       }
+      ],
+      "stored": true
+     }
+    },
+    "name": "behavior_tells_fused_soft",
+    "nonces": [
+     "a85df749c6fd9e0e601c4deb9347f15a40d5",
+     "e81e164a90eee5a8b67d0d58c9555175e6f4"
+    ],
+    "stepUp": true,
+    "steps": [
+     {
+      "step": {
+       "kind": "new",
+       "sid": "beh-1",
+       "remote": "198.51.100.50:1"
+      },
+      "method": "GET",
+      "path": "/api/pass/new",
+      "cookie": "hsid=beh-1",
+      "body": "",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"bucket\":59836255,\"challenge\":{\"n\":9,\"center\":4,\"rows\":[{\"chars\":[\"V\",\"2\",\"V\",\"J\",\"6\",\"5\",\"V\",\"2\",\"Q\"],\"keyIndex\":4},{\"chars\":[\"6\",\"P\",\"M\",\"W\",\"G\",\"D\",\"Y\",\"K\",\"7\"],\"keyIndex\":0},{\"chars\":[\"9\",\"R\",\"T\",\"6\",\"H\",\"L\",\"G\",\"V\",\"L\"],\"keyIndex\":5}]},\"challengeNonce\":\"a85df749c6fd9e0e601c4deb9347f15a40d5\",\"difficulty\":0,\"expiresInS\":60,\"ok\":true,\"preflight\":{\"attestRequired\":false,\"pow\":{\"seed\":\"10395e0a1ab4c083282fa763e5d17eced1467490f3896884e38d810bbf46dbaf\",\"difficulty\":14,\"bucket\":14959063}},\"triesLeft\":4}\n"
+     },
+     {
+      "step": {
+       "kind": "pow",
+       "sid": "beh-1",
+       "remote": "198.51.100.50:1"
+      },
+      "method": "POST",
+      "path": "/api/pass/pow",
+      "cookie": "hsid=beh-1",
+      "body": "{\"bucket\":14959063,\"challengeNonce\":\"a85df749c6fd9e0e601c4deb9347f15a40d5\",\"nonce\":\"3647\"}",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":true}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "beh-1",
+       "remote": "198.51.100.50:1",
+       "proof": {
+        "durations": [
+         1,
+         2,
+         3,
+         4,
+         5
+        ],
+        "keyDurs": [
+         3,
+         4,
+         5,
+         6
+        ],
+        "keys": 4,
+        "pointerType": "touch",
+        "rawT": [],
+        "trusted": true
+       }
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=beh-1",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"a85df749c6fd9e0e601c4deb9347f15a40d5\",\"durations\":[1,2,3,4,5],\"keyDurs\":[3,4,5,6],\"keys\":4,\"offsets\":[0,4,8],\"pointerType\":\"touch\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":true,\"riskScore\":23,\"stepUpReceipt\":\"c3VyfGJlaC0xfDE3OTUwODc3NzI.vY3UrbWfCBU54Qzw6hlWysCPNWXyfp13X8Nmfwm3Wlg\",\"verdict\":\"CHALLENGE\"}\n"
+     },
+     {
+      "step": {
+       "kind": "new",
+       "sid": "beh-2",
+       "remote": "198.51.100.51:1"
+      },
+      "method": "GET",
+      "path": "/api/pass/new",
+      "cookie": "hsid=beh-2",
+      "body": "",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"bucket\":59836255,\"challenge\":{\"n\":9,\"center\":4,\"rows\":[{\"chars\":[\"Z\",\"M\",\"S\",\"F\",\"R\",\"C\",\"H\",\"K\",\"4\"],\"keyIndex\":7},{\"chars\":[\"E\",\"L\",\"4\",\"M\",\"Q\",\"9\",\"H\",\"B\",\"T\"],\"keyIndex\":3},{\"chars\":[\"D\",\"6\",\"Y\",\"Z\",\"C\",\"5\",\"K\",\"H\",\"Z\"],\"keyIndex\":7}]},\"challengeNonce\":\"e81e164a90eee5a8b67d0d58c9555175e6f4\",\"difficulty\":0,\"expiresInS\":60,\"ok\":true,\"preflight\":{\"attestRequired\":false,\"pow\":{\"seed\":\"287f8ad37857ddf329bb0697ffbde7acfe6037aa2f219096a738e1ebe78dc2c3\",\"difficulty\":14,\"bucket\":14959063}},\"triesLeft\":4}\n"
+     },
+     {
+      "step": {
+       "kind": "pow",
+       "sid": "beh-2",
+       "remote": "198.51.100.51:1"
+      },
+      "method": "POST",
+      "path": "/api/pass/pow",
+      "cookie": "hsid=beh-2",
+      "body": "{\"bucket\":14959063,\"challengeNonce\":\"e81e164a90eee5a8b67d0d58c9555175e6f4\",\"nonce\":\"1219\"}",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":true}\n"
+     },
+     {
+      "step": {
+       "kind": "solve",
+       "sid": "beh-2",
+       "remote": "198.51.100.51:1",
+       "proof": {
+        "keyDurs": [
+         12.25,
+         12.5,
+         12.75,
+         13.5
+        ],
+        "keys": 4,
+        "pointerType": "",
+        "rawT": [],
+        "trusted": true
+       }
+      },
+      "method": "POST",
+      "path": "/api/pass/solve",
+      "cookie": "hsid=beh-2",
+      "body": "{\"bucket\":59836255,\"challengeNonce\":\"e81e164a90eee5a8b67d0d58c9555175e6f4\",\"keyDurs\":[12.25,12.5,12.75,13.5],\"keys\":4,\"offsets\":[6,1,6],\"pointerType\":\"\",\"rawT\":[],\"trusted\":true}",
+      "fingerprint": "|198.51.100",
+      "nowUnix": 1795087652,
+      "status": 200,
+      "contentType": "application/json",
+      "setCookie": false,
+      "response": "{\"ok\":true,\"riskScore\":25.1,\"stepUpReceipt\":\"c3VyfGJlaC0yfDE3OTUwODc3NzI.B8nXi8bMnCm6BVVuMto9-6xfGyvzoP_FVAy-sW3ZhU0\",\"verdict\":\"CHALLENGE\"}\n"
+     }
+    ]
+   }
+  ],
+  "stats": [
+   {
+    "allIntegerMs": false,
+    "input": [],
+    "mean": "0",
+    "stddev": "0"
+   },
+   {
+    "allIntegerMs": true,
+    "input": [
+     "4014000000000000"
+    ],
+    "mean": "4014000000000000",
+    "stddev": "0"
+   },
+   {
+    "allIntegerMs": true,
+    "input": [
+     "3ff0000000000000",
+     "4000000000000000",
+     "4008000000000000",
+     "4010000000000000"
+    ],
+    "mean": "4004000000000000",
+    "stddev": "3ff1e3779b97f4a8"
+   },
+   {
+    "allIntegerMs": false,
+    "input": [
+     "406129999999999a",
+     "40566ccccccccccd",
+     "406a6ccccccccccd",
+     "405ef33333333333"
+    ],
+    "mean": "4061919999999999",
+    "stddev": "404637359b02d821"
+   },
+   {
+    "allIntegerMs": true,
+    "input": [
+     "401c000000000000",
+     "4014000000000000",
+     "4022000000000000",
+     "4018000000000000"
+    ],
+    "mean": "401b000000000000",
+    "stddev": "3ff7aa10d193c22d"
+   },
+   {
+    "allIntegerMs": true,
+    "input": [
+     "3ff000000006df38",
+     "4000000000000000"
+    ],
+    "mean": "3ff8000000036f9c",
+    "stddev": "3fdffffffff24190"
+   },
+   {
+    "allIntegerMs": true,
+    "input": [
+     "3feffffef39085f5",
+     "4008000000000000"
+    ],
+    "mean": "3fffffffbce4217d",
+    "stddev": "3ff00000431bde82"
+   },
+   {
+    "allIntegerMs": true,
+    "input": [
+     "3e7ad7f29abcaf48"
+    ],
+    "mean": "3e7ad7f29abcaf48",
+    "stddev": "0"
+   },
+   {
+    "allIntegerMs": false,
+    "input": [
+     "bff8000000000000",
+     "4004000000000000"
+    ],
+    "mean": "3fe0000000000000",
+    "stddev": "4000000000000000"
+   },
+   {
+    "allIntegerMs": false,
+    "input": [
+     "4059000000000000",
+     "4059000000000000",
+     "4059000000000000",
+     "4059133333333333"
+    ],
+    "mean": "405904cccccccccd",
+    "stddev": "3fc0a0b02501c76d"
+   },
+   {
+    "allIntegerMs": true,
+    "input": [
+     "40000000431bde83",
+     "4008000000000000"
+    ],
+    "mean": "40040000218def42",
+    "stddev": "3fdffffef39085f4"
+   },
+   {
+    "allIntegerMs": false,
+    "input": [
+     "3ff00000f1978771",
+     "4010000049d1db2a"
+    ],
+    "mean": "400400008637bd06",
+    "stddev": "3ff800001ad7f29c"
+   },
+   {
+    "allIntegerMs": true,
+    "input": [
+     "c000000000000000",
+     "c00800000d6bf94d"
+    ],
+    "mean": "c004000006b5fca6",
+    "stddev": "3fe000001ad7f29a"
+   },
+   {
+    "allIntegerMs": true,
+    "input": [
+     "430c6bf526340000",
+     "430c6bf526340008"
+    ],
+    "mean": "430c6bf526340004",
+    "stddev": "3fe0000000000000"
+   },
+   {
+    "allIntegerMs": false,
+    "input": [
+     "3fb999999999999a",
+     "3fc999999999999a",
+     "3fd3333333333333"
+    ],
+    "mean": "3fc999999999999b",
+    "stddev": "3fb4e6fdf33cf031"
+   },
+   {
+    "allIntegerMs": true,
+    "input": [
+     "4030000000000000",
+     "4030000000000000",
+     "4030000000000000",
+     "4030000000000000",
+     "4030000000000000"
+    ],
+    "mean": "4030000000000000",
+    "stddev": "0"
+   },
+   {
+    "allIntegerMs": true,
+    "input": [
+     "7e37e43c8800759c",
+     "fe37e43c8800759c"
+    ],
+    "mean": "0",
+    "stddev": "7ff0000000000000"
+   },
+   {
+    "allIntegerMs": true,
+    "input": [
+     "7fe1ccf385ebc8a0",
+     "7fe1ccf385ebc8a0"
+    ],
+    "mean": "7ff0000000000000",
+    "stddev": "7ff0000000000000"
+   }
+  ],
+  "velocity": [
+   {
+    "fingerprint": "|203.0.113",
+    "level": 0,
+    "scoring": {
+     "riskScore": 0,
+     "verdict": "",
+     "hardRuleFired": ""
+    },
+    "sessionLevel": 0,
+    "signalIds": [],
+    "signals": null,
+    "step": {
+     "sid": "vel-s1",
+     "remote": "203.0.113.7:5555",
+     "offsetMs": 0
+    },
+    "stored": false,
+    "velLevel": -1
+   },
+   {
+    "fingerprint": "|203.0.113",
+    "level": 0,
+    "scoring": {
+     "riskScore": 0,
+     "verdict": "",
+     "hardRuleFired": ""
+    },
+    "sessionLevel": 0,
+    "signalIds": [],
+    "signals": null,
+    "step": {
+     "sid": "vel-s1",
+     "remote": "203.0.113.7:5555",
+     "offsetMs": 100
+    },
+    "stored": false,
+    "velLevel": -1
+   },
+   {
+    "fingerprint": "|203.0.113",
+    "level": 0,
+    "scoring": {
+     "riskScore": 0,
+     "verdict": "",
+     "hardRuleFired": ""
+    },
+    "sessionLevel": 0,
+    "signalIds": [],
+    "signals": null,
+    "step": {
+     "sid": "vel-s1",
+     "remote": "203.0.113.7:5555",
+     "offsetMs": 200
+    },
+    "stored": false,
+    "velLevel": -1
+   },
+   {
+    "fingerprint": "|203.0.113",
+    "level": 1,
+    "scoring": {
+     "riskScore": 12.5,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "sessionLevel": 1,
+    "signalIds": [
+     "l7.pass.velocity"
+    ],
+    "signals": [
+     {
+      "id": "l7.pass.velocity",
+      "layer": "L7",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 25,
+      "score": 12.5,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "Pass velocity (automation cadence)"
+     }
+    ],
+    "step": {
+     "sid": "vel-s1",
+     "remote": "203.0.113.7:5555",
+     "offsetMs": 300
+    },
+    "stored": true,
+    "velLevel": 1
+   },
+   {
+    "fingerprint": "|203.0.113",
+    "level": 1,
+    "scoring": {
+     "riskScore": 12.5,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "sessionLevel": 1,
+    "signalIds": [
+     "l7.pass.velocity"
+    ],
+    "signals": [
+     {
+      "id": "l7.pass.velocity",
+      "layer": "L7",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 25,
+      "score": 12.5,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "Pass velocity (automation cadence)"
+     }
+    ],
+    "step": {
+     "sid": "vel-s1",
+     "remote": "203.0.113.7:5555",
+     "offsetMs": 400
+    },
+    "stored": true,
+    "velLevel": 1
+   },
+   {
+    "fingerprint": "|203.0.113",
+    "level": 1,
+    "scoring": {
+     "riskScore": 12.5,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "sessionLevel": 0,
+    "signalIds": [
+     "l7.pass.velocity"
+    ],
+    "signals": [
+     {
+      "id": "l7.pass.velocity",
+      "layer": "L7",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 25,
+      "score": 12.5,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "Pass velocity (automation cadence)"
+     }
+    ],
+    "step": {
+     "sid": "vel-s2",
+     "remote": "203.0.113.7:6000",
+     "offsetMs": 500
+    },
+    "stored": true,
+    "velLevel": 1
+   },
+   {
+    "fingerprint": "|203.0.113",
+    "level": 1,
+    "scoring": {
+     "riskScore": 12.5,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "sessionLevel": 0,
+    "signalIds": [
+     "l7.pass.velocity"
+    ],
+    "signals": [
+     {
+      "id": "l7.pass.velocity",
+      "layer": "L7",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 25,
+      "score": 12.5,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "Pass velocity (automation cadence)"
+     }
+    ],
+    "step": {
+     "sid": "vel-s2",
+     "remote": "203.0.113.7:6000",
+     "offsetMs": 600
+    },
+    "stored": true,
+    "velLevel": 1
+   },
+   {
+    "fingerprint": "|203.0.113",
+    "level": 2,
+    "scoring": {
+     "riskScore": 45,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "sessionLevel": 0,
+    "signalIds": [
+     "l7.pass.velocity",
+     "l7.pass.flood"
+    ],
+    "signals": [
+     {
+      "id": "l7.pass.velocity",
+      "layer": "L7",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 25,
+      "score": 12.5,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "Pass velocity (automation cadence)"
+     },
+     {
+      "id": "l7.pass.flood",
+      "layer": "L7",
+      "value": null,
+      "verdict": "BOT",
+      "weight": 45,
+      "score": 45,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "Pass velocity (automation cadence)"
+     }
+    ],
+    "step": {
+     "sid": "vel-s2",
+     "remote": "203.0.113.7:6000",
+     "offsetMs": 700
+    },
+    "stored": true,
+    "velLevel": 2
+   },
+   {
+    "fingerprint": "|203.0.113",
+    "level": 2,
+    "scoring": {
+     "riskScore": 45,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "sessionLevel": 1,
+    "signalIds": [
+     "l7.pass.velocity",
+     "l7.pass.flood"
+    ],
+    "signals": [
+     {
+      "id": "l7.pass.velocity",
+      "layer": "L7",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 25,
+      "score": 12.5,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "Pass velocity (automation cadence)"
+     },
+     {
+      "id": "l7.pass.flood",
+      "layer": "L7",
+      "value": null,
+      "verdict": "BOT",
+      "weight": 45,
+      "score": 45,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "Pass velocity (automation cadence)"
+     }
+    ],
+    "step": {
+     "sid": "vel-s2",
+     "remote": "203.0.113.7:6000",
+     "offsetMs": 800
+    },
+    "stored": true,
+    "velLevel": 2
+   },
+   {
+    "fingerprint": "|198.51.100",
+    "level": 0,
+    "scoring": {
+     "riskScore": 0,
+     "verdict": "",
+     "hardRuleFired": ""
+    },
+    "sessionLevel": 0,
+    "signalIds": [],
+    "signals": null,
+    "step": {
+     "sid": "vel-s3",
+     "remote": "198.51.100.9:7000",
+     "offsetMs": 900
+    },
+    "stored": false,
+    "velLevel": -1
+   },
+   {
+    "fingerprint": "|203.0.113",
+    "level": 2,
+    "scoring": {
+     "riskScore": 45,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "sessionLevel": 1,
+    "signalIds": [
+     "l7.pass.velocity",
+     "l7.pass.flood"
+    ],
+    "signals": [
+     {
+      "id": "l7.pass.velocity",
+      "layer": "L7",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 25,
+      "score": 12.5,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "Pass velocity (automation cadence)"
+     },
+     {
+      "id": "l7.pass.flood",
+      "layer": "L7",
+      "value": null,
+      "verdict": "BOT",
+      "weight": 45,
+      "score": 45,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "Pass velocity (automation cadence)"
+     }
+    ],
+    "step": {
+     "sid": "vel-s1",
+     "remote": "203.0.113.7:5555",
+     "offsetMs": 1000
+    },
+    "stored": true,
+    "velLevel": 2
+   },
+   {
+    "fingerprint": "|203.0.113",
+    "level": 0,
+    "scoring": {
+     "riskScore": 45,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "sessionLevel": 0,
+    "signalIds": [
+     "l7.pass.velocity",
+     "l7.pass.flood"
+    ],
+    "signals": [
+     {
+      "id": "l7.pass.velocity",
+      "layer": "L7",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 25,
+      "score": 12.5,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "Pass velocity (automation cadence)"
+     },
+     {
+      "id": "l7.pass.flood",
+      "layer": "L7",
+      "value": null,
+      "verdict": "BOT",
+      "weight": 45,
+      "score": 45,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "Pass velocity (automation cadence)"
+     }
+    ],
+    "step": {
+     "sid": "vel-s1",
+     "remote": "203.0.113.7:5555",
+     "offsetMs": 31000
+    },
+    "stored": true,
+    "velLevel": 2
+   },
+   {
+    "fingerprint": "|203.0.113",
+    "level": 0,
+    "scoring": {
+     "riskScore": 45,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "sessionLevel": 0,
+    "signalIds": [
+     "l7.pass.velocity",
+     "l7.pass.flood"
+    ],
+    "signals": [
+     {
+      "id": "l7.pass.velocity",
+      "layer": "L7",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 25,
+      "score": 12.5,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "Pass velocity (automation cadence)"
+     },
+     {
+      "id": "l7.pass.flood",
+      "layer": "L7",
+      "value": null,
+      "verdict": "BOT",
+      "weight": 45,
+      "score": 45,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "Pass velocity (automation cadence)"
+     }
+    ],
+    "step": {
+     "sid": "vel-s1",
+     "remote": "203.0.113.7:5555",
+     "offsetMs": 31010
+    },
+    "stored": true,
+    "velLevel": 2
+   },
+   {
+    "fingerprint": "|203.0.113",
+    "level": 0,
+    "scoring": {
+     "riskScore": 45,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "sessionLevel": 0,
+    "signalIds": [
+     "l7.pass.velocity",
+     "l7.pass.flood"
+    ],
+    "signals": [
+     {
+      "id": "l7.pass.velocity",
+      "layer": "L7",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 25,
+      "score": 12.5,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "Pass velocity (automation cadence)"
+     },
+     {
+      "id": "l7.pass.flood",
+      "layer": "L7",
+      "value": null,
+      "verdict": "BOT",
+      "weight": 45,
+      "score": 45,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "Pass velocity (automation cadence)"
+     }
+    ],
+    "step": {
+     "sid": "vel-s1",
+     "remote": "203.0.113.7:5555",
+     "offsetMs": 31020
+    },
+    "stored": true,
+    "velLevel": 2
+   },
+   {
+    "fingerprint": "|203.0.113",
+    "level": 1,
+    "scoring": {
+     "riskScore": 45,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "sessionLevel": 1,
+    "signalIds": [
+     "l7.pass.velocity",
+     "l7.pass.flood"
+    ],
+    "signals": [
+     {
+      "id": "l7.pass.velocity",
+      "layer": "L7",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 25,
+      "score": 12.5,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "Pass velocity (automation cadence)"
+     },
+     {
+      "id": "l7.pass.flood",
+      "layer": "L7",
+      "value": null,
+      "verdict": "BOT",
+      "weight": 45,
+      "score": 45,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "Pass velocity (automation cadence)"
+     }
+    ],
+    "step": {
+     "sid": "vel-s1",
+     "remote": "203.0.113.7:5555",
+     "offsetMs": 31030
+    },
+    "stored": true,
+    "velLevel": 2
+   },
+   {
+    "fingerprint": "|203.0.113",
+    "level": 1,
+    "scoring": {
+     "riskScore": 45,
+     "verdict": "CHALLENGE",
+     "hardRuleFired": "HR-10"
+    },
+    "sessionLevel": 0,
+    "signalIds": [
+     "l7.pass.velocity",
+     "l7.pass.flood"
+    ],
+    "signals": [
+     {
+      "id": "l7.pass.velocity",
+      "layer": "L7",
+      "value": null,
+      "verdict": "SUSPICIOUS",
+      "weight": 25,
+      "score": 12.5,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "Pass velocity (automation cadence)"
+     },
+     {
+      "id": "l7.pass.flood",
+      "layer": "L7",
+      "value": null,
+      "verdict": "BOT",
+      "weight": 45,
+      "score": 45,
+      "confidence": 1,
+      "collected": "server",
+      "notes": "Pass velocity (automation cadence)"
+     }
+    ],
+    "step": {
+     "sid": "vel-s2",
+     "remote": "203.0.113.7:6000",
+     "offsetMs": 61000
+    },
+    "stored": true,
+    "velLevel": 2
+   }
+  ]
+ }
+}
