@@ -82,8 +82,30 @@ fn unit(
     let text = std::fs::read_to_string(&log).map_err(|error| error.to_string())?;
     let passed = code == 0 && super::pilots::passed(&text, name);
     report["commands"][stage] = json!({"exit_code":code,"log_sha256":source::file(&log)?});
+    if !passed {
+        report["commands"][stage]["failure_excerpt"] = json!(failure_excerpt(&text));
+    }
     report[format!("{}_passed", stage.replace('-', "_"))] = json!(passed);
     require(passed, "Windows unit did not pass alone")
+}
+
+/// Bounded panic/compiler lines of a failed unit run, for diagnosis only.
+fn failure_excerpt(text: &str) -> Vec<String> {
+    let mut lines = Vec::new();
+    let mut after = 0;
+    for line in text.lines() {
+        if line.contains("panicked at") || line.starts_with("error") || line.contains("FAILED") {
+            after = 4;
+        }
+        if after > 0 {
+            after -= 1;
+            lines.push(line.chars().take(300).collect());
+        }
+        if lines.len() >= 24 {
+            break;
+        }
+    }
+    lines
 }
 
 /// Run the N3 unit test alone and require its exact single-test footer.
@@ -511,6 +533,17 @@ mod tests {
                 "{name}"
             );
         }
+    }
+    #[test]
+    fn failure_excerpt_is_bounded_to_panic_context() {
+        let text = "noise\nthread 'x' panicked at src/a.rs:1:2:\nstep dir-create: OsFailure\nnote\nmore\nlater\n";
+        let lines = failure_excerpt(text);
+        assert_eq!(
+            lines.first().unwrap(),
+            "thread 'x' panicked at src/a.rs:1:2:"
+        );
+        assert_eq!(lines.len(), 4);
+        assert!(failure_excerpt(&"FAILED\n".repeat(100)).len() <= 24);
     }
     #[test]
     fn windows_units_name_existing_tests() {

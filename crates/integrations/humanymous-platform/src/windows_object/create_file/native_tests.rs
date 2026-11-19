@@ -230,48 +230,69 @@ fn actual_elevated_administrators_owner_at_creation_and_foreign_owner_refused() 
     let root = std::env::temp_dir().join(format!("hm-b1-owner-{}-{time}", std::process::id()));
     let sd: LocalBox<SecurityDescriptor> =
         "O:BAD:P(A;OICI;FA;;;BA)(A;OICI;FA;;;SY)".parse().unwrap();
-    let created = super::super::create_directory_with_descriptor(&root, &sd).unwrap();
-    assert_eq!(created.path(), root);
+    let created = super::super::create_directory_with_descriptor(&root, &sd)
+        .unwrap_or_else(|e| panic!("step dir-create: {e:?} {}", std::io::Error::last_os_error()));
+    assert_eq!(created.path(), root, "step dir-locator");
     let directory = OpenOptions::new()
         .access_mode(0x0002_0000)
         .custom_flags(0x0220_0000)
         .open(&root)
-        .unwrap();
+        .unwrap_or_else(|e| panic!("step dir-open: {e}"));
     assert_eq!(
         owner_and_dacl(&directory),
-        (Some("S-1-5-32-544".into()), 2, true)
+        (Some("S-1-5-32-544".into()), 2, true),
+        "step dir-descriptor"
     );
     drop(directory);
 
     let path = root.join("context.json");
     let sd: LocalBox<SecurityDescriptor> = "O:BAD:P(A;;FA;;;BA)(A;;FA;;;SY)".parse().unwrap();
-    let file = create_new_file_with_descriptor(&path, &sd).unwrap();
+    let file = create_new_file_with_descriptor(&path, &sd).unwrap_or_else(|e| {
+        panic!(
+            "step file-create: {e:?} {}",
+            std::io::Error::last_os_error()
+        )
+    });
     assert_eq!(
         owner_and_dacl(file.file()),
-        (Some("S-1-5-32-544".into()), 2, true)
+        (Some("S-1-5-32-544".into()), 2, true),
+        "step file-descriptor"
     );
     let mut writer = file.file();
-    writer.write_all(b"carrier").unwrap();
+    writer.write_all(b"carrier").expect("step file-write");
     // CREATE_NEW refuses the existing object; it is never reopened or repaired.
-    assert!(matches!(
-        create_new_file_with_descriptor(&path, &sd),
-        Err(BridgeError::OsFailure)
-    ));
+    assert!(
+        matches!(
+            create_new_file_with_descriptor(&path, &sd),
+            Err(BridgeError::OsFailure)
+        ),
+        "step file-collision"
+    );
     drop(file);
-    assert_eq!(fs::metadata(&path).unwrap().len(), 7);
+    assert_eq!(
+        fs::metadata(&path).expect("step file-metadata").len(),
+        7,
+        "step file-length"
+    );
 
     // Everyone is a token group without the owner attribute: refused, nothing created.
     let foreign: LocalBox<SecurityDescriptor> = "O:WDD:P(A;;FA;;;BA)".parse().unwrap();
     let refused_file = root.join("foreign.json");
-    assert!(matches!(
-        create_new_file_with_descriptor(&refused_file, &foreign),
-        Err(BridgeError::OsFailure)
-    ));
-    assert!(!refused_file.exists());
+    assert!(
+        matches!(
+            create_new_file_with_descriptor(&refused_file, &foreign),
+            Err(BridgeError::OsFailure)
+        ),
+        "step foreign-file-refused"
+    );
+    assert!(!refused_file.exists(), "step foreign-file-absent");
     let refused_dir = root.join("foreign");
-    assert!(super::super::create_directory_with_descriptor(&refused_dir, &foreign).is_err());
-    assert!(!refused_dir.exists());
+    assert!(
+        super::super::create_directory_with_descriptor(&refused_dir, &foreign).is_err(),
+        "step foreign-dir-refused"
+    );
+    assert!(!refused_dir.exists(), "step foreign-dir-absent");
 
-    fs::remove_file(&path).unwrap();
-    fs::remove_dir(&root).unwrap();
+    fs::remove_file(&path).expect("step cleanup-file");
+    fs::remove_dir(&root).expect("step cleanup-dir");
 }

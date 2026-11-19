@@ -11069,9 +11069,9 @@
     },
     {
       "source": "crates/integrations/humanymous-platform/src/windows_object/create_file/native_tests.rs",
-      "sha256": "8e46e90b6449d9902586226a71a910af48df88341cdde6f29dd6bfcb864da3c6",
+      "sha256": "7f472620ad3b067c5884f208c12882b985af63d50a0dbea384b553157989c85e",
       "reviewer": "claude agent first-pass review 2026-11-19 (Claude Code author session; independent agent review pending)",
-      "notes": "Ignored native fixtures for B1. The four Root-listed ordinary-actor fixtures keep their HUMANYMOUS_B1_FIXTURE_PARENT gate and stay unrun. The D5-N4 option (a) fixture (issue #75 comment 6999924070) runs alone with --exact --ignored from delivery component dotnet-host under the elevated windows-2025 parent: directory and file created with owner Administrators at creation and a protected two-ACE DACL, CREATE_NEW refusing the existing file, and an Everyone owner refused for both with nothing created; it removes only what it created.",
+      "notes": "Ignored native fixtures for B1. The four Root-listed ordinary-actor fixtures keep their HUMANYMOUS_B1_FIXTURE_PARENT gate and stay unrun. The D5-N4 option (a) fixture (issue #75 comment 6999924070) runs alone with --exact --ignored from delivery component dotnet-host under the elevated windows-2025 parent: directory and file created with owner Administrators at creation and a protected two-ACE DACL, CREATE_NEW refusing the existing file, and an Everyone owner refused for both with nothing created; it removes only what it created. Each step carries a step label (and the last OS error for a refused creation) so a CI failure names the step.",
       "pages": [
         "docs/reference/production-vs-reference.md"
       ]
