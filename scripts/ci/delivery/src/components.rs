@@ -3,6 +3,7 @@ use crate::{Result, command, evidence, require, source, write_json};
 use serde_json::{Value, json};
 use std::path::Path;
 pub mod dotnet_host;
+pub mod dotnet_windows;
 mod maintenance;
 mod native_archive;
 pub(crate) mod node_host;
@@ -276,6 +277,7 @@ fn request(entry: EntryPoint, kind: &str) -> Result<Request<'_>> {
                 | "node-host"
                 | "dotnet-host"
                 | "dotnet-package"
+                | "dotnet-stdio"
                 | "pilots"
         ),
         "unknown hosted component",
@@ -336,7 +338,8 @@ fn execute(root: &Path, request: Request<'_>) -> Result<()> {
     let kind = request.kind;
     require(
         (matches!(kind, "maintenance" | "runtime" | "pilots")
-            || cfg!(all(target_os = "linux", target_arch = "x86_64")))
+            || (kind == "dotnet-stdio" && cfg!(all(windows, target_arch = "x86_64")))
+            || (kind != "dotnet-stdio" && cfg!(all(target_os = "linux", target_arch = "x86_64"))))
             && std::env::var("GITHUB_ACTIONS").as_deref() == Ok("true")
             && std::env::var_os("ACT").is_none()
             && std::env::var("RUNNER_ENVIRONMENT").as_deref() == Ok("github-hosted"),
@@ -358,6 +361,7 @@ fn execute(root: &Path, request: Request<'_>) -> Result<()> {
         "node-host" => node_host::run(root, &dir, &mut report),
         "dotnet-host" => dotnet_host::run(root, &dir, &mut report),
         "dotnet-package" => dotnet_host::run_package(root, &dir, &mut report),
+        "dotnet-stdio" => dotnet_windows::stdio_fixture(root, &dir, &mut report),
         "pilots" => pilots::run(root, &dir, &mut report),
         "archive" => native_archive::run(root, &dir, &mut report, &before),
         _ => header(root, &dir, &mut report),

@@ -74,6 +74,21 @@ fn run() -> io::Result<i32> {
     if mode == "controlled-capture" {
         return controlled::run(args);
     }
+    #[cfg(windows)]
+    if mode == actor::stdio_fixture::CHILD_MODE {
+        return actor::stdio_fixture::child(&mut args);
+    }
+    #[cfg(windows)]
+    if mode == "dotnet-stdio-fixture" {
+        return match (args.next().as_deref(), args.next(), args.next()) {
+            (Some("--report"), Some(report), None) => {
+                actor::stdio_fixture::run(std::path::Path::new(&report))
+            }
+            _ => Err(io::Error::other(
+                "dotnet-stdio-fixture --report <abs> required",
+            )),
+        };
+    }
     if mode == "summarize-service" {
         return service::summary::run(args);
     }
