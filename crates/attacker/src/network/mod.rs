@@ -54,6 +54,7 @@ pub(crate) mod tests {
             installation: "unit-only-failure".into(),
             revision: "r1".into(),
             binding: "supervisor-owned-child/private-pipe/same-loopback-only-namespace".into(),
+            ipv6: humanymous_defender::lab::Ipv6Evidence::StackAbsent,
         });
         row.steps = [
             ("collect-asserted-fixture", "setup"),

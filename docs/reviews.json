@@ -1730,9 +1730,9 @@
     },
     {
       "source": "crates/attacker/INTEGRATION.md",
-      "sha256": "7fa9feffaf44091a6ccf085f64c59b6d4160f10023a44b03bfe539f24118ec01",
+      "sha256": "e359092f9b86b41de60708795a1e33a7573c26c0f85ec8afabfc6d42dc11ee08",
       "reviewer": "claude agent review 2026-11-18 (Claude Code session; owner sample pending)",
-      "notes": "Wargame integration contract v0.4-v0.8 for the attacker/defender workspace members: fixes ownership and dependency direction (lab runtime -> attacker -> defender -> runtime/integrity/audit/scoring), the exported OwnedRuntime/VerifiedSnapshot/OwnedLab/network::run API, the network v2 JSON schema (26 scheduled = 19 implemented + 7 unsupported cases) and the humanymous-wargame-verify exit codes (0 scoped pass, 2 failed or --require-full unqualified, 1 malformed). It chronicles strict duplicate-key/unknown-field decoding, step attribution and terminal accounting with pure-test counts, records the actual hosted 813 run as 0 evaluated/19 errors, and states that full_product_qualified, human and assistive-technology execution stay false and hosted runtime requalification is pending. Some API text still names the pre-consolidation `humanymous_audit::log::Log` path. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b (PR #83): the only change rewrites the remote-installation boundary row to say signed-remote-installation stays unsupported in this HTTP1 ledger and is evaluated separately by product-lab installation-target-binding / unknown-target-refused (runtime-binary pinned-key fresh-nonce answer over same-container pipes), with cross-host transport and listener binding still unqualified. Re-reviewed for PR #80: an appended section records that src/wire emits plans and bytes only, that LoopbackClient and H2Request::new restrict targets to loopback/.test, that live lab execution needs an explicit own-lab address allowlist bound to the lab manifest plus a TLS/h2 transport able to present the modelled ClientHello, and that ClientHello output is structurally modelled, not byte-for-byte.",
+      "notes": "Wargame integration contract v0.4-v0.8 for the attacker/defender workspace members: fixes ownership and dependency direction (lab runtime -> attacker -> defender -> runtime/integrity/audit/scoring), the exported OwnedRuntime/VerifiedSnapshot/OwnedLab/network::run API, the network v2 JSON schema (26 scheduled = 19 implemented + 7 unsupported cases) and the humanymous-wargame-verify exit codes (0 scoped pass, 2 failed or --require-full unqualified, 1 malformed). It chronicles strict duplicate-key/unknown-field decoding, step attribution and terminal accounting with pure-test counts, records the actual hosted 813 run as 0 evaluated/19 errors, and states that full_product_qualified, human and assistive-technology execution stay false and hosted runtime requalification is pending. Some API text still names the pre-consolidation `humanymous_audit::log::Log` path. Re-reviewed 2026-11-18 for merge train claude/merge-train-2b (PR #83): the only change rewrites the remote-installation boundary row to say signed-remote-installation stays unsupported in this HTTP1 ledger and is evaluated separately by product-lab installation-target-binding / unknown-target-refused (runtime-binary pinned-key fresh-nonce answer over same-container pipes), with cross-host transport and listener binding still unqualified. Re-reviewed for PR #80: an appended section records that src/wire emits plans and bytes only, that LoopbackClient and H2Request::new restrict targets to loopback/.test, that live lab execution needs an explicit own-lab address allowlist bound to the lab manifest plus a TLS/h2 transport able to present the modelled ClientHello, and that ClientHello output is structurally modelled, not byte-for-byte. Re-reviewed 2026-11-19 (owner decision #152-2): the JSON contract lists the new required processes[].ipv6 field and states its two values, loopback_routes_only (route table read, only lo routes) and stack_absent (route table, if_inet6 and the IPv6 sysctl tree all not found), with any other observation failing closed before spawn.",
       "pages": [
         "docs/reference/red-team-catalog.md",
         "docs/explanation/red-catalog-architecture.md"
@@ -1797,9 +1797,9 @@
     },
     {
       "source": "crates/attacker/src/network/mod.rs",
-      "sha256": "a2131c5092149841b0a664afe0c297e4d4affd4618207426d5e69bb3c2172e32",
+      "sha256": "480efdb1c050c32522d5fd725a00bf0c504058c92d77b98dbd5f12cd03199e87",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Owned-runtime HTTP network wargame entry: OwnedLab trait (spawn a fresh provisioned child, take an authenticated audit/origin snapshot) and run(), which shuffles the catalog by seed and executes every case into a NetworkReport. Four tests with a test-only Unavailable lab assert 19 errors and 7 unsupported with scoped_passed false, that attempted rows cannot become skipped or evaluated after transport failure, that transport errors end steps and carry no verdict, and that fabricated totals, human_executed, missing rows or passes are refused. Synthetic failure ledgers only; not actual network or human qualification.",
+      "notes": "Owned-runtime HTTP network wargame entry: OwnedLab trait (spawn a fresh provisioned child, take an authenticated audit/origin snapshot) and run(), which shuffles the catalog by seed and executes every case into a NetworkReport. Four tests with a test-only Unavailable lab assert 19 errors and 7 unsupported with scoped_passed false, that attempted rows cannot become skipped or evaluated after transport failure, that transport errors end steps and carry no verdict, and that fabricated totals, human_executed, missing rows or passes are refused. Synthetic failure ledgers only; not actual network or human qualification. Re-reviewed 2026-11-19 (owner decision #152-2): the synthetic failure ledger's ProcessReceipt now sets the required ipv6 field (StackAbsent); no behavior change.",
       "pages": [
         "docs/reference/red-team-catalog.md"
       ]
@@ -1864,9 +1864,9 @@
     },
     {
       "source": "crates/attacker/src/verification.rs",
-      "sha256": "6b8050fe96ad31df539e8a75d7b68cfd15f1743c34e88911615ac72be43b9675",
+      "sha256": "3668fc3a4fc2b4160366cf542602a01e9aa707b2097bf92e5bb5187a1e18537e",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Wargame report verifier. verify_bytes decodes through the shared strict-JSON boundary, then either replays the pure engine for humanymous.wargame.v1, comparing numeric values by meaning, or deserializes and validates humanymous.wargame-network.v2 owned-process evidence. It always reports full_product_qualified from the evidence and never upgrades it. Tests assert rejection of duplicate keys (including escaped aliases and dynamic-map keys), unknown fields at every structure, relabelled, reordered or extra network steps, mutated totals and traces, and unknown schemas, while failed prefixes stay non-passing. This is semantic consistency checking, not canonical-byte or signature authenticity.",
+      "notes": "Wargame report verifier. verify_bytes decodes through the shared strict-JSON boundary, then either replays the pure engine for humanymous.wargame.v1, comparing numeric values by meaning, or deserializes and validates humanymous.wargame-network.v2 owned-process evidence. It always reports full_product_qualified from the evidence and never upgrades it. Tests assert rejection of duplicate keys (including escaped aliases and dynamic-map keys), unknown fields at every structure, relabelled, reordered or extra network steps, mutated totals and traces, and unknown schemas, while failed prefixes stay non-passing. This is semantic consistency checking, not canonical-byte or signature authenticity. Re-reviewed 2026-11-19 (owner decision #152-2): the network fixture's process receipt carries ipv6 loopback_routes_only, and a new test shows stack_absent verifies while a missing ipv6 field or any other value (absent, empty, null) is rejected.",
       "pages": [
         "docs/reference/red-team-catalog.md",
         "docs/how-to/self-validation-red-team.md"
@@ -3251,9 +3251,9 @@
     },
     {
       "source": "crates/defender/src/lab/isolation.rs",
-      "sha256": "101fc8ae6da720064e7f24f1917f0b3c9e02079a947caa6424d1de3483b4add0",
+      "sha256": "44fe6e0822aab443e20717786d9e5c7ce7210a5fc7a060356c7f4c4816d0f4ef",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Network-isolation precondition for the owned lab: on Linux it reads /proc/self/net/dev, route and ipv6_route and accepts only a namespace whose sole interface is lo with no IPv4 routes and only lo IPv6 routes, and it requires the runtime child to share the supervisor's network namespace; every non-Linux build fails closed with a message requiring isolated Linux Docker execution. Tests cover malformed, missing and extra interfaces or routes being refused.",
+      "notes": "Network-isolation precondition for the owned lab: on Linux it reads /proc/self/net/dev, route and ipv6_route and accepts only a namespace whose sole interface is lo with no IPv4 routes and only lo IPv6 routes, and it requires the runtime child to share the supervisor's network namespace; every non-Linux build fails closed with a message requiring isolated Linux Docker execution. Tests cover malformed, missing and extra interfaces or routes being refused. Re-reviewed 2026-11-19 (owner decision #152-2): the IPv6 half is a pure ipv6() judgement returning Ipv6Evidence. A readable ipv6_route must be ten-field lines with device lo (LoopbackRoutesOnly). A not-found ipv6_route is StackAbsent only when /proc/self/net/if_inet6 and /proc/sys/net/ipv6 are also not found; permission or other read errors on any of the three, non-UTF-8 or malformed lines, a non-loopback route, or a missing route table beside a present address table or sysctl tree all fail closed. The interface and IPv4 route checks are unchanged. Tests cover each accepted and refused case.",
       "pages": [
         "docs/explanation/red-catalog-architecture.md",
         "docs/how-to/self-validation-red-team.md"
@@ -3261,9 +3261,9 @@
     },
     {
       "source": "crates/defender/src/lab/mod.rs",
-      "sha256": "cd8d10726fcf78b5b53a8b838cc720d50a6681903f3b1e4a5a584b67d32cb404",
+      "sha256": "51f78416e02ce000a0ed51a68c7e727948a361d6b4dd33ac5005ac4c9a409230",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "Module root for the private owned-child lab boundary, distinct from remote target authentication: re-exports Session/Response, the runtime gateway Request, OwnedRuntime/ProcessReceipt and the audit snapshot types, defines the sanitized LabError(&'static str) that never embeds bodies or capabilities, and a wall-clock now_ms helper. A test-only gateway Configuration fixture (loopback listen, one POST /effect route, synthetic audit paths) supports the sibling tests.",
+      "notes": "Module root for the private owned-child lab boundary, distinct from remote target authentication: re-exports Session/Response, the runtime gateway Request, OwnedRuntime/ProcessReceipt and the audit snapshot types, defines the sanitized LabError(&'static str) that never embeds bodies or capabilities, and a wall-clock now_ms helper. A test-only gateway Configuration fixture (loopback listen, one POST /effect route, synthetic audit paths) supports the sibling tests. Re-reviewed 2026-11-19 (owner decision #152-2): re-exports isolation::Ipv6Evidence; no behavior change.",
       "pages": [
         "docs/explanation/red-catalog-architecture.md",
         "docs/how-to/self-validation-red-team.md"
@@ -3271,9 +3271,9 @@
     },
     {
       "source": "crates/defender/src/lab/process.rs",
-      "sha256": "0d3948566ac481aee9f1b32ca4733e2b2982a99bb762bed760052260a9a4f16e",
+      "sha256": "a9fc7f84e59c55db7df43c71e1a7c70afa65ee312fe039f72f2c92f025595656",
       "reviewer": "claude agent first-pass review 2026-11-16 (Claude Code session; owner sample pending)",
-      "notes": "OwnedRuntime spawns the fixed sibling humanymous-runtime executable next to the supervisor after the isolation check, sends the validated configuration over a private stdin pipe (64 KiB cap, cleared env, stderr null), reads one bounded readiness line within 10 s and requires its profile to equal standalone_profile and its listener to be a nonzero loopback port distinct from the origin; on Linux it also compares /proc/pid/exe with the recorded runtime SHA-256. ProcessReceipt holds runtime/supervisor digests and scope as source-bound observations, not remote attestation; Drop stops and reaps the child, and the test rejects profile drift and non-loopback or origin-colliding addresses.",
+      "notes": "OwnedRuntime spawns the fixed sibling humanymous-runtime executable next to the supervisor after the isolation check, sends the validated configuration over a private stdin pipe (64 KiB cap, cleared env, stderr null), reads one bounded readiness line within 10 s and requires its profile to equal standalone_profile and its listener to be a nonzero loopback port distinct from the origin; on Linux it also compares /proc/pid/exe with the recorded runtime SHA-256. ProcessReceipt holds runtime/supervisor digests and scope as source-bound observations, not remote attestation; Drop stops and reaps the child, and the test rejects profile drift and non-loopback or origin-colliding addresses. Re-reviewed 2026-11-19 (owner decision #152-2): ProcessReceipt gains the required ipv6 field set from the isolation check at spawn, and check_live refuses a namespace whose IPv6 evidence differs from the recorded value.",
       "pages": [
         "docs/explanation/red-catalog-architecture.md",
         "docs/how-to/self-validation-red-team.md"

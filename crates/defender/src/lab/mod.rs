@@ -6,6 +6,7 @@ mod snapshot;
 
 pub use client::{Response, Session};
 pub use humanymous_runtime::gateway::http::Request;
+pub use isolation::Ipv6Evidence;
 pub use process::{OwnedRuntime, ProcessReceipt};
 pub use snapshot::{AuditEvent, SnapshotDelta, VerifiedSnapshot};
 

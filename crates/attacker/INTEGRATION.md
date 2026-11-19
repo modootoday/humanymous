@@ -60,11 +60,14 @@ runner binds actual hardening, source/image/topology/namespace inspection.
 `schema=humanymous.wargame-network.v2`,
 `evidence_type=supervisor-owned-runtime-child-http1`, seed:u64 orders cases only.
 Rows: id/tier/class/status, steps[{id,role,http_status?,response_verdict?,error?}],
-processes[{runtime_sha256,supervisor_sha256,installation,revision,binding}],
+processes[{runtime_sha256,supervisor_sha256,installation,revision,binding,ipv6}],
 effects?{origin_effects,audit[{seq,event_type,verdict,risk_score,rules,record_hash}]},
 expectation_matches?, reason?. Status: evaluated/error/skipped/unsupported.
 Only evaluated has expectation_matches; unsupported has no actual effects.
 Receipts must retain the same source/scope; audit sequences cannot overlap.
+A receipt's ipv6 is loopback_routes_only (route table read, only lo routes) or
+stack_absent (route table, if_inet6 and the IPv6 sysctl tree all not found;
+owner decision #152-2). Any other observation fails closed before spawn.
 
 26scheduled =19implemented network scenarios+7unsupported producer/control cases.
 Totals and by_class preserve all denominators. audited_policy_verdicts comes from

@@ -3,7 +3,7 @@ id: sot:root/rust-wargame
 title: Rust wargame
 status: active
 created: 2026-11-06T22:24:18Z
-updated: 2026-11-07T07:17:45Z
+updated: 2026-11-19T18:11:20Z
 verify:
   - cargo test --locked -j1 -p humanymous-attacker -p humanymous-defender -- --test-threads=1
 rel:
@@ -328,3 +328,29 @@ creates only loopback; the [Compose service contract](https://docs.docker.com/re
 provides `network_mode: none`. A normal [bridge](https://docs.docker.com/engine/network/drivers/bridge/)
 provides external access by default, so a bridge alone is never isolation evidence.
 These official references were checked on 2026-11-07 (Asia/Seoul).
+
+## IPv6 stack absence (owner decision #152-2, 2026-11-19)
+
+Owner decision #152-2 on issue #75 (comment 7017558784) accepts "no IPv6
+stack" as "no IPv6 routes", only when the absence is observed directly and
+recorded. `crates/defender/src/lab/isolation.rs` applies it as follows.
+
+- A readable `/proc/self/net/ipv6_route` must parse as the kernel's ten-field
+  lines, and every route must use `lo`. The evidence is
+  `loopback_routes_only`.
+- A not-found `/proc/self/net/ipv6_route` counts as no IPv6 stack only when
+  `/proc/self/net/if_inet6` and `/proc/sys/net/ipv6` are also not found. The
+  evidence is `stack_absent`.
+- Everything else fails closed: a permission error or other read error on any
+  of the three paths, non-UTF-8 or malformed route lines, a non-loopback route,
+  or a missing route table while the address table or the sysctl tree exists.
+
+The interface check and the IPv4 route check are unchanged and still run
+first. `ProcessReceipt` carries the result as a required `ipv6` field, so
+every row's process receipt in the `humanymous.wargame-network.v2` report
+records which case held. The report's same-source continuity check covers the
+field, and the liveness recheck before each request refuses a namespace whose
+IPv6 evidence differs from the value recorded at spawn. The verifier rejects
+a receipt without `ipv6` or with any other value. The schema name is
+unchanged: v2 reports are verified from the bytes the same run emitted, and
+v2 bytes from before this change no longer decode.
