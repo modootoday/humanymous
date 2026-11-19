@@ -39,6 +39,10 @@ loosened.
   `internal/gate/wargame_escalation_r161_test.go` to `ported_unit`; R169 is the
   owner-accepted difference of decision 2 (issue #20), pinned by the HTTP
   parser test.
+- [x] Upstream error: owner decision C10 (issue #75) already fixed 503 with a
+  typed code as the documented difference from Go's empty 502, so row
+  `internal/gate/upstream_error_test.go` moves to `ported_unit` with the
+  event-id stamping test added.
 
 ## Open owner questions (not decided here)
 

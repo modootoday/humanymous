@@ -15,8 +15,8 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 269,
-  "partial": 32,
+  "ported_unit": 270,
+  "partial": 31,
   "missing": 2,
   "not_applicable": 2,
   "oracle_only": 9
@@ -75,10 +75,10 @@
    "ported_unit": 5
   },
   "internal/gate": {
-   "partial": 16,
+   "partial": 15,
    "missing": 1,
    "not_applicable": 1,
-   "ported_unit": 66,
+   "ported_unit": 67,
    "oracle_only": 1
   },
   "internal/httpx": {
@@ -4489,28 +4489,29 @@
   },
   {
    "baseline_path": "internal/gate/upstream_error_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/application.rs",
     "crates/sdk/humanymous-runtime/src/gateway/application/tls.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/request.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/request.rs",
+    "crates/sdk/humanymous-runtime/src/audit/log/stamp.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::upstream_errors_map_to_stable_classes_without_raw_text",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::origin_failure_acknowledges_consumed_counter_without_claiming_zero_effects"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::origin_failure_acknowledges_consumed_counter_without_claiming_zero_effects",
+    "crates/sdk/humanymous-runtime/src/audit/log/stamp.rs::event_ids_are_unique_across_many_mints"
    ],
    "go_test_map": {
     "TestUpstreamErrorAudited": "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::origin_failure_acknowledges_consumed_counter_without_claiming_zero_effects"
    },
-   "gaps": [
-    "client response stays 503 with the consumed-counter ACK and a static JSON code, and upstream.status records that 503; Go answers 502 with an empty body. runtime-application SoT pins 503 for post-consumption origin errors, so adopting 502 is an owner/SoT decision"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Ported: an origin refusal after the committed ALLOW and before any client byte appends one upstream.error record (actor system, tenant, host, route class, the ALLOW record's request id and commitment as correlation, revision, latency_us, mode enforce, fail_mode degraded, upstream.status and a stable error_class) through Application::upstream_failure on the plaintext and TLS paths; event_id is stamped by the durable log (audit/log/stamp.rs). The socket test covers a malformed origin frame (unreachable) and a closed origin port (connection_refused, Go's dead-upstream case); the TLS path shares the helper but has no origin-failure socket test. Deliberate fail-closed differences: fail_reason carries the static refusal code, never transport error text; a failed upstream.error append poisons the epoch and answers durable_audit (Go logged and continued); a malformed or truncated buffered origin frame is audited because Rust buffers the whole frame before the first client byte. Go oracle at 981d25c: go test ./internal/gate -run TestUpstreamErrorAudited PASS (go1.25.3).",
+   "notes": "Ported: an origin refusal after the committed ALLOW and before any client byte appends one upstream.error record (actor system, tenant, host, route class, the ALLOW record's request id and commitment as correlation, revision, latency_us, mode enforce, fail_mode degraded, upstream.status and a stable error_class) through Application::upstream_failure on the plaintext and TLS paths; event_id is stamped by the durable log (audit/log/stamp.rs). The socket test covers a malformed origin frame (unreachable) and a closed origin port (connection_refused, Go's dead-upstream case); the TLS path shares the helper but has no origin-failure socket test. Deliberate fail-closed differences: fail_reason carries the static refusal code, never transport error text; a failed upstream.error append poisons the epoch and answers durable_audit (Go logged and continued); a malformed or truncated buffered origin frame is audited because Rust buffers the whole frame before the first client byte. Go oracle at 981d25c: go test ./internal/gate -run TestUpstreamErrorAudited PASS (go1.25.3). FM11 lane B: the remaining gap was settled before this lane: owner decision C10 on issue #75 (runtime-application SoT, \"Origin failure, origin cloak and security headers\") fixes HTTP 503 with body {\"error\":\"<origin code>\"} and upstream.status 503 as the documented, deliberate difference from Go's empty-body 502, so the client gets a typed code and the consumed-counter ACK binds the actual status. Every other Go assertion is covered: the record exists, upstream.status and error_class are set, correlation_id links the ALLOW record, and event_id is stamped by the durable log (audit::log::stamp, event_ids_are_unique_across_many_mints). Go oracle at 981d25c re-run: TestUpstreamErrorAudited PASS (go1.26.3, network none).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::upstream_errors_map_to_stable_classes_without_raw_text": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::origin_failure_acknowledges_consumed_counter_without_claiming_zero_effects": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::origin_failure_acknowledges_consumed_counter_without_claiming_zero_effects": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/log/stamp.rs::event_ids_are_unique_across_many_mints": "passed"
    }
   },
   {
