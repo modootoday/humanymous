@@ -6,7 +6,7 @@ use serde_json::{Value, json};
 /// Required product capability -> case IDs that must each pass in this run.
 /// Pilot-required IDs (scripts/ci/delivery pilot docker/browser kinds) are all
 /// covered here, so a lab report can never claim more than the pilot requires.
-pub(super) const CAPABILITIES: &[(&str, &[&str])] = &[
+pub(crate) const CAPABILITIES: &[(&str, &[&str])] = &[
     ("full Gate TLS/H2/capture", &["gate", "raw-tls-h2"]),
     (
         "session-bound real browser collector",
@@ -39,7 +39,7 @@ pub(super) const CAPABILITIES: &[(&str, &[&str])] = &[
     ("documentation examples", &["documentation-examples"]),
 ];
 
-pub(super) struct Qualification {
+pub(crate) struct Qualification {
     /// Capability labels with any required case not evaluated-and-passed.
     pub required_unavailable: Vec<&'static str>,
     /// Per required case: passed, failed or not_evaluated.
@@ -63,7 +63,7 @@ fn status(cases: &[Value], id: &str) -> &'static str {
     if seen { "passed" } else { "not_evaluated" }
 }
 
-pub(super) fn assess(cases: &[Value], cleanup_verified: bool) -> Qualification {
+pub(crate) fn assess(cases: &[Value], cleanup_verified: bool) -> Qualification {
     let mut required_unavailable = Vec::new();
     let mut required_cases = Vec::new();
     let mut not_evaluated = 0;
@@ -95,7 +95,7 @@ pub(super) fn assess(cases: &[Value], cleanup_verified: bool) -> Qualification {
 
 impl Qualification {
     /// Top-level fields consumed by the delivery pilot.
-    pub(super) fn report_fields(&self) -> Value {
+    pub(crate) fn report_fields(&self) -> Value {
         json!({
             "status": if self.errors > 0 { "failed" } else if self.full_product_qualified { "passed" } else { "blocked" },
             "qualification": if self.full_product_qualified { "full-product" } else { "component-only" },

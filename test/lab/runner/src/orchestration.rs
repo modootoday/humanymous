@@ -61,7 +61,7 @@ mod go_public;
 pub(crate) mod h2_product_binding;
 mod mount_probe;
 mod public_receipts;
-mod qualification;
+pub(crate) mod qualification;
 pub(crate) mod red_blue_product;
 mod requirement;
 mod startup_failure;

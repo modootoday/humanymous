@@ -12,8 +12,15 @@
 # sealed WAL checkpoints are counter-signed by an independent witness
 # container (separate UID, no network, own tmpfs custody). The runner is the
 # trusted broker that relays typed audit frames between their private stdio.
-# The shipped gateway binary has no witness input, so wgate composes the same
-# library ServiceHost::bind_with_witness in the lab supervisor.
+# wgate composes the library ServiceHost::bind_with_witness in the lab
+# supervisor. The shipped gateway binary now accepts inherited witness pipes,
+# but this topology does not hand it witness descriptors yet, so the witnessed
+# Gate is library evidence, not shipped-binary evidence.
+#
+# Profile "wargame" (increment 5): the owned attack catalog through the
+# network-none process wargame (humanymous-runtime-pilot --wargame), which
+# spawns the shipped runtime as a supervisor-owned child. Its unsupported
+# catalog entries keep the required attack-catalog case from passing.
 #
 # Health checks use exec form and a Rust actor subcommand; no shell runs.
 # Authority is absent. This is never pass_product_clean_room.
@@ -176,6 +183,17 @@ services:
     init: true
     networks: [dnscanary]
     profiles: [browser]
+  wargame:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--wargame"]
+    init: true
+    network_mode: none
+    pids_limit: 128
+    mem_limit: 512m
+    cpus: 2
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=64m,mode=1777"]
+    profiles: [wargame]
 networks:
   product:
     internal: true
