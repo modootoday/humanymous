@@ -50,7 +50,7 @@ const ED25519_SPKI_PREFIX: [u8; 12] = [
     0x30, 0x2a, 0x30, 0x05, 0x06, 0x03, 0x2b, 0x65, 0x70, 0x03, 0x21, 0x00,
 ];
 /// Largest public-key or signature file accepted (a PEM key is ~113 bytes).
-const MAX_SMALL_FILE: usize = 16 * 1024;
+pub(in crate::gateway) const MAX_SMALL_FILE: usize = 16 * 1024;
 
 /// Static public-key refusals; no key bytes are interpolated.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -234,7 +234,7 @@ impl Admission {
     }
 }
 
-fn read_bounded(path: &PathBuf, limit: usize) -> Option<Vec<u8>> {
+pub(in crate::gateway) fn read_bounded(path: &PathBuf, limit: usize) -> Option<Vec<u8>> {
     let file = std::fs::File::open(path).ok()?;
     let mut bytes = Vec::new();
     file.take(limit as u64 + 1).read_to_end(&mut bytes).ok()?;

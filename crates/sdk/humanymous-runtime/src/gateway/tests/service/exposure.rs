@@ -272,3 +272,162 @@ async fn unix_without_admin_records_keep_the_scope_revision() {
     let host = ServiceHost::bind(config).await.unwrap();
     assert_eq!(host.config_version(), revision);
 }
+
+const APPROVER: &str = "approver-fixture-token-b";
+
+/// One plaintext admin request with a body; the full response text.
+fn admin_send(address: SocketAddr, method: &str, target: &str, token: &str, body: &str) -> String {
+    let mut socket = NativeStream::connect_timeout(&address, BUDGET).unwrap();
+    socket.set_read_timeout(Some(BUDGET)).unwrap();
+    let request = format!(
+        "{method} {target} HTTP/1.1\r\nHost: admin\r\nAuthorization: Bearer {token}\r\nContent-Type: application/json\r\nContent-Length: {}\r\n\r\n{body}",
+        body.len()
+    );
+    socket.write_all(request.as_bytes()).unwrap();
+    let mut response = String::new();
+    let _ = socket.read_to_string(&mut response);
+    response
+}
+
+fn json_body(response: &str) -> serde_json::Value {
+    serde_json::from_str(response.split("\r\n\r\n").nth(1).unwrap()).unwrap()
+}
+
+/// Golden bundle material of the Go capture (`ml-bundle-go-golden.json`).
+fn golden_model(dir: &std::path::Path, signature: &str) -> serde_json::Value {
+    use base64::{Engine as _, engine::general_purpose::STANDARD};
+    let golden: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../tests/fixtures/gateway/ml-bundle-go-golden.json"
+    ))
+    .unwrap();
+    std::fs::create_dir_all(dir).unwrap();
+    let bytes = |field: &str, name: &str| {
+        STANDARD
+            .decode(golden[field][name].as_str().unwrap())
+            .unwrap()
+    };
+    std::fs::write(dir.join("bundle.json"), bytes("bundles", "v1")).unwrap();
+    std::fs::write(dir.join("bundle.sig"), bytes("signatures", signature)).unwrap();
+    std::fs::write(
+        dir.join("key.pem"),
+        golden["public_key_pem"].as_str().unwrap(),
+    )
+    .unwrap();
+    json!({
+        "bundle": dir.join("bundle.json"),
+        "public_key": dir.join("key.pem"),
+        "signature": dir.join("bundle.sig"),
+    })
+}
+
+fn admin_with_models(settings: &std::path::Path, models: serde_json::Value) -> AdminListener {
+    serde_json::from_value(json!({
+        "listen": "127.0.0.1:0",
+        "operators": [{"role":"operator","id":"op-1","token":TOKEN},
+            {"role":"approver","id":"appr-1","token":APPROVER}],
+        "bans": {"capacity":64,"max_keys":64,"max_hits_per_key":256,"max_key_bytes":128,
+            "max_payload_bytes":1_048_576,"gc_scan_budget":64},
+        "settings_dir": settings,
+        "models": models,
+    }))
+    .unwrap()
+}
+
+/// Owner decision #12 in the shipped composition: the configured signed
+/// bundle is staged at startup over the serving runtime; only an operator
+/// request committed by a distinct approver activates it.
+#[tokio::test]
+async fn unix_admin_listener_stages_the_configured_model_until_a_dual_controlled_promote() {
+    let fixture = PrivateFixture::new();
+    let mut config = fixture.configuration();
+    let models = golden_model(&fixture.0.join("model"), "v1");
+    config.admin = Some(admin_with_models(&fixture.0.join("settings"), models));
+    config.edge.ban = Mode::Off;
+    let host = ServiceHost::bind(config).await.unwrap();
+    let ready = serde_json::to_value(host.readiness()).unwrap();
+    let facts = &ready["profile"]["admin_listener"]["models"];
+    assert_eq!(facts["signed"], true, "{facts}");
+    assert_eq!(facts["staged"], true, "{facts}");
+    assert!(facts["refusal"].is_null(), "{facts}");
+    assert!(
+        !ready.to_string().contains("bundle.json"),
+        "path in readiness"
+    );
+    let admin_address = host.readiness().admin_listen.unwrap();
+    let (sender, receiver) = tokio::sync::watch::channel(None);
+    let running = tokio::spawn(host.run(receiver));
+    let (staged, active) = tokio::task::spawn_blocking(move || {
+        let view = admin_get(admin_address, "/_humanymous/admin/models", Some(TOKEN));
+        assert!(view.starts_with("HTTP/1.1 200"), "{view}");
+        let body = json_body(&view);
+        assert_eq!(body["signed"], true);
+        let digest = body["staged"]["digest"].as_str().unwrap().to_owned();
+        assert_eq!(digest.len(), 64, "{body}");
+        // Staging never serves: nothing is active.
+        assert!(
+            body["active"]["digest"].as_str().is_none_or(str::is_empty),
+            "{body}"
+        );
+        // Activation is the dual-controlled promote: the operator requests,
+        // a distinct approver commits.
+        let requested = admin_send(
+            admin_address,
+            "POST",
+            "/_humanymous/admin/models/promote",
+            TOKEN,
+            &json!({"Digest": digest}).to_string(),
+        );
+        assert!(requested.starts_with("HTTP/1.1 200"), "{requested}");
+        let pending = json_body(&requested);
+        assert_eq!(pending["pending"], true, "{pending}");
+        let id = pending["approvalId"].as_str().unwrap().to_owned();
+        let target = format!("/_humanymous/admin/approvals/{id}");
+        let refused = admin_send(admin_address, "POST", &target, TOKEN, "");
+        assert!(!refused.starts_with("HTTP/1.1 200"), "{refused}");
+        let committed = admin_send(admin_address, "POST", &target, APPROVER, "");
+        assert!(committed.starts_with("HTTP/1.1 200"), "{committed}");
+        let view = json_body(&admin_get(
+            admin_address,
+            "/_humanymous/admin/models",
+            Some(TOKEN),
+        ));
+        (digest, view["active"]["digest"].as_str().map(str::to_owned))
+    })
+    .await
+    .unwrap();
+    assert_eq!(active.as_deref(), Some(staged.as_str()));
+    sender
+        .send(Some(StopBudget::new(1000, 1000, 5000).unwrap().request()))
+        .unwrap();
+    let report = tokio::time::timeout(BUDGET, running)
+        .await
+        .unwrap()
+        .unwrap()
+        .unwrap();
+    assert!(report.stopped && report.drained && report.audit_flushed);
+}
+
+/// A refused candidate is not fatal (Go admission); a configured public key
+/// that cannot be parsed refuses startup (fail closed).
+#[tokio::test]
+async fn unix_admin_model_refusals() {
+    let fixture = PrivateFixture::new();
+    let mut config = fixture.configuration();
+    let models = golden_model(&fixture.0.join("model"), "wrong");
+    config.admin = Some(admin_with_models(&fixture.0.join("settings"), models));
+    config.edge.ban = Mode::Off;
+    let host = ServiceHost::bind(config).await.unwrap();
+    let ready = serde_json::to_value(host.readiness()).unwrap();
+    let facts = &ready["profile"]["admin_listener"]["models"];
+    assert_eq!(facts["staged"], false, "{facts}");
+    assert_eq!(facts["refusal"], "verification", "{facts}");
+    drop(host);
+
+    let fixture = PrivateFixture::new();
+    let mut config = fixture.configuration();
+    let models = golden_model(&fixture.0.join("model"), "v1");
+    std::fs::write(fixture.0.join("model").join("key.pem"), "not a key").unwrap();
+    config.admin = Some(admin_with_models(&fixture.0.join("settings"), models));
+    config.edge.ban = Mode::Off;
+    assert!(ServiceHost::bind(config).await.is_err());
+}

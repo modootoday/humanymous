@@ -82,10 +82,11 @@ ported (accepted deviation under #12).
 
 ## Not done here
 
-- Composing `Models` into the service binary: the admin listener has no
-  bundle source or verification key to stage from. `SignedPolicy` is
-  composed with the admin listener since 2026-11-20 (configsign.go stays
-  `partial`: without the admin listener records keep `scope.revision`).
+- Done after this lane (2026-11-20): `SignedPolicy` and `Models` are
+  composed with the service's admin listener (`admin.models` stages the Go
+  `-ml-*` admission inputs; mlcorrect/bundle.go is `ported_unit`).
+  configsign.go stays `partial`: without the admin listener records keep
+  `scope.revision`. Ledger: 288 `ported_unit`, 15 `partial`.
 - The controller's feature and shadow observers, the shadow model and the
   canary auto-rollback onto `Models`.
 - Prometheus metrics, including the config-version label (issue #75).

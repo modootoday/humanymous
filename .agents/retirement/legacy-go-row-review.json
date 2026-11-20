@@ -15,8 +15,8 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 287,
-  "partial": 16,
+  "ported_unit": 288,
+  "partial": 15,
   "missing": 0,
   "not_applicable": 2,
   "oracle_only": 9
@@ -92,8 +92,7 @@
    "ported_unit": 6
   },
   "internal/mlcorrect": {
-   "ported_unit": 15,
-   "partial": 1
+   "ported_unit": 16
   },
   "internal/mlserve": {
    "ported_unit": 4
@@ -1519,7 +1518,8 @@
     "crates/sdk/humanymous-core/src/model/inference/mlp.rs",
     "crates/sdk/humanymous-core/src/model/inference/runtime.rs",
     "crates/sdk/humanymous-runtime/src/gateway/model_admission.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/model_admission/tests.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/service/admin.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/model/inference/runtime.rs::candidate_is_observed_but_never_served_and_stale_candidates_are_skipped",
@@ -1541,8 +1541,8 @@
    "gaps": [
     "self-calibration controller as threshold provider (SetThresholdProvider): accepted deviation by owner decision #12, activation never changes a threshold, so the annotation fire threshold stays 0.5",
     "feature observer, shadow model and shadow observer (SetFeatureObserver, SetShadow, SetShadowObserver) and the canary auto-rollback are not wired to the served Runtime or to admin_plane::models::Models",
-    "-ml-* flag parsing and staging from files in a serving binary (no Core server binary yet)",
-    "setup log lines"
+    "setup log lines",
+    "-ml-* command-line flags: the service binary reads the same four admission inputs from the private configuration's admin.models object (bundle, public_key, signature, digest) and stages there; the shadow bundle and the lab control flags have no service input"
    ],
    "retire_basis": null,
    "confidence": "medium",
@@ -9186,12 +9186,14 @@
   },
   {
    "baseline_path": "internal/mlcorrect/bundle.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-core/src/model/correction/bundle.rs",
     "crates/sdk/humanymous-runtime/src/gateway/model_admission.rs",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models.rs",
-    "crates/sdk/humanymous-runtime/tests/fixtures/gateway/ml-bundle-go-golden.json"
+    "crates/sdk/humanymous-runtime/tests/fixtures/gateway/ml-bundle-go-golden.json",
+    "crates/sdk/humanymous-runtime/src/gateway/service/admin.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/configuration/admin.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_accepts_a_valid_bundle",
@@ -9216,15 +9218,15 @@
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::failed_audit_answers_503_and_changes_nothing",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::activation_keeps_every_score_and_verdict",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::poisoned_lifecycle_answers_503_and_records_nothing",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::digest_mismatch_is_a_conflict_at_request_and_at_commit"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::digest_mismatch_is_a_conflict_at_request_and_at_commit",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/service/exposure.rs::unix_admin_listener_stages_the_configured_model_until_a_dual_controlled_promote",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/service/exposure.rs::unix_admin_model_refusals"
    ],
    "go_test_map": {},
-   "gaps": [
-    "the owner decision #12 promote and rollback routes (gateway::admin_plane::models::Models) are not composed into the service binary's admin listener (B01 / lane G); until then no shipped path activates a model"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Exact-byte SHA-256 identity, schema pin, explicit unsigned lab policy and staged/active/previous transitions with Go's rollback semantics. Ed25519 signed policy ported without a core dependency change: core BundleVerifier seam (BundleManager::with_verifier, stage_signed) checks in legacy order size, digest, signature, decode, schema; the Runtime supplies Ed25519Verifier::from_pkix_pem (legacy NewBundleManager PEM/PKIX/ed25519 checks) over the existing ed25519-dalek dependency. BundleManager::with_public_key in core still fails closed. Deliberate fail-closed differences: verify_strict (small-order keys refused; honest ed25519.Sign signatures verify identically) and PEM blocks with RFC 1421 headers refused. The canary breach callback now drives rollback of the admitted lab identity (gateway::model_admission::lab_control), still without activating a model. Owner decision #12 (issue #75 comment 7017558784, 2026-11-19): production activation is accepted as explicit, audited operator actions on the admin plane. gateway::admin_plane::models::Models pairs the core BundleManager (verification in Go Stage order, unchanged) with the shared inference Runtime: Models::stage only verifies and stages; POST models/promote (staged digest, pending action committed by a distinct approver) installs the verified model as the served predictor like Go mlserve.Set and keeps the prior one; POST models/rollback (active digest) reverts to the prior model or abstention. Each writes config.changed before the change; a failed write answers 503 and changes nothing; a digest mismatch is 409. Go capture tests/fixtures/gateway/ml-bundle-go-golden.json (go1.26.3, oracle 981d25c, --network none; plan:root/20261119180000) is replayed through the admin routes: every stage result, staged/active identity, served version and served p_bot (float32 bits) equals Go. Activation keeps every score, verdict, hard rule and contributor (l4.ml.behavioral stays weight 0, fire threshold 0.5); the explanation may gain an L4 layer row of probability 0, as in Go. Deviations by decision #12: startup never promotes (Go promoted the admitted bundle at boot) and promote needs a distinct approver (Go had no runtime promote). PR #155 review: every refusal (no candidate, digest mismatch, nothing to roll back to, core and slots apart) is decided before the audit record; a poisoned lifecycle lock answers 503 and records nothing; Models::stage decodes before the core stages. Kept partial until lane G composes Models (owner decision #12).",
+   "notes": "Exact-byte SHA-256 identity, schema pin, explicit unsigned lab policy and staged/active/previous transitions with Go's rollback semantics. Ed25519 signed policy ported without a core dependency change: core BundleVerifier seam (BundleManager::with_verifier, stage_signed) checks in legacy order size, digest, signature, decode, schema; the Runtime supplies Ed25519Verifier::from_pkix_pem (legacy NewBundleManager PEM/PKIX/ed25519 checks) over the existing ed25519-dalek dependency. BundleManager::with_public_key in core still fails closed. Deliberate fail-closed differences: verify_strict (small-order keys refused; honest ed25519.Sign signatures verify identically) and PEM blocks with RFC 1421 headers refused. The canary breach callback now drives rollback of the admitted lab identity (gateway::model_admission::lab_control), still without activating a model. Owner decision #12 (issue #75 comment 7017558784, 2026-11-19): production activation is accepted as explicit, audited operator actions on the admin plane. gateway::admin_plane::models::Models pairs the core BundleManager (verification in Go Stage order, unchanged) with the shared inference Runtime: Models::stage only verifies and stages; POST models/promote (staged digest, pending action committed by a distinct approver) installs the verified model as the served predictor like Go mlserve.Set and keeps the prior one; POST models/rollback (active digest) reverts to the prior model or abstention. Each writes config.changed before the change; a failed write answers 503 and changes nothing; a digest mismatch is 409. Go capture tests/fixtures/gateway/ml-bundle-go-golden.json (go1.26.3, oracle 981d25c, --network none; plan:root/20261119180000) is replayed through the admin routes: every stage result, staged/active identity, served version and served p_bot (float32 bits) equals Go. Activation keeps every score, verdict, hard rule and contributor (l4.ml.behavioral stays weight 0, fire threshold 0.5); the explanation may gain an L4 layer row of probability 0, as in Go. Deviations by decision #12: startup never promotes (Go promoted the admitted bundle at boot) and promote needs a distinct approver (Go had no runtime promote). PR #155 review: every refusal (no candidate, digest mismatch, nothing to roll back to, core and slots apart) is decided before the audit record; a poisoned lifecycle lock answers 503 and records nothing; Models::stage decodes before the core stages. Kept partial until lane G composes Models (owner decision #12). Service composition (2026-11-20): the admin listener's models object (Go -ml-bundle, -ml-pubkey, -ml-bundle-sig, -ml-bundle-digest) builds Models over the serving engine's inference Runtime and stages the configured bundle at startup; the service test stages the Go-signed golden v1 bundle, shows nothing active, refuses an operator self-approval and serves the bundle after an operator promote committed by a distinct approver over the real loopback listener. A refused candidate stages nothing and is reported in readiness (Go admission was non-fatal); an unreadable or unparsable configured public key refuses startup (fail closed; Go ran heuristics only). Disposition ported_unit.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_accepts_a_valid_bundle": "passed",
     "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_rejects_a_stale_schema": "passed",
@@ -9248,7 +9250,9 @@
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::failed_audit_answers_503_and_changes_nothing": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::activation_keeps_every_score_and_verdict": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::poisoned_lifecycle_answers_503_and_records_nothing": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::digest_mismatch_is_a_conflict_at_request_and_at_commit": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/models/tests.rs::digest_mismatch_is_a_conflict_at_request_and_at_commit": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/service/exposure.rs::unix_admin_listener_stages_the_configured_model_until_a_dual_controlled_promote": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/service/exposure.rs::unix_admin_model_refusals": "passed"
    }
   },
   {

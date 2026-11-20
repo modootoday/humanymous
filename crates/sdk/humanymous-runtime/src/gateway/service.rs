@@ -317,12 +317,16 @@ impl ServiceHost {
         }
         // Owner decision B01 #1: the admin plane on its own loopback TCP
         // listener, bound before readiness, sharing the sealed audit sink.
+        // The serving engine; the admin model lifecycle shares its inference
+        // runtime, so only an approved promote changes what it reads.
+        let engine = humanymous_core::scoring::engine::Engine::default();
         let admin = match &configuration.admin {
             Some(config) => Some(
                 admin::AdminService::bind(
                     config,
                     &configuration,
                     Box::new(SharedAudit(audit.clone())),
+                    &engine.model,
                 )
                 .await?,
             ),
@@ -352,12 +356,9 @@ impl ServiceHost {
                 )
             })
             .transpose()?;
-        let mut application = Application::new(
-            configuration,
-            Default::default(),
-            Box::new(SharedAudit(audit.clone())),
-        )
-        .map_err(|_| io::Error::other("application startup"))?;
+        let mut application =
+            Application::new(configuration, engine, Box::new(SharedAudit(audit.clone())))
+                .map_err(|_| io::Error::other("application startup"))?;
         if let Some(settings) = settings {
             application.install_settings(settings, audit.clone(), profile_shared, commands);
         }

@@ -585,10 +585,18 @@ threshold, hard-rule predicate, verdict band or signal ID.
   once. Both write `config.changed` before the change. A failed write
   answers 503 and changes nothing. A digest mismatch answers 409. Every
   refusal is decided before the record is written; a poisoned or
-  inconsistent lifecycle answers 503 and records nothing. This is a
-  component capability: the service's admin listener does not attach
-  `Models` yet, because the service has no bundle source or verification
-  key to stage from (Go `-ml-bundle`, `-ml-pubkey`). Staging
+  inconsistent lifecycle answers 503 and records nothing. The service
+  binary composes it with the admin listener (2026-11-20): the private
+  configuration's `admin.models` object carries Go's `-ml-bundle`,
+  `-ml-pubkey`, `-ml-bundle-sig` and `-ml-bundle-digest` as `bundle`,
+  `public_key`, `signature` and `digest`. `gateway::service::admin` builds
+  `Models` over the serving engine's inference `Runtime` (signed when a key
+  is configured) and stages the bundle at startup. Readiness reports only
+  `signed`, `staged` and a static refusal class, never paths or bytes. As
+  in Go's admission, a refused candidate is not fatal: nothing is staged.
+  Unlike Go, a configured public key that cannot be read or parsed refuses
+  startup, so a signed policy never degrades to an unsigned or absent one.
+  Staging
   (`Models::stage`, the legacy `Stage` verification order) and training
   never activate a model. Verification and the served lifecycle are
   replayed against the Go capture

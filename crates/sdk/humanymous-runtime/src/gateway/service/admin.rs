@@ -16,7 +16,16 @@
 //!   slot shared by the settings engine (which mirrors its active overlay into
 //!   the slot), the `policy` view and the [`SignedPolicy`] the service
 //!   installs with `Application::install_signed_policy`, so served records
-//!   carry the `configVersion` the `policy` view reports.
+//!   carry the `configVersion` the `policy` view reports;
+//! - with `admin.models`, the behavioral-model lifecycle (owner decision #12)
+//!   over the inference runtime the serving engine reads. The configured
+//!   bundle is verified and staged at startup, never activated: only the
+//!   dual-controlled `models/promote` serves it. As in Go's admission, a
+//!   refused candidate (unreadable bundle or signature, digest, signature,
+//!   shape or schema) is not fatal: nothing is staged and readiness says so.
+//!   A configured public key that cannot be read or parsed refuses startup
+//!   (Go fell back to heuristics only): a signed policy never degrades to an
+//!   unsigned or absent one.
 //!
 //! The approval, operator-pseudonym and configuration-version key is random
 //! per process, as Go's was without `HMN_TOKEN_KEY`: pending approvals and
@@ -29,12 +38,17 @@
 //! here feeds scoring.
 use crate::authority::decision::DurableAudit;
 use crate::gateway::admin_approval::Role;
+use crate::gateway::admin_plane::models::Models;
 use crate::gateway::admin_plane::{AdminPlane, Clock, policy::Policy, settings::Settings};
 use crate::gateway::ban::Store;
+use crate::gateway::configuration::ModelSource;
 use crate::gateway::configuration::{AdminListener as AdminConfig, Configuration};
+use crate::gateway::model_admission::{Ed25519Verifier, MAX_SMALL_FILE, read_bounded};
 use crate::gateway::service::ShutdownRequest;
 use crate::gateway::settings::configsign::{BootPolicy, SignedPolicy};
 use crate::gateway::settings::overlay::{Overlay, OverlayFileStore};
+use humanymous_core::model::correction::MAX_BUNDLE_BYTES;
+use humanymous_core::model::inference::Runtime;
 use std::collections::BTreeMap;
 use std::io;
 use std::net::SocketAddr;
@@ -57,6 +71,7 @@ pub(in crate::gateway) struct AdminService {
     settings: bool,
     operators: usize,
     signed: SignedPolicy,
+    models: Option<serde_json::Value>,
 }
 
 fn clock(epoch: Instant) -> io::Result<Clock> {
@@ -74,6 +89,7 @@ impl AdminService {
         admin: &AdminConfig,
         configuration: &Configuration,
         audit: Box<dyn DurableAudit>,
+        runtime: &Runtime,
     ) -> io::Result<Self> {
         admin
             .validate()
@@ -145,6 +161,12 @@ impl AdminService {
             active.clone(),
         ));
         let signed = SignedPolicy::new(boot, kill_switch, active);
+        let mut models = None;
+        if let Some(source) = &admin.models {
+            let (lifecycle, facts) = stage(source, runtime)?;
+            plane = plane.with_models(lifecycle);
+            models = Some(facts);
+        }
         let listener = TcpListener::bind(admin.listen).await?;
         Ok(Self {
             plane: Arc::new(plane),
@@ -154,6 +176,7 @@ impl AdminService {
             settings: admin.settings_dir.is_some(),
             operators: admin.operators.len(),
             signed,
+            models,
         })
     }
 
@@ -175,12 +198,16 @@ impl AdminService {
 
     /// Readiness facts; no tokens, ids or keys.
     pub(in crate::gateway) fn readiness(&self) -> io::Result<serde_json::Value> {
-        Ok(serde_json::json!({
+        let mut facts = serde_json::json!({
             "listen": self.local_addr()?,
             "operators": self.operators,
             "settings": self.settings,
             "transport": "loopback-http1",
-        }))
+        });
+        if let Some(models) = &self.models {
+            facts["models"] = models.clone();
+        }
+        Ok(facts)
     }
 
     /// Serve until shutdown, sweeping an expired overlay every minute. A sweep
@@ -194,6 +221,46 @@ impl AdminService {
             swept = sweep(&self.plane, self.epoch) => swept,
         }
     }
+}
+
+/// Build the model lifecycle over the serving `runtime` and stage the
+/// configured candidate. Returns the readiness facts: whether a signature is
+/// required and whether a candidate is staged (never which bytes or paths).
+fn stage(source: &ModelSource, runtime: &Runtime) -> io::Result<(Models, serde_json::Value)> {
+    let models = match &source.public_key {
+        None => Models::unsigned(runtime.clone()),
+        Some(path) => {
+            let pem = read_bounded(path, MAX_SMALL_FILE)
+                .filter(|pem| !pem.is_empty())
+                .ok_or_else(|| io::Error::other("admin model public key unreadable"))?;
+            let verifier = Ed25519Verifier::from_pkix_pem(&pem)
+                .map_err(|_| io::Error::other("admin model public key refused"))?;
+            Models::signed(Box::new(verifier), runtime.clone())
+        }
+    };
+    let signature = match &source.signature {
+        None => Ok(None),
+        Some(path) => read_bounded(path, MAX_SMALL_FILE)
+            .map(Some)
+            .ok_or("signature_read"),
+    };
+    let bundle = read_bounded(&source.bundle, MAX_BUNDLE_BYTES)
+        .filter(|bytes| !bytes.is_empty())
+        .ok_or("bundle_read");
+    let digest = (!source.digest.is_empty()).then_some(source.digest.as_str());
+    let outcome = signature.and_then(|signature| {
+        let bundle = bundle?;
+        models
+            .stage(&bundle, digest, signature.as_deref())
+            .map(|_| ())
+            .map_err(|_| "verification")
+    });
+    let facts = serde_json::json!({
+        "signed": models.is_signed(),
+        "staged": outcome.is_ok(),
+        "refusal": outcome.err(),
+    });
+    Ok((models, facts))
 }
 
 /// Go `GC` calling `expireActiveOverlayIfNeeded` once a minute; returns only
