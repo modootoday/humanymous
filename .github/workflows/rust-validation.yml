@@ -295,7 +295,7 @@ jobs:
     - run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- image-candidates
     - id: runtime_scan_prepare
       run: cargo run --locked -p humanymous-delivery -- image-scan prepare
-    - uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a
+    - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc
       id: runtime_image_build
       with:
         context: .
