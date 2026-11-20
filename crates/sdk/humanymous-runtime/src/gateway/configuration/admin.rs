@@ -24,6 +24,10 @@
 //!   one could present) are not minted. At least one operator is required.
 //! - The ban store needs explicit history bounds; the rate history kernel has
 //!   no production defaults, so absent bounds refuse the configuration.
+//! - `models` carries Go's `-ml-bundle`, `-ml-pubkey`, `-ml-bundle-sig` and
+//!   `-ml-bundle-digest` admission flags (cmd/server/ml_setup.go). Under
+//!   owner decision #12 the bundle is only staged at startup; activation is
+//!   the dual-controlled admin promote. See `gateway::service::admin`.
 use crate::gateway::Rejection;
 use crate::gateway::admin_approval::Role;
 use crate::gateway::ban::Store;
@@ -60,6 +64,43 @@ pub struct AdminListener {
     /// Absent, the settings routes answer 404 after authentication.
     #[serde(default)]
     pub settings_dir: Option<PathBuf>,
+    /// Behavioral-model candidate staged at startup (Go `-ml-*` admission
+    /// flags). Absent, the `models` routes answer 404 after authentication.
+    #[serde(default)]
+    pub models: Option<ModelSource>,
+}
+
+/// Startup model candidate (legacy `mlFlags` admission fields).
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
+#[serde(deny_unknown_fields)]
+pub struct ModelSource {
+    /// `-ml-bundle`: bundle JSON path.
+    pub bundle: PathBuf,
+    /// `-ml-pubkey`: PKIX Ed25519 PEM path; when set every stage needs a
+    /// signature it accepts.
+    #[serde(default)]
+    pub public_key: Option<PathBuf>,
+    /// `-ml-bundle-sig`: detached signature over the exact bundle bytes.
+    #[serde(default)]
+    pub signature: Option<PathBuf>,
+    /// `-ml-bundle-digest`: lowercase hex SHA-256 pin; empty means unset.
+    #[serde(default)]
+    pub digest: String,
+}
+
+impl ModelSource {
+    fn valid(&self) -> bool {
+        let path = |path: &PathBuf| !path.as_os_str().is_empty();
+        path(&self.bundle)
+            && self.public_key.as_ref().is_none_or(path)
+            && self.signature.as_ref().is_none_or(path)
+            && (self.digest.is_empty()
+                || (self.digest.len() == 64
+                    && self
+                        .digest
+                        .bytes()
+                        .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))))
+    }
 }
 
 /// One operator principal.
@@ -159,6 +200,7 @@ impl AdminListener {
                 .settings_dir
                 .as_ref()
                 .is_some_and(|dir| dir.as_os_str().is_empty())
+            || self.models.as_ref().is_some_and(|models| !models.valid())
         {
             return Err(bad);
         }
@@ -216,6 +258,31 @@ mod tests {
             admin("127.0.0.1:0", "operator-fixture-token")
                 .validate()
                 .is_ok()
+        );
+    }
+
+    #[test]
+    fn model_source_paths_and_digest_pin_are_checked() {
+        let with = |models: serde_json::Value| {
+            let mut admin = admin("127.0.0.1:0", "operator-fixture-token");
+            admin.models = Some(serde_json::from_value(models).unwrap());
+            admin.validate()
+        };
+        let hex = "0123456789abcdef".repeat(4);
+        assert!(with(json!({"bundle": "/m/b.json"})).is_ok());
+        assert!(
+            with(json!({"bundle": "/m/b.json", "public_key": "/m/k.pem",
+            "signature": "/m/b.sig", "digest": hex}))
+            .is_ok()
+        );
+        assert!(with(json!({"bundle": ""})).is_err());
+        assert!(with(json!({"bundle": "/m/b.json", "public_key": ""})).is_err());
+        assert!(with(json!({"bundle": "/m/b.json", "signature": ""})).is_err());
+        assert!(with(json!({"bundle": "/m/b.json", "digest": hex.to_uppercase()})).is_err());
+        assert!(with(json!({"bundle": "/m/b.json", "digest": "abc"})).is_err());
+        assert!(
+            serde_json::from_value::<ModelSource>(json!({"bundle": "/m/b.json", "shadow": "/x"}))
+                .is_err()
         );
     }
 

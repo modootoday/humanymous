@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 941,
-      "macos": 941,
-      "windows": 905
+      "linux": 944,
+      "macos": 944,
+      "windows": 906
     },
     "common_test_names": [
       "gateway::accept::tests::accept_serves_a_real_connection",
@@ -221,6 +221,7 @@
       "gateway::ban::tests::wargame::wargame_r191_double_lift_safe",
       "gateway::ban::tests::wargame::wargame_r192_list_bans_includes_manual",
       "gateway::configuration::admin::tests::go_weak_admin_secrets_are_refused",
+      "gateway::configuration::admin::tests::model_source_paths_and_digest_pin_are_checked",
       "gateway::configuration::admin::tests::non_loopback_admin_listen_is_refused",
       "gateway::configuration::admin::tests::operator_table_and_ban_bounds_fail_closed",
       "gateway::configuration::audit::tests::inline_keys_and_unknown_sources_are_rejected",
@@ -944,6 +945,8 @@
       "gateway::tests::edge::dual_control::ledger::r162_commit_then_edge_denies",
       "gateway::tests::service::exposure::unix_admin_bans_need_an_enforceable_gate",
       "gateway::tests::service::exposure::unix_admin_listener_binds_the_signed_policy_version",
+      "gateway::tests::service::exposure::unix_admin_listener_stages_the_configured_model_until_a_dual_controlled_promote",
+      "gateway::tests::service::exposure::unix_admin_model_refusals",
       "gateway::tests::service::exposure::unix_public_tls_edge_and_loopback_admin_listener",
       "gateway::tests::service::exposure::unix_without_admin_records_keep_the_scope_revision",
       "gateway::tests::service::hosted_only_witnessed_settings_commit_invalidates_sessions_and_restores",

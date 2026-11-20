@@ -9,7 +9,7 @@ mod edge;
 pub mod exposure;
 mod ip_reputation;
 mod operational;
-pub use admin::AdminListener;
+pub use admin::{AdminListener, ModelSource};
 pub use audit::{Audit, MAX_WITNESS_PROOF, SealedKeys, WitnessInput, WitnessInputDurability};
 pub use edge::Edge;
 pub use ip_reputation::{ClientAddressSource, IpReputation};
