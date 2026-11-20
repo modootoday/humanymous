@@ -220,3 +220,55 @@ async fn unix_admin_bans_need_an_enforceable_gate() {
         .unwrap();
     assert!(report.stopped && report.drained && report.audit_flushed);
 }
+
+/// Owner decision #8 in the shipped composition: with an admin listener the
+/// served records carry the signed effective-policy version the admin
+/// `policy` view reports, in place of `scope.revision`.
+#[tokio::test]
+async fn unix_admin_listener_binds_the_signed_policy_version() {
+    let fixture = PrivateFixture::new();
+    let mut config = fixture.configuration();
+    let revision = config.scope.revision.clone();
+    config.admin = Some(admin(&fixture.0.join("settings")));
+    config.edge.ban = Mode::Off;
+    let host = ServiceHost::bind(config).await.unwrap();
+    let version = host.config_version();
+    assert!(
+        version.starts_with("cfg-") && version.len() == 16,
+        "{version}"
+    );
+    assert_ne!(version, revision);
+    let admin_address = host.readiness().admin_listen.unwrap();
+    let (sender, receiver) = tokio::sync::watch::channel(None);
+    let running = tokio::spawn(host.run(receiver));
+    let policy = tokio::task::spawn_blocking(move || {
+        admin_get(admin_address, "/_humanymous/admin/policy", Some(TOKEN))
+    })
+    .await
+    .unwrap();
+    assert!(policy.starts_with("HTTP/1.1 200"), "{policy}");
+    let body: serde_json::Value =
+        serde_json::from_str(policy.split("\r\n\r\n").nth(1).unwrap()).unwrap();
+    assert_eq!(body["configVersion"], version.as_str());
+    assert_eq!(body["killSwitch"], false);
+    assert_eq!(body["rateLimit"]["windowSec"], 10);
+    sender
+        .send(Some(StopBudget::new(1000, 1000, 5000).unwrap().request()))
+        .unwrap();
+    let report = tokio::time::timeout(BUDGET, running)
+        .await
+        .unwrap()
+        .unwrap()
+        .unwrap();
+    assert!(report.stopped && report.drained && report.audit_flushed);
+}
+
+/// Without an admin listener the shipped runtime keeps `scope.revision`.
+#[tokio::test]
+async fn unix_without_admin_records_keep_the_scope_revision() {
+    let fixture = PrivateFixture::new();
+    let config = fixture.configuration();
+    let revision = config.scope.revision.clone();
+    let host = ServiceHost::bind(config).await.unwrap();
+    assert_eq!(host.config_version(), revision);
+}

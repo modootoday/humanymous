@@ -150,7 +150,7 @@ impl Application {
     }
 
     /// `config_version` of a record written now.
-    fn config_version(&self) -> String {
+    pub(in crate::gateway) fn config_version(&self) -> String {
         self.signed_policy.as_ref().map_or_else(
             || self.config.scope.revision.clone(),
             crate::gateway::settings::configsign::SignedPolicy::version,
