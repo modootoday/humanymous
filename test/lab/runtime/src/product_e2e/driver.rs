@@ -55,10 +55,12 @@ fn spoof_expectation(mode: Mode) -> (u16, Option<Vec<u8>>) {
 }
 
 pub(super) fn records() -> Result<Vec<Value>> {
-    let response = exchange(
-        super::OBSERVE,
-        b"GET /records HTTP/1.1\r\nHost: observe\r\n\r\n",
-    )?;
+    records_at(super::OBSERVE)
+}
+
+/// The origin's records from the observation endpoint at `address`.
+pub(super) fn records_at(address: &str) -> Result<Vec<Value>> {
+    let response = exchange(address, b"GET /records HTTP/1.1\r\nHost: observe\r\n\r\n")?;
     Ok(body(&response)
         .and_then(|v| v["records"].as_array().cloned())
         .ok_or("origin observation unavailable")?)

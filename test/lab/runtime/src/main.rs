@@ -61,6 +61,9 @@ fn main() {
             browser_product::stop().expect("owned public head/shutdown control")
         }
         Some("--product-origin") => product_e2e::origin().expect("owned recording origin"),
+        Some("--product-origin-public-observe") => {
+            product_e2e::origin_public_observe().expect("owned recording origin")
+        }
         Some("--product-gate") => product_e2e::gate().expect("owned Gate supervisor"),
         Some("--product-driver") => product_e2e::driver().expect("product e2e driver"),
         Some("--product-health") => product_e2e::health(std::env::args().nth(2).as_deref()),

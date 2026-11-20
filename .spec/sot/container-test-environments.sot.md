@@ -3,7 +3,7 @@ id: sot:root/container-test-environments
 title: Canonical Compose lab and Cloudflare test environment profiles
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-19T18:46:12Z
+updated: 2026-11-20T03:45:26Z
 verify: manual
 rel:
   governs: [deployments/lab/**, build/rust/**, test/lab/**]
@@ -1508,6 +1508,46 @@ Profile `tls` of `deployments/lab/compose.product-e2e.yaml` runs the shipped
   case. A passed one leaves it `not_evaluated`, because the required case
   needs original-client TLS/H2 from a client in its own namespace (owner item
   B01 #1, public edge listener).
+
+## Cross-namespace public TLS Gate profile (2a, 2026-11-20)
+
+Profile `tls` now drives the shipped binary's public TLS edge listener
+(owner decision B01 #1, merged in #156) from an original client in its own
+network namespace. It supersedes the scope bullet of the shared-namespace
+section above; the certificate, driver cases and `tls_effect` rules there
+are unchanged.
+
+- Gate: the private configuration sets `listen: 0.0.0.0:18443` and
+  `public_listen: true` beside the per-run lab CA leaf, so the gateway's own
+  exposure rules (`gateway::configuration::exposure`) admit non-loopback
+  peers. Readiness must report that listen address and profile
+  `experimental-public-tls` with `public_listen: true`.
+- Origin: `torigin` still shares `tgate`'s namespace, because the origin must
+  stay loopback (`origin` is validated loopback-only). It runs
+  `--product-origin-public-observe`: the application origin stays on
+  `127.0.0.1:18080`, and only the read-only observation endpoint binds
+  `0.0.0.0:18081` so the driver can read the origin's records.
+- Driver: `tdriver` runs in its own container on the internal `tls` network
+  (no `network_mode: service:tgate`) and reaches `tgate:18443` and
+  `tgate:18081` through the container resolver, with SNI `owned.test`.
+- Topology: besides the shared checks for `tgate` and `torigin`, the runner
+  asserts `driver_in_own_network_namespace` (not the Gate's namespace, host or
+  none), `driver_only_on_internal_tls_network` (exactly one network, the
+  internal `tls` network) and `driver_runs_built_image_hardened`, plus the
+  readiness assertion `public_edge_listener`.
+- Ledger: `gate` and `raw-tls-h2` are reported as `tls_cases`. The required
+  case is `passed` only when every listed driver case, every topology and
+  readiness assertion and the driver run pass and the three cross-namespace
+  assertions are present and pass; a passing measurement without them stays
+  `not_evaluated`; any failure fails the required case. The capture half of
+  "full Gate TLS/H2/capture" is the Gate's own ClientHello capture, which the
+  `raw_tls` route admissions (`tls_h1_raw_tls_route_admitted`,
+  `tls_h2_raw_tls_route_admitted`) require. The cloud-container venue still
+  never sets `full_product_qualified`.
+- Venue note: the cloud-container engine used the `mirror.gcr.io` registry
+  mirror and the classic (overlay2) image store, because anonymous Docker Hub
+  pulls answered 429; both base images are pinned by digest, so the mirror
+  cannot change their content.
 
 ## Official sources, checked 2026-11-07
 

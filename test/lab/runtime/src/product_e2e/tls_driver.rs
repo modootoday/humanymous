@@ -9,10 +9,13 @@
 //! neither can complete a handshake by itself (their key shares are filler),
 //! so they measure the listener's refusal, not a parrot session.
 //!
-//! Scope: the client shares the Gate's loopback namespace. Nothing here is
-//! original-client or cross-namespace evidence.
+//! Scope: the client runs in its own container and network namespace on the
+//! internal `tls` network and reaches the Gate's public TLS edge listener
+//! (`public_listen`, owner decision B01 #1) by its network address, as an
+//! original client would. The origin stays on the Gate's loopback; only its
+//! read-only observation endpoint is bound beside the Gate.
 use super::{
-    driver::{body, forbidden, header_names, records, status, wait_for},
+    driver::{body, forbidden, header_names, records_at, status, wait_for},
     report::{self, Captured},
 };
 use crate::client::{request, sign, sign_h2, wire};
@@ -53,7 +56,7 @@ type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 /// Wrapper schema of the public lab root the runner writes on stdin.
 pub const LAB_CA_SCHEMA: &str = "humanymous.product-e2e-lab-ca/1";
-const SCOPE: &str = "shared loopback namespace: the client runs in the Gate container's network namespace; not original-client or cross-namespace";
+const SCOPE: &str = "cross-namespace original client: the driver runs in its own network namespace and reaches the Gate's public TLS edge listener over the internal tls network";
 const RESPONSE_LIMIT: u64 = 1 << 20;
 const H2: &[u8] = b"h2";
 const H1: &[u8] = b"http/1.1";
@@ -238,7 +241,7 @@ fn tls(config: Arc<ClientConfig>, name: &str, bytes: &[u8], close: bool) -> Exch
     let mut exchange = Exchange::default();
     let outcome = (|| -> Result<()> {
         let mut socket =
-            TcpStream::connect_timeout(&super::address(super::GATE), Duration::from_secs(5))?;
+            TcpStream::connect_timeout(&super::address(super::TLS_GATE), Duration::from_secs(5))?;
         socket.set_read_timeout(Some(Duration::from_secs(10)))?;
         socket.set_write_timeout(Some(Duration::from_secs(5)))?;
         let mut connection = ClientConnection::new(config, ServerName::try_from(name.to_owned())?)?;
@@ -306,7 +309,7 @@ fn raw(bytes: &[u8], half_close: bool) -> Raw {
     let mut closed = false;
     let outcome = (|| -> Result<()> {
         let mut socket =
-            TcpStream::connect_timeout(&super::address(super::GATE), Duration::from_secs(5))?;
+            TcpStream::connect_timeout(&super::address(super::TLS_GATE), Duration::from_secs(5))?;
         socket.set_read_timeout(Some(Duration::from_secs(12)))?;
         socket.set_write_timeout(Some(Duration::from_secs(5)))?;
         socket.write_all(bytes)?;
@@ -703,9 +706,9 @@ impl Driver {
         &mut self,
         send: impl FnOnce(&Self) -> Result<Exchange>,
     ) -> Result<(Exchange, Vec<Value>)> {
-        let before = records()?.len();
+        let before = records_at(super::TLS_OBSERVE)?.len();
         let exchange = send(self)?;
-        Ok((exchange, records()?[before..].to_vec()))
+        Ok((exchange, records_at(super::TLS_OBSERVE)?[before..].to_vec()))
     }
 
     /// Negotiation and an unsigned session issue under one ALPN offer.
@@ -882,9 +885,9 @@ impl Driver {
 
     /// Raw bytes on the TLS listener that are not a complete client flight.
     fn raw_case(&mut self, id: &str, bytes: &[u8], half_close: bool, extra: Value) -> Result<()> {
-        let before = records()?.len();
+        let before = records_at(super::TLS_OBSERVE)?.len();
         let outcome = raw(bytes, half_close);
-        let new = records()?.len() - before;
+        let new = records_at(super::TLS_OBSERVE)?.len() - before;
         let plaintext = outcome.response.starts_with(b"HTTP/");
         let pass = !plaintext && new == 0 && outcome.closed_by_gate;
         let mut case = json!({"id":id,"sent_bytes":bytes.len(),"half_close":half_close,
@@ -1065,8 +1068,8 @@ fn read_line(limit: u64) -> Result<String> {
 pub fn run() -> Result<()> {
     let report = report::from_stdin();
     let (root, root_sha256) = lab_root(&read_line(64 * 1024)?)?;
-    wait_for(super::OBSERVE)?;
-    wait_for(super::GATE)?;
+    wait_for(super::TLS_OBSERVE)?;
+    wait_for(super::TLS_GATE)?;
     let mut driver = Driver {
         config: serde_json::from_value(super::tls_configuration(
             "/unused", "/unused", "unused", "/unused", "/unused",
