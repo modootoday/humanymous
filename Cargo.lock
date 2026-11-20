@@ -2004,7 +2004,7 @@ dependencies = [
  "regex",
  "serde",
  "serde_json",
- "sha2 0.10.9",
+ "sha2 0.11.1",
  "time",
 ]
 
@@ -2025,7 +2025,7 @@ dependencies = [
  "humanymous-runtime",
  "rustix 1.1.6",
  "serde_json",
- "sha2 0.10.9",
+ "sha2 0.11.1",
  "tokio",
  "zeroize",
 ]
@@ -2043,7 +2043,7 @@ dependencies = [
  "humanymous-runtime",
  "serde",
  "serde_json",
- "sha2 0.10.9",
+ "sha2 0.11.1",
 ]
 
 [[package]]
@@ -2096,7 +2096,7 @@ dependencies = [
  "junction",
  "serde",
  "serde_json",
- "sha2 0.10.9",
+ "sha2 0.11.1",
  "tokio",
  "ureq",
  "windows-permissions",
@@ -2130,7 +2130,7 @@ dependencies = [
  "png",
  "serde",
  "serde_json",
- "sha2 0.10.9",
+ "sha2 0.11.1",
  "subtle",
  "time",
  "wasmparser",
@@ -2146,7 +2146,7 @@ dependencies = [
  "humanymous-runtime",
  "serde",
  "serde_json",
- "sha2 0.10.9",
+ "sha2 0.11.1",
  "zeroize",
 ]
 
@@ -2160,7 +2160,7 @@ dependencies = [
  "humanymous-platform",
  "humanymous-runtime",
  "serde_json",
- "sha2 0.10.9",
+ "sha2 0.11.1",
  "tar",
  "time",
  "toml",
@@ -2179,7 +2179,7 @@ dependencies = [
  "humanymous-runtime",
  "serde",
  "serde_json",
- "sha2 0.10.9",
+ "sha2 0.11.1",
  "tokio",
 ]
 
@@ -2203,7 +2203,7 @@ dependencies = [
  "humanymous-runtime",
  "serde",
  "serde_json",
- "sha2 0.10.9",
+ "sha2 0.11.1",
  "tokio",
  "zeroize",
 ]
@@ -2216,7 +2216,7 @@ dependencies = [
  "humanymous-platform",
  "humanymous-runtime",
  "serde_json",
- "sha2 0.10.9",
+ "sha2 0.11.1",
 ]
 
 [[package]]
@@ -2255,7 +2255,7 @@ dependencies = [
  "rustix 1.1.6",
  "serde",
  "serde_json",
- "sha2 0.10.9",
+ "sha2 0.11.1",
  "tokio",
  "zeroize",
 ]
@@ -2273,7 +2273,7 @@ dependencies = [
  "napi-derive",
  "serde",
  "serde_json",
- "sha2 0.10.9",
+ "sha2 0.11.1",
  "tokio",
  "windows-permissions",
 ]
@@ -2291,7 +2291,7 @@ dependencies = [
  "scraper",
  "serde",
  "serde_json",
- "sha2 0.10.9",
+ "sha2 0.11.1",
  "ureq",
  "url",
 ]
@@ -2318,7 +2318,7 @@ dependencies = [
  "pyo3",
  "pyo3-async-runtimes",
  "serde_json",
- "sha2 0.10.9",
+ "sha2 0.11.1",
  "tokio",
 ]
 
@@ -2360,7 +2360,7 @@ dependencies = [
  "scrypt",
  "serde",
  "serde_json",
- "sha2 0.10.9",
+ "sha2 0.11.1",
  "socket2",
  "subtle",
  "time",
@@ -2392,7 +2392,7 @@ dependencies = [
  "rustls",
  "serde",
  "serde_json",
- "sha2 0.10.9",
+ "sha2 0.11.1",
  "tokio",
  "zeroize",
 ]
