@@ -28,7 +28,7 @@ mod witnessed;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
-const ENDPOINT: &str = "unix:///var/run/docker.sock";
+const ENDPOINT: &str = crate::docker::CLOUD_CONTAINER_ENDPOINT;
 const IMAGE: &str = "humanymous/product-e2e:local";
 const PROJECT: &str = "humanymous-lab-product-e2e";
 const GATE_CONTAINER: &str = "humanymous-lab-product-e2e-gate-1";
@@ -43,6 +43,9 @@ struct Options {
     build_ca: Option<PathBuf>,
     build_proxy: Option<String>,
     keep_image: bool,
+    /// Engine ID observed by the operator before the run; when given, the
+    /// observed engine must match it.
+    engine_id: Option<String>,
 }
 
 fn options(args: &[String]) -> Result<Options> {
@@ -51,6 +54,7 @@ fn options(args: &[String]) -> Result<Options> {
     let mut build_ca = None;
     let mut build_proxy = None;
     let mut keep_image = false;
+    let mut engine_id = None;
     let mut rest = args.iter();
     while let Some(flag) = rest.next() {
         match flag.as_str() {
@@ -59,6 +63,9 @@ fn options(args: &[String]) -> Result<Options> {
             "--build-ca" => build_ca = rest.next().map(PathBuf::from),
             "--build-proxy" => build_proxy = rest.next().cloned(),
             "--keep-image" => keep_image = true,
+            "--engine-id" => {
+                engine_id = Some(rest.next().cloned().ok_or("--engine-id value missing")?)
+            }
             _ => return Err(format!("unknown product-e2e argument {flag}").into()),
         }
     }
@@ -68,6 +75,9 @@ fn options(args: &[String]) -> Result<Options> {
     let emit = emit.ok_or("--emit PATH required")?;
     if emit.exists() {
         return Err("receipt path exists; preserve prior runs".into());
+    }
+    if let Some(id) = &engine_id {
+        crate::docker::Venue::parse(Some("cloud-container"), Some(id))?;
     }
     if build_ca.as_ref().is_some_and(|path| !path.is_file()) {
         return Err("--build-ca must name an existing file".into());
@@ -84,6 +94,7 @@ fn options(args: &[String]) -> Result<Options> {
         build_ca,
         build_proxy,
         keep_image,
+        engine_id,
     })
 }
 
@@ -96,6 +107,46 @@ struct Output {
 struct Lab {
     root: PathBuf,
     transcript: Vec<Value>,
+    /// Operator-supplied engine ID the observed engine must equal, if any.
+    expected_engine: Option<String>,
+    /// Engine ID observed at start; every later mutation must see it again.
+    engine_id: Option<String>,
+    /// Set when a recheck saw another engine or none; later mutations and
+    /// cleanup are refused and the receipt records it.
+    engine_changed: Option<Value>,
+    /// Engine rechecks performed before mutations.
+    engine_rechecks: u64,
+}
+
+/// Read-only Docker commands; anything else is a mutation and is preceded by
+/// an engine identity recheck.
+fn observation(args: &[&str]) -> bool {
+    match args {
+        ["version" | "info" | "inspect" | "logs" | "ps", ..] => true,
+        ["image" | "network", "inspect", ..] => true,
+        ["compose", rest @ ..] => {
+            matches!(compose_subcommand(rest), Some("config" | "ps" | "logs"))
+        }
+        _ => false,
+    }
+}
+
+/// First positional Compose argument after its global flags. Only the
+/// value-taking flags listed here are understood; any other flag (including
+/// `--flag=value` forms) may consume the next argument, so the subcommand is
+/// unknown and the caller treats the command as a mutation (fail closed).
+fn compose_subcommand<'a>(args: &[&'a str]) -> Option<&'a str> {
+    let mut rest = args.iter();
+    while let Some(arg) = rest.next() {
+        match *arg {
+            "--file" | "-f" | "--project-name" | "-p" | "--profile" | "--env-file" => {
+                rest.next()?;
+            }
+            flag if flag.starts_with('-') => return None,
+            subcommand => return Some(subcommand),
+        }
+    }
+    None
 }
 
 impl Lab {
@@ -112,12 +163,48 @@ impl Lab {
         seconds: u64,
         required: bool,
     ) -> Result<Output> {
-        let mut command = Command::new("docker");
-        if args.first() != Some(&"context") {
-            command.args(["--host", ENDPOINT]);
+        if !observation(args) {
+            self.recheck_engine(args)?;
         }
-        command.args(args).current_dir(&self.root);
+        let mut command = Command::new("docker");
+        command
+            .args(["--host", ENDPOINT])
+            .args(args)
+            .current_dir(&self.root);
         self.capture(command, args, input, seconds, required)
+    }
+
+    /// Engine ID behind the explicit endpoint, read without recursion.
+    fn observe_engine_id(&self) -> Option<String> {
+        let mut command = Command::new("docker");
+        command
+            .args(["--host", ENDPOINT, "info", "--format", "{{.ID}}"])
+            .current_dir(&self.root);
+        let captured =
+            capture_with_stderr(&mut command, b"", Duration::from_secs(30), 1024 * 1024).ok()?;
+        let id = String::from_utf8(captured.stdout).ok()?.trim().to_owned();
+        (captured.status.success() && !id.is_empty()).then_some(id)
+    }
+
+    /// Before a mutation: the engine must still be the one observed at start.
+    /// A changed or unreadable engine is recorded and refused, never retried.
+    fn recheck_engine(&mut self, args: &[&str]) -> Result<()> {
+        let Some(expected) = self.engine_id.clone() else {
+            return Err("engine not observed before mutation".into());
+        };
+        if self.engine_changed.is_none() {
+            self.engine_rechecks += 1;
+            let observed = self.observe_engine_id();
+            if observed.as_deref() != Some(expected.as_str()) {
+                self.engine_changed = Some(
+                    json!({"expected_engine_id":expected,"observed_engine_id":observed,"refused_argv":args}),
+                );
+            }
+        }
+        if self.engine_changed.is_some() {
+            return Err("Docker engine identity changed; mutation refused".into());
+        }
+        Ok(())
     }
 
     fn git(&mut self, args: &[&str]) -> Result<String> {
@@ -174,35 +261,28 @@ impl Lab {
 
     fn engine(&mut self) -> Result<Value> {
         let version = self.json(&["version", "--format", "{{json .}}"])?;
-        let context = self
-            .docker(&["context", "show"], 30, true)?
-            .stdout
-            .trim()
-            .to_owned();
-        let selected = self.json(&[
-            "context",
-            "inspect",
-            &context,
-            "--format",
-            "{{json .Endpoints.docker.Host}}",
-        ])?;
         let info = self.json(&["info", "--format", "{{json .}}"])?;
         let engine = json!({"kind":"cloud-container","endpoint":ENDPOINT,
-            "selected_context":context,"selected_context_endpoint":selected,
+            "endpoint_selection":"explicit --host on every command; the selected context is not consulted",
             "client_version":version["Client"]["Version"],"server_version":version["Server"]["Version"],
             "server_api_version":version["Server"]["ApiVersion"],
             "engine_id":info["ID"],"os_type":info["OSType"],"info_server_version":info["ServerVersion"],
-            "windows_desktop_affinity_claimed":false,"github_hosted":false});
+            "windows_desktop_affinity_claimed":false,"github_hosted":false,
+            "explicit":true,"bound_engine_id":self.expected_engine,
+            "authenticated_provenance":false,"qualifying_venue":false});
+        let id = engine["engine_id"].as_str().unwrap_or("");
         if engine["os_type"] != "linux"
-            || !engine["engine_id"]
-                .as_str()
-                .is_some_and(|id| !id.is_empty())
-            || selected != ENDPOINT
+            || id.is_empty()
+            || self
+                .expected_engine
+                .as_ref()
+                .is_some_and(|expected| id != expected)
         {
             return Err(
-                "cloud-container engine identity incomplete or not the local socket".into(),
+                "cloud-container engine identity incomplete or not the supplied engine ID; refused before mutation".into(),
             );
         }
+        self.engine_id = Some(id.to_owned());
         Ok(engine)
     }
 
@@ -316,15 +396,20 @@ pub fn run(args: &[String]) -> Result<i32> {
             "product-e2e cloud-container venue only; other venues are not this increment".into(),
         );
     }
-    for name in ["DOCKER_HOST", "DOCKER_CONTEXT"] {
-        if std::env::var(name).is_ok_and(|value| !value.is_empty() && value != ENDPOINT) {
-            return Err(format!("{name} override refused; the endpoint is explicit").into());
-        }
-    }
+    // The same environment refusals as the lab `run` cloud-container venue.
+    crate::docker::cloud_container_environment(
+        cfg!(windows),
+        crate::docker::actual_hosted_linux(),
+        &|name| std::env::var(name).ok(),
+    )?;
     let options = options(args)?;
     let mut lab = Lab {
         root: crate::snapshot::root()?,
         transcript: Vec::new(),
+        expected_engine: options.engine_id.clone(),
+        engine_id: None,
+        engine_changed: None,
+        engine_rechecks: 0,
     };
     let commit = lab.git(&["rev-parse", "HEAD"])?;
     let branch = lab.git(&["rev-parse", "--abbrev-ref", "HEAD"])?;
@@ -369,6 +454,27 @@ pub fn run(args: &[String]) -> Result<i32> {
           "the shipped-binary gate probe is TCP liveness only: crates/sdk/humanymous-runtime/src/gateway/main.rs writes readiness once and exposes no live serving-epoch latch to its supervisor; only the witnessed gate probe reads ServiceHost::epoch_health",
           "the attack catalog runs against the shipped runtime as a supervisor-owned child in a network-none wargame container, not through the product topology gate",
           "readiness withdrawal is lazy: the serving-epoch latch fails on the first failed audit append after a witness loss, not when the witness stops"]});
+    let mut started = false;
+    if let Err(error) = measure(&mut lab, &options, &commit, &mut receipt, &mut started) {
+        receipt["status"] = json!(if lab.engine_changed.is_some() {
+            "engine_identity_changed"
+        } else {
+            "measurement_error"
+        });
+        receipt["measurement_error"] = json!(error.to_string());
+    }
+    finish(&mut lab, receipt, &options, started)
+}
+
+/// Build, start, drive and judge the topology. Any error leaves the receipt
+/// to `finish`, which still records it.
+fn measure(
+    lab: &mut Lab,
+    options: &Options,
+    commit: &str,
+    receipt: &mut Value,
+    started_topology: &mut bool,
+) -> Result<()> {
     let config = lab.docker(
         &[
             "compose",
@@ -393,16 +499,18 @@ pub fn run(args: &[String]) -> Result<i32> {
             "venue host-loopback HTTPS proxy supplied as a build-only proxy argument; builds used the host network; lab containers never do"
         );
     }
-    if !build_image(&mut lab, &options, &commit, None, IMAGE)? {
+    if !build_image(lab, options, commit, None, IMAGE)? {
         receipt["status"] = json!("build_failed");
-        return finish(&mut lab, receipt, &options, false);
+        return Ok(());
     }
     receipt["build_seconds"] = json!(started.elapsed().as_secs());
+    // From here on containers may exist, so teardown always runs.
+    *started_topology = true;
     let started = Instant::now();
     let browser_built = build_image(
-        &mut lab,
-        &options,
-        &commit,
+        lab,
+        options,
+        commit,
         Some("browser"),
         browser::BROWSER_IMAGE,
     )?;
@@ -452,7 +560,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     // Increment 4: the browser topology runs first, because its real collector
     // report is the one every collected session in the other topologies submits.
     let (browser, report_line) = match &browser_image {
-        Some(browser_image) => match browser::run(&mut lab, &image, browser_image) {
+        Some(browser_image) => match browser::run(lab, &image, browser_image) {
             Ok(result) => result,
             Err(error) => (json!({"pass":false,"error":error.to_string()}), None),
         },
@@ -488,7 +596,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     .concat();
     if !lab.docker(&up, 300, false)?.success {
         receipt["status"] = json!("topology_start_failed");
-        return finish(&mut lab, receipt, &options, true);
+        return Ok(());
     }
     let drive = [
         &compose[..],
@@ -531,16 +639,16 @@ pub fn run(args: &[String]) -> Result<i32> {
             .is_some_and(|d| d["failed"] == 0 && d["driver_error"].is_null());
     receipt["driver"] = driver.unwrap_or(Value::Null);
     receipt["driver_exit_success"] = json!(driven.success);
-    let origin_lost = origin_loss(&mut lab, &compose, &stdin_report)?;
+    let origin_lost = origin_loss(lab, &compose, &stdin_report)?;
     let origin_lost_pass = origin_lost["pass"] == true;
     receipt["origin_loss_after_readiness"] = origin_lost;
-    let witnessed = match witnessed::run(&mut lab, &image, &stdin_report) {
+    let witnessed = match witnessed::run(lab, &image, &stdin_report) {
         Ok(report) => report,
         Err(error) => json!({"pass":false,"error":error.to_string()}),
     };
     let witnessed_pass = witnessed["pass"] == true;
     receipt["witnessed"] = witnessed;
-    let catalog = match ledger::wargame(&mut lab, &compose) {
+    let catalog = match ledger::wargame(lab, &compose) {
         Ok(report) => report,
         Err(error) => json!({"pass":false,"error":error.to_string()}),
     };
@@ -557,7 +665,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     } else {
         "partial_topology_failed"
     });
-    finish(&mut lab, receipt, &options, true)
+    Ok(())
 }
 
 /// The driver's forged-header expectation must follow the Gate's own
@@ -658,6 +766,42 @@ fn build_image(
 
 fn finish(lab: &mut Lab, mut receipt: Value, options: &Options, started: bool) -> Result<i32> {
     let mut cleanup = json!({});
+    if lab.engine_changed.is_some() {
+        // Never delete through a daemon other than the one that was bound.
+        cleanup["skipped"] =
+            json!("engine identity changed; no cleanup through a different daemon");
+    } else if let Err(error) = teardown(lab, options, started, &mut cleanup) {
+        cleanup["error"] = json!(error.to_string());
+    }
+    // Observed without failing, so an engine change still yields a receipt.
+    let after = lab.observe_engine_id();
+    let stable = lab.engine_changed.is_none()
+        && after.is_some()
+        && after.as_deref() == receipt["venue"]["engine_id"].as_str();
+    receipt["venue"]["engine_id_stable"] = json!(stable);
+    receipt["venue"]["engine_id_after"] = json!(after);
+    receipt["venue"]["engine_rechecks_before_mutation"] = json!(lab.engine_rechecks);
+    receipt["venue"]["engine_identity_change"] = json!(lab.engine_changed);
+    if !stable {
+        receipt["status"] = json!("engine_identity_changed");
+    }
+    let cleanup_verified = stable && cleanup_verified(&cleanup, started, options.keep_image);
+    receipt["qualification"] = ledger::ledger(&receipt, cleanup_verified);
+    receipt["full_product_qualified"] = receipt["qualification"]["full_product_qualified"].clone();
+    receipt["cleanup"] = cleanup;
+    receipt["transcript"] = json!(lab.transcript);
+    let bytes = serde_json::to_vec_pretty(&receipt)?;
+    std::fs::write(&options.emit, &bytes)?;
+    println!("{}", String::from_utf8(bytes)?);
+    Ok(if receipt["status"] == "partial_topology_measured" {
+        0
+    } else {
+        1
+    })
+}
+
+/// Owned teardown through the bound engine; every step rechecks it first.
+fn teardown(lab: &mut Lab, options: &Options, started: bool, cleanup: &mut Value) -> Result<()> {
     if started {
         let down = [
             "compose",
@@ -717,25 +861,7 @@ fn finish(lab: &mut Lab, mut receipt: Value, options: &Options, started: bool) -
                 .success
         );
     }
-    let after = lab.engine()?;
-    let stable = after["engine_id"] == receipt["venue"]["engine_id"];
-    receipt["venue"]["engine_id_stable"] = json!(stable);
-    if !stable {
-        receipt["status"] = json!("engine_identity_changed");
-    }
-    let cleanup_verified = stable && cleanup_verified(&cleanup, started, options.keep_image);
-    receipt["qualification"] = ledger::ledger(&receipt, cleanup_verified);
-    receipt["full_product_qualified"] = receipt["qualification"]["full_product_qualified"].clone();
-    receipt["cleanup"] = cleanup;
-    receipt["transcript"] = json!(lab.transcript);
-    let bytes = serde_json::to_vec_pretty(&receipt)?;
-    std::fs::write(&options.emit, &bytes)?;
-    println!("{}", String::from_utf8(bytes)?);
-    Ok(if receipt["status"] == "partial_topology_measured" {
-        0
-    } else {
-        1
-    })
+    Ok(())
 }
 
 /// Owned teardown observed complete: the project is down with no container
@@ -847,6 +973,17 @@ mod tests {
             fresh.display().to_string(),
         ];
         assert!(options(&args).is_ok());
+        let with_id = |id: &str| {
+            let mut bound = args.to_vec();
+            bound.extend(["--engine-id".into(), id.into()]);
+            options(&bound)
+        };
+        assert_eq!(
+            with_id("c7f5a196-202c").unwrap().engine_id.as_deref(),
+            Some("c7f5a196-202c")
+        );
+        assert!(with_id("").is_err());
+        assert!(with_id("id with space").is_err());
     }
     #[test]
     fn build_proxy_is_host_loopback_only() {
@@ -864,6 +1001,46 @@ mod tests {
         assert!(with("http://127.0.0.1:3128").is_ok());
         assert!(with("http://proxy.example:3128").is_err());
         assert!(with("https://127.0.0.1:3128").is_err());
+    }
+    #[test]
+    fn every_non_observation_docker_command_is_a_rechecked_mutation() {
+        for read in [
+            &["version", "--format", "x"][..],
+            &["info"],
+            &["inspect", "c"],
+            &["logs", "c"],
+            &["ps", "--all"],
+            &["image", "inspect", "i"],
+            &["network", "inspect", "n"],
+            &["compose", "--file", "f", "--project-name", "p", "config"],
+        ] {
+            assert!(observation(read), "{read:?}");
+        }
+        for mutation in [
+            &["build", "."][..],
+            &["run", "x"],
+            &["create", "x"],
+            &["start", "x"],
+            &["stop", "x"],
+            &["rm", "--force", "x"],
+            &["exec", "x", "cmd"],
+            &["image", "rm", "i"],
+            &["compose", "--file", "f", "up"],
+            &["compose", "--file", "f", "down"],
+            &["compose", "--file", "f", "run", "config"],
+            // Unrecognised global flags may take a value: never skip them.
+            &["compose", "--project-directory", "config", "up"],
+            &["compose", "--ansi", "never", "config"],
+            &["compose", "--progress", "config", "up"],
+            &["compose", "--parallel", "config", "down"],
+            &["compose", "--project-directory=config", "config"],
+            &["compose", "--dry-run", "config"],
+            &["compose", "--file"],
+            &["network", "create", "n"],
+            &[],
+        ] {
+            assert!(!observation(mutation), "{mutation:?}");
+        }
     }
     #[test]
     fn driver_receipt_is_found_by_schema_not_position() {

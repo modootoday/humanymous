@@ -3,7 +3,7 @@ id: sot:root/container-test-environments
 title: Canonical Compose lab and Cloudflare test environment profiles
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-18T12:00:00Z
+updated: 2026-11-19T18:46:12Z
 verify: manual
 rel:
   governs: [deployments/lab/**, build/rust/**, test/lab/**]
@@ -27,7 +27,7 @@ sole product-completion authority for Rust full-product and M3 composed e2e.
 
 | Element | Measured requirement | Not clean-room |
 | --- | --- | --- |
-| Engine | Windows Desktop `desktop-linux` / `npipe:////./pipe/dockerDesktopLinuxEngine`, or genuine GitHub-hosted Linux with its own provenance; rule `96` preflight before mutation | Unallocated WSL daemon fallback; PATH-missing substitution; merging Desktop and WSL server IDs |
+| Engine | Windows Desktop `desktop-linux` / `npipe:////./pipe/dockerDesktopLinuxEngine`, or genuine GitHub-hosted Linux with its own provenance; rule `96` preflight before mutation | Unallocated WSL daemon fallback; PATH-missing substitution; merging Desktop and WSL server IDs; an explicit cloud-container venue, which is component evidence only (decision #152-1 below) |
 | L5 topology | Lab internal networks; separated Gate / origin / attacker / browser / witness roles; product HTTP probes inside the lab; host coordinates Docker only | Host-published Gate/origin as the measured plane; loopback-only multi-role claims; single-namespace browser+backend product claim |
 | Lab isolation | Unique owned Compose projects; clients run in Docker; defense-only `internal: true`; no host Docker socket mount into attackers | Shared foreign projects; host `node`/`cargo` product HTTP runners; third-party probing |
 | Project naming | Prefix `humanymous-<family>-*` (e.g. `humanymous-lab-go-product`); never reuse `humanymous-pages-preview` | Unscoped default project names; pages-preview collision |
@@ -1401,6 +1401,68 @@ missing: restart and replay of the shipped runtime binary's own audit with
 its witness input (decision C3), cross-namespace origin/audit effect binding,
 and a source-bound Docker run at the candidate head. Until then the case
 stays `blocked` and `full_product_qualified` stays false.
+
+## Explicit cloud-container venue (owner decision #152-1, 2026-11-19)
+
+Owner decision #152-1 on issue #75 (comment 7017558784) accepts an explicitly
+named cloud-container venue for the lab engine preflight. It amends the local
+engine affinity rule above, which otherwise accepts only the Windows Desktop
+baseline, an allocated Desktop CLI proxy or genuine GitHub-hosted Linux.
+
+**Selection.** The venue exists only when the operator names it:
+`humanymous-lab-runner run ... --venue cloud-container --engine-id ID`,
+`engine-preflight --evidence BUNDLE --venue cloud-container --engine-id ID`,
+`cleanup --venue cloud-container --engine-id ID` (expired owned resources),
+or `humanymous-delivery pilot docker --venue cloud-container --engine-id ID`,
+which forwards both flags to the lab `run`. The two flags come together or not
+at all, each at most once (a repeated flag is refused, never last-wins), and no
+other venue name is accepted. Nothing infers the venue from the daemon the CLI
+selects, from `DOCKER_HOST` or from the absence of a Desktop baseline.
+
+**Binding.** The operator observes the engine ID before the run and supplies
+it. Every Docker command for the venue passes `--host unix:///var/run/docker.sock`
+explicitly. The preflight refuses Windows and genuine GitHub-hosted Linux, and
+it refuses a set `DOCKER_CONTEXT`, `HUMANYMOUS_DOCKER_DESKTOP_PROXY`,
+`HUMANYMOUS_DOCKER_DESKTOP_BASELINE` or a `DOCKER_HOST` naming another endpoint.
+It then requires the observed engine ID to equal the supplied one and the OS
+type to be `linux`, and it rechecks that identity at each mutation boundary
+and before cleanup, as for the other venues. A different ID stops the run
+before workload mutation.
+
+**`product-e2e`.** This profile is cloud-container only and has its own
+runner, with the same binding. It refuses the same environment overrides,
+passes the same explicit `--host` on every Docker command and never consults
+the selected context. It observes the engine at start, and an optional
+`--engine-id ID` must equal it. Before every Docker command that is not a
+read-only observation (`version`, `info`, `inspect`, `logs`, `ps`, image or
+network `inspect`, Compose `config`, `ps` or `logs`) it rechecks the engine ID.
+A Compose command counts as an observation only when every global flag before
+its subcommand is one the runner knows (`--file`/`-f`, `--project-name`/`-p`,
+`--profile`, `--env-file`, each with a separate value); any other flag may take
+a value, so the command is treated as a mutation. The recheck also runs
+before teardown and before attaching to the witness. A changed or
+unreadable engine refuses that command and every later mutation, skips
+teardown so nothing is deleted through another daemon, and still writes the
+receipt with status `engine_identity_changed`, `venue.engine_identity_change`
+(expected, observed and refused command), `venue.engine_id_after` and
+`venue.engine_rechecks_before_mutation`. Any other measurement error also
+writes a receipt, with status `measurement_error`.
+
+**Receipt.** The engine observation records `venue: "cloud-container"`, the
+explicit endpoint, the observed and expected engine IDs and
+`authenticated_provenance: false`. The lab report adds `engine_venue` with the
+venue name, `bound_engine_id`, `observed_engine_id`,
+`authenticated_provenance: false` and `qualifying_venue: false`. The delivery
+pilot report and its public summary carry the same `engine_venue`.
+
+**Never qualifying.** The venue cannot make `full_product_qualified` true on
+its own. The lab adds `qualifying engine venue (GitHub-hosted Linux CI)` to
+`required_unavailable` and forces `full_product_qualified: false` whatever its
+cases show. The `product-e2e` ledger does the same. The delivery pilot computes
+`full` false for the venue, and `pilot::validate` refuses any report whose
+`engine_venue.qualifying_venue` is false. In the clean-room table above the
+venue is component evidence, not a clean-room engine. Hosted CI stays the
+qualifying venue.
 
 ## Official sources, checked 2026-11-07
 

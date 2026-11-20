@@ -125,7 +125,8 @@ mod tests {
         row["processes"] = serde_json::json!([{
             "runtime_sha256":"1".repeat(64), "supervisor_sha256":"2".repeat(64),
             "installation":"unit-synthetic", "revision":"r1",
-            "binding":"supervisor-owned-child/private-pipe/same-loopback-only-namespace"
+            "binding":"supervisor-owned-child/private-pipe/same-loopback-only-namespace",
+            "ipv6":"loopback_routes_only"
         }]);
         row["effects"] = serde_json::json!({
             "origin_effects":0, "audit":[{
@@ -236,6 +237,31 @@ mod tests {
         assert!(verify_bytes(&serde_json::to_vec(&simulation).unwrap()).is_err());
     }
 
+    #[test]
+    fn process_ipv6_evidence_is_required_and_enumerated() {
+        let base = network_failure_fixture();
+        let index = base["rows"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .position(|row| row["id"] == "missing-client-report")
+            .unwrap();
+        let check = |value: &Value| verify_bytes(&serde_json::to_vec(value).unwrap());
+        let mut absent = base.clone();
+        absent["rows"][index]["processes"][0]["ipv6"] = "stack_absent".into();
+        assert!(check(&absent).is_ok());
+        for value in [Value::from("absent"), Value::from(""), Value::Null] {
+            let mut changed = base.clone();
+            changed["rows"][index]["processes"][0]["ipv6"] = value;
+            assert!(check(&changed).is_err());
+        }
+        let mut missing = base.clone();
+        missing["rows"][index]["processes"][0]
+            .as_object_mut()
+            .unwrap()
+            .remove("ipv6");
+        assert!(check(&missing).is_err());
+    }
     #[test]
     fn network_rejects_duplicate_fields_and_dynamic_map_keys() {
         let base = network_failure_fixture();

@@ -1,6 +1,6 @@
 //! Docker control plane and source-bound case accounting, with owned cleanup.
 use crate::{
-    docker::{Docker, Result},
+    docker::{self, Docker, Result},
     snapshot,
 };
 use serde_json::{Value, json};
@@ -863,6 +863,8 @@ pub fn run(args: &[String]) -> Result<i32> {
     let mut g4_cef_at = false;
     let mut full = false;
     let mut require_go_component = false;
+    let mut venue = None;
+    let mut engine_id = None;
     let mut index = 0;
     while index < args.len() {
         match args[index].as_str() {
@@ -896,6 +898,14 @@ pub fn run(args: &[String]) -> Result<i32> {
             "--g4-cef-at" => g4_cef_at = true,
             "--require-full" => full = true,
             "--require-go-component" => require_go_component = true,
+            "--venue" => {
+                index += 1;
+                docker::set_once(&mut venue, args.get(index), "--venue")?;
+            }
+            "--engine-id" => {
+                index += 1;
+                docker::set_once(&mut engine_id, args.get(index), "--engine-id")?;
+            }
             _ => return Err("unknown runner argument".into()),
         }
         index += 1;
@@ -1384,6 +1394,8 @@ pub fn run(args: &[String]) -> Result<i32> {
         return Err("Go product requires a separate fresh bundle/profile".into());
     }
     let requirement = requirement::Requirement::select(full, require_go_component, go_product)?;
+    // Never inferred from the daemon: only an explicit --venue selects one.
+    let venue = docker::Venue::parse(venue.as_deref(), engine_id.as_deref())?;
     if !evidence.starts_with(root.join(".spec.local/root/evidence"))
         || !evidence.join("index.evidence.md").is_file()
     {
@@ -1413,7 +1425,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     };
     let expires = SystemTime::now().duration_since(UNIX_EPOCH)?.as_secs() + 1800;
     let mut lab = Lab {
-        docker: Docker::new(&root),
+        docker: Docker::with_venue(&root, venue.clone()),
         project: project.clone(),
         environment: vec![
             (
@@ -1487,11 +1499,14 @@ pub fn run(args: &[String]) -> Result<i32> {
     snapshot::write(
         &lab.evidence,
         "docker-engine-affinity.json",
-        &json!({"schema":"humanymous.lab-engine-evidence/1","observation":lab.docker.engine_identity,"actual_sdk_connection_observed":false}),
+        &json!({"schema":"humanymous.lab-engine-evidence/1","venue":venue.report(),"observation":lab.docker.engine_identity,"actual_sdk_connection_observed":false}),
     )?;
     let failed = lab.cases.iter().any(|c| c["status"] == "failed");
     // Derived, never hard-coded: absent or failed required cases stay unavailable.
-    let qualification = qualification::assess(&lab.cases, cleanup_verified);
+    let mut qualification = qualification::assess(&lab.cases, cleanup_verified);
+    if !venue.qualifying() {
+        qualification.non_qualifying_venue();
+    }
     let assessment = requirement.assess(
         failed,
         lab.go_component_verified,
@@ -1586,7 +1601,16 @@ pub fn run(args: &[String]) -> Result<i32> {
     let documentation_review_sha256 = std::fs::read(root.join("docs/reviews.json"))
         .ok()
         .map(|bytes| snapshot::digest(&bytes));
-    let mut report = json!({"schema":"humanymous.product-lab/2","requirement":requirement.report(&assessment),"safe_diagnostics":diagnostics,"public_receipts":lab.public_receipts,"project":lab.project,"evidence_types":evidence_types,"cases":lab.cases,"components":lab.components,"source_sha":source_sha,"documentation_review_sha256":documentation_review_sha256,"release_ready":false,"ttl":{"expires_unix":expires,"external_janitor_scheduled":false}});
+    // The receipt names the venue and the engine ID actually observed.
+    let mut engine_venue = venue.report();
+    engine_venue["observed_engine_id"] = lab
+        .docker
+        .engine_identity
+        .as_ref()
+        .map_or(Value::Null, |identity| {
+            identity["observed"]["server_id"].clone()
+        });
+    let mut report = json!({"schema":"humanymous.product-lab/2","requirement":requirement.report(&assessment),"safe_diagnostics":diagnostics,"public_receipts":lab.public_receipts,"engine_venue":engine_venue,"project":lab.project,"evidence_types":evidence_types,"cases":lab.cases,"components":lab.components,"source_sha":source_sha,"documentation_review_sha256":documentation_review_sha256,"release_ready":false,"ttl":{"expires_unix":expires,"external_janitor_scheduled":false}});
     for (key, value) in qualification
         .report_fields()
         .as_object()
@@ -1713,8 +1737,11 @@ pub fn owned_expired(labels: &Value, now: u64) -> bool {
             .and_then(|s| s.parse::<u64>().ok())
             .is_some_and(|n| n > 0 && n <= now)
 }
-pub fn cleanup_expired() -> Result<()> {
-    let mut docker = Docker::new(&snapshot::root()?);
+/// Expired owned-resource cleanup. With `--venue cloud-container --engine-id ID`
+/// it uses the same explicit binding as `run`; without it, rule 96 affinity.
+pub fn cleanup_expired(args: &[String]) -> Result<()> {
+    let venue = docker::venue_args(args)?;
+    let mut docker = Docker::with_venue(&snapshot::root()?, venue);
     let now = SystemTime::now().duration_since(UNIX_EPOCH)?.as_secs();
     let mut projects = std::collections::BTreeSet::new();
     for args in [

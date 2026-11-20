@@ -70,6 +70,20 @@ venue as a cloud container, with its endpoint, engine ID and versions, apart fro
 local Windows, WSL, `act` and GitHub-hosted results. It is not a GitHub-hosted
 runner and never stands in for one. Rule 97 covers coordination there.
 
+The lab accepts this venue only when it is named explicitly (owner decision
+#152-1): `--venue cloud-container --engine-id ID` on the lab `run` and
+`engine-preflight` and standalone `cleanup`, or on `humanymous-delivery pilot
+docker`; `product-e2e` is cloud-container only and binds the same way. Each
+flag is given at most once. Observe the engine
+ID first (`docker --host unix:///var/run/docker.sock info --format '{{.ID}}'`)
+and pass it; never let a tool infer the venue from the selected daemon. Every
+command uses that explicit Unix socket, and the run stops before mutation when
+the observed ID differs or when `DOCKER_CONTEXT`, a Desktop proxy or baseline,
+or another `DOCKER_HOST` is set. The receipt records the venue, the bound and
+observed engine IDs and `authenticated_provenance: false`. The venue never
+makes `full_product_qualified` true; hosted CI stays the qualifying venue. The
+canon is `.spec/sot/container-test-environments.sot.md`.
+
 ## Image cleanup authorization
 
 Run `image prune -a` only after an explicit user request for that image cleanup,

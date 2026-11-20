@@ -126,6 +126,16 @@ fn judge(
                 .collect()
         })
         .unwrap_or_default();
+    // The IPv6 isolation evidence each owned child recorded (decision #152-2):
+    // loopback_routes_only or stack_absent, from the byte-verified report.
+    let process_ipv6: std::collections::BTreeSet<&str> = report["rows"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter_map(|row| row["processes"].as_array())
+        .flatten()
+        .filter_map(|process| process["ipv6"].as_str())
+        .collect();
     let scoped_passed = report["scoped_passed"] == true;
     let pass = exit_success && network_none && verified && scoped_passed;
     json!({"container":{"network_mode":container["network_mode"],"image":container["image"],
@@ -136,7 +146,7 @@ fn judge(
         "raw_sha256":raw_sha256,"report_schema":report["schema"],"evidence_type":report["evidence_type"],
         "scoped_passed":scoped_passed,"totals":report["totals"],
         "unsupported_ids":ids("unsupported"),"error_ids":ids("error"),"skipped_ids":ids("skipped"),
-        "error_reasons":error_reasons,
+        "error_reasons":error_reasons,"process_ipv6":process_ipv6,
         "scope":"owned process network: the shipped runtime as a supervisor-owned child in a network-none container, not the product topology Gate",
         "pass":pass})
 }
@@ -165,7 +175,9 @@ pub(super) fn ledger(receipt: &Value, cleanup_verified: bool) -> Value {
     if receipt["attack_catalog"].is_object() {
         cases.push(attack_catalog_case(&receipt["attack_catalog"]));
     }
-    let assessed = qualification::assess(&cases, cleanup_verified);
+    let mut assessed = qualification::assess(&cases, cleanup_verified);
+    // This profile runs only on the explicit cloud-container venue.
+    assessed.non_qualifying_venue();
     let mut fields = assessed.report_fields();
     fields["derivation"] = json!(
         "test/lab/runner/src/orchestration/qualification.rs assess over this run's mapped cases"
@@ -210,6 +222,11 @@ mod tests {
         );
         assert_eq!(run["pass"], true);
         assert_eq!(run["unsupported_ids"], json!(["real-browser-agent"]));
+        assert_eq!(run["process_ipv6"], json!([]));
+        let mut absent = partial.clone();
+        absent["rows"][1]["processes"] = json!([{"ipv6":"stack_absent"},{"ipv6":"stack_absent"}]);
+        let run_absent = judge(true, &none(), Some(&absent), &[receipt(&absent, "s")], "s");
+        assert_eq!(run_absent["process_ipv6"], json!(["stack_absent"]));
         let case = attack_catalog_case(&run);
         assert_eq!(case["status"], "failed");
         assert_eq!(case["detail"]["unsupported"], 7);
@@ -289,6 +306,12 @@ mod tests {
         let empty = ledger(&json!({}), true);
         assert_eq!(empty["skips"], all);
         assert_eq!(empty["full_product_qualified"], false);
+        assert!(
+            empty["required_unavailable"]
+                .as_array()
+                .unwrap()
+                .contains(&json!(qualification::QUALIFYING_VENUE))
+        );
         assert_eq!(empty["mapped_cases"], json!([]));
         let report = report(7);
         let run = judge(true, &none(), Some(&report), &[receipt(&report, "s")], "s");

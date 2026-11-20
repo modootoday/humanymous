@@ -26,6 +26,8 @@ pub struct ProcessReceipt {
     pub revision: String,
     /// Narrow execution boundary, never full product qualification.
     pub binding: String,
+    /// How the IPv6 isolation precondition was observed for this namespace.
+    pub ipv6: isolation::Ipv6Evidence,
 }
 
 fn digest(path: &Path) -> Result<String, LabError> {
@@ -84,7 +86,7 @@ impl OwnedRuntime {
     /// Start the fixed sibling runtime in an already isolated network namespace.
     /// Custody must already exist; this never provisions or repairs target keys.
     pub fn spawn(value: &Value) -> Result<Self, LabError> {
-        isolation::check()?;
+        let ipv6 = isolation::check()?;
         let mut config: Configuration =
             serde_json::from_value(value.clone()).map_err(|_| LabError("runtime configuration"))?;
         config
@@ -111,6 +113,7 @@ impl OwnedRuntime {
             installation: config.scope.installation.clone(),
             revision: config.scope.revision.clone(),
             binding: "supervisor-owned-child/private-pipe/same-loopback-only-namespace".into(),
+            ipv6,
         };
         let bytes = zeroize::Zeroizing::new(
             serde_json::to_vec(value).map_err(|_| LabError("startup serialization"))?,
@@ -208,7 +211,10 @@ impl OwnedRuntime {
         Ok(())
     }
     pub(super) fn check_live(&mut self) -> Result<(), LabError> {
-        isolation::check()?;
+        // The IPv6 evidence recorded at spawn must still hold for this namespace.
+        if isolation::check()? != self.receipt.ipv6 {
+            return Err(LabError("IPv6 isolation evidence changed"));
+        }
         let child = self.child.as_mut().ok_or(LabError("runtime stopped"))?;
         if child
             .try_wait()

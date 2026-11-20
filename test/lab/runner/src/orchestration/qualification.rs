@@ -93,7 +93,18 @@ pub(crate) fn assess(cases: &[Value], cleanup_verified: bool) -> Qualification {
     }
 }
 
+/// Listed as unavailable when the engine venue cannot qualify a product run.
+pub(crate) const QUALIFYING_VENUE: &str = "qualifying engine venue (GitHub-hosted Linux CI)";
+
 impl Qualification {
+    /// An explicitly named cloud-container venue never qualifies on its own,
+    /// whatever its cases show; hosted CI stays the qualifying venue.
+    pub(crate) fn non_qualifying_venue(&mut self) {
+        self.full_product_qualified = false;
+        if !self.required_unavailable.contains(&QUALIFYING_VENUE) {
+            self.required_unavailable.push(QUALIFYING_VENUE);
+        }
+    }
     /// Top-level fields consumed by the delivery pilot.
     pub(crate) fn report_fields(&self) -> Value {
         json!({
@@ -170,6 +181,20 @@ mod tests {
         );
         assert_eq!(result.report_fields()["status"], "failed");
         assert_eq!(result.errors, 1);
+    }
+
+    #[test]
+    fn cloud_container_venue_never_qualifies_even_with_every_case_passed() {
+        let mut result = assess(&all_required("passed"), true);
+        assert!(result.full_product_qualified);
+        result.non_qualifying_venue();
+        result.non_qualifying_venue();
+        assert!(!result.full_product_qualified);
+        assert_eq!(result.required_unavailable, vec![QUALIFYING_VENUE]);
+        let fields = result.report_fields();
+        assert_eq!(fields["qualification"], "component-only");
+        assert_eq!(fields["status"], "blocked");
+        assert_eq!(fields["full_product_qualified"], false);
     }
 
     #[test]

@@ -51,6 +51,14 @@ pub fn validate(report: &Value, kind: &str, head: &str, review: &str) -> Result<
         report["status"] == "passed" && report["qualification"] == "full-product",
         "component/blocked pilot cannot qualify full product",
     )?;
+    // A missing `engine_venue` is Null, not false, so it still validates: pilot
+    // reports written before decision #152-1 carry no such field, and their
+    // engine was the rule 96 affinity venue. This pilot always writes the
+    // field now, with `qualifying_venue: false` for the cloud-container venue.
+    require(
+        report["engine_venue"]["qualifying_venue"] != false,
+        "an explicit cloud-container venue cannot qualify full product",
+    )?;
     require(
         report["errors"].as_u64() == Some(0) && report["skips"].as_u64() == Some(0),
         "pilot execution errors/skips are not success",
@@ -94,8 +102,9 @@ pub fn validate(report: &Value, kind: &str, head: &str, review: &str) -> Result<
     }
     Ok(())
 }
-pub fn run(root: &Path, kind: &str) -> Result<()> {
+pub fn run(root: &Path, kind: &str, options: &[String]) -> Result<()> {
     let ids = required(kind)?;
+    let venue = venue(kind, options)?;
     let before = source::snapshot(root)?;
     let head = before["source_sha"].as_str().ok_or("source SHA missing")?;
     let review = source::file(&root.join("docs/reviews.json"))?;
@@ -160,6 +169,9 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
             if let Some(profile) = lab_profile(kind) {
                 args.push(profile);
             }
+            // The lab owns the venue preflight; the pilot only forwards the
+            // explicitly named venue and its engine ID.
+            args.extend(venue.iter().map(String::as_str));
             args.push("--require-full");
             let code = command::log(root, "cargo", &args, &dir.join("lab-owner.log"))?;
             let report = if dir.join("lab-report.json").is_file() {
@@ -239,7 +251,10 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
             value.and_then(|value| sum.checked_add(value))
         })
     };
-    let full = !changed
+    // An explicit cloud-container venue is never a qualifying venue.
+    let qualifying_venue = venue.is_empty();
+    let full = qualifying_venue
+        && !changed
         && errors == 0
         && components
             .iter()
@@ -267,7 +282,7 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
             }
         }
     }
-    let report = json!({"schema":1,"kind":kind,"source_sha":head,"source":before,"documentation_review_sha256":review,"status":if full{"passed"}else if errors>0{"failed"}else{"blocked"},"qualification":if full{"full-product"}else{"component-only"},"full_product_qualified":full,"release_ready":full,"errors":errors,"skips":skips,"cases":cases,"components":components,"source_changed_during_execution":changed,"isolation":if kind=="native"{"native"}else{"docker"},"runtime":"rust","images":images,"private_evidence":dir.strip_prefix(root).map_err(|e|e.to_string())?.to_string_lossy().replace('\\',"/")});
+    let report = json!({"schema":1,"kind":kind,"source_sha":head,"source":before,"documentation_review_sha256":review,"status":if full{"passed"}else if errors>0{"failed"}else{"blocked"},"qualification":if full{"full-product"}else{"component-only"},"full_product_qualified":full,"release_ready":full,"errors":errors,"skips":skips,"cases":cases,"components":components,"source_changed_during_execution":changed,"engine_venue":if qualifying_venue{json!({"venue":"rule-96-affinity","qualifying_venue":true})}else{json!({"venue":"cloud-container","bound_engine_id":venue[3],"authenticated_provenance":false,"qualifying_venue":false})},"isolation":if kind=="native"{"native"}else{"docker"},"runtime":"rust","images":images,"private_evidence":dir.strip_prefix(root).map_err(|e|e.to_string())?.to_string_lossy().replace('\\',"/")});
     write_json(&dir.join("delivery-pilot.json"), &report)?;
     evidence::register(&dir, "Source-bound delivery pilot")?;
     let destination = root
@@ -280,6 +295,28 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
     evidence::emit_public_summary(&format!("Source-bound {kind} pilot"), &summary)?;
     println!("pilot evidence: {}", destination.display());
     validate(&report, kind, head, &review)
+}
+/// Pilot options: nothing, or exactly `--venue cloud-container --engine-id ID`
+/// for a Docker-backed kind. The lab runner checks the engine against the ID;
+/// the venue is never inferred and never qualifies a product.
+fn venue(kind: &str, options: &[String]) -> Result<Vec<String>> {
+    match options {
+        [] => Ok(Vec::new()),
+        [flag, name, id_flag, id]
+            if kind != "native"
+                && flag == "--venue"
+                && name == "cloud-container"
+                && id_flag == "--engine-id"
+                && !id.is_empty()
+                && id.len() <= 256
+                && id
+                    .bytes()
+                    .all(|b| b.is_ascii_alphanumeric() || b"-:".contains(&b)) =>
+        {
+            Ok(options.to_vec())
+        }
+        _ => Err("pilot options: none, or --venue cloud-container --engine-id ID for a Docker-backed kind".into()),
+    }
 }
 fn lab_profile(kind: &str) -> Option<&'static str> {
     match kind {
@@ -302,6 +339,7 @@ fn public_summary(report: &Value) -> Value {
         "errors",
         "skips",
         "source_changed_during_execution",
+        "engine_venue",
         "isolation",
         "runtime",
         "images",
@@ -349,6 +387,38 @@ mod tests {
             required("browser").unwrap(),
             required("browser-product").unwrap()
         );
+    }
+    #[test]
+    fn cloud_container_venue_is_explicit_and_never_qualifies() {
+        let options = |items: &[&str]| items.iter().map(|s| (*s).to_owned()).collect::<Vec<_>>();
+        assert!(venue("docker", &[]).unwrap().is_empty());
+        let named = options(&["--venue", "cloud-container", "--engine-id", "c7f5a196-202c"]);
+        assert_eq!(venue("docker", &named).unwrap(), named);
+        assert!(venue("native", &named).is_err());
+        for wrong in [
+            options(&["--venue", "cloud-container"]),
+            options(&["--venue", "github-hosted", "--engine-id", "x"]),
+            options(&["--venue", "cloud-container", "--engine-id", ""]),
+            options(&["--engine-id", "x", "--venue", "cloud-container"]),
+            options(&[
+                "--venue",
+                "cloud-container",
+                "--engine-id",
+                "x",
+                "--require-full",
+            ]),
+        ] {
+            assert!(venue("docker", &wrong).is_err(), "{wrong:?}");
+        }
+        let cases: Vec<_> = required("docker")
+            .unwrap()
+            .iter()
+            .map(|id| json!({"id":id,"status":"passed","evidence":"e"}))
+            .collect();
+        let mut report = json!({"schema":1,"kind":"docker","source_sha":"a","documentation_review_sha256":"b","qualification":"full-product","status":"passed","errors":0,"skips":0,"cases":cases,"isolation":"docker","runtime":"rust","images":[format!("sha256:{}", "0".repeat(64))]});
+        assert!(validate(&report, "docker", "a", "b").is_ok());
+        report["engine_venue"] = json!({"venue":"cloud-container","qualifying_venue":false});
+        assert!(validate(&report, "docker", "a", "b").is_err());
     }
     #[test]
     fn component_and_stale_reports_cannot_pass() {
