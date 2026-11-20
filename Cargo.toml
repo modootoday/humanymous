@@ -32,7 +32,7 @@ humanymous-platform = { path = "crates/integrations/humanymous-platform", versio
 humanymous-core = { path = "crates/sdk/humanymous-core", version = "0.1.0" }
 humanymous-runtime = { path = "crates/sdk/humanymous-runtime", version = "0.1.0", default-features = false }
 hmac = "0.12.1"
-sha2 = "0.10.9"
+sha2 = "0.11.1"
 md-5 = "0.11.0"
 hex = "0.4.3"
 serde = { version = "1.0", features = ["derive"] }
