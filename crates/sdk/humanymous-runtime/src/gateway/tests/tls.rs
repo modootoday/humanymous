@@ -12,7 +12,7 @@ use std::{
 
 const BUDGET: Duration = Duration::from_secs(3);
 
-fn configurations() -> (Arc<ServerConfig>, Arc<ClientConfig>) {
+pub(super) fn configurations() -> (Arc<ServerConfig>, Arc<ClientConfig>) {
     let certified = rcgen::generate_simple_self_signed(vec!["owned.test".into()]).unwrap();
     let certificate = certified.cert.der().clone();
     let key = rustls::pki_types::PrivatePkcs8KeyDer::from(certified.signing_key.serialize_der());

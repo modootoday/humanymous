@@ -3,10 +3,13 @@ use crate::authority::configuration::{Peer, Required, Scope};
 use crate::gateway::Rejection;
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
+pub mod admin;
 mod audit;
 mod edge;
+pub mod exposure;
 mod ip_reputation;
 mod operational;
+pub use admin::AdminListener;
 pub use audit::{Audit, MAX_WITNESS_PROOF, SealedKeys, WitnessInput, WitnessInputDurability};
 pub use edge::Edge;
 pub use ip_reputation::{ClientAddressSource, IpReputation};
@@ -16,9 +19,21 @@ pub use operational::OperationalSettings;
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Configuration {
-    /// Explicit loopback ingress address. Port zero is available for pilots.
+    /// Ingress address. Loopback unless `public_listen` is set (then a
+    /// non-loopback address with a TLS listener). Port zero is available for
+    /// pilots.
     pub listen: SocketAddr,
+    /// Explicit public edge opt-in (owner decision B01 #1): a non-loopback
+    /// `listen` served over TLS to non-loopback peers. Absent keeps the
+    /// loopback-only listener. See [`exposure`].
+    #[serde(default)]
+    pub public_listen: bool,
+    /// Concurrent receive bounds of the public listener; ignored on loopback.
+    #[serde(default)]
+    pub public_receive: exposure::PublicReceive,
     /// Fixed owned loopback origin address, never taken from request headers.
+    /// It stays loopback with a public edge: the origin hop is plaintext and
+    /// a non-loopback upstream (Go `-upstream` URL) is plan B14.
     pub origin: SocketAddr,
     /// Installation/tenant/authority/policy binding.
     pub scope: Scope,
@@ -58,6 +73,10 @@ pub struct Configuration {
     /// operational records. Validated and opened before custody.
     #[serde(default)]
     pub logging: Option<crate::gateway::logging::InheritedLogging>,
+    /// Separate loopback admin TCP listener serving `gateway::admin_plane`
+    /// (owner decision B01 #1); absent serves no admin plane.
+    #[serde(default)]
+    pub admin: Option<AdminListener>,
 }
 
 /// Distinct integrity contracts. A browser subset never claims full wire binding.
@@ -144,7 +163,16 @@ impl Configuration {
     /// Fail closed before binding a listener or opening an origin connection.
     pub fn validate(&self) -> Result<(), Rejection> {
         let bad = Rejection::new(503, "configuration");
-        if !self.listen.ip().is_loopback()
+        if !exposure::listen_permitted(self.listen, self.public_listen, self.tls.as_ref())
+            // A PROXY v2 header is trusted from every peer of the listener;
+            // on a public listener any client could forge the client address.
+            || self.public_listen && self.ip_reputation.is_some()
+            || !self.public_receive.valid()
+            || self.admin.as_ref().is_some_and(|admin| {
+                admin.validate().is_err()
+                    || admin.listen.port() != 0
+                        && (admin.listen == self.listen || admin.listen == self.origin)
+            })
             || !self.origin.ip().is_loopback()
             || self.origin.port() == 0
             || self.origin == self.listen
@@ -210,7 +238,9 @@ impl Configuration {
         Ok(())
     }
 
-    /// Listener readiness is distinct from browser/product qualification.
+    /// Listener readiness is distinct from browser/product qualification. A
+    /// public listener always has TLS, so its profile name comes from the
+    /// service's TLS readiness.
     pub fn readiness(&self) -> serde_json::Value {
         let routes: Vec<_> = self
             .routes
@@ -225,6 +255,8 @@ impl Configuration {
             })
             .collect();
         serde_json::json!({"profile":"experimental-loopback-http1", "raw_tls":false,
+            "public_listen":self.public_listen,
+            "admin_plane":self.admin.is_some(),
             "operational":self.operational(),
             "original_h2":false,"raw_header_order":true,"rit":true,
             "client_asserted_report_ingestion":true,"browser_collector":false,

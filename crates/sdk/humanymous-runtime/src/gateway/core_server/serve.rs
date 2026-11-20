@@ -9,14 +9,16 @@
 //! evidence stays with the [`Connection`] (owner decision 2026-11-16: no
 //! address-keyed registry).
 //!
-//! Deliberate differences from Go: only explicit loopback addresses can be
-//! bound (runtime-application SoT; a public Core profile is plan B01, owned by
-//! Root), HTTP/2 is not served (an `h2` ALPN closes the connection), and
+//! Deliberate differences from Go: loopback addresses only by default; a
+//! non-loopback listener and its peers are served only with the explicit
+//! [`Options::public`] opt-in and TLS (owner decision B01 #1, never public
+//! plaintext). HTTP/2 is not served (an `h2` ALPN closes the connection), and
 //! there is no keep-alive.
 use super::http::{Refused, Request, read_request, write_response};
 use super::routes::date_now;
 use super::{Connection, CoreServer};
 use crate::capture::tls::Connection as TlsConnection;
+use crate::gateway::configuration::exposure;
 use crate::gateway::connection_cap::ConnectionCap;
 use crate::network::http::{peek_owned, peek_tcp};
 use rustls::ServerConfig;
@@ -43,6 +45,10 @@ pub struct Options {
     pub budget: Duration,
     /// Concurrent connection cap.
     pub cap: ConnectionCap,
+    /// Explicit public Core opt-in (owner decision B01 #1): with TLS, a
+    /// non-loopback listener may be served to non-loopback peers. Without
+    /// TLS it is refused; there is no public plaintext Core.
+    pub public: bool,
 }
 
 /// Bind an explicit loopback address; any other address is refused.
@@ -63,7 +69,8 @@ pub async fn serve(
     options: Options,
     shutdown: impl Future<Output = ()>,
 ) -> io::Result<()> {
-    if !listener.local_addr()?.ip().is_loopback() {
+    let public = options.public && options.tls.is_some();
+    if !exposure::bound_permitted(listener.local_addr()?, public) {
         return Err(io::Error::new(
             io::ErrorKind::InvalidInput,
             "Core serves loopback only",
@@ -78,13 +85,16 @@ pub async fn serve(
                 Err(_) => return Ok(()),
             },
         };
-        let (stream, _) = tokio::select! {
+        let (stream, peer) = tokio::select! {
             () = &mut shutdown => return Ok(()),
             accepted = listener.accept() => match accepted {
                 Ok(accepted) => accepted,
                 Err(_) => continue,
             },
         };
+        if !exposure::peer_admitted(peer, public) {
+            continue;
+        }
         let Ok(stream) = stream.into_std() else {
             continue;
         };

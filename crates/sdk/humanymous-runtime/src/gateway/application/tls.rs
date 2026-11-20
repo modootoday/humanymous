@@ -1,6 +1,7 @@
 //! Bounded TLS/H1 and R14 H2 consumers; all request authority stays in Application.
 use super::*;
 use crate::gateway::{
+    configuration::exposure,
     service::ShutdownRequest,
     tls::{CapturedH2Request, CapturedRequest, CapturedTls},
 };
@@ -22,8 +23,15 @@ impl Application {
         mut shutdown: watch::Receiver<Option<ShutdownRequest>>,
     ) -> io::Result<()> {
         self.validate_tls_h1(&tls)?;
-        if !listener.local_addr()?.ip().is_loopback() {
+        // Owner decision B01 #1: only an explicitly public configuration (a
+        // validated non-loopback listen with TLS) may serve a non-loopback
+        // listener and its non-loopback peers.
+        let public = self.config.public_listen;
+        if !exposure::bound_permitted(listener.local_addr()?, public) {
             return Err(io::Error::other("loopback only"));
+        }
+        if public {
+            return self.serve_public_tls(listener, tls, shutdown).await;
         }
         let mut admission = Admission::new(self.config.rate_per_second);
         let mut commands = self.take_settings_commands();
@@ -53,7 +61,7 @@ impl Application {
                 admission_rate = self.config.rate_per_second;
                 admission = Admission::new(admission_rate);
             }
-            if !peer.ip().is_loopback() || !admission.admit() {
+            if !exposure::peer_admitted(peer, public) || !admission.admit() {
                 continue;
             }
             let budget = Duration::from_millis(self.config.timeout_ms);
@@ -94,6 +102,129 @@ impl Application {
             if stopping {
                 return Ok(());
             }
+        }
+    }
+
+    /// Public listener (owner decision B01 #1): each admitted peer's TLS
+    /// handshake and complete request read run in their own task, at most
+    /// `public_receive.max_receiving` at once and each within the receive
+    /// deadline, so a silent or slow peer holds one permit, not the listener.
+    /// A peer beyond the bound is closed at once (fail closed, never queued).
+    /// Received requests are decided and answered one at a time by this
+    /// serialized owner, exactly as on the loopback listener; a received
+    /// request keeps its permit until answered, which bounds the queue.
+    /// The public listener has no PROXY v2 edge (refused by configuration),
+    /// so no client address is taken from the connection.
+    async fn serve_public_tls(
+        &mut self,
+        listener: TcpListener,
+        tls: Arc<ServerConfig>,
+        mut shutdown: watch::Receiver<Option<ShutdownRequest>>,
+    ) -> io::Result<()> {
+        if self.edge_policy().is_some() {
+            return Err(io::Error::other("public listener has no PROXY v2 edge"));
+        }
+        let bounds = self.config.public_receive;
+        let permits = Arc::new(tokio::sync::Semaphore::new(bounds.max_receiving));
+        let (received_sender, mut received) =
+            tokio::sync::mpsc::channel::<Received>(bounds.max_receiving);
+        let mut receiving = tokio::task::JoinSet::new();
+        let mut admission = Admission::new(self.config.rate_per_second);
+        let mut commands = self.take_settings_commands();
+        let mut admission_rate = self.config.rate_per_second;
+        let mut sweep = maintenance::ticker(self.sweep_interval);
+        self.client = None;
+        loop {
+            while receiving.try_join_next().is_some() {}
+            if shutdown.borrow().is_some() {
+                return Ok(());
+            }
+            let next = tokio::select! {
+                biased;
+                changed = shutdown.changed() => {
+                    changed.map_err(|_| io::Error::other("shutdown controller closed"))?;
+                    continue;
+                }
+                command = settings::next_command(&mut commands) => {
+                    self.apply_settings_command(command, &shutdown)?;
+                    continue;
+                }
+                _ = sweep.tick() => {
+                    self.maintenance_tick();
+                    continue;
+                }
+                Some(next) = received.recv() => next,
+                accepted = crate::gateway::accept::accept(&listener) => {
+                    let (stream, peer) = accepted?;
+                    if admission_rate != self.config.rate_per_second {
+                        admission_rate = self.config.rate_per_second;
+                        admission = Admission::new(admission_rate);
+                    }
+                    if !exposure::peer_admitted(peer, true) || !admission.admit() {
+                        continue;
+                    }
+                    // Over the bound the stream is dropped, closing it.
+                    let Ok(permit) = permits.clone().try_acquire_owned() else {
+                        continue;
+                    };
+                    let budget = Duration::from_millis(self.config.timeout_ms);
+                    let until = Instant::now() + budget;
+                    let deadline = Instant::now() + bounds.deadline(self.config.timeout_ms);
+                    let (tls, sender) = (tls.clone(), received_sender.clone());
+                    receiving.spawn(async move {
+                        // The capture lifetime stays the connection budget, so
+                        // a queued request keeps its original deadline.
+                        let captured = timeout_at(deadline, async {
+                            CapturedTls::receive(stream.into_std()?, tls, budget).await
+                        })
+                        .await;
+                        if let Ok(Ok(captured)) = captured {
+                            let _ = sender.send(Received { captured, until, _permit: permit }).await;
+                        }
+                    });
+                    continue;
+                }
+            };
+            if self.serve_received(next, &mut shutdown).await? {
+                return Ok(());
+            }
+        }
+    }
+
+    /// Decide and answer one received public request under the shutdown
+    /// drain rules of the loopback listener; true when the service stops.
+    async fn serve_received(
+        &mut self,
+        received: Received,
+        shutdown: &mut watch::Receiver<Option<ShutdownRequest>>,
+    ) -> io::Result<bool> {
+        let Received {
+            captured,
+            until,
+            _permit,
+        } = received;
+        let connection_shutdown = shutdown.clone();
+        let pending = timeout_at(
+            until,
+            self.captured_tls_connection(captured, until, &connection_shutdown),
+        );
+        tokio::pin!(pending);
+        tokio::select! {
+            biased;
+            changed = shutdown.changed() => {
+                changed.map_err(|_| io::Error::other("shutdown controller closed"))?;
+                let request = *shutdown.borrow();
+                if let Some(request) = request {
+                    let _connection_outcome = tokio::time::timeout(request.drain_timeout(), &mut pending).await
+                        .map_err(|_| io::Error::other("TLS shutdown drain incomplete"))?
+                        .map_err(|_| io::Error::other("TLS request deadline incomplete"))?;
+                    Ok(true)
+                } else {
+                    let _ = pending.await;
+                    Ok(false)
+                }
+            }
+            _ = &mut pending => Ok(false),
         }
     }
 
@@ -320,6 +451,14 @@ impl Application {
             .unwrap_or_default();
         response.encode(&headers)
     }
+}
+
+/// One public request whose handshake and read completed in its own task.
+struct Received {
+    captured: CapturedTls,
+    until: Instant,
+    /// Held until the request is answered, bounding queued requests.
+    _permit: tokio::sync::OwnedSemaphorePermit,
 }
 
 struct EncodeArgs<'a> {
