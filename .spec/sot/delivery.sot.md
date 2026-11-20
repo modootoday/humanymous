@@ -417,6 +417,15 @@ still fails at once. Reason: on 2026-11-19 and 2026-11-20 the patch endpoint
 for `aquasecurity/trivy-action` answered 503 once and failed the required
 `validate / policy` on #159 and #156 with unchanged inputs.
 
+When the patch read still fails after its retries, the same identity is proven
+from the unauthenticated git commit object
+(`api.github.com/repos/{owner}/{repo}/git/commits/{sha}`), whose `sha` must
+equal the pin. GitHub renders the patch from the commit diff and answers 503
+when that takes too long; the commit object has no diff. Reason: on
+2026-11-20 the trivy-action patch answered 503 on every retry, failing
+`validate / policy` on the `codex/rust` head and on #167. The fallback costs
+one unauthenticated API request per such action, never per run.
+
 ### Workflow identity convention
 
 Explicit obsolete-cleanup delta: frozen-go-oracle.yml no longer invokes legacy

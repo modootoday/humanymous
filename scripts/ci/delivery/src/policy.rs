@@ -1268,6 +1268,12 @@ fn with_retry<T>(
 /// identity (an IP allow list answers 403), and the unauthenticated API shares
 /// the runner IP's 60 requests per hour. Only on that 403 is the same identity
 /// proven from the public commit patch, whose first line names the full SHA.
+/// GitHub renders the patch from the commit's diff and answers 503 when that
+/// takes too long; aquasecurity/trivy-action@ed142fd0 did so on every retry of
+/// the base and pull request runs of 2026-11-20. Only when the patch read
+/// fails is the identity proven from the unauthenticated git commit object
+/// (`git/commits/{sha}`), which carries no diff, at one unauthenticated
+/// request per such action.
 fn public_commit(owner: &str, repo: &str, sha: &str, token: Option<&str>) -> Result<()> {
     let read = |url: &str, token: Option<&str>| -> std::result::Result<String, ureq::Error> {
         let request = ureq::get(url)
@@ -1286,9 +1292,17 @@ fn public_commit(owner: &str, repo: &str, sha: &str, token: Option<&str>) -> Res
         Ok(body) => verify_public_commit(&body, sha),
         Err(ureq::Error::StatusCode(403)) => {
             let patch = format!("https://github.com/{owner}/{repo}/commit/{sha}.patch");
-            let body =
-                with_retry(|| read(&patch, None)).map_err(|e| format!("api 403, patch: {e}"))?;
-            verify_public_patch(&body, sha)
+            match with_retry(|| read(&patch, None)) {
+                Ok(body) => verify_public_patch(&body, sha),
+                Err(patch_error) => {
+                    let object =
+                        format!("https://api.github.com/repos/{owner}/{repo}/git/commits/{sha}");
+                    let body = with_retry(|| read(&object, None)).map_err(|e| {
+                        format!("api 403, patch: {patch_error}, commit object: {e}")
+                    })?;
+                    verify_public_commit(&body, sha)
+                }
+            }
         }
         Err(error) => Err(error.to_string()),
     }
@@ -1967,6 +1981,15 @@ mod tests {
         release["jobs"]["crates"]["environment"] = json!("release");
         assert!(document("release.yml", release).is_err());
         assert!(catalog(&manifest, &changed).is_err());
+    }
+    #[test]
+    fn git_commit_object_proves_the_same_identity() {
+        let sha = "ed142fd0673e97e23eac54620cfb913e5ce36c25";
+        let object = format!(r#"{{"sha":"{sha}","tree":{{"sha":"0"}},"parents":[]}}"#);
+        assert!(verify_public_commit(&object, sha).is_ok());
+        let other = object.replace(sha, "0000000000000000000000000000000000000000");
+        assert!(verify_public_commit(&other, sha).is_err());
+        assert!(verify_public_commit("not json", sha).is_err());
     }
     #[test]
     fn public_reads_retry_only_transient_faults() {
