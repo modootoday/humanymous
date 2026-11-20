@@ -3,7 +3,7 @@ id: sot:root/runtime-application
 title: Runtime application and session owner
 status: active
 created: 2026-11-07T00:20:25Z
-updated: 2026-11-19T00:00:00Z
+updated: 2026-11-19T18:50:00Z
 verify: [cargo test -p humanymous-runtime --locked, cargo clippy -p humanymous-runtime --all-targets --locked -- -D warnings]
 rel:
   governs: [crates/sdk/humanymous-runtime/**]
@@ -373,7 +373,8 @@ such origin failure, before the client is answered. This is legacy
 | --- | --- |
 | `event_type` | `upstream.error` |
 | `actor.kind` | `system`, no actor pseudonym |
-| `tenant_id`, `host`, `config_version` | configured scope tenant, authority and revision |
+| `tenant_id`, `host` | configured scope tenant and authority |
+| `config_version` | the signed effective-policy version once `Application::install_signed_policy` is called (owner decision #8), else the scope revision |
 | `request_id`, `correlation_id`, `route_class` | copied from the linked ALLOW `runtime.decision` record |
 | `latency_us` | decision start to failure; `0` if the clock is unavailable |
 | `enforcement_mode` / `fail_mode` | `enforce` / `degraded` |
@@ -532,6 +533,73 @@ Deliberate differences: without the object nothing is logged (Go always logged
 at its defaults); `console_stream: "stdout"` is refused
 (`log_console_stream_reserved`) because standard output is the readiness pipe.
 Pinned by `gateway::logging` tests and the `gateway-tls-startup` process test.
+
+### Owner decisions delegated 2026-11-19 (FM11 lane J)
+
+The owner delegated these decisions in issue #75 comment 7017558784. The
+detection freeze is unchanged: none of them changes a score, weight,
+threshold, hard-rule predicate, verdict band or signal ID.
+
+- **#6 kill switch.** The Rust signed one-way node kill (`gateway::control`)
+  stays the only kill. Go's reversible global monitor mode (an approved
+  kill-switch flip that let a scored DENY pass, and its reversal) is not
+  ported. This is an accepted deviation. The admin plane keeps serving the
+  Go kill-switch request and approval, and an approved commit keeps
+  answering 409 because the effect needs the signed node kill.
+- **#8 signed effective-policy version.** Records bind the signed version of
+  legacy configsign.go in place of `scope.revision`.
+  `settings::configsign::SignedPolicy` is the shared live handle: the boot
+  slice, the kill-switch flag and the active overlay slot. Once
+  `Application::install_signed_policy` is called, the `runtime.decision`,
+  `runtime.collect` and `upstream.error` records carry
+  `SignedPolicy::version`, read at record time. The admin `policy` view
+  already reports the same value. This is a component capability: the
+  service binary does not compose it yet (`gateway::service` builds no
+  `AdminPlane` and nothing outside tests calls `install_signed_policy`), so
+  the shipped runtime still records `scope.revision` until lane G composes
+  it (B01). The adapter authority's
+  `adapter.decision` record (no Go counterpart) and the settings journal
+  binding keep the provisioned scope revision. The Prometheus label stays
+  with the owner-pending metrics.
+- **#11 credentials and request integrity.** A verified credential (Web Bot
+  Auth, PAT, WebAuthn) never stands in for request integrity. Credential
+  gates run only after RIT authorization and admission, and they only
+  upgrade over scoring. This is stricter than Go, where a credential could
+  stand in for the cookie session. It is an accepted deviation (see the
+  credential gates paragraph above).
+- **#12 behavioral-model activation.** Promote and rollback are audited
+  operator actions on the admin plane (`gateway::admin_plane::models`,
+  `AdminPlane::with_models`). `GET models` reads the staged, active and
+  previous identities. `POST models/promote` names the staged digest and
+  becomes an `ml.model.promote` pending action that a distinct approver
+  commits. `POST models/rollback` names the active digest and applies at
+  once. Both write `config.changed` before the change. A failed write
+  answers 503 and changes nothing. A digest mismatch answers 409. Every
+  refusal is decided before the record is written; a poisoned or
+  inconsistent lifecycle answers 503 and records nothing. Like #8 this is a
+  component capability: the service binary does not compose the admin plane
+  yet (B01, lane G). Staging
+  (`Models::stage`, the legacy `Stage` verification order) and training
+  never activate a model. Verification and the served lifecycle are
+  replayed against the Go capture
+  `tests/fixtures/gateway/ml-bundle-go-golden.json`. Activation only feeds
+  the existing weight-0 `l4.ml.behavioral` annotation. No threshold provider
+  is installed, so the fire threshold stays 0.5. Risk, verdict, hard rule,
+  contributors and hard-rule matches are unchanged. The explanation can gain
+  an L4 layer row of probability 0, as in Go. See
+  `sot:root/model-training-correction`.
+- Accepted deviations from PRs #150 and #151 (same comment):
+  - `/static/` answers 404 for a cleaned name with a backslash, a colon, NUL
+    or a Windows device name, on every OS.
+  - Pass answers 503 when a duplicate trace meets a scoring failure, and
+    spends neither the trace nor the velocity level.
+  - The settings write plane writes its audit record before the change.
+  - A neutral Web Bot Auth record names a keyid only when the credential
+    kernel reports one.
+  - Credential gates run after the integrity checks (#11).
+
+Decisions #9 and #10 are recorded in `sot:root/pass-protocol` and
+`sot:root/ip-reputation`. Plan: `plan:root/20261119180000`.
 
 ### Review reflected
 

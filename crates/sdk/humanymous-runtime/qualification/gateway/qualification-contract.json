@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 905,
-      "macos": 905,
-      "windows": 873
+      "linux": 917,
+      "macos": 917,
+      "windows": 885
     },
     "common_test_names": [
       "gateway::admin_approval::tests::approval_store_rules",
@@ -42,6 +42,17 @@
       "gateway::admin_plane::chain::tests::r131_nil_witness_public_omits_witnessed_field",
       "gateway::admin_plane::chain::tests::unadmitted_incident_lookups_are_capped",
       "gateway::admin_plane::chain::tests::wargame_r166_meta_audit_on_ban_list_keeps_the_chain_intact",
+      "gateway::admin_plane::models::tests::activation_keeps_every_score_and_verdict",
+      "gateway::admin_plane::models::tests::digest_mismatch_is_a_conflict_at_request_and_at_commit",
+      "gateway::admin_plane::models::tests::failed_audit_answers_503_and_changes_nothing",
+      "gateway::admin_plane::models::tests::golden_covers_the_capture",
+      "gateway::admin_plane::models::tests::golden_lifecycle",
+      "gateway::admin_plane::models::tests::golden_signed_verification",
+      "gateway::admin_plane::models::tests::golden_unsigned_verification",
+      "gateway::admin_plane::models::tests::poisoned_lifecycle_answers_503_and_records_nothing",
+      "gateway::admin_plane::models::tests::promote_needs_a_distinct_approver_and_records_before_serving",
+      "gateway::admin_plane::models::tests::roles_and_unattached_plane",
+      "gateway::admin_plane::models::tests::staging_never_activates_a_model",
       "gateway::admin_plane::ops::tests::can_read_session_matches_go_golden",
       "gateway::admin_plane::ops::tests::configure_ops_matches_go_golden",
       "gateway::admin_plane::ops::tests::explain_fails_closed_on_non_finite_policy",
@@ -781,6 +792,7 @@
       "gateway::tests::settings::operational_candidate_freezes_exact_parent_scope_and_serialized_bytes",
       "gateway::tests::settings::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision",
       "gateway::tests::signed_method_target_body_scope_policy_and_deadline_cannot_change",
+      "gateway::tests::signed_policy::records_carry_the_signed_policy_version_once_installed",
       "gateway::tests::stream::native_stream_delivers_first_event_before_origin_is_allowed_to_finish",
       "gateway::tests::streaming_requires_explicit_native_profile_and_preserves_browser_complete_body_contract",
       "gateway::tests::tls::actual_tls_coalesced_request_is_refused_before_audit_or_origin",

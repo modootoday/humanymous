@@ -3,7 +3,7 @@ id: plan:root/20261117142053
 title: "Full-product capabilities, Go port and .NET launch roadmap"
 status: draft
 created: 2026-11-17T14:20:53Z
-updated: 2026-11-19T11:16:20Z
+updated: 2026-11-19T18:50:00Z
 rel:
   depends_on: [plan:root/20261116060213]
 ---
@@ -180,6 +180,32 @@ CI run waits on the Windows native queue before `validate / quality` and
 Nothing else changes: the detection freeze, the B1 exact-parity terms, the
 no-forgery rule and the owner-reserved items stay as written. Pull requests
 already reviewed under the per-slice mode (#148, #149) merge as they are.
+
+### Owner decisions delegated 2026-11-19
+
+The owner delegated decisions #6, #8, #9, #10, #11 and #12 and accepted the
+review deviations of PRs #150 and #151 in
+[#75 comment 7017558784](https://github.com/modootoday/humanymous/issues/75#issuecomment-7017558784).
+FM11 lane J (`plan:root/20261119180000`) records them:
+
+- #6: keep the Rust signed one-way node kill; Go's reversible global monitor
+  mode is not ported (accepted deviation).
+- #8: records bind the signed effective-policy version in place of
+  `scope.revision` (`Application::install_signed_policy`).
+- #9: `MotorEvidence::GoParity` is never served; it stays `Off`.
+- #10: the proxy-VPN and Tor exit feeds stay shadow-only.
+- #11: a credential never stands in for request integrity; credential gates
+  run after it (stricter than Go).
+- #12: model promote and rollback are audited admin actions
+  (`gateway::admin_plane::models`, Go-captured golden); training and startup
+  never activate a model, and activation changes no weight, threshold or
+  signal ID.
+
+Ledger after lane J (PR #155 review): 287 `ported_unit`, 16 `partial`, 0
+`missing`, 2 `not_applicable`, 9 `oracle_only`. The configsign.go and
+mlcorrect/bundle.go rows stay `partial` until the service binary composes
+`SignedPolicy` and `Models` (B01, lane G); killswitch_test.go stays
+`partial` with the decided monitor-mode effect as its recorded gap.
 
 When every row is `ported_unit` or explicitly oracle-only, remove the Go sources,
 `go.mod` and `go.sum` in a needs-human pull request, keeping the oracle pinned at

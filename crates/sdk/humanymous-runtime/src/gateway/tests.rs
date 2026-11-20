@@ -8,6 +8,7 @@ mod maintenance;
 #[cfg(unix)]
 mod service;
 mod settings;
+mod signed_policy;
 mod stream;
 mod tls;
 use crate::audit::record::Record;

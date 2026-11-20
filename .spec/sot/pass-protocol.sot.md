@@ -3,7 +3,7 @@ id: sot:root/pass-protocol
 title: Source-reconstructed pure Pass alignment protocol
 status: active
 created: 2026-11-07T14:33:00Z
-updated: 2026-11-07T14:33:00Z
+updated: 2026-11-19T18:00:00Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration]
@@ -53,6 +53,15 @@ the three offset solutions. Instance-bound request authentication, real-event
 proof, issuance limits, single-use state and attestation/engine fusion remain
 external required integration responsibilities. Alignment alone is not replay
 protection or proof of humanity. No new detection rule or verdict follows here.
+
+Owner decision #9 (issue #75 comment 7017558784, 2026-11-19): Go's
+`realEventOK` gate and its `applyPassBehavior` tells reject or penalise Pass
+on motor richness and timing. They are ported exactly as
+`MotorEvidence::GoParity` in `gateway::pass_flow` and pinned by tests, but
+they are never served (accessibility hard rule). Every served Pass path uses
+`MotorEvidence::Off`, and `PassMount::new` refuses `GoParity`. The Pass steps
+Go answered from these checks get the accessible answer. This is an accepted
+deviation, not a gap. Plan: `plan:root/20261119180000`.
 
 ## Verification gates
 
