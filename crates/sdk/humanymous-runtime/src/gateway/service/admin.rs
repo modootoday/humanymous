@@ -10,26 +10,36 @@
 //!   gate through `Application::install_bans` under one monotonic epoch;
 //! - the durable audit sink of the serving process (the same sealed log);
 //! - with `admin.settings_dir`, the settings engine over that overlay store,
-//!   swept on Go's one-minute GC cadence.
+//!   swept on Go's one-minute GC cadence;
+//! - the read-only `policy` view and the signed effective-policy version
+//!   (owner decision #8): one boot slice, kill-switch flag and active overlay
+//!   slot shared by the settings engine (which mirrors its active overlay into
+//!   the slot), the `policy` view and the [`SignedPolicy`] the service
+//!   installs with `Application::install_signed_policy`, so served records
+//!   carry the `configVersion` the `policy` view reports.
 //!
-//! The approval and operator-pseudonym key is random per process, as Go's was
-//! without `HMN_TOKEN_KEY`: pending approvals and pseudonyms do not survive a
-//! restart. The settings boot posture has no route presets (the runtime
+//! The approval, operator-pseudonym and configuration-version key is random
+//! per process, as Go's was without `HMN_TOKEN_KEY`: pending approvals and
+//! pseudonyms do not survive a restart, and the same policy gets a new
+//! `cfg-…` version after a restart. The settings boot posture has no route presets (the runtime
 //! serves an exact route inventory, not Go presets), global monitor and kill
 //! switch off; the stored overlay is served and validated, and only its rate
-//! window reaches the shared ban store. Nothing here feeds scoring.
+//! window reaches the shared ban store. The kill-switch flag stays off: an
+//! approved Go kill-switch commit answers 409 (owner decision #6). Nothing
+//! here feeds scoring.
 use crate::authority::decision::DurableAudit;
 use crate::gateway::admin_approval::Role;
-use crate::gateway::admin_plane::{AdminPlane, Clock, settings::Settings};
+use crate::gateway::admin_plane::{AdminPlane, Clock, policy::Policy, settings::Settings};
 use crate::gateway::ban::Store;
 use crate::gateway::configuration::{AdminListener as AdminConfig, Configuration};
 use crate::gateway::service::ShutdownRequest;
-use crate::gateway::settings::overlay::{BootInput, OverlayFileStore};
+use crate::gateway::settings::configsign::{BootPolicy, SignedPolicy};
+use crate::gateway::settings::overlay::{Overlay, OverlayFileStore};
 use std::collections::BTreeMap;
 use std::io;
 use std::net::SocketAddr;
 use std::sync::atomic::AtomicBool;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, RwLock};
 use std::time::{Duration, Instant};
 use tokio::net::TcpListener;
 use tokio::sync::watch;
@@ -46,6 +56,7 @@ pub(in crate::gateway) struct AdminService {
     bans: Arc<Mutex<Store>>,
     settings: bool,
     operators: usize,
+    signed: SignedPolicy,
 }
 
 fn clock(epoch: Instant) -> io::Result<Clock> {
@@ -96,26 +107,44 @@ impl AdminService {
                 .map_err(|_| io::Error::other("admin operator refused"))?;
         }
         let epoch = Instant::now();
+        let boot = BootPolicy {
+            global_monitor: false,
+            routes: BTreeMap::new(),
+            rate_window_nanos: admin
+                .bans
+                .window_sec
+                .checked_mul(1_000_000_000)
+                .and_then(|nanos| i64::try_from(nanos).ok())
+                .ok_or_else(|| io::Error::other("admin rate window"))?,
+            rate_soft: i64::try_from(admin.bans.soft)
+                .map_err(|_| io::Error::other("admin rate cutpoint"))?,
+            rate_hard: i64::try_from(admin.bans.hard)
+                .map_err(|_| io::Error::other("admin rate cutpoint"))?,
+            hmac_key: key.to_vec(),
+        };
+        let kill_switch = Arc::new(AtomicBool::new(false));
+        let active: Arc<RwLock<Option<Overlay>>> = Arc::new(RwLock::new(None));
         if let Some(directory) = &admin.settings_dir {
             let store = OverlayFileStore::open(directory)
                 .map_err(|_| io::Error::other("admin settings store unavailable"))?;
-            let boot = BootInput {
-                global_monitor: false,
-                kill_switch: false,
-                routes: BTreeMap::new(),
-                rate_window_sec: i64::try_from(admin.bans.window_sec)
-                    .map_err(|_| io::Error::other("admin rate window"))?,
-                rate_soft: i64::try_from(admin.bans.soft)
-                    .map_err(|_| io::Error::other("admin rate cutpoint"))?,
-                rate_hard: i64::try_from(admin.bans.hard)
-                    .map_err(|_| io::Error::other("admin rate cutpoint"))?,
-                hmac_key: key.to_vec(),
-            };
-            let settings = Settings::new(boot, Arc::new(AtomicBool::new(false)), store);
+            // The settings engine hashes the same boot posture the signed
+            // version does. A zero bound, which the legacy defaults would
+            // rewrite on one side only, is refused.
+            if boot.rate_window_nanos <= 0 || boot.rate_soft <= 0 || boot.rate_hard <= 0 {
+                return Err(io::Error::other("admin rate bounds"));
+            }
+            let settings = Settings::new(boot.boot_input(false), kill_switch.clone(), store)
+                .with_active_slot(active.clone());
             plane = plane
                 .with_settings(settings, clock(epoch)?)
                 .map_err(|_| io::Error::other("admin settings refused"))?;
         }
+        plane = plane.with_policy(Policy::new(
+            boot.clone(),
+            kill_switch.clone(),
+            active.clone(),
+        ));
+        let signed = SignedPolicy::new(boot, kill_switch, active);
         let listener = TcpListener::bind(admin.listen).await?;
         Ok(Self {
             plane: Arc::new(plane),
@@ -124,6 +153,7 @@ impl AdminService {
             bans,
             settings: admin.settings_dir.is_some(),
             operators: admin.operators.len(),
+            signed,
         })
     }
 
@@ -135,6 +165,12 @@ impl AdminService {
     /// The store and epoch the edge ban gate must share.
     pub(in crate::gateway) fn bans(&self) -> (Arc<Mutex<Store>>, Instant) {
         (self.bans.clone(), self.epoch)
+    }
+
+    /// The signed effective-policy version source the served records bind
+    /// (owner decision #8); it shares the `policy` view's inputs.
+    pub(in crate::gateway) fn signed_policy(&self) -> SignedPolicy {
+        self.signed.clone()
     }
 
     /// Readiness facts; no tokens, ids or keys.

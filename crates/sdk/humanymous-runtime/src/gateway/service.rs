@@ -372,6 +372,9 @@ impl ServiceHost {
             application
                 .install_bans(bans, epoch)
                 .map_err(|_| io::Error::other("admin ban store needs a client address source"))?;
+            // Owner decision #8: records carry the version the admin `policy`
+            // view reports, in place of `scope.revision`.
+            application.install_signed_policy(admin.signed_policy());
         }
         if let Some(tls) = &tls {
             application.validate_tls_h1(tls)?;
@@ -395,6 +398,12 @@ impl ServiceHost {
             intel,
         })
     }
+    /// `config_version` a record written now carries.
+    #[cfg(test)]
+    pub(in crate::gateway) fn config_version(&self) -> String {
+        self.application.config_version()
+    }
+
     /// No raw credentials or audit material are included.
     pub fn readiness(&self) -> &Readiness {
         &self.readiness

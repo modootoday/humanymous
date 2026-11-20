@@ -7,8 +7,8 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 939,
-      "macos": 939,
+      "linux": 941,
+      "macos": 941,
       "windows": 905
     },
     "common_test_names": [
@@ -943,7 +943,9 @@
       "gateway::logging::tests::file_sink_rejects_symlink",
       "gateway::tests::edge::dual_control::ledger::r162_commit_then_edge_denies",
       "gateway::tests::service::exposure::unix_admin_bans_need_an_enforceable_gate",
+      "gateway::tests::service::exposure::unix_admin_listener_binds_the_signed_policy_version",
       "gateway::tests::service::exposure::unix_public_tls_edge_and_loopback_admin_listener",
+      "gateway::tests::service::exposure::unix_without_admin_records_keep_the_scope_revision",
       "gateway::tests::service::hosted_only_witnessed_settings_commit_invalidates_sessions_and_restores",
       "gateway::tests::service::settings_operator::native_operator_commit_is_witnessed_cas_and_invalidates_sessions",
       "gateway::tests::service::unix_closed_shutdown_controller_cannot_report_stopped",

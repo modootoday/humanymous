@@ -556,11 +556,17 @@ threshold, hard-rule predicate, verdict band or signal ID.
   `Application::install_signed_policy` is called, the `runtime.decision`,
   `runtime.collect` and `upstream.error` records carry
   `SignedPolicy::version`, read at record time. The admin `policy` view
-  already reports the same value. This is a component capability: the
-  service binary does not compose it yet (`gateway::service` builds no
-  `AdminPlane` and nothing outside tests calls `install_signed_policy`), so
-  the shipped runtime still records `scope.revision` until lane G composes
-  it (B01). The adapter authority's
+  already reports the same value. The service binary composes it with the
+  admin listener (2026-11-20): `gateway::service::admin` builds one boot
+  slice (no route presets, global monitor off, the admin ban store's rate
+  window and cutpoints, the per-process admin key), kill-switch flag and
+  active overlay slot. The settings engine mirrors its active overlay into
+  that slot, the `policy` view reads it, and the service installs the
+  matching `SignedPolicy`, so served records carry the `configVersion` the
+  `policy` view reports. A zero rate bound is refused at startup. Without
+  the admin listener the shipped runtime still records `scope.revision`.
+  The per-process key gives the same policy a new version after a restart,
+  as Go's did without `HMN_TOKEN_KEY`. The adapter authority's
   `adapter.decision` record (no Go counterpart) and the settings journal
   binding keep the provisioned scope revision. The Prometheus label stays
   with the owner-pending metrics.
@@ -579,9 +585,10 @@ threshold, hard-rule predicate, verdict band or signal ID.
   once. Both write `config.changed` before the change. A failed write
   answers 503 and changes nothing. A digest mismatch answers 409. Every
   refusal is decided before the record is written; a poisoned or
-  inconsistent lifecycle answers 503 and records nothing. Like #8 this is a
-  component capability: the service binary does not compose the admin plane
-  yet (B01, lane G). Staging
+  inconsistent lifecycle answers 503 and records nothing. This is a
+  component capability: the service's admin listener does not attach
+  `Models` yet, because the service has no bundle source or verification
+  key to stage from (Go `-ml-bundle`, `-ml-pubkey`). Staging
   (`Models::stage`, the legacy `Stage` verification order) and training
   never activate a model. Verification and the served lifecycle are
   replayed against the Go capture

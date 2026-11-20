@@ -3266,28 +3266,33 @@
     "crates/sdk/humanymous-runtime/src/gateway/settings/configsign.rs",
     "crates/sdk/humanymous-runtime/src/gateway/settings/overlay/resolve.rs",
     "crates/sdk/humanymous-runtime/src/gateway/application.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/signed_policy.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/signed_policy.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/service/admin.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_matches_go_capture",
     "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_signed_and_stable",
     "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::rate_defaults_follow_legacy_helpers",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/signed_policy.rs::records_carry_the_signed_policy_version_once_installed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/signed_policy.rs::records_carry_the_signed_policy_version_once_installed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/service/exposure.rs::unix_admin_listener_binds_the_signed_policy_version",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/service/exposure.rs::unix_without_admin_records_keep_the_scope_revision"
    ],
    "go_test_map": {
     "TestConfigVersionSignedAndStable": "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_signed_and_stable"
    },
    "gaps": [
-    "signed version not composed by the service binary (B01 / lane G): nothing outside tests calls Application::install_signed_policy, so the shipped runtime still records scope.revision"
+    "the service binary composes the signed version only with the admin listener configured (gateway::service::admin); without one the shipped runtime records scope.revision, while Go always stamped configVersion"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "gateway/settings/configsign.rs ports Server.configVersion (SettingsEffective().ConfigVersion over boot monitor, live kill switch, routes, rlWindow/rlSoft/rlHard defaults, the active overlay and the token HMAC key) on the frozen overlay resolver; Go golden tests/fixtures/gateway/configsign-guard-go-golden.json (Go 1.25.3 at 981d25c, offline) covers 18 server/overlay postures. The unreachable overlay-free fallback (nil server) is not ported. Owner decision #8 (issue #75 comment 7017558784, 2026-11-19): the signed effective-policy version replaces scope.revision, as Go configVersion did. settings::configsign::SignedPolicy is the shared live handle (boot slice, kill-switch flag, active overlay slot); after Application::install_signed_policy the runtime.decision, runtime.collect and upstream.error records carry SignedPolicy::version, read at record time (gateway::tests::signed_policy: cfg- version, changes with the kill switch, decision unchanged). The admin policy view already reports the same value. No production caller installs the handle yet: the service binary does not compose it (B01 / lane G), so the shipped runtime still records scope.revision (gap). The Prometheus config-version label belongs to the owner-pending metrics (rows internal/gate/admin.go and settings_runtime.go); the adapter authority's adapter.decision (no Go counterpart) and the settings journal binding keep the provisioned scope revision (sot:root/runtime-application, owner decisions delegated 2026-11-19). PR #155 review: kept partial until the service binary composes SignedPolicy (owner decision #8).",
+   "notes": "gateway/settings/configsign.rs ports Server.configVersion (SettingsEffective().ConfigVersion over boot monitor, live kill switch, routes, rlWindow/rlSoft/rlHard defaults, the active overlay and the token HMAC key) on the frozen overlay resolver; Go golden tests/fixtures/gateway/configsign-guard-go-golden.json (Go 1.25.3 at 981d25c, offline) covers 18 server/overlay postures. The unreachable overlay-free fallback (nil server) is not ported. Owner decision #8 (issue #75 comment 7017558784, 2026-11-19): the signed effective-policy version replaces scope.revision, as Go configVersion did. settings::configsign::SignedPolicy is the shared live handle (boot slice, kill-switch flag, active overlay slot); after Application::install_signed_policy the runtime.decision, runtime.collect and upstream.error records carry SignedPolicy::version, read at record time (gateway::tests::signed_policy: cfg- version, changes with the kill switch, decision unchanged). The admin policy view already reports the same value. Service composition (2026-11-20): with the admin listener configured, gateway::service::admin builds one boot slice (no route presets, global monitor off, the admin ban store's rate window and cutpoints, the per-process admin key), kill-switch flag and active overlay slot, shared by the settings engine (with_active_slot), the admin policy view (with_policy) and the SignedPolicy the service installs, so served records carry the configVersion the policy view reports (service test unix_admin_listener_binds_the_signed_policy_version). Without the admin listener the shipped runtime still records scope.revision (gap); the per-process key gives the same policy a new version after a restart, as Go's did without HMN_TOKEN_KEY. The Prometheus config-version label belongs to the owner-pending metrics (rows internal/gate/admin.go and settings_runtime.go); the adapter authority's adapter.decision (no Go counterpart) and the settings journal binding keep the provisioned scope revision (sot:root/runtime-application, owner decisions delegated 2026-11-19). PR #155 review: kept partial until the service binary composes SignedPolicy (owner decision #8); still partial while composition depends on the admin listener.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_matches_go_capture": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::config_version_signed_and_stable": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/settings/configsign/tests.rs::rate_defaults_follow_legacy_helpers": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/signed_policy.rs::records_carry_the_signed_policy_version_once_installed": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/signed_policy.rs::records_carry_the_signed_policy_version_once_installed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/service/exposure.rs::unix_admin_listener_binds_the_signed_policy_version": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/service/exposure.rs::unix_without_admin_records_keep_the_scope_revision": "passed"
    }
   },
   {
