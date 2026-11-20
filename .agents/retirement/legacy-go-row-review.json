@@ -1424,7 +1424,7 @@
    ],
    "go_test_map": {},
    "gaps": [
-    "flag/env surface: -addr, -max-conns, the request budget, rit, web_dir, -trusted-proxies, HMN_TOKEN_KEY and the core limits are CoreRole fields of the private role document; ML, Redis, playground and Core operational logging flags are not ported",
+    "flag/env surface: -addr, -max-conns, the request budget, rit, web_dir, -trusted-proxies, HMN_TOKEN_KEY and the core limits are CoreRole fields of the private role document; the -ml-bundle, -ml-pubkey, -ml-bundle-sig and -ml-bundle-digest admission inputs are read by the gateway's admin listener (admin.models, staged only), not by the Core role; the other ML flags, Redis, playground and Core operational logging flags are not ported",
     "divergence: the Pass token key must be at least 32 bytes (Go accepted 16), and Go's wide default listen is replaced by loopback unless public_listen with a provisioned or ACME tls source",
     "HTTP/2 serving and keep-alive: the Core serves one HTTP/1.1 request per connection and its ALPN offer omits h2",
     "GC/timeouts settings beyond the fixed Go TTLs and the per-connection I/O budget"
@@ -3678,7 +3678,7 @@
     "verdict-token gate: the decision is ported (gateway::gates::verdict_token, Go-golden parity) but not composed on the served path: nothing there mints hmn_vt (the gate control plane that issued it is not composed), so the upgrade gate always sees no valid token, as Go did without a token key",
     "attestation floor audit: the record is ported (gateway::gates::attestation_floor_audit, Go-golden parity) but the served path has no route presets, so no route carries the attestation floor and the record is never written there",
     "credential and sweep gate provisioning: Application::install_agent_keys, install_pat_issuers, install_webauthn and install_sweep compose the gates on the served path, but the service binary installs none (no configuration document for key directories, issuers, credentials or the gate.recon_sweep mode; gate default modes open in issue #75)",
-    "ban gate provisioning: Application runs gateway::ban::gate once a store is installed (Application::install_bans), but the service binary (gateway::service) provisions no store because no rate-limit configuration document exists, and the store's monotonic epoch is not shared with an admin plane's serving epoch"
+    "ban gate provisioning: the service binary provisions the ban store only with the admin listener configured (admin.bans; gateway::service::admin builds it, and Application::install_bans shares the store and the admin plane's monotonic epoch with the edge ban gate, refusing startup when an enforcing gate has no trusted client address); without the admin listener no store is installed, while Go always ran a BanStore"
    ],
    "retire_basis": null,
    "confidence": "medium",

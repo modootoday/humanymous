@@ -2,7 +2,7 @@
 layout: doc
 title: Review behavioral model operations
 permalink: /how-to/operate-behavioral-model.html
-reviewed: 2026-11-19
+reviewed: 2026-11-20
 ---
 # Review behavioral model operations
 
@@ -16,6 +16,36 @@ Include sparse interaction, keyboard-only access and assistive technology in
 controls. Keep model errors distinct from verdicts. Migration work does not
 authorize changes to frozen scoring or motor-based recovery requirements.
 See [model limits](../explanation/self-correcting-behavioral-model.md).
+
+## Stage a candidate at startup
+
+The runtime gateway stages a candidate only when its private configuration
+has an admin listener with a `models` object:
+
+```json
+"admin": {
+  "listen": "127.0.0.1:8445",
+  "operators": ["…"],
+  "bans": {"…": "…"},
+  "models": {
+    "bundle": "/srv/humanymous/model/bundle.json",
+    "public_key": "/srv/humanymous/model/bundle-key.pem",
+    "signature": "/srv/humanymous/model/bundle.sig",
+    "digest": "<64 lowercase hex characters>"
+  }
+}
+```
+
+Only `bundle` is required. Set `public_key` (a PKIX Ed25519 PEM key) to
+require a signature over the exact bundle bytes, and `digest` to pin its
+SHA-256. Without either, only the feature schema protects the bundle.
+
+At startup the bundle is verified and staged. It is never served at startup.
+The admin listener's readiness facts show `signed`, `staged` and, when nothing
+was staged, the refusal class. A candidate that fails verification does not
+stop the gateway: nothing is staged and the gateway runs without a model. A
+configured public key that cannot be read or parsed stops startup, so a signed
+setup never runs unsigned.
 
 ## Promote or roll back a staged model
 
@@ -41,5 +71,5 @@ model lifecycle is unavailable, the request fails with 503 and nothing is
 recorded.
 
 A served model only adds an annotation with weight 0. It does not change any
-score, verdict, threshold or signal. The runtime service binary does not yet
-attach this plane, so this is a component capability, not a deployed one.
+score, verdict, threshold or signal. The model routes exist only when the
+`models` object is configured; otherwise they answer 404.
