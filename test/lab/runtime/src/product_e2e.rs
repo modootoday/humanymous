@@ -39,6 +39,7 @@ pub use gate::tls as gate_tls;
 pub use gate::witnessed as gate_witnessed;
 pub use health::run as health;
 pub use origin::run as origin;
+pub use origin::run_public_observe as origin_public_observe;
 pub use tls_driver::run as driver_tls;
 pub use witness::run as witness;
 
@@ -55,8 +56,27 @@ pub const OBSERVE: &str = "127.0.0.1:18081";
 /// the runtime's serving-epoch latch reports serving.
 pub const SERVING_MARKER: &str = "/tmp/product-e2e-gate.serving";
 
+/// Public TLS edge of profile `tls` (owner decision B01 #1): the shipped
+/// gateway binds every interface of the Gate container with `public_listen`.
+pub const PUBLIC_GATE_LISTEN: &str = "0.0.0.0:18443";
+/// The TLS Gate as the driver reaches it from its own network namespace.
+pub const TLS_GATE: &str = "tgate:18443";
+/// Origin observation endpoint of profile `tls`, bound beside the Gate so the
+/// driver can read the origin's records across namespaces. The application
+/// origin itself stays loopback-only ([`ORIGIN`]).
+pub const PUBLIC_OBSERVE_LISTEN: &str = "0.0.0.0:18081";
+/// That observation endpoint as the driver reaches it.
+pub const TLS_OBSERVE: &str = "tgate:18081";
+
+/// One socket address: a literal as given, a compose service name through
+/// the container resolver (first address).
 pub fn address(text: &str) -> SocketAddr {
-    text.parse().expect("fixed loopback address")
+    text.parse().unwrap_or_else(|_| {
+        std::net::ToSocketAddrs::to_socket_addrs(text)
+            .ok()
+            .and_then(|mut all| all.next())
+            .unwrap_or_else(|| panic!("{text} does not resolve"))
+    })
 }
 
 /// The one private configuration document. The driver uses the same scope and
@@ -89,6 +109,8 @@ pub fn tls_configuration(
     key: &str,
 ) -> Value {
     let mut config = configuration(audit, keys, passphrase);
+    config["listen"] = json!(PUBLIC_GATE_LISTEN);
+    config["public_listen"] = json!(true);
     config["tls"] = json!({"certificate":chain,"key":key});
     if let Some(routes) = config["routes"].as_array_mut() {
         routes.push(json!({"method":"POST","path":H2_ROUTE,"required":

@@ -92,9 +92,20 @@ fn application(stream: &mut TcpStream, records: &Records) {
 
 /// Serve the application origin and a separate lab observation endpoint.
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
+    serve(super::OBSERVE)
+}
+
+/// Profile `tls`: the same origin, with only the read-only observation
+/// endpoint bound beside the public Gate so a driver in its own namespace can
+/// read the records. The application origin stays loopback-only.
+pub fn run_public_observe() -> Result<(), Box<dyn std::error::Error>> {
+    serve(super::PUBLIC_OBSERVE_LISTEN)
+}
+
+fn serve(observe: &str) -> Result<(), Box<dyn std::error::Error>> {
     let records: Records = Arc::new(Mutex::new(Vec::new()));
     let application_listener = TcpListener::bind(super::ORIGIN)?;
-    let observe_listener = TcpListener::bind(super::OBSERVE)?;
+    let observe_listener = TcpListener::bind(observe)?;
     let observed = records.clone();
     let observer = std::thread::spawn(move || {
         for stream in observe_listener.incoming() {

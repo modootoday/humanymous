@@ -7,31 +7,34 @@
 //! entry is unsupported. Every other required case stays `not_evaluated`, with
 //! the reason a related component measurement here does not satisfy it.
 //!
-//! `gate` and `raw-tls-h2` are measured in the `tls` profile at a narrower
-//! scope (shared loopback namespace) and reported as `scoped_cases`. A scoped
-//! failure is a failure of the required case too, so it enters `assess` as
-//! failed; a scoped success never passes it, because the required case needs
-//! an original client in its own namespace (owner item B01 #1).
+//! `gate` and `raw-tls-h2` are measured in the `tls` profile and reported as
+//! `tls_cases`. The Gate serves its public TLS edge listener (owner decision
+//! B01 #1) and the driver runs in its own network namespace, so a measurement
+//! whose topology proves that is original-client cross-namespace evidence and
+//! enters `assess` as passed or failed. A passing measurement without that
+//! proof stays `not_evaluated`; a failing one always fails the required case.
 use super::{Lab, Result};
 use crate::orchestration::qualification;
 use serde_json::{Value, json};
 
 pub(super) const WARGAME: &str = "humanymous-lab-product-e2e-wargame";
 
-/// Why a shared-namespace TLS measurement cannot satisfy `gate` or `raw-tls-h2`.
-const ORIGINAL_CLIENT_BLOCKER: &str = "the required case needs original-client TLS/H2 from a client in its own network namespace reaching the Gate's public edge listener; Configuration::validate requires a loopback listen address and the TLS accept loop drops non-loopback peers (crates/sdk/humanymous-runtime/src/gateway/configuration.rs, gateway/application/tls.rs), so the only client that can reach it shares the Gate namespace. Owner item B01 #1 (public edge listener) blocks it";
+/// Why a passing TLS measurement without cross-namespace proof cannot satisfy
+/// `gate` or `raw-tls-h2`.
+const ORIGINAL_CLIENT_REQUIRED: &str = "the required case needs original-client TLS/H2 from a client in its own network namespace reaching the Gate's public edge listener; this receipt's topology does not prove that (assertions driver_in_own_network_namespace, driver_only_on_internal_tls_network and public_edge_listener)";
+
+/// Topology and readiness assertions that make the TLS driver an original
+/// client: its own namespace, the internal network only, and the Gate's public
+/// edge listener.
+const CROSS_NAMESPACE: &[&str] = &[
+    "driver_in_own_network_namespace",
+    "driver_only_on_internal_tls_network",
+    "public_edge_listener",
+];
 
 /// Required IDs this topology measures something near, and why that
 /// measurement is not the required case. Unlisted IDs have no producer here.
 const NOT_MAPPED: &[(&str, &str)] = &[
-    (
-        "gate",
-        "measured only at shared-loopback-namespace scope (scoped_cases: the shipped binary's TLS listener in profile tls); the required case needs original-client TLS/H2 from its own namespace, blocked by owner item B01 #1 (public edge listener)",
-    ),
-    (
-        "raw-tls-h2",
-        "measured only at shared-loopback-namespace scope (scoped_cases: real TLS/H2 sessions, raw ClientHello parrots and malformed H2 frames from the Gate's own namespace); original-client raw capture across namespaces is blocked by owner item B01 #1 (public edge listener)",
-    ),
     (
         "collector-parity",
         "the real WASM collector browser test is a component; no parity oracle or denominator is defined for it",
@@ -177,7 +180,7 @@ fn attack_catalog_case(wargame: &Value) -> Value {
             "rule":"not passed while any catalog entry is unsupported, skipped or in error"}})
 }
 
-/// TLS driver cases each scoped component judgement requires, all passing.
+/// TLS driver cases each required-case judgement requires, all passing.
 const SCOPED: &[(&str, &[&str])] = &[
     (
         "gate",
@@ -218,17 +221,24 @@ const SCOPED: &[(&str, &[&str])] = &[
     ),
 ];
 
-/// Shared-loopback-namespace judgement of `gate` and `raw-tls-h2` from the
-/// `tls` profile. `measured` is passed only with every listed driver case,
-/// the TLS topology/readiness assertions and the driver run passing; the
-/// required status is then still `not_evaluated`, never `passed`.
-fn scoped_cases(tls: &Value) -> Vec<Value> {
+/// Judgement of `gate` and `raw-tls-h2` from the `tls` profile. `measured`
+/// is passed only with every listed driver case, the TLS topology/readiness
+/// assertions and the driver run passing. The required status is then passed
+/// only when the topology proves an original client across namespaces
+/// ([`CROSS_NAMESPACE`]); otherwise it stays `not_evaluated`. A failed
+/// measurement fails the required case.
+fn tls_cases(tls: &Value) -> Vec<Value> {
     let cases = tls["driver"]["cases"].as_array();
     let topology: Vec<&Value> = tls["topology"]["assertions"]
         .as_array()
         .map(|rows| rows.iter().collect())
         .unwrap_or_default();
     let topology_pass = !topology.is_empty() && topology.iter().all(|row| row["pass"] == true);
+    let cross_namespace = CROSS_NAMESPACE.iter().all(|id| {
+        topology
+            .iter()
+            .any(|row| row["id"] == *id && row["pass"] == true)
+    });
     let driver_ran = tls["driver_exit_success"] == true && tls["driver"]["driver_error"].is_null();
     SCOPED
         .iter()
@@ -247,11 +257,26 @@ fn scoped_cases(tls: &Value) -> Vec<Value> {
             } else {
                 "failed"
             };
-            json!({"id":id,"scope":"shared loopback namespace","measured":measured,
-                "required_case_status":if measured == "passed" { "not_evaluated" } else { "failed" },
-                "blocked_by":"owner item B01 #1 (public edge listener)","reason":ORIGINAL_CLIENT_BLOCKER,
+            let status = match (measured, cross_namespace) {
+                ("passed", true) => "passed",
+                ("passed", false) => "not_evaluated",
+                _ => "failed",
+            };
+            let scope = if cross_namespace {
+                "cross-namespace original client"
+            } else {
+                "not proven cross-namespace"
+            };
+            let mut row = json!({"id":id,"scope":scope,"measured":measured,
+                "required_case_status":status,
                 "evidence":{"source":"product-e2e profile tls (receipt.tls)","driver_cases":rows,
-                    "topology_and_readiness_assertions_pass":topology_pass,"driver_ran":driver_ran}})
+                    "topology_and_readiness_assertions_pass":topology_pass,
+                    "cross_namespace_assertions":CROSS_NAMESPACE,"cross_namespace":cross_namespace,
+                    "driver_ran":driver_ran}});
+            if status == "not_evaluated" {
+                row["reason"] = json!(ORIGINAL_CLIENT_REQUIRED);
+            }
+            row
         })
         .collect()
 }
@@ -263,17 +288,20 @@ pub(super) fn ledger(receipt: &Value, cleanup_verified: bool) -> Value {
     if receipt["attack_catalog"].is_object() {
         cases.push(attack_catalog_case(&receipt["attack_catalog"]));
     }
-    let scoped = if receipt["tls"].is_object() {
-        scoped_cases(&receipt["tls"])
+    let tls = if receipt["tls"].is_object() {
+        tls_cases(&receipt["tls"])
     } else {
         Vec::new()
     };
-    // A failure at the narrower scope fails the required case; a scoped
-    // success leaves it unevaluated.
-    for case in scoped.iter().filter(|case| case["measured"] != "passed") {
-        cases.push(json!({"id":case["id"],"status":"failed",
-            "detail":{"source":"product-e2e profile tls","scope":"shared loopback namespace",
-                "rule":"a failed shared-namespace measurement fails the required case"}}));
+    // A failed measurement fails the required case; a passing one passes it
+    // only with cross-namespace proof, else it stays unevaluated.
+    for case in tls
+        .iter()
+        .filter(|case| case["required_case_status"] != "not_evaluated")
+    {
+        cases.push(json!({"id":case["id"],"status":case["required_case_status"],
+            "detail":{"source":"product-e2e profile tls","scope":case["scope"],
+                "rule":"every listed TLS/H2 driver case, the topology and readiness assertions and the driver run pass, with the driver an original client in its own namespace"}}));
     }
     let mut assessed = qualification::assess(&cases, cleanup_verified);
     // This profile runs only on the explicit cloud-container venue.
@@ -288,7 +316,7 @@ pub(super) fn ledger(receipt: &Value, cleanup_verified: bool) -> Value {
         .map(|(id, reason)| json!({"id":id,"reason":reason}))
         .collect();
     fields["mapped_cases"] = json!(cases);
-    fields["scoped_cases"] = json!(scoped);
+    fields["tls_cases"] = json!(tls);
     fields["cleanup_verified"] = json!(cleanup_verified);
     fields
 }
@@ -443,93 +471,112 @@ mod tests {
             .flat_map(|(_, ids)| ids.iter())
             .map(|id| json!({"id":id,"pass":pass}))
             .collect();
+        let mut assertions = vec![json!({"id":"tls_listener_operator_certificate","pass":true})];
+        assertions.extend(
+            CROSS_NAMESPACE
+                .iter()
+                .map(|id| json!({"id":id,"pass":true})),
+        );
         json!({"driver_exit_success":true,"driver":{"cases":cases,"driver_error":null},
-            "topology":{"assertions":[{"id":"tls_listener_operator_certificate","pass":true}]}})
+            "topology":{"assertions":assertions}})
+    }
+
+    fn status(ledger: &Value, id: &str) -> Value {
+        ledger["required_cases"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|row| row["id"] == id)
+            .unwrap()["status"]
+            .clone()
     }
 
     #[test]
-    fn shared_namespace_tls_success_never_passes_the_required_cases() {
+    fn cross_namespace_tls_success_passes_the_required_cases() {
         let ledger = ledger(&json!({"tls":tls(true)}), true);
-        let scoped = ledger["scoped_cases"].as_array().unwrap();
-        assert_eq!(scoped.len(), 2);
-        for case in scoped {
+        let measured = ledger["tls_cases"].as_array().unwrap();
+        assert_eq!(measured.len(), 2);
+        for case in measured {
             assert_eq!(case["measured"], "passed");
-            assert_eq!(case["required_case_status"], "not_evaluated");
-            assert_eq!(case["scope"], "shared loopback namespace");
+            assert_eq!(case["required_case_status"], "passed");
+            assert_eq!(case["scope"], "cross-namespace original client");
         }
-        for row in ledger["required_cases"].as_array().unwrap() {
-            if row["id"] == "gate" || row["id"] == "raw-tls-h2" {
-                assert_eq!(row["status"], "not_evaluated");
-            }
-        }
-        assert_eq!(ledger["mapped_cases"], json!([]));
+        assert_eq!(status(&ledger, "gate"), "passed");
+        assert_eq!(status(&ledger, "raw-tls-h2"), "passed");
+        assert_eq!(ledger["mapped_cases"].as_array().unwrap().len(), 2);
+        // The cloud-container venue never qualifies the full product.
         assert_eq!(ledger["full_product_qualified"], false);
-        assert!(
-            ledger["required_unavailable"]
-                .as_array()
-                .unwrap()
-                .contains(&json!("full Gate TLS/H2/capture"))
-        );
-        assert!(
-            ledger["not_mapped"]
-                .as_array()
-                .unwrap()
-                .iter()
-                .any(|row| row["id"] == "raw-tls-h2")
-        );
-    }
-
-    #[test]
-    fn a_scoped_tls_failure_fails_the_required_case() {
-        let mut one = tls(true);
-        one["driver"]["cases"][0]["pass"] = json!(false);
-        let ledger = ledger(&json!({"tls":one}), true);
-        let status = |id: &str| {
-            ledger["required_cases"]
-                .as_array()
-                .unwrap()
-                .iter()
-                .find(|row| row["id"] == id)
-                .unwrap()["status"]
-                .clone()
-        };
-        assert_eq!(status("gate"), "failed");
-        assert_eq!(status("raw-tls-h2"), "not_evaluated");
-        assert_eq!(ledger["errors"], 1);
         assert!(
             !ledger["not_mapped"]
                 .as_array()
                 .unwrap()
                 .iter()
-                .any(|row| row["id"] == "gate")
+                .any(|row| row["id"] == "gate" || row["id"] == "raw-tls-h2")
         );
+    }
+
+    #[test]
+    fn tls_success_without_cross_namespace_proof_stays_unevaluated() {
+        for missing in CROSS_NAMESPACE {
+            let mut shared = tls(true);
+            let rows = shared["topology"]["assertions"].as_array_mut().unwrap();
+            rows.retain(|row| row["id"] != *missing);
+            let ledger = ledger(&json!({"tls":shared}), true);
+            for case in ledger["tls_cases"].as_array().unwrap() {
+                assert_eq!(case["measured"], "passed", "{missing}");
+                assert_eq!(case["required_case_status"], "not_evaluated", "{missing}");
+                assert_eq!(case["reason"], ORIGINAL_CLIENT_REQUIRED);
+            }
+            assert_eq!(status(&ledger, "gate"), "not_evaluated");
+            assert_eq!(ledger["mapped_cases"], json!([]));
+        }
+    }
+
+    #[test]
+    fn a_tls_failure_fails_the_required_case() {
+        let mut one = tls(true);
+        one["driver"]["cases"][0]["pass"] = json!(false);
+        let ledger = ledger(&json!({"tls":one}), true);
+        assert_eq!(status(&ledger, "gate"), "failed");
+        assert_eq!(status(&ledger, "raw-tls-h2"), "passed");
+        assert_eq!(ledger["errors"], 1);
+        // A failure fails even without cross-namespace proof.
+        let mut shared = tls(true);
+        shared["driver"]["cases"][0]["pass"] = json!(false);
+        shared["topology"]["assertions"] =
+            json!([{"id":"tls_listener_operator_certificate","pass":true}]);
+        assert_eq!(status(&ledger_of(&shared), "gate"), "failed");
         // A missing driver case, a failed topology assertion or an aborted
-        // driver run each fail the scoped measurement.
+        // driver run each fail the measurement.
         let mut missing = tls(true);
         missing["driver"]["cases"] = json!([]);
         assert!(
-            scoped_cases(&missing)
+            tls_cases(&missing)
                 .iter()
-                .all(|case| case["measured"] == "failed")
+                .all(|case| case["required_case_status"] == "failed")
         );
         let mut topology = tls(true);
         topology["topology"]["assertions"][0]["pass"] = json!(false);
         assert!(
-            scoped_cases(&topology)
+            tls_cases(&topology)
                 .iter()
-                .all(|case| case["measured"] == "failed")
+                .all(|case| case["required_case_status"] == "failed")
         );
         let mut aborted = tls(true);
         aborted["driver"]["driver_error"] = json!("boom");
         assert!(
-            scoped_cases(&aborted)
+            tls_cases(&aborted)
                 .iter()
-                .all(|case| case["measured"] == "failed")
+                .all(|case| case["required_case_status"] == "failed")
         );
         assert!(
-            scoped_cases(&json!({"pass":false,"error":"x"}))
+            tls_cases(&json!({"pass":false,"error":"x"}))
                 .iter()
-                .all(|c| c["measured"] == "failed")
+                .all(|c| c["required_case_status"] == "failed")
         );
+    }
+
+    fn ledger_of(tls: &Value) -> Value {
+        ledger(&json!({"tls":tls}), true)
     }
 }

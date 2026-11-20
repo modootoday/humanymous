@@ -3,10 +3,12 @@
 //! (HTTP/1.1 and H2), raw owned ClientHello parrots and malformed H2 frames.
 //!
 //! The runner relays only the public lab root from the Gate's readiness line
-//! to the driver, then judges the observed readiness and topology. Origin and
-//! driver share the Gate's loopback namespace (the gateway accepts loopback
-//! peers only), so every result is scoped to that namespace.
-use super::{COMPOSE, Lab, PROJECT, Result, last_json_line, topology_assertions};
+//! to the driver, then judges the observed readiness and topology. The Gate
+//! serves its public TLS edge listener (`public_listen`, owner decision
+//! B01 #1); the origin shares the Gate's namespace and stays loopback, and the
+//! driver runs in its own namespace on the internal `tls` network, so its
+//! results are original-client cross-namespace evidence.
+use super::{COMPOSE, Lab, PROJECT, Result, empty, last_json_line, topology_assertions};
 use serde_json::{Value, json};
 
 const TGATE: &str = "humanymous-lab-product-e2e-tgate-1";
@@ -31,17 +33,60 @@ fn readiness_assertions(ready: &Value, driver: &Value) -> Vec<(&'static str, boo
         ),
         (
             "tls_readiness_profile",
-            profile["profile"] == "experimental-loopback-tls-h1" && profile["raw_tls"] == true,
+            profile["profile"] == "experimental-public-tls"
+                && profile["public_listen"] == true
+                && profile["raw_tls"] == true,
         ),
         (
-            "listener_loopback_in_gate_namespace",
-            readiness["listen"] == "127.0.0.1:18443",
+            "public_edge_listener",
+            readiness["listen"] == "0.0.0.0:18443" && profile["public_listen"] == true,
         ),
         (
             "per_run_lab_root_relayed_and_trusted",
             ready["lab_ca"]["schema"] == LAB_CA_SCHEMA
                 && root.as_str().is_some_and(|sha| sha.len() == 64)
                 && driver["trusted_lab_root_sha256"] == *root,
+        ),
+    ]
+}
+
+/// The driver is an original client: its own network namespace (never the
+/// Gate's), attached only to the internal `tls` network, running the built
+/// image in the hardened sandbox with no published ports.
+fn driver_namespace_assertions(
+    network: &Value,
+    gate: &Value,
+    driver: &Value,
+    image: &str,
+) -> Vec<(&'static str, bool)> {
+    let name = network["Name"].as_str().unwrap_or("");
+    let shared = gate["id"]
+        .as_str()
+        .map(|id| format!("container:{id}"))
+        .unwrap_or_default();
+    vec![
+        (
+            "driver_in_own_network_namespace",
+            !name.is_empty()
+                && driver["network_mode"] != shared.as_str()
+                && driver["network_mode"].as_str() != Some("host")
+                && driver["network_mode"].as_str() != Some("none"),
+        ),
+        (
+            "driver_only_on_internal_tls_network",
+            network["Internal"] == true
+                && driver["networks"]
+                    .as_array()
+                    .is_some_and(|all| all.len() == 1 && all[0].as_str() == Some(name)),
+        ),
+        (
+            "driver_runs_built_image_hardened",
+            driver["image"] == image
+                && driver["read_only_rootfs"] == true
+                && driver["user"] == "65532:65532"
+                && driver["init"] == true
+                && empty(&driver["port_bindings"])
+                && empty(&driver["published_ports"]),
         ),
     ]
 }
@@ -119,7 +164,13 @@ pub(super) fn run(lab: &mut Lab, image: &str, report_line: &str) -> Result<Value
         "{{json .}}",
         &format!("{PROJECT}_tls"),
     ])?;
-    let mut assertions = topology_assertions(&network, &containers, image);
+    let mut assertions = topology_assertions(&network, &containers[..2], image);
+    assertions.extend(driver_namespace_assertions(
+        &network,
+        &containers[0],
+        &containers[2],
+        image,
+    ));
     assertions.extend(readiness_assertions(&ready, &driver));
     assertions.push((
         "tls_gate_healthy_after_driver",
@@ -131,7 +182,7 @@ pub(super) fn run(lab: &mut Lab, image: &str, report_line: &str) -> Result<Value
     readiness["lab_ca_sha256"] = ready["lab_ca"]["sha256"].clone();
     readiness["lab_ca_issuance"] = ready["lab_ca"]["issuance"].clone();
     Ok(
-        json!({"scope":"shared loopback namespace: tgate, torigin and tdriver share one network namespace on an internal network",
+        json!({"scope":"cross-namespace original client: tdriver runs in its own network namespace on the internal tls network and reaches tgate's public TLS edge listener; torigin shares tgate's namespace",
         "gate":"humanymous-runtime (shipped binary) with a tls section: ServiceHost::bind_tls, no witness input",
         "readiness":readiness,
         "topology":{"network":{"name":network["Name"],"internal":network["Internal"],"driver":network["Driver"]},
@@ -148,8 +199,8 @@ mod tests {
 
     fn ready() -> Value {
         json!({"schema":"humanymous.product-e2e-gate-ready/1","binary":"/usr/local/bin/humanymous-runtime",
-            "readiness":{"listen":"127.0.0.1:18443","tls_mode":"operator_certificate",
-                "profile":{"profile":"experimental-loopback-tls-h1","raw_tls":true}},
+            "readiness":{"listen":"0.0.0.0:18443","tls_mode":"operator_certificate",
+                "profile":{"profile":"experimental-public-tls","public_listen":true,"raw_tls":true}},
             "lab_ca":{"schema":LAB_CA_SCHEMA,"certificate_pem":"PEM","sha256":"a".repeat(64),"issuance":"x"}})
     }
 
@@ -178,6 +229,25 @@ mod tests {
         let mut library = ready();
         library["binary"] = json!("library");
         assert!(!readiness_assertions(&library, &driver)[0].1);
+    }
+
+    #[test]
+    fn a_loopback_or_unflagged_listener_is_not_the_public_edge() {
+        let driver = json!({"trusted_lab_root_sha256":"a".repeat(64)});
+        let edge = |ready: &Value| {
+            readiness_assertions(ready, &driver)
+                .into_iter()
+                .find(|(id, _)| *id == "public_edge_listener")
+                .unwrap()
+                .1
+        };
+        assert!(edge(&ready()));
+        let mut loopback = ready();
+        loopback["readiness"]["listen"] = json!("127.0.0.1:18443");
+        assert!(!edge(&loopback));
+        let mut unflagged = ready();
+        unflagged["readiness"]["profile"]["public_listen"] = json!(false);
+        assert!(!edge(&unflagged));
     }
 
     #[test]

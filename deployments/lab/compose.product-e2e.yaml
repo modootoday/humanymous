@@ -183,14 +183,16 @@ services:
     init: true
     networks: [dnscanary]
     profiles: [browser]
-  # Profile "tls": the shipped gateway binary with its TLS listener
-  # (ServiceHost::bind_tls, ALPN h2 then http/1.1). tgate mints a per-run lab
-  # CA in its own container, writes the leaf pair to its private tmpfs and
-  # names it in the gateway's `tls` configuration; only the public root leaves,
-  # in the readiness line, and the runner relays it to tdriver's stdin. The
-  # gateway still accepts loopback peers only, so torigin and tdriver share
-  # tgate's namespace: TLS/H2 evidence here is shared-loopback-namespace
-  # scoped, never original-client cross-namespace evidence.
+  # Profile "tls": the shipped gateway binary with its public TLS edge
+  # listener (`public_listen`, owner decision B01 #1; ServiceHost::bind_tls,
+  # ALPN h2 then http/1.1). tgate mints a per-run lab CA in its own container,
+  # writes the leaf pair to its private tmpfs and names it in the gateway's
+  # `tls` configuration; only the public root leaves, in the readiness line,
+  # and the runner relays it to tdriver's stdin. torigin shares tgate's
+  # namespace (the origin must stay loopback); only its read-only observation
+  # endpoint is bound beside the Gate. tdriver runs in its own namespace on the
+  # internal tls network and reaches tgate by address: original-client
+  # cross-namespace TLS/H2 evidence.
   tgate:
     extends: {file: topology/sandbox.yaml, service: sandbox}
     image: humanymous/product-e2e:local
@@ -208,7 +210,7 @@ services:
   torigin:
     extends: {file: topology/sandbox.yaml, service: sandbox}
     image: humanymous/product-e2e:local
-    command: ["--product-origin"]
+    command: ["--product-origin-public-observe"]
     init: true
     network_mode: "service:tgate"
     depends_on:
@@ -222,7 +224,7 @@ services:
     image: humanymous/product-e2e:local
     command: ["--product-driver-tls"]
     init: true
-    network_mode: "service:tgate"
+    networks: [tls]
     stdin_open: true
     depends_on:
       tgate: {condition: service_healthy}

@@ -10,10 +10,11 @@
 //! attack catalog in a network-none wargame container and emits the
 //! required-case ledger through the shared `qualification::assess` derivation,
 //! mapping only the required cases this run actually evaluates.
-//! Increment 6 adds profile `tls`: the shipped gateway binary serving its TLS
-//! listener with a per-run lab CA, driven over real TLS/H2, raw ClientHello
-//! parrots and malformed H2 frames from its own loopback namespace, reported as
-//! shared-namespace scoped `gate` and `raw-tls-h2` evidence.
+//! Increment 6 adds profile `tls`: the shipped gateway binary serving its
+//! public TLS edge listener with a per-run lab CA, driven over real TLS/H2, raw
+//! ClientHello parrots and malformed H2 frames by a driver in its own network
+//! namespace, reported as original-client cross-namespace `gate` and
+//! `raw-tls-h2` evidence.
 //!
 //! Venue: an explicitly named cloud container whose own Linux engine listens on
 //! the local Unix socket. It never claims Windows Docker Desktop affinity or a
@@ -295,6 +296,8 @@ impl Lab {
         let value = self.json(&["inspect", "--format", "{{json .}}", name])?;
         Ok(json!({"name":name,"id":value["Id"],"image":value["Image"],
             "network_mode":value["HostConfig"]["NetworkMode"],
+            "networks":value["NetworkSettings"]["Networks"].as_object()
+                .map(|all| all.keys().cloned().collect::<Vec<_>>()).unwrap_or_default(),
             "port_bindings":value["HostConfig"]["PortBindings"],
             "published_ports":value["NetworkSettings"]["Ports"],
             "read_only_rootfs":value["HostConfig"]["ReadonlyRootfs"],
@@ -427,7 +430,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     let engine = lab.engine()?;
     let mut receipt = json!({"schema":"humanymous.product-e2e-receipt/1","roadmap_unit":35,"increment":6,
         "status":"started","pass_product_clean_room":false,"product_complete":false,
-        "label":"partial topology: gate + origin + attacker, a witness-required gate with an independent witness container, a real browser running the Rust WASM collector against a witnessed gate with an owned DNS canary, the shipped-binary gate serving its TLS listener (h2 and http/1.1) with a per-run lab CA in its own shared-namespace topology, and the owned attack catalog in a network-none wargame; the other topologies replay the real collector report; not product e2e completion",
+        "label":"partial topology: gate + origin + attacker, a witness-required gate with an independent witness container, a real browser running the Rust WASM collector against a witnessed gate with an owned DNS canary, the shipped-binary gate serving its public TLS edge listener (h2 and http/1.1) with a per-run lab CA to a driver in its own network namespace, and the owned attack catalog in a network-none wargame; the other topologies replay the real collector report; not product e2e completion",
         "source":source,"venue":engine,
         "components":{
           "gate":{"present":true,"real":true,"binary":"humanymous-runtime (crates/sdk/humanymous-runtime, src/gateway/main.rs)",
@@ -435,10 +438,11 @@ pub fn run(args: &[String]) -> Result<i32> {
                   "embedded_durable_audit":"runtime-owned sealed WAL with synthetic owned custody on tmpfs; this topology configures no audit.witness_input, so the shipped binary starts writer-only"},
           "witnessed_gate":{"present":true,"real":"runtime library, lab composition root","composition":"humanymous-runtime-pilot --product-gate-witnessed: the humanymous-runtime library ServiceHost::bind_with_witness with require_external_witness=true",
                   "why_not_the_shipped_binary":"the shipped binary accepts a witness: crates/sdk/humanymous-runtime/src/gateway/main.rs pins inherited witness pipes (startup::inherited_witness, configured by audit.witness_input) before custody and selects ServiceHost::bind_tls, bind_with_witness or bind; this topology does not yet hand it inherited witness descriptors, so the witnessed gate is still the library composed by the lab supervisor"},
-          "tls_gate":{"present":true,"real":true,"scope":"profile tls; shared loopback namespace",
+          "tls_gate":{"present":true,"real":true,"scope":"profile tls; public TLS edge listener (public_listen), driver in its own network namespace on the internal tls network",
                   "binary":"humanymous-runtime (crates/sdk/humanymous-runtime, src/gateway/main.rs) with a tls section: ServiceHost::bind_tls, ALPN h2 then http/1.1, no witness input",
                   "certificate":"operator_certificate source: a leaf for owned.test issued by a per-run lab CA minted in the tgate container (humanymous-runtime-pilot --product-gate-tls); the CA signing key is dropped after issuance and the leaf key file is removed after readiness; only the public root is relayed to the driver",
-                  "driver":"humanymous-runtime-pilot --product-driver-tls: rustls client trusting only the relayed root, owned ClientHello parrots (crates/attacker wire::clienthello) and H2 frames (wire::h2)"},
+                  "driver":"humanymous-runtime-pilot --product-driver-tls in its own container and network namespace, reaching tgate:18443: rustls client trusting only the relayed root, owned ClientHello parrots (crates/attacker wire::clienthello) and H2 frames (wire::h2)",
+                  "origin":"humanymous-runtime-pilot --product-origin-public-observe: the application origin stays on tgate's loopback; only its read-only observation endpoint is bound beside the Gate (tgate:18081)"},
           "origin":{"present":true,"real":true,"binary":"humanymous-runtime-pilot --product-origin (Rust recording origin)"},
           "attacker":{"present":true,"real":true,"binary":"humanymous-runtime-pilot --product-driver (Rust HTTP/1.1 driver)"},
           "authority":{"present":false,"gate_can_use_remote_authority":false,
@@ -459,7 +463,7 @@ pub fn run(args: &[String]) -> Result<i32> {
           "the authority role is absent; the Gate cannot use a remote authority",
           "the browser reaches the browser Gate through an owned lab proxy pair (browser-local and Gate frontend), not original client TLS/H2; the browser Gate is the runtime library, not the shipped binary",
           "the witnessed gate is the runtime library composed by a lab supervisor, not the shipped binary, although the shipped binary now accepts inherited witness pipes",
-          "the shipped-binary TLS gate (profile tls) is driven only from its own loopback namespace: TLS/H2 and raw ClientHello evidence is shared-namespace scoped, not original-client cross-namespace evidence (owner item B01 #1); it runs writer-only with no witness input",
+          "the shipped-binary TLS gate (profile tls) runs writer-only with no witness input; its origin shares the Gate namespace (loopback origin), with only the read-only observation endpoint reachable from the driver's namespace",
           "the shipped-binary gate probe is TCP liveness only: crates/sdk/humanymous-runtime/src/gateway/main.rs writes readiness once and exposes no live serving-epoch latch to its supervisor; only the witnessed gate probe reads ServiceHost::epoch_health",
           "the attack catalog runs against the shipped runtime as a supervisor-owned child in a network-none wargame container, not through the product topology gate",
           "readiness withdrawal is lazy: the serving-epoch latch fails on the first failed audit append after a witness loss, not when the witness stops"]});
