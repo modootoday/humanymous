@@ -1,7 +1,9 @@
 //! Gate container supervisors. Both provision synthetic owned sealed custody on
 //! the container tmpfs. `run` starts the shipped gateway binary with private
 //! inherited configuration and no witness input, so it binds writer-only.
-//! `witnessed` composes the same library `ServiceHost` with a required
+//! `tls` starts the same shipped binary with a `tls` section naming a leaf
+//! issued by a per-run lab CA minted here, so it binds its TLS listener
+//! (`bind_tls`, still writer-only). `witnessed` composes the same library `ServiceHost` with a required
 //! external witness in this supervisor. The shipped binary also accepts
 //! inherited witness pipes (`src/gateway/main.rs` selects `bind_tls`,
 //! `bind_with_witness` or `bind`), but this topology does not yet hand it
@@ -102,6 +104,49 @@ fn provision() -> Result<Provisioned> {
 pub fn run() -> Result<()> {
     let provisioned = provision()?;
     let config = provisioned.configuration()?;
+    supervise(config, provisioned, json!({}), || Ok(()))
+}
+
+/// Shipped binary with its TLS listener. A per-run lab CA is minted here; the
+/// leaf chain and key go to an owner-only tmpfs directory that the private
+/// configuration names, and the key file is removed once the gateway has
+/// reported readiness (it loads the pair before custody opens). Only the
+/// public root leaves this container, in the readiness line.
+pub fn tls() -> Result<()> {
+    let provisioned = provision()?;
+    let issued = super::lab_ca::issue()?;
+    let material = provisioned.root.join("tls");
+    private_directory(&material)?;
+    let chain = material.join("chain.pem");
+    let key = material.join("key.pem");
+    super::lab_ca::write_private(&chain, issued.chain_pem.as_bytes())?;
+    super::lab_ca::write_private(&key, issued.key_pem.as_bytes())?;
+    drop(issued.key_pem);
+    let config = super::tls_configuration(
+        provisioned.root.to_str().ok_or("audit path")?,
+        provisioned.keys.to_str().ok_or("custody path")?,
+        &provisioned.passphrase,
+        chain.to_str().ok_or("chain path")?,
+        key.to_str().ok_or("key path")?,
+    );
+    let extra = json!({"lab_ca":{"schema":"humanymous.product-e2e-lab-ca/1",
+        "certificate_pem":issued.root_pem,"sha256":issued.root_sha256,
+        "server_name":super::lab_ca::SERVER_NAME,
+        "issuance":"minted in the Gate container at start; the CA signing key was dropped after one leaf; the leaf key file is removed after readiness"}});
+    supervise(config, provisioned, extra, move || {
+        fs::remove_file(&key)?;
+        Ok(())
+    })
+}
+
+/// Start the shipped gateway with one private configuration document, print
+/// the nonsecret readiness line (plus `extra`), run `after_ready`, and wait.
+fn supervise(
+    config: Value,
+    provisioned: Provisioned,
+    extra: Value,
+    after_ready: impl FnOnce() -> Result<()>,
+) -> Result<()> {
     let mut child = Command::new("/usr/local/bin/humanymous-runtime")
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
@@ -130,10 +175,18 @@ pub fn run() -> Result<()> {
         }
     };
     // Readiness is a nonsecret manifest; the runner retains it from the log.
-    println!(
-        "{}",
-        json!({"schema":"humanymous.product-e2e-gate-ready/1","binary":"/usr/local/bin/humanymous-runtime","readiness":readiness})
-    );
+    let mut line = json!({"schema":"humanymous.product-e2e-gate-ready/1",
+        "binary":"/usr/local/bin/humanymous-runtime","readiness":readiness});
+    if let (Some(line), Some(extra)) = (line.as_object_mut(), extra.as_object()) {
+        line.extend(extra.clone());
+    }
+    println!("{line}");
+    io::stdout().flush()?;
+    if let Err(error) = after_ready() {
+        let _ = child.kill();
+        let _ = child.wait();
+        return Err(error);
+    }
     let status = child.wait()?;
     Err(format!("gateway exited: {status}").into())
 }

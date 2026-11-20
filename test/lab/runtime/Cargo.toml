@@ -21,6 +21,11 @@ zeroize.workspace = true
 tokio.workspace = true
 humanymous-platform = { workspace = true, features = ["testing"] }
 humanymous = {path="../../../crates/humanymous", default-features=false, features=["adapter-go"]}
+# Product-e2e TLS topology: the per-run lab CA minted inside the Gate container
+# and the driver's real TLS client. Same pinned versions and features as
+# humanymous-runtime, so no new crate enters the lock (only these two edges).
+rustls = { version = "=0.23.46", default-features = false, features = ["std", "ring", "tls12"] }
+rcgen = { version = "=0.14.10", default-features = false, features = ["crypto", "ring"] }
 
 # Clears close-on-exec on the two witness pipe ends the shipped runtime inherits
 # (unsafe_code is forbidden, so no pre_exec hook). Same version and features as

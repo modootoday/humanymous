@@ -31,6 +31,21 @@ pub fn request(path: &str, body: Vec<u8>) -> Request {
     }
 }
 pub fn sign(config: &Configuration, req: &mut Request, issued: &Value, counter: u64) {
+    sign_named(config, req, issued, counter, "Authorization");
+}
+/// As [`sign`] with every added field name lowercase, as HTTP/2 requires. The
+/// signature binds the exact header names, so the H2 request is signed in the
+/// form the Gate rebuilds from its fields.
+pub fn sign_h2(config: &Configuration, req: &mut Request, issued: &Value, counter: u64) {
+    sign_named(config, req, issued, counter, "authorization");
+}
+fn sign_named(
+    config: &Configuration,
+    req: &mut Request,
+    issued: &Value,
+    counter: u64,
+    authorization: &str,
+) {
     let now = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .unwrap()
@@ -38,7 +53,7 @@ pub fn sign(config: &Configuration, req: &mut Request, issued: &Value, counter: 
     let deadline = now + 4000;
     let id = issued["session"].as_str().unwrap();
     req.headers.extend([
-        ("Authorization".into(), format!("Bearer {id}")),
+        (authorization.into(), format!("Bearer {id}")),
         ("x-humanymous-counter".into(), counter.to_string()),
         ("x-humanymous-bucket".into(), (now / 10_000).to_string()),
         ("x-humanymous-deadline".into(), deadline.to_string()),
