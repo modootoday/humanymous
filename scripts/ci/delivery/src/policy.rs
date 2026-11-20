@@ -1215,17 +1215,13 @@ pub fn pins(root: &Path) -> Result<()> {
             "https://raw.githubusercontent.com/{}/{}/{sha}{suffix}",
             parts[0], parts[1]
         );
-        let content = match ureq::get(&format!("{prefix}action.yml")).call() {
-            Ok(mut response) => response
-                .body_mut()
-                .read_to_string()
-                .map_err(|e| e.to_string())?,
-            Err(ureq::Error::StatusCode(404)) => ureq::get(&format!("{prefix}action.yaml"))
-                .call()
-                .map_err(|e| e.to_string())?
-                .body_mut()
-                .read_to_string()
-                .map_err(|e| e.to_string())?,
+        let fetch =
+            |url: String| with_retry(|| ureq::get(&url).call()?.body_mut().read_to_string());
+        let content = match fetch(format!("{prefix}action.yml")) {
+            Ok(body) => body,
+            Err(ureq::Error::StatusCode(404)) => {
+                fetch(format!("{prefix}action.yaml")).map_err(|e| e.to_string())?
+            }
             Err(error) => return Err(error.to_string()),
         };
         require(
@@ -1236,6 +1232,35 @@ pub fn pins(root: &Path) -> Result<()> {
     }
     println!("{}", json!(reports));
     Ok(())
+}
+
+/// A GitHub answer worth one more try: a 5xx status or a transport error.
+/// A 4xx answer (403 allow list, 404 missing file) is a result, not a fault.
+fn transient(error: &ureq::Error) -> bool {
+    match error {
+        ureq::Error::StatusCode(code) => *code >= 500,
+        _ => true,
+    }
+}
+
+/// Run one public read with bounded retries on transient faults: four attempts
+/// with 1 s, 2 s and 4 s pauses. GitHub's commit patch endpoint answers 503
+/// intermittently (#156, #159), and one such answer used to fail the required
+/// policy check. Identity is still proven only by the returned body.
+fn with_retry<T>(
+    mut read: impl FnMut() -> std::result::Result<T, ureq::Error>,
+) -> std::result::Result<T, ureq::Error> {
+    let mut pause = std::time::Duration::from_secs(1);
+    for _ in 0..3 {
+        match read() {
+            Err(error) if transient(&error) => {
+                std::thread::sleep(pause);
+                pause *= 2;
+            }
+            other => return other,
+        }
+    }
+    read()
 }
 
 /// Prove a public commit exists, through the API authenticated by the workflow
@@ -1257,11 +1282,12 @@ fn public_commit(owner: &str, repo: &str, sha: &str, token: Option<&str>) -> Res
         response.body_mut().read_to_string()
     };
     let api = format!("https://api.github.com/repos/{owner}/{repo}/commits/{sha}");
-    match read(&api, token) {
+    match with_retry(|| read(&api, token)) {
         Ok(body) => verify_public_commit(&body, sha),
         Err(ureq::Error::StatusCode(403)) => {
             let patch = format!("https://github.com/{owner}/{repo}/commit/{sha}.patch");
-            let body = read(&patch, None).map_err(|e| format!("api 403, patch: {e}"))?;
+            let body =
+                with_retry(|| read(&patch, None)).map_err(|e| format!("api 403, patch: {e}"))?;
             verify_public_patch(&body, sha)
         }
         Err(error) => Err(error.to_string()),
@@ -1941,6 +1967,30 @@ mod tests {
         release["jobs"]["crates"]["environment"] = json!("release");
         assert!(document("release.yml", release).is_err());
         assert!(catalog(&manifest, &changed).is_err());
+    }
+    #[test]
+    fn public_reads_retry_only_transient_faults() {
+        assert!(transient(&ureq::Error::StatusCode(503)));
+        assert!(transient(&ureq::Error::StatusCode(500)));
+        assert!(!transient(&ureq::Error::StatusCode(403)));
+        assert!(!transient(&ureq::Error::StatusCode(404)));
+        let mut calls = 0;
+        let result = with_retry(|| {
+            calls += 1;
+            if calls < 3 {
+                Err(ureq::Error::StatusCode(503))
+            } else {
+                Ok(calls)
+            }
+        });
+        assert_eq!(result.ok(), Some(3));
+        let mut calls = 0;
+        let refused: std::result::Result<(), _> = with_retry(|| {
+            calls += 1;
+            Err(ureq::Error::StatusCode(403))
+        });
+        assert!(matches!(refused, Err(ureq::Error::StatusCode(403))));
+        assert_eq!(calls, 1, "a 4xx answer is not retried");
     }
     #[test]
     fn public_commit_patch_requires_exact_identity() {
