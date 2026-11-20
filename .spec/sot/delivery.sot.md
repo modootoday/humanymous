@@ -3,7 +3,7 @@ id: sot:root/delivery
 title: Rust delivery and Pages contracts
 status: active
 created: 2026-11-06T20:27:03Z
-updated: 2026-11-19T22:12:17Z
+updated: 2026-11-20T02:21:34Z
 verify: [cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- policy, cargo test --locked --manifest-path scripts/ci/delivery/Cargo.toml, cargo test --locked --manifest-path scripts/ci/docs-review/Cargo.toml]
 rel:
   governs: [docs/**, .github/workflows/**, scripts/ci/**, scripts/migration/**, build/rust/**]
@@ -404,6 +404,18 @@ the free-plan job limit. A self-hosted Windows runner was considered and rejecte
 for this purpose, per [[sot:root/cross-os-runners]]: public fork code must not run
 on a persistent privileged fleet, and the only candidate device is the owner's
 everyday PC.
+
+### Public action lookups retry transient GitHub faults (2026-11-20)
+
+The `policy` check proves each pinned public action commit by GitHub reads:
+the commits API (with the workflow token), on a 403 the public commit
+`.patch`, then `action.yml` or `action.yaml` at that commit. Each read now gets
+four attempts with 1 s, 2 s and 4 s pauses when GitHub answers 5xx or the
+transport fails. A 4xx answer is a result, not a fault: 403 still selects the
+patch fallback and 404 the `action.yaml` fallback, and an identity mismatch
+still fails at once. Reason: on 2026-11-19 and 2026-11-20 the patch endpoint
+for `aquasecurity/trivy-action` answered 503 once and failed the required
+`validate / policy` on #159 and #156 with unchanged inputs.
 
 ### Workflow identity convention
 
