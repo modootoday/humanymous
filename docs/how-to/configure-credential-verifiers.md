@@ -19,13 +19,21 @@ administrative authority. See [administrative roles](../reference/rbac-separatio
 
 ## Configure gateway trust anchors
 
-The runtime gateway can verify two credential types when its private
+The runtime gateway can verify three credential types when its private
 configuration has a `credentials` object:
 
 ```json
 "credentials": {
   "agent_keys": "/srv/humanymous/credentials/agent-keys.txt",
-  "pat_issuers": "/srv/humanymous/credentials/pat-issuers.pem"
+  "pat_issuers": "/srv/humanymous/credentials/pat-issuers.pem",
+  "webauthn": {
+    "credentials": "/srv/humanymous/credentials/webauthn-creds.txt",
+    "origin": "https://www.example.com",
+    "rp_id": "example.com",
+    "fanout_cap": 8,
+    "fanout": {"max_credentials": 10000, "max_distinct": 64,
+               "max_field_bytes": 512, "max_payload_bytes": 16777216}
+  }
 }
 ```
 
@@ -35,8 +43,18 @@ configuration has a `credentials` object:
 - `pat_issuers` holds the PEM `PUBLIC KEY` blocks of the Privacy Pass issuers
   you trust (RSA keys of 2048 to 8192 bits).
 
-Either one may be left out, but the object must name at least one file. The
-gateway reads both files once at startup. It refuses to start when a file
+- `webauthn.credentials` lists registered passkeys: one `credentialId key`
+  pair per line, where `key` is the credential's P-256 public key (DER
+  SubjectPublicKeyInfo) in unpadded base64url. Set `origin` and `rp_id` so an
+  assertion made for another site is refused; leaving either empty turns that
+  check off. `fanout_cap` is how many distinct /24 (IPv6 /48) networks one
+  credential may come from before it stops bypassing scoring on attested
+  routes (0 means 8). The `fanout` bounds cap the memory used to count that;
+  all four are required and must be above zero. When a bound is reached, the
+  credential loses its bypass instead of keeping it.
+
+Any of the three may be left out, but the object must name at least one. The
+gateway reads every named file once at startup. It refuses to start when a file
 cannot be read, is larger than 4 MiB, has a malformed line, a duplicate
 identifier or an invalid key, or contains no key at all. The readiness line
 reports which verifiers are on under `profile.credentials`; it never shows
@@ -46,4 +64,7 @@ A verified credential is checked only after the request's integrity checks
 pass, and it then lets the request through without scoring. It never changes
 a score, threshold or signal. Treat each listed key as a grant of that
 bypass, and remove keys you no longer trust, then restart the gateway.
-WebAuthn credentials cannot be configured on the gateway yet.
+WebAuthn needs a client address to count networks: the gateway refuses to
+start with `webauthn` on a loopback listener unless the trusted edge sends
+PROXY protocol headers (`ip_reputation.client_address`). A public listener
+always has one.
