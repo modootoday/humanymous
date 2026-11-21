@@ -254,15 +254,14 @@
    "go_test_map": {},
    "gaps": [
     "flag/env configuration surface (cmd/gate/main.go at 981d25c defines 35 flags and reads 17 HMN_* variables; audited 2026-11-21). Mapped to the private inherited configuration: -addr to listen plus public_listen; -admin-addr to admin.listen; HMN_ADMIN_TOKENS to admin.operators; -settings-dir to admin.settings_dir; -node to audit.node_id; -audit-wal to audit.directory; -keystore with HMN_UNSEAL to audit.keys (directory, passphrase); -origin-key to edge.origin_key_hex; -hsts to edge.hsts; -upstream to origin (loopback only, see B14); the six edge TLS flags -tls-cert/-tls-key/-acme-domain/-acme-cache/-acme-email/-acme-directory to tls; the five -log-* flags with their HMN_LOG_* fallbacks to logging; -trusted-proxies to trusted_proxies (plan B26); -agent-keys and -pat-issuers to credentials.agent_keys and credentials.pat_issuers; -webauthn-creds with HMN_WEBAUTHN_ORIGIN/HMN_WEBAUTHN_RPID to credentials.webauthn",
-    "unmapped flags and variables: -monitor (boot global monitor, not on the served path; row internal/gate/gate.go), -routes (route presets, B12), -audit-verify (verification is the audit library API, no binary mode), -audit-redis/-audit-clickhouse with HMN_CLICKHOUSE_USER/PASSWORD (B24), -redis with HMN_REDIS_USER/PASSWORD/KEY (B23), -anomaly-shadow (log-only observer), -virtual-usb-results-dir/HMN_VIRTUAL_USB_RESULTS_DIR (console view), -shutdown-grace (signal drain, B27), HMN_TOKEN_KEY (verdict-token minting, lane H #4)",
+    "unmapped flags and variables: -monitor (boot global monitor, not on the served path; row internal/gate/gate.go), -routes (route presets, B12), -audit-verify (verification is the audit library API, no binary mode), -audit-redis/-audit-clickhouse with HMN_CLICKHOUSE_USER/PASSWORD (B24), -redis with HMN_REDIS_USER/PASSWORD/KEY (B23), -anomaly-shadow (log-only observer), -virtual-usb-results-dir/HMN_VIRTUAL_USB_RESULTS_DIR (console view), -shutdown-grace (signal drain, B27), HMN_TOKEN_KEY (verdict-token minting, owner decision #4)",
     "divergence: -max-body (Go 0 = unlimited) is a fixed 64 KiB request-body bound (gateway::http::MAX_BODY)",
     "divergence: HMN_ALLOW_DEV_TOKENS and the local demo mode are refused, never enabled",
     "divergence: Go defaulted -addr :8444 on every interface and served TLS with a self-signed fallback; the runtime refuses that fallback, defaults to loopback, and a wider listen needs public_listen and a provisioned or ACME tls source",
     "divergence: Go served the admin listener with a self-signed certificate and allowed it off-host (warning without mTLS, -admin-mtls-ca optional); the runtime admin listener is plaintext loopback only and refuses any other address, -admin-mtls-ca is not ported",
-    "admin operator provisioning beyond the static bearer table in the private configuration (lane H #2)",
     "origin reverse proxy to non-loopback upstream, origin-auth (B14)",
     "Redis/ClickHouse projections (B23,B24)",
-    "ordered gate composition still missing on the served path: verdict-token minting (B17) and the sweep gate (mode open in issue #75); bans (admin.bans with the edge ban gate) and the credential gates are composed",
+    "ordered gate composition still missing on the served path: verdict-token minting (B17, owner decision #4) and the sweep gate (mode: owner decision #3, not yet ported); bans (admin.bans with the edge ban gate) and the credential gates are composed",
     "admin metrics and virtual-usb routes (B19; row internal/gate/admin.go); RBAC, approvals, policy, console, settings and models are served by the admin listener",
     "signal-driven drain of the binary (B27; Go -shutdown-grace)"
    ],
@@ -2758,7 +2757,7 @@
    "go_test_map": {},
    "gaps": [
     "divergence: Go served the admin listener over self-signed TLS and allowed it off-host (optional -admin-mtls-ca); the runtime admin listener is plaintext HTTP/1.1 on loopback only",
-    "operator provisioning beyond the static bearer table in the private configuration, and Go's explicit local-demo dev tokens (refused: no demo mode) (lane H #2)",
+    "divergence: Go's local-demo dev tokens and per-boot random tokens for unlisted roles are not minted; operators come only from the configured bearer table (owner decision #2: provisioning is configuration-driven)",
     "metrics and virtual-usb routes (integrity, proof, audit, incidents, keys and checkpoints are served by gateway::admin_plane::chain; policy and the console page by gateway::admin_plane::policy; the settings routes and the settings.overlay and settings.overlay.rollback approval commits by gateway::admin_plane::settings)",
     "kill-switch commit (signed node kill)",
     "intake path that stages retained PermanentBan permits into the plane",
@@ -3601,12 +3600,11 @@
    "go_test_map": {},
    "gaps": [
     "boot global monitor posture on the served path (the kill-switch half is decided: owner decision #6 keeps the signed one-way node kill; Go's reversible global monitor flip is an accepted deviation, not ported)",
-    "HTML injection: no served loader route and no SoT authorisation for response mutation (lane H #7)",
+    "HTML injection: no served loader route; port it opt-in and off by default, decided by owner decision #7 (issue #75 comment 7017558784), not yet ported (plan:root/20261121201500)",
     "erasure shred runner: the service now composes the admin plane, but nothing stages ledger-issued erasure permits and no periodic AdminPlane::run_due_shreds caller runs",
-    "verdict-token minting on the served path (lane H #4)",
-    "projection/operational metrics: Prometheus metrics open in issue #75",
-    "settings-driven module modes: gate default modes open in issue #75 (lane H #3)",
-    "operator provisioning beyond the static admin bearer table (lane H #2)"
+    "verdict-token minting on the served path: port Go's key-gated issuer, decided by owner decision #4 (issue #75 comment 7017558784), not yet ported (plan:root/20261121201500)",
+    "projection/operational metrics: Go's Prometheus names and labels on the admin listener, decided by owner decision #5 (issue #75 comment 7017558784), not yet ported (plan:root/20261121201500)",
+    "settings-driven module modes: Go's default modes at 981d25c as goldens, decided by owner decision #3 (issue #75 comment 7017558784), not yet ported (plan:root/20261121201500)"
    ],
    "retire_basis": null,
    "confidence": "medium",
@@ -3683,7 +3681,7 @@
    "gaps": [
     "verdict-token gate: the decision is ported (gateway::gates::verdict_token, Go-golden parity) but not composed on the served path: nothing there mints hmn_vt (the gate control plane that issued it is not composed), so the upgrade gate always sees no valid token, as Go did without a token key",
     "attestation floor audit: the record is ported (gateway::gates::attestation_floor_audit, Go-golden parity) but the served path has no route presets, so no route carries the attestation floor and the record is never written there",
-    "sweep gate provisioning: the service binary installs agent auth (Web Bot Auth), PAT and WebAuthn from the private configuration's credentials object (agent_keys, pat_issuers, webauthn; Go -agent-keys, -pat-issuers, -webauthn-creds), but not the sweep gate (the gate.recon_sweep mode; gate default modes open in issue #75)",
+    "sweep gate provisioning: the service binary installs agent auth (Web Bot Auth), PAT and WebAuthn from the private configuration's credentials object (agent_keys, pat_issuers, webauthn; Go -agent-keys, -pat-issuers, -webauthn-creds), but not the sweep gate (its gate.recon_sweep mode is owner decision #3, decided, not yet ported; plan:root/20261121201500)",
     "ban gate provisioning: the service binary provisions the ban store only with the admin listener configured (admin.bans; gateway::service::admin builds it, and Application::install_bans shares the store and the admin plane's monotonic epoch with the edge ban gate, refusing startup when an enforcing gate has no trusted client address); without the admin listener no store is installed, while Go always ran a BanStore"
    ],
    "retire_basis": null,
@@ -3967,7 +3965,7 @@
     "TestProxyEnforcementAndAudit": "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies"
    },
    "gaps": [
-    "HTML injection step: gateway::inject::Injector is not composed on the served path. Go injected <script src=/__hmn/loader.js> into every 200 text/html response of an inject route; the runtime-application SoT defines no served response mutation and the served path has no loader route (the browser profile bootstraps through /_humanymous/browser/session), so composing it needs an owner/SoT decision"
+    "HTML injection step: gateway::inject::Injector is not composed on the served path; owner decision #7 (issue #75 comment 7017558784) ports it opt-in and off by default, not yet done (plan:root/20261121201500). Go injected <script src=/__hmn/loader.js> into every 200 text/html response of an inject route; the runtime-application SoT defines no served response mutation and the served path has no loader route (the browser profile bootstraps through /_humanymous/browser/session)"
    ],
    "retire_basis": null,
    "confidence": "medium",
@@ -4508,8 +4506,8 @@
     "TestSettingsMetricsReflectApply": null
    },
    "gaps": [
-    "per-gate monitor modes on the request path (gate.ban audit-only, verdict_token fast path, recon_sweep, inject, attest_floor): settings-driven module modes are open in issue #75 and the hosted gateway does not consume the effective overlay; the gate kernels take a mode (gateway::gates, FM11 lane D), but no settings overlay supplies gate.verdict_token, gate.recon_sweep or gate.attest_floor at run time",
-    "settings metrics exposition (TestSettingsMetricsReflectApply): Prometheus metrics and labels are owner-pending; the counters it reads are pinned by stats_reflect_apply_and_rejection"
+    "per-gate monitor modes on the request path (gate.ban audit-only, verdict_token fast path, recon_sweep, inject, attest_floor): Go's default modes are owner decision #3 (decided, not yet ported; plan:root/20261121201500) and the hosted gateway does not consume the effective overlay; the gate kernels take a mode (gateway::gates, FM11 lane D), but no settings overlay supplies gate.verdict_token, gate.recon_sweep or gate.attest_floor at run time",
+    "settings metrics exposition (TestSettingsMetricsReflectApply): Prometheus metrics and labels are owner decision #5 (decided, not yet ported; plan:root/20261121201500); the counters it reads are pinned by stats_reflect_apply_and_rejection"
    ],
    "retire_basis": null,
    "confidence": "medium",
@@ -4545,7 +4543,7 @@
    ],
    "go_test_map": {},
    "gaps": [
-    "Prometheus exposition of the settings counters (hmn_gate_settings_apply_total, store_errors_total), overlay_active and pending_age_seconds gauges and the config_version label (prometheusLabel): metrics and labels are owner-pending in issue #75; Settings::stats and AdminPlane::settings_pending_age hold the values"
+    "Prometheus exposition of the settings counters (hmn_gate_settings_apply_total, store_errors_total), overlay_active and pending_age_seconds gauges and the config_version label (prometheusLabel): metrics and labels are owner decision #5 (decided, not yet ported; plan:root/20261121201500); Settings::stats and AdminPlane::settings_pending_age hold the values"
    ],
    "retire_basis": null,
    "confidence": "medium",
