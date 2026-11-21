@@ -34,6 +34,15 @@ pub(super) fn tls_listener(
             "max_receiving": config.public_receive.max_receiving,
             "receive_ms": config.public_receive.receive_ms.min(config.timeout_ms),
         });
+        // Plan B26: where the client address comes from; an entry count,
+        // never the trusted networks.
+        let trusted = config
+            .trusted_proxy_allowlist()
+            .map_or(0, |allowlist| allowlist.entries().len());
+        profile["client_address"] = json!({
+            "source": if trusted == 0 { "socket" } else { "socket_or_trusted_proxy_v2" },
+            "trusted_proxies": trusted,
+        });
     }
     profile["raw_tls"] = json!(true);
     profile["original_h2"] = json!(h2);

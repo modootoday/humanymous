@@ -133,13 +133,14 @@ pub(super) struct Bans {
 impl Application {
     /// Run the ban gate against `store`, a store an admin plane may share.
     /// `epoch` is the monotonic origin of the store's clock. Refused unless
-    /// a trusted client-address source is configured (or the gate is off).
+    /// served connections carry a client address (the loopback PROXY v2 edge
+    /// or the public listener, plan B26) or the gate is off.
     pub fn install_bans(
         &mut self,
         store: Arc<Mutex<Store>>,
         epoch: Instant,
     ) -> Result<(), Rejection> {
-        if self.config.edge.ban != Mode::Off && self.edge_policy().is_none() {
+        if self.config.edge.ban != Mode::Off && !self.attributes_clients() {
             return Err(Rejection::new(503, "configuration"));
         }
         self.bans = Some(Bans { store, epoch });

@@ -265,6 +265,11 @@ header on every accepted connection. The runtime reuses the existing
 - Private, loopback, link-local and unspecified addresses are never classified.
   This matches the Go oracle.
 
+On a public TLS listener (plan B26) the PROXY v2 header is accepted only from
+the balancers listed in `trusted_proxies`, which `ip_reputation` there
+requires; every other peer is classified by its socket address. See
+`sot:root/runtime-application` (public client address).
+
 ### Freshness and failure semantics
 
 Traffic fails open, but the state is never silent.

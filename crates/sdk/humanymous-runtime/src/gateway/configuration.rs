@@ -31,6 +31,12 @@ pub struct Configuration {
     /// Concurrent receive bounds of the public listener; ignored on loopback.
     #[serde(default)]
     pub public_receive: exposure::PublicReceive,
+    /// Transport-pass-through load balancers allowed to send a PROXY v2
+    /// header to the public listener (Go `-trusted-proxies`, plan B26): CIDRs
+    /// or bare IPs, at most 256, none broader than /8. Only with
+    /// `public_listen`; empty keeps every peer's socket address as its client.
+    #[serde(default)]
+    pub trusted_proxies: Vec<String>,
     /// Fixed owned loopback origin address, never taken from request headers.
     /// It stays loopback with a public edge: the origin hop is plaintext and
     /// a non-loopback upstream (Go `-upstream` URL) is plan B14.
@@ -150,6 +156,14 @@ pub fn target(value: &str) -> bool {
 }
 
 impl Configuration {
+    /// The parsed `trusted_proxies` allowlist; `None` when empty or refused.
+    pub fn trusted_proxy_allowlist(&self) -> Option<crate::network::proxy::Allowlist> {
+        if self.trusted_proxies.is_empty() {
+            return None;
+        }
+        crate::network::proxy::Allowlist::parse(&self.trusted_proxies.join(",")).ok()
+    }
+
     /// Nonsecret resource configuration, separate from frozen detection policy.
     pub fn operational(&self) -> OperationalSettings {
         OperationalSettings {
@@ -164,9 +178,11 @@ impl Configuration {
     pub fn validate(&self) -> Result<(), Rejection> {
         let bad = Rejection::new(503, "configuration");
         if !exposure::listen_permitted(self.listen, self.public_listen, self.tls.as_ref())
-            // A PROXY v2 header is trusted from every peer of the listener;
-            // on a public listener any client could forge the client address.
-            || self.public_listen && self.ip_reputation.is_some()
+            // The loopback edge contract trusts a PROXY v2 header from every
+            // peer; on a public listener only listed balancers may send one.
+            || self.public_listen && self.ip_reputation.is_some() && self.trusted_proxies.is_empty()
+            || !self.trusted_proxies.is_empty()
+                && (!self.public_listen || self.trusted_proxy_allowlist().is_none())
             || !self.public_receive.valid()
             || self.admin.as_ref().is_some_and(|admin| {
                 admin.validate().is_err()

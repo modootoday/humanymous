@@ -637,9 +637,26 @@ opt-in (`gateway::configuration::exposure` owns every predicate):
   to serve a socket bound beyond loopback, and plaintext serving stays
   loopback-only whatever the configuration says. The owned origin stays
   loopback (non-loopback upstream remains B14). Trust-header stripping and the
-  spoof-header gate are unchanged. PROXY v2 client addresses are refused with
-  a public listener, because any peer could then write the header (Go's
-  `-trusted-proxies` ranges are not ported).
+  spoof-header gate are unchanged.
+- Public client address (plan B26, 2026-11-21; Go `-trusted-proxies`): on a
+  public listener the client is the connection's socket peer. The optional
+  `trusted_proxies` list (CIDRs or bare IPs, at most 256, none broader than
+  /8, only with `public_listen`) names transport-pass-through balancers that
+  must send one PROXY v2 header before TLS. It is read inside the receive
+  task under its permit and deadline (at most Go's 5 s), not in the accept
+  loop. A listed balancer's declared TCP source is the client; LOCAL, UNSPEC
+  or a non-TCP family leave the request unattributed (Go kept the balancer
+  address), which an enforcing ban gate refuses 503 `ban_client_address`; a
+  malformed, truncated or late header closes that connection only; a header
+  from an unlisted peer is never read. The client keys bans, credential
+  fan-out and the IP reputation lookup, never a scoring tell, the session or
+  TLS provenance. Because every public connection is attributable, an
+  enforcing ban gate and WebAuthn fan-out are accepted there;
+  `ip_reputation` on a public listener still needs `trusted_proxies`.
+  Behind an L7 front the socket peer is the front, so an enforcing ban gate
+  there would block every client; the gateway cannot detect that. Readiness
+  reports `profile.client_address` as `socket` or
+  `socket_or_trusted_proxy_v2` with the entry count, never the networks.
 - Public receive (PR #156 review): on a public listener each admitted peer's
   TLS handshake and complete request read run concurrently in their own task,
   at most `public_receive.max_receiving` (default 64, 1..=1024) at once, each
