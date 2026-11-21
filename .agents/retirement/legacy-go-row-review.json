@@ -253,15 +253,18 @@
    ],
    "go_test_map": {},
    "gaps": [
-    "flag/env configuration surface: the remaining cmd/gate flags and HMN_* environment values (cmd/gate/main.go at 981d25c defines 35 flags and reads 17 HMN_* variables). Mapped so far: the six edge TLS flags -tls-cert/-tls-key/-acme-domain/-acme-cache/-acme-email/-acme-directory to the inherited configuration's tls object, the five operational logging flags -log-level/-log-console-format/-log-console-stream/-log-plain-file/-log-jsonl-file (with their HMN_LOG_* fallbacks) to its logging object, -addr to listen plus public_listen, -admin-addr to admin.listen, -settings-dir to admin.settings_dir -trusted-proxies to trusted_proxies (plan B26), -agent-keys and -pat-issuers to credentials.agent_keys and credentials.pat_issuers, and -webauthn-creds with HMN_WEBAUTHN_ORIGIN/HMN_WEBAUTHN_RPID to credentials.webauthn (credentials, origin, rp_id)",
+    "flag/env configuration surface (cmd/gate/main.go at 981d25c defines 35 flags and reads 17 HMN_* variables; audited 2026-11-21). Mapped to the private inherited configuration: -addr to listen plus public_listen; -admin-addr to admin.listen; HMN_ADMIN_TOKENS to admin.operators; -settings-dir to admin.settings_dir; -node to audit.node_id; -audit-wal to audit.directory; -keystore with HMN_UNSEAL to audit.keys (directory, passphrase); -origin-key to edge.origin_key_hex; -hsts to edge.hsts; -upstream to origin (loopback only, see B14); the six edge TLS flags -tls-cert/-tls-key/-acme-domain/-acme-cache/-acme-email/-acme-directory to tls; the five -log-* flags with their HMN_LOG_* fallbacks to logging; -trusted-proxies to trusted_proxies (plan B26); -agent-keys and -pat-issuers to credentials.agent_keys and credentials.pat_issuers; -webauthn-creds with HMN_WEBAUTHN_ORIGIN/HMN_WEBAUTHN_RPID to credentials.webauthn",
+    "unmapped flags and variables: -monitor (boot global monitor, not on the served path; row internal/gate/gate.go), -routes (route presets, B12), -audit-verify (verification is the audit library API, no binary mode), -audit-redis/-audit-clickhouse with HMN_CLICKHOUSE_USER/PASSWORD (B24), -redis with HMN_REDIS_USER/PASSWORD/KEY (B23), -anomaly-shadow (log-only observer), -virtual-usb-results-dir/HMN_VIRTUAL_USB_RESULTS_DIR (console view), -shutdown-grace (signal drain, B27), HMN_TOKEN_KEY (verdict-token minting, lane H #4)",
+    "divergence: -max-body (Go 0 = unlimited) is a fixed 64 KiB request-body bound (gateway::http::MAX_BODY)",
+    "divergence: HMN_ALLOW_DEV_TOKENS and the local demo mode are refused, never enabled",
     "divergence: Go defaulted -addr :8444 on every interface and served TLS with a self-signed fallback; the runtime refuses that fallback, defaults to loopback, and a wider listen needs public_listen and a provisioned or ACME tls source",
     "divergence: Go served the admin listener with a self-signed certificate and allowed it off-host (warning without mTLS, -admin-mtls-ca optional); the runtime admin listener is plaintext loopback only and refuses any other address, -admin-mtls-ca is not ported",
     "admin operator provisioning beyond the static bearer table in the private configuration (lane H #2)",
     "origin reverse proxy to non-loopback upstream, origin-auth (B14)",
-    "ordered gate composition: bans/token/upgrade/sweep (B13,B17,B18)",
-    "admin RBAC/console (B19-B21)",
     "Redis/ClickHouse projections (B23,B24)",
-    "signal drain/HSTS (B27)"
+    "ordered gate composition still missing on the served path: verdict-token minting (B17) and the sweep gate (mode open in issue #75); bans (admin.bans with the edge ban gate) and the credential gates are composed",
+    "admin metrics and virtual-usb routes (B19; row internal/gate/admin.go); RBAC, approvals, policy, console, settings and models are served by the admin listener",
+    "signal-driven drain of the binary (B27; Go -shutdown-grace)"
    ],
    "retire_basis": null,
    "confidence": "medium",
