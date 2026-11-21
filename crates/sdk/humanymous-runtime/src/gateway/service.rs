@@ -53,6 +53,23 @@ const INTEL_RELOAD_INTERVAL: std::time::Duration = std::time::Duration::from_sec
 
 /// Wall clock in Unix seconds for the IP reputation store. An unavailable clock
 /// reads as zero, which refuses every snapshot visibly instead of trusting it.
+/// The signed effective-policy version source of a service without an admin
+/// listener (owner decision #8).
+fn standalone_signed_policy() -> io::Result<crate::gateway::settings::configsign::SignedPolicy> {
+    use crate::gateway::settings::configsign::{BootPolicy, SignedPolicy};
+    let mut key = zeroize::Zeroizing::new(vec![0u8; 32]);
+    getrandom::fill(&mut key).map_err(|_| io::Error::other("policy key entropy unavailable"))?;
+    let boot = BootPolicy {
+        hmac_key: key.to_vec(),
+        ..BootPolicy::default()
+    };
+    Ok(SignedPolicy::new(
+        boot,
+        Arc::new(std::sync::atomic::AtomicBool::new(false)),
+        Arc::new(std::sync::RwLock::new(None)),
+    ))
+}
+
 pub(in crate::gateway) fn intel_now_s() -> u64 {
     crate::authority::now_ms().map_or(0, |ms| ms / 1000)
 }
@@ -390,6 +407,13 @@ impl ServiceHost {
             // Owner decision #8: records carry the version the admin `policy`
             // view reports, in place of `scope.revision`.
             application.install_signed_policy(admin.signed_policy());
+        } else {
+            // Owner decision #8 without an admin listener: Go always stamped
+            // `Server.configVersion()`. The boot slice has no route presets,
+            // global monitor and kill switch off, no overlay and the legacy
+            // rate defaults; the key is random per process, as Go's was
+            // without `HMN_TOKEN_KEY`.
+            application.install_signed_policy(standalone_signed_policy()?);
         }
         if let Some(tls) = &tls {
             application.validate_tls_h1(tls)?;

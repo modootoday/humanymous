@@ -580,9 +580,12 @@ threshold, hard-rule predicate, verdict band or signal ID.
   that slot, the `policy` view reads it, and the service installs the
   matching `SignedPolicy`, so served records carry the `configVersion` the
   `policy` view reports. A zero rate bound is refused at startup. Without
-  the admin listener the shipped runtime still records `scope.revision`.
-  The per-process key gives the same policy a new version after a restart,
-  as Go's did without `HMN_TOKEN_KEY`. The adapter authority's
+  the admin listener (2026-11-21) the service installs its own
+  `SignedPolicy` over the boot defaults (no route presets, global monitor
+  and kill switch off, no overlay, the legacy rate defaults), so every
+  shipped configuration stamps the signed version, as Go always did. The
+  per-process key gives the same policy a new version after a restart, as
+  Go's did without `HMN_TOKEN_KEY`. The adapter authority's
   `adapter.decision` record (no Go counterpart) and the settings journal
   binding keep the provisioned scope revision. The Prometheus label stays
   with the owner-pending metrics.

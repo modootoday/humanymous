@@ -953,7 +953,7 @@
       "gateway::tests::service::exposure::unix_admin_listener_stages_the_configured_model_until_a_dual_controlled_promote",
       "gateway::tests::service::exposure::unix_admin_model_refusals",
       "gateway::tests::service::exposure::unix_public_tls_edge_and_loopback_admin_listener",
-      "gateway::tests::service::exposure::unix_without_admin_records_keep_the_scope_revision",
+      "gateway::tests::service::exposure::unix_without_admin_records_carry_a_signed_version",
       "gateway::tests::service::hosted_only_witnessed_settings_commit_invalidates_sessions_and_restores",
       "gateway::tests::service::settings_operator::native_operator_commit_is_witnessed_cas_and_invalidates_sessions",
       "gateway::tests::service::trusted_proxies::trusted_proxies_need_a_public_listener_and_a_narrow_allowlist",
