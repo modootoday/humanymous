@@ -7,8 +7,8 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 950,
-      "macos": 950,
+      "linux": 952,
+      "macos": 952,
       "windows": 906
     },
     "common_test_names": [
@@ -946,6 +946,8 @@
       "gateway::tests::service::credentials::credentials_object_names_at_least_one_nonempty_file",
       "gateway::tests::service::credentials::unix_configured_credential_anchors_are_installed_before_readiness",
       "gateway::tests::service::credentials::unix_refused_credential_anchors_stop_startup",
+      "gateway::tests::service::credentials::unix_refused_webauthn_configuration",
+      "gateway::tests::service::credentials::unix_webauthn_is_installed_only_with_a_client_address",
       "gateway::tests::service::exposure::unix_admin_bans_need_an_enforceable_gate",
       "gateway::tests::service::exposure::unix_admin_listener_binds_the_signed_policy_version",
       "gateway::tests::service::exposure::unix_admin_listener_stages_the_configured_model_until_a_dual_controlled_promote",

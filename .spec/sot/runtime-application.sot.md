@@ -507,12 +507,18 @@ proxied requests. Same detection freeze as above.
   unreadable or refused file, an empty path or an object naming no file
   refuses startup, as Go's fatal load did. Readiness reports
   `profile.credentials` (`web_bot_auth`, `private_access_token`,
-  `webauthn: false`), never paths or keys. WebAuthn (Go `-webauthn-creds`,
-  which also needs explicit credential fan-out bounds) and the sweep gate are
-  not installed by the service. WebAuthn is refused unless served connections
-  carry a client address (the loopback PROXY v2 edge or a public listener),
-  which the fan-out subnet needs; without an attributed client the fast path
-  is withheld.
+  `webauthn`), never paths or keys. `credentials.webauthn` (2026-11-21; Go
+  `-webauthn-creds`, `HMN_WEBAUTHN_ORIGIN`, `HMN_WEBAUTHN_RPID`,
+  `CredFanoutCap`) names the registered-credential file, the optional origin
+  and RP ID binding (empty leaves that check off, as in Go), the fan-out cap
+  (zero selects Go's 8) and explicit fan-out history bounds
+  (`max_credentials`, `max_distinct`, `max_field_bytes`,
+  `max_payload_bytes`; a zero bound is refused, an observation beyond them
+  withholds the upgrade). WebAuthn is refused unless served connections carry
+  a client address (the loopback PROXY v2 edge or a public listener), which
+  the fan-out subnet needs, so a loopback service without the edge refuses
+  startup; without an attributed client the fast path is withheld. The sweep
+  gate is not installed by the service.
 - A trust upgrade forwards without scoring; its record carries the request
   id and commitment of the ALLOW, so an `upstream.error` links to it. A deny
   answers Go's 403 with the incident pointer and, after authorization, the

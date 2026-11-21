@@ -2,8 +2,10 @@
 //! and install their gates. Every failure is a startup refusal before
 //! readiness, with a static message (no paths or file bytes).
 use crate::gateway::application::Application;
+use crate::gateway::attest_floor::fanout::CredentialFanout;
 use crate::gateway::configuration::credentials::Credentials;
-use crate::gateway::credential::{MAX_CONFIG, privacy_pass, web_bot_auth};
+use crate::gateway::credential::{MAX_CONFIG, privacy_pass, web_bot_auth, webauthn};
+use crate::network::correlation::Registry;
 use std::io::{self, Read};
 use std::path::Path;
 
@@ -25,6 +27,7 @@ fn read(path: &Path, what: &'static str) -> io::Result<String> {
 pub(super) struct Loaded {
     agent: Option<web_bot_auth::KeyDirectory>,
     pat: Option<privacy_pass::Verifier>,
+    webauthn: Option<(webauthn::Registry, CredentialFanout)>,
 }
 
 /// Read and parse every configured file.
@@ -43,7 +46,28 @@ pub(super) fn load(credentials: &Credentials) -> io::Result<Loaded> {
         ),
         None => None,
     };
-    Ok(Loaded { agent, pat })
+    let webauthn = match &credentials.webauthn {
+        Some(config) => {
+            let mut registry = webauthn::Registry::parse(&read(
+                &config.credentials,
+                "WebAuthn credentials unreadable",
+            )?)
+            .map_err(|_| io::Error::other("WebAuthn credentials refused"))?;
+            registry.set_binding(&config.origin, &config.rp_id);
+            let limits = config
+                .fanout
+                .limits()
+                .ok_or_else(|| io::Error::other("WebAuthn fan-out bounds refused"))?;
+            let fanout = CredentialFanout::new(Registry::new(limits), i64::from(config.fanout_cap));
+            Some((registry, fanout))
+        }
+        None => None,
+    };
+    Ok(Loaded {
+        agent,
+        pat,
+        webauthn,
+    })
 }
 
 impl Loaded {
@@ -52,17 +76,24 @@ impl Loaded {
         serde_json::json!({
             "web_bot_auth": self.agent.is_some(),
             "private_access_token": self.pat.is_some(),
-            "webauthn": false,
+            "webauthn": self.webauthn.is_some(),
         })
     }
 
-    /// Install the loaded gates.
-    pub(super) fn install(self, application: &mut Application) {
+    /// Install the loaded gates. WebAuthn is refused unless served
+    /// connections carry a client address, which its fan-out subnet needs.
+    pub(super) fn install(self, application: &mut Application) -> io::Result<()> {
         if let Some(directory) = self.agent {
             application.install_agent_keys(directory);
         }
         if let Some(verifier) = self.pat {
             application.install_pat_issuers(verifier);
         }
+        if let Some((registry, fanout)) = self.webauthn {
+            application
+                .install_webauthn(registry, fanout)
+                .map_err(|_| io::Error::other("WebAuthn needs a client address source"))?;
+        }
+        Ok(())
     }
 }

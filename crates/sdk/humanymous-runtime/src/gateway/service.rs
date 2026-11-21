@@ -377,7 +377,7 @@ impl ServiceHost {
             application.install_intel(store.clone());
         }
         if let Some(credentials) = credentials {
-            credentials.install(&mut application);
+            credentials.install(&mut application)?;
         }
         if let Some(admin) = &admin {
             // The edge ban gate consults the store the plane writes. A gate that
