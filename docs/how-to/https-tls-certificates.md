@@ -2,7 +2,7 @@
 layout: doc
 title: Plan TLS termination
 permalink: /how-to/https-tls-certificates.html
-reviewed: 2026-11-19
+reviewed: 2026-11-21
 ---
 # Plan TLS termination
 
@@ -61,7 +61,7 @@ public address such as port 443 directly, set `listen` to that address and add
 The runtime refuses to start, before it opens audit custody, when a
 non-loopback `listen` lacks `public_listen`, when `public_listen` has no `tls`
 object, names the development certificate or sits on a loopback address, and
-when it is combined with PROXY v2 client addresses. There is no public
+when it is combined with `ip_reputation` without `trusted_proxies`. There is no public
 plaintext listener. The protected origin stays a loopback address. The
 readiness line then reports the `experimental-public-tls` profile with
 `public_listen: true`; it remains an experimental profile, not product
@@ -73,6 +73,35 @@ each within `public_receive.receive_ms` (default 5000 ms). A connection beyond
 that bound is closed immediately, and a silent connection is closed at its
 receive deadline. Requests are still decided one at a time, so size the bounds,
 `rate_per_second` and your network limits for the traffic you expect.
+
+### Behind a transport-pass-through load balancer
+
+On a public address the client address used for bans and IP reputation is
+the connection's own source address. If a TCP (layer 4) load balancer that
+passes TLS through sits in front, list its addresses in `trusted_proxies` and
+have it send a PROXY protocol version 2 header (for example HAProxy
+`send-proxy-v2` or nginx `proxy_protocol on;` in a `stream` block):
+
+```json
+"public_listen": true,
+"trusted_proxies": ["10.0.12.0/24", "10.0.13.7"]
+```
+
+- Only listed addresses may send the header; a header from anyone else is
+  never read, so a client cannot claim another address.
+- A listed balancer must send the header on every connection. A connection
+  from it without a valid header is closed.
+- A balancer health check (the LOCAL command) is served without a client
+  address. With an enforcing ban gate such a request answers 503.
+- Ranges broader than /8, more than 256 entries and an empty entry are
+  refused at startup. `trusted_proxies` is only accepted with
+  `public_listen`.
+- Readiness reports `client_address.source` (`socket` or
+  `socket_or_trusted_proxy_v2`) and the entry count, never the networks.
+
+If TLS ends at a CDN or another layer 7 proxy instead, every client reaches the
+gateway from that proxy's address. Do not run an enforcing ban gate there: a
+ban would block every client behind the proxy.
 
 The optional administration listener (`admin` object) is always a separate
 loopback address, even when the edge is public. Reach it from the same host or

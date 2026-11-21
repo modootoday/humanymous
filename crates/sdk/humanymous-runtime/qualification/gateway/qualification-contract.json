@@ -7,8 +7,8 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 944,
-      "macos": 944,
+      "linux": 947,
+      "macos": 947,
       "windows": 906
     },
     "common_test_names": [
@@ -951,6 +951,9 @@
       "gateway::tests::service::exposure::unix_without_admin_records_keep_the_scope_revision",
       "gateway::tests::service::hosted_only_witnessed_settings_commit_invalidates_sessions_and_restores",
       "gateway::tests::service::settings_operator::native_operator_commit_is_witnessed_cas_and_invalidates_sessions",
+      "gateway::tests::service::trusted_proxies::trusted_proxies_need_a_public_listener_and_a_narrow_allowlist",
+      "gateway::tests::service::trusted_proxies::unix_public_listener_keys_bans_on_the_socket_peer",
+      "gateway::tests::service::trusted_proxies::unix_trusted_balancer_declares_the_client",
       "gateway::tests::service::unix_closed_shutdown_controller_cannot_report_stopped",
       "gateway::tests::service::unix_service_management_drains_before_custody_release",
       "gateway::tests::service::witness_input::inherited_pipe_witness_pins_identity_and_cosigns_durable_audit",

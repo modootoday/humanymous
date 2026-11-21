@@ -3,7 +3,7 @@ id: plan:root/20261120201558
 title: B26 trusted balancers on the public listener
 status: active
 created: 2026-11-20T20:15:58Z
-updated: 2026-11-20T20:15:58Z
+updated: 2026-11-21T00:40:00Z
 rel:
   governs: [crates/sdk/humanymous-runtime/src/gateway/configuration.rs, crates/sdk/humanymous-runtime/src/gateway/configuration/exposure.rs, crates/sdk/humanymous-runtime/src/gateway/application/tls.rs, crates/sdk/humanymous-runtime/src/gateway/application/edge.rs, crates/sdk/humanymous-runtime/src/gateway/proxy_listener.rs, crates/sdk/humanymous-runtime/src/gateway/service/readiness.rs]
   depends_on: [sot:root/runtime-application, sot:root/ip-reputation, sot:root/network-capture, plan:root/20261119160000]
@@ -114,20 +114,35 @@ stay untrusted. A11y gating is untouched.
 
 ## Steps
 
-- [ ] `configuration`: `trusted_proxies`, validation (public only, Allowlist
+- [x] `configuration`: `trusted_proxies`, validation (public only, Allowlist
   parse, `ip_reputation` coupling of decision 5), unit tests.
-- [ ] `application/tls.rs`: header read in the receive task; `Received`
+- [x] `application/tls.rs`: header read in the receive task; `Received`
   carries the client; `serve_received` sets `self.client`; tests for the four
   trust-gate outcomes over real sockets, including a slow trusted balancer
   that does not block a second client.
-- [ ] `application/edge.rs`: `install_bans` accepts the public listener;
+- [x] `application/edge.rs`: `install_bans` accepts the public listener;
   test that an enforcing gate bans the declared source, not the balancer.
-- [ ] Readiness facts and test.
-- [ ] SoT: runtime-application (public listener client address) and
+- [x] Readiness facts and test.
+- [x] SoT: runtime-application (public listener client address) and
   ip-reputation (trusted client address on a public listener); ledger rows
   internal/gate/proxyproto.go and cmd/gate/main.go (`-trusted-proxies`).
-- [ ] Qualification contract, docs-review hashes; scoped `cargo test`,
+- [x] Qualification contract, docs-review hashes; scoped `cargo test`,
   Clippy and fmt; docs how-to for running behind an L4 balancer.
+
+## Record (2026-11-21)
+
+- One client-address predicate (`Application::attributes_clients`: the
+  loopback PROXY v2 edge or a public listener) replaces "has an edge
+  policy" for `install_bans` and `install_webauthn`; the loopback accept
+  paths still use `edge_policy` unchanged.
+- LOCAL from a listed balancer under an enforcing ban gate answers 503
+  `ban_client_address` (the existing unattributed rule), pinned by
+  `unix_trusted_balancer_declares_the_client`.
+- Tests: `gateway::tests::service::trusted_proxies` (socket peer keyed,
+  spoofed header from an unlisted peer ignored, declared source keyed and
+  the balancer not, LOCAL unattributed, missing header closed, a silent
+  listed peer not blocking a second client, configuration refusals). A
+  mutation that keys the balancer instead of the declared source fails them.
 
 ## Verification
 

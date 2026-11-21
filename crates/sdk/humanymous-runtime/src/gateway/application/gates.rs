@@ -111,14 +111,15 @@ impl Application {
     }
 
     /// Verify WebAuthn assertions (Go `WebAuthnCreds`) with the credential
-    /// fan-out cap. Refused unless the client address comes from the trusted
-    /// edge, which the fan-out subnet needs.
+    /// fan-out cap. Refused unless served connections carry a client address
+    /// (the trusted loopback edge or the public listener, plan B26), which
+    /// the fan-out subnet needs.
     pub fn install_webauthn(
         &mut self,
         registry: webauthn::Registry,
         fanout: CredentialFanout,
     ) -> Result<(), Rejection> {
-        if self.edge_policy().is_none() {
+        if !self.attributes_clients() {
             return Err(Rejection::new(503, "configuration"));
         }
         self.installed.epoch();

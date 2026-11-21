@@ -17,9 +17,11 @@
 //! delays later accepts by at most the read timeout. Only the bytes of the
 //! header are consumed; the TLS ClientHello that follows stays on the stream.
 //! The returned [`Peer`] is only for address-keyed state; it never becomes TLS
-//! or original-client provenance (network-capture N01). This module does not
-//! choose which listener the gate composition wraps; no composition root
-//! wraps one yet.
+//! or original-client provenance (network-capture N01). The public TLS
+//! listener (`application::tls`, plan B26) applies the same trust gate with
+//! [`read_header`] inside its per-connection receive task instead of
+//! wrapping the listener, so a slow balancer holds one receive permit, not
+//! the accept loop.
 use crate::network::proxy::{self, Allowlist, FIXED_LEN, Header, Peer, Refusal};
 use std::io;
 use std::net::SocketAddr;
@@ -87,7 +89,10 @@ impl ProxyListener {
     }
 }
 
-async fn read_header(stream: &mut TcpStream) -> Result<Header, Refusal> {
+/// Read exactly one PROXY v2 header (and nothing after it) from a trusted
+/// balancer's stream. Shared with the public TLS listener (plan B26), which
+/// reads it in its per-connection receive task.
+pub(in crate::gateway) async fn read_header(stream: &mut TcpStream) -> Result<Header, Refusal> {
     let mut fixed = [0u8; FIXED_LEN];
     stream
         .read_exact(&mut fixed)

@@ -113,16 +113,23 @@ impl Application {
     /// Received requests are decided and answered one at a time by this
     /// serialized owner, exactly as on the loopback listener; a received
     /// request keeps its permit until answered, which bounds the queue.
-    /// The public listener has no PROXY v2 edge (refused by configuration),
-    /// so no client address is taken from the connection.
+    /// Client address (plan B26): a peer outside `trusted_proxies` is its
+    /// socket address and nothing is read from it; a listed balancer must
+    /// send one PROXY v2 header first, inside the receive task and deadline
+    /// (at most Go's 5 s), and its declared TCP source is the client. LOCAL,
+    /// UNSPEC or a non-TCP family leave the request unattributed (Go kept the
+    /// balancer address); a malformed, truncated or late header closes that
+    /// connection only. The address keys bans, credential fan-out and the IP
+    /// reputation lookup; it is never TLS or original-client provenance.
     async fn serve_public_tls(
         &mut self,
         listener: TcpListener,
         tls: Arc<ServerConfig>,
         mut shutdown: watch::Receiver<Option<ShutdownRequest>>,
     ) -> io::Result<()> {
-        if self.edge_policy().is_some() {
-            return Err(io::Error::other("public listener has no PROXY v2 edge"));
+        let trusted = self.config.trusted_proxy_allowlist().map(Arc::new);
+        if self.edge_policy().is_some() && trusted.is_none() {
+            return Err(io::Error::other("public PROXY v2 needs trusted_proxies"));
         }
         let bounds = self.config.public_receive;
         let permits = Arc::new(tokio::sync::Semaphore::new(bounds.max_receiving));
@@ -171,7 +178,12 @@ impl Application {
                     let until = Instant::now() + budget;
                     let deadline = Instant::now() + bounds.deadline(self.config.timeout_ms);
                     let (tls, sender) = (tls.clone(), received_sender.clone());
+                    let trusted = trusted.clone();
                     receiving.spawn(async move {
+                        let mut stream = stream;
+                        let Some(client) = public_client(trusted.as_deref(), peer, &mut stream, deadline).await else {
+                            return;
+                        };
                         // The capture lifetime stays the connection budget, so
                         // a queued request keeps its original deadline.
                         let captured = timeout_at(deadline, async {
@@ -179,7 +191,7 @@ impl Application {
                         })
                         .await;
                         if let Ok(Ok(captured)) = captured {
-                            let _ = sender.send(Received { captured, until, _permit: permit }).await;
+                            let _ = sender.send(Received { captured, until, client, _permit: permit }).await;
                         }
                     });
                     continue;
@@ -201,8 +213,10 @@ impl Application {
         let Received {
             captured,
             until,
+            client,
             _permit,
         } = received;
+        self.client = client;
         let connection_shutdown = shutdown.clone();
         let pending = timeout_at(
             until,
@@ -457,6 +471,8 @@ impl Application {
 struct Received {
     captured: CapturedTls,
     until: Instant,
+    /// Client address of the connection (plan B26), `None` when unattributed.
+    client: Option<std::net::IpAddr>,
     /// Held until the request is answered, bounding queued requests.
     _permit: tokio::sync::OwnedSemaphorePermit,
 }
@@ -469,4 +485,30 @@ struct EncodeArgs<'a> {
     shutdown: &'a watch::Receiver<Option<ShutdownRequest>>,
     ack: &'a mut Option<Ack>,
     h1_idle: bool,
+}
+
+/// Plan B26 trust gate for one public connection. `None` means the connection
+/// is closed (a listed balancer sent a malformed, truncated or late header);
+/// `Some(None)` is served unattributed.
+async fn public_client(
+    trusted: Option<&crate::network::proxy::Allowlist>,
+    peer: std::net::SocketAddr,
+    stream: &mut TcpStream,
+    deadline: Instant,
+) -> Option<Option<std::net::IpAddr>> {
+    use crate::network::proxy::Header;
+    if !trusted.is_some_and(|allowlist| allowlist.trusts_peer(peer)) {
+        return Some(Some(peer.ip()));
+    }
+    let deadline = deadline.min(Instant::now() + crate::gateway::proxy_listener::READ_TIMEOUT);
+    match timeout_at(
+        deadline,
+        crate::gateway::proxy_listener::read_header(stream),
+    )
+    .await
+    {
+        Ok(Ok(Header::Source(source))) => Some(Some(source.ip())),
+        Ok(Ok(Header::Local | Header::Unspecified)) => Some(None),
+        Ok(Err(_)) | Err(_) => None,
+    }
 }

@@ -181,6 +181,14 @@ impl Application {
         })
     }
 
+    /// Whether served connections carry an attributable client address: the
+    /// loopback edge's PROXY v2 contract, or the public listener's socket peer
+    /// or trusted-balancer source (plan B26). Gates keyed by client address
+    /// (bans, credential fan-out) need one.
+    fn attributes_clients(&self) -> bool {
+        self.edge_policy().is_some() || self.config.public_listen
+    }
+
     /// Exact readiness manifest; no session secrets or raw client observations.
     pub fn readiness(&self) -> serde_json::Value {
         self.config.readiness()
