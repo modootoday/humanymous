@@ -263,14 +263,23 @@ async fn unix_admin_listener_binds_the_signed_policy_version() {
     assert!(report.stopped && report.drained && report.audit_flushed);
 }
 
-/// Without an admin listener the shipped runtime keeps `scope.revision`.
+/// Without an admin listener records still carry a signed version (Go always
+/// stamped `configVersion`): the boot defaults under a per-process key, never
+/// `scope.revision`, and a second process gets a different version.
 #[tokio::test]
-async fn unix_without_admin_records_keep_the_scope_revision() {
+async fn unix_without_admin_records_carry_a_signed_version() {
     let fixture = PrivateFixture::new();
     let config = fixture.configuration();
     let revision = config.scope.revision.clone();
     let host = ServiceHost::bind(config).await.unwrap();
-    assert_eq!(host.config_version(), revision);
+    let first = host.config_version();
+    assert!(first.starts_with("cfg-") && first.len() == 16, "{first}");
+    assert_ne!(first, revision);
+    assert_eq!(host.config_version(), first, "stable within a process");
+    drop(host);
+    let fixture = PrivateFixture::new();
+    let host = ServiceHost::bind(fixture.configuration()).await.unwrap();
+    assert_ne!(host.config_version(), first, "per-process key");
 }
 
 const APPROVER: &str = "approver-fixture-token-b";

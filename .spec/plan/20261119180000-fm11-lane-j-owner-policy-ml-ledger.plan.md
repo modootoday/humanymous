@@ -85,8 +85,9 @@ ported (accepted deviation under #12).
 - Done after this lane (2026-11-20): `SignedPolicy` and `Models` are
   composed with the service's admin listener (`admin.models` stages the Go
   `-ml-*` admission inputs; mlcorrect/bundle.go is `ported_unit`).
-  configsign.go stays `partial`: without the admin listener records keep
-  `scope.revision`. Ledger: 288 `ported_unit`, 15 `partial`.
+  Since 2026-11-21 a service without the admin listener installs its own
+  `SignedPolicy` too, so configsign.go is `ported_unit`. Ledger: 289
+  `ported_unit`, 14 `partial`.
 - The controller's feature and shadow observers, the shadow model and the
   canary auto-rollback onto `Models`.
 - Prometheus metrics, including the config-version label (issue #75).
