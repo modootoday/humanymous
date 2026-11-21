@@ -500,9 +500,19 @@ proxied requests. Same detection freeze as above.
   session is the signed RIT session, not the legacy `hsid` cookie.
 - Each capability is opt-in (`Application::install_agent_keys`,
   `install_pat_issuers`, `install_webauthn`, `install_sweep` with its
-  `gate.recon_sweep` mode); the service binary installs none. WebAuthn is
-  refused without the trusted PROXY v2 client address, which the fan-out
-  subnet needs; without an attributed client the fast path is withheld.
+  `gate.recon_sweep` mode). The service binary installs agent auth and PAT
+  from the optional `credentials` object (2026-11-21; Go `-agent-keys`,
+  `-pat-issuers`): `agent_keys` and `pat_issuers` name operator files read
+  once before readiness with the strict parsers (at most 4 MiB each); an
+  unreadable or refused file, an empty path or an object naming no file
+  refuses startup, as Go's fatal load did. Readiness reports
+  `profile.credentials` (`web_bot_auth`, `private_access_token`,
+  `webauthn: false`), never paths or keys. WebAuthn (Go `-webauthn-creds`,
+  which also needs explicit credential fan-out bounds) and the sweep gate are
+  not installed by the service. WebAuthn is refused unless served connections
+  carry a client address (the loopback PROXY v2 edge or a public listener),
+  which the fan-out subnet needs; without an attributed client the fast path
+  is withheld.
 - A trust upgrade forwards without scoring; its record carries the request
   id and commitment of the ALLOW, so an `upstream.error` links to it. A deny
   answers Go's 403 with the incident pointer and, after authorization, the

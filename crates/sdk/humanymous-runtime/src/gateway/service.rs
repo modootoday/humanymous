@@ -18,6 +18,7 @@ use tokio::{net::TcpListener, sync::watch};
 use zeroize::Zeroizing;
 mod admin;
 mod authorization;
+mod credentials;
 mod lifecycle;
 mod observed;
 mod outcome;
@@ -337,6 +338,16 @@ impl ServiceHost {
         if let Some(admin) = &admin {
             profile["admin_listener"] = admin.readiness()?;
         }
+        // Credential trust anchors (shipping row B25): read and parsed before
+        // readiness; a refused file stops startup, as Go's did.
+        let credentials = configuration
+            .credentials
+            .as_ref()
+            .map(credentials::load)
+            .transpose()?;
+        if let Some(credentials) = &credentials {
+            profile["credentials"] = credentials.facts();
+        }
         profile["administration_writable"] = serde_json::json!(operator.is_some());
         let profile_shared = Arc::new(std::sync::RwLock::new(profile.clone()));
         let (operator, commands) = if let Some(operator) = operator {
@@ -364,6 +375,9 @@ impl ServiceHost {
         }
         if let Some(store) = &intel {
             application.install_intel(store.clone());
+        }
+        if let Some(credentials) = credentials {
+            credentials.install(&mut application);
         }
         if let Some(admin) = &admin {
             // The edge ban gate consults the store the plane writes. A gate that
