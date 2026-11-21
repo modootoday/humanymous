@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 pub mod admin;
 mod audit;
+pub mod credentials;
 mod edge;
 pub mod exposure;
 mod ip_reputation;
@@ -83,6 +84,10 @@ pub struct Configuration {
     /// (owner decision B01 #1); absent serves no admin plane.
     #[serde(default)]
     pub admin: Option<AdminListener>,
+    /// Credential trust-anchor files (Go `-agent-keys`, `-pat-issuers`);
+    /// absent installs no credential gate. See [`credentials`].
+    #[serde(default)]
+    pub credentials: Option<credentials::Credentials>,
 }
 
 /// Distinct integrity contracts. A browser subset never claims full wire binding.
@@ -201,6 +206,10 @@ impl Configuration {
                 .as_ref()
                 .is_some_and(|policy| policy.validate().is_err())
             || self.edge.origin_key().is_err()
+            || self
+                .credentials
+                .as_ref()
+                .is_some_and(|credentials| credentials.validate().is_err())
             || self.edge.hsts && self.tls.is_none()
         {
             return Err(bad);
