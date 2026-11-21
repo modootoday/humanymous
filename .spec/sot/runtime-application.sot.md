@@ -587,8 +587,28 @@ threshold, hard-rule predicate, verdict band or signal ID.
   per-process key gives the same policy a new version after a restart, as
   Go's did without `HMN_TOKEN_KEY`. The adapter authority's
   `adapter.decision` record (no Go counterpart) and the settings journal
-  binding keep the provisioned scope revision. The Prometheus label stays
-  with the owner-pending metrics.
+  binding keep the provisioned scope revision. The Prometheus label belongs
+  to the metrics of decision #5, not yet ported.
+- **#2 provisioning, #3 gate modes, #4 verdict tokens, #5 metrics, #7 HTML
+  injection (same comment; recorded 2026-11-21, plan
+  `plan:root/20261121201500`).** The delegation also decided these. They are
+  decided, not open; what remains is porting them:
+  - #2: provisioning is configuration-driven. Nothing is installed when it is
+    not configured, and a configured but unreadable input fails closed at
+    startup. Done: the ban store (`admin.bans`), agent auth, PAT and WebAuthn
+    (`credentials`). Pending: the sweep gate, whose mode is #3.
+  - #3: per-gate default modes and the settings overlay on the request path
+    take Go's defaults at 981d25c, captured as goldens. Modes are not
+    weights or thresholds, so the detection freeze is untouched. Not ported.
+  - #4: port Go's `hmn_vt` issuer, key-gated, with route presets and the
+    attestation floor. Without a key, upgrades stay denied (HR-26), as Go
+    without a token key. The token, verdict-token gate and route-preset
+    kernels are ported; issuing and preset routing are not composed.
+  - #5: port Go's Prometheus metric names and labels, served on the admin
+    listener only. Not ported.
+  - #7: port HTML loader injection as an opt-in that is off by default,
+    because it mutates responses. The injector kernel is ported; no served
+    route uses it.
 - **#11 credentials and request integrity.** A verified credential (Web Bot
   Auth, PAT, WebAuthn) never stands in for request integrity. Credential
   gates run only after RIT authorization and admission, and they only
