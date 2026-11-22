@@ -365,6 +365,18 @@ impl ServiceHost {
         if let Some(credentials) = &credentials {
             profile["credentials"] = credentials.facts();
         }
+        // Owner decision #2: the sweep gate only when configured; its bounds
+        // were validated with the configuration.
+        let sweep = match &configuration.recon_sweep {
+            Some(config) => {
+                profile["recon_sweep"] = config.readiness();
+                let detector = config
+                    .detector()
+                    .ok_or_else(|| io::Error::other("recon sweep bounds refused"))?;
+                Some((detector, config.mode))
+            }
+            None => None,
+        };
         profile["administration_writable"] = serde_json::json!(operator.is_some());
         let profile_shared = Arc::new(std::sync::RwLock::new(profile.clone()));
         let (operator, commands) = if let Some(operator) = operator {
@@ -395,6 +407,9 @@ impl ServiceHost {
         }
         if let Some(credentials) = credentials {
             credentials.install(&mut application)?;
+        }
+        if let Some((detector, mode)) = sweep {
+            application.install_sweep(detector, mode);
         }
         if let Some(admin) = &admin {
             // The edge ban gate consults the store the plane writes. A gate that

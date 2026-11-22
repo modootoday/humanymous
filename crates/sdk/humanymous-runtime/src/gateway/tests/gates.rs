@@ -200,16 +200,38 @@ fn upgrade_without_verdict_token_is_denied() {
 }
 
 fn sweeping(mode: Mode) -> Audit {
+    sweeping_with(mode, None)
+}
+
+/// Nine sessions on one fingerprint with boot mode `boot` and, when given,
+/// an active settings overlay naming `gate.recon_sweep`.
+fn sweeping_with(boot: Mode, overlay: Option<crate::gateway::settings::overlay::Mode>) -> Audit {
+    use crate::gateway::settings::overlay::{Mode as Named, Overlay};
     let audit = Audit::default();
     let mut app = app_with(config(), &audit);
     app.install_sweep(
         Detector::new(SweepConfig::new(Duration::from_secs(30), 8, 1024).unwrap()),
-        mode,
+        boot,
     );
+    let effective = match &overlay {
+        None => boot,
+        Some(Named::Off) => Mode::Off,
+        Some(Named::Monitor) => Mode::Monitor,
+        Some(Named::Shadow) => Mode::Shadow,
+        Some(_) => Mode::Enforce,
+    };
+    if let Some(mode) = overlay {
+        let active = Overlay {
+            status: "active".into(),
+            gates: [("gate.recon_sweep".to_owned(), mode)].into(),
+            ..Default::default()
+        };
+        app.install_gate_overlay(std::sync::Arc::new(std::sync::RwLock::new(Some(active))));
+    }
     for n in 1..=9 {
         let req = signed_request(&mut app, &[]);
         let decision = app.decide(&req, || Ok(NOW_MS)).unwrap();
-        if n == 9 && mode == Mode::Enforce {
+        if n == 9 && effective == Mode::Enforce {
             assert_denied(decision);
         } else {
             assert!(!matches!(decision, Decision::Gate(_)), "request {n}");
@@ -244,6 +266,34 @@ fn sweep_gate_denies_the_ninth_session_and_monitor_only_records() {
         ("monitor", "would_block")
     );
     assert_eq!(records(&monitored, "runtime.decision").len(), 9);
+}
+
+/// Go TestSettingsReconMonitorAuditsWithoutBlocking at 981d25c: an overlay
+/// naming `gate.recon_sweep: monitor` over an enforcing boot mode blocks
+/// nothing and records `would_block` in mode `monitor`; an overlay naming
+/// `enforce` over a monitoring boot mode denies the ninth session (owner
+/// decision #3).
+#[test]
+fn settings_overlay_sets_the_sweep_mode() {
+    use crate::gateway::settings::overlay::Mode as Named;
+    let monitored = sweeping_with(Mode::Enforce, Some(Named::Monitor));
+    let probing = records(&monitored, "recon.decision_probing");
+    assert_eq!(probing.len(), 1);
+    assert_eq!(
+        (
+            probing[0].enforcement_mode.as_str(),
+            probing[0].enforcement_action.as_str()
+        ),
+        ("monitor", "would_block")
+    );
+    assert_eq!(records(&monitored, "runtime.decision").len(), 9);
+    let enforced = sweeping_with(Mode::Monitor, Some(Named::Enforce));
+    let probing = records(&enforced, "recon.decision_probing");
+    assert_eq!(probing.len(), 1);
+    assert_eq!(probing[0].enforcement_action, "block");
+    assert_eq!(records(&enforced, "runtime.decision").len(), 8);
+    let off = sweeping_with(Mode::Enforce, Some(Named::Off));
+    assert!(records(&off, "recon.decision_probing").is_empty());
 }
 
 /// A gate record that cannot be appended fails closed (503 durable_audit)

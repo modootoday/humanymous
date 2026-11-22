@@ -10,7 +10,8 @@
 //! Bot Auth needs an installed key directory, PAT installed issuers, WebAuthn
 //! an installed registry and fan-out tracker, and the sweep gate an installed
 //! detector with its `gate.recon_sweep` mode. The service binary installs
-//! none of them; provisioning and default modes are owner questions.
+//! them from configuration (`credentials`, `recon_sweep`; owner decision
+//! #2), and the active settings overlay supplies the sweep mode (#3).
 //!
 //! Kept from Go: the gate order (agent auth, PAT, WebAuthn, upgrade, sweep,
 //! then the verdict), the records, the 403 deny with the incident pointer
@@ -127,7 +128,9 @@ impl Application {
         Ok(())
     }
 
-    /// Run the decision-probing sweep gate (HR-30) in `mode`.
+    /// Run the decision-probing sweep gate (HR-30) with boot mode `mode`; an
+    /// installed settings overlay naming `gate.recon_sweep` replaces it per
+    /// request (owner decision #3).
     pub fn install_sweep(&mut self, detector: Detector, mode: Mode) {
         self.installed.epoch();
         self.installed.sweep = Some((detector, mode));
@@ -250,9 +253,16 @@ impl Application {
             req.header("sec-ch-ua").unwrap_or(""),
         )
         .unwrap_or_default();
-        let sweep = match (self.installed.sweep.as_mut(), monotonic) {
-            (Some((detector, mode)), Some(now)) => Some(
-                gates::sweep(&subject, &route, *mode, || {
+        // Owner decision #3: the overlay's `gate.recon_sweep` replaces the
+        // installed boot mode on this request.
+        let sweep_mode = self
+            .installed
+            .sweep
+            .as_ref()
+            .map(|(_, boot)| self.gate_mode("gate.recon_sweep", *boot));
+        let sweep = match (self.installed.sweep.as_mut(), sweep_mode, monotonic) {
+            (Some((detector, _)), Some(mode), Some(now)) => Some(
+                gates::sweep(&subject, &route, mode, || {
                     detector
                         .observe(&binding, sid, now)
                         .map(|counted| matches!(counted, Sweep::Counted { sweeping: true, .. }))

@@ -45,7 +45,7 @@ impl Default for Edge {
     }
 }
 
-fn mode_name(mode: Mode) -> &'static str {
+pub(super) fn mode_name(mode: Mode) -> &'static str {
     match mode {
         Mode::Off => "off",
         Mode::Monitor => "monitor",

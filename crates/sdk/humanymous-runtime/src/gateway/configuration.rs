@@ -10,6 +10,7 @@ mod edge;
 pub mod exposure;
 mod ip_reputation;
 mod operational;
+pub mod recon_sweep;
 pub use admin::{AdminListener, ModelSource};
 pub use audit::{Audit, MAX_WITNESS_PROOF, SealedKeys, WitnessInput, WitnessInputDurability};
 pub use edge::Edge;
@@ -88,6 +89,10 @@ pub struct Configuration {
     /// absent installs no credential gate. See [`credentials`].
     #[serde(default)]
     pub credentials: Option<credentials::Credentials>,
+    /// Decision-probing sweep gate (HR-30, owner decision #2); absent
+    /// installs none. See [`recon_sweep`].
+    #[serde(default)]
+    pub recon_sweep: Option<recon_sweep::ReconSweep>,
 }
 
 /// Distinct integrity contracts. A browser subset never claims full wire binding.
@@ -210,6 +215,10 @@ impl Configuration {
                 .credentials
                 .as_ref()
                 .is_some_and(|credentials| credentials.validate().is_err())
+            || self
+                .recon_sweep
+                .as_ref()
+                .is_some_and(|sweep| sweep.config().is_none())
             || self.edge.hsts && self.tls.is_none()
         {
             return Err(bad);
