@@ -3,9 +3,9 @@ id: plan:root/20261121201500
 title: Lane H delegated gate decisions
 status: active
 created: 2026-11-21T20:15:00Z
-updated: 2026-11-22T05:30:00Z
+updated: 2026-11-22T08:40:00Z
 rel:
-  governs: [crates/sdk/humanymous-runtime/src/gateway/admin_plane.rs, crates/sdk/humanymous-runtime/src/gateway/application.rs, crates/sdk/humanymous-runtime/src/gateway/application/gates.rs, crates/sdk/humanymous-runtime/src/gateway/application/edge.rs, crates/sdk/humanymous-runtime/src/gateway/service.rs, crates/sdk/humanymous-runtime/src/gateway/service/admin.rs, crates/sdk/humanymous-runtime/src/gateway/configuration.rs]
+  governs: [crates/sdk/humanymous-runtime/src/gateway/admin_plane.rs, crates/sdk/humanymous-runtime/src/gateway/application.rs, crates/sdk/humanymous-runtime/src/gateway/application/gates.rs, crates/sdk/humanymous-runtime/src/gateway/application/edge.rs, crates/sdk/humanymous-runtime/src/gateway/service.rs, crates/sdk/humanymous-runtime/src/gateway/service/admin.rs, crates/sdk/humanymous-runtime/src/gateway/configuration.rs, crates/sdk/humanymous-runtime/src/gateway/configuration/recon_sweep.rs]
   depends_on: [sot:root/runtime-application, plan:root/20261119180000, plan:root/20261119160000]
 ---
 
@@ -51,8 +51,13 @@ scoring inputs. A11y gating is untouched.
   source when #2, #4 and #7 compose their gates. Deliberate difference: with
   no overlay entry Go enforced; here the configured boot mode applies, whose
   default is `enforce`.
-- [ ] #2 sweep gate: install the sweep detector from configuration in the
-  mode #3 selects.
+- [x] #2 sweep gate (2026-11-22): the optional `recon_sweep` object installs
+  the detector (`configuration::recon_sweep`, Go's 30 s window and
+  8-session threshold by default, an explicit binding bound); refused
+  bounds stop startup; readiness reports the values. Its boot mode is
+  replaced per request by the overlay's `gate.recon_sweep` (#3); Go
+  TestSettingsReconMonitorAuditsWithoutBlocking is ported
+  (`settings_overlay_sets_the_sweep_mode`).
 - [ ] #4 verdict tokens and presets: compose the `hmn_vt` issuer behind a
   configured key (none: upgrades stay denied, HR-26) and route presets with
   the attestation floor. The open #78 stack (B12 route presets) is the

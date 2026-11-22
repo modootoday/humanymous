@@ -1,6 +1,7 @@
 //! Actual Unix IPC/listener/custody boundaries; execution requires allocation.
 mod credentials;
 mod exposure;
+mod recon_sweep;
 mod settings_operator;
 mod trusted_proxies;
 mod witness_input;

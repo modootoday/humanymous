@@ -518,7 +518,15 @@ proxied requests. Same detection freeze as above.
   a client address (the loopback PROXY v2 edge or a public listener), which
   the fan-out subnet needs, so a loopback service without the edge refuses
   startup; without an attributed client the fast path is withheld. The sweep
-  gate is not installed by the service.
+  gate is installed from the optional `recon_sweep` object (2026-11-22, owner
+  decision #2; Go `NewSweepDetector(30*time.Second, 8)`): `mode` (boot mode
+  of `gate.recon_sweep`, default `enforce`), `window_ms` (default 30000, at
+  most one hour), `max_sessions` (default 8, at most 4096) and the required
+  `max_bindings` (at most 2^20; Go was unbounded). A zero or out-of-range
+  bound refuses startup; without the object no detector is installed, where
+  Go always built one. Readiness reports `profile.recon_sweep` with the four
+  values. The active settings overlay's `gate.recon_sweep` replaces the boot
+  mode per request (owner decision #3).
 - A trust upgrade forwards without scoring; its record carries the request
   id and commitment of the ALLOW, so an `upstream.error` links to it. A deny
   answers Go's 403 with the incident pointer and, after authorization, the
@@ -596,16 +604,16 @@ threshold, hard-rule predicate, verdict band or signal ID.
   - #2: provisioning is configuration-driven. Nothing is installed when it is
     not configured, and a configured but unreadable input fails closed at
     startup. Done: the ban store (`admin.bans`), agent auth, PAT and WebAuthn
-    (`credentials`). Pending: the sweep gate, whose mode is #3.
+    (`credentials`) and the sweep gate (`recon_sweep`, 2026-11-22).
   - #3: per-gate default modes and the settings overlay on the request path
     take Go's defaults at 981d25c (`enforce` for every known gate). Modes
     are not weights or thresholds, so the detection freeze is untouched.
     Composed (2026-11-22): the request path reads the active settings
     overlay on every request; an explicit gate mode replaces the configured
     boot mode, and a gate the overlay leaves out keeps it (Go enforced; the
-    boot default is `enforce`). Read for `gate.ban` and `gate.spoof_header`;
-    the verdict-token, sweep, injection and attestation-floor gates read it
-    once #2, #4 and #7 compose them.
+    boot default is `enforce`). Read for `gate.ban`, `gate.spoof_header` and
+    `gate.recon_sweep`; the verdict-token, injection and attestation-floor
+    gates read it once #4 and #7 compose them.
   - #4: port Go's `hmn_vt` issuer, key-gated, with route presets and the
     attestation floor. Without a key, upgrades stay denied (HR-26), as Go
     without a token key. The token, verdict-token gate and route-preset
