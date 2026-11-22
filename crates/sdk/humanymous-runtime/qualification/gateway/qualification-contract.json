@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 952,
-      "macos": 952,
-      "windows": 906
+      "linux": 956,
+      "macos": 956,
+      "windows": 910
     },
     "common_test_names": [
       "gateway::accept::tests::accept_serves_a_real_connection",
@@ -45,6 +45,10 @@
       "gateway::admin_plane::chain::tests::r131_nil_witness_public_omits_witnessed_field",
       "gateway::admin_plane::chain::tests::unadmitted_incident_lookups_are_capped",
       "gateway::admin_plane::chain::tests::wargame_r166_meta_audit_on_ban_list_keeps_the_chain_intact",
+      "gateway::admin_plane::metrics::tests::a_bare_plane_reports_zeros_and_no_config_version",
+      "gateway::admin_plane::metrics::tests::any_role_reads_and_anonymous_is_refused",
+      "gateway::admin_plane::metrics::tests::golden_fresh_and_applied_expositions",
+      "gateway::admin_plane::metrics::tests::uptime_kill_switch_bans_and_label_escaping",
       "gateway::admin_plane::models::tests::activation_keeps_every_score_and_verdict",
       "gateway::admin_plane::models::tests::digest_mismatch_is_a_conflict_at_request_and_at_commit",
       "gateway::admin_plane::models::tests::failed_audit_answers_503_and_changes_nothing",

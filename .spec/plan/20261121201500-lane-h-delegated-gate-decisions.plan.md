@@ -3,7 +3,7 @@ id: plan:root/20261121201500
 title: Lane H delegated gate decisions
 status: active
 created: 2026-11-21T20:15:00Z
-updated: 2026-11-21T20:15:00Z
+updated: 2026-11-22T00:40:00Z
 rel:
   governs: [crates/sdk/humanymous-runtime/src/gateway/admin_plane.rs, crates/sdk/humanymous-runtime/src/gateway/application/gates.rs, crates/sdk/humanymous-runtime/src/gateway/application/edge.rs, crates/sdk/humanymous-runtime/src/gateway/service.rs, crates/sdk/humanymous-runtime/src/gateway/service/admin.rs, crates/sdk/humanymous-runtime/src/gateway/configuration.rs]
   depends_on: [sot:root/runtime-application, plan:root/20261119180000, plan:root/20261119160000]
@@ -28,7 +28,7 @@ scoring inputs. A11y gating is untouched.
 
 - [x] Record the decisions in `sot:root/runtime-application` and correct the
   ledger gaps that called them open (2026-11-21).
-- [ ] #5 metrics: `GET metrics` on the admin listener with Go's
+- [x] #5 metrics (2026-11-22, audit-chain and operational-log families still to wire): `GET metrics` on the admin listener with Go's
   `hmn_gate_*` names, HELP/TYPE text, label sets and `prometheusLabel`
   escaping, pinned against a Go capture. Sources the service has: uptime,
   active bans, kill switch, effective monitor, settings overlay, pending

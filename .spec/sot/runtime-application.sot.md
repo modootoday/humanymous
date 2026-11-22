@@ -587,8 +587,8 @@ threshold, hard-rule predicate, verdict band or signal ID.
   per-process key gives the same policy a new version after a restart, as
   Go's did without `HMN_TOKEN_KEY`. The adapter authority's
   `adapter.decision` record (no Go counterpart) and the settings journal
-  binding keep the provisioned scope revision. The Prometheus label belongs
-  to the metrics of decision #5, not yet ported.
+  binding keep the provisioned scope revision. The admin `metrics` route
+  carries the same version as its `hmn_gate_config_version` label.
 - **#2 provisioning, #3 gate modes, #4 verdict tokens, #5 metrics, #7 HTML
   injection (same comment; recorded 2026-11-21, plan
   `plan:root/20261121201500`).** The delegation also decided these. They are
@@ -605,7 +605,14 @@ threshold, hard-rule predicate, verdict band or signal ID.
     without a token key. The token, verdict-token gate and route-preset
     kernels are ported; issuing and preset routing are not composed.
   - #5: port Go's Prometheus metric names and labels, served on the admin
-    listener only. Not ported.
+    listener only. `GET metrics` (2026-11-22, `gateway::admin_plane::metrics`,
+    any role) emits Go's text exposition, pinned against a 981d25c capture:
+    uptime, active bans, projection drops (0: no projection sink), kill
+    switch, effective monitor, the settings families and the config-version
+    label. Not emitted: the four audit-chain families (no chain attached to
+    the admin listener), the four operational-log families (the logger is
+    not shared with the admin plane) and Go's runtime gauges (no Rust
+    counterpart).
   - #7: port HTML loader injection as an opt-in that is off by default,
     because it mutates responses. The injector kernel is ported; no served
     route uses it.
