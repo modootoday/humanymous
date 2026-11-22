@@ -60,6 +60,20 @@ pub struct Policy {
 }
 
 impl Policy {
+    /// `(kill switch, effective monitor)` now: the live flag, and the boot
+    /// global monitor or the kill switch (Go `monitorOn`).
+    pub(super) fn switches(&self) -> (bool, bool) {
+        let kill = self.kill_switch.load(Ordering::SeqCst);
+        (kill, self.boot.global_monitor || kill)
+    }
+
+    /// The signed effective-policy version now (Go `ConfigVersion`).
+    pub(super) fn version(&self) -> String {
+        let kill = self.kill_switch.load(Ordering::SeqCst);
+        let active = self.active.read().unwrap_or_else(PoisonError::into_inner);
+        self.boot.config_version(kill, active.as_ref())
+    }
+
     /// `boot` is the boot configuration slice (global monitor, route presets,
     /// rate thresholds and the verdict-token key the version is keyed with),
     /// `kill_switch` the live kill-switch flag and `active` the active

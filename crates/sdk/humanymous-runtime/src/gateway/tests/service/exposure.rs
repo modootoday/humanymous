@@ -252,6 +252,25 @@ async fn unix_admin_listener_binds_the_signed_policy_version() {
     assert_eq!(body["configVersion"], version.as_str());
     assert_eq!(body["killSwitch"], false);
     assert_eq!(body["rateLimit"]["windowSec"], 10);
+    // Owner decision #5: Prometheus metrics on the admin listener only, with
+    // the same signed version as a label.
+    let metrics = tokio::task::spawn_blocking(move || {
+        admin_get(admin_address, "/_humanymous/admin/metrics", Some(TOKEN))
+    })
+    .await
+    .unwrap();
+    assert!(metrics.starts_with("HTTP/1.1 200"), "{metrics}");
+    assert!(
+        metrics.contains("text/plain; version=0.0.4; charset=utf-8"),
+        "{metrics}"
+    );
+    assert!(
+        metrics.contains(&format!(
+            "hmn_gate_config_version{{version=\"{version}\"}} 1"
+        )),
+        "{metrics}"
+    );
+    assert!(metrics.contains("hmn_gate_bans_active 0"), "{metrics}");
     sender
         .send(Some(StopBudget::new(1000, 1000, 5000).unwrap().request()))
         .unwrap();

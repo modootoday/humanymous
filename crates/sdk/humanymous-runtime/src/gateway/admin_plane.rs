@@ -70,8 +70,9 @@
 //!   served only when a [`settings::Settings`] engine is attached with
 //!   [`AdminPlane::with_settings`] (see [`settings`]); otherwise they answer
 //!   404 after authentication (Go answered 503 without a store).
-//! - The metrics and virtual-USB routes are not served here; they answer 404
-//!   after authentication.
+//! - `GET metrics` is Go's Prometheus exposition for any role (owner decision
+//!   #5); see [`metrics`]. The virtual-USB routes are not served here; they
+//!   answer 404 after authentication.
 //! - JSON numbers use Go `encoding/json` text (`1`, not `1.0`).
 //!
 //! The operator ops routes of legacy cmd/server/ops.go (liveness, score
@@ -93,6 +94,7 @@
 //! there.
 pub mod chain;
 pub mod erasure;
+pub mod metrics;
 pub mod models;
 pub mod ops;
 pub mod policy;
@@ -302,6 +304,7 @@ impl Matcher {
 #[derive(Clone, Copy)]
 enum Handler {
     ListBans,
+    Metrics,
     Integrity,
     Proof,
     Audit,
@@ -332,7 +335,7 @@ enum Handler {
 }
 
 /// Ordered dispatch and capability table (Go `adminRoutes`, served subset).
-const ROUTES: [(&str, Matcher, Capability, Handler); 29] = [
+const ROUTES: [(&str, Matcher, Capability, Handler); 30] = [
     (
         "GET",
         Matcher::Exact("bans"),
@@ -368,6 +371,12 @@ const ROUTES: [(&str, Matcher, Capability, Handler); 29] = [
         Matcher::Exact("policy"),
         Capability::Read,
         Handler::Policy,
+    ),
+    (
+        "GET",
+        Matcher::Exact("metrics"),
+        Capability::Read,
+        Handler::Metrics,
     ),
     (
         "GET",
@@ -668,6 +677,7 @@ impl AdminPlane {
                 Handler::Keys => self.keys(),
                 Handler::Checkpoints => self.checkpoints(),
                 Handler::Policy => self.policy_view(),
+                Handler::Metrics => self.metrics_view(clock),
                 Handler::Console => Self::console_page(),
                 Handler::SettingsEffective => self.settings_effective(clock),
                 Handler::SettingsSchema => self.settings_schema(),
