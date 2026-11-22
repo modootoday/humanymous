@@ -3,9 +3,9 @@ id: plan:root/20261121201500
 title: Lane H delegated gate decisions
 status: active
 created: 2026-11-21T20:15:00Z
-updated: 2026-11-22T00:40:00Z
+updated: 2026-11-22T05:30:00Z
 rel:
-  governs: [crates/sdk/humanymous-runtime/src/gateway/admin_plane.rs, crates/sdk/humanymous-runtime/src/gateway/application/gates.rs, crates/sdk/humanymous-runtime/src/gateway/application/edge.rs, crates/sdk/humanymous-runtime/src/gateway/service.rs, crates/sdk/humanymous-runtime/src/gateway/service/admin.rs, crates/sdk/humanymous-runtime/src/gateway/configuration.rs]
+  governs: [crates/sdk/humanymous-runtime/src/gateway/admin_plane.rs, crates/sdk/humanymous-runtime/src/gateway/application.rs, crates/sdk/humanymous-runtime/src/gateway/application/gates.rs, crates/sdk/humanymous-runtime/src/gateway/application/edge.rs, crates/sdk/humanymous-runtime/src/gateway/service.rs, crates/sdk/humanymous-runtime/src/gateway/service/admin.rs, crates/sdk/humanymous-runtime/src/gateway/configuration.rs]
   depends_on: [sot:root/runtime-application, plan:root/20261119180000, plan:root/20261119160000]
 ---
 
@@ -37,10 +37,20 @@ scoring inputs. A11y gating is untouched.
   admin listener (`AdminPlane::with_chain`), which is a step of its own; Go
   runtime gauges (goroutines, heap, sys) have no Rust counterpart and are a
   recorded deviation.
-- [ ] #3 gate modes: Go's default module modes at 981d25c as a golden, the
-  effective settings overlay consumed on the request path for `gate.ban`,
-  `gate.verdict_token`, `gate.recon_sweep`, `gate.inject` and
-  `gate.attest_floor`.
+- [x] #3 gate modes (2026-11-22, for the composed gates): Go's default
+  module modes at 981d25c are `enforce` for every known gate
+  (`settings/resolve.go` `defaultGates`, `GateMode`), which the boot
+  defaults `edge.ban` and `edge.spoof_header` already pin
+  (`configuration::edge` tests). The active overlay the settings engine
+  publishes is read on every request (`Application::install_gate_overlay`,
+  `gate_mode`): an explicit mode replaces the boot mode, a gate the overlay
+  leaves out keeps it. Composed: `gate.ban` and `gate.spoof_header`. Go
+  TestSettingsGateBanMonitorIsAuditOnly is ported
+  (`settings_overlay_ban_monitor_is_audit_only`). `gate.verdict_token`,
+  `gate.recon_sweep`, `gate.inject` and `gate.attest_floor` read the same
+  source when #2, #4 and #7 compose their gates. Deliberate difference: with
+  no overlay entry Go enforced; here the configured boot mode applies, whose
+  default is `enforce`.
 - [ ] #2 sweep gate: install the sweep detector from configuration in the
   mode #3 selects.
 - [ ] #4 verdict tokens and presets: compose the `hmn_vt` issuer behind a
