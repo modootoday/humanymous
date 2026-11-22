@@ -407,6 +407,11 @@ impl ServiceHost {
             // Owner decision #8: records carry the version the admin `policy`
             // view reports, in place of `scope.revision`.
             application.install_signed_policy(admin.signed_policy());
+            // Owner decision #3: the settings overlay's explicit gate modes
+            // override the configured boot modes on the request path.
+            if let Some(slot) = admin.gate_overlay() {
+                application.install_gate_overlay(slot);
+            }
         } else {
             // Owner decision #8 without an admin listener: Go always stamped
             // `Server.configVersion()`. The boot slice has no route presets,

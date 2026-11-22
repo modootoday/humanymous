@@ -108,6 +108,10 @@ pub struct Application {
     /// Signed effective-policy version source (owner decision #8), once
     /// installed; records carry `scope.revision` until then.
     signed_policy: Option<crate::gateway::settings::configsign::SignedPolicy>,
+    /// Active settings overlay whose explicit gate modes override the boot
+    /// modes on the request path (owner decision #3), once installed.
+    gate_overlay:
+        Option<Arc<std::sync::RwLock<Option<crate::gateway::settings::overlay::Overlay>>>>,
 }
 impl Application {
     /// Compose existing services without changing policy or deriving new tells.
@@ -132,6 +136,7 @@ impl Application {
             ready: ReadySwitch::default(),
             sweep_interval: maintenance::INTERVAL,
             signed_policy: None,
+            gate_overlay: None,
         })
     }
 
@@ -147,6 +152,45 @@ impl Application {
         policy: crate::gateway::settings::configsign::SignedPolicy,
     ) {
         self.signed_policy = Some(policy);
+    }
+
+    /// Read gate modes from the active settings overlay (owner decision #3,
+    /// Go `gateModuleMode`): a mode the overlay names for a gate replaces that
+    /// gate's boot mode from the configuration; a gate the overlay leaves out
+    /// keeps its boot mode. Read on every request, so the overlay the settings
+    /// engine publishes (applied, rolled back, or cleared on expiry by the
+    /// admin sweep) governs the next request. Gates read here: `gate.ban` and
+    /// `gate.spoof_header`; the other gate kernels are not yet composed.
+    pub fn install_gate_overlay(
+        &mut self,
+        slot: Arc<std::sync::RwLock<Option<crate::gateway::settings::overlay::Overlay>>>,
+    ) {
+        self.gate_overlay = Some(slot);
+    }
+
+    /// The mode of gate `id` now: the active overlay's explicit mode, else
+    /// `boot`. A mode spelling the validator would refuse never reaches an
+    /// active overlay; if one did it enforces (Go's default).
+    pub(in crate::gateway) fn gate_mode(
+        &self,
+        id: &str,
+        boot: crate::gateway::ban::gate::Mode,
+    ) -> crate::gateway::ban::gate::Mode {
+        use crate::gateway::ban::gate::Mode as Gate;
+        use crate::gateway::settings::overlay::Mode as Overlay;
+        let Some(slot) = &self.gate_overlay else {
+            return boot;
+        };
+        let active = slot
+            .read()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        match active.as_ref().and_then(|overlay| overlay.gates.get(id)) {
+            None => boot,
+            Some(Overlay::Off) => Gate::Off,
+            Some(Overlay::Monitor) => Gate::Monitor,
+            Some(Overlay::Shadow) => Gate::Shadow,
+            Some(Overlay::Enforce | Overlay::Other(_)) => Gate::Enforce,
+        }
     }
 
     /// `config_version` of a record written now.

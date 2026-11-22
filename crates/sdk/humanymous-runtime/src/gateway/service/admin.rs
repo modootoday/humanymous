@@ -72,6 +72,9 @@ pub(in crate::gateway) struct AdminService {
     operators: usize,
     signed: SignedPolicy,
     models: Option<serde_json::Value>,
+    /// The active-overlay slot the settings engine mirrors, when settings are
+    /// configured.
+    overlay: Option<Arc<RwLock<Option<Overlay>>>>,
 }
 
 fn clock(epoch: Instant) -> io::Result<Clock> {
@@ -160,6 +163,7 @@ impl AdminService {
             kill_switch.clone(),
             active.clone(),
         ));
+        let overlay_slot = active.clone();
         let signed = SignedPolicy::new(boot, kill_switch, active);
         let mut models = None;
         if let Some(source) = &admin.models {
@@ -177,6 +181,7 @@ impl AdminService {
             operators: admin.operators.len(),
             signed,
             models,
+            overlay: admin.settings_dir.as_ref().map(|_| overlay_slot),
         })
     }
 
@@ -194,6 +199,12 @@ impl AdminService {
     /// (owner decision #8); it shares the `policy` view's inputs.
     pub(in crate::gateway) fn signed_policy(&self) -> SignedPolicy {
         self.signed.clone()
+    }
+
+    /// The active-overlay slot whose gate modes the request path reads (owner
+    /// decision #3), when a settings engine mirrors into it.
+    pub(in crate::gateway) fn gate_overlay(&self) -> Option<Arc<RwLock<Option<Overlay>>>> {
+        self.overlay.clone()
     }
 
     /// Readiness facts; no tokens, ids or keys.

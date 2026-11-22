@@ -972,3 +972,136 @@ mod dual_control {
         }
     }
 }
+
+/// Active-overlay slot holding `gates` (owner decision #3).
+fn overlay_slot(
+    gates: &[(&str, crate::gateway::settings::overlay::Mode)],
+) -> Arc<std::sync::RwLock<Option<crate::gateway::settings::overlay::Overlay>>> {
+    let overlay = crate::gateway::settings::overlay::Overlay {
+        schema_version: "1.0.0".into(),
+        overlay_id: "ovl_test".into(),
+        status: "active".into(),
+        gates: gates
+            .iter()
+            .map(|(id, mode)| ((*id).to_owned(), mode.clone()))
+            .collect(),
+        ..Default::default()
+    };
+    Arc::new(std::sync::RwLock::new(Some(overlay)))
+}
+
+/// Go TestSettingsGateBanMonitorIsAuditOnly at 981d25c: with the configured
+/// ban gate enforcing, an overlay naming `gate.ban: monitor` lets a flood
+/// past the hard threshold through, creates no ban and records
+/// `would_auto_ban` in mode `monitor`. Clearing the overlay restores the
+/// boot mode on the next request.
+#[tokio::test]
+async fn settings_overlay_ban_monitor_is_audit_only() {
+    use crate::gateway::settings::overlay::Mode as Overlay;
+    let origin = Origin::start(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok").await;
+    let store = ban_store(1, 2);
+    let slot = overlay_slot(&[("gate.ban", Overlay::Monitor)]);
+    let audit = Audit::default();
+    let cfg = edge_config(origin.address);
+    assert_eq!(cfg.edge.ban, Mode::Enforce);
+    let mut app = Application::new(cfg, Default::default(), Box::new(audit.clone())).unwrap();
+    app.install_bans(store.clone(), Instant::now()).unwrap();
+    app.install_gate_overlay(slot.clone());
+    let (address, server) = serve(app).await;
+    for i in 0..4 {
+        let reply = from(address, [198, 51, 100, 44], &plain("/data", &[])).await;
+        assert_ne!(reply.status, 403, "monitor request {i} blocked");
+    }
+    assert!(store.lock().unwrap().list(Duration::ZERO).is_empty());
+    assert!(
+        records(&audit, "ratelimit.hard_exceeded")
+            .iter()
+            .any(|r| r.enforcement_mode == "monitor" && r.enforcement_action == "would_auto_ban")
+    );
+    // Rolled back: the boot mode (enforce) applies to the next requests.
+    *slot.write().unwrap() = None;
+    let mut statuses = Vec::new();
+    for _ in 0..4 {
+        statuses.push(
+            from(address, [198, 51, 100, 45], &plain("/data", &[]))
+                .await
+                .status,
+        );
+    }
+    assert!(statuses.contains(&403), "{statuses:?}");
+    assert!(!store.lock().unwrap().list(Duration::ZERO).is_empty());
+    server.abort();
+}
+
+/// A gate the overlay does not name keeps its configured boot mode.
+#[tokio::test]
+async fn settings_overlay_without_the_gate_keeps_the_boot_mode() {
+    use crate::gateway::settings::overlay::Mode as Overlay;
+    let origin = Origin::start(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok").await;
+    let store = ban_store(1, 2);
+    let mut app = Application::new(
+        edge_config(origin.address),
+        Default::default(),
+        Box::new(Audit::default()),
+    )
+    .unwrap();
+    app.install_bans(store.clone(), Instant::now()).unwrap();
+    app.install_gate_overlay(overlay_slot(&[
+        ("gate.inject", Overlay::Monitor),
+        ("gate.spoof_header", Overlay::Monitor),
+    ]));
+    let (address, server) = serve(app).await;
+    let mut statuses = Vec::new();
+    for _ in 0..4 {
+        statuses.push(
+            from(address, [198, 51, 100, 46], &plain("/data", &[]))
+                .await
+                .status,
+        );
+    }
+    assert!(statuses.contains(&403), "{statuses:?}");
+    server.abort();
+}
+
+/// The overlay's `gate.spoof_header` replaces the boot mode both ways: monitor
+/// over a configured enforce records mode `monitor` and continues; enforce
+/// over a configured monitor denies.
+#[test]
+fn settings_overlay_sets_the_spoof_header_mode() {
+    use crate::gateway::settings::overlay::Mode as Overlay;
+    let req = plain("/api/thing", &[("Forwarded", "for=9.9.9.9")]);
+    let audit = Audit::default();
+    let mut app = Application::new(config(), Default::default(), Box::new(audit.clone())).unwrap();
+    app.install_gate_overlay(overlay_slot(&[("gate.spoof_header", Overlay::Monitor)]));
+    assert_eq!(
+        app.decide(&req, || Ok(10_000)).err(),
+        Some(crate::gateway::Rejection::new(409, "route_inventory"))
+    );
+    let record = records(&audit, "hdr.internal_header_ingress")
+        .pop()
+        .unwrap();
+    assert_eq!(record.enforcement_mode, "monitor");
+
+    let audit = Audit::default();
+    let mut cfg = config();
+    cfg.edge.spoof_header = Mode::Monitor;
+    let mut app = Application::new(cfg, Default::default(), Box::new(audit.clone())).unwrap();
+    app.install_gate_overlay(overlay_slot(&[("gate.spoof_header", Overlay::Enforce)]));
+    assert!(matches!(
+        app.decide(&req, || Ok(10_000)),
+        Ok(Decision::Gate(crate::gateway::application::GateResponse {
+            status: 403,
+            ..
+        }))
+    ));
+    let record = records(&audit, "hdr.internal_header_ingress")
+        .pop()
+        .unwrap();
+    assert_eq!(
+        (
+            record.enforcement_action.as_str(),
+            record.enforcement_mode.as_str()
+        ),
+        ("block", "enforce")
+    );
+}

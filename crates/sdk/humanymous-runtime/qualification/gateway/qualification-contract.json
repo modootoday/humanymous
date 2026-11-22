@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 956,
-      "macos": 956,
-      "windows": 910
+      "linux": 959,
+      "macos": 959,
+      "windows": 913
     },
     "common_test_names": [
       "gateway::accept::tests::accept_serves_a_real_connection",
@@ -768,6 +768,9 @@
       "gateway::tests::edge::ip_rotating_flood_is_banned_by_fingerprint_on_the_served_path",
       "gateway::tests::edge::poisoned_epoch_is_not_ready",
       "gateway::tests::edge::readiness_probe_drains_and_liveness_stays_ok",
+      "gateway::tests::edge::settings_overlay_ban_monitor_is_audit_only",
+      "gateway::tests::edge::settings_overlay_sets_the_spoof_header_mode",
+      "gateway::tests::edge::settings_overlay_without_the_gate_keeps_the_boot_mode",
       "gateway::tests::edge::spoof_gate_monitor_records_and_continues",
       "gateway::tests::edge::spoof_gate_monitor_strips_forged_headers_before_scoring",
       "gateway::tests::edge::spoofed_trust_headers_are_denied_before_origin",

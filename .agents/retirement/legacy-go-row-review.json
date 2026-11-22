@@ -3613,7 +3613,7 @@
     "erasure shred runner: the service now composes the admin plane, but nothing stages ledger-issued erasure permits and no periodic AdminPlane::run_due_shreds caller runs",
     "verdict-token minting on the served path: port Go's key-gated issuer, decided by owner decision #4 (issue #75 comment 7017558784), not yet ported (plan:root/20261121201500)",
     "projection/operational metrics: gateway::admin_plane::metrics serves Go's names and labels on the admin listener (owner decision #5) except hmn_gate_audit_records_total, audit_checkpoints_total, audit_integrity_ok and audit_witnessed (no audit chain attached to the admin listener), the four operational_log_* families (the binary's logger is not shared with the admin plane) and the Go runtime gauges goroutines, heap_alloc_bytes and sys_bytes (no Rust counterpart, accepted deviation)",
-    "settings-driven module modes: Go's default modes at 981d25c as goldens, decided by owner decision #3 (issue #75 comment 7017558784), not yet ported (plan:root/20261121201500)"
+    "settings-driven module modes (owner decision #3, issue #75 comment 7017558784): composed for gate.ban and gate.spoof_header (the active overlay's explicit mode replaces the boot mode, whose default is Go's enforce); gate.verdict_token, gate.recon_sweep, gate.inject and gate.attest_floor read it once their gates are composed (plan:root/20261121201500)"
    ],
    "retire_basis": null,
    "confidence": "medium",
@@ -4503,7 +4503,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings.rs",
     "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs",
     "crates/sdk/humanymous-runtime/src/gateway/gates.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/metrics.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/metrics.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_hot_apply_preserves_counters",
@@ -4513,11 +4514,13 @@
     "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::verdict_token_gate_matches_go",
     "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::sweep_gate_matches_go",
     "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::attestation_floor_audit_matches_go",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/metrics/tests.rs::golden_fresh_and_applied_expositions"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/metrics/tests.rs::golden_fresh_and_applied_expositions",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::settings_overlay_ban_monitor_is_audit_only",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::settings_overlay_without_the_gate_keeps_the_boot_mode"
    ],
    "go_test_map": {
     "TestSettingsRateHotApplyPreservesCounters": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_hot_apply_preserves_counters",
-    "TestSettingsGateBanMonitorIsAuditOnly": null,
+    "TestSettingsGateBanMonitorIsAuditOnly": "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::settings_overlay_ban_monitor_is_audit_only",
     "TestSettingsVerdictTokenMonitorDoesNotFastPath": "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::verdict_token_gate_matches_go",
     "TestSettingsReconMonitorAuditsWithoutBlocking": "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::sweep_gate_matches_go",
     "TestSettingsInjectMonitorLeavesHTMLUntouched": null,
@@ -4526,7 +4529,7 @@
     "TestSettingsMetricsReflectApply": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/metrics/tests.rs::golden_fresh_and_applied_expositions"
    },
    "gaps": [
-    "per-gate monitor modes on the request path (gate.ban audit-only, verdict_token fast path, recon_sweep, inject, attest_floor): Go's default modes are owner decision #3 (decided, not yet ported; plan:root/20261121201500) and the hosted gateway does not consume the effective overlay; the gate kernels take a mode (gateway::gates, FM11 lane D), but no settings overlay supplies gate.verdict_token, gate.recon_sweep or gate.attest_floor at run time"
+    "per-gate monitor modes on the request path for the gates not yet composed (verdict_token fast path, recon_sweep, inject, attest_floor): owner decision #3 is composed for gate.ban and gate.spoof_header (Application::gate_mode reads the active overlay on every request, 2026-11-22); the other gate kernels take a mode (gateway::gates, FM11 lane D) and read the same source once owner decisions #2, #4 and #7 compose them (plan:root/20261121201500); TestSettingsInjectMonitorLeavesHTMLUntouched waits on #7"
    ],
    "retire_basis": null,
    "confidence": "medium",

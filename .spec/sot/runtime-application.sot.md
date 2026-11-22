@@ -598,8 +598,14 @@ threshold, hard-rule predicate, verdict band or signal ID.
     startup. Done: the ban store (`admin.bans`), agent auth, PAT and WebAuthn
     (`credentials`). Pending: the sweep gate, whose mode is #3.
   - #3: per-gate default modes and the settings overlay on the request path
-    take Go's defaults at 981d25c, captured as goldens. Modes are not
-    weights or thresholds, so the detection freeze is untouched. Not ported.
+    take Go's defaults at 981d25c (`enforce` for every known gate). Modes
+    are not weights or thresholds, so the detection freeze is untouched.
+    Composed (2026-11-22): the request path reads the active settings
+    overlay on every request; an explicit gate mode replaces the configured
+    boot mode, and a gate the overlay leaves out keeps it (Go enforced; the
+    boot default is `enforce`). Read for `gate.ban` and `gate.spoof_header`;
+    the verdict-token, sweep, injection and attestation-floor gates read it
+    once #2, #4 and #7 compose them.
   - #4: port Go's `hmn_vt` issuer, key-gated, with route presets and the
     attestation floor. Without a key, upgrades stay denied (HR-26), as Go
     without a token key. The token, verdict-token gate and route-preset
