@@ -173,7 +173,7 @@ impl Application {
         Some(Ok(Decision::Probe(status, body)))
     }
 
-    fn append_gate_record(
+    pub(super) fn append_gate_record(
         &mut self,
         record: crate::audit::record::Record,
     ) -> Result<(), Rejection> {
