@@ -333,6 +333,8 @@ impl Application {
         let collect = path == "/_humanymous/collect" || path == "/_humanymous/browser/collect";
         // Fields after a non-enforcing spoof gate stripped forged trust headers.
         let mut stripped = None;
+        // Owner decision #4: the matched route's preset (collect routes enforce).
+        let (mut enforcing, mut preset) = (true, "balanced");
         if collect {
             if req.method != "POST"
                 || req.target != path
@@ -356,6 +358,8 @@ impl Application {
                 .iter()
                 .find(|r| r.method == req.method && r.path == path)
                 .ok_or(Rejection::new(409, "route_inventory"))?;
+            enforcing = route.policy().enforce;
+            preset = route.policy().name;
             if route.rit_profile != profile {
                 return Err(Rejection::new(409, "route_integrity_profile"));
             }
@@ -380,7 +384,13 @@ impl Application {
         let correlation_id = commitment(req);
         if !collect {
             // Legacy ServeHTTP gates between route resolution and the verdict.
-            match self.run_gates(req, id, now, (&request_id, &correlation_id))? {
+            match self.run_gates(
+                req,
+                id,
+                now,
+                (&request_id, &correlation_id),
+                (enforcing, preset),
+            )? {
                 gates::Gated::Continue => {}
                 gates::Gated::Answer(decision) => return Ok(decision),
                 gates::Gated::Forward => {
@@ -517,7 +527,9 @@ impl Application {
             verdict: verdict.clone(),
             risk_score: risk as i64,
             enforcement_action: if collect { "collect" } else { &verdict }.into(),
-            enforcement_mode: "enforce".into(),
+            // Legacy applyVerdict: a non-enforcing preset (monitor, off)
+            // records mode `monitor` and passes through.
+            enforcement_mode: if enforcing { "enforce" } else { "monitor" }.into(),
             fail_mode: "fail_closed".into(),
             triggered_rules: (!rule.is_empty()).then(|| vec![rule]),
             ..Default::default()
@@ -527,7 +539,7 @@ impl Application {
             return Err(Rejection::new(503, "durable_audit"));
         }
         self.check_deadline(deadline, clock())?;
-        if verdict == "ALLOW" {
+        if verdict == "ALLOW" || !collect && !enforcing {
             Ok(Decision::Origin { deadline, upstream })
         } else {
             Ok(Decision::Local(

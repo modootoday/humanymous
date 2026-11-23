@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 968,
-      "macos": 968,
-      "windows": 919
+      "linux": 971,
+      "macos": 971,
+      "windows": 922
     },
     "common_test_names": [
       "gateway::accept::tests::accept_serves_a_real_connection",
@@ -772,6 +772,8 @@
       "gateway::tests::edge::ip_rotating_flood_is_banned_by_fingerprint_on_the_served_path",
       "gateway::tests::edge::poisoned_epoch_is_not_ready",
       "gateway::tests::edge::readiness_probe_drains_and_liveness_stays_ok",
+      "gateway::tests::edge::route_preset_monitor_and_off_pass_through_and_record_monitor",
+      "gateway::tests::edge::route_presets_are_validated_and_reported",
       "gateway::tests::edge::settings_overlay_ban_monitor_is_audit_only",
       "gateway::tests::edge::settings_overlay_inject_monitor_leaves_html_untouched",
       "gateway::tests::edge::settings_overlay_sets_the_spoof_header_mode",
@@ -791,6 +793,7 @@
       "gateway::tests::gates::forged_agent_signature_is_denied_before_scoring",
       "gateway::tests::gates::gate_deny_fields_precede_the_acknowledgement",
       "gateway::tests::gates::maintenance_sweeps_installed_gate_kernels",
+      "gateway::tests::gates::monitor_route_preset_stands_down_the_enforcing_sweep_gate",
       "gateway::tests::gates::pat_is_not_presentable_under_the_native_profile",
       "gateway::tests::gates::pat_upgrades_once_under_the_browser_profile",
       "gateway::tests::gates::settings_overlay_sets_the_sweep_mode",

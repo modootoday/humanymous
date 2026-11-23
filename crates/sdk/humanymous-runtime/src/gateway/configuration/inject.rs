@@ -5,7 +5,8 @@
 //! Off by default: without an `inject` object no response is changed. Go
 //! injected on every route its presets marked; here the operator lists the
 //! exact GET routes. Each must be an inventoried GET route on the
-//! buffered response profile, never a reserved route. The snippet is Go's:
+//! buffered response profile whose preset injects (not `off`), never a
+//! reserved route. The snippet is Go's:
 //! the idempotence marker and one `<script src="..." defer>` element whose
 //! `src` is `loader_src`. Go served `loader.js` from its control plane; the
 //! gateway serves no script (sot:root/client-collector forbids a
@@ -63,6 +64,7 @@ impl Inject {
                         route.method == "GET"
                             && &route.path == path
                             && route.response_profile == ResponseProfile::Buffered
+                            && route.policy().inject
                     })
             })
     }

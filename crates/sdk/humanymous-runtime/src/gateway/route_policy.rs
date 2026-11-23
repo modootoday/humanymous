@@ -14,7 +14,9 @@
 //! challenges every `Unknown` verdict. No other cell differs.
 //!
 //! This is a pure library. The hosted gateway still uses its exact route
-//! inventory; wiring presets into serving is not decided here.
+//! inventory; each inventoried route may name a preset
+//! (`configuration::Route::policy`, owner decision #4), while the prefix
+//! table here is not on the served path.
 use crate::gateway::verdict_store::Verdict;
 use std::collections::BTreeMap;
 

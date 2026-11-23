@@ -296,6 +296,28 @@ fn settings_overlay_sets_the_sweep_mode() {
     assert!(records(&off, "recon.decision_probing").is_empty());
 }
 
+/// Owner decision #4, route presets: on a `monitor` route the gates see a
+/// non-enforcing route (Go `enforcing(route)`), so an enforcing sweep gate
+/// neither counts nor denies, and every session is scored.
+#[test]
+fn monitor_route_preset_stands_down_the_enforcing_sweep_gate() {
+    let audit = Audit::default();
+    let mut cfg = config();
+    cfg.routes[0].preset = Some("monitor".into());
+    let mut app = app_with(cfg, &audit);
+    app.install_sweep(
+        Detector::new(SweepConfig::new(Duration::from_secs(30), 8, 1024).unwrap()),
+        Mode::Enforce,
+    );
+    for n in 1..=9 {
+        let req = signed_request(&mut app, &[]);
+        let decision = app.decide(&req, || Ok(NOW_MS)).unwrap();
+        assert!(!matches!(decision, Decision::Gate(_)), "request {n}");
+    }
+    assert!(records(&audit, "recon.decision_probing").is_empty());
+    assert_eq!(records(&audit, "runtime.decision").len(), 9);
+}
+
 /// A gate record that cannot be appended fails closed (503 durable_audit)
 /// and poisons the epoch instead of forwarding unaudited.
 #[test]
