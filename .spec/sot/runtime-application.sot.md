@@ -618,6 +618,12 @@ threshold, hard-rule predicate, verdict band or signal ID.
     attestation floor. Without a key, upgrades stay denied (HR-26), as Go
     without a token key. The token, verdict-token gate and route-preset
     kernels are ported; issuing and preset routing are not composed.
+    Go carries `hmn_vt` and the step-up proof `hmn_su` as cookies, which the
+    cookie-free browser profile above rejects, so the transport (server-side
+    sticky verdict on the RIT session, a signed header token, or the
+    route-scoped cookie contract first) is an owner choice recorded in issue
+    #75 (2026-11-23, `plan:root/20261123121500`). Route presets per
+    inventoried route do not depend on it.
   - #5: port Go's Prometheus metric names and labels, served on the admin
     listener only. `GET metrics` (2026-11-22, `gateway::admin_plane::metrics`,
     any role) emits Go's text exposition, pinned against a 981d25c capture:

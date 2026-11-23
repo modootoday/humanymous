@@ -3,7 +3,7 @@ id: plan:root/20261121201500
 title: Lane H delegated gate decisions
 status: active
 created: 2026-11-21T20:15:00Z
-updated: 2026-11-23T08:40:00Z
+updated: 2026-11-23T12:15:00Z
 rel:
   governs: [crates/sdk/humanymous-runtime/src/gateway/admin_plane.rs, crates/sdk/humanymous-runtime/src/gateway/application.rs, crates/sdk/humanymous-runtime/src/gateway/application/gates.rs, crates/sdk/humanymous-runtime/src/gateway/application/edge.rs, crates/sdk/humanymous-runtime/src/gateway/service.rs, crates/sdk/humanymous-runtime/src/gateway/service/admin.rs, crates/sdk/humanymous-runtime/src/gateway/configuration.rs, crates/sdk/humanymous-runtime/src/gateway/configuration/recon_sweep.rs, crates/sdk/humanymous-runtime/src/gateway/configuration/inject.rs, crates/sdk/humanymous-runtime/src/gateway/application/inject.rs]
   depends_on: [sot:root/runtime-application, plan:root/20261119180000, plan:root/20261119160000]
@@ -58,10 +58,12 @@ scoring inputs. A11y gating is untouched.
   replaced per request by the overlay's `gate.recon_sweep` (#3); Go
   TestSettingsReconMonitorAuditsWithoutBlocking is ported
   (`settings_overlay_sets_the_sweep_mode`).
-- [ ] #4 verdict tokens and presets: compose the `hmn_vt` issuer behind a
-  configured key (none: upgrades stay denied, HR-26) and route presets with
-  the attestation floor. The open #78 stack (B12 route presets) is the
-  starting point and is rebased onto `codex/rust` here.
+- [ ] #4 verdict tokens and presets: split out to `plan:root/20261123121500`
+  (2026-11-23). Go carries `hmn_vt` and `hmn_su` as cookies, and the runtime
+  browser profile is cookie-free (`sot:root/runtime-application`), so the
+  token transport is an owner choice (issue #75). Route presets per
+  inventoried route proceed without it. PR #78 is superseded by
+  `gateway::route_policy` and `configsign` on the base and is not rebased.
 - [x] #7 HTML injection (2026-11-22): the optional `inject` object composes
   `gateway::inject::Injector` on listed buffered GET routes
   (`gateway::application::inject`), with Go's snippet, identity upstream,
