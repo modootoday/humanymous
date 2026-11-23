@@ -532,9 +532,17 @@ proxied requests. Same detection freeze as above.
   answers Go's 403 with the incident pointer and, after authorization, the
   counter acknowledgement. Every record is appended before its effect; an
   append failure poisons the epoch and answers 503 `durable_audit`.
-- Every inventoried route enforces and none carries the attestation floor:
-  route presets and the kill switch are not on the served path, so the
-  attestation floor audit is never written there. The verdict-token gate is
+- Route presets (2026-11-23, owner decision #4, `plan:root/20261123121500`):
+  each inventoried route may name `strict`, `balanced`, `monitor` or `off`
+  (absent is `balanced`; matching stays exact). `monitor` and `off` pass a
+  non-ALLOW verdict through to the origin with the `runtime.decision` record
+  in mode `monitor` (Go `applyVerdict`), and the gates see the route as
+  non-enforcing; `strict` and `balanced` enforce as before (fail closed is
+  universal, scoring is always synchronous). `attested` is refused until
+  its step-up proof transport is decided, so no route carries the
+  attestation floor and its audit is never written. An `off` route cannot be
+  listed in `inject.routes`. Readiness names each route's preset. The kill
+  switch is not on the served path. The verdict-token gate is
   not composed because nothing on the served path mints `hmn_vt`; the upgrade
   gate therefore denies every WebSocket upgrade (HR-26), as Go did without a
   token key.

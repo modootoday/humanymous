@@ -23,8 +23,10 @@
 //!   served path has no request that skips request integrity, and a
 //!   credential is a trust upgrade over scoring only. The session is the
 //!   signed RIT session, not the legacy `hsid` cookie.
-//! - Every inventoried route enforces and none carries the attestation
-//!   floor: route presets and the kill switch are not on the served path.
+//! - The route is the matched inventoried route's preset (owner decision
+//!   #4): `monitor` and `off` are non-enforcing; no served preset carries
+//!   the attestation floor (`attested` is refused until its step-up proof
+//!   transport is decided). The kill switch is not on the served path.
 //! - The verdict-token gate is not composed: nothing on the served path
 //!   issues `hmn_vt` (the gate control plane that minted it is not composed),
 //!   so the upgrade gate's `hasValidToken` is always false, as in Go without
@@ -189,6 +191,7 @@ impl Application {
         sid: &str,
         now_ms: u64,
         linkage: (&str, &str),
+        route: (bool, &'static str),
     ) -> Result<Gated, Rejection> {
         let tenant = self.config.scope.tenant.clone();
         let class = crate::gateway::request::route_class(&req.headers);
@@ -197,10 +200,12 @@ impl Application {
             pseudonym: "",
             route_class: class.as_str(),
         };
+        // Owner decision #4 (route presets): `enforcing` is the route's
+        // preset; no served preset carries the attestation floor yet.
         let route = Route {
-            enforcing: true,
+            enforcing: route.0,
             attest_floor: false,
-            name: "",
+            name: route.1,
         };
         let wall = Duration::from_millis(now_ms);
         let path = req.target.split('?').next().unwrap_or("");

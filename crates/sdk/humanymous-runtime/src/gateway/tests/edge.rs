@@ -1298,3 +1298,102 @@ async fn settings_overlay_inject_monitor_leaves_html_untouched() {
     assert_eq!(reply.body, PAGE.as_bytes());
     assert!(records(&audit, "html.injection.skipped").is_empty());
 }
+
+/// A laundering-header request (HR-24 CHALLENGE, see
+/// `spoof_gate_monitor_strips_forged_headers_before_scoring`) on `/effect`
+/// with the route's `preset`; returns the decision and its record.
+fn challenged_on(preset: Option<&str>) -> (Decision, Record) {
+    let audit = Audit::default();
+    let mut cfg = config();
+    cfg.routes[0].preset = preset.map(str::to_owned);
+    let mut app_cfg = config();
+    app_cfg.routes[0].preset = preset.map(str::to_owned);
+    let mut app = Application::new(app_cfg, Default::default(), Box::new(audit.clone())).unwrap();
+    let issued = issue(&mut app, 10_000);
+    collected(&mut app, &cfg, &issued, 10_000);
+    let mut req = request("POST", "/effect?exact=1", b"original bytes".to_vec());
+    req.headers
+        .push(("True-Client-Ip".into(), "203.0.113.9".into()));
+    sign(
+        &cfg,
+        &mut req,
+        issued["session"].as_str().unwrap(),
+        issued["key"].as_str().unwrap(),
+        2,
+        10_000,
+    );
+    let decision = app.decide(&req, || Ok(10_000)).unwrap();
+    (decision, records(&audit, "runtime.decision").pop().unwrap())
+}
+
+/// Owner decision #4, route presets (Go `applyVerdict` with
+/// `enforcing(route)`): `balanced` (the default) and `strict` refuse a
+/// CHALLENGE locally; `monitor` and `off` record it in mode `monitor` and pass
+/// through to the origin. Scoring is unchanged: the verdict, score and rules
+/// are the same under every preset.
+#[test]
+fn route_preset_monitor_and_off_pass_through_and_record_monitor() {
+    let (decision, enforced) = challenged_on(None);
+    assert!(matches!(decision, Decision::Local(403, _)));
+    assert_eq!(
+        (
+            enforced.verdict.as_str(),
+            enforced.enforcement_mode.as_str()
+        ),
+        ("CHALLENGE", "enforce")
+    );
+    let (decision, strict) = challenged_on(Some("strict"));
+    assert!(matches!(decision, Decision::Local(403, _)));
+    assert_eq!(strict.enforcement_mode, "enforce");
+    for preset in ["monitor", "off"] {
+        let (decision, record) = challenged_on(Some(preset));
+        assert!(matches!(decision, Decision::Origin { .. }), "{preset}");
+        assert_eq!(
+            (
+                record.verdict.as_str(),
+                record.enforcement_mode.as_str(),
+                record.risk_score,
+                &record.triggered_rules
+            ),
+            (
+                "CHALLENGE",
+                "monitor",
+                enforced.risk_score,
+                &enforced.triggered_rules
+            ),
+            "{preset}"
+        );
+    }
+}
+
+/// Served presets are the routes-file vocabulary without `attested`, whose
+/// attestation floor has no step-up proof source yet
+/// (`plan:root/20261123121500`); readiness names each route's preset, and an
+/// `off` route cannot be listed for injection (Go `off` does not inject).
+#[test]
+fn route_presets_are_validated_and_reported() {
+    for (preset, ok) in [
+        ("strict", true),
+        ("balanced", true),
+        ("monitor", true),
+        ("off", true),
+        ("attested", false),
+        ("Strict", false),
+        ("", false),
+    ] {
+        let mut cfg = config();
+        cfg.routes[0].preset = Some(preset.into());
+        assert_eq!(cfg.validate().is_ok(), ok, "{preset}");
+    }
+    let mut cfg = config();
+    assert_eq!(cfg.readiness()["routes"][0]["preset"], "balanced");
+    cfg.routes[0].preset = Some("monitor".into());
+    assert_eq!(cfg.readiness()["routes"][0]["preset"], "monitor");
+
+    let mut cfg = inject_config("127.0.0.1:32123".parse().unwrap(), true);
+    assert!(cfg.validate().is_ok());
+    cfg.routes[1].preset = Some("off".into());
+    assert!(cfg.validate().is_err());
+    cfg.routes[1].preset = Some("monitor".into());
+    assert!(cfg.validate().is_ok());
+}

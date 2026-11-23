@@ -150,6 +150,26 @@ pub struct Route {
     /// Explicit opt-in; no automatic streaming inference from content type.
     #[serde(default)]
     pub response_profile: ResponseProfile,
+    /// Enforcement preset (legacy routes file vocabulary, owner decision #4,
+    /// `plan:root/20261123121500`); absent is `balanced`, today's behaviour.
+    /// `attested` is refused until its step-up proof transport is decided.
+    #[serde(default)]
+    pub preset: Option<String>,
+}
+
+impl Route {
+    /// The route's enforcement preset (`balanced` when absent).
+    pub fn policy(&self) -> crate::gateway::route_policy::RoutePolicy {
+        crate::gateway::route_policy::preset_by_name(self.preset.as_deref().unwrap_or("balanced"))
+    }
+
+    /// A named preset must be a served one: in the routes-file vocabulary and
+    /// not `attested`, whose attestation floor has no proof source yet.
+    fn preset_valid(&self) -> bool {
+        self.preset.as_deref().is_none_or(|name| {
+            name != "attested" && crate::gateway::route_policy::VALID_PRESETS.contains(&name)
+        })
+    }
 }
 
 /// Only bounded complete HTTP request methods have an implementation.
@@ -210,6 +230,7 @@ impl Configuration {
             || self.operational().validate().is_err()
             || self.routes.is_empty()
             || self.routes.len() > 4096
+            || !self.routes.iter().all(Route::preset_valid)
             || !self.audit.witness_input_valid()
             || self
                 .ip_reputation
@@ -293,6 +314,7 @@ impl Configuration {
                     "method":r.method,"path":r.path,
                     "ready":!r.required.raw_tls && !r.required.original_h2 && !r.required.collector,
                     "rit_profile":r.rit_profile,
+                    "preset":r.policy().name,
                     "response_profile":r.response_profile
                 })
             })

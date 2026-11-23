@@ -3,7 +3,7 @@ id: plan:root/20261123121500
 title: Lane H #4 verdict-token transport and route presets on the served path
 status: active
 created: 2026-11-23T12:15:00Z
-updated: 2026-11-23T12:15:00Z
+updated: 2026-11-23T16:40:00Z
 rel:
   governs: [crates/sdk/humanymous-runtime/src/gateway/application.rs, crates/sdk/humanymous-runtime/src/gateway/application/gates.rs, crates/sdk/humanymous-runtime/src/gateway/configuration.rs, crates/sdk/humanymous-runtime/src/gateway/route_policy.rs, crates/sdk/humanymous-runtime/src/gateway/token.rs]
   depends_on: [sot:root/runtime-application, plan:root/20261121201500]
@@ -82,7 +82,10 @@ token for a stateless fast path across nodes.
 ## Steps
 
 - [ ] Owner chooses option 1, 2 or 3 (issue #75).
-- [ ] Route presets per inventoried route (decidable now): configuration, readiness, served-path `enforce` and monitor/off audit, ledger and SoT.
+- [x] Route presets per inventoried route (2026-11-23): `Route.preset`
+  (strict, balanced, monitor, off; `attested` refused), readiness, monitor and
+  off passing through with mode `monitor`, non-enforcing gates, `off` refused
+  for injection; ledger and SoT.
 - [ ] The chosen verdict/step-up transport, with the verdict-token gate composed in its `gate.verdict_token` mode (#3 overlay) and the attestation floor in `gate.attest_floor`.
 
 ## Verification
