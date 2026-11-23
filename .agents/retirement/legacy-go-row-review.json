@@ -15,8 +15,8 @@
   "oracle_only": "no further Rust port; the responsibility stays only in the frozen Go oracle (981d25c) and leaves with the Go tree in the step 5 needs-human PR. Requires an owner decision cited in retire_basis"
  },
  "totals": {
-  "ported_unit": 290,
-  "partial": 13,
+  "ported_unit": 293,
+  "partial": 10,
   "missing": 0,
   "not_applicable": 2,
   "oracle_only": 9
@@ -74,9 +74,9 @@
    "ported_unit": 5
   },
   "internal/gate": {
-   "partial": 8,
+   "partial": 7,
    "not_applicable": 1,
-   "ported_unit": 75,
+   "ported_unit": 76,
    "oracle_only": 1
   },
   "internal/httpx": {
@@ -254,16 +254,16 @@
    "go_test_map": {},
    "gaps": [
     "flag/env configuration surface (cmd/gate/main.go at 981d25c defines 35 flags and reads 17 HMN_* variables; audited 2026-11-21). Mapped to the private inherited configuration: -addr to listen plus public_listen; -admin-addr to admin.listen; HMN_ADMIN_TOKENS to admin.operators; -settings-dir to admin.settings_dir; -node to audit.node_id; -audit-wal to audit.directory; -keystore with HMN_UNSEAL to audit.keys (directory, passphrase); -origin-key to edge.origin_key_hex; -hsts to edge.hsts; -upstream to origin (loopback only, see B14); the six edge TLS flags -tls-cert/-tls-key/-acme-domain/-acme-cache/-acme-email/-acme-directory to tls; the five -log-* flags with their HMN_LOG_* fallbacks to logging; -trusted-proxies to trusted_proxies (plan B26); -agent-keys and -pat-issuers to credentials.agent_keys and credentials.pat_issuers; -webauthn-creds with HMN_WEBAUTHN_ORIGIN/HMN_WEBAUTHN_RPID to credentials.webauthn",
-    "unmapped flags and variables: -monitor (boot global monitor, not on the served path; row internal/gate/gate.go), -routes (route presets, B12), -audit-verify (verification is the audit library API, no binary mode), -audit-redis/-audit-clickhouse with HMN_CLICKHOUSE_USER/PASSWORD (B24), -redis with HMN_REDIS_USER/PASSWORD/KEY (B23), -anomaly-shadow (log-only observer), -virtual-usb-results-dir/HMN_VIRTUAL_USB_RESULTS_DIR (console view), -shutdown-grace (signal drain, B27), HMN_TOKEN_KEY (verdict-token minting, owner decision #4)",
+    "unmapped flags and variables: -monitor (boot global monitor, not on the served path; row internal/gate/gate.go), -routes (the prefix routes file; each inventoried route names a preset instead, owner decision #4 2026-11-23), -audit-verify (verification is the audit library API, no binary mode), -audit-redis/-audit-clickhouse with HMN_CLICKHOUSE_USER/PASSWORD (B24), -redis with HMN_REDIS_USER/PASSWORD/KEY (B23), -anomaly-shadow (log-only observer), -virtual-usb-results-dir/HMN_VIRTUAL_USB_RESULTS_DIR (console view), -shutdown-grace (the CLI runtime host's stop.drain_ms, at most 30 s; Go default 25 s), HMN_TOKEN_KEY (verdict-token minting, owner decision #4)",
     "divergence: -max-body (Go 0 = unlimited) is a fixed 64 KiB request-body bound (gateway::http::MAX_BODY)",
     "divergence: HMN_ALLOW_DEV_TOKENS and the local demo mode are refused, never enabled",
     "divergence: Go defaulted -addr :8444 on every interface and served TLS with a self-signed fallback; the runtime refuses that fallback, defaults to loopback, and a wider listen needs public_listen and a provisioned or ACME tls source",
     "divergence: Go served the admin listener with a self-signed certificate and allowed it off-host (warning without mTLS, -admin-mtls-ca optional); the runtime admin listener is plaintext loopback only and refuses any other address, -admin-mtls-ca is not ported",
     "origin reverse proxy to non-loopback upstream, origin-auth (B14)",
     "Redis/ClickHouse projections (B23,B24)",
-    "ordered gate composition still missing on the served path: verdict-token minting (B17, owner decision #4) and the sweep gate (mode: owner decision #3, not yet ported); bans (admin.bans with the edge ban gate) and the credential gates are composed",
-    "admin metrics and virtual-usb routes (B19; row internal/gate/admin.go); RBAC, approvals, policy, console, settings and models are served by the admin listener",
-    "signal-driven drain of the binary (B27; Go -shutdown-grace)"
+    "ordered gate composition still missing on the served path: verdict-token minting (B17, owner decision #4; its transport is an owner choice, issue #75, plan:root/20261123121500); bans (admin.bans with the edge ban gate), the credential gates, the sweep gate (recon_sweep) and opt-in HTML injection (inject) are composed",
+    "virtual-usb routes and the audit-chain metric families (B19; row internal/gate/admin.go); RBAC, approvals, policy, console, settings, models and metrics are served by the admin listener",
+    "signal-driven drain (B27; Go -shutdown-grace): the CLI runtime host (crates/cli runtime_host::platform) turns SIGTERM/SIGINT into the bounded StopPlan drain; the inherited-pipe humanymous-runtime entrypoint itself has no signal adapter (its supervisor ends the process)"
    ],
    "retire_basis": null,
    "confidence": "medium",
@@ -3974,7 +3974,7 @@
   },
   {
    "baseline_path": "internal/gate/integration_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/application.rs",
     "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs"
@@ -3982,17 +3982,16 @@
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::real_tcp_audit_before_origin_and_negative_counter_zero",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::inject_route_html_carries_the_loader_once"
    ],
    "go_test_map": {
     "TestProxyEnforcementAndAudit": "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies"
    },
-   "gaps": [
-    "HTML injection step: gateway::inject::Injector is not composed on the served path; owner decision #7 (issue #75 comment 7017558784) ports it opt-in and off by default, not yet done (plan:root/20261121201500). Go injected <script src=/__hmn/loader.js> into every 200 text/html response of an inject route; the runtime-application SoT defines no served response mutation and the served path has no loader route (the browser profile bootstraps through /_humanymous/browser/session)"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust covers audit-before-origin over real TCP. FM11 lane B: tests/integration.rs runs the Go flow end to end through Application::serve on real loopback listeners with a counting origin and a real sealed log (node test, HMAC key k, a head every four records over a write-ahead log): a bot beacon (webdriver and headless token, no motor data) is collected, the same session's next protected request is scored DENY and answered 403 with the origin never contacted, a human session's HTML passes through byte for byte, and Log::self_verify reports ok with the DENY and ALLOW runtime.decision records in the chain. Deliberate differences: the beacon answers COLLECTED, not DENY with a sticky verdict cookie (the verdict is scored on the next request of the request-integrity session; the initial profile refuses cookies); the block is a runtime.decision DENY record with a JSON 403 body, not enforcement.deny with http.Error text. Go oracle at 981d25c: go test -run ^TestProxyEnforcementAndAudit$ ./internal/gate PASS (go1.26.3, network none).",
+   "notes": "Rust covers audit-before-origin over real TCP. FM11 lane B: tests/integration.rs runs the Go flow end to end through Application::serve on real loopback listeners with a counting origin and a real sealed log (node test, HMAC key k, a head every four records over a write-ahead log): a bot beacon (webdriver and headless token, no motor data) is collected, the same session's next protected request is scored DENY and answered 403 with the origin never contacted, a human session's HTML passes through byte for byte, and Log::self_verify reports ok with the DENY and ALLOW runtime.decision records in the chain. Deliberate differences: the beacon answers COLLECTED, not DENY with a sticky verdict cookie (the verdict is scored on the next request of the request-integrity session; the initial profile refuses cookies); the block is a runtime.decision DENY record with a JSON 403 body, not enforcement.deny with http.Error text. Go oracle at 981d25c: go test -run ^TestProxyEnforcementAndAudit$ ./internal/gate PASS (go1.26.3, network none). The injection step (step 1 of TestProxyEnforcementAndAudit) is composed opt-in by owner decision #7 (2026-11-22, PR #179): an inject route's 200 text/html response carries the marker and one deferred script element once, pinned by tests/edge.rs::inject_route_html_carries_the_loader_once. Accepted deviation: Go injected on every route its default preset marked and served /__hmn/loader.js; here injection is off unless the inject object lists routes, and loader_src names a same-origin path the operator serves.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::real_tcp_audit_before_origin_and_negative_counter_zero": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::report_rejects_server_planes_and_uses_registry_scores": "passed",
