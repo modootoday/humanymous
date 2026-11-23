@@ -611,9 +611,9 @@ threshold, hard-rule predicate, verdict band or signal ID.
     Composed (2026-11-22): the request path reads the active settings
     overlay on every request; an explicit gate mode replaces the configured
     boot mode, and a gate the overlay leaves out keeps it (Go enforced; the
-    boot default is `enforce`). Read for `gate.ban`, `gate.spoof_header` and
-    `gate.recon_sweep`; the verdict-token, injection and attestation-floor
-    gates read it once #4 and #7 compose them.
+    boot default is `enforce`). Read for `gate.ban`, `gate.spoof_header`,
+    `gate.recon_sweep` and `gate.inject`; the verdict-token and
+    attestation-floor gates read it once #4 composes them.
   - #4: port Go's `hmn_vt` issuer, key-gated, with route presets and the
     attestation floor. Without a key, upgrades stay denied (HR-26), as Go
     without a token key. The token, verdict-token gate and route-preset
@@ -628,8 +628,21 @@ threshold, hard-rule predicate, verdict band or signal ID.
     not shared with the admin plane) and Go's runtime gauges (no Rust
     counterpart).
   - #7: port HTML loader injection as an opt-in that is off by default,
-    because it mutates responses. The injector kernel is ported; no served
-    route uses it.
+    because it mutates responses. Composed (2026-11-22,
+    `gateway::application::inject`): the optional `inject` object lists
+    exact inventoried GET routes on the buffered response profile (at most
+    64, none reserved) and `loader_src`, a bounded same-origin path the
+    operator serves. The gateway serves no loader (the client-collector SoT
+    forbids a hand-authored one) and adds no CSP report-only companion (no
+    `csp-report` route). On an inject route the origin request asks for
+    `Accept-Encoding: identity`; a 200 `text/html` response gets Go's marker
+    and one deferred `<script src>` element once, a reframed length and
+    `Cache-Control: no-store`. A Content-Encoding is passed through with an
+    `html.injection.skipped` record (`decomp_bomb_guard`, HR-27a), as are
+    `gate.inject` monitor and shadow (`would inject`); off does nothing. The
+    record is appended before the response (fail closed). Readiness reports
+    `profile.inject`. Go's 8 MiB `too_large` branch cannot occur: complete
+    entities are bounded by `http::MAX_BODY`.
 - **#11 credentials and request integrity.** A verified credential (Web Bot
   Auth, PAT, WebAuthn) never stands in for request integrity. Credential
   gates run only after RIT authorization and admission, and they only

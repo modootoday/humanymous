@@ -377,6 +377,10 @@ impl ServiceHost {
             }
             None => None,
         };
+        // Owner decision #7: injection only when configured.
+        if let Some(inject) = &configuration.inject {
+            profile["inject"] = inject.readiness();
+        }
         profile["administration_writable"] = serde_json::json!(operator.is_some());
         let profile_shared = Arc::new(std::sync::RwLock::new(profile.clone()));
         let (operator, commands) = if let Some(operator) = operator {

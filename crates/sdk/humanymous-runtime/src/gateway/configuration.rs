@@ -8,6 +8,7 @@ mod audit;
 pub mod credentials;
 mod edge;
 pub mod exposure;
+pub mod inject;
 mod ip_reputation;
 mod operational;
 pub mod recon_sweep;
@@ -93,6 +94,10 @@ pub struct Configuration {
     /// installs none. See [`recon_sweep`].
     #[serde(default)]
     pub recon_sweep: Option<recon_sweep::ReconSweep>,
+    /// Opt-in HTML loader injection (owner decision #7); absent changes no
+    /// response. See [`inject`].
+    #[serde(default)]
+    pub inject: Option<inject::Inject>,
 }
 
 /// Distinct integrity contracts. A browser subset never claims full wire binding.
@@ -219,6 +224,10 @@ impl Configuration {
                 .recon_sweep
                 .as_ref()
                 .is_some_and(|sweep| sweep.config().is_none())
+            || self
+                .inject
+                .as_ref()
+                .is_some_and(|inject| !inject.valid(&self.routes))
             || self.edge.hsts && self.tls.is_none()
         {
             return Err(bad);

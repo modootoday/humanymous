@@ -3594,7 +3594,10 @@
     "crates/sdk/humanymous-runtime/src/gateway/application/maintenance.rs",
     "crates/sdk/humanymous-runtime/src/gateway/application/gates.rs",
     "crates/sdk/humanymous-runtime/src/gateway/service/admin.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/service/lifecycle.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/service/lifecycle.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application/inject.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/configuration/inject.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/http/origin_response.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::real_tcp_audit_before_origin_and_negative_counter_zero",
@@ -3604,20 +3607,24 @@
     "crates/sdk/humanymous-runtime/src/gateway/tests/integration.rs::bot_beacon_is_blocked_at_the_edge_and_the_chain_verifies",
     "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::maintenance_sweeps_installed_gate_kernels",
     "crates/sdk/humanymous-runtime/src/gateway/tests/service/exposure.rs::unix_public_tls_edge_and_loopback_admin_listener",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/service/exposure.rs::unix_admin_bans_need_an_enforceable_gate"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/service/exposure.rs::unix_admin_bans_need_an_enforceable_gate",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::inject_route_html_carries_the_loader_once",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::inject_skips_are_go_branches",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::settings_overlay_inject_monitor_leaves_html_untouched",
+    "crates/sdk/humanymous-runtime/src/gateway/configuration/inject/tests.rs::inject_routes_and_loader_are_validated",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/service/inject.rs::unix_configured_inject_is_reported_and_refused_routes_stop_startup"
    ],
    "go_test_map": {},
    "gaps": [
     "boot global monitor posture on the served path (the kill-switch half is decided: owner decision #6 keeps the signed one-way node kill; Go's reversible global monitor flip is an accepted deviation, not ported)",
-    "HTML injection: no served loader route; port it opt-in and off by default, decided by owner decision #7 (issue #75 comment 7017558784), not yet ported (plan:root/20261121201500)",
     "erasure shred runner: the service now composes the admin plane, but nothing stages ledger-issued erasure permits and no periodic AdminPlane::run_due_shreds caller runs",
     "verdict-token minting on the served path: port Go's key-gated issuer, decided by owner decision #4 (issue #75 comment 7017558784), not yet ported (plan:root/20261121201500)",
     "projection/operational metrics: gateway::admin_plane::metrics serves Go's names and labels on the admin listener (owner decision #5) except hmn_gate_audit_records_total, audit_checkpoints_total, audit_integrity_ok and audit_witnessed (no audit chain attached to the admin listener), the four operational_log_* families (the binary's logger is not shared with the admin plane) and the Go runtime gauges goroutines, heap_alloc_bytes and sys_bytes (no Rust counterpart, accepted deviation)",
-    "settings-driven module modes (owner decision #3, issue #75 comment 7017558784): composed for gate.ban, gate.spoof_header and gate.recon_sweep (the active overlay's explicit mode replaces the boot mode, whose default is Go's enforce); gate.verdict_token, gate.inject and gate.attest_floor read it once their gates are composed (plan:root/20261121201500)"
+    "settings-driven module modes (owner decision #3, issue #75 comment 7017558784): composed for gate.ban, gate.spoof_header, gate.recon_sweep and gate.inject (the active overlay's explicit mode replaces the boot mode, whose default is Go's enforce); gate.verdict_token and gate.attest_floor read it once owner decision #4 composes them (plan:root/20261121201500)"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust application gives an audited loopback forwarder, not the Gate server composition (B13/B14). FM11 lane B (2026-11-19): the Go gcLoop composite (verdict sessions plus the installed ban store, 60 s) now runs on both accept loops (gateway::application::maintenance); the integration flow (bot beacon denied at the edge, human page untouched, sealed chain verifies) is pinned by tests/integration.rs. FM11 lane D (2026-11-19): the optional NewServer capabilities AgentKeys, PATIssuers, WebAuthnCreds (with credCorr) and the sweep detector are Application::install_* on the served path, and Server.GC sweeps the installed sweep detector and fan-out tracker; the service binary installs none of them. Owner decision #6 (issue #75 comment 7017558784, 2026-11-19): the kill switch is the Rust signed one-way node kill; Go's reversible global monitor mode is an accepted deviation (sot:root/runtime-application). Owner decision B01 #1 (2026-11-19): the control/admin split is composed: gateway::service runs the optional loopback admin listener (admin_plane) beside the edge and management listeners, shares the installed ban store and epoch with the served path (startup refused when an enforcing ban gate has no PROXY v2 client address) and stops every listener when one fails.",
+   "notes": "Rust application gives an audited loopback forwarder, not the Gate server composition (B13/B14). FM11 lane B (2026-11-19): the Go gcLoop composite (verdict sessions plus the installed ban store, 60 s) now runs on both accept loops (gateway::application::maintenance); the integration flow (bot beacon denied at the edge, human page untouched, sealed chain verifies) is pinned by tests/integration.rs. FM11 lane D (2026-11-19): the optional NewServer capabilities AgentKeys, PATIssuers, WebAuthnCreds (with credCorr) and the sweep detector are Application::install_* on the served path, and Server.GC sweeps the installed sweep detector and fan-out tracker; the service binary installs none of them. Owner decision #6 (issue #75 comment 7017558784, 2026-11-19): the kill switch is the Rust signed one-way node kill; Go's reversible global monitor mode is an accepted deviation (sot:root/runtime-application). Owner decision B01 #1 (2026-11-19): the control/admin split is composed: gateway::service runs the optional loopback admin listener (admin_plane) beside the edge and management listeners, shares the installed ban store and epoch with the served path (startup refused when an enforcing ban gate has no PROXY v2 client address) and stops every listener when one fails. Owner decision #7 (2026-11-22): modifyResponse HTML loader injection is composed opt-in and off by default: an optional inject object lists exact inventoried buffered GET routes and a same-origin loader_src the operator serves (the gateway serves no loader.js and adds no CSP report-only companion: no loader or csp-report route); an inject route's origin request asks for Accept-Encoding: identity; a 200 text/html response gets Go's marker plus deferred script element once, a reframed length and Cache-Control: no-store; a Content-Encoding is skipped with a decomp_bomb_guard html.injection.skipped record; gate.inject monitor/shadow record would-inject; the 8 MiB too_large branch cannot occur (complete entities are bounded by MAX_BODY).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::client_abort_during_audit_never_dispatches_origin": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::real_tcp_audit_before_origin_and_negative_counter_zero": "passed",
@@ -4520,20 +4527,21 @@
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/metrics/tests.rs::golden_fresh_and_applied_expositions",
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::settings_overlay_ban_monitor_is_audit_only",
     "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::settings_overlay_without_the_gate_keeps_the_boot_mode",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::settings_overlay_sets_the_sweep_mode"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::settings_overlay_sets_the_sweep_mode",
+    "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::settings_overlay_inject_monitor_leaves_html_untouched"
    ],
    "go_test_map": {
     "TestSettingsRateHotApplyPreservesCounters": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/settings/tests.rs::rate_hot_apply_preserves_counters",
     "TestSettingsGateBanMonitorIsAuditOnly": "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::settings_overlay_ban_monitor_is_audit_only",
     "TestSettingsVerdictTokenMonitorDoesNotFastPath": "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::verdict_token_gate_matches_go",
     "TestSettingsReconMonitorAuditsWithoutBlocking": "crates/sdk/humanymous-runtime/src/gateway/tests/gates.rs::settings_overlay_sets_the_sweep_mode",
-    "TestSettingsInjectMonitorLeavesHTMLUntouched": null,
+    "TestSettingsInjectMonitorLeavesHTMLUntouched": "crates/sdk/humanymous-runtime/src/gateway/tests/edge.rs::settings_overlay_inject_monitor_leaves_html_untouched",
     "TestSettingsAttestationFloorMonitorAuditsWithoutChallenging": "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::attestation_floor_audit_matches_go",
     "TestSettingsAttestationFloorMonitorAllowsVerdictTokenFastPath": "crates/sdk/humanymous-runtime/src/gateway/gates/tests.rs::verdict_token_gate_matches_go",
     "TestSettingsMetricsReflectApply": "crates/sdk/humanymous-runtime/src/gateway/admin_plane/metrics/tests.rs::golden_fresh_and_applied_expositions"
    },
    "gaps": [
-    "per-gate monitor modes on the request path for the gates not yet composed (verdict_token fast path, inject, attest_floor): owner decision #3 is composed for gate.ban, gate.spoof_header and gate.recon_sweep (Application::gate_mode reads the active overlay on every request, 2026-11-22); the other gate kernels take a mode (gateway::gates, FM11 lane D) and read the same source once owner decisions #2, #4 and #7 compose them (plan:root/20261121201500); TestSettingsInjectMonitorLeavesHTMLUntouched waits on #7"
+    "per-gate monitor modes on the request path for the gates not yet composed (verdict_token fast path, attest_floor): owner decision #3 is composed for gate.ban, gate.spoof_header, gate.recon_sweep and gate.inject (Application::gate_mode reads the active overlay on every request, 2026-11-22); the other gate kernels take a mode (gateway::gates, FM11 lane D) and read the same source once owner decisions #2, #4 and #7 compose them (plan:root/20261121201500)"
    ],
    "retire_basis": null,
    "confidence": "medium",

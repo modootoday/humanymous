@@ -1105,3 +1105,196 @@ fn settings_overlay_sets_the_spoof_header_mode() {
         ("block", "enforce")
     );
 }
+
+/// HTML page an inject-route origin answers.
+const PAGE: &str = "<html><head><title>t</title></head><body>x</body></html>";
+
+/// Inventory a GET `/page` route and, with `inject`, list it for injection
+/// with the loader at `/static/loader.js`.
+fn inject_config(origin: std::net::SocketAddr, inject: bool) -> Configuration {
+    let mut cfg = configuration(origin);
+    cfg.routes.push(
+        serde_json::from_value(
+            json!({"method":"GET","path":"/page","required":{"raw_tls":false,
+            "original_h2":false,"raw_header_order":true,"collector":false,"rit":true}}),
+        )
+        .unwrap(),
+    );
+    if inject {
+        cfg.inject = Some(
+            serde_json::from_value(json!({"routes":["/page"],"loader_src":"/static/loader.js"}))
+                .unwrap(),
+        );
+    }
+    cfg
+}
+
+/// One signed GET `/page` through a served application whose origin answers
+/// `origin_response`; returns the reply, the forwarded fields and the audit.
+async fn page_exchange(
+    inject: bool,
+    overlay: Option<crate::gateway::settings::overlay::Mode>,
+    origin_response: &'static [u8],
+) -> (Reply, Vec<(String, String)>, Audit) {
+    let origin = Origin::start(origin_response).await;
+    let cfg = inject_config(origin.address, inject);
+    let audit = Audit::default();
+    let mut app = Application::new(
+        inject_config(origin.address, inject),
+        Default::default(),
+        Box::new(audit.clone()),
+    )
+    .unwrap();
+    if let Some(mode) = overlay {
+        app.install_gate_overlay(overlay_slot(&[("gate.inject", mode)]));
+    }
+    let (address, server) = serve(app).await;
+    let issued =
+        json_body(&exchange(address, &request("POST", "/_humanymous/session", vec![])).await);
+    let (id, key) = (
+        issued["session"].as_str().unwrap(),
+        issued["key"].as_str().unwrap(),
+    );
+    let now = crate::authority::now_ms().unwrap();
+    let mut collect = request("POST", "/_humanymous/collect", client_report(id));
+    sign(&cfg, &mut collect, id, key, 1, now);
+    assert!(
+        exchange(address, &collect)
+            .await
+            .starts_with(b"HTTP/1.1 200")
+    );
+    let mut page = request("GET", "/page", Vec::new());
+    sign(&cfg, &mut page, id, key, 2, now);
+    let reply = Reply::parse(&exchange(address, &page).await);
+    server.abort();
+    assert_eq!(origin.hits.load(Ordering::SeqCst), 1, "one origin effect");
+    let seen = origin.seen.lock().unwrap().pop().unwrap();
+    (reply, seen, audit)
+}
+
+fn accept_encoding(seen: &[(String, String)]) -> Vec<&str> {
+    seen.iter()
+        .filter(|(name, _)| name.eq_ignore_ascii_case("accept-encoding"))
+        .map(|(_, value)| value.as_str())
+        .collect()
+}
+
+/// Owner decision #7 (Go `modifyResponse` with gate.inject enforcing): the
+/// inject route asks the origin for an identity entity, and its 200
+/// `text/html` response carries Go's snippet once after `<head>`, a new
+/// Content-Length and `Cache-Control: no-store`, with no skip record.
+#[tokio::test]
+async fn inject_route_html_carries_the_loader_once() {
+    let (reply, seen, audit) = page_exchange(
+        true,
+        None,
+        b"HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nCache-Control: max-age=60\r\nContent-Length: 56\r\n\r\n<html><head><title>t</title></head><body>x</body></html>",
+    )
+    .await;
+    assert_eq!(accept_encoding(&seen), vec!["identity"]);
+    let body = std::str::from_utf8(&reply.body).unwrap();
+    assert_eq!(
+        body,
+        "<html><head><!--hmn-injected--><script src=\"/static/loader.js\" defer></script><title>t</title></head><body>x</body></html>"
+    );
+    assert_eq!(reply.status, 200);
+    assert_eq!(
+        reply.field("Content-Length"),
+        Some(body.len().to_string().as_str())
+    );
+    assert_eq!(reply.field("Cache-Control"), Some("no-store"));
+    assert_eq!(
+        reply
+            .fields
+            .iter()
+            .filter(|(name, _)| name.eq_ignore_ascii_case("cache-control"))
+            .count(),
+        1
+    );
+    assert_eq!(reply.field("X-Content-Type-Options"), Some("nosniff"));
+    assert!(records(&audit, "html.injection.skipped").is_empty());
+}
+
+/// The rest of Go's `modifyResponse` branches, and the default: without an
+/// `inject` object nothing changes and the client's Accept-Encoding reaches
+/// the origin; a non-HTML response and an already-marked page pass
+/// unrecorded; a compressed entity passes with a `decomp_bomb_guard` record.
+#[tokio::test]
+async fn inject_skips_are_go_branches() {
+    const HTML: &[u8] = b"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: 56\r\n\r\n<html><head><title>t</title></head><body>x</body></html>";
+    let (reply, seen, audit) = page_exchange(false, None, HTML).await;
+    assert_eq!(accept_encoding(&seen), vec!["gzip, deflate, br, zstd"]);
+    assert_eq!(reply.body, PAGE.as_bytes());
+    assert!(reply.field("Cache-Control").is_none());
+    assert!(records(&audit, "html.injection.skipped").is_empty());
+
+    let (reply, _, audit) = page_exchange(
+        true,
+        None,
+        b"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 2\r\n\r\n{}",
+    )
+    .await;
+    assert_eq!(reply.body, b"{}");
+    assert!(records(&audit, "html.injection.skipped").is_empty());
+
+    let (reply, _, audit) = page_exchange(
+        true,
+        None,
+        b"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: 36\r\n\r\n<!--hmn-injected--><head></head>done",
+    )
+    .await;
+    assert_eq!(reply.body, b"<!--hmn-injected--><head></head>done");
+    assert!(records(&audit, "html.injection.skipped").is_empty());
+
+    let (reply, _, audit) = page_exchange(
+        true,
+        None,
+        b"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Encoding: gzip\r\nContent-Length: 4\r\n\r\nzzzz",
+    )
+    .await;
+    assert_eq!(reply.body, b"zzzz");
+    let skipped = records(&audit, "html.injection.skipped");
+    assert_eq!(skipped.len(), 1);
+    assert_eq!(
+        (
+            skipped[0].fail_reason.as_str(),
+            skipped[0].enforcement_mode.as_str(),
+            skipped[0].route_class.as_str(),
+            skipped[0].actor.kind.as_str(),
+            skipped[0].triggered_rules.clone()
+        ),
+        (
+            "decomp_bomb_guard",
+            "enforce",
+            "html",
+            "system",
+            Some(vec!["HR-27a".to_owned()])
+        )
+    );
+}
+
+/// Go TestSettingsInjectMonitorLeavesHTMLUntouched at 981d25c: with the
+/// overlay naming `gate.inject: monitor` the HTML is unchanged and a
+/// `would inject` record in mode `monitor` is written; `off` writes none.
+#[tokio::test]
+async fn settings_overlay_inject_monitor_leaves_html_untouched() {
+    use crate::gateway::settings::overlay::Mode as Overlay;
+    const HTML: &[u8] = b"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: 56\r\n\r\n<html><head><title>t</title></head><body>x</body></html>";
+    let (reply, _, audit) = page_exchange(true, Some(Overlay::Monitor), HTML).await;
+    assert_eq!(
+        (reply.status, reply.body.as_slice()),
+        (200, PAGE.as_bytes())
+    );
+    let skipped = records(&audit, "html.injection.skipped");
+    assert_eq!(skipped.len(), 1);
+    assert_eq!(
+        (
+            skipped[0].fail_reason.as_str(),
+            skipped[0].enforcement_mode.as_str()
+        ),
+        ("gate.inject monitor (would inject)", "monitor")
+    );
+    let (reply, _, audit) = page_exchange(true, Some(Overlay::Off), HTML).await;
+    assert_eq!(reply.body, PAGE.as_bytes());
+    assert!(records(&audit, "html.injection.skipped").is_empty());
+}

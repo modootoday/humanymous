@@ -181,6 +181,58 @@ impl Response {
         }
     }
 
+    /// Legacy `modifyResponse` eligibility: a 200 whose first Content-Type
+    /// starts with `text/html`, case-insensitively.
+    pub(in crate::gateway) fn html(&self) -> bool {
+        self.status == 200
+            && self
+                .headers
+                .iter()
+                .find(|(name, _)| name.eq_ignore_ascii_case("content-type"))
+                .is_some_and(|(_, value)| {
+                    value
+                        .trim()
+                        .get(..9)
+                        .is_some_and(|prefix| prefix.eq_ignore_ascii_case("text/html"))
+                })
+    }
+
+    /// Whether the origin declared a nonempty Content-Encoding (HR-27a: a
+    /// compressed body is passed through, never expanded).
+    pub(in crate::gateway) fn encoded(&self) -> bool {
+        self.headers.iter().any(|(name, value)| {
+            name.eq_ignore_ascii_case("content-encoding") && !value.trim().is_empty()
+        })
+    }
+
+    /// Insert `snippet` once with the ported injector (`gateway::inject`). On
+    /// insertion the entity is reframed with its new length, and every
+    /// Cache-Control field is replaced by `no-store` (Go `Header.Set`), so
+    /// loader-bearing HTML is not cached. A skipped insertion changes nothing.
+    pub(in crate::gateway) fn inject(&mut self, snippet: &[u8]) -> crate::gateway::inject::Outcome {
+        use crate::gateway::inject::{Injector, Outcome, Skipped};
+        use std::io::Read as _;
+        let mut injector = Injector::new(std::io::Cursor::new(&self.body), snippet.to_vec());
+        let mut body = Vec::with_capacity(self.body.len() + snippet.len());
+        if injector.read_to_end(&mut body).is_err() {
+            return Outcome::Skipped(Skipped::PointNotFound);
+        }
+        let outcome = injector
+            .outcome()
+            .unwrap_or(Outcome::Skipped(Skipped::PointNotFound));
+        if outcome == Outcome::Injected {
+            self.body = body;
+            self.reframe_length = true;
+            self.headers.retain(|(name, _)| {
+                !name.eq_ignore_ascii_case("content-length")
+                    && !name.eq_ignore_ascii_case("cache-control")
+            });
+            self.headers
+                .push(("Cache-Control".into(), " no-store".into()));
+        }
+        outcome
+    }
+
     /// Reframe one already-validated entity, preserving duplicate end-to-end fields
     /// while preventing an origin from forging gateway counter acknowledgements.
     pub(in crate::gateway) fn encode(

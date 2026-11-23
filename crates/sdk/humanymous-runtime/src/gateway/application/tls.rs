@@ -434,11 +434,7 @@ impl Application {
                         return Err(Rejection::new(503, "service_stopping").into());
                     }
                     origin_stream
-                        .write_all(&http::origin_request(
-                            request,
-                            &self.config.scope.authority,
-                            origin_auth.as_deref(),
-                        ))
+                        .write_all(&self.origin_bytes(request, origin_auth.as_deref()))
                         .await
                         .map_err(|error| OriginError::io("origin_write", &error))?;
                     let mut bytes = Vec::new();
@@ -456,6 +452,8 @@ impl Application {
             }
         };
         let mut response = response;
+        // Owner decision #7: opt-in loader injection.
+        self.inject_html(request, &mut response)?;
         // TLS listener: HSTS only when configured (owner decision C10).
         response.secure(self.config.edge.hsts);
         let headers = ack

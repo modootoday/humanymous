@@ -25,6 +25,7 @@ use tokio::{
 };
 mod edge;
 mod gates;
+mod inject;
 mod maintenance;
 mod settings;
 mod tls;
@@ -822,11 +823,7 @@ impl Application {
                         && route.response_profile
                             == crate::gateway::configuration::ResponseProfile::NativeStream
                 });
-                let bytes = http::origin_request(
-                    &request,
-                    &self.config.scope.authority,
-                    self.origin_auth()?.as_deref(),
-                );
+                let bytes = self.origin_bytes(&request, self.origin_auth()?.as_deref());
                 let outcome = timeout_at(until, async {
                     let mut origin_stream = TcpStream::connect(origin)
                         .await
@@ -875,6 +872,10 @@ impl Application {
                 let Some(mut response) = response else {
                     return Ok(());
                 };
+                // Owner decision #7: opt-in loader injection, before the
+                // add-only security headers (Go `modifyResponse` order aside,
+                // both are add-only and independent).
+                self.inject_html(&request, &mut response)?;
                 // Plaintext listener: HSTS is never added here (owner decision C10).
                 response.secure(false);
                 let extra = ack
