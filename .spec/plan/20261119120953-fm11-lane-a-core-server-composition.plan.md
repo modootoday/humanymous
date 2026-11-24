@@ -3,7 +3,7 @@ id: plan:root/20261119120953
 title: FM11 lane A Core server composition
 status: active
 created: 2026-11-19T12:09:53Z
-updated: 2026-11-19T13:21:00Z
+updated: 2026-11-24T00:20:00Z
 rel:
   governs: [crates/sdk/humanymous-runtime/src/gateway/core_server.rs, crates/sdk/humanymous-runtime/tests/fixtures/gateway/core-server-go-golden.json]
   depends_on: [sot:root/rust-migration, sot:root/runtime-application]
@@ -61,9 +61,14 @@ The work is bounded:
   `URL.EscapedPath`; plaintext connections read and write under one absolute
   budget deadline and the drain has its own absolute deadline. Four new
   common `gateway::` tests; the qualification contract was regenerated.
-- [ ] Public Core listener and binary role (plan B01, Root profile).
-- [ ] Decide whether proxy-VPN and Tor exit CIDR sets feed `is_proxy` and
-  `is_tor_exit` (owner). The intel SoT keeps them shadow-only.
+- [x] Public Core listener and binary role (plan B01, Root profile): owner
+  decision B01 #1 (issue #75 comment 7017558784), composed by commit
+  2f8de947. `core_server::role` serves loopback by default, a non-loopback
+  listen needs `public_listen` with TLS, and the binary's Core role reads
+  one role document.
+- [x] Decide whether proxy-VPN and Tor exit CIDR sets feed `is_proxy` and
+  `is_tor_exit`: owner decision #10 (same comment) is no. They stay
+  shadow-only under the detection freeze, as the intel SoT says.
 - [x] Mount `gateway::pass_flow` into `core_server` through a `PassRoutes`
   adapter: `core_server::pass::PassMount` and `CoreServer::with_pass_flow`
   (lane F, `plan:root/20261119132028`).
