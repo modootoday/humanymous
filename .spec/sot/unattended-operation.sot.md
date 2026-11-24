@@ -105,6 +105,19 @@ down (U6.4), runs this loop once.
 | Merge to `main`, releases, tags, publication, OIDC | Owner | `needs-owner` |
 | Merge of an agent pull request outside the human-gated paths | Auto-merge after the required checks (Phase 2, H7) | — |
 
+- U3.0 The matrix maps onto the fleet governance levels that the cloud
+  environment's auto-mode context names:
+  - **A0 (auto):** the agent rows above, merged by auto-merge after the
+    required checks.
+  - **A1 (needs-human, then the owner merges):** pull requests that touch a
+    human-gated path. That includes this document and the permission files.
+  - **A2 (owner only):** rulesets, secrets, the main merge, releases, tags,
+    publication, and scoring.
+
+  The environment's hard-deny list (protected-branch pushes, force pushes,
+  tags, releases, approvals and merges, ruleset and secret changes,
+  production deploys, paid resources, naming the fleet configuration) agrees
+  with U9.1 deny. Where the two differ, the stricter one applies.
 - U3.1 A standing delegation, such as issue #75 comment 7017558784, covers the
   questions that were open when it was given. A question that arises later is
   asked again (C0.3). The run continues with other work meanwhile.
