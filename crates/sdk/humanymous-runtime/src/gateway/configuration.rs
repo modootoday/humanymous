@@ -11,6 +11,7 @@ pub mod exposure;
 pub mod inject;
 mod ip_reputation;
 mod operational;
+pub mod pass;
 pub mod recon_sweep;
 pub mod verdict_fast_path;
 pub use admin::{AdminListener, ModelSource};
@@ -103,6 +104,10 @@ pub struct Configuration {
     /// absent keeps every request scored. See [`verdict_fast_path`].
     #[serde(default)]
     pub verdict_fast_path: Option<verdict_fast_path::VerdictFastPath>,
+    /// Opt-in gateway Pass for the step-up proof (owner decision #4); absent
+    /// serves no Pass API and refuses the `attested` preset. See [`pass`].
+    #[serde(default)]
+    pub pass: Option<pass::Pass>,
 }
 
 /// Distinct integrity contracts. A browser subset never claims full wire binding.
@@ -157,7 +162,7 @@ pub struct Route {
     pub response_profile: ResponseProfile,
     /// Enforcement preset (legacy routes file vocabulary, owner decision #4,
     /// `plan:root/20261123121500`); absent is `balanced`, today's behaviour.
-    /// `attested` is refused until its step-up proof transport is decided.
+    /// `attested` (the attestation floor) needs the `pass` object.
     #[serde(default)]
     pub preset: Option<String>,
 }
@@ -168,11 +173,14 @@ impl Route {
         crate::gateway::route_policy::preset_by_name(self.preset.as_deref().unwrap_or("balanced"))
     }
 
-    /// A named preset must be a served one: in the routes-file vocabulary and
-    /// not `attested`, whose attestation floor has no proof source yet.
-    fn preset_valid(&self) -> bool {
+    /// A named preset must be in the routes-file vocabulary. `attested`
+    /// needs the step-up proof source (`pass_mounted`): without it the floor
+    /// would hold every session forever (Go refused an attested route
+    /// without its token key the same way).
+    fn preset_valid(&self, pass_mounted: bool) -> bool {
         self.preset.as_deref().is_none_or(|name| {
-            name != "attested" && crate::gateway::route_policy::VALID_PRESETS.contains(&name)
+            (name != "attested" || pass_mounted)
+                && crate::gateway::route_policy::VALID_PRESETS.contains(&name)
         })
     }
 }
@@ -235,7 +243,11 @@ impl Configuration {
             || self.operational().validate().is_err()
             || self.routes.is_empty()
             || self.routes.len() > 4096
-            || !self.routes.iter().all(Route::preset_valid)
+            || !self
+                .routes
+                .iter()
+                .all(|route| route.preset_valid(self.pass.is_some()))
+            || self.pass.as_ref().is_some_and(|pass| !pass.valid())
             || !self.audit.witness_input_valid()
             || self
                 .ip_reputation

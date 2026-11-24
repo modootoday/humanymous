@@ -27,6 +27,7 @@ mod edge;
 mod gates;
 mod inject;
 mod maintenance;
+pub mod pass;
 mod settings;
 mod sticky;
 mod tls;
@@ -114,6 +115,9 @@ pub struct Application {
     /// modes on the request path (owner decision #3), once installed.
     gate_overlay:
         Option<Arc<std::sync::RwLock<Option<crate::gateway::settings::overlay::Overlay>>>>,
+    /// Gateway Pass API for the step-up proof (owner decision #4), when
+    /// configured.
+    pass: Option<pass::Mounted>,
 }
 impl Application {
     /// Compose existing services without changing policy or deriving new tells.
@@ -124,6 +128,12 @@ impl Application {
     ) -> Result<Self, Rejection> {
         config.validate()?;
         let origin_key = config.edge.origin_key()?;
+        // Owner decision #4: the gateway Pass API, only when configured.
+        let pass = config
+            .pass
+            .as_ref()
+            .map(|pass| pass::Mounted::new(Duration::from_millis(pass.step_up_ttl_ms)))
+            .transpose()?;
         Ok(Self {
             config,
             sessions: Sessions::new(),
@@ -139,6 +149,7 @@ impl Application {
             sweep_interval: maintenance::INTERVAL,
             signed_policy: None,
             gate_overlay: None,
+            pass,
         })
     }
 
@@ -331,11 +342,27 @@ impl Application {
                 serde_json::to_vec(&issued).map_err(|_| Rejection::new(503, "serialization"))?,
             ));
         }
+        // Owner decision #4: the gateway Pass API, authenticated by request
+        // integrity; the RIT session is the Pass session.
+        if let Some(flow_path) = pass::flow_path(path) {
+            if !self.pass_mounted() {
+                return Err(Rejection::new(403, "reserved_route"));
+            }
+            let mut authorized = self.sessions.authorize(&self.config, req, now)?;
+            *ack = authorized.ack.take();
+            if !self.sessions.admit_authorized(&authorized.session) {
+                return Err(Rejection::new(429, "session_admission"));
+            }
+            let sid = authorized.session.clone();
+            return self.serve_pass(req, flow_path, &sid, now);
+        }
         let collect = path == "/_humanymous/collect" || path == "/_humanymous/browser/collect";
         // Fields after a non-enforcing spoof gate stripped forged trust headers.
         let mut stripped = None;
         // Owner decision #4: the matched route's preset (collect routes enforce).
         let (mut enforcing, mut preset) = (true, "balanced");
+        // Ceiling-guard #1: the matched route carries the attestation floor.
+        let mut attested = false;
         if collect {
             if req.method != "POST"
                 || req.target != path
@@ -361,6 +388,7 @@ impl Application {
                 .ok_or(Rejection::new(409, "route_inventory"))?;
             enforcing = route.policy().enforce;
             preset = route.policy().name;
+            attested = route.policy().attest_floor;
             if route.rit_profile != profile {
                 return Err(Rejection::new(409, "route_integrity_profile"));
             }
@@ -390,7 +418,11 @@ impl Application {
                 id,
                 now,
                 (&request_id, &correlation_id),
-                (enforcing, preset),
+                gates::Matched {
+                    enforcing,
+                    attest_floor: attested,
+                    name: preset,
+                },
             )? {
                 gates::Gated::Continue => {}
                 gates::Gated::Answer(decision) => return Ok(decision),
@@ -513,6 +545,15 @@ impl Application {
             route_class: route_class.clone(),
             started_ms: now,
         };
+        // Ceiling-guard #1 (legacy applyVerdict): on an enforcing attested
+        // route a scored ALLOW without a step-up proof is held for step-up
+        // (enforce) or recorded as `would_challenge` (monitor, shadow). The
+        // verdict, score and rules are recorded unchanged.
+        let held = verdict == "ALLOW"
+            && !collect
+            && enforcing
+            && attested
+            && self.floor_holds(req, id, &route_class)?;
         let record = Record {
             event_type: if collect {
                 "runtime.collect"
@@ -527,7 +568,14 @@ impl Application {
             config_version: self.config_version(),
             verdict: verdict.clone(),
             risk_score: risk as i64,
-            enforcement_action: if collect { "collect" } else { &verdict }.into(),
+            enforcement_action: if collect {
+                "collect"
+            } else if held {
+                "step_up_challenge"
+            } else {
+                &verdict
+            }
+            .into(),
             // Legacy applyVerdict: a non-enforcing preset (monitor, off)
             // records mode `monitor` and passes through.
             enforcement_mode: if enforcing { "enforce" } else { "monitor" }.into(),
@@ -545,7 +593,15 @@ impl Application {
         if verdict == "ALLOW" && !collect && enforcing {
             self.remember_allow(req, id);
         }
-        if verdict == "ALLOW" || !collect && !enforcing {
+        if held {
+            // Go served the step-up interstitial with 401; the client runs
+            // the gateway Pass (`/_humanymous/pass/*`) and retries.
+            Ok(Decision::Local(
+                401,
+                serde_json::to_vec(&serde_json::json!({"verdict":verdict,"step_up":"required"}))
+                    .map_err(|_| Rejection::new(503, "serialization"))?,
+            ))
+        } else if verdict == "ALLOW" || !collect && !enforcing {
             Ok(Decision::Origin { deadline, upstream })
         } else {
             Ok(Decision::Local(
