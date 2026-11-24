@@ -35,6 +35,7 @@ before committing, run `spec check`. Rust conventions in that SoT are mandatory.
 | Full verification | skill `red-blue-validate` (**Docker only**) |
 | Local Docker, WSL Docker or act | `.agents/rules/96-docker-engine-affinity.md`; verify the intended engine before execution or image cleanup |
 | Cloud container or scheduled session (no shared checkout, board, pwsh or `.spec.local`) | `.agents/rules/97-github-coordination.md` |
+| Unattended scheduled loop, authority matrix, permissions | `.spec/sot/unattended-operation.sot.md` |
 | Multi-round red/blue wargame (attack→e2e→guard) | skill `red-blue-wargame-round` + rule `61-redblue-wargame` |
 | Pass challenge round only | skill `pass-wargame-round` (SoT-36) |
 | Multi-perspective panel | `.agents/agents/` + `.agents/workflows/design-panel.yaml` |
