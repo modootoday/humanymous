@@ -12,6 +12,8 @@ Rules 90 and 91 assume those local facilities. Where this rule names a GitHub
 replacement, the session uses it instead. Every other rule still applies.
 
 Canon and phases: `plan:root/20261116070000` (GitHub infrastructure coordination).
+The unattended run loop, authority matrix and permission model are
+`sot:root/unattended-operation`.
 
 ## Coordination state
 
