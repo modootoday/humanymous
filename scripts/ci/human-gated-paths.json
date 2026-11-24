@@ -16,7 +16,8 @@
     "internal/network/",
     "internal/collector/",
     "cmd/wasm/",
-    "cmd/server/"
+    "cmd/server/",
+    "scripts/agents/hooks/"
   ],
   "files": [
     ".github/labels.json",
@@ -31,7 +32,9 @@
     "rust-toolchain.toml",
     "go.mod",
     "go.sum",
-    "SECURITY.md"
+    "SECURITY.md",
+    ".claude/settings.json",
+    ".spec/sot/unattended-operation.sot.md"
   ],
   "suffixes": [
     ".go"
