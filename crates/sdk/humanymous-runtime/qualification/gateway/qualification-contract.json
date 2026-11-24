@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 971,
-      "macos": 971,
-      "windows": 922
+      "linux": 977,
+      "macos": 977,
+      "windows": 927
     },
     "common_test_names": [
       "gateway::accept::tests::accept_serves_a_real_connection",
@@ -152,6 +152,7 @@
       "gateway::admin_plane::tests::wargame::r144_incidents_auth_required",
       "gateway::admin_plane::tests::wargame::r145_approvals_list_auth_required",
       "gateway::admin_plane::tests::wargame::r146_console_unauth_404",
+      "gateway::application::sticky::tests::sticky_verdict_binding_expiry_and_bound",
       "gateway::application::temporal::tests::categories::configure_only_preserves_unknown_gap_until_provider_observation",
       "gateway::application::temporal::tests::categories::maintenance_and_warmup_commit_but_never_upgrade_scope_or_erase_loss",
       "gateway::application::temporal::tests::categories::missing_key_noops_never_become_committed_normal_observations",
@@ -238,6 +239,7 @@
       "gateway::configuration::ip_reputation::tests::defaults_and_bounds",
       "gateway::configuration::operational::tests::operational_schema_excludes_frozen_detection_policy_and_secrets",
       "gateway::configuration::recon_sweep::tests::defaults_are_go_and_bounds_are_validated",
+      "gateway::configuration::verdict_fast_path::tests::defaults_are_go_and_bounds_are_validated",
       "gateway::connection_cap::tests::close_refuses_new_and_waiting_acquisitions",
       "gateway::connection_cap::tests::connection_concurrency_is_capped",
       "gateway::connection_cap::tests::limit_bounds_are_refused",
@@ -797,11 +799,14 @@
       "gateway::tests::gates::pat_is_not_presentable_under_the_native_profile",
       "gateway::tests::gates::pat_upgrades_once_under_the_browser_profile",
       "gateway::tests::gates::settings_overlay_sets_the_sweep_mode",
+      "gateway::tests::gates::sticky_allow_rescores_on_a_new_fingerprint_or_after_expiry",
+      "gateway::tests::gates::sticky_allow_takes_the_fast_path_without_rescoring",
       "gateway::tests::gates::sweep_gate_denies_the_ninth_session_and_monitor_only_records",
       "gateway::tests::gates::unaudited_trust_upgrade_fails_closed",
       "gateway::tests::gates::uninstalled_gates_leave_the_served_path_unchanged",
       "gateway::tests::gates::unknown_agent_key_is_recorded_and_scored",
       "gateway::tests::gates::upgrade_without_verdict_token_is_denied",
+      "gateway::tests::gates::verdict_fast_path_monitor_and_non_enforcing_routes_score",
       "gateway::tests::gates::verified_agent_signature_forwards_without_scoring",
       "gateway::tests::gates::webauthn_assertion_upgrades_only_with_an_attributed_client",
       "gateway::tests::gates::webauthn_needs_the_trusted_client_address",
@@ -980,6 +985,7 @@
       "gateway::tests::service::trusted_proxies::unix_trusted_balancer_declares_the_client",
       "gateway::tests::service::unix_closed_shutdown_controller_cannot_report_stopped",
       "gateway::tests::service::unix_service_management_drains_before_custody_release",
+      "gateway::tests::service::verdict_fast_path::unix_verdict_fast_path_is_reported_and_refused_bounds_stop_startup",
       "gateway::tests::service::witness_input::inherited_pipe_witness_pins_identity_and_cosigns_durable_audit",
       "gateway::tests::service::witness_input::inherited_witness_refusals_happen_before_custody_or_unlock",
       "gateway::tls::acme::tests::cache_is_owner_only_and_loose_entries_are_refused",
