@@ -377,6 +377,11 @@ impl ServiceHost {
             }
             None => None,
         };
+        // Owner decision #4 (option 1): the verdict fast path only when configured.
+        let fast_path = configuration.verdict_fast_path.clone();
+        if let Some(fast) = &fast_path {
+            profile["verdict_fast_path"] = fast.readiness();
+        }
         // Owner decision #7: injection only when configured.
         if let Some(inject) = &configuration.inject {
             profile["inject"] = inject.readiness();
@@ -414,6 +419,13 @@ impl ServiceHost {
         }
         if let Some((detector, mode)) = sweep {
             application.install_sweep(detector, mode);
+        }
+        if let Some(fast) = fast_path {
+            application.install_verdict_fast_path(
+                std::time::Duration::from_millis(fast.ttl_ms),
+                fast.max_sessions,
+                fast.mode,
+            );
         }
         if let Some(admin) = &admin {
             // The edge ban gate consults the store the plane writes. A gate that

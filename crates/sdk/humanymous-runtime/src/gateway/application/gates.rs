@@ -27,10 +27,12 @@
 //!   #4): `monitor` and `off` are non-enforcing; no served preset carries
 //!   the attestation floor (`attested` is refused until its step-up proof
 //!   transport is decided). The kill switch is not on the served path.
-//! - The verdict-token gate is not composed: nothing on the served path
-//!   issues `hmn_vt` (the gate control plane that minted it is not composed),
-//!   so the upgrade gate's `hasValidToken` is always false, as in Go without
-//!   a token key.
+//! - The verdict-token gate reads a server-side sticky verdict in place of
+//!   Go's `hmn_vt` cookie (owner decision #4, option 1; `application::sticky`)
+//!   and runs only with `install_verdict_fast_path`; a scored ALLOW on an
+//!   enforcing route records it, and nothing is sent to the client. Without
+//!   it the gate is skipped and the upgrade gate's `hasValidToken` is false,
+//!   as in Go without a token key.
 //! - Records carry no subject pseudonym, as the ban and spoof gates. A trust
 //!   upgrade's record also carries the request id and commitment of the
 //!   ALLOW it authorizes, so an `upstream.error` record links to it.
@@ -45,6 +47,7 @@
 use super::{Application, Decision, GateResponse};
 use crate::audit::record::Record;
 use crate::gateway::Rejection;
+use crate::gateway::attest_floor::FloorMode;
 use crate::gateway::attest_floor::fanout::{self, CredentialFanout};
 use crate::gateway::ban::gate::Mode;
 use crate::gateway::credential::{privacy_pass, web_bot_auth, webauthn};
@@ -64,6 +67,9 @@ pub(super) struct Installed {
     pat: Option<privacy_pass::Verifier>,
     webauthn: Option<(webauthn::Registry, CredentialFanout)>,
     sweep: Option<(Detector, Mode)>,
+    /// Server-side sticky verdicts with the `gate.verdict_token` boot mode
+    /// (owner decision #4, option 1; see `application::sticky`).
+    fast_path: Option<(super::sticky::StickyVerdicts, Mode)>,
     /// Monotonic origin of the sweep detector and fan-out tracker clocks.
     epoch: Option<Instant>,
 }
@@ -85,6 +91,9 @@ impl Installed {
         }
         if let Some((_, fanout)) = self.webauthn.as_mut() {
             fanout.gc(now).map_err(|_| refused)?;
+        }
+        if let Some((sticky, _)) = self.fast_path.as_mut() {
+            sticky.gc(now);
         }
         Ok(())
     }
@@ -136,6 +145,39 @@ impl Application {
     pub fn install_sweep(&mut self, detector: Detector, mode: Mode) {
         self.installed.epoch();
         self.installed.sweep = Some((detector, mode));
+    }
+
+    /// Keep scored ALLOW verdicts on the server for `ttl`, at most
+    /// `max_sessions` at once, and let the verdict-token gate fast-path them
+    /// with boot mode `mode` (owner decision #4, option 1). Without this the
+    /// gate is skipped, as Go's without a token key.
+    pub fn install_verdict_fast_path(&mut self, ttl: Duration, max_sessions: usize, mode: Mode) {
+        self.installed.epoch();
+        self.installed.fast_path =
+            Some((super::sticky::StickyVerdicts::new(ttl, max_sessions), mode));
+    }
+
+    /// Go `tokenBind(r)`: the header fingerprint and the client subnet.
+    fn client_binding(&self, req: &Request) -> String {
+        let key = token::bind_key(
+            req.header("user-agent").unwrap_or(""),
+            req.header("accept-language").unwrap_or(""),
+            req.header("sec-ch-ua").unwrap_or(""),
+        );
+        let subnet = self.client.map(token::client_subnet).unwrap_or_default();
+        token::token_bind(key.as_deref(), &subnet)
+    }
+
+    /// Record a scored ALLOW of an enforcing route for the fast path (Go
+    /// `issueVerdictTokenOnAllow`, without a token on the wire).
+    pub(super) fn remember_allow(&mut self, req: &Request, sid: &str) {
+        let binding = self.client_binding(req);
+        let Some(epoch) = self.installed.epoch else {
+            return;
+        };
+        if let Some((sticky, _)) = self.installed.fast_path.as_mut() {
+            sticky.record(sid, &binding, epoch.elapsed());
+        }
     }
 
     /// Set the recovered client address the edge would supply (tests).
@@ -248,7 +290,57 @@ impl Application {
         if let Some(gated) = self.settle(webauthn, linkage)? {
             return Ok(gated);
         }
-        let upgrade = Some(gates::upgrade(&subject, &route, false));
+        // Owner decision #4 (option 1): the session's server-side verdict
+        // stands in for Go's `hmn_vt` cookie, for both the verdict-token gate
+        // and the upgrade gate's `hasValidToken`.
+        let presented = match (self.installed.fast_path.is_some(), monotonic) {
+            (true, Some(now)) => {
+                let binding = self.client_binding(req);
+                self.installed
+                    .fast_path
+                    .as_mut()
+                    .map(|(sticky, _)| sticky.check(sid, &binding, now))
+            }
+            _ => None,
+        };
+        let verdict = match (presented, self.installed.fast_path.as_ref()) {
+            (Some(presented), Some((_, boot))) => {
+                let mode = self.gate_mode("gate.verdict_token", *boot);
+                let floor_mode = match self.gate_mode("gate.attest_floor", Mode::Enforce) {
+                    Mode::Off => FloorMode::Off,
+                    Mode::Monitor => FloorMode::Monitor,
+                    Mode::Shadow => FloorMode::Shadow,
+                    Mode::Enforce => FloorMode::Enforce,
+                };
+                let config_version = self.config_version();
+                let host = req.header("host").unwrap_or("").to_owned();
+                let floor = gates::Floor {
+                    mode: floor_mode,
+                    // No step-up proof source yet; no served route carries
+                    // the attestation floor (`attested` is refused).
+                    step_up: false,
+                    audit: gates::FloorAudit {
+                        actor_pseudonym: "",
+                        session_pseudonym: "",
+                        host: &host,
+                        config_version: &config_version,
+                    },
+                };
+                Some(gates::verdict_token(
+                    &subject,
+                    &route,
+                    mode,
+                    || presented,
+                    &floor,
+                ))
+            }
+            _ => None,
+        };
+        if let Some(gated) = self.settle(verdict, linkage)? {
+            return Ok(gated);
+        }
+        let valid = presented == Some(gates::Token::Valid);
+        let upgrade = Some(gates::upgrade(&subject, &route, valid));
         if let Some(gated) = self.settle(upgrade, linkage)? {
             return Ok(gated);
         }

@@ -542,10 +542,22 @@ proxied requests. Same detection freeze as above.
   its step-up proof transport is decided, so no route carries the
   attestation floor and its audit is never written. An `off` route cannot be
   listed in `inject.routes`. Readiness names each route's preset. The kill
-  switch is not on the served path. The verdict-token gate is
-  not composed because nothing on the served path mints `hmn_vt`; the upgrade
-  gate therefore denies every WebSocket upgrade (HR-26), as Go did without a
-  token key.
+  switch is not on the served path.
+- Verdict fast path (2026-11-24, owner decision #4 with transport option 1,
+  issue #75): the optional `verdict_fast_path` object (`mode`, the boot mode
+  of `gate.verdict_token`, default `enforce`; `ttl_ms`, default and maximum
+  Go's 30 minutes; required `max_sessions`) keeps a scored ALLOW of an
+  enforcing route on the server for that session, bound to Go's
+  `tokenBind` (header fingerprint and client subnet). No token or cookie is
+  sent. Within the lifetime the verdict-token gate forwards the session's
+  requests without scoring (`enforcement.allow` `pass`, the preset as
+  `config_version`); a changed binding or an expired verdict records
+  `token.binding_mismatch` and re-scores; monitor and shadow record
+  `would_fast_path` and score. The store is bounded (a session beyond it is
+  scored every time) and swept on the maintenance tick. Without the object
+  the gate is skipped, every request is scored and the upgrade gate denies
+  every upgrade (HR-26), as Go without a token key. The step-up proof is not
+  composed (the Pass flow is in the Core role), so `attested` stays refused.
 - The sweep detector and fan-out tracker run on a monotonic epoch and are
   swept by `Application::gc`; an enforcing detector that cannot count answers
   503 `sweep_unavailable`, a non-enforcing one continues unrecorded.
@@ -631,7 +643,9 @@ threshold, hard-rule predicate, verdict band or signal ID.
     sticky verdict on the RIT session, a signed header token, or the
     route-scoped cookie contract first) is an owner choice recorded in issue
     #75 (2026-11-23, `plan:root/20261123121500`). Route presets per
-    inventoried route do not depend on it.
+    inventoried route do not depend on it. The owner chose option 1, the
+    server-side sticky verdict (2026-11-24); composed as the verdict fast
+    path above.
   - #5: port Go's Prometheus metric names and labels, served on the admin
     listener only. `GET metrics` (2026-11-22, `gateway::admin_plane::metrics`,
     any role) emits Go's text exposition, pinned against a 981d25c capture:

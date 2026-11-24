@@ -482,3 +482,144 @@ fn gate_deny_fields_precede_the_acknowledgement() {
     expected.extend(ack.headers(DENY_STATUS).unwrap());
     assert_eq!(gate.with_ack(Some(&ack)).unwrap(), expected);
 }
+
+/// Two signed requests of one session; `second` edits the second request's
+/// fields before it is signed. Returns the second decision.
+fn same_session_twice(
+    app: &mut Application,
+    second: impl FnOnce(&mut Request),
+    between: impl FnOnce(),
+) -> Decision {
+    let cfg = config();
+    let issued = issue(app, NOW_MS);
+    let (id, key) = (
+        issued["session"].as_str().unwrap().to_owned(),
+        issued["key"].as_str().unwrap().to_owned(),
+    );
+    collected(app, &cfg, &issued, NOW_MS);
+    let mut first = request("POST", "/effect?exact=1", b"original bytes".to_vec());
+    sign(&cfg, &mut first, &id, &key, 2, NOW_MS);
+    assert!(matches!(
+        app.decide(&first, || Ok(NOW_MS)).unwrap(),
+        Decision::Origin { .. }
+    ));
+    between();
+    let mut req = request("POST", "/effect?exact=1", b"original bytes".to_vec());
+    second(&mut req);
+    sign(&cfg, &mut req, &id, &key, 3, NOW_MS);
+    app.decide(&req, || Ok(NOW_MS)).unwrap()
+}
+
+fn fast_app(audit: &Audit, ttl: Duration) -> Application {
+    let mut app = app_with(config(), audit);
+    app.install_verdict_fast_path(ttl, 64, Mode::Enforce);
+    app
+}
+
+/// Owner decision #4, option 1 (Go `verdictTokenGate` fast path, HR-28): a
+/// scored ALLOW keeps the session's verdict on the server, so the session's
+/// next request is forwarded without scoring, audited `enforcement.allow`
+/// `pass` with the route preset as `config_version`. Without the fast path
+/// installed every request is scored, as Go without a token key.
+#[test]
+fn sticky_allow_takes_the_fast_path_without_rescoring() {
+    let audit = Audit::default();
+    let mut app = fast_app(&audit, Duration::from_secs(60));
+    let decision = same_session_twice(&mut app, |_| {}, || {});
+    assert!(matches!(decision, Decision::Origin { .. }));
+    assert_eq!(records(&audit, "runtime.decision").len(), 1);
+    let fast = records(&audit, "enforcement.allow");
+    assert_eq!(fast.len(), 1);
+    assert_eq!(
+        (
+            fast[0].enforcement_action.as_str(),
+            fast[0].enforcement_mode.as_str(),
+            fast[0].config_version.as_str()
+        ),
+        ("pass", "enforce", "balanced")
+    );
+    assert!(!fast[0].request_id.is_empty());
+
+    let audit = Audit::default();
+    let mut app = app_with(config(), &audit);
+    same_session_twice(&mut app, |_| {}, || {});
+    assert_eq!(records(&audit, "runtime.decision").len(), 2);
+    assert!(records(&audit, "enforcement.allow").is_empty());
+}
+
+/// A changed fingerprint or an expired verdict re-scores (Go clears the
+/// cookie and falls through): the mismatch is recorded and the request gets
+/// a full `runtime.decision`.
+#[test]
+fn sticky_allow_rescores_on_a_new_fingerprint_or_after_expiry() {
+    let audit = Audit::default();
+    let mut app = fast_app(&audit, Duration::from_secs(60));
+    same_session_twice(
+        &mut app,
+        |req| {
+            for (name, value) in &mut req.headers {
+                if name.eq_ignore_ascii_case("user-agent") {
+                    *value = "Mozilla/5.0 Firefox/130.0".into();
+                }
+            }
+        },
+        || {},
+    );
+    assert_eq!(records(&audit, "runtime.decision").len(), 2);
+    let mismatch = records(&audit, "token.binding_mismatch");
+    assert_eq!(mismatch.len(), 1);
+    assert_eq!(
+        mismatch[0].fail_reason,
+        "verdict token binding_mismatch \u{2014} cleared, re-scoring"
+    );
+
+    let audit = Audit::default();
+    let mut app = fast_app(&audit, Duration::from_millis(1));
+    same_session_twice(
+        &mut app,
+        |_| {},
+        || std::thread::sleep(Duration::from_millis(20)),
+    );
+    assert_eq!(records(&audit, "runtime.decision").len(), 2);
+    assert_eq!(
+        records(&audit, "token.binding_mismatch")[0].fail_reason,
+        "verdict token expired \u{2014} cleared, re-scoring"
+    );
+}
+
+/// Go TestSettingsVerdictTokenMonitorDoesNotFastPath at 981d25c: with the
+/// overlay naming `gate.verdict_token: monitor` a valid verdict does not
+/// fast-path; `would_fast_path` is recorded in mode `monitor` and the request
+/// is scored. A non-enforcing route (`monitor` preset) keeps no verdict.
+#[test]
+fn verdict_fast_path_monitor_and_non_enforcing_routes_score() {
+    use crate::gateway::settings::overlay::{Mode as Named, Overlay};
+    let audit = Audit::default();
+    let mut app = fast_app(&audit, Duration::from_secs(60));
+    let overlay = Overlay {
+        status: "active".into(),
+        gates: [("gate.verdict_token".to_owned(), Named::Monitor)].into(),
+        ..Default::default()
+    };
+    app.install_gate_overlay(std::sync::Arc::new(std::sync::RwLock::new(Some(overlay))));
+    same_session_twice(&mut app, |_| {}, || {});
+    assert_eq!(records(&audit, "runtime.decision").len(), 2);
+    let would = records(&audit, "enforcement.allow");
+    assert_eq!(
+        (
+            would.len(),
+            would[0].enforcement_action.as_str(),
+            would[0].enforcement_mode.as_str()
+        ),
+        (1, "would_fast_path", "monitor")
+    );
+
+    let audit = Audit::default();
+    let mut cfg = config();
+    cfg.routes[0].preset = Some("monitor".into());
+    let mut app = app_with(cfg, &audit);
+    app.install_verdict_fast_path(Duration::from_secs(60), 64, Mode::Enforce);
+    same_session_twice(&mut app, |_| {}, || {});
+    assert_eq!(records(&audit, "runtime.decision").len(), 2);
+    assert!(records(&audit, "enforcement.allow").is_empty());
+}

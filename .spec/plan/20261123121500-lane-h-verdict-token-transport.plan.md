@@ -3,9 +3,9 @@ id: plan:root/20261123121500
 title: Lane H #4 verdict-token transport and route presets on the served path
 status: active
 created: 2026-11-23T12:15:00Z
-updated: 2026-11-23T16:40:00Z
+updated: 2026-11-24T21:00:00Z
 rel:
-  governs: [crates/sdk/humanymous-runtime/src/gateway/application.rs, crates/sdk/humanymous-runtime/src/gateway/application/gates.rs, crates/sdk/humanymous-runtime/src/gateway/configuration.rs, crates/sdk/humanymous-runtime/src/gateway/route_policy.rs, crates/sdk/humanymous-runtime/src/gateway/token.rs]
+  governs: [crates/sdk/humanymous-runtime/src/gateway/application.rs, crates/sdk/humanymous-runtime/src/gateway/application/gates.rs, crates/sdk/humanymous-runtime/src/gateway/configuration.rs, crates/sdk/humanymous-runtime/src/gateway/route_policy.rs, crates/sdk/humanymous-runtime/src/gateway/token.rs, crates/sdk/humanymous-runtime/src/gateway/application/sticky.rs, crates/sdk/humanymous-runtime/src/gateway/configuration/verdict_fast_path.rs]
   depends_on: [sot:root/runtime-application, plan:root/20261121201500]
 ---
 
@@ -81,12 +81,19 @@ token for a stateless fast path across nodes.
 
 ## Steps
 
-- [ ] Owner chooses option 1, 2 or 3 (issue #75).
+- [x] Owner chooses option 1, 2 or 3 (issue #75): option 1, the server-side
+  sticky verdict (owner, 2026-11-24).
 - [x] Route presets per inventoried route (2026-11-23): `Route.preset`
   (strict, balanced, monitor, off; `attested` refused), readiness, monitor and
   off passing through with mode `monitor`, non-enforcing gates, `off` refused
   for injection; ledger and SoT.
-- [ ] The chosen verdict/step-up transport, with the verdict-token gate composed in its `gate.verdict_token` mode (#3 overlay) and the attestation floor in `gate.attest_floor`.
+- [x] Verdict fast path (2026-11-24): `verdict_fast_path` configuration,
+  `application::sticky` store, the verdict-token gate composed in its
+  `gate.verdict_token` mode and the upgrade gate's `hasValidToken` read from
+  it; Go TestSettingsVerdictTokenMonitorDoesNotFastPath ported.
+- [ ] Step-up proof and the attestation floor: the Pass flow runs in the Core
+  role, not on the gateway's sessions, so no session can hold a step-up flag
+  yet; `attested` stays refused until that link exists.
 
 ## Verification
 

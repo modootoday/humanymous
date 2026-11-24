@@ -5,6 +5,7 @@ mod inject;
 mod recon_sweep;
 mod settings_operator;
 mod trusted_proxies;
+mod verdict_fast_path;
 mod witness_input;
 use super::*;
 use crate::audit::keys::{

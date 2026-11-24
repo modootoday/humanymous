@@ -12,6 +12,7 @@ pub mod inject;
 mod ip_reputation;
 mod operational;
 pub mod recon_sweep;
+pub mod verdict_fast_path;
 pub use admin::{AdminListener, ModelSource};
 pub use audit::{Audit, MAX_WITNESS_PROOF, SealedKeys, WitnessInput, WitnessInputDurability};
 pub use edge::Edge;
@@ -98,6 +99,10 @@ pub struct Configuration {
     /// response. See [`inject`].
     #[serde(default)]
     pub inject: Option<inject::Inject>,
+    /// Opt-in server-side verdict fast path (owner decision #4, option 1);
+    /// absent keeps every request scored. See [`verdict_fast_path`].
+    #[serde(default)]
+    pub verdict_fast_path: Option<verdict_fast_path::VerdictFastPath>,
 }
 
 /// Distinct integrity contracts. A browser subset never claims full wire binding.
@@ -249,6 +254,10 @@ impl Configuration {
                 .inject
                 .as_ref()
                 .is_some_and(|inject| !inject.valid(&self.routes))
+            || self
+                .verdict_fast_path
+                .as_ref()
+                .is_some_and(|fast| !fast.valid())
             || self.edge.hsts && self.tls.is_none()
         {
             return Err(bad);

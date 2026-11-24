@@ -28,6 +28,7 @@ mod gates;
 mod inject;
 mod maintenance;
 mod settings;
+mod sticky;
 mod tls;
 // L1 consumer adapter only; no serving observation point is accepted yet.
 #[cfg(test)]
@@ -539,6 +540,11 @@ impl Application {
             return Err(Rejection::new(503, "durable_audit"));
         }
         self.check_deadline(deadline, clock())?;
+        // Owner decision #4 (option 1): a scored ALLOW on an enforcing route
+        // is kept on the server for the verdict fast path, when installed.
+        if verdict == "ALLOW" && !collect && enforcing {
+            self.remember_allow(req, id);
+        }
         if verdict == "ALLOW" || !collect && !enforcing {
             Ok(Decision::Origin { deadline, upstream })
         } else {
