@@ -538,10 +538,9 @@ proxied requests. Same detection freeze as above.
   non-ALLOW verdict through to the origin with the `runtime.decision` record
   in mode `monitor` (Go `applyVerdict`), and the gates see the route as
   non-enforcing; `strict` and `balanced` enforce as before (fail closed is
-  universal, scoring is always synchronous). `attested` is refused until
-  its step-up proof transport is decided, so no route carries the
-  attestation floor and its audit is never written. An `off` route cannot be
-  listed in `inject.routes`. Readiness names each route's preset. The kill
+  universal, scoring is always synchronous). `attested` carries the
+  attestation floor and needs the `pass` object (below); without it the
+  preset is refused. An `off` route cannot be listed in `inject.routes`. Readiness names each route's preset. The kill
   switch is not on the served path.
 - Verdict fast path (2026-11-24, owner decision #4 with transport option 1,
   issue #75): the optional `verdict_fast_path` object (`mode`, the boot mode
@@ -556,8 +555,27 @@ proxied requests. Same detection freeze as above.
   `would_fast_path` and score. The store is bounded (a session beyond it is
   scored every time) and swept on the maintenance tick. Without the object
   the gate is skipped, every request is scored and the upgrade gate denies
-  every upgrade (HR-26), as Go without a token key. The step-up proof is not
-  composed (the Pass flow is in the Core role), so `attested` stays refused.
+  every upgrade (HR-26), as Go without a token key.
+- Step-up proof and attestation floor (2026-11-24, owner decision #4; the
+  owner chose to mount Pass on the gateway): the optional `pass` object
+  (`step_up_ttl_ms`, default and maximum Go's 30 minutes) mounts the ported
+  `gateway::pass_flow` on the reserved routes
+  `/_humanymous/pass/{new,pow,attest,solve}`, authenticated by request
+  integrity; the RIT session is the Pass session and the master key is
+  random per process. Motor evidence stays off (owner decision #9). A solve
+  that marks the session solved appends `token.issued` ("step-up proof
+  minted (Pass solved)") and records a server-side step-up proof bound to
+  Go's `tokenBind`; no receipt, token or cookie is issued, and the Core
+  role's receipt path is not used by the gateway. On an `attested` route a
+  scored ALLOW without that proof is held with 401
+  (`{"verdict":"ALLOW","step_up":"required"}`, action `step_up_challenge`,
+  verdict and score recorded unchanged) when `gate.attest_floor` enforces,
+  or recorded `would_challenge` and forwarded in monitor or shadow (Go
+  `applyVerdict`); the verdict fast path asks the same proof through the
+  ported floor kernel. The Pass page and KPI view are not served here, the
+  flow's own score never reaches the served verdicts (detection freeze) and
+  the browser client that drives these routes with RIT-signed requests is a
+  separate collector change.
 - The sweep detector and fan-out tracker run on a monotonic epoch and are
   swept by `Application::gc`; an enforcing detector that cannot count answers
   503 `sweep_unavailable`, a non-enforcing one continues unrecorded.

@@ -3,9 +3,9 @@ id: plan:root/20261123121500
 title: Lane H #4 verdict-token transport and route presets on the served path
 status: active
 created: 2026-11-23T12:15:00Z
-updated: 2026-11-24T21:00:00Z
+updated: 2026-11-24T23:30:00Z
 rel:
-  governs: [crates/sdk/humanymous-runtime/src/gateway/application.rs, crates/sdk/humanymous-runtime/src/gateway/application/gates.rs, crates/sdk/humanymous-runtime/src/gateway/configuration.rs, crates/sdk/humanymous-runtime/src/gateway/route_policy.rs, crates/sdk/humanymous-runtime/src/gateway/token.rs, crates/sdk/humanymous-runtime/src/gateway/application/sticky.rs, crates/sdk/humanymous-runtime/src/gateway/configuration/verdict_fast_path.rs]
+  governs: [crates/sdk/humanymous-runtime/src/gateway/application.rs, crates/sdk/humanymous-runtime/src/gateway/application/gates.rs, crates/sdk/humanymous-runtime/src/gateway/configuration.rs, crates/sdk/humanymous-runtime/src/gateway/route_policy.rs, crates/sdk/humanymous-runtime/src/gateway/token.rs, crates/sdk/humanymous-runtime/src/gateway/application/sticky.rs, crates/sdk/humanymous-runtime/src/gateway/configuration/verdict_fast_path.rs, crates/sdk/humanymous-runtime/src/gateway/application/pass.rs, crates/sdk/humanymous-runtime/src/gateway/configuration/pass.rs]
   depends_on: [sot:root/runtime-application, plan:root/20261121201500]
 ---
 
@@ -91,9 +91,14 @@ token for a stateless fast path across nodes.
   `application::sticky` store, the verdict-token gate composed in its
   `gate.verdict_token` mode and the upgrade gate's `hasValidToken` read from
   it; Go TestSettingsVerdictTokenMonitorDoesNotFastPath ported.
-- [ ] Step-up proof and the attestation floor: the Pass flow runs in the Core
-  role, not on the gateway's sessions, so no session can hold a step-up flag
-  yet; `attested` stays refused until that link exists.
+- [x] Step-up proof and the attestation floor (2026-11-24; the owner chose to
+  mount Pass on the gateway): the `pass` object mounts `pass_flow` on
+  `/_humanymous/pass/*` for RIT sessions; a solve records a server-side
+  step-up proof bound to `tokenBind`; `attested` routes hold an unproven
+  ALLOW with 401 per `gate.attest_floor`; Go
+  TestSettingsAttestationFloorMonitorAuditsWithoutChallenging ported.
+- [ ] Browser collector client for the gateway Pass routes (RIT-signed Pass
+  API calls and the interstitial); a collector change, not part of lane H.
 
 ## Verification
 

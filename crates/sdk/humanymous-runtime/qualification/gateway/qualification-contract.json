@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 977,
-      "macos": 977,
-      "windows": 927
+      "linux": 982,
+      "macos": 982,
+      "windows": 931
     },
     "common_test_names": [
       "gateway::accept::tests::accept_serves_a_real_connection",
@@ -238,6 +238,7 @@
       "gateway::configuration::exposure::tests::public_listen_needs_the_key_and_a_real_tls_source",
       "gateway::configuration::ip_reputation::tests::defaults_and_bounds",
       "gateway::configuration::operational::tests::operational_schema_excludes_frozen_detection_policy_and_secrets",
+      "gateway::configuration::pass::tests::default_is_go_and_the_lifetime_is_bounded",
       "gateway::configuration::recon_sweep::tests::defaults_are_go_and_bounds_are_validated",
       "gateway::configuration::verdict_fast_path::tests::defaults_are_go_and_bounds_are_validated",
       "gateway::connection_cap::tests::close_refuses_new_and_waiting_acquisitions",
@@ -835,6 +836,9 @@
       "gateway::tests::settings::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision",
       "gateway::tests::signed_method_target_body_scope_policy_and_deadline_cannot_change",
       "gateway::tests::signed_policy::records_carry_the_signed_policy_version_once_installed",
+      "gateway::tests::step_up::attested_needs_the_pass_object_and_pass_routes_are_reserved_without_it",
+      "gateway::tests::step_up::attested_route_holds_until_the_session_solves_the_gateway_pass",
+      "gateway::tests::step_up::step_up_is_bound_to_the_client_and_monitor_floor_only_records",
       "gateway::tests::stream::native_stream_delivers_first_event_before_origin_is_allowed_to_finish",
       "gateway::tests::streaming_requires_explicit_native_profile_and_preserves_browser_complete_body_contract",
       "gateway::tests::tls::actual_tls_coalesced_request_is_refused_before_audit_or_origin",
@@ -985,6 +989,7 @@
       "gateway::tests::service::trusted_proxies::unix_trusted_balancer_declares_the_client",
       "gateway::tests::service::unix_closed_shutdown_controller_cannot_report_stopped",
       "gateway::tests::service::unix_service_management_drains_before_custody_release",
+      "gateway::tests::service::verdict_fast_path::unix_gateway_pass_is_reported_and_enables_attested_routes",
       "gateway::tests::service::verdict_fast_path::unix_verdict_fast_path_is_reported_and_refused_bounds_stop_startup",
       "gateway::tests::service::witness_input::inherited_pipe_witness_pins_identity_and_cosigns_durable_audit",
       "gateway::tests::service::witness_input::inherited_witness_refusals_happen_before_custody_or_unlock",

@@ -382,6 +382,10 @@ impl ServiceHost {
         if let Some(fast) = &fast_path {
             profile["verdict_fast_path"] = fast.readiness();
         }
+        // Owner decision #4: the gateway Pass (step-up proof) only when configured.
+        if let Some(pass) = &configuration.pass {
+            profile["pass"] = pass.readiness();
+        }
         // Owner decision #7: injection only when configured.
         if let Some(inject) = &configuration.inject {
             profile["inject"] = inject.readiness();

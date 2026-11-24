@@ -24,9 +24,9 @@
 //!   credential is a trust upgrade over scoring only. The session is the
 //!   signed RIT session, not the legacy `hsid` cookie.
 //! - The route is the matched inventoried route's preset (owner decision
-//!   #4): `monitor` and `off` are non-enforcing; no served preset carries
-//!   the attestation floor (`attested` is refused until its step-up proof
-//!   transport is decided). The kill switch is not on the served path.
+//!   #4): `monitor` and `off` are non-enforcing; `attested` carries the
+//!   attestation floor, whose step-up proof a gateway Pass solve records
+//!   (`application::pass`). The kill switch is not on the served path.
 //! - The verdict-token gate reads a server-side sticky verdict in place of
 //!   Go's `hmn_vt` cookie (owner decision #4, option 1; `application::sticky`)
 //!   and runs only with `install_verdict_fast_path`; a scored ALLOW on an
@@ -70,6 +70,8 @@ pub(super) struct Installed {
     /// Server-side sticky verdicts with the `gate.verdict_token` boot mode
     /// (owner decision #4, option 1; see `application::sticky`).
     fast_path: Option<(super::sticky::StickyVerdicts, Mode)>,
+    /// Step-up proofs recorded by a gateway Pass solve (`application::pass`).
+    step_up: Option<super::sticky::StickyVerdicts>,
     /// Monotonic origin of the sweep detector and fan-out tracker clocks.
     epoch: Option<Instant>,
 }
@@ -95,8 +97,22 @@ impl Installed {
         if let Some((sticky, _)) = self.fast_path.as_mut() {
             sticky.gc(now);
         }
+        if let Some(step_up) = self.step_up.as_mut() {
+            step_up.gc(now);
+        }
         Ok(())
     }
+}
+
+/// The matched route's enforcement facts (its preset).
+#[derive(Clone, Copy)]
+pub(super) struct Matched {
+    /// The preset enforces (`strict`, `balanced`, `attested`).
+    pub(super) enforcing: bool,
+    /// The preset carries the attestation floor (`attested`).
+    pub(super) attest_floor: bool,
+    /// Preset name.
+    pub(super) name: &'static str,
 }
 
 /// What the served path does after the gates.
@@ -157,8 +173,90 @@ impl Application {
             Some((super::sticky::StickyVerdicts::new(ttl, max_sessions), mode));
     }
 
+    /// Monotonic time on the gate clock.
+    pub(super) fn monotonic(&mut self) -> Duration {
+        self.installed.epoch().elapsed()
+    }
+
+    /// Record a step-up proof for `sid` bound to `binding` (Go `hmn_su`,
+    /// kept on the server).
+    pub(super) fn remember_step_up(&mut self, sid: &str, binding: &str, ttl: Duration) {
+        let now = self.monotonic();
+        self.installed
+            .step_up
+            .get_or_insert_with(|| {
+                super::sticky::StickyVerdicts::new(
+                    ttl,
+                    crate::gateway::pass_store::MAX_PASS_SESSIONS,
+                )
+            })
+            .record(sid, binding, now);
+    }
+
+    /// Go `hasValidStepUp`: a recorded, unexpired step-up proof for `sid`
+    /// bound to this client.
+    pub(super) fn has_step_up(&mut self, req: &Request, sid: &str) -> bool {
+        let binding = self.client_binding(req);
+        let now = self.monotonic();
+        self.installed
+            .step_up
+            .as_mut()
+            .is_some_and(|step_up| step_up.check(sid, &binding, now) == gates::Token::Valid)
+    }
+
+    /// `gate.attest_floor` now: the overlay's mode, else enforce (Go's
+    /// default; the floor has no boot setting).
+    pub(super) fn floor_mode(&self) -> FloorMode {
+        match self.gate_mode("gate.attest_floor", Mode::Enforce) {
+            Mode::Off => FloorMode::Off,
+            Mode::Monitor => FloorMode::Monitor,
+            Mode::Shadow => FloorMode::Shadow,
+            Mode::Enforce => FloorMode::Enforce,
+        }
+    }
+
+    /// Legacy `applyVerdict` floor (ceiling-guard #1): what an enforcing
+    /// attested route does with a scored ALLOW of session `sid`. Returns
+    /// whether the request is held for step-up; a monitor or shadow floor
+    /// appends its `would_challenge` record and lets it through.
+    pub(super) fn floor_holds(
+        &mut self,
+        req: &Request,
+        sid: &str,
+        route_class: &str,
+    ) -> Result<bool, Rejection> {
+        let mode = self.floor_mode();
+        let step_up = self.has_step_up(req, sid);
+        let decided = crate::gateway::attest_floor::decide(
+            crate::gateway::attest_floor::Request {
+                attest_floor: true,
+                enforcing: true,
+                verdict_token: false,
+                sticky_allow: true,
+                step_up,
+            },
+            mode,
+        );
+        if let Some(note) = decided.would_require_step_up {
+            let record = gates::attestation_floor_audit(
+                &self.config.scope.tenant,
+                route_class,
+                mode,
+                note,
+                &gates::FloorAudit {
+                    actor_pseudonym: "",
+                    session_pseudonym: "",
+                    host: req.header("host").unwrap_or(""),
+                    config_version: &self.config_version(),
+                },
+            );
+            self.append_all(vec![record])?;
+        }
+        Ok(decided.decision == crate::gateway::attest_floor::Decision::StepUpChallenge)
+    }
+
     /// Go `tokenBind(r)`: the header fingerprint and the client subnet.
-    fn client_binding(&self, req: &Request) -> String {
+    pub(super) fn client_binding(&self, req: &Request) -> String {
         let key = token::bind_key(
             req.header("user-agent").unwrap_or(""),
             req.header("accept-language").unwrap_or(""),
@@ -233,7 +331,7 @@ impl Application {
         sid: &str,
         now_ms: u64,
         linkage: (&str, &str),
-        route: (bool, &'static str),
+        matched: Matched,
     ) -> Result<Gated, Rejection> {
         let tenant = self.config.scope.tenant.clone();
         let class = crate::gateway::request::route_class(&req.headers);
@@ -242,12 +340,12 @@ impl Application {
             pseudonym: "",
             route_class: class.as_str(),
         };
-        // Owner decision #4 (route presets): `enforcing` is the route's
-        // preset; no served preset carries the attestation floor yet.
+        // Owner decision #4 (route presets): the route is its preset;
+        // `attested` carries the attestation floor.
         let route = Route {
-            enforcing: route.0,
-            attest_floor: false,
-            name: route.1,
+            enforcing: matched.enforcing,
+            attest_floor: matched.attest_floor,
+            name: matched.name,
         };
         let wall = Duration::from_millis(now_ms);
         let path = req.target.split('?').next().unwrap_or("");
@@ -306,19 +404,14 @@ impl Application {
         let verdict = match (presented, self.installed.fast_path.as_ref()) {
             (Some(presented), Some((_, boot))) => {
                 let mode = self.gate_mode("gate.verdict_token", *boot);
-                let floor_mode = match self.gate_mode("gate.attest_floor", Mode::Enforce) {
-                    Mode::Off => FloorMode::Off,
-                    Mode::Monitor => FloorMode::Monitor,
-                    Mode::Shadow => FloorMode::Shadow,
-                    Mode::Enforce => FloorMode::Enforce,
-                };
+                let floor_mode = self.floor_mode();
                 let config_version = self.config_version();
                 let host = req.header("host").unwrap_or("").to_owned();
+                // Go `hasValidStepUp`: only looked up on an attested route.
+                let step_up = matched.attest_floor && self.has_step_up(req, sid);
                 let floor = gates::Floor {
                     mode: floor_mode,
-                    // No step-up proof source yet; no served route carries
-                    // the attestation floor (`attested` is refused).
-                    step_up: false,
+                    step_up,
                     audit: gates::FloorAudit {
                         actor_pseudonym: "",
                         session_pseudonym: "",
