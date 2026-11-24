@@ -77,6 +77,13 @@ down (U6.4), runs this loop once.
   3. FM11 ledger `partial` rows, smallest gap first;
   4. the other active plans in [[sot:root/program-roadmap]] order.
 
+  Within 2, the 2026-11-18 lab and gateway stack (PRs #84–#107, open, about
+  420 commits behind the base and stacked on the superseded #78) is salvaged
+  one pull request at a time, bottom up. Each one is checked against the
+  base, and only the behaviour the base still lacks is ported onto a fresh
+  `claude/<slug>` branch. The old pull request is then closed with a pointer.
+  These are the Docker lab cells that `goal_complete` item 2 needs.
+
   An item with an open `needs-owner` question is skipped (C6). An item that
   needs a venue this container lacks (Docker daemon, Windows, a GPU, a human,
   assistive technology) is skipped and named in the run report.
@@ -157,6 +164,18 @@ down (U6.4), runs this loop once.
   Report the counts in the pull request body.
 - U4.6 When a pull request touches a human-gated path, it gets `needs-human`.
   The run moves on; the owner merges.
+
+- U4.7 Dependabot pull requests:
+  - **Green, and the bump is a patch:** comment `@dependabot rebase` so the
+    required checks run on the current base. A Dependabot change touches
+    `Cargo.lock` or a workflow, which are human-gated, so the owner merges it
+    on GitHub once it is green. The run reports which ones are ready.
+  - **Breaks the build** (a semver-incompatible `0.x` minor such as sha2 0.11
+    or hmac 0.13): it becomes a port item. Adapt the code in a
+    `claude/<slug>` pull request that carries the bump, then close the
+    Dependabot pull request with a pointer.
+  - An agent never merges a Dependabot pull request itself (C7.1, and the
+    environment hard-deny).
 
 ## U5. CI failure policy
 
