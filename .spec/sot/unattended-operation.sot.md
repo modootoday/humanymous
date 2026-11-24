@@ -241,9 +241,18 @@ Five layers decide what an unattended session can do. Each has one canon.
   - **deny** blocks what this governance reserves for the owner or forbids:
     merging or approving pull requests; tags and releases; secrets and
     variables; ruleset, settings and branch-protection writes; force pushes
-    and ref deletion; repository creation or deletion; workflow dispatch of
-    release workflows; reading local credential files; piping remote
-    scripts into a shell.
+    and ref deletion; repository creation or deletion; workflow dispatch;
+    package publication and production deploys (`cargo publish`,
+    `npm publish`, `docker push`, `cf deploy` and `wrangler deploy`);
+    reading local credential files; piping remote scripts into a shell.
+    Auto-merge is turned on through the GitHub auto-merge API (MCP
+    `enable_pr_auto_merge`), which the allow side of the fleet auto-mode
+    context names; a direct merge stays denied.
+  - The deny list was checked item by item against the environment's
+    hard-deny list (2026-11-24): protected-branch pushes, force pushes,
+    tags, releases, approvals and merges, ruleset, required-check and secret
+    changes, production deploys, package publication and repository
+    deletion each have a rule.
   - Deny wins over allow. Anything unlisted falls to the session's permission
     mode and its classifier.
 - U9.2 The guards stay the hard backstop. `pre-tool-guard.mjs` blocks curl|sh,

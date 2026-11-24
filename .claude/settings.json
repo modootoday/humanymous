@@ -111,7 +111,15 @@
       "mcp__github__pull_request_review_write",
       "mcp__github__create_repository",
       "mcp__github__delete_file",
-      "mcp__github__fork_repository"
+      "mcp__github__fork_repository",
+      "Bash(cargo publish *)",
+      "Bash(cargo publish)",
+      "Bash(npm publish *)",
+      "Bash(npm publish)",
+      "Bash(docker push *)",
+      "Bash(cf deploy *)",
+      "Bash(wrangler deploy *)",
+      "Bash(wrangler publish *)"
     ]
   }
 }
