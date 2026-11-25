@@ -208,7 +208,7 @@ pub(super) fn verify_receipt(
     let refused = || io::Error::other("declared native pilot receipt absent or mismatched");
     let receipt: Value =
         serde_json::from_str(receipt.ok_or_else(refused)?).map_err(|_| refused())?;
-    let digest = format!("{:x}", sha2::Sha256::digest(DECLARATIONS.as_bytes()));
+    let digest = hex::encode(sha2::Sha256::digest(DECLARATIONS.as_bytes()));
     if receipt["schema"] != RECEIPT_SCHEMA
         || source_sha.is_none_or(|sha| receipt["source_sha"] != sha)
         || receipt["os"] != os
@@ -379,7 +379,7 @@ mod tests {
     #[test]
     fn receipt_must_bind_source_os_declarations_and_each_pass() {
         let found = declared(&runtime_entry(), &Packages::fixture(), "linux", "x86_64").unwrap();
-        let digest = format!("{:x}", sha2::Sha256::digest(DECLARATIONS.as_bytes()));
+        let digest = hex::encode(sha2::Sha256::digest(DECLARATIONS.as_bytes()));
         let rows: Vec<_> = found
             .receipt_tests
             .iter()

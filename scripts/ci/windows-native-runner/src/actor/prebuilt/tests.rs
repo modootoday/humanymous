@@ -2,7 +2,7 @@ use super::*;
 use serde_json::json;
 
 fn sha(label: &str) -> String {
-    format!("{:x}", Sha256::digest(label.as_bytes()))
+    hex::encode(Sha256::digest(label.as_bytes()))
 }
 fn input() -> Value {
     let app: Vec<_> = APP_FILES

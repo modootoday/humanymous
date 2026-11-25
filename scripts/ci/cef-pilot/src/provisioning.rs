@@ -60,7 +60,7 @@ fn cef_manifest(metadata: &Value) -> io::Result<PathBuf> {
         .join("src/build_util/win/cef-app.exe.manifest"))
 }
 pub(super) fn digest(path: &Path) -> io::Result<String> {
-    Ok(format!("{:x}", Sha256::digest(fs::read(path)?)))
+    Ok(hex::encode(Sha256::digest(fs::read(path)?)))
 }
 pub(super) fn source_snapshot() -> io::Result<Value> {
     let head = Command::new("git").args(["rev-parse", "HEAD"]).output()?;

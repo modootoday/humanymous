@@ -98,7 +98,7 @@ fn now_ms() -> io::Result<u64> {
         .map_err(|_| other("wall clock out of range"))
 }
 fn hex(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
+    hex::encode(Sha256::digest(bytes))
 }
 /// Forward-slash path text, as the `/2` wire and harness checks expect.
 pub(super) fn wire(path: &Path) -> io::Result<String> {

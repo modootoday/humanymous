@@ -170,7 +170,7 @@ fn verify(root: &Path) -> Result<usize, String> {
         if source.ends_with(".rs") && source_bytes.contains(&b'\r') {
             return Err(format!("authored Rust source is not LF: {source}"));
         }
-        let digest = format!("{:x}", Sha256::digest(source_bytes));
+        let digest = hex::encode(Sha256::digest(source_bytes));
         if digest != review.sha256 {
             return Err(format!("stale source review: {source}"));
         }
@@ -300,7 +300,7 @@ mod tests {
             "---\nlayout: doc\ntitle: Guide\n---\nReviewed instructions\n",
         )
         .unwrap();
-        let reviews: Vec<_> = ["Cargo.toml", "Cargo.lock"].iter().map(|source| serde_json::json!({"source": source, "sha256": format!("{:x}", Sha256::digest(fs::read(root.join(source)).unwrap())), "reviewer": "maintainer", "notes": "Reviewed package configuration and reader installation instructions.", "pages": ["docs/guide.md"]})).collect();
+        let reviews: Vec<_> = ["Cargo.toml", "Cargo.lock"].iter().map(|source| serde_json::json!({"source": source, "sha256": hex::encode(Sha256::digest(fs::read(root.join(source)).unwrap())), "reviewer": "maintainer", "notes": "Reviewed package configuration and reader installation instructions.", "pages": ["docs/guide.md"]})).collect();
         let surfaces: Vec<_> = SURFACES.iter().map(|(id, check)| serde_json::json!({
             "id": id, "sources": ["Cargo.toml"], "pages": ["docs/guide.md"],
             "reviewer": "maintainer", "notes": "Reviewed the capability limits and associated executable example.", "checks": [check]

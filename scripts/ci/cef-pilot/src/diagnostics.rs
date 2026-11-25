@@ -153,7 +153,7 @@ pub(super) fn read(path: &Path, source: &Value, exit: Option<i32>, bootstrap: bo
             let truncated = bytes.len() > MAX_BYTES;
             bytes.truncate(MAX_BYTES);
             let observed_bytes = bytes.len();
-            let digest = format!("{:x}", Sha256::digest(&bytes));
+            let digest = hex::encode(Sha256::digest(&bytes));
             if truncated {
                 if let Some(last) = bytes.iter().rposition(|byte| *byte == b'\n') {
                     bytes.truncate(last);
@@ -290,7 +290,7 @@ pub(super) fn public(report: &Value) -> Value {
     let manifest = report["source"]["files"]
         .as_object()
         .and_then(|files| serde_json::to_vec(files).ok())
-        .map(|bytes| format!("{:x}", Sha256::digest(bytes)));
+        .map(|bytes| hex::encode(Sha256::digest(bytes)));
     json!({"schema":"humanymous.cef-safe-diagnostics/1","stage":stage,"source_sha":sha,
         "source_manifest_sha256":manifest,"native_build":report.get("native_build").map(|value| native_public(value, &report["source"])),
         "source_changed":report["source_changed"].as_bool(),

@@ -49,7 +49,7 @@ fn bounded_reader(mut stream: io::PipeReader, limit: usize) -> mpsc::Receiver<io
 }
 
 fn hex(bytes: &[u8]) -> String {
-    format!("{:x}", sha2::Sha256::digest(bytes))
+    hex::encode(sha2::Sha256::digest(bytes))
 }
 
 /// The child's own observations. Every field is a native fact of the child.
