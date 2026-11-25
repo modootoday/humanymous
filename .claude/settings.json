@@ -61,11 +61,24 @@
       "Bash(git push -u origin claude/*)",
       "Bash(git push origin claude/*)",
       "Bash(gh api -X GET *)",
-      "Bash(playpilot mail inbox *)",
       "Bash(playpilot sync --check *)",
       "Bash(playpilot history-check *)",
       "Bash(playpilot surface-check *)",
-      "Bash(playpilot validate *)"
+      "Bash(playpilot validate *)",
+      "Bash(gh pr create *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr checks *)",
+      "Bash(gh pr comment *)",
+      "Bash(gh issue create *)",
+      "Bash(gh issue view *)",
+      "Bash(gh issue comment *)",
+      "Bash(playpilot mail *)",
+      "Bash(playpilot claim *)",
+      "Bash(playpilot release *)",
+      "Bash(playpilot render *)",
+      "Bash(playpilot plan *)",
+      "Bash(playpilot whoami)",
+      "Bash(playpilot whoami *)"
     ],
     "deny": [
       "Bash(gh pr merge *)",
@@ -119,7 +132,19 @@
       "Bash(docker push *)",
       "Bash(cf deploy *)",
       "Bash(wrangler deploy *)",
-      "Bash(wrangler publish *)"
+      "Bash(wrangler publish *)",
+      "Bash(git add .)",
+      "Bash(git add -A)",
+      "Bash(git add -A *)",
+      "Bash(git add --all)",
+      "Bash(git add --all *)",
+      "Bash(git push * refs/tags/*)",
+      "Bash(git push origin v*)",
+      "Bash(wrangler secret *)",
+      "Read(~/.netrc)",
+      "Read(~/.npmrc)",
+      "Read(~/.cargo/credentials)",
+      "Read(~/.cargo/credentials.toml)"
     ]
   }
 }
