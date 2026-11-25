@@ -305,7 +305,7 @@ Five layers decide what an unattended session can do. Each has one canon.
   `Public surface`, `Secret scan`, `validate / policy`, `validate / quality`,
   `validate / msrv`.
 - Keep `HUMANYMOUS_DENY_TERMS` registered as an Actions secret and as a
-  Dependabot secret. Keep secret scanning and push protection on.
+  Dependabot secret; add new terms in `HUMANYMOUS_DENY_TERMS_EXTRA`. Keep secret scanning and push protection on.
 - Answer `needs-owner` questions on issue #75. No open question blocks lane H
   once PR #186 (gateway Pass step-up) merges.
 - Optionally widen the cloud environment's network for Docker image pulls

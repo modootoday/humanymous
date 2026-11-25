@@ -2,13 +2,17 @@
 //!
 //! Scans the text a change makes public: added lines, file names, commit
 //! messages and the pull request title and body. Deny terms come from the
-//! `HUMANYMOUS_DENY_TERMS` secret, one term per line. The check fails closed
-//! when the secret is absent, and never prints a term or a matching line:
-//! findings name the location and the term's index only.
+//! `HUMANYMOUS_DENY_TERMS` secret, one term per line, plus the optional
+//! `HUMANYMOUS_DENY_TERMS_EXTRA` secret in the same format; the check uses the
+//! union of both lists. It fails closed when the main secret is absent or
+//! empty (an unset or empty extra secret adds nothing), and never prints a
+//! term or a matching line: findings name the location and the term's index
+//! only.
 use crate::{Result, command};
 use std::path::Path;
 
 const DENY_ENV: &str = "HUMANYMOUS_DENY_TERMS";
+const DENY_EXTRA_ENV: &str = "HUMANYMOUS_DENY_TERMS_EXTRA";
 
 /// Parses the secret value: one term per line, blank lines ignored.
 fn terms(value: &str) -> Vec<String> {
@@ -18,6 +22,24 @@ fn terms(value: &str) -> Vec<String> {
         .filter(|term| !term.is_empty())
         .map(str::to_lowercase)
         .collect()
+}
+
+/// Builds the deny list from the main and the optional extra secret values:
+/// the main terms keep their indexes, extra terms follow, and duplicates are
+/// dropped. An empty main list fails closed whatever the extra list holds.
+fn deny_terms(main: &str, extra: &str) -> Result<Vec<String>> {
+    let mut list = terms(main);
+    if list.is_empty() {
+        return Err(format!(
+            "{DENY_ENV} is absent or empty; Public surface fails closed (a fork pull request is reviewed by the owner)"
+        ));
+    }
+    for term in terms(extra) {
+        if !list.contains(&term) {
+            list.push(term);
+        }
+    }
+    Ok(list)
 }
 
 /// Returns the 1-based indexes of the terms found in `text`, case-insensitively.
@@ -83,12 +105,10 @@ pub fn check(root: &Path, base: &str, head: &str) -> Result<()> {
     } else {
         revision(base)?.to_owned()
     };
-    let terms = terms(&std::env::var(DENY_ENV).unwrap_or_default());
-    if terms.is_empty() {
-        return Err(format!(
-            "{DENY_ENV} is absent or empty; Public surface fails closed (a fork pull request is reviewed by the owner)"
-        ));
-    }
+    let terms = deny_terms(
+        &std::env::var(DENY_ENV).unwrap_or_default(),
+        &std::env::var(DENY_EXTRA_ENV).unwrap_or_default(),
+    )?;
     let range = format!("{base}..{head}");
     let triple = format!("{base}...{head}");
     let mut findings = Vec::new();
@@ -158,6 +178,17 @@ mod tests {
     fn terms_are_trimmed_lowercased_and_blank_lines_dropped() {
         assert_eq!(terms(" Alpha \n\n beta\n"), ["alpha", "beta"]);
         assert!(terms("\n  \n").is_empty());
+    }
+    #[test]
+    fn extra_terms_join_the_main_list_without_duplicates() {
+        let list = deny_terms("Alpha\nbeta", "BETA\n gamma \n").unwrap();
+        assert_eq!(list, ["alpha", "beta", "gamma"]);
+        assert_eq!(deny_terms("alpha", "").unwrap(), ["alpha"]);
+    }
+    #[test]
+    fn an_empty_main_secret_fails_closed_even_with_extra_terms() {
+        assert!(deny_terms("", "gamma").is_err());
+        assert!(deny_terms(" \n", "").is_err());
     }
     #[test]
     fn hits_report_indexes_not_terms() {
