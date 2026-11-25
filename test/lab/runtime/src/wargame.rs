@@ -31,7 +31,7 @@ pub fn run() {
         .expect("strict original-byte report verification");
     eprintln!(
         "HM-WARGAME-VERIFICATION {}",
-        serde_json::json!({"schema":"humanymous.lab-wargame-byte-receipt/1","raw_sha256":format!("{:x}",Sha256::digest(&bytes)),"verification":verification})
+        serde_json::json!({"schema":"humanymous.lab-wargame-byte-receipt/1","raw_sha256":hex::encode(Sha256::digest(&bytes)),"verification":verification})
     );
     std::io::stdout()
         .write_all(&bytes)

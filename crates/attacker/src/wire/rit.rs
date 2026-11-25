@@ -5,7 +5,7 @@
 //! port can exercise the same anti-tamper plane. It mints no capability of its
 //! own; the canonical form mirrors `cmd/server/rit.go` exactly.
 use base64::{Engine as _, engine::general_purpose::URL_SAFE_NO_PAD};
-use hmac::{Hmac, Mac};
+use hmac::{Hmac, KeyInit, Mac};
 use sha2::{Digest, Sha256};
 
 /// RIT rotation window in seconds (Go `ritW`).

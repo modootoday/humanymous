@@ -83,7 +83,7 @@ pub(super) fn member_digest(members: &[Member]) -> String {
         digest.update(member.bytes.to_le_bytes());
         digest.update(member.mode.to_le_bytes());
     }
-    format!("{:x}", digest.finalize())
+    hex::encode(digest.finalize())
 }
 
 pub fn plan(request: &Request) -> Plan {

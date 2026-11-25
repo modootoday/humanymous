@@ -163,7 +163,7 @@ fn ensure(value: bool, label: &'static str) -> Result<(), Error> {
     if value { Ok(()) } else { Err(label.into()) }
 }
 fn hash(path: &Path) -> Result<String, Error> {
-    Ok(format!("{:x}", Sha256::digest(std::fs::read(path)?)))
+    Ok(hex::encode(Sha256::digest(std::fs::read(path)?)))
 }
 fn source_value(value: Option<&str>, size: usize) -> Result<String, Error> {
     let value = value.ok_or("source identity must be embedded at build time")?;

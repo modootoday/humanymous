@@ -53,7 +53,7 @@ impl Plan {
         if bytes.is_empty() {
             return Err(err("empty artifact"));
         }
-        let digest = format!("{:x}", Sha256::digest(&bytes));
+        let digest = hex::encode(Sha256::digest(&bytes));
         if expected.len() != 64 || digest != expected {
             return Err(err("artifact SHA-256 mismatch"));
         }
@@ -89,7 +89,7 @@ impl Plan {
     ) -> std::io::Result<Self> {
         plain(destination)?;
         private_parent(destination.parent().ok_or_else(|| err("parent required"))?)?;
-        let digest = format!("{:x}", Sha256::digest(&bytes));
+        let digest = hex::encode(Sha256::digest(&bytes));
         if digest != expected || bytes.is_empty() {
             return Err(err("artifact SHA-256 mismatch"));
         }

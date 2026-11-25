@@ -298,7 +298,7 @@ fn configuration(directory: &Path) -> Result<(String, String), Refusal> {
     if !valid_installation(&installation) {
         return Err(Refusal::Custody);
     }
-    Ok((installation, format!("{:x}", Sha256::digest(&*bytes))))
+    Ok((installation, hex::encode(Sha256::digest(&*bytes))))
 }
 
 fn own_binary_sha256() -> Result<String, Refusal> {
@@ -308,7 +308,7 @@ fn own_binary_sha256() -> Result<String, Refusal> {
         std::env::current_exe().map_err(|_| Refusal::Custody)?
     };
     let bytes = read_bounded(&path, BINARY_BUDGET)?;
-    Ok(format!("{:x}", Sha256::digest(&*bytes)))
+    Ok(hex::encode(Sha256::digest(&*bytes)))
 }
 
 /// Generate the installation key inside the installation and report only its
@@ -623,10 +623,9 @@ mod tests {
             )
             .unwrap();
             let binary = own_binary_sha256().unwrap();
-            let configuration = format!(
-                "{:x}",
-                Sha256::digest(std::fs::read(target.0.join(CONFIGURATION_FILE)).unwrap())
-            );
+            let configuration = hex::encode(Sha256::digest(
+                std::fs::read(target.0.join(CONFIGURATION_FILE)).unwrap(),
+            ));
             assert_eq!(
                 configuration,
                 enrollment["configuration_sha256"].as_str().unwrap()

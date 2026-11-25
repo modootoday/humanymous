@@ -35,7 +35,7 @@ fn emit(value: &Value) -> Result<()> {
 }
 
 fn digest(name: &str) -> String {
-    format!("{:x}", Sha256::digest(name.as_bytes()))
+    hex::encode(Sha256::digest(name.as_bytes()))
 }
 
 /// One arrival record; pure so the wire judgement is testable.

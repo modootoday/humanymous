@@ -52,7 +52,7 @@ fn file_hash(path: &Path) -> Result<String> {
         }
         hash.update(&bytes[..n]);
     }
-    Ok(format!("{:x}", hash.finalize()))
+    Ok(hex::encode(hash.finalize()))
 }
 struct Operations {
     bundle: PathBuf,
@@ -407,7 +407,7 @@ fn snapshot(operations: &mut Operations, name: &str) -> Result<(String, String)>
     let archive_hash = file_hash(&archive)?;
     operations.archive = Some(archive);
     let bytes=serde_json::to_vec(&json!({"schema":"humanymous.apache.source/0.1","sourceCommit":revision,"gitArchiveSha256":archive_hash,"observedWorktreeFiles":sources})).map_err(|_|"source-manifest-json")?;
-    let hash = format!("{:x}", Sha256::digest(&bytes));
+    let hash = hex::encode(Sha256::digest(&bytes));
     write_new(&operations.bundle.join(name), &bytes)?;
     Ok((revision, hash))
 }

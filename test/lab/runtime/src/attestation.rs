@@ -38,7 +38,7 @@ fn runtime() -> Result<PathBuf> {
 }
 
 fn digest(path: &Path) -> Result<String> {
-    Ok(format!("{:x}", Sha256::digest(std::fs::read(path)?)))
+    Ok(hex::encode(Sha256::digest(std::fs::read(path)?)))
 }
 
 fn invoke(binary: &Path, mode: &str, request: &Value) -> Result<Answer> {
@@ -132,7 +132,7 @@ impl Target {
         &self.installation.directory
     }
     fn configuration_sha256(&self) -> String {
-        format!("{:x}", Sha256::digest(&self.configuration))
+        hex::encode(Sha256::digest(&self.configuration))
     }
 }
 

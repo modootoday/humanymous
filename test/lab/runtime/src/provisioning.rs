@@ -35,7 +35,7 @@ pub fn run(root: &Path) {
     fs::set_permissions(&root, fs::Permissions::from_mode(0o700)).unwrap();
     let artifact = b"synthetic non-executed provisioning artifact";
     fs::write(root.join("source"), artifact).unwrap();
-    let digest = format!("{:x}", Sha256::digest(artifact));
+    let digest = hex::encode(Sha256::digest(artifact));
     let before = names(&root);
     fs::set_permissions(&root, fs::Permissions::from_mode(0o500)).unwrap();
     let refused = invoke(&root, &digest, "doctor", false);

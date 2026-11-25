@@ -168,7 +168,7 @@ fn difficulty_clamps_preserve_boundary_challenges() {
 
 #[test]
 fn seed_framing_is_exact_and_delimiters_are_not_reencoded() {
-    use hmac::{Hmac, Mac};
+    use hmac::{Hmac, KeyInit, Mac};
     use sha2::Sha256;
     let mut mac = Hmac::<Sha256>::new_from_slice(b"key").unwrap();
     mac.update(b"pass|a|b|\x01\x02\x03\x04\x05\x06\x07\x08|\x11\x12\x13\x14\x15\x16\x17\x18");

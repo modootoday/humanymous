@@ -18,7 +18,7 @@
 //! key shorter than `MIN_ORIGIN_KEY` bytes is refused (Go accepted any), and
 //! `spoof_gate` strips internal headers even when none carried a value.
 use crate::audit::record::Record;
-use hmac::{Hmac, Mac};
+use hmac::{Hmac, KeyInit, Mac};
 use sha2::Sha256;
 use subtle::ConstantTimeEq;
 
@@ -150,7 +150,8 @@ impl OriginKey {
 
     /// Token the proxy attaches for `epoch`.
     pub fn token(&self, epoch: &str) -> String {
-        let mut mac = <Hmac<Sha256> as Mac>::new_from_slice(&self.0).expect("HMAC accepts any key");
+        let mut mac =
+            <Hmac<Sha256> as KeyInit>::new_from_slice(&self.0).expect("HMAC accepts any key");
         mac.update(b"hmny-origin|");
         mac.update(epoch.as_bytes());
         hex::encode(mac.finalize().into_bytes())

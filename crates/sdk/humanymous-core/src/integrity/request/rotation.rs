@@ -1,4 +1,4 @@
-use hmac::{Hmac, Mac};
+use hmac::{Hmac, KeyInit, Mac};
 use sha2::Sha256;
 
 pub(super) fn mac(key: &[u8]) -> Hmac<Sha256> {

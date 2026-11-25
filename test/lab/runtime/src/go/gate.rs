@@ -89,7 +89,7 @@ fn configuration_digest(value: &serde_json::Value) -> Result<String> {
     // hashes the complete sanitized per-case bundle before qualification.
     let mut value = value.clone();
     value["audit"]["keys"]["passphrase"] = json!("<private>");
-    Ok(format!("{:x}", Sha256::digest(serde_json::to_vec(&value)?)))
+    Ok(hex::encode(Sha256::digest(serde_json::to_vec(&value)?)))
 }
 pub fn count() -> Result<()> {
     let bytes = std::fs::read("/tmp/go-contacts.json")?;

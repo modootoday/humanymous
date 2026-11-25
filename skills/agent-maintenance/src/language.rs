@@ -104,7 +104,7 @@ pub fn inspect(path: &str, text: &str, preserved: &[Preservation]) -> Report {
         if !indicator(line) {
             continue;
         }
-        let hash = format!("{:x}", Sha256::digest(line.as_bytes()));
+        let hash = hex::encode(Sha256::digest(line.as_bytes()));
         let retained = preserved.iter().any(|entry| {
             entry.path == path
                 && entry.line_sha256 == hash
@@ -157,7 +157,7 @@ mod tests {
         let title = "Humanymous · 개발도구 · 규칙";
         let entry = Preservation {
             path: "THREADS.md".into(),
-            line_sha256: format!("{:x}", Sha256::digest(title.as_bytes())),
+            line_sha256: hex::encode(Sha256::digest(title.as_bytes())),
             category: "literal-ui-title".into(),
             reason: "Recorded application title".into(),
         };

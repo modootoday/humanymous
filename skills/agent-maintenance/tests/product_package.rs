@@ -38,7 +38,7 @@ fn verify_bundle(kind: &str, plugin: &str, excluded: &str, expected_cases: usize
     for entry in &receipt.files {
         let bytes = fs::read(output.join(&entry.path)).unwrap();
         assert_eq!(bytes.len(), entry.bytes);
-        assert_eq!(format!("{:x}", Sha256::digest(&bytes)), entry.sha256);
+        assert_eq!(hex::encode(Sha256::digest(&bytes)), entry.sha256);
         assert!(!entry.path.contains(excluded));
         assert!(!entry.path.starts_with(".agents/"));
     }

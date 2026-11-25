@@ -25,7 +25,7 @@ fn visit(base: &Path, path: &Path, rows: &mut Vec<serde_json::Value>) -> std::io
         }
     } else {
         let bytes = fs::read(path)?;
-        rows.push(serde_json::json!({"path":path.strip_prefix(base).map_err(std::io::Error::other)?.to_string_lossy().replace('\\',"/"),"bytes":bytes.len(),"sha256":format!("{:x}",Sha256::digest(&bytes)),"lf_only":!bytes.contains(&b'\r')}));
+        rows.push(serde_json::json!({"path":path.strip_prefix(base).map_err(std::io::Error::other)?.to_string_lossy().replace('\\',"/"),"bytes":bytes.len(),"sha256":hex::encode(Sha256::digest(&bytes)),"lf_only":!bytes.contains(&b'\r')}));
     }
     Ok(())
 }
@@ -133,7 +133,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     rows.sort_by_key(|r| r["path"].as_str().unwrap_or("").to_string());
     rows.dedup_by(|left, right| left["path"] == right["path"]);
     let encoded = serde_json::to_vec(&rows)?;
-    let source_hash = format!("{:x}", Sha256::digest(&encoded));
+    let source_hash = hex::encode(Sha256::digest(&encoded));
     let git = Command::new("git")
         .args(["rev-parse", "HEAD"])
         .current_dir(root)
@@ -150,7 +150,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .args(["show", &format!("{head}:{path}")])
             .current_dir(root)
             .output()?;
-        canonical.push(serde_json::json!({"path":path,"present":output.status.success(),"matches_working":output.status.success()&&format!("{:x}",Sha256::digest(&output.stdout))==row["sha256"].as_str().unwrap_or(""),"sha256":if output.status.success(){Some(format!("{:x}",Sha256::digest(&output.stdout)))}else{None}}));
+        canonical.push(serde_json::json!({"path":path,"present":output.status.success(),"matches_working":output.status.success()&&hex::encode(Sha256::digest(&output.stdout))==row["sha256"].as_str().unwrap_or(""),"sha256":if output.status.success(){Some(hex::encode(Sha256::digest(&output.stdout)))}else{None}}));
     }
     println!(
         "{}",

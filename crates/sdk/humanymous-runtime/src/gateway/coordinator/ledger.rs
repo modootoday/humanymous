@@ -26,7 +26,7 @@ use crate::network::history::Unavailable;
 use crate::network::history::rate::{
     Config, ConfigurationEffect, Coverage, Level, Limiter, Observation,
 };
-use hmac::{Hmac, Mac};
+use hmac::{Hmac, KeyInit, Mac};
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
 use std::{
@@ -84,7 +84,7 @@ impl std::fmt::Debug for SigningKey {
 }
 
 fn tag(key: &SigningKey, context: &str, payload: &[u8]) -> Vec<u8> {
-    let mut mac = <HmacSha256 as Mac>::new_from_slice(&key.0).expect("HMAC accepts any key");
+    let mut mac = <HmacSha256 as KeyInit>::new_from_slice(&key.0).expect("HMAC accepts any key");
     mac.update(context.as_bytes());
     mac.update(&[0]);
     mac.update(payload);
