@@ -158,7 +158,7 @@ impl Delegation {
         Ok(())
     }
     pub(super) fn original_sha256(&self) -> String {
-        format!("{:x}", Sha256::digest(self.original_text.as_bytes()))
+        hex::encode(Sha256::digest(self.original_text.as_bytes()))
     }
 }
 impl Drop for Delegation {

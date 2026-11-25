@@ -41,7 +41,7 @@ pub fn decode(line: &str) -> Result<Captured, String> {
     let bytes = STANDARD
         .decode(wrapper["base64"].as_str().ok_or("report bytes absent")?)
         .map_err(|_| "report bytes encoding")?;
-    let digest = format!("{:x}", Sha256::digest(&bytes));
+    let digest = hex::encode(Sha256::digest(&bytes));
     if wrapper["sha256"] != digest.as_str() || wrapper["bytes"] != bytes.len() {
         return Err("report digest or length mismatch".into());
     }
@@ -94,7 +94,7 @@ mod tests {
         let bytes = serde_json::to_vec(report).unwrap();
         wrapper(
             &STANDARD.encode(&bytes),
-            &format!("{:x}", Sha256::digest(&bytes)),
+            &hex::encode(Sha256::digest(&bytes)),
             bytes.len() as u64,
             "test",
         )

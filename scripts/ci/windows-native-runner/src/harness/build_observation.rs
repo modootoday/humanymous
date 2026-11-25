@@ -4,7 +4,7 @@ use sha2::{Digest, Sha256};
 use std::{io, time::Duration};
 
 fn hash(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
+    hex::encode(Sha256::digest(bytes))
 }
 fn environment_hash(name: &str) -> Value {
     match std::env::var(name) {

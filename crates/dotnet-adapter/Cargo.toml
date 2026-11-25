@@ -22,6 +22,7 @@ humanymous-runtime = { workspace = true, features = ["audit", "native-security",
 humanymous-core.workspace = true
 humanymous-platform = { workspace = true, features = ["testing", "windows-object"] }
 sha2.workspace = true
+hex.workspace = true
 
 [lints]
 workspace = true

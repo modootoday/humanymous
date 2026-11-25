@@ -1,6 +1,6 @@
 //! Exact legacy-v1 HMAC input and carrier layout, with explicit issuance checks.
 
-use hmac::{Hmac, Mac};
+use hmac::{Hmac, KeyInit, Mac};
 use sha2::Sha256;
 use subtle::ConstantTimeEq;
 use zeroize::Zeroizing;

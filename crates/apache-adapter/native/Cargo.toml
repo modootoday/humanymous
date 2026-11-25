@@ -15,7 +15,7 @@ default = []
 httpd = [
   "dep:humanymous-framework-adapter", "dep:humanymous-runtime",
   "dep:humanymous-core", "dep:tokio", "dep:zeroize", "dep:rustix",
-  "dep:bindgen", "dep:sha2", "dep:serde_json",
+  "dep:bindgen", "dep:sha2", "dep:hex", "dep:serde_json",
 ]
 pilot = [
   "dep:humanymous-framework-adapter", "dep:humanymous-runtime",
@@ -42,6 +42,7 @@ rustix = { version = "1.1", features = ["fs", "process"], optional = true }
 [build-dependencies]
 bindgen = { version = "=0.73.2", optional = true }
 sha2 = { workspace = true, optional = true }
+hex = { workspace = true, optional = true }
 serde_json = { workspace = true, optional = true }
 
 [[bin]]

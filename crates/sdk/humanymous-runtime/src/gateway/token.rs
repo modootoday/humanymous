@@ -14,7 +14,7 @@
 //! - Keys shorter than 32 bytes are refused.
 use base64::Engine;
 use base64::engine::general_purpose::URL_SAFE_NO_PAD;
-use hmac::{Hmac, Mac};
+use hmac::{Hmac, KeyInit, Mac};
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 use std::net::IpAddr;
@@ -70,7 +70,8 @@ impl TokenKey {
         Ok(Self(bytes))
     }
     fn mac(&self, payload: &[u8]) -> Vec<u8> {
-        let mut mac = <Hmac<Sha256> as Mac>::new_from_slice(&self.0).expect("HMAC accepts any key");
+        let mut mac =
+            <Hmac<Sha256> as KeyInit>::new_from_slice(&self.0).expect("HMAC accepts any key");
         mac.update(payload);
         mac.finalize().into_bytes().to_vec()
     }

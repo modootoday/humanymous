@@ -37,7 +37,7 @@ fn hex(value: &str, len: usize) -> bool {
             .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
 }
 fn digest(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
+    hex::encode(Sha256::digest(bytes))
 }
 fn run_id(value: &Value) -> Option<u64> {
     let text = value.as_str()?;

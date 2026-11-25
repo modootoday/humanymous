@@ -146,7 +146,7 @@ fn lower_hex(text: &str) -> bool {
 }
 
 pub(crate) fn digest(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
+    hex::encode(Sha256::digest(bytes))
 }
 
 #[cfg(test)]

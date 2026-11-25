@@ -105,7 +105,7 @@ fn projection(scan: &Value, id: &str, sha: &str, manifest: &str) -> Result<Value
         json!({"scan_status":if !coverage {"not_scanned"} else if findings > 0 {"vulnerable"} else {"clean_observed_inventory"},
         "rust_binary_inventory_observed":coverage,"rust_binary_inventory_count":inventories,
         "observed_rust_packages":if coverage {Some(packages.len())} else {None},
-        "inventory_sha256":if coverage {Some(format!("{:x}",Sha256::digest(inventory_bytes)))} else {None},
+        "inventory_sha256":if coverage {Some(hex::encode(Sha256::digest(inventory_bytes)))} else {None},
         "vulnerability_count":findings,"inventory_completeness_verified":false,"full_product_qualified":false,
         "shipping_qualified":false}),
     )

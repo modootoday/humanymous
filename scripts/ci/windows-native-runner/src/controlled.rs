@@ -237,7 +237,7 @@ pub(crate) fn run(args: impl Iterator<Item = String>) -> io::Result<i32> {
         }
         hasher.update(&buffer[..count]);
     }
-    if format!("{:x}", hasher.finalize()) != options.digest {
+    if hex::encode(hasher.finalize()) != options.digest {
         return Err(refused());
     }
     let profile = profile(&options.case).ok_or_else(refused)?;

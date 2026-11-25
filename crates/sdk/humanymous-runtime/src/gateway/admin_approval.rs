@@ -34,7 +34,7 @@
 //! - The caller supplies a monotonic time. A time earlier than an entry's
 //!   creation never expires it.
 //! - [`ApprovalStore::pending`] returns entries in id order, not map order.
-use hmac::{Hmac, Mac};
+use hmac::{Hmac, KeyInit, Mac};
 use sha2::Sha256;
 use std::collections::{BTreeMap, HashMap};
 use std::fmt;

@@ -10,7 +10,7 @@ mod source_inputs;
 pub(crate) use failure::record as record_initial_failure;
 
 pub fn digest(path: &Path) -> io::Result<String> {
-    Ok(format!("{:x}", Sha256::digest(fs::read(path)?)))
+    Ok(hex::encode(Sha256::digest(fs::read(path)?)))
 }
 pub fn write(path: &Path, value: &Value) -> io::Result<()> {
     let mut bytes = serde_json::to_vec_pretty(value)?;
@@ -138,7 +138,7 @@ pub fn source(workspace: bool) -> io::Result<Value> {
             let canonical = object
                 .status
                 .success()
-                .then(|| format!("{:x}", Sha256::digest(&object.stdout)));
+                .then(|| hex::encode(Sha256::digest(&object.stdout)));
             let lf_only = !fs::read(path)?.windows(2).any(|pair| pair == b"\r\n");
             git_bytes.insert(path.clone(),json!({"validated_worktree_sha256":worktree,"canonical_git_sha256":canonical,"matches_git":canonical.as_ref()==Some(worktree),"lf_only":lf_only}));
         }
@@ -312,10 +312,9 @@ pub fn summary(input: &Path, output: &Path) -> io::Result<()> {
         summary["build_observation"] =
             crate::harness::build_observation::project(&report["manifest"]["build_observation"]);
     }
-    summary["source_manifest_sha256"] = json!(format!(
-        "{:x}",
-        Sha256::digest(serde_json::to_vec(&report["source"]["files"])?)
-    ));
+    summary["source_manifest_sha256"] = json!(hex::encode(Sha256::digest(serde_json::to_vec(
+        &report["source"]["files"]
+    )?)));
     write(output, &summary)
 }
 

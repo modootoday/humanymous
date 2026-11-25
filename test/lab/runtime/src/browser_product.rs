@@ -132,7 +132,7 @@ fn collector_reports(entities: &[Vec<u8>]) -> Vec<serde_json::Value> {
         .iter()
         .map(|bytes| {
             let fits = bytes.len() <= REPORT_FRAME_MAX;
-            json!({"sha256":format!("{:x}",Sha256::digest(bytes)),"bytes":bytes.len(),
+            json!({"sha256":hex::encode(Sha256::digest(bytes)),"bytes":bytes.len(),
                 "base64":fits.then(|| STANDARD.encode(bytes)),"oversize":!fits})
         })
         .collect()

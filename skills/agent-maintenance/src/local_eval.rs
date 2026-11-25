@@ -24,7 +24,7 @@ fn body(path: &Path) -> Result<String> {
     Ok(String::from_utf8(bytes)?)
 }
 fn sha(text: &str) -> String {
-    format!("{:x}", Sha256::digest(text.as_bytes()))
+    hex::encode(Sha256::digest(text.as_bytes()))
 }
 fn strip_frontmatter(text: &str) -> &str {
     text.strip_prefix("---")

@@ -97,7 +97,7 @@ fn inspect(reader: impl Read, expected: &Members) -> Result<Value, Failure> {
             }
             digest.update(&buffer[..count]);
         }
-        if format!("{:x}", digest.finalize()) != *hash {
+        if hex::encode(digest.finalize()) != *hash {
             return Err(Failure {
                 member: Some(member),
                 predicate: "hash_mismatch",

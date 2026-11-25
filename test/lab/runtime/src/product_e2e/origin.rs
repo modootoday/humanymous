@@ -77,7 +77,7 @@ fn application(stream: &mut TcpStream, records: &Records) {
             let body = &bytes[head_end(&bytes).unwrap_or(0) + 4..total];
             record["sequence"] = json!(sequence);
             record["body_length"] = json!(body.len());
-            record["body_sha256"] = json!(format!("{:x}", Sha256::digest(body)));
+            record["body_sha256"] = json!(hex::encode(Sha256::digest(body)));
             record
         }
         _ => json!({"sequence":sequence,"malformed":true,"bytes":bytes.len()}),

@@ -52,7 +52,7 @@ fn digest(path: &Path) -> Result<String, LabError> {
         }
         hash.update(&buf[..n]);
     }
-    Ok(format!("{:x}", hash.finalize()))
+    Ok(hex::encode(hash.finalize()))
 }
 
 pub(super) fn ready_address(config: &Configuration, value: &Value) -> Result<SocketAddr, LabError> {

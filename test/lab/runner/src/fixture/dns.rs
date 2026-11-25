@@ -26,7 +26,7 @@ pub(super) fn serve() -> Result<()> {
                 received = received.checked_add(1).ok_or("DNS count exhausted")?;
                 match name(&packet[..length]) {
                     Ok(value) => {
-                        let hash = format!("{:x}", Sha256::digest(value.as_bytes()));
+                        let hash = hex::encode(Sha256::digest(value.as_bytes()));
                         if counts.len() >= 64 && !counts.contains_key(&hash) {
                             return Err("DNS canary inventory bound".into());
                         }

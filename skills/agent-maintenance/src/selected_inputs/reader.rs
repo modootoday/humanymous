@@ -184,7 +184,7 @@ impl ReadBudget {
             actual_read_bytes: self.actual - start,
             read_count_known: self.count_known,
             probe_bytes: self.probes - probe_start,
-            sha256: (status == ReadStatus::Complete).then(|| format!("{:x}", hash.finalize())),
+            sha256: (status == ReadStatus::Complete).then(|| hex::encode(hash.finalize())),
             error_kind,
         }
     }

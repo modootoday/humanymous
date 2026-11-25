@@ -192,7 +192,7 @@ pub(crate) fn normalized_manifest(rows: &[FileEntry]) -> io::Result<Vec<u8>> {
     Ok(bytes)
 }
 pub(crate) fn manifest_sha256(rows: &[FileEntry]) -> io::Result<String> {
-    Ok(format!("{:x}", Sha256::digest(normalized_manifest(rows)?)))
+    Ok(hex::encode(Sha256::digest(normalized_manifest(rows)?)))
 }
 
 /// Closed runtime closure rows the parent observed while staging. They must be

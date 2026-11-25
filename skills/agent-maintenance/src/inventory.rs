@@ -106,7 +106,7 @@ pub(crate) fn files(
             records.push(FileRecord {
                 path: relative,
                 bytes: data.len(),
-                sha256: format!("{:x}", Sha256::digest(&data)),
+                sha256: hex::encode(Sha256::digest(&data)),
             });
         }
     }
