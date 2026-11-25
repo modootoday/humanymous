@@ -256,14 +256,23 @@ Five layers decide what an unattended session can do. Each has one canon.
   - **allow** pre-approves the routine, reversible tools an unattended run
     needs: reading, building, testing, formatting and linting the workspace;
     local git operations; pushing `claude/*` topic branches; read-only GitHub
-    queries; the fleet mailbox and sync check.
+    queries; opening, viewing and commenting on pull requests and issues; the
+    playpilot subcommands the loop uses (mail, claim, release, render, plan,
+    whoami, sync check, history and surface checks, validate). This follows
+    fleet `permissions.md` (mailbox item 56, 2026-11-24). `gh pr merge --auto`
+    is not allowed: a command pattern cannot separate it from `--admin`, so
+    `gh pr merge` stays denied as a whole. This repository's stricter rule wins.
   - **deny** blocks what this governance reserves for the owner or forbids:
     merging or approving pull requests; tags and releases; secrets and
     variables; ruleset, settings and branch-protection writes; force pushes
     and ref deletion; repository creation or deletion; workflow dispatch;
     package publication and production deploys (`cargo publish`,
-    `npm publish`, `docker push`, `cf deploy` and `wrangler deploy`);
-    reading local credential files; piping remote scripts into a shell.
+    `npm publish`, `docker push`, `cf deploy` and `wrangler deploy`), and
+    Worker secret commands (`wrangler secret`); tag pushes, including tag
+    refs; staging everything at once (`git add .`, `-A`, `--all`), because
+    commits name their paths; reading local credential files (`.env`, SSH
+    keys, gh, git, netrc, npm and cargo credentials); piping remote scripts
+    into a shell.
     Auto-merge is turned on through the GitHub auto-merge API (MCP
     `enable_pr_auto_merge`), which the allow side of the fleet auto-mode
     context names; a direct merge stays denied.
