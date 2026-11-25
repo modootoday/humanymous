@@ -16,10 +16,16 @@
 //! four apply outcomes and store errors; `config_version` with the version as
 //! a `prometheusLabel`-escaped label.
 //!
+//! The four audit-chain families are emitted, in Go's order, only when a
+//! chain is attached (`AdminPlane::with_chain`): `audit_records_total` and
+//! `audit_checkpoints_total` read the shared log at scrape time;
+//! `audit_integrity_ok` and `audit_witnessed` come from the cache that
+//! `AdminPlane::refresh_integrity_metrics` fills off the request path, and
+//! read 0 until it runs, as Go's do. An unreadable checkpoint list answers
+//! 503 rather than a partial exposition (fail closed, as the chain routes).
+//!
 //! Families not emitted, each recorded in the ledger:
-//! - `audit_records_total`, `audit_checkpoints_total`,
-//!   `audit_integrity_ok`, `audit_witnessed`: the admin listener has no
-//!   audit chain attached (`AdminPlane::with_chain`), and a value without the
+//! - the four audit-chain families without a chain: a value without the
 //!   chain would be invented.
 //! - the four `operational_log_*` families: the binary's operational logger
 //!   is not shared with the admin plane; Go's unwired defaults (zeros,
@@ -30,7 +36,7 @@
 //! Without a policy attached `killswitch` and `monitor` are 0 and
 //! `config_version` is omitted; without settings the settings families are 0.
 //! The route only reads; it changes no score, threshold or signal.
-use super::{AdminPlane, Clock, Response};
+use super::{AdminPlane, Clock, Response, audit_unavailable};
 use std::fmt::Write as _;
 
 /// Go's metrics content type.
@@ -55,6 +61,11 @@ fn single(out: &mut String, name: &str, help: &str, kind: &str, value: impl std:
 
 impl AdminPlane {
     pub(super) fn metrics_view(&self, clock: Clock) -> Response {
+        let chain = match self.chain.as_ref().map(super::chain::Chain::gauges) {
+            None => None,
+            Some(Ok(gauges)) => Some(gauges),
+            Some(Err(_)) => return audit_unavailable(),
+        };
         let mut out = String::new();
         single(
             &mut out,
@@ -63,6 +74,22 @@ impl AdminPlane {
             "gauge",
             format_args!("{:.0}", clock.monotonic.as_secs_f64()),
         );
+        if let Some(gauges) = &chain {
+            single(
+                &mut out,
+                "hmn_gate_audit_records_total",
+                "Records sealed into this node's audit chain.",
+                "counter",
+                gauges.records,
+            );
+            single(
+                &mut out,
+                "hmn_gate_audit_checkpoints_total",
+                "Signed Tree Heads written.",
+                "counter",
+                gauges.checkpoints,
+            );
+        }
         let bans = self.store().list(clock.monotonic).len();
         single(
             &mut out,
@@ -78,6 +105,22 @@ impl AdminPlane {
             "counter",
             0,
         );
+        if let Some(gauges) = &chain {
+            single(
+                &mut out,
+                "hmn_gate_audit_integrity_ok",
+                "Audit chain verifies end-to-end (1) or a mismatch was found (0).",
+                "gauge",
+                u8::from(gauges.integrity_ok),
+            );
+            single(
+                &mut out,
+                "hmn_gate_audit_witnessed",
+                "The latest checkpoints carry a valid independent-witness co-signature (1) or not (0).",
+                "gauge",
+                u8::from(gauges.witnessed),
+            );
+        }
         let (kill, monitor) = self
             .policy
             .as_ref()

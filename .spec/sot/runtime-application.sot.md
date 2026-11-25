@@ -669,8 +669,13 @@ threshold, hard-rule predicate, verdict band or signal ID.
     any role) emits Go's text exposition, pinned against a 981d25c capture:
     uptime, active bans, projection drops (0: no projection sink), kill
     switch, effective monitor, the settings families and the config-version
-    label. Not emitted: the four audit-chain families (no chain attached to
-    the admin listener), the four operational-log families (the logger is
+    label. The four audit-chain families (records, checkpoints, integrity,
+    witnessed) are emitted in Go's order only when a chain is attached
+    (`AdminPlane::with_chain`); integrity and witnessed come from a cache
+    that `refresh_integrity_metrics` (Go `RefreshIntegrityMetrics`) fills off
+    the request path and read 0 until it runs (2026-11-25). The served admin
+    listener attaches no chain yet, so it still omits them. Not emitted: the
+    four operational-log families (the logger is
     not shared with the admin plane) and Go's runtime gauges (no Rust
     counterpart).
   - #7: port HTML loader injection as an opt-in that is off by default,

@@ -620,3 +620,135 @@ fn r131_nil_witness_public_omits_witnessed_field() {
         golden["has_witnessFailAt"]
     );
 }
+
+fn gauge(text: &str, name: &str) -> String {
+    let prefix = format!("{name} ");
+    text.lines()
+        .find_map(|line| line.strip_prefix(prefix.as_str()))
+        .unwrap_or_else(|| panic!("{name} missing: {text}"))
+        .to_owned()
+}
+
+/// Go `adminMetrics` with a chain: the four audit families appear in Go's
+/// order and with Go's HELP and TYPE text
+/// (`tests/fixtures/gateway/admin-metrics-go-golden.json`); integrity and
+/// witness read 0 until `refresh_integrity_metrics` runs (Go stores false at
+/// construction), and the counts read the shared log.
+#[test]
+fn go_admin_metrics_audit_families_follow_the_chain() {
+    let golden: Value = serde_json::from_str(include_str!(
+        "../../../../tests/fixtures/gateway/admin-metrics-go-golden.json"
+    ))
+    .unwrap();
+    let s = ban_stack();
+    let fresh = s.get("auditor", "metrics");
+    assert_eq!(fresh.status, 200);
+    let text = body(&fresh).to_owned();
+    // Every header and line the chain plane emits is Go's, in Go's order.
+    let go: Vec<&str> = golden["fresh"].as_str().unwrap().lines().collect();
+    let mut cursor = 0;
+    for line in text.lines().filter(|line| line.starts_with('#')) {
+        let at = go[cursor..]
+            .iter()
+            .position(|candidate| *candidate == line)
+            .unwrap_or_else(|| panic!("{line} not in Go order"));
+        cursor += at + 1;
+    }
+    for name in [
+        "hmn_gate_audit_records_total",
+        "hmn_gate_audit_checkpoints_total",
+        "hmn_gate_audit_integrity_ok",
+        "hmn_gate_audit_witnessed",
+    ] {
+        assert!(text.contains(&format!("# TYPE {name} ")), "{name}: {text}");
+    }
+    // The scrape's own admin.access record is sealed before dispatch.
+    assert_eq!(gauge(&text, "hmn_gate_audit_records_total"), "1");
+    assert_eq!(gauge(&text, "hmn_gate_audit_checkpoints_total"), "0");
+    assert_eq!(gauge(&text, "hmn_gate_audit_integrity_ok"), "0");
+    assert_eq!(gauge(&text, "hmn_gate_audit_witnessed"), "0");
+
+    for _ in 0..8 {
+        s.emit();
+    }
+    // Not refreshed yet: the cached gauges stay 0 on the scrape path.
+    let stale = body(&s.get("auditor", "metrics")).to_owned();
+    assert_eq!(gauge(&stale, "hmn_gate_audit_integrity_ok"), "0");
+    let (records, heads) = {
+        let log = s.log.lock().unwrap();
+        (log.len(), log.checkpoints().unwrap().len())
+    };
+    assert_eq!(
+        gauge(&stale, "hmn_gate_audit_records_total"),
+        records.to_string()
+    );
+    assert_eq!(
+        gauge(&stale, "hmn_gate_audit_checkpoints_total"),
+        heads.to_string()
+    );
+    assert!(heads >= 1, "a head every eight records");
+
+    s.plane.refresh_integrity_metrics();
+    let refreshed = body(&s.get("auditor", "metrics")).to_owned();
+    assert_eq!(gauge(&refreshed, "hmn_gate_audit_integrity_ok"), "1");
+    // No witness configured: never witnessed.
+    assert_eq!(gauge(&refreshed, "hmn_gate_audit_witnessed"), "0");
+}
+
+/// Go `RefreshIntegrityMetrics` with a co-signer: witnessed needs a signed
+/// head; an empty chain is neither verified nor witnessed.
+#[test]
+fn go_refresh_integrity_metrics_reports_the_witness() {
+    let s = stack_with("audit-node", b"k", 4, true, 1024);
+    s.plane.refresh_integrity_metrics();
+    let empty = body(&s.get("auditor", "metrics")).to_owned();
+    // The refresh ran before the scrape's own access record: empty chain.
+    assert_eq!(gauge(&empty, "hmn_gate_audit_integrity_ok"), "0");
+    assert_eq!(gauge(&empty, "hmn_gate_audit_witnessed"), "0");
+    for _ in 0..4 {
+        s.emit();
+    }
+    s.plane.refresh_integrity_metrics();
+    let signed = body(&s.get("auditor", "metrics")).to_owned();
+    assert_eq!(gauge(&signed, "hmn_gate_audit_integrity_ok"), "1");
+    assert_eq!(gauge(&signed, "hmn_gate_audit_witnessed"), "1");
+}
+
+/// Without a chain the refresh does nothing and the families stay omitted.
+#[test]
+fn refresh_without_a_chain_is_inert() {
+    let rate =
+        crate::network::history::rate::Config::new(Duration::from_secs(60), 998, 1000, limits(64))
+            .unwrap();
+    let plane = AdminPlane::new(
+        "n1",
+        Scope {
+            installation: "installation".into(),
+            node: "n1".into(),
+        },
+        b"k",
+        Arc::new(Mutex::new(Store::new(rate, 64).unwrap())),
+        Box::new(Discard),
+    );
+    plane
+        .auth()
+        .add(&token("auditor"), "auditor-1", Role::Auditor)
+        .unwrap();
+    plane.refresh_integrity_metrics();
+    let request = Request {
+        method: "GET".into(),
+        target: format!("{PREFIX}metrics"),
+        headers: vec![
+            ("Host".to_owned(), "admin".to_owned()),
+            (
+                "Authorization".into(),
+                format!("Bearer {}", token("auditor")),
+            ),
+        ],
+        body: Vec::new(),
+    };
+    let response = plane.handle(&request, CLOCK);
+    assert_eq!(response.status, 200);
+    assert!(!body(&response).contains("hmn_gate_audit_records_total"));
+    assert!(!body(&response).contains("hmn_gate_audit_integrity_ok"));
+}

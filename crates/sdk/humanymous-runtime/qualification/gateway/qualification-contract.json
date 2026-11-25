@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 982,
-      "macos": 982,
-      "windows": 931
+      "linux": 985,
+      "macos": 985,
+      "windows": 934
     },
     "common_test_names": [
       "gateway::accept::tests::accept_serves_a_real_connection",
@@ -39,10 +39,13 @@
       "gateway::admin_plane::chain::tests::chain_routes_are_not_served_without_a_chain",
       "gateway::admin_plane::chain::tests::go_admin_integrity_empty_chain_matches_capture",
       "gateway::admin_plane::chain::tests::go_admin_keys_enable_offline_verify",
+      "gateway::admin_plane::chain::tests::go_admin_metrics_audit_families_follow_the_chain",
       "gateway::admin_plane::chain::tests::go_audit_stream_incidents_and_enumeration_cap_match_capture",
       "gateway::admin_plane::chain::tests::go_keys_proof_and_checkpoint_refusals_match_capture",
+      "gateway::admin_plane::chain::tests::go_refresh_integrity_metrics_reports_the_witness",
       "gateway::admin_plane::chain::tests::r113_keys_omit_hmac_secret",
       "gateway::admin_plane::chain::tests::r131_nil_witness_public_omits_witnessed_field",
+      "gateway::admin_plane::chain::tests::refresh_without_a_chain_is_inert",
       "gateway::admin_plane::chain::tests::unadmitted_incident_lookups_are_capped",
       "gateway::admin_plane::chain::tests::wargame_r166_meta_audit_on_ban_list_keeps_the_chain_intact",
       "gateway::admin_plane::metrics::tests::a_bare_plane_reports_zeros_and_no_config_version",
