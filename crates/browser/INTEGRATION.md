@@ -363,7 +363,9 @@ All dependencies are under target.'cfg(windows)'.dependencies. Empty non-Windows
 crate compilation is not Linux/macOS native implementation or qualification.
 
 - Both: cef git https://github.com/tauri-apps/cef-rs.git,
-  rev224a785c7b41758b51821cbb7395ea57ba493a63,
+  revbacdb41c17f30f4eca4a6f747586fbf7f280ab90 (156.5.0+156.0.28; moved from
+  224a785 on 2026-11-25 because download-cef 3.0.0 rejected the CEF index
+  above 10 MiB, issue #190),
   default-features=false, features=["sandbox"]. No dox or no-sandbox.
 - Bootstrap: libloading="=0.9.0"; cdylib humanymous_cef_bootstrap.dll.
 - Desktop: humanymous-browser path="../..", features=["native-ui"];
