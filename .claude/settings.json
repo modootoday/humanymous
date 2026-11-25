@@ -100,7 +100,8 @@
       "mcp__github__get_check_run",
       "mcp__github__get_file_contents",
       "mcp__github__list_commits",
-      "mcp__github__get_commit"
+      "mcp__github__get_commit",
+      "mcp__playpilot-mail"
     ],
     "deny": [
       "Bash(gh pr merge *)",
