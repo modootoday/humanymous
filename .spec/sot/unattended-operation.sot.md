@@ -61,8 +61,8 @@ down (U6.4), runs this loop once.
   - a red required check on the current head;
   - a merge conflict;
   - unanswered review comments;
-  - a pull request waiting only on CI. Arm a check-in (U6.3) and do not start
-    anything else on the same lane.
+  - a pull request waiting only on CI. Leave it to its PR events and the next
+    scheduled run (U6.3), and do not start anything else on the same lane.
 - U2.3 **Base health.** If a required check is red on `codex/rust` itself,
   repairing it is the work item. A red non-required check on the base is
   recorded once and not chased.
@@ -147,8 +147,8 @@ down (U6.4), runs this loop once.
   The provider is named in the body (`Provider:` / `Agent-Provider:`).
 - U4.2 The subject follows Conventional Commits, at most 72 characters (the
   `History` check). The topic branch holds no merge commits (H3).
-- U4.3 Turn auto-merge on (merge method) right after opening. Subscribe to the
-  pull request's activity and arm one check-in about 50 minutes later.
+- U4.3 Turn auto-merge on (merge method) right after opening, and subscribe to
+  the pull request's activity. Do not arm a check-in (U6.3).
 - U4.4 Never force-push. When a branch needs the base, needs a new commit
   message or must drop a merge commit: create a new branch, cherry-pick or
   check out the content, open a new pull request, and close the old one with a
@@ -198,15 +198,18 @@ down (U6.4), runs this loop once.
 - U6.1 The schedule is every 4 hours at minute 13 UTC (the fleet session
   `humanymous-slices`). The owner changes it.
 - U6.2 A run stops when:
-  - its item's pull request is open with auto-merge armed and its check-in set; or
+  - its item's pull request is open with auto-merge armed and its activity
+    subscribed; or
   - nothing is actionable (U2.7); or
   - a hard constraint would be crossed.
   
   It never waits idle for CI. Events wake it.
-- U6.3 Check-ins: one per open pull request, about 50 minutes after the last
-  activity, then about every 4 hours. After three empty check-ins in a row,
-  stop the check-ins; a GitHub event resumes them. A merged or closed pull
-  request cancels its check-in.
+- U6.3 Follow-up comes from the pull request's subscribed events (CI results,
+  reviews, the merge) and from the next scheduled run, which re-reads its open
+  pull requests first (U2.2). The loop arms no check-ins: `send_later` waits on
+  an approval prompt in a loop session whatever the allow list says
+  (measured 2026-11-25, twice), and a stalled turn also holds back the next
+  scheduled run. A session a person is watching may still arm one.
 - U6.4 Coalescing: when several scheduled firings queued while the worker was
   down, run the loop once for the newest and say so.
 - U6.5 Recovery after a worker restart: re-read `git status` and the open
@@ -265,8 +268,8 @@ Five layers decide what an unattended session can do. Each has one canon.
     A loop session may run in the default permission mode, where an unlisted
     tool waits for an approval nobody gives (2026-11-25: the replacement loop
     session stalled on `send_later`). The allow list therefore also names the
-    MCP tools of the loop's routine: check-ins and PR subscriptions
-    (`send_later`, `subscribe_pr_activity`, `unsubscribe_pr_activity`, trigger
+    MCP tools of the loop's routine: PR subscriptions and, for attended
+    sessions, check-ins (`send_later`, `subscribe_pr_activity`, `unsubscribe_pr_activity`, trigger
     and session reads), and the GitHub reads and writes for its own pull
     requests and issues (create, update, read and list pull requests and
     issues, comment, enable auto-merge, read jobs, checks, files and commits), and every tool of the
