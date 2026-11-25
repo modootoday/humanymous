@@ -1,6 +1,6 @@
 //! Reference HMAC attestation protocol. The caller enforces issuance rate limits
 //! and challenge single use; this primitive alone provides neither property.
-use hmac::{Hmac, Mac};
+use hmac::{Hmac, KeyInit, Mac};
 use sha2::Sha256;
 use subtle::ConstantTimeEq;
 

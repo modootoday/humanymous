@@ -159,7 +159,7 @@ pub fn stage(
         receipt.files.push(Entry {
             path,
             bytes: text.len(),
-            sha256: format!("{:x}", Sha256::digest(text.as_bytes())),
+            sha256: hex::encode(Sha256::digest(text.as_bytes())),
         });
     }
     let mut file = OpenOptions::new()

@@ -11,7 +11,7 @@
 use crate::gateway::session::store::CollectorStore;
 use base64::Engine as _;
 use base64::engine::general_purpose::URL_SAFE_NO_PAD;
-use hmac::{Hmac, Mac};
+use hmac::{Hmac, KeyInit, Mac};
 use humanymous_core::integrity::request::{seed, session_key, time_bucket};
 use humanymous_core::signals::observation::{Signal, Source, Verdict};
 use humanymous_core::signals::report::Timestamp;

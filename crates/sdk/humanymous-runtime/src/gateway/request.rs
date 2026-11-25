@@ -8,7 +8,7 @@
 //! signed RIT headers, not the legacy `hsid` cookie.
 use super::Rejection;
 use crate::network::tls::{ClientHello, ja4};
-use hmac::{Hmac, Mac};
+use hmac::{Hmac, KeyInit, Mac};
 use sha2::Sha256;
 use std::io;
 use std::net::IpAddr;
@@ -117,7 +117,7 @@ pub fn traffic_ip_hash(key: &[u8], ip: IpAddr) -> Option<String> {
     if key.is_empty() {
         return None;
     }
-    let mut mac = <Hmac<Sha256> as Mac>::new_from_slice(key).ok()?;
+    let mut mac = <Hmac<Sha256> as KeyInit>::new_from_slice(key).ok()?;
     mac.update(b"ipwm|");
     mac.update(ip.to_string().as_bytes());
     Some(hex::encode(&mac.finalize().into_bytes()[..8]))

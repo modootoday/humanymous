@@ -158,7 +158,7 @@ fn within(child: &str, root: &str) -> bool {
 }
 
 fn hex_digest(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
+    hex::encode(Sha256::digest(bytes))
 }
 
 /// Pure admission over one received frame and this process's own facts.

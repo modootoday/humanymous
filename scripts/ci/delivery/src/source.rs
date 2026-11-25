@@ -28,7 +28,7 @@ pub const SCOPES: &[&str] = &[
     ".github/workflows",
 ];
 pub fn sha(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
+    hex::encode(Sha256::digest(bytes))
 }
 pub fn file(path: &Path) -> Result<String> {
     Ok(sha(&std::fs::read(path).map_err(|e| e.to_string())?))

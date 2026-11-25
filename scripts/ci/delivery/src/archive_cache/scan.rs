@@ -73,7 +73,7 @@ fn checksum(reader: &mut impl Read, limit: u64) -> Result<String> {
         hash.update(&buffer[..count]);
     }
     require(total == limit, "archive_changed_during_read")?;
-    Ok(format!("{:x}", hash.finalize()))
+    Ok(hex::encode(hash.finalize()))
 }
 pub fn collect(cache: &Path, lock: &toml::Value) -> Result<Archives> {
     let expected = expected(lock)?;

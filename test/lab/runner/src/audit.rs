@@ -76,7 +76,7 @@ pub fn run(args: &[String]) -> Result<i32> {
                 }
                 hash.update(&buf[..count]);
             }
-            format!("{:x}", hash.finalize())
+            hex::encode(hash.finalize())
         };
         let args = vec![
             "run".into(),

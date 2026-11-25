@@ -9,7 +9,7 @@
 //! remains the only settings path wired into the hosted gateway. The admin
 //! write plane over it (propose, dry-run, rollback, approval-backed commit and
 //! expiry) is `gateway::admin_plane::settings`, served only when attached.
-use hmac::{Hmac, Mac};
+use hmac::{Hmac, KeyInit, Mac};
 use sha2::Sha256;
 use std::collections::BTreeMap;
 use std::fmt::Write as _;

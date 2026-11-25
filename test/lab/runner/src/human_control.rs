@@ -236,7 +236,7 @@ pub fn receipt(record: &Value, bytes: &[u8]) -> Result<Value> {
         "provider_note": provider,
         "date": record["date"],
         "source_sha": record["source_sha"],
-        "record_sha256": format!("{:x}", Sha256::digest(bytes)),
+        "record_sha256": hex::encode(Sha256::digest(bytes)),
         "environment": record["environment"],
         "steps": listed,
         "assertions": assertions,
@@ -361,7 +361,7 @@ mod tests {
         assert_eq!(receipt["provider_note"], Value::Null);
         assert_eq!(
             receipt["record_sha256"],
-            format!("{:x}", Sha256::digest(&bytes))
+            hex::encode(Sha256::digest(&bytes))
         );
         for assertion in [
             "human-allow-control",

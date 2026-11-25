@@ -9,7 +9,7 @@ use std::{
 };
 
 pub fn digest(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
+    hex::encode(Sha256::digest(bytes))
 }
 pub fn root() -> Result<PathBuf> {
     let output = Command::new("git")

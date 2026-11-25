@@ -48,7 +48,7 @@ impl DenyResolver {
                                 .checked_add(1)
                                 .ok_or_else(|| io::Error::other("DNS count exhausted"))?;
                             if let Ok(name) = dns_wire::question(&packet[..length]) {
-                                let hash = format!("{:x}", Sha256::digest(name.as_bytes()));
+                                let hash = hex::encode(Sha256::digest(name.as_bytes()));
                                 if counts.questions.len() >= 64
                                     && !counts.questions.contains_key(&hash)
                                 {
@@ -114,7 +114,7 @@ pub async fn probe(resolver: &DenyResolver, name: &str, outside: Ipv4Addr) -> io
     if !outside.is_private() {
         return Err(io::Error::other("owned external DNS canary IP required"));
     }
-    let hash = format!("{:x}", Sha256::digest(name.as_bytes()));
+    let hash = hex::encode(Sha256::digest(name.as_bytes()));
     let hostname = format!("{name}.");
     let resolved = tokio::time::timeout(
         Duration::from_secs(4),

@@ -107,7 +107,7 @@ use crate::gateway::admin_approval::{AdminAuth, ApprovalStore, Operator, Role};
 use crate::gateway::ban::{self, Key, Source, Store};
 use crate::gateway::http::{self, Request};
 use crate::gateway::service::ShutdownRequest;
-use hmac::{Hmac, Mac};
+use hmac::{Hmac, KeyInit, Mac};
 use humanymous_core::signals::wire::json_float_go;
 use serde::Serialize;
 use serde_json::{Map, Value, json};

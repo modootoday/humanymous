@@ -29,7 +29,7 @@ fn limits(file: u64, total: u64) -> Limits {
     }
 }
 fn hash(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
+    hex::encode(Sha256::digest(bytes))
 }
 
 #[test]

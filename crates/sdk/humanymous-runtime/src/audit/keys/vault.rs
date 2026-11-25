@@ -1,7 +1,7 @@
 //! Per-subject linkage keys. Persistence must be sealed; erasure requires a
 //! durable signed dual-control issuer, not an unrestricted public delete method.
 use super::{KeyError, LIMIT};
-use hmac::{Hmac, Mac};
+use hmac::{Hmac, KeyInit, Mac};
 use serde::{Deserialize, Deserializer, Serialize};
 use sha2::{Digest, Sha256};
 use std::{

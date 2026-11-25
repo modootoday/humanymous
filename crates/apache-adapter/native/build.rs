@@ -56,12 +56,8 @@ mod generator {
             directories.iter().all(|path| path.is_absolute()),
             "absolute host include roots required"
         );
-        let hash = |path: &Path| {
-            format!(
-                "{:x}",
-                Sha256::digest(std::fs::read(path).expect("read ABI input"))
-            )
-        };
+        let hash =
+            |path: &Path| hex::encode(Sha256::digest(std::fs::read(path).expect("read ABI input")));
         let mut headers = BTreeMap::new();
         for (name, expected) in lock["headers"].as_object().expect("header inventory") {
             let path = directories
@@ -144,7 +140,7 @@ mod generator {
         let receipt = serde_json::json!({"schema":"humanymous.apache.abi-build/0.1", "target":target,
         "bindgenVersion":"0.73.2", "libclangSha256":hash(&clang),"clangVersion":bindgen::clang_version().full,
         "directHeaders":headers,"configuredHeaderClosure":closure,
-        "headerClosureSha256":format!("{:x}",Sha256::digest(serde_json::to_vec(&closure).expect("header closure JSON"))),
+        "headerClosureSha256":hex::encode(Sha256::digest(serde_json::to_vec(&closure).expect("header closure JSON"))),
         "bindingsSha256":hash(&output.join("apache_bindings.rs")),"fullProductSuccess":false});
         std::fs::write(
             output.join("apache-abi-build.json"),

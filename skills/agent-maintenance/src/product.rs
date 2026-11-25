@@ -53,7 +53,7 @@ pub fn validate(entry: &str, resources: &BTreeMap<String, String>) -> Report {
     let mut result = Report {
         schema: "humanymous.product-skill.v1",
         name: None,
-        entrypoint_sha256: format!("{:x}", Sha256::digest(entry.as_bytes())),
+        entrypoint_sha256: hex::encode(Sha256::digest(entry.as_bytes())),
         resources: Vec::new(),
         local_references: 0,
         errors: Vec::new(),
@@ -91,7 +91,7 @@ pub fn validate(entry: &str, resources: &BTreeMap<String, String>) -> Report {
             result.resources.push(FileRecord {
                 path: path.into(),
                 bytes: text.len(),
-                sha256: format!("{:x}", Sha256::digest(text.as_bytes())),
+                sha256: hex::encode(Sha256::digest(text.as_bytes())),
             });
         }
         for link in links.captures_iter(text) {

@@ -62,7 +62,7 @@ struct Report {
 
 fn digest(bytes: &[u8]) -> String {
     use sha2::Digest;
-    format!("{:x}", sha2::Sha256::digest(bytes))
+    hex::encode(sha2::Sha256::digest(bytes))
 }
 
 fn grade(value: &Value, positive: bool, wasm: bool) -> bool {

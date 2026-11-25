@@ -42,7 +42,7 @@ impl Fixture {
         Plan::inspect(
             &self.0.join("source"),
             &self.0.join("installed"),
-            &format!("{:x}", Sha256::digest(b"verified fixture artifact")),
+            &hex::encode(Sha256::digest(b"verified fixture artifact")),
             true,
         )
         .expect("plan")
@@ -103,7 +103,7 @@ impl Fixture {
         Plan::inspect(
             &self.0.join("source"),
             &self.0.join("installed"),
-            &format!("{:x}", Sha256::digest(b"verified fixture artifact")),
+            &hex::encode(Sha256::digest(b"verified fixture artifact")),
             true,
         )
     }

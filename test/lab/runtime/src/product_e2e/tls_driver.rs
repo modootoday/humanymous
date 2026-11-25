@@ -71,7 +71,7 @@ fn lab_root(line: &str) -> Result<(CertificateDer<'static>, String)> {
         .as_str()
         .ok_or("lab CA certificate absent")?;
     let root = CertificateDer::from_pem_slice(pem.as_bytes())?;
-    let digest = format!("{:x}", Sha256::digest(root.as_ref()));
+    let digest = hex::encode(Sha256::digest(root.as_ref()));
     if wrapper["sha256"] != digest.as_str() {
         return Err("lab CA digest mismatch".into());
     }

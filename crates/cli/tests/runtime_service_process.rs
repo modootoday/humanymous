@@ -60,7 +60,7 @@ fn address() -> SocketAddr {
         .unwrap()
 }
 fn digest(path: &Path) -> String {
-    format!("{:x}", Sha256::digest(fs::read(path).unwrap()))
+    hex::encode(Sha256::digest(fs::read(path).unwrap()))
 }
 fn signed(descriptor: &Descriptor) -> (SignedRelease, [u8; 32]) {
     let key = SigningKey::from_bytes(&[81; 32]);

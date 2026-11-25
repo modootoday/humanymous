@@ -67,7 +67,7 @@ pub fn issue() -> Result<Issued> {
     // The root's issuer (and its signing key) is dropped here.
     drop(root);
     Ok(Issued {
-        root_sha256: format!("{:x}", Sha256::digest(&root_der)),
+        root_sha256: hex::encode(Sha256::digest(&root_der)),
         chain_pem: pem("CERTIFICATE", leaf.der()) + &root_pem,
         root_pem,
         key_pem: Zeroizing::new(pem(
@@ -139,14 +139,11 @@ mod tests {
         assert!(!verifies(&first.root_pem, &leaf, "foreign.test"));
         assert!(PrivateKeyDer::from_pem_slice(first.key_pem.as_bytes()).is_ok());
         assert_eq!(
-            format!(
-                "{:x}",
-                Sha256::digest(
-                    CertificateDer::from_pem_slice(first.root_pem.as_bytes())
-                        .unwrap()
-                        .as_ref()
-                )
-            ),
+            hex::encode(Sha256::digest(
+                CertificateDer::from_pem_slice(first.root_pem.as_bytes())
+                    .unwrap()
+                    .as_ref()
+            )),
             first.root_sha256
         );
     }

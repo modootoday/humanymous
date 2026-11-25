@@ -53,7 +53,7 @@ impl Fixture {
             sequence: 1,
             os: std::env::consts::OS.into(),
             arch: std::env::consts::ARCH.into(),
-            artifact_sha256: format!("{:x}", Sha256::digest(fs::read(&source).unwrap())),
+            artifact_sha256: hex::encode(Sha256::digest(fs::read(&source).unwrap())),
             service_name: name,
             arguments,
             readiness,
@@ -156,7 +156,7 @@ fn snapshot(root: &Path) -> Vec<String> {
         if meta.is_dir() {
             paths.extend(fs::read_dir(&path).unwrap().map(|e| e.unwrap().path()));
         } else {
-            row.push_str(&format!("{:x}", Sha256::digest(fs::read(&path).unwrap())));
+            row.push_str(&hex::encode(Sha256::digest(fs::read(&path).unwrap())));
         }
         #[cfg(windows)]
         {

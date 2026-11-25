@@ -133,7 +133,7 @@ impl FrozenSelection {
         }
         let bytes = serde_json::to_vec(&(&roots, &inputs, declared_complete))
             .expect("strings and paths have a JSON representation");
-        let digest = format!("{:x}", Sha256::digest(bytes));
+        let digest = hex::encode(Sha256::digest(bytes));
         Ok(Self {
             roots,
             inputs,
