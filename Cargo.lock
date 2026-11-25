@@ -2034,7 +2034,7 @@ dependencies = [
 name = "humanymous-attacker"
 version = "0.1.0"
 dependencies = [
- "base64 0.22.1",
+ "base64 0.23.1",
  "hex",
  "hmac 0.12.1",
  "humanymous-core",
@@ -2108,7 +2108,7 @@ dependencies = [
 name = "humanymous-collector"
 version = "0.1.0"
 dependencies = [
- "base64 0.22.1",
+ "base64 0.23.1",
  "humanymous-core",
  "js-sys",
  "serde",
@@ -2123,7 +2123,7 @@ dependencies = [
 name = "humanymous-core"
 version = "0.1.0"
 dependencies = [
- "base64 0.22.1",
+ "base64 0.23.1",
  "hex",
  "hmac 0.12.1",
  "humanymous-platform",
@@ -2141,7 +2141,7 @@ dependencies = [
 name = "humanymous-defender"
 version = "0.1.0"
 dependencies = [
- "base64 0.22.1",
+ "base64 0.23.1",
  "humanymous-core",
  "humanymous-runtime",
  "serde",
@@ -2196,7 +2196,7 @@ dependencies = [
 name = "humanymous-framework-adapter"
 version = "0.1.0"
 dependencies = [
- "base64 0.22.1",
+ "base64 0.23.1",
  "getrandom 0.4.3",
  "hex",
  "humanymous-core",
@@ -2246,7 +2246,7 @@ dependencies = [
 name = "humanymous-nginx-adapter"
 version = "0.1.0"
 dependencies = [
- "base64 0.22.1",
+ "base64 0.23.1",
  "getrandom 0.4.3",
  "hex",
  "humanymous-core",
@@ -2340,7 +2340,7 @@ name = "humanymous-runtime"
 version = "0.1.0"
 dependencies = [
  "aes-gcm",
- "base64 0.22.1",
+ "base64 0.23.1",
  "ed25519-dalek",
  "getrandom 0.4.3",
  "hex",
@@ -2378,7 +2378,7 @@ dependencies = [
 name = "humanymous-runtime-pilot"
 version = "0.1.0"
 dependencies = [
- "base64 0.22.1",
+ "base64 0.23.1",
  "ed25519-dalek",
  "getrandom 0.4.3",
  "humanymous",
