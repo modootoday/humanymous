@@ -30,7 +30,8 @@ static GOLDEN: LazyLock<Value> = LazyLock::new(|| {
 });
 static NEXT: AtomicU64 = AtomicU64::new(0);
 const KEY: &[u8] = b"test-token-key-32-bytes-long!!!!";
-/// Families the port does not emit (module documentation).
+/// Families this plane (no chain attached) does not emit (module
+/// documentation).
 const OMITTED: [&str; 11] = [
     "hmn_gate_audit_records_total",
     "hmn_gate_audit_checkpoints_total",

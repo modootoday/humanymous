@@ -51,6 +51,7 @@ use crate::network::history::Unavailable;
 use crate::network::history::rate::{self, Level, Limiter, Observation};
 use serde_json::{Map, Value, json};
 use std::io;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex, MutexGuard, PoisonError};
 use std::time::Duration;
 
@@ -68,12 +69,22 @@ const TOO_MANY: &str = "too many incident lookups";
 const NOT_FOUND: &str = "incident not found";
 const RECON_NOTE: &str = "incident enumeration cap exceeded (bulk-read)";
 
-/// The shared chain, the incident handle key and the per-operator incident
-/// limiter.
+/// The shared chain, the incident handle key, the per-operator incident
+/// limiter and the cached integrity gauges that `metrics` serves.
 pub struct Chain {
     log: Arc<Mutex<Log>>,
     incidents: TokenKey,
     limiter: Mutex<Limiter>,
+    integrity_ok: AtomicBool,
+    witnessed: AtomicBool,
+}
+
+/// The audit-chain families of Go `adminMetrics`.
+pub(super) struct Gauges {
+    pub records: u64,
+    pub checkpoints: usize,
+    pub integrity_ok: bool,
+    pub witnessed: bool,
 }
 
 impl Chain {
@@ -90,11 +101,27 @@ impl Chain {
             log,
             incidents,
             limiter: Mutex::new(Limiter::new(config)),
+            // Go stores false at construction (SoT-38 P0-5: an empty chain
+            // is not a green pass) until RefreshIntegrityMetrics runs.
+            integrity_ok: AtomicBool::new(false),
+            witnessed: AtomicBool::new(false),
         })
     }
 
     pub(super) fn log(&self) -> MutexGuard<'_, Log> {
         self.log.lock().unwrap_or_else(PoisonError::into_inner)
+    }
+
+    /// Record and checkpoint counts read now; integrity and witness state
+    /// from the cache that [`AdminPlane::refresh_integrity_metrics`] fills.
+    pub(super) fn gauges(&self) -> io::Result<Gauges> {
+        let log = self.log();
+        Ok(Gauges {
+            records: log.len(),
+            checkpoints: log.checkpoints()?.len(),
+            integrity_ok: self.integrity_ok.load(Ordering::SeqCst),
+            witnessed: self.witnessed.load(Ordering::SeqCst),
+        })
     }
 
     /// Opaque handle for a sequence number (Go `incidentHandle`).
@@ -123,6 +150,31 @@ impl AdminPlane {
         self.audit = Mutex::new(Box::new(ChainSink(chain.log.clone())));
         self.chain = Some(chain);
         self
+    }
+
+    /// Go `RefreshIntegrityMetrics`: recompute the cached
+    /// `hmn_gate_audit_integrity_ok` and `hmn_gate_audit_witnessed` gauges.
+    /// Call it off the request path (at boot and on a maintenance tick),
+    /// never per scrape: a full-chain self-verify reads the whole log under
+    /// the audit lock. `witnessed` needs at least one signed head, a witness
+    /// key, and a valid co-signature on every head (Go `VerifyWitness`). An
+    /// unreadable checkpoint list reads as not witnessed. Without a chain
+    /// this does nothing.
+    pub fn refresh_integrity_metrics(&self) {
+        let Some(chain) = &self.chain else {
+            return;
+        };
+        let log = chain.log();
+        let ok = log.self_verify().ok;
+        let witnessed = match (log.checkpoints(), log.witness_public_key()) {
+            (Ok(checkpoints), Some(key)) if !checkpoints.is_empty() => checkpoints
+                .iter()
+                .all(|checkpoint| checkpoint.verify_witness(&key)),
+            _ => false,
+        };
+        drop(log);
+        chain.integrity_ok.store(ok, Ordering::SeqCst);
+        chain.witnessed.store(witnessed, Ordering::SeqCst);
     }
 
     pub(super) fn integrity(&self) -> Response {

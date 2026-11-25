@@ -3,7 +3,7 @@ id: plan:root/20261121201500
 title: Lane H delegated gate decisions
 status: active
 created: 2026-11-21T20:15:00Z
-updated: 2026-11-23T12:15:00Z
+updated: 2026-11-25T15:00:00Z
 rel:
   governs: [crates/sdk/humanymous-runtime/src/gateway/admin_plane.rs, crates/sdk/humanymous-runtime/src/gateway/application.rs, crates/sdk/humanymous-runtime/src/gateway/application/gates.rs, crates/sdk/humanymous-runtime/src/gateway/application/edge.rs, crates/sdk/humanymous-runtime/src/gateway/service.rs, crates/sdk/humanymous-runtime/src/gateway/service/admin.rs, crates/sdk/humanymous-runtime/src/gateway/configuration.rs, crates/sdk/humanymous-runtime/src/gateway/configuration/recon_sweep.rs, crates/sdk/humanymous-runtime/src/gateway/configuration/inject.rs, crates/sdk/humanymous-runtime/src/gateway/application/inject.rs]
   depends_on: [sot:root/runtime-application, plan:root/20261119180000, plan:root/20261119160000]
@@ -33,8 +33,11 @@ scoring inputs. A11y gating is untouched.
   escaping, pinned against a Go capture. Sources the service has: uptime,
   active bans, kill switch, effective monitor, settings overlay, pending
   age, apply and store-error counters, config version, operational log
-  queue and sink counters. Audit-chain gauges need the chain attached to the
-  admin listener (`AdminPlane::with_chain`), which is a step of its own; Go
+  queue and sink counters. Audit-chain gauges (2026-11-25): a plane with
+  `AdminPlane::with_chain` emits the four families in Go order, integrity
+  and witness cached by `refresh_integrity_metrics`; attaching the chain to
+  the served admin listener (and calling the refresh at boot and on a
+  maintenance tick) is a step of its own; Go
   runtime gauges (goroutines, heap, sys) have no Rust counterpart and are a
   recorded deviation.
 - [x] #3 gate modes (2026-11-22, for the composed gates): Go's default

@@ -261,7 +261,7 @@
     "divergence: Go served the admin listener with a self-signed certificate and allowed it off-host (warning without mTLS, -admin-mtls-ca optional); the runtime admin listener is plaintext loopback only and refuses any other address, -admin-mtls-ca is not ported",
     "origin reverse proxy to non-loopback upstream, origin-auth (B14)",
     "Redis/ClickHouse projections (B23,B24)",
-    "virtual-usb routes and the audit-chain metric families (B19; row internal/gate/admin.go); RBAC, approvals, policy, console, settings, models and metrics are served by the admin listener",
+    "virtual-usb routes and, on the served admin listener, the audit-chain metric families (B19; row internal/gate/admin.go; ported for a plane with an attached chain, which the service does not attach yet); RBAC, approvals, policy, console, settings, models and metrics are served by the admin listener",
     "signal-driven drain (B27; Go -shutdown-grace): the CLI runtime host (crates/cli runtime_host::platform) turns SIGTERM/SIGINT into the bounded StopPlan drain; the inherited-pipe humanymous-runtime entrypoint itself has no signal adapter (its supervisor ends the process)"
    ],
    "retire_basis": null,
@@ -2756,13 +2756,16 @@
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/metrics/tests.rs::golden_fresh_and_applied_expositions",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/metrics/tests.rs::uptime_kill_switch_bans_and_label_escaping",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/metrics/tests.rs::any_role_reads_and_anonymous_is_refused",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/metrics/tests.rs::a_bare_plane_reports_zeros_and_no_config_version"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/metrics/tests.rs::a_bare_plane_reports_zeros_and_no_config_version",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_admin_metrics_audit_families_follow_the_chain",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_refresh_integrity_metrics_reports_the_witness",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::refresh_without_a_chain_is_inert"
    ],
    "go_test_map": {},
    "gaps": [
     "divergence: Go served the admin listener over self-signed TLS and allowed it off-host (optional -admin-mtls-ca); the runtime admin listener is plaintext HTTP/1.1 on loopback only",
     "divergence: Go's local-demo dev tokens and per-boot random tokens for unlisted roles are not minted; operators come only from the configured bearer table (owner decision #2: provisioning is configuration-driven)",
-    "virtual-usb routes, and of the metrics route the families hmn_gate_audit_records_total, audit_checkpoints_total, audit_integrity_ok and audit_witnessed (no audit chain attached to the admin listener), the four operational_log_* families (the binary's logger is not shared with the admin plane) and the Go runtime gauges goroutines, heap_alloc_bytes and sys_bytes (no Rust counterpart, accepted deviation) (metrics is served by gateway::admin_plane::metrics, owner decision #5; integrity, proof, audit, incidents, keys and checkpoints are served by gateway::admin_plane::chain; policy and the console page by gateway::admin_plane::policy; the settings routes and the settings.overlay and settings.overlay.rollback approval commits by gateway::admin_plane::settings)",
+    "virtual-usb routes, and of the metrics route on the served admin listener the families hmn_gate_audit_records_total, audit_checkpoints_total, audit_integrity_ok and audit_witnessed (the service attaches no audit chain to the admin listener; a plane with AdminPlane::with_chain emits them in Go order, with the integrity and witness gauges cached by refresh_integrity_metrics as Go RefreshIntegrityMetrics, 2026-11-25), the four operational_log_* families (the binary's logger is not shared with the admin plane) and the Go runtime gauges goroutines, heap_alloc_bytes and sys_bytes (no Rust counterpart, accepted deviation) (metrics is served by gateway::admin_plane::metrics, owner decision #5; integrity, proof, audit, incidents, keys and checkpoints are served by gateway::admin_plane::chain; policy and the console page by gateway::admin_plane::policy; the settings routes and the settings.overlay and settings.overlay.rollback approval commits by gateway::admin_plane::settings)",
     "kill-switch commit (signed node kill)",
     "intake path that stages retained PermanentBan permits into the plane",
     "intake path that stages ledger-issued ErasurePermits into the plane and the periodic RunDueShreds caller with the attached chain's latest checkpoint"
@@ -2797,7 +2800,10 @@
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/metrics/tests.rs::golden_fresh_and_applied_expositions": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/metrics/tests.rs::uptime_kill_switch_bans_and_label_escaping": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/admin_plane/metrics/tests.rs::any_role_reads_and_anonymous_is_refused": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/metrics/tests.rs::a_bare_plane_reports_zeros_and_no_config_version": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/metrics/tests.rs::a_bare_plane_reports_zeros_and_no_config_version": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_admin_metrics_audit_families_follow_the_chain": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::go_refresh_integrity_metrics_reports_the_witness": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/admin_plane/chain/tests.rs::refresh_without_a_chain_is_inert": "passed"
    }
   },
   {
