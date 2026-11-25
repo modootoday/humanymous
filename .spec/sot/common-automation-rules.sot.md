@@ -144,7 +144,7 @@ Each repository has `SECURITY.md`, a pull request template with an `Agent-Provid
 | Settings files | `.github/labels.json`, `.github/settings/repository.json` |
 | Project gate checks | On `codex/rust` the ruleset requires the per-check jobs `validate / policy`, `validate / quality` and `validate / msrv` (owner change to ruleset 27382552 on 2026-11-17, recorded on issue #75); `validate / merge-ready` still runs and is reported but is no longer required there. `validate / merge-ready` is the merge aggregate of the reusable Rust validation, called by job `validate`; owner decision on issue #16, option 1). It needs policy, native, msrv, quality, nginx, images, packages, node, advisories and documentation to succeed, and the Docker and browser pilots to show no regression: zero failed assertions and no error other than the honest component-only block. `validate / ready` stays the release gate and is not a merge check |
 | Shared checks | `Public surface`, `Secret scan` in `.github/workflows/surface.yml` |
-| Deny secret | `HUMANYMOUS_DENY_TERMS` (Actions and Dependabot) |
+| Deny secret | `HUMANYMOUS_DENY_TERMS` (Actions and Dependabot; required, fails closed), plus optional `HUMANYMOUS_DENY_TERMS_EXTRA` (same format; the check uses the union; unset or empty adds nothing). The extra secret exists because a secret cannot be read back to append terms (fleet mailbox 72, 2026-11-24) |
 | Public surface implementation | Rust: `delivery public-surface <base> <head>` in `scripts/ci/delivery` |
 | Secret scan implementation | Gitleaks 8.28.0 linux x64 release archive, SHA-256 verified in the workflow |
 | Settings drift implementation | Rust: `delivery settings-drift --issue`, workflow `.github/workflows/settings-drift.yml`. Runs on push to `codex/rust` touching settings paths and on dispatch. The weekly schedule is added after the main merge, because scheduled runs use the default branch |
@@ -174,7 +174,7 @@ values:
 ## Owner tasks (not automatable here)
 
 - Apply the ruleset, label and repository settings files from the owner's computer after they merge.
-- Register `HUMANYMOUS_DENY_TERMS` as an Actions secret and as a Dependabot secret.
+- Register `HUMANYMOUS_DENY_TERMS` as an Actions secret and as a Dependabot secret. New terms go in `HUMANYMOUS_DENY_TERMS_EXTRA` (Actions and Dependabot) when the main value is not at hand.
 - Enable secret scanning and push protection.
 - Apply `allow_auto_merge: true` from `.github/settings/repository.json`; auto-merge cannot be turned on before that.
 - Confirm the exact `validate / merge-ready` context on the first pull request; rename in one pull request with the ruleset if it differs (C3.5).

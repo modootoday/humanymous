@@ -35,6 +35,7 @@ jobs:
     - name: Scan the landing range (fails closed without the deny secret)
       env:
         HUMANYMOUS_DENY_TERMS: ${{ secrets.HUMANYMOUS_DENY_TERMS }}
+        HUMANYMOUS_DENY_TERMS_EXTRA: ${{ secrets.HUMANYMOUS_DENY_TERMS_EXTRA }}
         PR_TITLE: ${{ github.event.pull_request.title }}
         PR_BODY: ${{ github.event.pull_request.body }}
         RANGE_BASE: ${{ github.event.pull_request.base.sha || github.event.before || github.sha }}
