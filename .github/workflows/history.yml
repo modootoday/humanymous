@@ -30,7 +30,7 @@ jobs:
       with:
         toolchain: 1.99.1
     - name: Install playpilot at a pinned revision
-      run: cargo install --locked --git https://github.com/modootoday/playpilot --rev fde47840d02fe81976d60d668f7fa08ee0211d24 playpilot
+      run: cargo install --locked --git https://github.com/modootoday/playpilot --rev e80e7a2c605849b2d3fa2aa126aa1004719dc40a playpilot
     - name: Check the pull request history
       env:
         BASE: ${{ github.event.pull_request.base.sha }}
