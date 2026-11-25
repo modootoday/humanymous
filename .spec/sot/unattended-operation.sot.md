@@ -269,7 +269,9 @@ Five layers decide what an unattended session can do. Each has one canon.
     (`send_later`, `subscribe_pr_activity`, `unsubscribe_pr_activity`, trigger
     and session reads), and the GitHub reads and writes for its own pull
     requests and issues (create, update, read and list pull requests and
-    issues, comment, enable auto-merge, read jobs, checks, files and commits).
+    issues, comment, enable auto-merge, read jobs, checks, files and commits), and every tool of the
+    fleet mailbox server (`mcp__playpilot-mail`: inbox, send, ack), which the
+    fleet treats as A0 (2026-11-25: the 08:13 run stalled on mail ack).
   - **deny** blocks what this governance reserves for the owner or forbids:
     merging or approving pull requests; tags and releases; secrets and
     variables; ruleset, settings and branch-protection writes; force pushes
