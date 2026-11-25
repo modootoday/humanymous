@@ -16,7 +16,7 @@ crate-type = ["cdylib"]
 unsafe_code = "deny"
 
 [target.'cfg(windows)'.dependencies]
-cef = { git = "https://github.com/tauri-apps/cef-rs.git", rev = "224a785c7b41758b51821cbb7395ea57ba493a63", default-features = false, features = ["sandbox"] }
+cef = { git = "https://github.com/tauri-apps/cef-rs.git", rev = "bacdb41c17f30f4eca4a6f747586fbf7f280ab90", default-features = false, features = ["sandbox"] }
 libloading = "=0.9.1"
 
 [target.'cfg(windows)'.dev-dependencies]

@@ -43,9 +43,9 @@ fn cef_manifest(metadata: &Value) -> io::Result<PathBuf> {
         .as_array()
         .and_then(|packages| packages.iter().find(|p| p["name"] == "cef"))
         .ok_or_else(|| io::Error::other("pinned CEF dependency absent"))?;
-    if cef["version"] != "156.3.0+156.0.15"
+    if cef["version"] != "156.5.0+156.0.28"
         || cef["source"]
-            != "git+https://github.com/tauri-apps/cef-rs.git?rev=224a785c7b41758b51821cbb7395ea57ba493a63#224a785c7b41758b51821cbb7395ea57ba493a63"
+            != "git+https://github.com/tauri-apps/cef-rs.git?rev=bacdb41c17f30f4eca4a6f747586fbf7f280ab90#bacdb41c17f30f4eca4a6f747586fbf7f280ab90"
     {
         return Err(io::Error::other("unexpected CEF revision/version"));
     }
@@ -148,8 +148,8 @@ pub(super) fn prepare() -> io::Result<PathBuf> {
     }
     let archive: Value = serde_json::from_slice(&fs::read(bundle.join("archive.json"))?)?;
     if archive["name"]
-        != "cef_binary_156.0.15+gcf671c0+chromium-156.0.8078.80_windows64_minimal.tar.bz2"
-        || archive["sha1"] != "b690e035689ee20ba9d2500ac8953815bc7ed46a"
+        != "cef_binary_156.0.28+g57389f0+chromium-156.0.8078.88_windows64_minimal.tar.bz2"
+        || archive["sha1"] != "6223324fafd8f0a00a02669058fa491293548a89"
         || archive["type"] != "minimal"
     {
         return Err(io::Error::other("unexpected upstream CEF archive metadata"));
@@ -220,7 +220,7 @@ mod tests {
     use super::*;
     #[test]
     fn metadata_requires_exact_native_dependency_revision_and_version() {
-        let mut m = serde_json::json!({"packages":[{"name":"cef","version":"156.3.0+156.0.15","source":"git+https://github.com/tauri-apps/cef-rs.git?rev=224a785c7b41758b51821cbb7395ea57ba493a63#224a785c7b41758b51821cbb7395ea57ba493a63","manifest_path":"cef/Cargo.toml"}]});
+        let mut m = serde_json::json!({"packages":[{"name":"cef","version":"156.5.0+156.0.28","source":"git+https://github.com/tauri-apps/cef-rs.git?rev=bacdb41c17f30f4eca4a6f747586fbf7f280ab90#bacdb41c17f30f4eca4a6f747586fbf7f280ab90","manifest_path":"cef/Cargo.toml"}]});
         assert!(cef_manifest(&m).is_ok());
         m["packages"][0]["source"] = "git+https://example.invalid#other".into();
         assert!(cef_manifest(&m).is_err());

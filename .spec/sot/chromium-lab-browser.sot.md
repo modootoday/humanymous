@@ -59,7 +59,12 @@ means not_integrated, not a failed website defense or an invented verdict.
 
 cef-rs is maintained under tauri-apps, not an upstream Chromium-maintained Rust
 API. Observed source 224a785c7b41758b51821cbb7395ea57ba493a63, dated 2026-11-01,
-declares cef/cef-dll-sys 156.3.0+156.0.15, edition 2021, Apache-2.0 OR MIT. No
+declares cef/cef-dll-sys 156.3.0+156.0.15, edition 2021, Apache-2.0 OR MIT. The
+pin moved on 2026-11-25 to bacdb41c17f30f4eca4a6f747586fbf7f280ab90 (release
+2026-11-14, cef/cef-dll-sys 156.5.0+156.0.28, download-cef 3.0.1, CEF
+156.0.28+g57389f0+chromium-156.0.8078.88): the CEF builds index grew past the
+10 MiB JSON limit of download-cef 3.0.0, which failed every fresh build, and
+upstream 2c769e9 (an ancestor of bacdb41) bounds larger indexes (issue #190). No
 rust-version is declared; full binding closure compatibility remains unverified.
 The user subsequently approved core/toolchain1.99.1. Lock exact features/dependency closure and
 prove native target builds before adoption. README target support is not our
