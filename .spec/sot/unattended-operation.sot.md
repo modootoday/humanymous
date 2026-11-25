@@ -262,6 +262,14 @@ Five layers decide what an unattended session can do. Each has one canon.
     fleet `permissions.md` (mailbox item 56, 2026-11-24). `gh pr merge --auto`
     is not allowed: a command pattern cannot separate it from `--admin`, so
     `gh pr merge` stays denied as a whole. This repository's stricter rule wins.
+    A loop session may run in the default permission mode, where an unlisted
+    tool waits for an approval nobody gives (2026-11-25: the replacement loop
+    session stalled on `send_later`). The allow list therefore also names the
+    MCP tools of the loop's routine: check-ins and PR subscriptions
+    (`send_later`, `subscribe_pr_activity`, `unsubscribe_pr_activity`, trigger
+    and session reads), and the GitHub reads and writes for its own pull
+    requests and issues (create, update, read and list pull requests and
+    issues, comment, enable auto-merge, read jobs, checks, files and commits).
   - **deny** blocks what this governance reserves for the owner or forbids:
     merging or approving pull requests; tags and releases; secrets and
     variables; ruleset, settings and branch-protection writes; force pushes
@@ -272,7 +280,11 @@ Five layers decide what an unattended session can do. Each has one canon.
     refs; staging everything at once (`git add .`, `-A`, `--all`), because
     commits name their paths; reading local credential files (`.env`, SSH
     keys, gh, git, netrc, npm and cargo credentials); piping remote scripts
-    into a shell.
+    into a shell; writing repository content through the GitHub API
+    (`push_files`, `create_or_update_file`), which would bypass the local push
+    guards; turning auto-merge off, which the `Merge gate` job does for
+    human-gated paths; and confirming repository trust or attaching a computer
+    folder, which makes a session unreachable for scheduled runs.
     Auto-merge is turned on through the GitHub auto-merge API (MCP
     `enable_pr_auto_merge`), which the allow side of the fleet auto-mode
     context names; a direct merge stays denied.

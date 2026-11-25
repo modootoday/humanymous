@@ -78,7 +78,29 @@
       "Bash(playpilot render *)",
       "Bash(playpilot plan *)",
       "Bash(playpilot whoami)",
-      "Bash(playpilot whoami *)"
+      "Bash(playpilot whoami *)",
+      "mcp__claude-code-remote__send_later",
+      "mcp__claude-code-remote__subscribe_pr_activity",
+      "mcp__claude-code-remote__unsubscribe_pr_activity",
+      "mcp__claude-code-remote__get_trigger",
+      "mcp__claude-code-remote__list_triggers",
+      "mcp__claude-code-remote__get_session",
+      "mcp__github__create_pull_request",
+      "mcp__github__update_pull_request",
+      "mcp__github__enable_pr_auto_merge",
+      "mcp__github__pull_request_read",
+      "mcp__github__list_pull_requests",
+      "mcp__github__add_issue_comment",
+      "mcp__github__issue_read",
+      "mcp__github__list_issues",
+      "mcp__github__issue_write",
+      "mcp__github__get_job_logs",
+      "mcp__github__actions_list",
+      "mcp__github__actions_get",
+      "mcp__github__get_check_run",
+      "mcp__github__get_file_contents",
+      "mcp__github__list_commits",
+      "mcp__github__get_commit"
     ],
     "deny": [
       "Bash(gh pr merge *)",
@@ -144,7 +166,12 @@
       "Read(~/.netrc)",
       "Read(~/.npmrc)",
       "Read(~/.cargo/credentials)",
-      "Read(~/.cargo/credentials.toml)"
+      "Read(~/.cargo/credentials.toml)",
+      "mcp__github__disable_pr_auto_merge",
+      "mcp__github__push_files",
+      "mcp__github__create_or_update_file",
+      "mcp__claude-code-remote__confirm_repository_trust",
+      "mcp__claude-code-remote__request_computer_folder"
     ]
   }
 }
