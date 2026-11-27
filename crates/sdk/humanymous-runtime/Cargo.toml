@@ -70,7 +70,7 @@ winsafe = { optional = true, version = "=0.0.29", features = ["kernel", "advapi"
 keyring-core = { optional = true, version = "=1.0.1", default-features = false }
 windows-native-keyring-store = { optional = true, version = "=1.1.0", default-features = false }
 widestring = { version = "1.2.1", optional = true }
-interprocess = { optional = true, version = "=2.4.7", features = ["tokio"] }
+interprocess = { optional = true, version = "=2.4.9", features = ["tokio"] }
 
 [target.'cfg(windows)'.dev-dependencies]
 junction = { version = "=2.1.0", default-features = false }
