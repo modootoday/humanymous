@@ -24,7 +24,7 @@ jobs:
           ref: 981d25cf71a5a54855d7e2b4359e832a9d5998e5
           persist-credentials: false
           fetch-depth: 0        # full history + tags for the git-cliff config check below
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
+      - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7
         with:
           go-version: "1.25.3"
           cache: false
