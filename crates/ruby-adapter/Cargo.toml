@@ -21,7 +21,7 @@ host-pilot = ["native"]
 humanymous-framework-adapter = { path = "../framework-adapter" }
 humanymous-runtime = { workspace = true, features = ["authority"] }
 humanymous-core.workspace = true
-magnus = { version = "=0.9.3", features = ["bytes"], optional = true }
+magnus = { version = "=0.9.4", features = ["bytes"], optional = true }
 tokio.workspace = true
 serde.workspace = true
 serde_json.workspace = true
